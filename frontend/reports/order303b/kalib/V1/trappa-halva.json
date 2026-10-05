@@ -1,0 +1,229 @@
+{
+ "tasting": false,
+ "definition": "Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).",
+ "start": null,
+ "variant": "{\"CONSEQUENCES\":{\"moodBillPerLiftUp\":0.3,\"right\":{\"stepReputation\":0.3,\"clearedReputation\":1,\"avecShare\":0.1}},\"MENU_ROCKETS\":{\"tipBonusPerClearedStep\":0.015,\"tipBonusOnRocketCleared\":0.02}}",
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20
+ ],
+ "weeks": 8,
+ "players": {
+  "halva": {
+   "closed": 17,
+   "closedWeeks": [
+    6,
+    6,
+    5,
+    5,
+    7,
+    5,
+    7,
+    8,
+    5,
+    4,
+    5,
+    5,
+    7,
+    4,
+    6,
+    5,
+    6
+   ],
+   "renegotiated": 9,
+   "lowestCash": -46718,
+   "meanCashEnd": -24186,
+   "targetHitShare": 0.68,
+   "meanTastings": 0,
+   "meanOwned": 0,
+   "stars": 0,
+   "starEarned": 0,
+   "starWeeks": [],
+   "goldWeeks": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "meanRepAtSettlement": [
+    0.247,
+    0.287,
+    0.221,
+    0.279,
+    0.23,
+    0.243,
+    0.215,
+    0.282
+   ],
+   "meanJudgement": [
+    0.54,
+    0.42,
+    0.53,
+    0.49,
+    0.52,
+    0.44,
+    0.46,
+    0.66
+   ],
+   "byWeek": [
+    {
+     "week": 1,
+     "n": 20,
+     "meanResultSek": 1616,
+     "meanRevenueSek": 44732,
+     "meanCashEnd": 16616,
+     "meanCredits": 20,
+     "targetHit": 17,
+     "rentSek": 7155
+    },
+    {
+     "week": 2,
+     "n": 20,
+     "meanResultSek": -3640,
+     "meanRevenueSek": 41961,
+     "meanCashEnd": 12976,
+     "meanCredits": 36,
+     "targetHit": 13,
+     "rentSek": 7155
+    },
+    {
+     "week": 3,
+     "n": 20,
+     "meanResultSek": -10118,
+     "meanRevenueSek": 42744,
+     "meanCashEnd": 2858,
+     "meanCredits": 60,
+     "targetHit": 11,
+     "rentSek": 13469
+    },
+    {
+     "week": 4,
+     "n": 20,
+     "meanResultSek": -8857,
+     "meanRevenueSek": 43367,
+     "meanCashEnd": -5998,
+     "meanCredits": 82,
+     "targetHit": 14,
+     "rentSek": 13469
+    },
+    {
+     "week": 5,
+     "n": 18,
+     "meanResultSek": -6830,
+     "meanRevenueSek": 45882,
+     "meanCashEnd": -10946,
+     "meanCredits": 109,
+     "targetHit": 13,
+     "rentSek": 13469
+    },
+    {
+     "week": 6,
+     "n": 11,
+     "meanResultSek": -11663,
+     "meanRevenueSek": 40300,
+     "meanCashEnd": -15667,
+     "meanCredits": 139,
+     "targetHit": 6,
+     "rentSek": 13469
+    },
+    {
+     "week": 7,
+     "n": 7,
+     "meanResultSek": -11285,
+     "meanRevenueSek": 41415,
+     "meanCashEnd": -19911,
+     "meanCredits": 169,
+     "targetHit": 4,
+     "rentSek": 13469
+    },
+    {
+     "week": 8,
+     "n": 4,
+     "meanResultSek": -8379,
+     "meanRevenueSek": 43877,
+     "meanCashEnd": -17446,
+     "meanCredits": 210,
+     "targetHit": 3,
+     "rentSek": 13469
+    }
+   ],
+   "repByWeek": [
+    {
+     "week": 1,
+     "mon": 0.6,
+     "sat": 0.344
+    },
+    {
+     "week": 2,
+     "mon": 0.265,
+     "sat": 0.327
+    },
+    {
+     "week": 3,
+     "mon": 0.305,
+     "sat": 0.261
+    },
+    {
+     "week": 4,
+     "mon": 0.242,
+     "sat": 0.301
+    },
+    {
+     "week": 5,
+     "mon": 0.281,
+     "sat": 0.27
+    },
+    {
+     "week": 6,
+     "mon": 0.227,
+     "sat": 0.225
+    },
+    {
+     "week": 7,
+     "mon": 0.287,
+     "sat": 0.242
+    },
+    {
+     "week": 8,
+     "mon": 0.257,
+     "sat": 0.333
+    }
+   ]
+  }
+ },
+ "note": "ORDER 303b: runs borttagna i kalibreringens filer (summeringen kvar); hela körningen för det valda talet står i ../efter."
+}

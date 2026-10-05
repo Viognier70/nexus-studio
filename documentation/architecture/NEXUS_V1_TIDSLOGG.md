@@ -143,6 +143,7 @@ Uppskattningen skrivs innan etappen börjar. Faktisk tid fylls i när etappen ä
 | Kunskapsgrunden | 301 | ~7: filen och beslutet, omskrivningen av namnet i 74 strängar med regler per sammanhang, introduktionens kort, sidan och eftertexterna, kontrollen, förslaget om raketen, rapport | 3 h | Texter som behandlade Herdenstam och Crichton-Fock som två personer; källraderna visas på båda språken; speldesignens tal-test läste ORDER-numret | | — | 2026-10-05 | |
 | Gatans folk | 302 | ~6: Designs koreografi genomgången, storlek och formation, fart och sida med trottoaren per gata, pauserna, före 19 och efter 22, samlingen vid dörren och ordet på gatan, kontrollen, rapport | 2 h | Gångnätet går på mittlinjen (trottoaren per gatans bredd); hemvägen ärvde samlingen; ett skript tömde VillageLife.tsx (återställd ur git) | | — | 2026-10-05 | |
 | Konceptet och varukorgen, förslag | 304 | ~3: genomgång av det som finns, förslaget till datamodell och balans, utkastet till 90 frågor på två språk, faktakontroll | 2 h | Faktauppgifterna i frågorna (lagstiftning, ursprungsskydd, temperaturer) kontrollerades en gång till; humidorns temperatur rättad | | — | 2026-10-05 | Väntar på beslut. |
+| Ekonomin efter följderna | 303b | ~4: utgångsläget, fyra varianter i harness (trappan, stjärnan 40 säsonger med tre färdigheter, 303 B), talen, slutkörningen, rapport | 2 h | Stjärnan föll under målet när belöningen sänktes; gränsen för klarade raketer fick sänkas | | — | 2026-10-05 | |
 
 ## Omräkning efter etapp 2
 

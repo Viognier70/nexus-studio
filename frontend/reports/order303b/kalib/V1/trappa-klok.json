@@ -1,0 +1,211 @@
+{
+ "tasting": false,
+ "definition": "Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).",
+ "start": null,
+ "variant": "{\"CONSEQUENCES\":{\"moodBillPerLiftUp\":0.3,\"right\":{\"stepReputation\":0.3,\"clearedReputation\":1,\"avecShare\":0.1}},\"MENU_ROCKETS\":{\"tipBonusPerClearedStep\":0.015,\"tipBonusOnRocketCleared\":0.02}}",
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20
+ ],
+ "weeks": 8,
+ "players": {
+  "klok": {
+   "closed": 0,
+   "closedWeeks": [],
+   "renegotiated": 0,
+   "lowestCash": 23495,
+   "meanCashEnd": 120786,
+   "targetHitShare": 1,
+   "meanTastings": 0,
+   "meanOwned": 3,
+   "stars": 0,
+   "starEarned": 0,
+   "starWeeks": [],
+   "goldWeeks": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "meanRepAtSettlement": [
+    0.681,
+    0.807,
+    0.842,
+    0.902,
+    0.942,
+    0.913,
+    0.871,
+    0.861
+   ],
+   "meanJudgement": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "byWeek": [
+    {
+     "week": 1,
+     "n": 20,
+     "meanResultSek": 16947,
+     "meanRevenueSek": 58555,
+     "meanCashEnd": 31947,
+     "meanCredits": 36,
+     "targetHit": 20,
+     "rentSek": 7155
+    },
+    {
+     "week": 2,
+     "n": 20,
+     "meanResultSek": 15420,
+     "meanRevenueSek": 59354,
+     "meanCashEnd": 47367,
+     "meanCredits": 32,
+     "targetHit": 20,
+     "rentSek": 7155
+    },
+    {
+     "week": 3,
+     "n": 20,
+     "meanResultSek": 10586,
+     "meanRevenueSek": 60752,
+     "meanCashEnd": 57953,
+     "meanCredits": 55,
+     "targetHit": 20,
+     "rentSek": 13469
+    },
+    {
+     "week": 4,
+     "n": 20,
+     "meanResultSek": 12432,
+     "meanRevenueSek": 62549,
+     "meanCashEnd": 70385,
+     "meanCredits": 114,
+     "targetHit": 20,
+     "rentSek": 13469
+    },
+    {
+     "week": 5,
+     "n": 20,
+     "meanResultSek": 11893,
+     "meanRevenueSek": 62185,
+     "meanCashEnd": 82278,
+     "meanCredits": 177,
+     "targetHit": 20,
+     "rentSek": 13469
+    },
+    {
+     "week": 6,
+     "n": 20,
+     "meanResultSek": 12425,
+     "meanRevenueSek": 62614,
+     "meanCashEnd": 94702,
+     "meanCredits": 241,
+     "targetHit": 20,
+     "rentSek": 13469
+    },
+    {
+     "week": 7,
+     "n": 20,
+     "meanResultSek": 12792,
+     "meanRevenueSek": 62744,
+     "meanCashEnd": 107494,
+     "meanCredits": 306,
+     "targetHit": 20,
+     "rentSek": 13469
+    },
+    {
+     "week": 8,
+     "n": 20,
+     "meanResultSek": 13292,
+     "meanRevenueSek": 62711,
+     "meanCashEnd": 120786,
+     "meanCredits": 373,
+     "targetHit": 20,
+     "rentSek": 13469
+    }
+   ],
+   "repByWeek": [
+    {
+     "week": 1,
+     "mon": 0.6,
+     "sat": 0.677
+    },
+    {
+     "week": 2,
+     "mon": 0.686,
+     "sat": 0.779
+    },
+    {
+     "week": 3,
+     "mon": 0.807,
+     "sat": 0.871
+    },
+    {
+     "week": 4,
+     "mon": 0.842,
+     "sat": 0.851
+    },
+    {
+     "week": 5,
+     "mon": 0.902,
+     "sat": 0.934
+    },
+    {
+     "week": 6,
+     "mon": 0.942,
+     "sat": 0.922
+    },
+    {
+     "week": 7,
+     "mon": 0.913,
+     "sat": 0.876
+    },
+    {
+     "week": 8,
+     "mon": 0.871,
+     "sat": 0.902
+    }
+   ]
+  }
+ },
+ "note": "ORDER 303b: runs borttagna i kalibreringens filer (summeringen kvar); hela körningen för det valda talet står i ../efter."
+}

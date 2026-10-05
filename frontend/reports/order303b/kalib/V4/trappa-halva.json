@@ -1,0 +1,232 @@
+{
+ "tasting": false,
+ "definition": "Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).",
+ "start": null,
+ "variant": "{\"CONSEQUENCES\":{\"moodBillPerLiftUp\":0.15,\"right\":{\"stepReputation\":0.3,\"clearedReputation\":1,\"avecShare\":0.08}},\"MENU_ROCKETS\":{\"tipBonusPerClearedStep\":0.015,\"tipBonusOnRocketCleared\":0.02},\"STAR\":{\"judgementAtLeast\":0.40}}",
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20
+ ],
+ "weeks": 8,
+ "players": {
+  "halva": {
+   "closed": 20,
+   "closedWeeks": [
+    6,
+    6,
+    7,
+    5,
+    5,
+    7,
+    6,
+    5,
+    7,
+    4,
+    5,
+    6,
+    5,
+    6,
+    6,
+    7,
+    7,
+    6,
+    4,
+    6
+   ],
+   "renegotiated": 8,
+   "lowestCash": -51313,
+   "meanCashEnd": -26622,
+   "targetHitShare": 0.62,
+   "meanTastings": 0,
+   "meanOwned": 0,
+   "stars": 0,
+   "starEarned": 0,
+   "starWeeks": [],
+   "goldWeeks": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "meanRepAtSettlement": [
+    0.27,
+    0.327,
+    0.218,
+    0.266,
+    0.256,
+    0.266,
+    0.188,
+    0
+   ],
+   "meanJudgement": [
+    0.57,
+    0.47,
+    0.51,
+    0.55,
+    0.53,
+    0.5,
+    0.41,
+    0
+   ],
+   "byWeek": [
+    {
+     "week": 1,
+     "n": 20,
+     "meanResultSek": 458,
+     "meanRevenueSek": 43646,
+     "meanCashEnd": 15458,
+     "meanCredits": 22,
+     "targetHit": 15,
+     "rentSek": 7155
+    },
+    {
+     "week": 2,
+     "n": 20,
+     "meanResultSek": -3524,
+     "meanRevenueSek": 42383,
+     "meanCashEnd": 11934,
+     "meanCredits": 41,
+     "targetHit": 13,
+     "rentSek": 7155
+    },
+    {
+     "week": 3,
+     "n": 20,
+     "meanResultSek": -10570,
+     "meanRevenueSek": 42165,
+     "meanCashEnd": 1364,
+     "meanCredits": 65,
+     "targetHit": 11,
+     "rentSek": 13469
+    },
+    {
+     "week": 4,
+     "n": 20,
+     "meanResultSek": -8459,
+     "meanRevenueSek": 43576,
+     "meanCashEnd": -7094,
+     "meanCredits": 90,
+     "targetHit": 14,
+     "rentSek": 13469
+    },
+    {
+     "week": 5,
+     "n": 18,
+     "meanResultSek": -9692,
+     "meanRevenueSek": 43539,
+     "meanCashEnd": -15994,
+     "meanCredits": 116,
+     "targetHit": 12,
+     "rentSek": 13469
+    },
+    {
+     "week": 6,
+     "n": 13,
+     "meanResultSek": -10990,
+     "meanRevenueSek": 40879,
+     "meanCashEnd": -23935,
+     "meanCredits": 141,
+     "targetHit": 5,
+     "rentSek": 13469
+    },
+    {
+     "week": 7,
+     "n": 5,
+     "meanResultSek": -14647,
+     "meanRevenueSek": 36925,
+     "meanCashEnd": -28435,
+     "meanCredits": 173,
+     "targetHit": 2,
+     "rentSek": 13469
+    },
+    {
+     "week": 8,
+     "n": 0,
+     "meanResultSek": 0,
+     "meanRevenueSek": 0,
+     "meanCashEnd": 0,
+     "meanCredits": 0,
+     "targetHit": 0,
+     "rentSek": 0
+    }
+   ],
+   "repByWeek": [
+    {
+     "week": 1,
+     "mon": 0.6,
+     "sat": 0.35
+    },
+    {
+     "week": 2,
+     "mon": 0.29,
+     "sat": 0.296
+    },
+    {
+     "week": 3,
+     "mon": 0.346,
+     "sat": 0.262
+    },
+    {
+     "week": 4,
+     "mon": 0.238,
+     "sat": 0.285
+    },
+    {
+     "week": 5,
+     "mon": 0.284,
+     "sat": 0.305
+    },
+    {
+     "week": 6,
+     "mon": 0.29,
+     "sat": 0.302
+    },
+    {
+     "week": 7,
+     "mon": 0.299,
+     "sat": 0.233
+    },
+    {
+     "week": 8,
+     "mon": 0,
+     "sat": 0
+    }
+   ]
+  }
+ },
+ "note": "ORDER 303b: runs borttagna i kalibreringens filer (summeringen kvar); hela körningen för det valda talet står i ../efter."
+}
