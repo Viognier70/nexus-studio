@@ -1,0 +1,232 @@
+{
+ "tasting": false,
+ "definition": "Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).",
+ "start": null,
+ "variant": "{\"CONSEQUENCES\":{\"moodBillPerLiftUp\":0.12,\"right\":{\"stepReputation\":0.3,\"clearedReputation\":1,\"avecShare\":0.07}},\"MENU_ROCKETS\":{\"tipBonusPerClearedStep\":0.015,\"tipBonusOnRocketCleared\":0.02},\"STAR\":{\"judgementAtLeast\":0.42},\"DOUBLE_OR_NOTHING\":{\"enabled\":true,\"potHoldsCash\":false,\"stopTakesStaffOutcome\":false}}",
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20
+ ],
+ "weeks": 8,
+ "players": {
+  "halva": {
+   "closed": 20,
+   "closedWeeks": [
+    5,
+    4,
+    5,
+    5,
+    4,
+    4,
+    4,
+    6,
+    5,
+    5,
+    5,
+    4,
+    4,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
+   ],
+   "renegotiated": 16,
+   "lowestCash": -67782,
+   "meanCashEnd": -46545,
+   "targetHitShare": 0.32,
+   "meanTastings": 0,
+   "meanOwned": 0,
+   "stars": 0,
+   "starEarned": 0,
+   "starWeeks": [],
+   "goldWeeks": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "meanRepAtSettlement": [
+    0.23,
+    0.275,
+    0.192,
+    0.267,
+    0.229,
+    0.246,
+    0,
+    0
+   ],
+   "meanJudgement": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "byWeek": [
+    {
+     "week": 1,
+     "n": 20,
+     "meanResultSek": -4153,
+     "meanRevenueSek": 39691,
+     "meanCashEnd": 10847,
+     "meanCredits": 6,
+     "targetHit": 10,
+     "rentSek": 7155
+    },
+    {
+     "week": 2,
+     "n": 20,
+     "meanResultSek": -8975,
+     "meanRevenueSek": 37047,
+     "meanCashEnd": 1872,
+     "meanCredits": 11,
+     "targetHit": 5,
+     "rentSek": 7155
+    },
+    {
+     "week": 3,
+     "n": 20,
+     "meanResultSek": -16897,
+     "meanRevenueSek": 37226,
+     "meanCashEnd": -15025,
+     "meanCredits": 18,
+     "targetHit": 7,
+     "rentSek": 13469
+    },
+    {
+     "week": 4,
+     "n": 20,
+     "meanResultSek": -18158,
+     "meanRevenueSek": 34904,
+     "meanCashEnd": -33183,
+     "meanCredits": 23,
+     "targetHit": 5,
+     "rentSek": 13469
+    },
+    {
+     "week": 5,
+     "n": 14,
+     "meanResultSek": -17965,
+     "meanRevenueSek": 35565,
+     "meanCashEnd": -49312,
+     "meanCredits": 29,
+     "targetHit": 3,
+     "rentSek": 13469
+    },
+    {
+     "week": 6,
+     "n": 1,
+     "meanResultSek": -15743,
+     "meanRevenueSek": 37570,
+     "meanCashEnd": -40581,
+     "meanCredits": 46,
+     "targetHit": 0,
+     "rentSek": 13469
+    },
+    {
+     "week": 7,
+     "n": 0,
+     "meanResultSek": 0,
+     "meanRevenueSek": 0,
+     "meanCashEnd": 0,
+     "meanCredits": 0,
+     "targetHit": 0,
+     "rentSek": 0
+    },
+    {
+     "week": 8,
+     "n": 0,
+     "meanResultSek": 0,
+     "meanRevenueSek": 0,
+     "meanCashEnd": 0,
+     "meanCredits": 0,
+     "targetHit": 0,
+     "rentSek": 0
+    }
+   ],
+   "repByWeek": [
+    {
+     "week": 1,
+     "mon": 0.6,
+     "sat": 0.348
+    },
+    {
+     "week": 2,
+     "mon": 0.25,
+     "sat": 0.293
+    },
+    {
+     "week": 3,
+     "mon": 0.295,
+     "sat": 0.204
+    },
+    {
+     "week": 4,
+     "mon": 0.212,
+     "sat": 0.305
+    },
+    {
+     "week": 5,
+     "mon": 0.244,
+     "sat": 0.222
+    },
+    {
+     "week": 6,
+     "mon": 0.351,
+     "sat": 0.3
+    },
+    {
+     "week": 7,
+     "mon": 0,
+     "sat": 0
+    },
+    {
+     "week": 8,
+     "mon": 0,
+     "sat": 0
+    }
+   ]
+  }
+ },
+ "note": "ORDER 305: runs/rows borttagna, summeringen kvar."
+}

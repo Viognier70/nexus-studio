@@ -87,6 +87,7 @@ function answerPinsWisely(s: SimulationState): SimulationState {
 // raketen och steget.
 export type ScenarioAnswer = 'best' | 'worst' | 'half' | 'halfRocket' | 'skill';
 export const ROCKET_SKILL = Number(process.env.ROCKET_SKILL ?? 0.75);
+const KVITT_STOP_AFTER = Number(process.env.KVITT_STOP_AFTER ?? 0);
 function resolveAnswer(answer: ScenarioAnswer, key: number, seed = 0): 'best' | 'worst' {
   // Nyckeln börjar med det som skiljer (FNV sprider dåligt när bara slutet gör det).
   if (answer === 'skill') return hashKey(seed, `${Math.round(key * 1000)}|skill`) < ROCKET_SKILL ? 'best' : 'worst';
@@ -139,6 +140,9 @@ export function answerScenario(s: SimulationState, given: ScenarioAnswer = 'best
   const active = s.incidents?.active;
   if (active) {
     const incident = incidentById(s.economy.businessClass, active.id);
+    // ORDER 305 — kvitt eller dubbelt: KVITT_STOP_AFTER=n stannar och tar
+    // potten efter n klarade steg (0, förvalt: går alltid vidare).
+    if (active.choosing) return reducer(s, { type: KVITT_STOP_AFTER > 0 && active.step >= KVITT_STOP_AFTER ? 'INCIDENT_STOP' : 'INCIDENT_GO' });
     const step = incident?.steps[active.step ?? 0];
     if (step) {
       // ORDER 280 — i en egen raket står spelaren för svaret, så högt

@@ -3086,6 +3086,16 @@ export const TABLE = {
   // mätarna, kvällens lärdom L1, kvällsberättelsen K1 och rutan X1.
   rocket: {
     card: {
+      // ORDER 305 — kvitt eller dubbelt (förslag; Designs form i D5).
+      kvitt: {
+        pot: {
+          sv: (credits: string, sek: string) => `Potten: ${credits} krediter och ${sek} kr`,
+          en: (credits: string, sek: string) => `The pot: ${credits} credits and ${sek} kr`
+        },
+        stop: { sv: 'Stanna och ta potten', en: 'Stop and take the pot' },
+        go: { sv: 'Kvitt eller dubbelt: nästa steg', en: 'Double or nothing: next step' },
+        note: { sv: 'Rätt på nästa steg dubblar potten. Fel, och den är borta.', en: 'Right on the next step doubles the pot. Wrong, and it is gone.' }
+      },
       rocketOf: {
         sv: (n: string, total: string) => `Raket ${n} av ${total}`,
         en: (n: string, total: string) => `Rocket ${n} of ${total}`

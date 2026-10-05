@@ -34,7 +34,7 @@ import { clockMinutes, formatClock } from './clock';
 import { clampReputation } from '../strategic/simulation/reputation';
 import { strings } from '../content/strings';
 import { rocketClipFor, rocketFigure, type RocketFigure } from './theatreTriggers';
-import { ANSWER_EFFECTS, CONSEQUENCES, STAFF_CONDITION, THEATRE, BACK, type Confidence, INCIDENTS, MENU_ROCKETS, REPUTATION, SERVICE_STREAM, SHOP } from './balance';
+import { ANSWER_EFFECTS, CONSEQUENCES, DOUBLE_OR_NOTHING, STAFF_CONDITION, THEATRE, BACK, type Confidence, INCIDENTS, MENU_ROCKETS, REPUTATION, SERVICE_STREAM, SHOP } from './balance';
 import { abilityActive } from './shop';
 import { calendarFor } from './calendar';
 import { clampScenarioCash, scenarioUnitSek } from './economy';
@@ -105,6 +105,19 @@ export interface ActiveIncident {
   introLeft?: number;
   // ORDER 292 — vad som står på spel vid bordet när raketen öppnas.
   stake?: TableStake | null;
+  // ORDER 305 — kvitt eller dubbelt (balance.ts DOUBLE_OR_NOTHING): potten
+  // (krediter per kunskapsform och bordets merbeställning i kronor) och valet
+  // efter ett rätt steg, med tiden kvar att välja (verkliga sekunder).
+  pot?: RocketPot | null;
+  choosing?: boolean;
+  choiceLeft?: number;
+}
+
+// ORDER 305 — raketens pott i kvitt eller dubbelt.
+export interface RocketPot {
+  credits: Partial<Record<KnowledgeAxis, number>>;
+  cashSek: number;
+  payerType: GuestType | null;
 }
 
 // ORDER 292 (Vision Owner 2026-10-01: "Insatsen före svaret: raketkortet visar
@@ -161,7 +174,8 @@ export interface IncidentRecord {
   id: string;
   step: number | null;
   optionId: string | null;
-  quality: AnswerQuality | 'staff';
+  // ORDER 305 — 'stopped': spelaren stannade och tog potten.
+  quality: AnswerQuality | 'staff' | 'stopped';
   situation: string | null;
   context: IncidentContext;
   at: number;
@@ -171,6 +185,9 @@ export interface IncidentRecord {
   deltas?: { cashSek: number; reputation: number; credits: number; guestsIn: number };
   // ORDER 289 — planerad, följd eller egen (Back your knowledge).
   kind?: 'planned' | 'chained' | 'backed';
+  // ORDER 305 — kvitt eller dubbelt: potten togs (stannade eller klarade
+  // raketen) eller förlorades (fel efter att ha gått vidare).
+  pot?: { taken: boolean; credits: number; cashSek: number };
 }
 
 // ORDER 271 — ett svar i stunden (Design paket 6, R2/R3): valt svar,
@@ -203,6 +220,8 @@ export interface IncidentOutcomeView {
   deltas: IncidentDeltas;
   // ORDER 280 — Back your knowledge: svaret på det sista steget.
   back?: BackResult | null;
+  // ORDER 305 — kvitt eller dubbelt: potten som togs eller förlorades.
+  pot?: IncidentRecord['pot'];
 }
 
 // Följden av ett fel val, som pågår i rummet tills nästa händelse.
@@ -255,6 +274,8 @@ export interface IncidentsState {
   // senaste låsta svaret och kvällens träffsäkerhet.
   betsTonight?: number;
   betCreditsDue?: number;
+  // ORDER 305 — en tagen pott: krediterna per kunskapsform (reducern bokför dem).
+  potCreditsDue?: Partial<Record<KnowledgeAxis, number>>;
   lastBack?: BackResult | null;
   calibration?: Calibration;
 }
@@ -680,7 +701,27 @@ export function failSeverity(fail: IncidentOutcomeMeta | undefined): Consequence
 
 const worse = (s: ConsequenceSeverity): ConsequenceSeverity => (s === 'mild' ? 'medium' : s === 'medium' && STAFF_CONDITION.hesitationToGrave > 0 ? 'grave' : s);
 
-function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: boolean, guestsIn: number, keepTable = false, severity: ConsequenceSeverity = 'grave', rocketCleared = false, incidentId: string | null = null, hesitated = false): void {
+// ORDER 305 — bordets merbeställning in i kvällskassan (förut inne i
+// answerConsequence; också när en pott i kvitt eller dubbelt tas).
+function bookTableCash(draft: SimulationState, amountSek: number, payerType: GuestType | null): void {
+  if (amountSek <= 0 || (draft.day.period !== 'dinner' && draft.day.period !== 'lunch')) return;
+  applyCashRevenue(draft, amountSek);
+  // Kassabokens försäljningsrad vid stängningen läser serviceperiodens summa (kSEK).
+  if (draft.day.period === 'dinner') draft.serviceRevenueToday = { ...draft.serviceRevenueToday, dinner: draft.serviceRevenueToday.dinner + amountSek / SERVICE_STREAM.sekPerKsek };
+  else draft.serviceRevenueToday = { ...draft.serviceRevenueToday, lunch: draft.serviceRevenueToday.lunch + amountSek / SERVICE_STREAM.sekPerKsek };
+  // Gästtypens intäkt i kväll (som guestTypes.ts recordTypeRevenue;
+  // importeras inte, för att undvika ett cirkelberoende).
+  if (payerType) {
+    const rev = { ...(draft.day.guestTypeRevenue ?? {}) };
+    rev[payerType] = (rev[payerType] ?? 0) + amountSek;
+    draft.day = { ...draft.day, guestTypeRevenue: rev };
+  }
+}
+
+// ORDER 305 — holdCash: bordets merbeställning bokförs inte utan läggs i
+// raketens pott (kvitt eller dubbelt); beloppet returneras.
+function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: boolean, guestsIn: number, keepTable = false, severity: ConsequenceSeverity = 'grave', rocketCleared = false, incidentId: string | null = null, hesitated = false, holdCash = false): number {
+  let held = 0;
   const table = draft.guests.filter((g) => ctx.guestIds.includes(g.id) && PRESENT.includes(g.state));
   let left = 0;
   let amountSek = 0;
@@ -698,20 +739,8 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
       const stake = tableStake(draft, ctx.guestIds);
       amountSek = stake ? Math.round(stake.billSek * ANSWER_EFFECTS.rightBillShare) : 0;
     }
-    if (amountSek > 0 && (draft.day.period === 'dinner' || draft.day.period === 'lunch')) {
-      applyCashRevenue(draft, amountSek);
-      // Kassabokens försäljningsrad vid stängningen läser serviceperiodens summa (kSEK).
-      if (draft.day.period === 'dinner') draft.serviceRevenueToday = { ...draft.serviceRevenueToday, dinner: draft.serviceRevenueToday.dinner + amountSek / SERVICE_STREAM.sekPerKsek };
-      else draft.serviceRevenueToday = { ...draft.serviceRevenueToday, lunch: draft.serviceRevenueToday.lunch + amountSek / SERVICE_STREAM.sekPerKsek };
-      // Gästtypens intäkt i kväll (som guestTypes.ts recordTypeRevenue;
-      // importeras inte, för att undvika ett cirkelberoende).
-      const payer = table[0];
-      if (payer?.guestType) {
-        const rev = { ...(draft.day.guestTypeRevenue ?? {}) };
-        rev[payer.guestType] = (rev[payer.guestType] ?? 0) + amountSek;
-        draft.day = { ...draft.day, guestTypeRevenue: rev };
-      }
-    }
+    if (holdCash) held = amountSek;
+    else bookTableCash(draft, amountSek, table[0]?.guestType ?? null);
   } else if (table.length > 0 && keepTable) {
     // Felet köade en följdraket vid samma bord: gästerna stannar (följden är
     // nästa raket), men bordet beställer mindre.
@@ -803,6 +832,7 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
     roomReactions: [...keep, { at: now, kind: right ? 'up' : 'down', table: ctx.table, guestIds: table.map((g) => g.id), text, amountSek, leftGuestId, detail, guestsIn, left, witnessIds }],
     consequence: { at: now, kind: right ? 'right' : 'wrong', table: ctx.table, tableGuestIds: table.map((g) => g.id), witnessIds }
   };
+  return held;
 }
 
 export interface CreditChange { axis: KnowledgeAxis; track: YrkesSpar | null; amount: number }
@@ -950,6 +980,88 @@ function applyOutcome(
 // konsekvens, och personalen tar över resten. Muterar draft (samma mönster
 // som advanceTick) och returnerar krediten som reducern bokför via
 // ACCUMULATE_KNOWLEDGE. Svaret går inte att ändra.
+// ORDER 305 — kvitt eller dubbelt (balance.ts DOUBLE_OR_NOTHING).
+export function potCredits(pot: RocketPot | null | undefined): number {
+  return pot ? Object.values(pot.credits).reduce((a, b) => a + (b ?? 0), 0) : 0;
+}
+// Ett rätt steg: potten gånger growth (när den finns) plus stegets vinst.
+function growPot(pot: RocketPot | null | undefined, axis: KnowledgeAxis, credit: number, cashSek: number, payerType: GuestType | null): RocketPot {
+  const g = DOUBLE_OR_NOTHING.growth;
+  const credits: Partial<Record<KnowledgeAxis, number>> = {};
+  for (const [a, n] of Object.entries(pot?.credits ?? {}) as [KnowledgeAxis, number][]) credits[a] = n * g;
+  credits[axis] = (credits[axis] ?? 0) + credit;
+  return { credits, cashSek: Math.round((pot?.cashSek ?? 0) * g + cashSek), payerType: pot?.payerType ?? payerType };
+}
+// Potten tas: kronorna till kvällskassan, krediterna till reducern.
+function takePot(draft: SimulationState, pot: RocketPot): void {
+  bookTableCash(draft, pot.cashSek, pot.payerType);
+  const due = { ...(draft.incidents!.potCreditsDue ?? {}) };
+  for (const [a, n] of Object.entries(pot.credits) as [KnowledgeAxis, number][]) due[a] = (due[a] ?? 0) + n;
+  draft.incidents = { ...draft.incidents!, potCreditsDue: due };
+}
+const payerOf = (draft: SimulationState, ctx: IncidentContext): GuestType | null =>
+  draft.guests.find((g) => ctx.guestIds.includes(g.id) && PRESENT.includes(g.state))?.guestType ?? null;
+
+// ORDER 305 — spelaren stannar efter ett rätt steg och tar potten.
+// Personalen tar resten av händelsen med sitt utfall för stegen som återstod
+// (som när ett steg faller), men utan felets följd: inget rykte, inget ord på
+// gatan, ingen gäst som går.
+export function stopIncident(draft: SimulationState): void {
+  const inc = draft.incidents;
+  const active = inc?.active;
+  if (!inc || !active?.choosing) return;
+  const incident = incidentById(draft.economy.businessClass, active.id);
+  if (!incident) {
+    draft.incidents = { ...inc, active: null };
+    return;
+  }
+  const ctx = active.context;
+  const before = meanSatisfaction(presentGuests(draft));
+  const moraleBefore = draft.morale;
+  const repBefore = draft.reputation;
+  const pot = active.pot ?? null;
+  if (pot) takePot(draft, pot);
+  const share = INCIDENTS.staffShareByFailedStep[active.step] ?? 1;
+  const staff = DOUBLE_OR_NOTHING.stopTakesStaffOutcome
+    ? applyOutcome(draft, incident, incident.staff, incident.text.staff, share, false)
+    : { cashSek: 0, ongoing: null };
+  const text = formatIncidentText(incident.text.staff.outcome, ctx);
+  const after = meanSatisfaction(presentGuests(draft));
+  draft.eventStream = [...draft.eventStream, {
+    at: draft.simTime, text, category: 'ambient',
+    causeTag: null, causeChainId: null, sustainability: 'social', kind: 'v1_incident', scenarioId: incident.id
+  }];
+  const potRecord = { taken: true, credits: potCredits(pot), cashSek: pot?.cashSek ?? 0 };
+  const cashSek = staff.cashSek + potRecord.cashSek;
+  const now = draft.incidents!;
+  const credits = (active.earned?.credits ?? 0) + potRecord.credits;
+  const guestsIn = active.earned?.guestsIn ?? 0;
+  draft.incidents = {
+    ...now,
+    active: null,
+    ongoing: staff.ongoing ?? null,
+    log: [...now.log, {
+      id: incident.id, step: active.step, optionId: null, quality: 'stopped', situation: active.situation, context: ctx, at: draft.simTime,
+      kind: active.backed ? 'backed' : active.chained ? 'chained' : 'planned',
+      deltas: { cashSek, reputation: draft.reputation - repBefore, credits, guestsIn }, pot: potRecord
+    }],
+    lastOutcome: {
+      incidentId: incident.id, optionId: null, reveal: active.revealed ?? null,
+      takeover: takeoverFor(draft, incident, incident.steps[active.step]),
+      text, at: draft.simTime,
+      deltas: { cashSek, satisfaction: before !== null && after !== null ? after - before : 0, stamina: draft.morale - moraleBefore, reputation: draft.reputation - repBefore },
+      back: null, pot: potRecord
+    }
+  };
+}
+
+// ORDER 305 — spelaren satsar potten på nästa steg: stegets klocka börjar.
+export function goOnIncident(draft: SimulationState): void {
+  const active = draft.incidents?.active;
+  if (!active?.choosing) return;
+  draft.incidents = { ...draft.incidents!, active: { ...active, choosing: false, choiceLeft: 0 } };
+}
+
 export function resolveIncident(draft: SimulationState, optionId: string | null, confidence: Confidence = 0): CreditChange | null {
   const inc = draft.incidents;
   const active = inc?.active;
@@ -981,15 +1093,20 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
     const secondsTotal = secondsFor(draft, next);
     const guestsIn = letGuestsIn(draft, INCIDENTS.guestsPerClearedStep);
     raiseTips(draft, active.context, MENU_ROCKETS.tipBonusPerClearedStep);
-    answerConsequence(draft, active.context, true, guestsIn, false, 'grave', false, incident.id);
+    // ORDER 305 — kvitt eller dubbelt: stegets krediter och bordets
+    // merbeställning går i potten, och spelaren väljer att stanna eller gå vidare.
+    const kvitt = DOUBLE_OR_NOTHING.enabled;
+    const payer = payerOf(draft, active.context);
+    const held = answerConsequence(draft, active.context, true, guestsIn, false, 'grave', false, incident.id, false, kvitt && DOUBLE_OR_NOTHING.potHoldsCash);
     const revealed: StepReveal = { step: stepIndex, optionId: option.id, correctId: correctOptionId(step, active.situation), cleared: true, guestsIn };
     const stepCredit = quality === 'best' ? INCIDENTS.bestAnswerCredit : 0;
-    const earned = { credits: (active.earned?.credits ?? 0) + stepCredit + (backResult?.delta ?? 0), guestsIn: (active.earned?.guestsIn ?? 0) + guestsIn };
+    const earned = { credits: (active.earned?.credits ?? 0) + (kvitt ? 0 : stepCredit) + (backResult?.delta ?? 0), guestsIn: (active.earned?.guestsIn ?? 0) + guestsIn };
+    const pot = kvitt ? growPot(active.pot, step.axis, stepCredit, held, payer) : null;
     draft.incidents = {
       ...draft.incidents!,
-      active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: eventRevealSeconds(active, stepIndex), picked: null, earned }
+      active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: eventRevealSeconds(active, stepIndex), picked: null, earned, pot, choosing: kvitt, choiceLeft: kvitt ? DOUBLE_OR_NOTHING.choiceSeconds : 0 }
     };
-    return creditFor(stepCredit);
+    return kvitt ? null : creditFor(stepCredit);
   }
 
   const ctx = active.context;
@@ -1005,7 +1122,7 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
     // Hela raketen klarad: bästa utfall.
     cashSek = applyOutcome(draft, incident, incident.success, incident.text.success, 1, true).cashSek;
     text = formatIncidentText(incident.text.success.outcome, ctx);
-    credit = (quality === 'best' ? INCIDENTS.bestAnswerCredit : 0) + (incident.success.effects.credit ?? 0);
+    credit = (quality === 'best' && !DOUBLE_OR_NOTHING.enabled ? INCIDENTS.bestAnswerCredit : 0) + (incident.success.effects.credit ?? 0);
   } else {
     // Stegets konsekvens, och personalen tar över resten med sämre utfall.
     const failMeta = option?.fail ?? step.fail;
@@ -1034,7 +1151,20 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
   const hesitated = !cleared && !staffKnows(draft, incidentArea(incident.track));
   if (hesitated) hesitationWellbeing(draft);
   const severity = cleared ? 'grave' : hesitated ? worse(failSeverity(option?.fail ?? step.fail)) : failSeverity(option?.fail ?? step.fail);
-  answerConsequence(draft, ctx, cleared, guestsIn, chains.length > 0, severity, cleared, incident.id, hesitated);
+  // ORDER 305 — kvitt eller dubbelt: en klarad raket tar potten (gånger
+  // growth, med sista stegets vinst); ett fel eller tiden ute förlorar den.
+  const kvitt = DOUBLE_OR_NOTHING.enabled;
+  const payer = payerOf(draft, ctx);
+  const heldLast = answerConsequence(draft, ctx, cleared, guestsIn, chains.length > 0, severity, cleared, incident.id, hesitated, kvitt && cleared && DOUBLE_OR_NOTHING.potHoldsCash);
+  let potRecord: IncidentRecord['pot'];
+  if (kvitt && cleared) {
+    const pot = growPot(active.pot, step.axis, quality === 'best' ? INCIDENTS.bestAnswerCredit : 0, heldLast, payer);
+    takePot(draft, pot);
+    potRecord = { taken: true, credits: potCredits(pot), cashSek: pot.cashSek };
+    cashSek += pot.cashSek;
+  } else if (kvitt && active.pot) {
+    potRecord = { taken: false, credits: potCredits(active.pot), cashSek: active.pot.cashSek };
+  }
   const reveal: StepReveal = { step: stepIndex, optionId: option?.id ?? null, correctId: correctOptionId(step, active.situation), cleared, guestsIn };
   const takeover = cleared ? null : takeoverFor(draft, incident, step);
   const now = draft.incidents!;
@@ -1050,9 +1180,10 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
     deltas: {
       cashSek,
       reputation: draft.reputation - repBefore,
-      credits: (active.earned?.credits ?? 0) + credit + (backResult?.delta ?? 0),
+      credits: (active.earned?.credits ?? 0) + credit + (backResult?.delta ?? 0) + (potRecord?.taken ? potRecord.credits : 0),
       guestsIn: (active.earned?.guestsIn ?? 0) + guestsIn
-    }
+    },
+    pot: potRecord
   };
   draft.incidents = {
     ...now,
@@ -1073,7 +1204,8 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
         stamina: draft.morale - moraleBefore,
         reputation: draft.reputation - repBefore
       },
-      back: backResult
+      back: backResult,
+      pot: potRecord
     }
   };
   return creditFor(credit);
@@ -1119,6 +1251,15 @@ export function countDown(draft: SimulationState, dt: number): boolean {
     draft.incidents = { ...inc, active: { ...inc.active, revealLeft: Math.max(0, rest), revealed: rest > 0 ? inc.active.revealed : null } };
     if (rest > 0) return false;
     real = -rest;
+  }
+  // ORDER 305 — kvitt eller dubbelt: valet efter ett rätt steg har sin egen
+  // tid, och stegets klocka börjar först när spelaren gått vidare. När tiden
+  // går ut stannar spelaren (reducer.ts TICK).
+  const c = draft.incidents.active!;
+  if (c.choosing) {
+    const choice = (c.choiceLeft ?? DOUBLE_OR_NOTHING.choiceSeconds) - real;
+    draft.incidents = { ...draft.incidents, active: { ...c, choiceLeft: Math.max(0, choice) } };
+    return choice <= 0;
   }
   const a = draft.incidents.active!;
   // ORDER 284 — ett låst svar i Back your knowledge: stegets klocka står.

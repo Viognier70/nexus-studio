@@ -1872,6 +1872,9 @@ export type SimAction =
   | { type: 'NEXT_VISIT_QUESTION' }
   | { type: 'CLOSE_VISIT' }
   | { type: 'ANSWER_INCIDENT'; optionId: string; confidence?: 0 | 1 | 2 }
+  // ORDER 305 — kvitt eller dubbelt efter ett rätt steg.
+  | { type: 'INCIDENT_STOP' }
+  | { type: 'INCIDENT_GO' }
   | { type: 'END_EVENING' }
   // ORDER 265 — byt verksamhet vid veckoavräkningen (banken).
   | { type: 'CHOOSE_CLASS'; to: import('../sim/balance').BusinessClassId }

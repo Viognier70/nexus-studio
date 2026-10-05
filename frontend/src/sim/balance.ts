@@ -1339,6 +1339,30 @@ export const BACK = {
   calibrationMinAnswers: 2
 } as const;
 
+// ORDER 305 — kvitt eller dubbelt (förslag för beslut, Designs tillägg till
+// D5; avstängt tills beslut). Efter ett rätt steg som inte är det sista
+// väljer spelaren: stanna och ta potten, eller satsa den på nästa steg.
+// Potten är raketens krediter för bästa svar (med potHoldsCash också bordets
+// merbeställning i kronor). Ett rätt steg efter att spelaren gått vidare ger
+// potten gånger growth plus stegets egen vinst; ett fel tar hela potten. Den
+// som stannar behåller potten, och händelsen slutar där (med
+// stopTakesStaffOutcome tar personalen resten med sitt utfall för stegen som
+// återstod). Ryktet, gästerna som kommer in, dricksen och stämningen följer
+// varje svar som förut: de är rummets reaktion och går inte att ta tillbaka.
+// Valet har choiceSeconds verkliga sekunder; när tiden går ut stannar
+// spelaren. Förvalen är förslag B (reports/order305: A gav de bästa spelarna
+// 133 000–147 000 kr, och den som stannade stängde krogen).
+export const DOUBLE_OR_NOTHING = {
+  section: 'Servicen > Händelserna i servicen',
+  enabled: false,
+  growth: 2,
+  potHoldsCash: false,
+  // Den som stannar: personalen tar resten med sitt utfall för stegen som
+  // återstod (true), eller händelsen slutar där utan mer följd (false).
+  stopTakesStaffOutcome: false,
+  choiceSeconds: 8
+};
+
 // ORDER 278 — servicen syns (Vision Owner 2026-09-28, andra provspelet).
 // Speldesign > Servicen > Händelseströmmen och > Lagret. Valda tal (F51).
 export const SERVICE_STREAM = {
