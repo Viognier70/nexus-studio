@@ -1,0 +1,882 @@
+{
+  "language": "sv",
+  "status": "draft",
+  "reviewedBy": null,
+  "note": "ORDER 306 — utkast för Anders granskning. Nya nycklar: steps[0].clue och steps[1].clue (ledtråden som står kvar på kortet när steget är besvarat, 'Analys: …' och 'Upplevelse: …') och halfGrip.analysis / halfGrip.experience (återkopplingen vid halvt grepp: halfGrip.analysis visas när valet har grip 'analysis', alltså höll för analysen men inte för upplevelsen; halfGrip.experience omvänt). Platshållare som i vinbar: {bord}, {gäst}, {vin}, {personal}.",
+  "texts": {
+    "vb01-korken": {
+      "title": "Första flaskan",
+      "body": "Kvällens första flaska: {gäst} vid bord {bord} har beställt en {vin}. När {personal} drar korken luktar det fuktig källare och våt kartong.",
+      "steps": [
+        {
+          "question": "Korken är dragen. Vad säger doften av fuktig källare och våt kartong?",
+          "clue": "Korkdefekt (TCA). Felet sitter i just den här flaskan.",
+          "options": {
+            "a": {
+              "label": "Reduktion, alltså svavelföreningar",
+              "explanation": "Reduktion luktar tändsticka, svavel eller ruttet ägg. Den kan ofta luftas bort. Fuktig källare är något annat."
+            },
+            "b": {
+              "label": "Oxidation, vinet har fått för mycket syre",
+              "explanation": "Ett oxiderat vin luktar trött äpple, nötter eller sherry och kan ha brunaktig färg. Källare och våt kartong pekar på korken."
+            },
+            "c": {
+              "label": "Korkdefekt, ämnet TCA",
+              "explanation": "Doften av fuktig källare och våt kartong är korkdefekt, orsakad av ämnet TCA. Det är ett fel i just den flaskan, inte i vinet som sådant."
+            },
+            "d": {
+              "label": "Ett ungt vin som behöver luftas",
+              "explanation": "Ett ungt vin kan vara stängt och säga lite, men det luktar inte källare. Den doften är ett fel, inte en ålder."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} ställer flaskan på bordet utan att veta vad som är fel. Gästen väntar."
+          }
+        },
+        {
+          "question": "{gäst} har sett dig lukta på korken och säger lite oroligt: \"Det är väl inget fel? Vi har sett fram emot just det här vinet hela veckan.\" Vad söker gästen?",
+          "clue": "Gästen vill ha just det här vinet, och ett ärligt besked.",
+          "options": {
+            "a": {
+              "label": "Att slippa höra om problem, kvällen ska kännas lätt",
+              "explanation": "Gästen frågade rakt ut om något var fel. Den som frågar vill ha ett svar, inte en tystnad."
+            },
+            "b": {
+              "label": "Just det vinet hen har valt, och ett ärligt besked om flaskan",
+              "explanation": "Två saker i samma mening: vinet de längtat efter och frågan om något är fel. Båda behöver ett svar."
+            },
+            "c": {
+              "label": "Ett gott vin att komma igång med, vilket som helst",
+              "explanation": "Gästen vill komma igång, men sa också \"just det här vinet\". Ett annat vin missar halva meningen."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} hör bara att gästen vill komma igång. Frågan om flaskan blir hängande."
+          }
+        },
+        {
+          "question": "Du har analysen och gästens ord framför dig. Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Säg ärligt att något är fel med vinet, och dekantera det så att doften luftas bort",
+              "explanation": "Ärligheten är rätt, men luftning hjälper mot reduktion, inte mot korkdefekt. TCA försvinner inte med syre."
+            },
+            "b": {
+              "label": "Servera ändå, det är nog vinets karaktär",
+              "explanation": "Korkdefekt är ett fel i flaskan, inte vinets karaktär. Gästen märker det, och förtroendet för hela vinlistan sjunker.",
+              "fail": {
+                "outcome": "Gästen smakar, rynkar pannan och ställer ner glaset.",
+                "ongoing": "Gästen vid bord {bord} sitter med ett orört glas och ser sig om efter personalen."
+              }
+            },
+            "c": {
+              "label": "Öppna en ny flaska av samma vin och byt glas, men säg inget om felet",
+              "explanation": "Flaskan och glasen byts rätt. Men gästen såg dig lukta på korken och frågade. Tystnad ser ut som att krogen döljer något."
+            },
+            "d": {
+              "label": "Säg rakt ut att flaskan är korkad, öppna en ny av samma vin, byt glas och låt gästen smaka. Bara den nya hamnar på notan",
+              "explanation": "En korkad flaska byts alltid, och nya glas behövs eftersom doften sitter kvar i de gamla. Korkdefekt är ingen skam, den drabbar en del flaskor med naturkork. Att säga det öppet och inte ta betalt för felet bygger förtroende."
+            }
+          },
+          "fail": {
+            "outcome": "Flaskan står öppen på bordet. Ingen säger något om doften.",
+            "ongoing": "Flaskan står öppen på bordet. Doften av källare sitter kvar."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Ny flaska och nya glas på bordet. Gästen nickar efter första smaken."
+      },
+      "staff": {
+        "outcome": "Personalen tar över: flaskan serverades som den var, och gästen skickade tillbaka den efter första glaset."
+      },
+      "halfGrip": {
+        "analysis": "Halvt grepp: valet höll för analysen, men inte för gästens upplevelse. Flaskan och glasen byttes rätt, men gästen fick inget svar på sin fråga och undrar fortfarande vad som hände.",
+        "experience": "Halvt grepp: valet höll för gästens upplevelse, men inte för analysen. Gästen fick ett ärligt besked, men korkdefekt går inte att lufta bort. Bara en ny flaska hjälper."
+      }
+    },
+    "vb02-rosen": {
+      "title": "Roséns temperatur",
+      "body": "Kvällen är varm. {personal} säger att vitvinerna håller 10 grader i kylen, men roséerna som just kom står i 24 grader. De första gästerna vill ha rosé.",
+      "steps": [
+        {
+          "question": "Termometern i lådan visar 24 grader. Vid vilken temperatur ska en rosé serveras?",
+          "clue": "Rosé ska vara 8–10 grader. Flaskorna står i 24.",
+          "options": {
+            "a": {
+              "label": "Rumstemperatur, runt 22 grader",
+              "explanation": "Så varmt smakar roséen tung och söt, och alkoholen sticker fram. Rumstemperatur är inte ens rätt för rött."
+            },
+            "b": {
+              "label": "16–18 grader, som ett rött",
+              "explanation": "Det passar många röda viner. En rosé behöver vara kallare för att friskheten och syran ska komma fram."
+            },
+            "c": {
+              "label": "Iskall, 2–4 grader",
+              "explanation": "För kallt stänger doften, och vinet smakar nästan ingenting. Kallt är bra, men inte kallare än kylen."
+            },
+            "d": {
+              "label": "8–10 grader",
+              "explanation": "En rosé serveras vid 8–10 grader. Då är den frisk utan att doften försvinner."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} häller upp ett glas rosé från hyllan. Det smakar ljummet."
+          }
+        },
+        {
+          "question": "De första gästerna lutar sig mot bardisken: \"Något kallt och friskt, gärna rosé. Vi har gått i solen hela dagen.\" Vad söker gästerna?",
+          "clue": "Gästerna vill ha något kallt i handen nu, och en frisk rosé.",
+          "options": {
+            "a": {
+              "label": "Rosé, och temperaturen spelar mindre roll",
+              "explanation": "De sa \"kallt och friskt\" först. En ljummen rosé en varm kväll är det de minns."
+            },
+            "b": {
+              "label": "Något att dricka snabbt, vad som helst",
+              "explanation": "Det brådskar, det stämmer. Men de bad om rosé, och de bad om något friskt."
+            },
+            "c": {
+              "label": "Något kallt i handen direkt, och en rosé som är frisk när den kommer",
+              "explanation": "Två önskningar: svalka nu, och roséen de bad om. Dagen i solen säger att väntan utan något i handen känns lång."
+            }
+          },
+          "fail": {
+            "outcome": "Gästerna i baren byter blickar. Några beställer öl i stället."
+          }
+        },
+        {
+          "question": "Flaskorna behöver kylas och gästerna står vid baren. Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Lägg roséflaskorna i en hink med is och vatten, säg att de är kalla om tio minuter och erbjud ett kallt glas vitt eller vatten så länge",
+              "explanation": "Is och vatten kyler en flaska på omkring tio minuter, mycket fortare än kylen. Gästerna vet varför det dröjer och får något kallt direkt."
+            },
+            "b": {
+              "label": "Servera roséen direkt, med isbitar i glaset",
+              "explanation": "Gästerna får något kallt på en gång. Men isen späder vinet och tar bort både doft och syra. Det är flaskan som ska kylas."
+            },
+            "c": {
+              "label": "Servera den varma roséen och hoppas att ingen märker",
+              "explanation": "Gästerna märker det på första klunken. Rumstemperatur gör roséen tung och söt, och alkoholen sticker fram."
+            },
+            "d": {
+              "label": "Lägg flaskorna i is och vatten och ta upp beställningen, utan att säga något om väntan",
+              "explanation": "Kylningen är rätt. Men gästerna står med tomma händer och vet inte varför det dröjer. Tio minuter utan besked känns längre."
+            }
+          },
+          "fail": {
+            "outcome": "Isbitarna klirrar. Efter en stund smakar vinet vatten.",
+            "ongoing": "Roséglasen står halvfulla på borden. Gästerna beställer inget mer."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Hinkarna står på bardisken. Första roséglasen är kalla och immiga."
+      },
+      "staff": {
+        "outcome": "Personalen tar över: roséen serverades som den var. Den smakade varmt och sött."
+      },
+      "halfGrip": {
+        "analysis": "Halvt grepp: valet höll för analysen, men inte för gästernas upplevelse. Roséen blev kall, men gästerna stod utan något i handen och utan besked.",
+        "experience": "Halvt grepp: valet höll för gästernas upplevelse, men inte för analysen. De fick något kallt direkt, men isen späder roséen. Flaskan ska ner till 8–10 grader i is och vatten."
+      }
+    },
+    "vb03-notallergi": {
+      "title": "Nötallergi",
+      "body": "{gäst} vid bord {bord} har nötallergi och frågar om bruschettan med basilikapesto går bra. {personal} är osäker på vad som finns i peston.",
+      "steps": [
+        {
+          "question": "Vad säger receptet på en klassisk basilikapesto? Vilka nötter brukar finnas i den?",
+          "clue": "Klassisk pesto har pinjenötter. Kvällens recept måste ändå kollas.",
+          "options": {
+            "a": {
+              "label": "Pinjenötter",
+              "explanation": "Klassisk pesto görs på basilika, pinjenötter, vitlök, hårdost och olivolja. Andra varianter kan ha andra nötter, så receptet måste ändå kollas."
+            },
+            "b": {
+              "label": "Jordnötter",
+              "explanation": "Jordnötter hör inte till klassisk pesto. Men att peston saknar just jordnötter betyder inte att den saknar nötter."
+            },
+            "c": {
+              "label": "Hasselnötter",
+              "explanation": "Hasselnötter finns inte i den klassiska peston. Nöten i originalet är pinjenöten."
+            },
+            "d": {
+              "label": "Inga, bara basilika, ost och olja",
+              "explanation": "Det är en vanlig miss. Klassisk pesto innehåller pinjenötter, och det är just därför frågan ska tas på allvar."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} står kvar vid bordet utan svar. Gästen väntar på besked."
+          }
+        },
+        {
+          "question": "{gäst} säger lågt: \"Jag brukar inte våga beställa något med sås när jag äter ute. I kväll vill jag bara kunna äta utan att oroa mig.\" Vad söker gästen?",
+          "clue": "Gästen vill ha ett säkert besked och en rätt hen kan äta utan oro.",
+          "options": {
+            "a": {
+              "label": "Att slippa peston",
+              "explanation": "Det är en del av svaret. Men gästen vill äta utan oro hela kvällen, inte bara undvika en sås."
+            },
+            "b": {
+              "label": "Att bli lugnad med att det nog går bra",
+              "explanation": "\"Nog\" är just det som gör gästen orolig. En gissning om allergener är aldrig ett lugnande svar."
+            },
+            "c": {
+              "label": "Ett säkert besked, och en rätt hen kan äta utan att oroa sig",
+              "explanation": "Gästen ber om två saker: fakta om peston och en kväll utan oro. Båda kräver att köket vet om allergin."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen får ett vagt svar och sitter tyst med menyn."
+          }
+        },
+        {
+          "question": "Vad gör du nu?",
+          "options": {
+            "a": {
+              "label": "Kolla receptet med köket, säg att peston har pinjenötter och låt gästen välja själv ur menyn",
+              "explanation": "Beskedet är rätt och bygger på receptet. Men gästen står nu ensam med samma oro inför nästa rätt. Hjälp hellre till att hitta en rätt som köket vet är säker."
+            },
+            "b": {
+              "label": "Kolla receptet med köket, säg rakt ut att peston har pinjenötter, föreslå en rätt köket bekräftat och märk ordern som allergi",
+              "explanation": "En allergifråga besvaras med fakta ur receptet och från köket. När ordern är märkt vet köket att den ska hållas fri från nötter hela vägen till bordet, och gästen kan äta utan oro."
+            },
+            "c": {
+              "label": "Avråd från bruschettan direkt och föreslå en rätt utan pesto, utan att fråga köket",
+              "explanation": "Gästen känner sig omhändertagen, och det är bra. Men ingen vet vad som finns i den nya rätten, och köket vet inget om allergin. Samma bräda eller kniv kan användas."
+            },
+            "d": {
+              "label": "Svara att det nog inte finns nötter i den",
+              "explanation": "Klassisk pesto görs med pinjenötter. Att gissa om allergener är det farligaste misstaget i en servering, och enligt livsmedelslagstiftningen ska gästen få korrekt allergeninformation."
+            }
+          },
+          "fail": {
+            "outcome": "Bruschettan går ut till bordet.",
+            "ongoing": "Bruschettan står på bordet. Ingen vet vad som finns i peston."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Gästen får en rätt som köket bekräftat. Hen nickar och tackar för att frågan togs på allvar."
+      },
+      "staff": {
+        "outcome": "Personalen tar över: de svarade på måfå och serverade bruschettan."
+      },
+      "halfGrip": {
+        "analysis": "Halvt grepp: valet höll för analysen, men inte för gästens upplevelse. Beskedet om pinjenötterna var rätt, men gästen fick leta själv och sitter kvar med oron.",
+        "experience": "Halvt grepp: valet höll för gästens upplevelse, men inte för analysen. Gästen kände sig omhändertagen, men ingen kollade receptet och köket vet inget om allergin."
+      }
+    },
+    "vb07-provningen": {
+      "title": "Provning för fyra",
+      "body": "Ett sällskap på fyra vid bord {bord} vill ha en provning med tre viner. {personal} undrar vilka glas som ska fram.",
+      "steps": [
+        {
+          "question": "Tre viner ska provas. Vad säger provningens ordning?",
+          "clue": "Lätt före fylligt, torrt före sött.",
+          "options": {
+            "a": {
+              "label": "Dyrast först, medan gommen är pigg",
+              "explanation": "Priset säger inget om ordningen. Ett kraftigt dyrt vin först gör att de lättare vinerna efteråt smakar tunt."
+            },
+            "b": {
+              "label": "Fylligast först, för att värma upp gommen",
+              "explanation": "Ett fylligt vin tar över smaken, och de lätta vinerna efteråt försvinner. Man bygger upp, inte ner."
+            },
+            "c": {
+              "label": "Sött först, för att väcka aptiten",
+              "explanation": "Sötma sitter kvar i munnen och gör att torra viner efteråt smakar surt och magert."
+            },
+            "d": {
+              "label": "Lätt före fylligt, torrt före sött",
+              "explanation": "Varje vin får då visa sig utan att det förra tar över. Så byggs en provning upp."
+            }
+          },
+          "fail": {
+            "outcome": "Det kraftigaste vinet går först. Gästerna tycker att resten smakar tunt."
+          }
+        },
+        {
+          "question": "En i sällskapet säger: \"Jag kör hem i kväll, men jag vill inte sitta bredvid och titta.\" Vad söker gästen?",
+          "clue": "Gästen som kör vill vara med fullt ut, utan att dricka.",
+          "options": {
+            "a": {
+              "label": "Att få lika mycket som de andra, det är ju små glas",
+              "explanation": "Tre små glas blir tillsammans ett par glas vin. Gästen sa själv att hen kör."
+            },
+            "b": {
+              "label": "Att få vara med i provningen fullt ut, utan att dricka",
+              "explanation": "Gästen vill smaka, jämföra och prata med de andra. Att smaka utan att dricka går, och det är det som behövs."
+            },
+            "c": {
+              "label": "Något eget att dricka medan de andra provar",
+              "explanation": "Omtänksamt, men gästen sa att hen inte vill sitta bredvid. Ett eget glas är fortfarande att sitta bredvid."
+            },
+            "d": {
+              "label": "Att slippa vara med",
+              "explanation": "Gästen sa tvärtom. Att utesluta hen förstör kvällen för hela sällskapet."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen som kör sitter med fulla glas och ser obekväm ut."
+          }
+        },
+        {
+          "question": "Hur dukar och häller du provningen?",
+          "options": {
+            "a": {
+              "label": "Samma tulpanformade provglas, ett nytt glas per vin och person, vinerna från lätt till fylligt och lika påfyllning till alla",
+              "explanation": "Glasen och ordningen är rätt. Men gästen som kör får samma påfyllning som de andra och har inget sätt att smaka utan att dricka."
+            },
+            "b": {
+              "label": "De glas som finns närmast, det fylligaste vinet först och lika till alla",
+              "explanation": "Ett fylligt vin först gör att de lättare vinerna efteråt smakar tunt, och gästen som kör blir lämnad med fulla glas."
+            },
+            "c": {
+              "label": "Samma tulpanformade provglas, nytt glas per vin och person, lätt före fylligt, och spottkopp och vatten på bordet med mindre påfyllning till den som kör",
+              "explanation": "Ett neutralt provglas gör vinerna jämförbara, och nya glas gör att dofterna inte blandas. Att spotta är helt normalt på en provning. Gästen är med fullt ut, och krogen tar sitt ansvar för alkoholserveringen."
+            },
+            "d": {
+              "label": "Spottkopp och vatten på bordet, och ett glas per person som sköljs med vatten mellan vinerna",
+              "explanation": "Gästen som kör får vara med, och det är rätt. Men vattnet späder nästa vin och tar med sig doft. Sköljer man, gör man det med en skvätt av nästa vin."
+            }
+          },
+          "fail": {
+            "outcome": "Glasen sköljs vid bordet. Nästa vin smakar tunt.",
+            "ongoing": "Bordet jämför viner som smakar vatten. Provningen blir tyst."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Tolv glas i rader på bordet. Gästerna jämför och diskuterar."
+      },
+      "staff": {
+        "outcome": "Personalen tar över: de tog de glas som fanns närmast."
+      },
+      "halfGrip": {
+        "analysis": "Halvt grepp: valet höll för analysen, men inte för gästernas upplevelse. Provningen var rätt byggd, men gästen som kör fick inget sätt att vara med utan att dricka.",
+        "experience": "Halvt grepp: valet höll för gästernas upplevelse, men inte för analysen. Alla fick vara med, men vatten i glaset späder nästa vin. Ett nytt glas per vin håller dofterna isär."
+      }
+    },
+    "vb09-getosten": {
+      "title": "Vin till getosten",
+      "body": "{gäst} vid bord {bord} beställer den färska getosten med honung och frågar vilket vin som passar.",
+      "steps": [
+        {
+          "question": "Vad säger tallriken? Vad är det som präglar smaken i en färsk getost?",
+          "clue": "Frisk syra och krämighet. Vinet måste möta syran.",
+          "options": {
+            "a": {
+              "label": "Kraftig, lagrad smak av nötter",
+              "explanation": "Det gäller lagrade ostar. En färsk getost har inte hunnit utveckla lagringssmaker."
+            },
+            "b": {
+              "label": "Sötma, som i en färskost",
+              "explanation": "Färsk getost är mild men inte söt. Sötman på tallriken kommer från honungen."
+            },
+            "c": {
+              "label": "Frisk syra och krämighet",
+              "explanation": "Färsk getost är syrlig och krämig. Syran är det vinet måste möta, annars smakar vinet platt."
+            },
+            "d": {
+              "label": "Sälta från saltlake",
+              "explanation": "Saltlake hör till ostar som fetaost. Den färska getosten här är syrlig snarare än salt."
+            }
+          },
+          "fail": {
+            "outcome": "Du tvekar om osten, och vinförslaget blir en gissning."
+          }
+        },
+        {
+          "question": "{gäst} säger: \"Jag dricker bara rött. Vitt vin känns som en vardagslunch för mig.\" Vad söker gästen?",
+          "clue": "Gästen vill ha rött, och en kväll som känns som hens egen.",
+          "options": {
+            "a": {
+              "label": "Ett rött vin, och en kväll som känns som hens egen",
+              "explanation": "Gästen sa det rakt ut. Önskan är inte ett hinder, den är en ledtråd till vad som ska väljas."
+            },
+            "b": {
+              "label": "Något som känns mer festligt, färgen spelar mindre roll",
+              "explanation": "Det ligger något i det, kvällen ska kännas speciell. Men gästen sa \"bara rött\", och det ska tas på orden."
+            },
+            "c": {
+              "label": "Att bli övertygad om att vitt passar osten bäst",
+              "explanation": "Gästen bad inte om en lektion. Den som får sin önskan överkörd minns det, inte vinet."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen får ett vin hen inte ville ha, eller ett som inte passar osten."
+          }
+        },
+        {
+          "question": "Vilket vin föreslår du till getosten med honung?",
+          "options": {
+            "a": {
+              "label": "Den fylliga, ekade Cabernet Sauvignon som gästen pekar på",
+              "explanation": "Gästen får sitt röda. Men kraftiga tanniner mot en färsk, syrlig ost ger en metallisk, bitter smak."
+            },
+            "b": {
+              "label": "En torr Sauvignon Blanc från Loire, med en förklaring till varför vitt passar osten",
+              "explanation": "Färsk getost och Sauvignon Blanc från Sancerre är en klassisk kombination. Men gästen sa att hen bara dricker rött och känner sig överkörd."
+            },
+            "c": {
+              "label": "Säg att rött inte går till getost och servera husets vita",
+              "explanation": "Det stämmer inte, ett lätt rött kan fungera fint. Och inget vin passar all ost. Gästen får varken sin önskan eller en kombination som ser till osten."
+            },
+            "d": {
+              "label": "Ett lätt, fruktigt rött med mjuka tanniner och frisk syra",
+              "explanation": "Du tar gästens önskan på allvar och väljer ändå med osten i tanke. Lite tannin och frisk syra möter getosten bäst bland de röda."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen smakar. Osten och vinet drar åt var sitt håll.",
+            "ongoing": "Osten står kvar på tallriken. Gästen dricker vinet för sig."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Gästen smakar, nickar och beställer ett glas till."
+      },
+      "staff": {
+        "outcome": "Personalen tar över: gästen får husets rödvin. Det passar inte osten."
+      },
+      "halfGrip": {
+        "analysis": "Halvt grepp: valet höll för analysen, men inte för gästens upplevelse. Vinet mötte ostens syra, men gästen bad om rött och fick vitt.",
+        "experience": "Halvt grepp: valet höll för gästens upplevelse, men inte för analysen. Gästen fick sitt röda, men kraftiga tanniner gör den färska osten bitter. Ett lätt rött hade burit båda."
+      }
+    },
+    "vb11-cremant": {
+      "title": "Är det champagne?",
+      "body": "{gäst} vid bord {bord} pekar på det mousserande på glas och frågar om det är champagne. Det är en crémant de Loire.",
+      "steps": [
+        {
+          "question": "Vad säger etiketten? Vad skiljer en crémant från champagne?",
+          "clue": "Samma traditionella metod, med andra jäsningen på flaska, men gjord utanför Champagne.",
+          "options": {
+            "a": {
+              "label": "Inget, det är i stort sett samma sak",
+              "explanation": "Att kalla en crémant för champagne är fel och vilseledande. Champagne är en skyddad ursprungsbeteckning."
+            },
+            "b": {
+              "label": "Bara priset, crémant är billigare",
+              "explanation": "Den är ofta billigare, men det säger inget om hur den görs. Metoden och ursprunget är det som skiljer."
+            },
+            "c": {
+              "label": "Crémant jäser i tank, inte på flaska",
+              "explanation": "Det stämmer inte. Crémant görs med den traditionella metoden, med andra jäsningen på flaska, precis som champagne."
+            },
+            "d": {
+              "label": "Samma metod, men gjord utanför Champagne",
+              "explanation": "Champagne är en skyddad ursprungsbeteckning. Crémant görs med samma traditionella metod, med andra jäsningen på flaska, men i andra franska regioner."
+            }
+          },
+          "fail": {
+            "outcome": "Du svarar att det i stort sett är champagne. Senare läser gästen etiketten på flaskan.",
+            "ongoing": "Gästen läser etiketten igen och ser tveksam ut."
+          }
+        },
+        {
+          "question": "Gästen tvekar: \"Crémant … låter som champagnens lillebror. Jag vill ju unna mig något i kväll.\" Vad söker gästen?",
+          "clue": "Gästen vill unna sig, och känna att valet är bra.",
+          "options": {
+            "a": {
+              "label": "Det billigaste mousserande som finns",
+              "explanation": "Gästen sa \"unna mig\". Det handlar inte om priset utan om känslan av att ha valt något fint."
+            },
+            "b": {
+              "label": "Champagne, för att vara säker",
+              "explanation": "Champagne kan passa den som vill fira. Men gästen frågade om ett glas, och tvekan gäller vad crémant är."
+            },
+            "c": {
+              "label": "Något som känns som att unna sig, och att få veta att valet är bra",
+              "explanation": "Gästen tvekar inför ordet, inte inför vinet. Den som får veta vad hen dricker kan njuta av det."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen tar ett glas rött i stället."
+          }
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Berätta kort att crémant görs med samma metod som champagne, utanför Champagne, och erbjud en liten smakskvätt",
+              "explanation": "Metoden är det som säljer en crémant, och en smak visar mer än ord. Gästen bestämmer själv med vinet i munnen och vet att valet är bra."
+            },
+            "b": {
+              "label": "Säg att de flesta ändå inte känner skillnad",
+              "explanation": "Det låter som att du tycker att gästen inte förstår. Det säljer varken vinet eller förtroendet."
+            },
+            "c": {
+              "label": "Föreslå champagnen på flaska i stället, så att kvällen känns festlig",
+              "explanation": "Gästen får något att fira med. Men hen frågade om ett glas, och du missar chansen att visa att crémanten är gjord på samma sätt och ett bra köp."
+            },
+            "d": {
+              "label": "Förklara noga metoden, andra jäsningen och ursprungsbeteckningen, och lämna valet där",
+              "explanation": "Allt stämmer. Men gästen ville unna sig, inte gå en kurs. En kort mening och en smak hade gjort mer."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen ser förvirrad ut och tar något annat."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Gästen blir nyfiken, smakar och beställer ett glas."
+      },
+      "staff": {
+        "outcome": "Personalen tar över och svarar vagt. Gästen tar något annat."
+      },
+      "halfGrip": {
+        "analysis": "Halvt grepp: valet höll för analysen, men inte för gästens upplevelse. Fakta om crémant var rätt, men gästen ville unna sig. En smak hade sagt mer än förklaringen.",
+        "experience": "Halvt grepp: valet höll för gästens upplevelse, men inte för analysen. Kvällen blev festlig, men crémanten görs på samma sätt som champagne. Den var redan ett bra val."
+      }
+    },
+    "vb12-varmt-rott": {
+      "title": "För varmt",
+      "body": "{gäst} vid bord {bord} skickar tillbaka ett glas {vin}: vinet är för varmt. Flaskan har stått på bardisken hela kvällen.",
+      "steps": [
+        {
+          "question": "Flaskan har stått på bardisken hela kvällen. Vid vilken temperatur smakar ett rött vin bäst?",
+          "clue": "Rött ska vara 16–18 grader, svalare än en varm bar.",
+          "options": {
+            "a": {
+              "label": "Rumstemperatur, som i en varm bar",
+              "explanation": "Regeln om rumstemperatur kommer från svala stenhus. En varm bar är för varm för rött vin."
+            },
+            "b": {
+              "label": "Runt 16–18 grader, svalare än rummet",
+              "explanation": "Rumstemperatur betyder 16–18 grader, inte en varm bar. Då hålls alkoholen tillbaka och frukten blir frisk."
+            },
+            "c": {
+              "label": "Kylskåpskallt, som ett vitt vin",
+              "explanation": "För kallt rött blir stramt och tanninerna känns hårda. Rött ska vara svalt, inte kallt."
+            },
+            "d": {
+              "label": "Temperaturen påverkar inte smaken",
+              "explanation": "Temperaturen ändrar smaken mycket. För varmt rött smakar alkohol och sylt."
+            }
+          },
+          "fail": {
+            "outcome": "Du håller med om att vinet har rätt temperatur. Gästen ser inte övertygad ut."
+          }
+        },
+        {
+          "question": "{gäst} säger: \"Det smakar som varm saft. Jag trodde att rött skulle vara rumsvarmt, men det här är inte gott.\" Vad söker gästen?",
+          "clue": "Gästen vill ha ett svalare glas, och höra att hen hade rätt.",
+          "options": {
+            "a": {
+              "label": "En förklaring av regeln om rumstemperatur",
+              "explanation": "Gästen kan regeln och märker ändå att något är fel. Det är vinet som ska rättas, inte gästen."
+            },
+            "b": {
+              "label": "Ett annat vin",
+              "explanation": "Kanske, men gästen beställde det här vinet. Det är temperaturen som är fel, inte valet."
+            },
+            "c": {
+              "label": "Ett svalare glas av samma vin, och att få höra att hen hade rätt",
+              "explanation": "Gästen tvivlar på sig själv (\"jag trodde …\") men smakade rätt. Ett svalare glas och ett ja gör klagomålet till något gott."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen tar glaset men ler inte."
+          }
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Häll ett nytt glas ur en svalare flaska, flytta de öppna röda till vinkylen och förklara utförligt hur värme får alkoholen att ta över",
+              "explanation": "Vinet blir rätt. Men gästen ville ha ett svalare glas, inte en föreläsning, och fick aldrig höra att hen hade rätt."
+            },
+            "b": {
+              "label": "Ge gästen rätt, tacka för att hen sa till och lägg en isbit i glaset",
+              "explanation": "Gästen känner sig hörd, och det är bra. Men isen späder vinet. Det är flaskan som ska kylas, inte glaset."
+            },
+            "c": {
+              "label": "Ge gästen rätt och tacka för att hen sa till, häll ett nytt glas ur en svalare flaska och flytta de öppna röda till vinkylen",
+              "explanation": "För varmt rött smakar alkohol och sylt. En sval vinkyl, eller en kort stund i isvatten, räddar det. Gästen hade rätt, och det ska märkas."
+            },
+            "d": {
+              "label": "Förklara att rött vin ska serveras i rumstemperatur",
+              "explanation": "Regeln om rumstemperatur kommer från svala stenhus. I en varm bar är vinet för varmt, och gästen har rätt."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen dricker glaset utan att säga mer.",
+            "ongoing": "Glaset står orört. Gästen vid bord {bord} beställer inget mer."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Nytt glas på bordet. Gästen smakar och nickar. De öppna flaskorna flyttas bort från disken."
+      },
+      "staff": {
+        "outcome": "Personalen tar över men svarar inte på klagomålet. Gästen låter glaset stå."
+      },
+      "halfGrip": {
+        "analysis": "Halvt grepp: valet höll för analysen, men inte för gästens upplevelse. Vinet blev svalt, men gästen fick en föreläsning i stället för ett tack.",
+        "experience": "Halvt grepp: valet höll för gästens upplevelse, men inte för analysen. Gästen fick rätt, men isen späder vinet. Flaskan ska ner till 16–18 grader."
+      }
+    },
+    "vb18-kavajen": {
+      "title": "Vin på kavajen",
+      "body": "{personal} tappar en flaska {vin} vid bord {bord}. Den går sönder, och vin stänker på en gästs ljusa kavaj.",
+      "steps": [
+        {
+          "question": "Vad säger fläcken? Vad i rödvinet är det som färgar tyget?",
+          "clue": "Färgämnen från druvskalen, antocyaner. Fläcken är färsk.",
+          "options": {
+            "a": {
+              "label": "Färgämnen från druvskalen, antocyaner",
+              "explanation": "Rödvinets färg kommer från skalen, som får ligga med musten under jäsningen. Det är de färgämnena som fastnar i tyget."
+            },
+            "b": {
+              "label": "Tanninerna från ekfatet",
+              "explanation": "Tanniner ger strävhet, och de flesta kommer från skal och kärnor. Färgen kommer från skalens färgämnen."
+            },
+            "c": {
+              "label": "Alkoholen, som bränner in färgen",
+              "explanation": "Alkoholen färgar inte. Det är druvskalens färgämnen som ger fläcken."
+            }
+          },
+          "fail": {
+            "outcome": "Personalen står osäker bredvid gästen medan fläcken sprider sig."
+          }
+        },
+        {
+          "question": "Gästen ser ner på kavajen och säger tyst: \"Den var min pappas. Jag har den bara när det är något särskilt.\" Vad söker gästen?",
+          "clue": "Kavajen betyder något. Gästen vill att den tas på allvar, och att någon tar hand om hen.",
+          "options": {
+            "a": {
+              "label": "Att få ersättning för kavajen",
+              "explanation": "Kemtvätt hör till, men gästen talade om pappan, inte om pengar. Det är omtanken som behövs först."
+            },
+            "b": {
+              "label": "Att kavajen tas på allvar, och att någon tar hand om hen",
+              "explanation": "Kavajen är inte vilket plagg som helst. Den som visar att hen förstår det, och gör det rätta för tyget, tar hand om både gästen och kvällen."
+            },
+            "c": {
+              "label": "Att det går fort och inte görs någon sak av",
+              "explanation": "Gästen sa motsatsen. Den som sopar undan en olycka gör den till en förolämpning."
+            }
+          },
+          "fail": {
+            "outcome": "Glaset sopas upp. Gästen sitter kvar med en röd fläck.",
+            "ongoing": "Gästen med den fläckiga kavajen sitter kvar och ser på fläcken."
+          }
+        },
+        {
+          "question": "Vad gör du nu, med fläcken och med gästen?",
+          "options": {
+            "a": {
+              "label": "Be om ursäkt, ta en servett med varmt vatten och gnid bort fläcken med gästen",
+              "explanation": "Ursäkten och omtanken är rätt. Men att gnida pressar in färgen i tyget, och värme kan fästa fläcken."
+            },
+            "b": {
+              "label": "Be om ursäkt, ge gästen ren servett och kallt vatten att badda med utan att gnida, erbjud att betala kemtvätten och bjud på kvällens vin",
+              "explanation": "Kallt vatten och försiktig baddning tar upp det mesta av vinet utan att pressa in färgen, och gästen bestämmer själv över sin kavaj. En olycka blir en historia om hur krogen tog hand om sin gäst."
+            },
+            "c": {
+              "label": "Ge gästen ren servett och kallt vatten att badda med, och sopa sedan upp glaset och gå vidare",
+              "explanation": "Fläcken sköts rätt. Men utan en ursäkt och utan ett ord om kavajen blir olyckan en förolämpning. Det är bemötandet efteråt gästen minns."
+            },
+            "d": {
+              "label": "Strö salt på fläcken, låt det torka in och sopa upp glaset",
+              "explanation": "Salt kan suga upp lite vätska, men en fläck som torkar in är svårare att få bort. Och gästen blir lämnad med den."
+            }
+          },
+          "fail": {
+            "outcome": "Fläcken blir större och mörkare. Gästen suckar."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Gästen skakar av sig, skrattar lite och tar emot erbjudandet."
+      },
+      "staff": {
+        "outcome": "Personalen tar över: glaset sopas upp och någon ber kort om ursäkt."
+      },
+      "halfGrip": {
+        "analysis": "Halvt grepp: valet höll för analysen, men inte för gästens upplevelse. Fläcken sköttes rätt, men kavajen var pappans och ingen bad om ursäkt.",
+        "experience": "Halvt grepp: valet höll för gästens upplevelse, men inte för analysen. Omtanken var rätt, men gnidning och varmt vatten fäster druvskalens färg i tyget. Kallt vatten och baddning hade räddat mer."
+      }
+    },
+    "vb23-sott": {
+      "title": "Något sött",
+      "body": "Bord {bord} vill avsluta med chokladtryffeln och frågar vad de ska dricka till.",
+      "steps": [
+        {
+          "question": "Vad säger desserten? Vad händer med ett torrt vin som dricks till en söt dessert?",
+          "clue": "Sötma i maten gör ett torrt vin surare och tunnare. Vinet ska vara minst lika sött som desserten.",
+          "options": {
+            "a": {
+              "label": "Det smakar sötare",
+              "explanation": "Tvärtom. Sötman i maten får vinet att smaka mindre sött."
+            },
+            "b": {
+              "label": "Det smakar fylligare",
+              "explanation": "Vinet blir inte fylligare. Det tappar frukt och känns tunnare."
+            },
+            "c": {
+              "label": "Ingenting, sötman påverkar bara maten",
+              "explanation": "Sötma i maten påverkar hur vinet smakar. Det är en av de säkraste reglerna i mat och vin."
+            },
+            "d": {
+              "label": "Det smakar surare och tunnare",
+              "explanation": "Sötma i maten gör ett torrt vin surare och tunnare. Därför ska vinet vara minst lika sött som desserten."
+            }
+          },
+          "fail": {
+            "outcome": "Gästerna får ett förslag som inte passar och ser tveksamma ut."
+          }
+        },
+        {
+          "question": "Värden vid bordet säger: \"Vi vill avsluta med något som känns som en present.\" En i sällskapet lägger handen över sitt glas: hen dricker inte alkohol. Vad söker bordet?",
+          "clue": "En avslutning som hela bordet kan dela, också den som inte dricker.",
+          "options": {
+            "a": {
+              "label": "Något festligt till dem som dricker vin",
+              "explanation": "Det är en del. Men handen över glaset säger att en vid bordet också behöver en present."
+            },
+            "b": {
+              "label": "Att kvällen avrundas snabbt, kaffe och nota",
+              "explanation": "Värden bad om en present, inte om notan. Avslutningen är det bordet minns."
+            },
+            "c": {
+              "label": "En avslutning som hela bordet kan dela, också den som inte dricker",
+              "explanation": "Alla vid bordet ska få skåla. Den som inte dricker visade det utan ord, och det är också en önskan."
+            }
+          },
+          "fail": {
+            "outcome": "En gäst sitter utan glas när de andra skålar."
+          }
+        },
+        {
+          "question": "Vad serverar du till chokladtryffeln?",
+          "options": {
+            "a": {
+              "label": "Ett glas torrt rött till alla, det går alltid till choklad",
+              "explanation": "Sötman i tryffeln gör det torra vinet surt och tunt, och gästen som inte dricker får ett glas hen inte vill ha."
+            },
+            "b": {
+              "label": "Ett litet glas ung ruby-portvin, lätt svalt, och fråga gästen som inte dricker vad hen tycker om: kaffe eller en söt must",
+              "explanation": "En ung, fruktig portvin klarar chokladens sötma och beska, och ett litet glas räcker. Ett eget förslag till gästen som inte dricker visar att hens val tas på allvar. Hela bordet skålar."
+            },
+            "c": {
+              "label": "Ett glas torrt mousserande till alla, och alkoholfritt bubbel till den som inte dricker",
+              "explanation": "Alla kan skåla, och det är rätt tanke. Men sötma i maten gör ett torrt vin surare och tunnare mot chokladen."
+            },
+            "d": {
+              "label": "Ung ruby-portvin till alla vid bordet, gästen som inte dricker kan låta bli",
+              "explanation": "Vinet är rätt till tryffeln. Men ett glas gästen inte vill ha sätter fokus på det hen valt bort. Fråga i stället."
+            }
+          },
+          "fail": {
+            "outcome": "Gästerna smakar. Vinet blir surt och tunt mot chokladen.",
+            "ongoing": "Glasen står kvar bredvid tryffeln."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Hela bordet skålar till tryffeln och beställer ett glas till."
+      },
+      "staff": {
+        "outcome": "Personalen tar över: bordet får kvällens rödvin till chokladen."
+      },
+      "halfGrip": {
+        "analysis": "Halvt grepp: valet höll för analysen, men inte för gästernas upplevelse. Portvinen bar chokladen, men gästen som inte dricker fick ett glas hen inte ville ha.",
+        "experience": "Halvt grepp: valet höll för gästernas upplevelse, men inte för analysen. Alla fick skåla, men ett torrt vin blir surt mot en söt dessert. Vinet ska vara minst lika sött som tryffeln."
+      }
+    },
+    "vb32-fodelsedagen": {
+      "title": "Födelsedagen",
+      "body": "Värden i lounge A vinkar diskret till Per, lutar sig fram och viskar att det är Karins födelsedag i kväll.",
+      "steps": [
+        {
+          "question": "Per ska beställa en efterrätt med ljus. Vad behöver köket veta först?",
+          "clue": "Köket behöver antal, allergier och när den ska ut.",
+          "options": {
+            "a": {
+              "label": "Att ljus och tändare ska ligga på brickan",
+              "explanation": "Köket planerar i antal och tid. Allergier går före allt annat, också på en fest."
+            },
+            "b": {
+              "label": "Hur många som ska ha och när den ska ut",
+              "explanation": "Köket planerar i antal och tid. Allergier går före allt annat, också på en fest."
+            },
+            "c": {
+              "label": "Antal, allergier och när den ska ut",
+              "explanation": "Köket planerar i antal och tid. Allergier går före allt annat, också på en fest."
+            },
+            "d": {
+              "label": "Vilken efterrätt värden helst vill ha",
+              "explanation": "Köket planerar i antal och tid. Allergier går före allt annat, också på en fest."
+            }
+          },
+          "fail": {
+            "outcome": "Jag tar hand om det."
+          }
+        },
+        {
+          "question": "Värden viskar: \"Hon vet ingenting, och hon älskar att sjunga.\" I lounge B sitter två gäster i ett affärssamtal och vill ha lugn. Vad behöver kvällen vid de två borden?",
+          "clue": "En kort fest för Karin, och lugn för grannarna i lounge B.",
+          "options": {
+            "a": {
+              "label": "En kort fest för Karin, och lugn för grannarna i lounge B",
+              "explanation": "Kvällen tillhör alla bord. Överraskningen och sången är Karins, lugnet är grannarnas. Båda går att ge."
+            },
+            "b": {
+              "label": "Så mycket musik och ljud som möjligt, så att festen märks i hela rummet",
+              "explanation": "Då hör grannarna inte sitt eget samtal. En fest som tar över rummet tar något från de andra borden."
+            },
+            "c": {
+              "label": "Att Karin blir firad, grannarna får stå ut en stund",
+              "explanation": "Karin ska firas, det stämmer. Men grannarna bad om lugn, och de är också kvällens gäster."
+            }
+          },
+          "fail": {
+            "outcome": "Jag tar hand om det.",
+            "ongoing": "Jag tar hand om det."
+          }
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Ge köket antal, allergier och tid, och be sällskapet vänta med sången tills grannarna har gått",
+              "explanation": "Köket får det det behöver. Men grannarna kan sitta kvar länge, och då blir det ingen sång alls för Karin."
+            },
+            "b": {
+              "label": "En vers för Karin och något på huset till grannarna, och tårtan ut så fort som möjligt, utan att köket frågat om allergier",
+              "explanation": "Kvällen blir rätt för båda borden. Men allergier går före allt annat, också på en fest. Köket planerar i antal, allergier och tid."
+            },
+            "c": {
+              "label": "Be DJ:n höja musiken så att sången smälter in, och tårtan bärs högt över gästerna",
+              "explanation": "Grannarna får mer ljud, inte mindre, och öppen låga bland gäster kräver fri väg, lågt grepp och lugnt tempo."
+            },
+            "d": {
+              "label": "Ge köket antal, allergier och tid, låt sällskapet sjunga en vers och bjud grannarna i lounge B",
+              "explanation": "Köket kan göra efterrätten säker och i tid. En kort fest och en gest till grannarna håller båda borden nöjda."
+            }
+          },
+          "fail": {
+            "outcome": "Jag tar hand om det."
+          }
+        }
+      ],
+      "success": {
+        "outcome": "Tårtan tänds vid luckan och bärs lågt i fri gång. En vers, sedan dämpar vi."
+      },
+      "staff": {
+        "outcome": "Per tar över."
+      },
+      "halfGrip": {
+        "analysis": "Halvt grepp: valet höll för analysen, men inte för kvällens upplevelse. Köket fick allt det behövde, men Karin fick ingen sång.",
+        "experience": "Halvt grepp: valet höll för kvällens upplevelse, men inte för analysen. Båda borden fick sitt, men ingen frågade om allergier innan tårtan gick ut."
+      }
+    }
+  }
+}
