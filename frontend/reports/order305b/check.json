@@ -1,0 +1,18 @@
+{
+  "size": "1440×900",
+  "errors": [],
+  "first": {
+    "choice": true,
+    "backed": "false",
+    "pot": "Potten: 1 krediter",
+    "optionsHidden": true,
+    "confidenceUi": false,
+    "countdown": "8",
+    "band": "RättDu stannar och tar potten. Gästen får det du visste, och bordet går vidare med sin kväll.+115 krBord 10 beställer mer · 1 ny gäst inDu stannade · +1 krediter ur potten"
+  },
+  "second": {
+    "choice": false
+  },
+  "clicks": 4,
+  "backsStarted": 3
+}

@@ -788,3 +788,7 @@ body[data-focus='1'] .nx-feed-back #back-why { display: none; }
 /* ORDER 303 G — förberedelseraden tar kolumnens bredd och breddar den inte
  * (layoutkontrollen: mätaren låg under farten före öppning). */
 .nx-hud-stack .nx-prep-hint { width: 0; min-width: 100%; box-sizing: border-box; }
+
+/* ORDER 305 — kvitt eller dubbelt: valet efter ett rätt steg (Designs form i D5). */
+.nx-rocket-kvitt-choices { display: flex; gap: calc(8 * var(--nx-u)); margin-top: calc(8 * var(--nx-u)); }
+.nx-rocket-kvitt-choices .nx-btn { flex: 1 1 0; width: auto; white-space: normal; }

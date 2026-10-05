@@ -8,7 +8,7 @@ import { reducer } from '../../strategic/simulation/reducer';
 import { makeNewGameState } from '../../strategic/simulation/model';
 import { changeClass } from '../economy';
 import { firstDayOfWeek, calendarFor } from '../calendar';
-import { INCIDENTS } from '../balance';
+import { DOUBLE_OR_NOTHING, INCIDENTS } from '../balance';
 import { incidentBankFor, incidentById, optionQuality, validateIncidentBank } from '../incidentBank';
 import { arcFor, clockMinutes, formatIncidentText, incidentsTonight, rankedStepOption } from '../incidents';
 import vinbarMeta from '../../content/incidents/vinbar.meta.json';
@@ -41,8 +41,17 @@ function wineBarService(weekdayOffset = 0, medals: SimulationState['medals'] = {
   return s;
 }
 
+// ORDER 305b — kvitt eller dubbelt: efter ett rätt steg går spelaren vidare.
+const GO = { type: 'INCIDENT_GO' } as const;
+const goOn = (s: SimulationState) => (s.incidents.active?.choosing ? reducer(s, GO) : s);
+// Svaret på stegets fråga, och gå vidare om valet står öppet.
+function ans(s: SimulationState, optionId: string): SimulationState {
+  return reducer(goOn(s), { type: 'ANSWER_INCIDENT', optionId });
+}
+
 // Svaret som harnessen ger på raketens aktuella steg.
 function answer(s: SimulationState, rank: 'best' | 'worst' = 'best'): SimulationState {
+  s = goOn(s);
   const a = s.incidents.active!;
   const step = incidentById('vinbar', a.id)!.steps[a.step];
   return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, rank, a.struck, a.situation) });
@@ -178,18 +187,22 @@ describe('ORDER 270 — en raket', () => {
     // Brons i Stensöta och Kalastorget, ingen medalj i Måltidsbiblioteket.
     const s0 = openNow(wineBarService(), 'vb09-getosten');
     expect(s0.incidents.active!.secondsTotal).toBe(INCIDENTS.stepSeconds.episteme);
-    const s1 = reducer(s0, { type: 'ANSWER_INCIDENT', optionId: 'c' });
+    const s1 = ans(s0, 'c');
     expect(s1.incidents.active).toMatchObject({ id: 'vb09-getosten', step: 1 });
     expect(s1.incidents.active!.secondsTotal).toBe(INCIDENTS.stepSeconds.techne + INCIDENTS.extraSecondsPerMedalStep);
-    expect(s1.knowledgeCredits.episteme - s0.knowledgeCredits.episteme).toBe(INCIDENTS.bestAnswerCredit);
-    const s2 = reducer(s1, { type: 'ANSWER_INCIDENT', optionId: 'b' });
+    // ORDER 305b — krediten ligger i potten tills den tas.
+    expect(s1.incidents.active!.pot?.credits.episteme).toBe(INCIDENTS.bestAnswerCredit);
+    expect(s1.knowledgeCredits.episteme).toBe(s0.knowledgeCredits.episteme);
+    const s2 = ans(s1, 'b');
     expect(s2.incidents.active).toMatchObject({ id: 'vb09-getosten', step: 2 });
     expect(s2.incidents.active!.secondsTotal).toBe(INCIDENTS.stepSeconds.phronesis + INCIDENTS.extraSecondsPerMedalStep);
-    expect(s2.knowledgeTracks.techne.sommellerie - s1.knowledgeTracks.techne.sommellerie).toBe(INCIDENTS.bestAnswerCredit);
-    // Hela raketen klarad: bästa utfall.
-    const done = reducer(s2, { type: 'ANSWER_INCIDENT', optionId: 'd' });
+    expect(s2.incidents.active!.pot?.credits.techne).toBe(INCIDENTS.bestAnswerCredit);
+    // Hela raketen klarad: bästa utfall, och potten tas (dubblad per steg).
+    const done = ans(s2, 'd');
     expect(done.incidents.active).toBeNull();
-    expect(done.knowledgeCredits.phronesis - s2.knowledgeCredits.phronesis).toBe(INCIDENTS.bestAnswerCredit);
+    const g = DOUBLE_OR_NOTHING.growth;
+    expect(done.knowledgeCredits.episteme - s0.knowledgeCredits.episteme).toBe(INCIDENTS.bestAnswerCredit * g * g);
+    expect(done.knowledgeCredits.phronesis - s0.knowledgeCredits.phronesis).toBe(INCIDENTS.bestAnswerCredit);
     expect(done.cash).toBeGreaterThan(s2.cash);
     expect(done.incidents.lastOutcome?.text).toBe(incidentById('vinbar', 'vb09-getosten')!.text.success.outcome);
     expect(done.incidents.log.at(-1)).toMatchObject({ id: 'vb09-getosten', step: null, quality: 'best' });
@@ -218,7 +231,7 @@ describe('ORDER 270 — en raket', () => {
 
   it('utan svar på ett steg beslutar personalen själv: sämre utfall och −1 kredit på stegets axel', () => {
     let s = openNow(wineBarService(), 'vb09-getosten');
-    s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: 'c' });
+    s = goOn(ans(s, 'c'));
     s = { ...s, knowledgeCredits: { ...s.knowledgeCredits, techne: 3 }, knowledgeTracks: { ...s.knowledgeTracks, techne: { ...s.knowledgeTracks.techne, untagged: 3 } } };
     // Farten 2: en tick är 0,1 s i verkligheten.
     // ORDER 271: först visas det förra svaret i revealSeconds.
@@ -251,8 +264,8 @@ describe('ORDER 270 — en raket', () => {
 
   it('ett fel kan utlösa en senare raket samma kväll, och en klarad raket förhindra den', () => {
     const s = openNow(wineBarService(), 'vb03-notallergi');
-    const passed = reducer(s, { type: 'ANSWER_INCIDENT', optionId: 'a' });
-    const bad = reducer(passed, { type: 'ANSWER_INCIDENT', optionId: 'c' });
+    const passed = ans(s, 'a');
+    const bad = ans(passed, 'c');
     expect(bad.incidents.queued).toContain('vb27-allergireaktion');
     let later = bad;
     for (let i = 0; i < 2000 && later.incidents.active?.id !== 'vb27-allergireaktion' && later.day.period === 'dinner'; i++) {
@@ -265,7 +278,7 @@ describe('ORDER 270 — en raket', () => {
     expect(later.incidents.active?.context.table).toBe(s.incidents.active!.context.table);
 
     let good = s;
-    for (const id of ['a', 'b', 'd']) good = reducer(good, { type: 'ANSWER_INCIDENT', optionId: id });
+    for (const id of ['a', 'b', 'd']) good = ans(good, id);
     expect(good.incidents.active).toBeNull();
     expect(good.incidents.blocked).toContain('vb27-allergireaktion');
     expect(good.incidents.queued).not.toContain('vb27-allergireaktion');
@@ -522,7 +535,7 @@ describe('ORDER 270 — den svaga spelaren står till slut utan verksamhet', () 
 // ORDER 271 — Designs paket 6 (R2/R3) och FRAGOR §49.
 describe('ORDER 271 — svaret i stunden och vem som tar över', () => {
   it('ett klarat steg visar svaret i 2,4 s innan nästa stegs tid börjar', () => {
-    const s = reducer(openNow(wineBarService(), 'vb09-getosten'), { type: 'ANSWER_INCIDENT', optionId: 'c' });
+    const s = goOn(ans(openNow(wineBarService(), 'vb09-getosten'), 'c'));
     const a = s.incidents.active!;
     expect(a.revealed).toMatchObject({ step: 0, optionId: 'c', correctId: 'c', cleared: true });
     expect(a.revealLeft).toBe(INCIDENTS.revealSeconds);

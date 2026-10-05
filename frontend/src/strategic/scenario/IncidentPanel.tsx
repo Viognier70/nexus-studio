@@ -37,11 +37,9 @@ import { CONSEQUENCE } from '../scene/guestMood';
 import { panelOpen, useServiceDrawer } from '../ui/service/serviceDrawer';
 import { useEffect, useRef, useState } from 'react';
 import { strings } from '../../content/strings';
-import { ANSWER_EFFECTS, BACK, INCIDENTS, type Confidence } from '../../sim/balance';
+import { ANSWER_EFFECTS, BACK, DOUBLE_OR_NOTHING, INCIDENTS } from '../../sim/balance';
 import { incidentById, type Incident, type IncidentStep } from '../../sim/incidentBank';
 import {
-  calibrationNote,
-  canBack,
   formatIncidentText,
   potCredits,
   secondsFor,
@@ -57,8 +55,8 @@ import { NxSteps } from '../ui/system/components';
 import { COUNTDOWN_ACCENT_SECONDS, METER_EMPHASIS_MS, deltaSteps, meterSteps, rocketCounter } from '../ui/service/serviceView';
 import '../ui/service/service.css';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
-import { shake, slam } from '../ui/juice/juice';
-import { fallFrom, flyTo, targetElement } from '../ui/juice/fx';
+import { shake } from '../ui/juice/juice';
+import { fallFrom, flyTo } from '../ui/juice/fx';
 import type { StringKey } from '../../content/nexusStrings';
 
 const EVENT_ROLE_KEY: Record<string, StringKey> = {
@@ -110,7 +108,8 @@ function useHeldOutcome(sim: SimulationState): Held | null {
   return held;
 }
 
-type Mode = 'ask' | 'right' | 'done' | 'wrong';
+// ORDER 305b — 'stopped': spelaren stannade och tog potten.
+type Mode = 'ask' | 'right' | 'done' | 'wrong' | 'stopped';
 type StepBox = 'cleared' | 'current' | 'next' | 'ahead' | 'failed' | 'unreached';
 type OptionLook = 'open' | 'struck' | 'chosen' | 'dim' | 'correct' | 'wrong';
 
@@ -122,16 +121,10 @@ export function IncidentCard() {
   const frozen = useRef<{ key: string; left: number; total: number } | null>(null);
   const active = sim.incidents?.active ?? null;
   const cls = sim.economy.businessClass;
-  // ORDER 280 — Back your knowledge (Designs B1): i en egen raket väljer
-  // spelaren svar och säkerhet, och står sedan för svaret.
+  // ORDER 280 — Back your knowledge (Designs B1): spelaren startade raketen
+  // själv. ORDER 305b — säkerheten är borttagen; valet att gå vidare i kvitt
+  // eller dubbelt är säkerheten, i alla raketer.
   const backed = !!active?.backed;
-  // ORDER 284 — svaret låses i simuleringen, och stegets klocka stannar.
-  const pick = backed ? active?.picked ?? null : null;
-  const setPick = (optionId: string) => dispatch({ type: 'PICK_BACK_ANSWER', optionId });
-  // Provspel av 285: "Think so" är förvald i varje steg (BACK.defaultConfidence),
-  // eller Guessing när krediterna inte räcker.
-  const defaultConf = (): Confidence => (canBack(sim, BACK.defaultConfidence) ? BACK.defaultConfidence : 0);
-  const [conf, setConf] = useState<Confidence | null>(defaultConf);
   const cardRef = useRef<HTMLElement>(null);
   // ORDER 299 — kortet är smalare: när bandet med svaret kommer rullas kortet
   // ned till det, så att förklaringen och raden om reaktionen syns.
@@ -141,28 +134,24 @@ export function IncidentCard() {
     const el = bandRef.current;
     if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'end', behavior: 'smooth' });
   }, [bandKind]);
-  const stepKey = active ? `${active.id}:${active.step}` : null;
-  useEffect(() => { setConf(defaultConf()); }, [stepKey]);
-  const lastBack = sim.incidents?.lastBack ?? null;
-  const backKey = lastBack ? `${lastBack.at}:${lastBack.step}` : null;
-  const seenBack = useRef<string | null>(backKey);
+  // ORDER 305b — potten avgjord: krediterna flyger till HUD:en när den tas,
+  // och faller ur när den går förlorad.
+  const lastPot = sim.incidents?.lastOutcome?.pot ?? null;
+  const potKey = lastPot ? `${sim.incidents?.lastOutcome?.at}` : null;
+  const seenPot = useRef<string | null>(potKey);
   useEffect(() => {
-    if (!lastBack || backKey === seenBack.current) return;
-    seenBack.current = backKey;
+    if (!lastPot || potKey === seenPot.current) return;
+    seenPot.current = potKey;
     const card = cardRef.current;
-    if (lastBack.correct) {
-      // Rätt: rutorna smäller in, krediterna flyger till HUD:en och
-      // panelen skakar 14 px.
-      card?.querySelectorAll('[data-back-box]').forEach((el) => slam(el, true));
-      if (lastBack.delta > 0) flyTo('credits', card, `+${lastBack.delta}`, lastBack.delta, { bg: 'var(--nx-ink)', mode: 'to' });
+    if (lastPot.taken) {
+      if (lastPot.credits > 0) flyTo('credits', card, `+${lastPot.credits}`, lastPot.credits, { bg: 'var(--nx-ink)', mode: 'to' });
       shake(card, 14);
     } else {
-      // Fel: panelen skakar 16 px och insatsen faller ur krediterna.
       shake(card, 16);
-      if (lastBack.delta < 0) fallFrom('credits', `−${-lastBack.delta}`, { bg: 'var(--nx-accent)' });
+      if (lastPot.credits > 0) fallFrom('credits', `−${lastPot.credits}`, { bg: 'var(--nx-accent)' });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [backKey]);
+  }, [potKey]);
 
   // Vad kortet visar just nu.
   let view: {
@@ -202,12 +191,13 @@ export function IncidentCard() {
     const r = held.outcome.reveal;
     if (incident) {
       const cleared = r ? r.cleared : held.record.step === null;
+      const stopped = held.record.quality === 'stopped';
       view = {
         incident,
         context: held.record.context,
         situation: held.record.situation,
-        mode: cleared ? 'done' : 'wrong',
-        shown: r?.step ?? held.record.step ?? incident.steps.length - 1,
+        mode: stopped ? 'stopped' : cleared ? 'done' : 'wrong',
+        shown: stopped ? Math.max(0, (held.record.step ?? 1) - 1) : r?.step ?? held.record.step ?? incident.steps.length - 1,
         chosen: r ? r.optionId : held.record.optionId,
         correct: r?.correctId ?? null,
         struck: [],
@@ -244,8 +234,8 @@ export function IncidentCard() {
       e.stopImmediatePropagation();
       const o = step.options[i];
       if (!o || (active?.struck ?? []).includes(o.id)) return;
-      if (backed) setPick(o.id);
-      else dispatch({ type: 'ANSWER_INCIDENT', optionId: o.id });
+      if (active?.choosing) return;
+      dispatch({ type: 'ANSWER_INCIDENT', optionId: o.id });
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
@@ -260,15 +250,17 @@ export function IncidentCard() {
   const t = strings.rocket.card;
   const f = (x: string) => formatIncidentText(x, view!.context);
   const rocketKey = `${incident.id}:${view.shown}`;
+  // ORDER 305 — kvitt eller dubbelt: valet står på kortet när svaret har visats.
+  const choosing = !!active?.choosing && view.mode === 'ask';
 
   // Nedräkningen: stegets egen tid. Efter ett svar står den still i grått
   // på det värde den hade.
   let left: number;
   let total: number;
-  if (view.mode === 'ask' && active && backed && active.picked) {
-    // Det låsta svarets andra tidsgräns.
-    left = Math.max(0, Math.ceil(active.lockLeft ?? BACK.lockSeconds));
-    total = BACK.lockSeconds;
+  if (view.mode === 'ask' && active?.choosing) {
+    // ORDER 305 — tiden att välja i kvitt eller dubbelt.
+    left = Math.max(0, Math.ceil(active.choiceLeft ?? DOUBLE_OR_NOTHING.choiceSeconds));
+    total = DOUBLE_OR_NOTHING.choiceSeconds;
   } else if (view.mode === 'ask' && active) {
     left = Math.max(0, Math.ceil(active.secondsLeft));
     total = active.secondsTotal;
@@ -297,6 +289,7 @@ export function IncidentCard() {
       case 'right': return i <= view!.shown ? 'cleared' : i === view!.shown + 1 ? 'next' : 'ahead';
       case 'done': return 'cleared';
       case 'wrong': return i < view!.shown ? 'cleared' : i === view!.shown ? 'failed' : 'unreached';
+      case 'stopped': return i <= view!.shown ? 'cleared' : 'unreached';
     }
   };
   const boxText = (st: IncidentStep, state: StepBox): string => {
@@ -316,6 +309,7 @@ export function IncidentCard() {
       case 'ask': return view!.struck.includes(id) ? 'struck' : 'open';
       case 'right':
       case 'done': return id === view!.chosen ? 'chosen' : 'dim';
+      case 'stopped': return 'dim';
       case 'wrong': return id === view!.correct ? 'correct' : id === view!.chosen ? 'wrong' : 'dim';
     }
   };
@@ -329,6 +323,8 @@ export function IncidentCard() {
     band = { kind: 'right', label: t.right(next ? s.stepName[next.axis] : ''), text: `${view.guestsIn > 0 ? `${t.guestsIn(view.guestsIn)} ` : ''}${f(explanation)}` };
   } else if (view.mode === 'done') {
     band = { kind: 'right', label: t.rightDone, text: `${view.guestsIn > 0 ? `${t.guestsIn(view.guestsIn)} ` : ''}${view.outcomeText ?? ''}` };
+  } else if (view.mode === 'stopped') {
+    band = { kind: 'right', label: t.kvitt.stoppedLabel, text: view.outcomeText ?? '' };
   } else if (view.mode === 'wrong') {
     // Designs band (2026-09-28): "Wrong · the {role} takes over" /
     // "Out of time · the {role} takes over"; rollen med sin artikel.
@@ -343,18 +339,10 @@ export function IncidentCard() {
   const freshReaction = band && lastReaction && sim.simTime - lastReaction.at <= CONSEQUENCE.camera.backTo ? lastReaction : null;
   const linkLine = freshReaction ? consequenceLine(lang, freshReaction, view.chosen ? f(step.text.options[view.chosen].label) : null) : null;
 
-  // ORDER 280 — Back your knowledge: bandet säger vad svaret gav i krediter.
-  const backResult = lastBack && (view.mode === 'right' ? lastBack.step === view.shown : view.mode === 'done' || view.mode === 'wrong') ? lastBack : null;
-  if (band && backResult && (backed || held?.outcome.back)) {
-    const sentence = backResult.correct ? strings.back.bandRight[backResult.confidence] : strings.back.bandWrong[backResult.confidence];
-    const credits = backResult.delta === 0 ? '±0' : `${backResult.delta > 0 ? '+' : '−'}${Math.abs(backResult.delta)}`;
-    band = { ...band, label: `${band.label} · ${credits} ${strings.back.credits.toLowerCase()}`, text: `${sentence} ${band.text}` };
-    // ORDER 299 — "Hur säker du var" stod i en panel till vänster; meningen
-    // om kvällens träffsäkerhet står nu i bandet när satsningen är avgjord.
-    if (view.mode === 'done' || view.mode === 'wrong') {
-      const know = sim.incidents?.calibration?.[2] ?? [0, 0];
-      band = { ...band, text: `${band.text} ${strings.back.calibNote[calibrationNote(sim.incidents?.calibration)](know[0], know[1])}` };
-    }
+  // ORDER 305b — kvitt eller dubbelt: bandet säger vad potten blev.
+  const pot = view.mode === 'done' || view.mode === 'wrong' || view.mode === 'stopped' ? (held?.outcome.pot ?? sim.incidents?.lastOutcome?.pot ?? null) : null;
+  if (band && pot && pot.credits > 0) {
+    band = { ...band, label: `${band.label} · ${pot.taken ? t.kvitt.potTaken(pot.credits) : t.kvitt.potLost(pot.credits)}` };
   }
 
   return (
@@ -364,7 +352,7 @@ export function IncidentCard() {
       data-testid="incident-card"
       data-backed={backed}
       data-incident-id={incident.id}
-      data-step={view.mode === 'done' || view.mode === 'wrong' ? 'closed' : view.shown}
+      data-step={view.mode === 'done' || view.mode === 'wrong' || view.mode === 'stopped' ? 'closed' : view.shown}
       data-step-axis={step.axis}
       data-mode={view.mode}
       aria-label={f(incident.text.title)}
@@ -384,8 +372,8 @@ export function IncidentCard() {
           {strings.rocketStake(incident.needsTable ? view.context.table : null, formatSek(active.stake.billSek), numberWord(active.stake.guests), active.stake.guests, (active.stake.types.social ?? 0) > 0)}
         </p>
       )}
-      {!(backed && pick !== null) && <p className="nx-rocket-story">{f(incident.text.body)}</p>}
-      {!(backed && pick !== null) && view.situation && incident.text.situations?.[view.situation] && (
+      {!choosing && <p className="nx-rocket-story">{f(incident.text.body)}</p>}
+      {!choosing && view.situation && incident.text.situations?.[view.situation] && (
         <p className="nx-rocket-situation" data-testid="incident-situation" data-situation={view.situation}>
           {f(incident.text.situations[view.situation])}
         </p>
@@ -401,8 +389,8 @@ export function IncidentCard() {
       <PyramidStrip
         testId="incident-pyramid"
         full={view.mode === 'done'}
-        showMult={backed}
-        confidence={backed && conf !== null ? strings.back.confidence[conf] : null}
+        showMult
+        confidence={active?.pot ? t.kvitt.potShort(potCredits(active.pot)) : null}
         levels={incident.steps.map((_, i) => { const b = boxFor(i); return b === 'cleared' ? 'filled' : b === 'current' ? 'current' : b === 'failed' ? 'cracked' : 'empty'; })}
       />
       {/* ORDER 303 G — pyramidens ögonblick när raketen klättrar ett steg. */}
@@ -411,8 +399,7 @@ export function IncidentCard() {
           key={`${incident.id}:${active?.openedAt ?? ''}:${view.shown}:${view.mode}`}
           step={view.shown}
           full={view.mode === 'done'}
-          confidence={backResult && backResult.correct ? backResult.confidence : null}
-          credits={backResult && backResult.correct ? backResult.delta : null}
+          pot={active?.pot ? potCredits(active.pot) : view.mode === 'done' ? (sim.incidents?.lastOutcome?.pot?.credits ?? null) : null}
           guestsIn={view.guestsIn ?? 0}
           levels={incident.steps.map((_, i) => { const b = boxFor(i); return b === 'cleared' ? 'filled' : b === 'current' ? 'current' : b === 'failed' ? 'cracked' : 'empty'; })}
         />
@@ -453,17 +440,18 @@ export function IncidentCard() {
       </div>
 
       {/* ORDER 305 — kvitt eller dubbelt: stanna eller satsa potten på nästa steg. */}
-      {active?.choosing && view.mode === 'ask' && (
+      {choosing && active && (
         <div className="nx-rocket-kvitt" data-testid="incident-kvitt">
-          <p>{t.kvitt.pot(String(potCredits(active.pot)), String(active.pot?.cashSek ?? 0))}</p>
+          <p>{t.kvitt.pot(potCredits(active.pot))}</p>
           <p>{t.kvitt.note}</p>
-          <button type="button" className="nx-rocket-option" data-testid="incident-kvitt-stop" onClick={() => dispatch({ type: 'INCIDENT_STOP' })}>{t.kvitt.stop}</button>
-          <button type="button" className="nx-rocket-option" data-testid="incident-kvitt-go" onClick={() => dispatch({ type: 'INCIDENT_GO' })}>{t.kvitt.go}</button>
+          <div className="nx-rocket-kvitt-choices">
+            <button type="button" className="nx-btn" data-testid="incident-kvitt-stop" onClick={() => dispatch({ type: 'INCIDENT_STOP' })}>{t.kvitt.stop}</button>
+            <button type="button" className="nx-btn nx-btn-primary" data-testid="incident-kvitt-go" onClick={() => dispatch({ type: 'INCIDENT_GO' })}>{t.kvitt.go}</button>
+          </div>
         </div>
       )}
-      {!active?.choosing && <div role="group" aria-label={f(step.text.question)}>
+      {!choosing && <div role="group" aria-label={f(step.text.question)}>
         {step.options.map((o, i) => {
-          if (backed && pick !== null && o.id !== pick && view!.mode === 'ask') return null;
           const look = lookFor(o.id);
           const struck = look === 'struck';
           return (
@@ -475,11 +463,10 @@ export function IncidentCard() {
               data-option-id={o.id}
               data-struck={view!.mode === 'ask' && struck}
               data-look={look}
-              disabled={view!.mode !== 'ask' || struck || (pick !== null && pick !== o.id)}
+              disabled={view!.mode !== 'ask' || struck}
               title={struck ? s.struck : undefined}
               aria-keyshortcuts={String(i + 1)}
-              data-picked={backed && pick === o.id}
-              onClick={() => (backed ? setPick(o.id) : dispatch({ type: 'ANSWER_INCIDENT', optionId: o.id }))}
+              onClick={() => dispatch({ type: 'ANSWER_INCIDENT', optionId: o.id })}
             >
               <span className="nx-rocket-key" aria-hidden>{look === 'chosen' ? <Check size={16} /> : look === 'wrong' ? <X size={16} /> : i + 1}</span>
               <span className="nx-rocket-option-text">
@@ -493,39 +480,6 @@ export function IncidentCard() {
           );
         })}
       </div>}
-
-      {backed && view.mode === 'ask' && pick === null && (
-        <p className="nx-small nx-muted" data-testid="back-picked-hint" data-picked="false">{strings.back.pickFirst}</p>
-      )}
-      {backed && view.mode === 'ask' && pick !== null && (
-        <div className="nx-back" data-testid="back-confidence">
-          <div className="nx-label">{strings.back.howSure} <span className="nx-muted" style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 400 }} data-testid="back-picked-hint" data-picked="true">{strings.back.pickedHint(Math.max(0, Math.ceil(active?.lockLeft ?? BACK.lockSeconds)))}</span></div>
-          {!canBack(sim, 1) && <div className="nx-small" data-testid="back-earn-card">{strings.back.earnShort}</div>}
-          <div className="nx-back-levels">
-            {BACK.confidence.map((c, i) => {
-              const level = i as Confidence;
-              const win = Math.round(c.win * (BACK.stepMultiplier[view!.shown] ?? 1));
-              const ok = canBack(sim, level);
-              return (
-                <button key={i} type="button" className="nx-back-level" data-testid={`back-level-${i}`} data-chosen={conf === level} data-allowed={ok}
-                  aria-pressed={conf === level}
-                  onClick={() => { if (!ok) { shake(targetElement('credits'), 10); return; } setConf(level); }}>
-                  <span className="nx-back-level-name">{strings.back.confidence[i]}</span>
-                  <span className="nx-back-level-odds">{strings.back.odds(win, c.loss)}</span>
-                </button>
-              );
-            })}
-          </div>
-          <button type="button" className="nx-btn nx-btn-primary nx-back-lock" data-testid="back-lock" data-ready={pick !== null && conf !== null}
-            onClick={() => {
-              if (pick === null || conf === null) { shake(cardRef.current, 10); return; }
-              dispatch({ type: 'ANSWER_INCIDENT', optionId: pick, confidence: conf });
-            }}>
-            {/* Provspel av 285: en grå knapp säger varför. */}
-            <span>{conf === null ? strings.back.chooseHow : strings.back.lock}</span>
-          </button>
-        </div>
-      )}
 
       {band ? (
         <div ref={bandRef} className="nx-rocket-band" data-kind={band.kind} data-testid="incident-band" aria-live="polite">

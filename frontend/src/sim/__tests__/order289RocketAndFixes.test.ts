@@ -1,14 +1,13 @@
 // ORDER 289 — rättelser efter provspelet av 285 (Vision Owner 2026-09-29).
-// "Raketen fastnar": Think so är förvald i varje steg, och efter att svaret
-// är låst finns en andra tidsgräns (BACK.lockSeconds); när den går ut satsas
-// Guessing. Här spelas en egen raket genom alla tre stegen till slut, en gång
-// med vald säkerhet och en gång utan.
+// "Raketen fastnar": en egen raket spelas genom alla tre stegen till slut.
+// ORDER 305b — säkerheten och det låsta svaret är borttagna; spelaren går
+// vidare eller stannar i kvitt eller dubbelt, och när valets tid går ut
+// stannar hen.
 
 import { describe, expect, it } from 'vitest';
 import { reducer } from '../../strategic/simulation/reducer';
 import { makeNewGameState } from '../../strategic/simulation/model';
 import { firstDayOfWeek } from '../calendar';
-import { BACK } from '../balance';
 import { incidentById } from '../incidentBank';
 import { canStartBack, rankedStepOption } from '../incidents';
 import { rocketCounter } from '../../strategic/ui/service/serviceView';
@@ -57,14 +56,15 @@ function toNextStep(s: SimulationState, step: number): SimulationState {
 }
 
 describe('ORDER 289 — en egen raket spelas till slut', () => {
-  it('med vald säkerhet: tre steg, raketen stängs', () => {
+  // ORDER 305b — säkerheten är borttagen; spelaren går vidare i kvitt eller dubbelt.
+  it('gå vidare efter varje steg: tre steg, raketen stängs', () => {
     let s = toBacked(evening(5));
     const id = s.incidents.active!.id;
     for (let step = 0; step < 3; step++) {
       s = toNextStep(s, step);
       expect(s.incidents.active?.id).toBe(id);
-      s = reducer(s, { type: 'PICK_BACK_ANSWER', optionId: best(s) });
-      s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: s.incidents.active!.picked!, confidence: BACK.defaultConfidence });
+      s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: best(s) });
+      if (s.incidents.active?.choosing) s = reducer(s, { type: 'INCIDENT_GO' });
     }
     expect(s.incidents.active).toBeNull();
     const rec = s.incidents.log[s.incidents.log.length - 1];
@@ -72,25 +72,16 @@ describe('ORDER 289 — en egen raket spelas till slut', () => {
     expect(rec.step).toBeNull();
   });
 
-  it('utan vald säkerhet: efter den andra tidsgränsen satsas Guessing, och raketen går till slut', () => {
+  it('utan val: när valets tid går ut stannar spelaren och tar potten', () => {
     let s = toBacked(evening(5));
     const id = s.incidents.active!.id;
-    for (let step = 0; step < 3; step++) {
-      s = toNextStep(s, step);
-      expect(s.incidents.active?.id).toBe(id);
-      s = reducer(s, { type: 'PICK_BACK_ANSWER', optionId: best(s) });
-      expect(s.incidents.active!.lockLeft).toBe(BACK.lockSeconds);
-      // Spelaren väljer ingen nivå. Klockan går (lockLeft) tills den är ute.
-      let ticks = 0;
-      while (s.incidents.active?.id === id && s.incidents.active.step === step && s.incidents.active.picked && ticks < 1000) { s = reducer(s, TICK); ticks++; }
-      expect(ticks).toBeLessThan(1000);
-    }
-    expect(s.incidents.active).toBeNull();
+    s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: best(s) });
+    let ticks = 0;
+    while (s.incidents.active?.id === id && ticks < 1000) { s = reducer(s, TICK); ticks++; }
+    expect(ticks).toBeLessThan(1000);
     const rec = s.incidents.log[s.incidents.log.length - 1];
-    expect(rec.id).toBe(id);
-    expect(rec.step).toBeNull();
-    // Guessing: bara vinst (förlusten är 0), aldrig fel på grund av tiden.
-    expect(s.incidents.lastBack?.confidence).toBe(0);
+    expect(rec).toMatchObject({ id, quality: 'stopped', step: 1 });
+    expect(rec.pot?.taken).toBe(true);
   });
 });
 
@@ -108,10 +99,8 @@ describe('ORDER 289 — raketräkningen', () => {
         if (s.incidents.active.backed || s.incidents.active.chained) totals.add(n - prevN);
         prevN = Math.max(prevN, n - (s.incidents.active.backed || s.incidents.active.chained ? 0 : 1));
         if (s.incidents.active.backed) {
-          const a = s.incidents.active;
-          if (!a.picked && (a.revealLeft ?? 0) <= 0) s = reducer(s, { type: 'PICK_BACK_ANSWER', optionId: best(s) });
-          else if (a.picked) s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: a.picked, confidence: 0 });
-        } else s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: best(s) });
+          s = s.incidents.active.choosing ? reducer(s, { type: 'INCIDENT_GO' }) : reducer(s, { type: 'ANSWER_INCIDENT', optionId: best(s) });
+        } else s = s.incidents.active.choosing ? reducer(s, { type: 'INCIDENT_GO' }) : reducer(s, { type: 'ANSWER_INCIDENT', optionId: best(s) });
       } else if (backs < 2 && canStartBack(s)) { s = reducer(s, { type: 'START_BACK' }); backs++; }
       s = reducer(s, TICK);
     }
@@ -130,20 +119,6 @@ describe('ORDER 289 — bankens replik efter vad spelaren har gjort', () => {
     const exam = reducer(s0, { type: 'VISIT_PAVILION', pavilion: 'stensota', mode: 'exam' });
     expect(exam.pavilionVisit?.mode).toBe('exam');
     expect(exam.examsTaken).toBe(1);
-  });
-});
-
-describe('ORDER 289 — ett låst fel svar när tiden går ut', () => {
-  it('räknas som svaret med Guessing, inte som tiden ute', () => {
-    let s = toBacked(evening(5));
-    const a = s.incidents.active!;
-    const step = incidentById('vinbar', a.id)!.steps[a.step];
-    const wrong = rankedStepOption(step, 'worst', a.struck, a.situation);
-    s = reducer(s, { type: 'PICK_BACK_ANSWER', optionId: wrong });
-    for (let i = 0; i < 1000 && s.incidents.active?.picked; i++) s = reducer(s, TICK);
-    const rec = s.incidents.log[s.incidents.log.length - 1];
-    expect(rec.optionId).toBe(wrong);
-    expect(rec.quality).not.toBe('staff');
   });
 });
 

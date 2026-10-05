@@ -22,7 +22,7 @@ import { WEEK } from '../../sim/balance';
 import { rankedScenarioChoice } from '../simulation/scenarios';
 import { incidentById } from '../../sim/incidentBank';
 import { packagesFor } from '../simulation/packages';
-import { canBack, canStartBack, rankedStepOption } from '../../sim/incidents';
+import { canStartBack, rankedStepOption } from '../../sim/incidents';
 import type { PavilionKey, ScenarioChoice, SimAction, SimulationState } from '../types';
 
 // Simuleringens tick är 0,2 s (5 Hz), samma som SimulationProvider.
@@ -56,10 +56,10 @@ export interface MorningPlan {
   // väljer det bästa svaret i varje steg, den svaga det sämsta (rankedStepOption).
   scenarioAnswer?: ScenarioAnswer;
   // ORDER 280 — Back your knowledge: spelaren startar en egen raket så fort
-  // det går (högst BACK.maxPerEvening per kväll) och står för varje svar
-  // med den här säkerheten (svaren som i scenarioAnswer). Utelämnat =
-  // ingen egen raket (harnessens spelare gör det inte i slumpmätningen).
-  backConfidence?: 0 | 1 | 2;
+  // det går (högst BACK.maxPerEvening per kväll), med svaren som i
+  // scenarioAnswer (ORDER 305b: säkerheten är borttagen). Utelämnat = ingen
+  // egen raket (harnessens spelare gör det inte i slumpmätningen).
+  backs?: boolean;
   // ORDER 296c — hovmästarens nålar: 'wise' svarar klokt på varje nål (se
   // wisePinAnswer); utelämnat = Per väljer (det säkra) när tiden går ut.
   pins?: 'wise';
@@ -112,10 +112,10 @@ export interface DayRecord {
   events: string[];
 }
 
-export function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, answer: ScenarioAnswer = 'best', backConfidence?: 0 | 1 | 2, pins?: 'wise'): SimulationState {
+export function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, answer: ScenarioAnswer = 'best', backs?: boolean, pins?: 'wise'): SimulationState {
   for (let i = 0; i < MAX_TICKS_PER_PHASE && !done(s); i++) {
-    s = answerScenario(reducer(s, { type: 'TICK', dt: TICK_DT }), answer, backConfidence);
-    if (backConfidence !== undefined && canStartBack(s)) s = reducer(s, { type: 'START_BACK' });
+    s = answerScenario(reducer(s, { type: 'TICK', dt: TICK_DT }), answer);
+    if (backs && canStartBack(s)) s = reducer(s, { type: 'START_BACK' });
     if (pins === 'wise' && (s.day.pins?.open.length ?? 0) > 0) s = answerPinsWisely(s);
   }
   return s;
@@ -133,7 +133,7 @@ export function rankedChoice(scenarioId: string | null, answer: 'best' | 'worst'
 // scenarier fyrades, och deras gäster och kassa uteblev. Mätt från
 // reports/order268/save-lordag-vecka1.json: lördagens intäkt 7 140 SEK
 // i harnessen mot 17 850 SEK + 8 000 SEK (scenario) i spelarens vy.
-export function answerScenario(s: SimulationState, given: ScenarioAnswer = 'best', backConfidence?: 0 | 1 | 2): SimulationState {
+export function answerScenario(s: SimulationState, given: ScenarioAnswer = 'best'): SimulationState {
   // ORDER 270 — raketens aktuella steg besvaras direkt, som spelaren gör i
   // IncidentCard (samma åtgärd, ANSWER_INCIDENT). Nästa tick svarar på
   // nästa steg.
@@ -145,11 +145,7 @@ export function answerScenario(s: SimulationState, given: ScenarioAnswer = 'best
     if (active.choosing) return reducer(s, { type: KVITT_STOP_AFTER > 0 && active.step >= KVITT_STOP_AFTER ? 'INCIDENT_STOP' : 'INCIDENT_GO' });
     const step = incident?.steps[active.step ?? 0];
     if (step) {
-      // ORDER 280 — i en egen raket står spelaren för svaret, så högt
-      // krediterna räcker till.
-      let c: 0 | 1 | 2 = active.backed ? (backConfidence ?? 0) : 0;
-      while (c > 0 && !canBack(s, c)) c = (c - 1) as 0 | 1 | 2;
-      return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, resolveAnswer(given, given === 'halfRocket' ? active.openedAt : given === 'skill' ? active.openedAt + (active.step ?? 0) / 10 : active.openedAt + (active.step ?? 0), s.seed ?? 0), active.struck, active.situation), confidence: c });
+      return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, resolveAnswer(given, given === 'halfRocket' ? active.openedAt : given === 'skill' ? active.openedAt + (active.step ?? 0) / 10 : active.openedAt + (active.step ?? 0), s.seed ?? 0), active.struck, active.situation) });
     }
   }
   const answer = resolveAnswer(given, s.day.dayNumber);
@@ -227,7 +223,7 @@ export function playDay(s: SimulationState, plan: MorningPlan): { state: Simulat
     s = tickUntil(opened, (x) => {
       for (const g of x.guests) seen.add(g.id);
       return x.day.period === 'evening' || x.day.period === 'morning';
-    }, plan.scenarioAnswer, plan.backConfidence, plan.pins);
+    }, plan.scenarioAnswer, plan.backs, plan.pins);
   } else {
     s = reducer(s, { type: 'CLOSE_DAY' });
   }

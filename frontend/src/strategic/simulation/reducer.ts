@@ -5,7 +5,7 @@ import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
 import { CONSEQUENCES, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
-import { clockMinutes, formatClock, canBack, canStartBack, pickBackAnswer, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
+import { clockMinutes, formatClock, canStartBack, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
 import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek, isClosed } from '../../sim/economy';
@@ -242,10 +242,6 @@ export function reducer(state: SimulationState, action: SimAction): SimulationSt
   let next = reduce(base, action);
   // Oförändrat tillstånd (åtgärden avvisades): inga id delades ut.
   if (next === base) return base;
-  // ORDER 280 — Back your knowledge: krediterna från låsta svar
-  // (incidents.ts settleBack), bokförda här oavsett vilken väg raketen
-  // avgjordes. Kassan rörs aldrig.
-  if ((next.incidents?.betCreditsDue ?? 0) !== 0) next = settleBackCredits(next);
   // ORDER 305 — en tagen pott i kvitt eller dubbelt: krediterna per kunskapsform.
   if (next.incidents?.potCreditsDue) next = settlePotCredits(next);
   // ORDER 266 — ryktets golv (10 av 100) gäller efter varje åtgärd.
@@ -276,10 +272,7 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
         stopIncident(draft);
         return draft;
       }
-      // Provspel av 285: ett låst svar vars andra tidsgräns gått ut satsas
-      // som Guessing; annars är tiden ute som förut.
-      const locked = draft.incidents?.active?.backed ? draft.incidents.active.picked ?? null : null;
-      return applyCreditChange(draft, resolveIncident(draft, locked, 0));
+      return applyCreditChange(draft, resolveIncident(draft, null));
     }
     case 'SEE_HOUSE_INTRO':
       return state.houseIntroSeen ? state : { ...state, houseIntroSeen: true };
@@ -299,18 +292,11 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       if (!isIncidentOpen(state)) return state;
       // ORDER 305 — kvitt eller dubbelt: först stanna eller gå vidare.
       if (state.incidents?.active?.choosing) return state;
-      // ORDER 280 — i Back your knowledge måste krediterna räcka till
-      // förlusten på den valda säkerheten.
-      const confidence = action.confidence ?? 0;
-      if (state.incidents?.active?.backed && !canBack(state, confidence)) return state;
-      // ORDER 284 — ett låst svar går inte att byta.
-      const lockedPick = state.incidents?.active?.backed ? state.incidents.active.picked : null;
-      if (lockedPick && lockedPick !== action.optionId) return state;
       // ORDER 299 — dagen kopieras också: svarets följd skriver i day (lagret,
       // kvällens glas), och React kan lägga om ett svar på köade TICK när spelet
       // går fort; reducern får då inte ändra det tidigare läget.
       const draft: SimulationState = { ...state, guests: state.guests.map((g) => ({ ...g })), day: { ...state.day } };
-      const credit = resolveIncident(draft, action.optionId, confidence);
+      const credit = resolveIncident(draft, action.optionId);
       // Ett struket eller okänt svar ändrar ingenting. Ett klarat steg
       // lämnar raketen öppen på nästa steg (ORDER 270, 2026-09-27).
       if (draft.incidents === state.incidents) return state;
@@ -325,8 +311,6 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       else goOnIncident(draft);
       return draft;
     }
-    case 'PICK_BACK_ANSWER':
-      return pickBackAnswer(state, action.optionId);
     case 'ANSWER_SALVAGE':
       return answerSalvage(state, action.optionId);
     case 'CLOSE_SALVAGE':
@@ -1314,30 +1298,14 @@ function applyCreditChange(state: SimulationState, credit: CreditChange | null):
     : debitQuestion(state, credit.axis, credit.track, -credit.amount);
 }
 
-// ORDER 280 — Back your knowledge rör bara krediterna. En förlust dras
-// en kredit i taget från axeln med flest; en vinst fördelas över de tre
-// axlarna i tur och ordning (utan spår).
+// De tre kunskapsformerna (potten i kvitt eller dubbelt bokförs per form;
+// butiken drar en kredit i taget från formen med flest).
 const BACK_AXES: KnowledgeAxis[] = ['episteme', 'techne', 'phronesis'];
 
 function settlePotCredits(state: SimulationState): SimulationState {
   const due = state.incidents!.potCreditsDue!;
   let s: SimulationState = { ...state, incidents: { ...state.incidents!, potCreditsDue: undefined } };
   for (const a of BACK_AXES) if ((due[a] ?? 0) > 0) s = creditQuestion(s, a, null, due[a]!);
-  return s;
-}
-
-function settleBackCredits(state: SimulationState): SimulationState {
-  const due = state.incidents?.betCreditsDue ?? 0;
-  let s: SimulationState = { ...state, incidents: { ...state.incidents!, betCreditsDue: 0 } };
-  if (due > 0) {
-    for (let i = 0; i < due; i++) s = creditQuestion(s, BACK_AXES[i % BACK_AXES.length], null, 1);
-  } else {
-    for (let i = 0; i < -due; i++) {
-      const axis = BACK_AXES.reduce((best, a) => (s.knowledgeCredits[a] > s.knowledgeCredits[best] ? a : best), BACK_AXES[0]);
-      if (s.knowledgeCredits[axis] <= 0) break;
-      s = debitQuestion(s, axis, null, 1);
-    }
-  }
   return s;
 }
 
@@ -1357,7 +1325,7 @@ function hostAction(state: SimulationState, action: Extract<SimAction, { type: '
 }
 
 // ORDER 296 — butiken: medaljen öppnar, krediterna betalar (en i taget från
-// axeln med flest, som en förlust i Stå för ditt svar). Köpet läggs i facket
+// axeln med flest). Köpet läggs i facket
 // om det finns plats.
 function shopBuy(state: SimulationState, id: string): SimulationState {
   const spec = SHOP.abilities[id];

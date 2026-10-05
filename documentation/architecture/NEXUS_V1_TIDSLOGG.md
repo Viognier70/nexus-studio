@@ -146,6 +146,7 @@ Uppskattningen skrivs innan etappen börjar. Faktisk tid fylls i när etappen ä
 | Början efter besluten | 300b | ~5: samtyckets andra stycke och knapparna, svaret i tillståndet och menyn, regel 1, fyra skript via den nya starten, kontrollen i spelarens flöde och layouten, rapport | 1,5 h | Hela sviten under hög belastning från en parallell harness: två långa tester nådde tidsgränsen | | — | 2026-10-05 | |
 | Ekonomin efter följderna | 303b | ~4: utgångsläget, fyra varianter i harness (trappan, stjärnan 40 säsonger med tre färdigheter, 303 B), talen, slutkörningen, rapport | 2 h | Stjärnan föll under målet när belöningen sänktes; gränsen för klarade raketer fick sänkas | | — | 2026-10-05 | |
 | Kvitt eller dubbelt, förslag | 305 | ~5: genomgång av raketens regler, potten och valet i simuleringen, harnessens val, två knappar på kortet, sex körningar (två varianter, tre val), rapport | 2 h | Variant A (kronorna i potten, personalens utfall vid stopp) bröt trappan | | — | 2026-10-05 | |
+| Kvitt eller dubbelt i spelet | 305b | ~6: potten och valet påslaget, säkerheten och det låsta svaret borttagna, portfolion, stjärnans räkning, kortet och pyramiden, nio tester om, kontrollen i spelarens flöde, rapport | 3 h | Kontrollen fann bandet "Tiden gick ut" efter Stanna; en måndag har få raketer, så kontrollen startar egna | | — | 2026-10-05 | |
 
 ## Omräkning efter etapp 2
 

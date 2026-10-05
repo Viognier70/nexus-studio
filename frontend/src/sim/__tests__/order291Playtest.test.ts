@@ -139,7 +139,7 @@ describe('ORDER 291 — ett resultat: kontot efter överföringen är kassan nä
       const day = s.day.dayNumber;
       s = playMorning(s, { activities: ['train-service', 'book-dj'] });
       const morning = s.day.cashAtDayStart!;
-      s = tickUntil(reducer(s, { type: 'START_SERVICE' }), (x) => x.day.period === 'evening', 'best', 1);
+      s = tickUntil(reducer(s, { type: 'START_SERVICE' }), (x) => x.day.period === 'evening', 'best', true);
       const tr = s.day.transfer!;
       // Resultatet är kontot efter mot kontot i morse, utom kursen (utbildningen).
       expect(tr.resultSek).toBe(Math.round(tr.accountAfterSek) - Math.round(morning) + activityById('train-service')!.costSek);

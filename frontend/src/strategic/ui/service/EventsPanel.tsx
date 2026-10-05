@@ -19,7 +19,7 @@ import { useEffect, useRef } from 'react';
 import { strings } from '../../../content/strings';
 import { GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SERVICE_STREAM, SITTING } from '../../../sim/balance';
 import { beforeDoors, doorsOpenMinutes, formatClock as clockText } from '../../../sim/clock';
-import { canStartBack, totalCredits, whyNotBack } from '../../../sim/incidents';
+import { canStartBack, whyNotBack } from '../../../sim/incidents';
 import { BACK } from '../../../sim/balance';
 import { useSimDispatch, useSimState } from '../../simulation/SimulationProvider';
 import type { EventStreamEntry } from '../../types';
@@ -145,8 +145,6 @@ export function EventsPanel({ mode = 'both' }: { mode?: 'both' | 'feed' | 'back'
               <strong>{strings.back.introTitle}</strong> {strings.back.introBody}
             </p>
           )}
-          {/* ORDER 284 — räcker krediterna bara till en gissning: hur man tjänar nya. */}
-          {open && totalCredits(sim) < BACK.confidence[1].loss && <div className="nx-small" data-testid="back-earn" style={{ marginTop: 'calc(6 * var(--nx-u))' }}>{strings.back.earn}</div>}
         </div>
         {/* Provspel av 285: en grå knapp säger varför. */}
         {/* ORDER 300 §6 (Anders 2026-10-04): tydligt avstängd (grå) före öppning, med texten "Öppnar 19.05", utan radbrytning. */}

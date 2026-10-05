@@ -26,7 +26,7 @@ function friday(seed = 5): SimulationState {
 // Spela kvällen; svara inte (Per väljer), eller svara det första.
 function play(s: SimulationState, answerFirst: boolean): SimulationState {
   for (let i = 0; i < 40000 && s.day.period === 'dinner'; i++) {
-    if (s.incidents?.active) s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: null as never, confidence: 0 });
+    if (s.incidents?.active) s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: null as never });
     s = reducer(s, TICK);
     if (answerFirst) for (const p of pinsOf(s).open) s = reducer(s, { type: 'HOST_PIN_ANSWER', id: p.id, answer: 0 });
   }
@@ -48,7 +48,7 @@ describe('ORDER 296 — hovmästarens nålar', () => {
     let s = friday();
     let maxOpen = 0;
     for (let i = 0; i < 40000 && s.day.period === 'dinner'; i++) {
-      if (s.incidents?.active) s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: null as never, confidence: 0 });
+      if (s.incidents?.active) s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: null as never });
       s = reducer(s, TICK);
       maxOpen = Math.max(maxOpen, pinsOf(s).open.length);
       for (const p of pinsOf(s).open) s = reducer(s, { type: 'HOST_PIN_ANSWER', id: p.id, answer: 0 });

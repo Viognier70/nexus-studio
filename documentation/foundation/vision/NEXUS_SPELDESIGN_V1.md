@@ -116,6 +116,14 @@ Kunskap mäts på två sätt. **Medaljer** per paviljong visar vilken nivå spel
   - Gastronomiska Teatern är platsen för det dubbla greppet.
 - **Raketen med analys, upplevelse och handling** och halvt grepp (filens avsnitt om raketen) beslutas efter ett förslag i rapporten om kunskapsgrunden (`documentation/architecture/`).
 
+*Beslut 2026-10-05 (Anders): raketen följer det dubbla greppet.* Förslaget i rapporten om kunskapsgrunden gäller i sin helhet.
+- **Ordningen** är analys → upplevelse → handling: episteme, phronesis, techne. Pyramiden har handlingen i toppen. Omdömet har som förut mest tid.
+- **Ledtrådarna.** Steg ett och två är frågor som besvaras, en analytisk ledtråd och en analogisk ur situationen, så att krediterna per kunskapsform finns kvar. Ledtråden står kvar på kortet när handlingen väljs.
+- **Fel på steg ett eller två** avslutar raketen, som förut.
+- **Handlingen** har svar märkta med grepp: helt, halvt mot analysen, halvt mot upplevelsen, eller fel. Ett halvt grepp klarar raketen med halva effekten och en återkoppling som säger vilket register som saknades.
+- **Portfolion** sparar varje rakets grepp.
+- **Innehållet:** ett urval på tio raketer skrivs först och prövas, innan resten skrivs om.
+
 ### Paviljongerna
 
 | Paviljong | Axel | Spår | Vem ställer frågan |
@@ -242,6 +250,14 @@ Sex klasser, och varje klass är ett eget spel, inte en storlek. Klasserna skilj
 
 Utan någon brons blir bankens besked inget lån: gå och öva.
 
+*Beslut 2026-10-05 (Anders): konceptet och varukorgen.* Förslaget om konceptet och varukorgen i `documentation/blueprints/` gäller i sin helhet.
+- Konceptet (enkel, bistro, soigné) är en egen dimension ovanpå verksamhetsklassen och räknas fram ur morgonens varukorg.
+- Gränserna och priset per gäst i förslaget är starttal som kalibreras i harness.
+- Gästtyperna blir fem: studenter, bybor, turister, gourmeter och affärsfolk. Turisterna är en egen typ också utanför bussen.
+- Krogen har ett rykte, och varje koncept har dessutom sitt eget.
+- Leverantörernas och utrustningens priser och villkor i förslaget är starttal.
+- Frågorna förankras i första hand i Gusto Science-biblioteket och i etablerade referensverk. Anders granskar dem och väljer källorna.
+
 *Beslut 2026-10-01 (Vision Owner, efter rättelserna från provspelet): vinbaren är det enda första valet tills food trucken är byggd i etapp 6.* Banken erbjuder vinbaren oavsett vilken paviljong spelaren tog brons i. Food trucken saknar ännu sin plats i byn och sina raketer.
 
 ### Uppgradering
@@ -353,6 +369,15 @@ Det här ersätter punkterna ovan om 3–6 händelser per kväll, 20 sekunders n
 - Utfallet avgörs bara av svaren. Inga casinodrag: inga hjul, spelautomater, tärningar eller jetonger, och inga ord som betting, gamble eller jackpot.
 - Efter kvällen visas hur säker spelaren var och hur ofta det höll, så att den som satsade högt och hade fel ser att hon trodde sig kunna mer än hon kunde.
 - Förlusterna och trycket kommer inte längre från insatsen, utan från de fasta kostnaderna (se Ekonomin > Hyran och lönerna).
+
+*Beslut 2026-10-05 (Anders): kvitt eller dubbelt ersätter säkerheten.* Gissar, tror det och vet det, med sin skala och stegens multiplikator, gäller inte längre, varken i Stå för ditt svar eller i de planerade raketerna. Valet att gå vidare är säkerheten.
+- Varje rätt steg lägger stegets krediter i raketens pott. Potten håller bara krediter, aldrig kassan.
+- Efter ett rätt steg som inte är det sista väljer spelaren: stanna och ta potten, eller gå vidare. Rätt på nästa steg dubblar potten och lägger till stegets kredit. Fel tar hela potten.
+- Den som stannar får ingen följd, och personalen tar inte över resten av händelsen.
+- Valet har åtta sekunder. När tiden går ut stannar spelaren.
+- En raket där spelaren stannar efter andra steget räknas som klarad i stjärnans andel. Efter första steget räknas den inte.
+- Ryktet, gästerna som kommer in, dricksen och stämningen följer varje svar som förut.
+- Portfolion registrerar valet: gick vidare och hade rätt, gick vidare och hade fel, stannade med rätt.
 
 ### Personalen
 
@@ -493,7 +518,7 @@ Expert kräver Kalastorget eftersom fronesis, omdömet, är den högsta formen a
 
 ### Portfolion
 
-Portfolion fylls i automatiskt av det spelaren gör, aldrig av henne själv. Varje rad är evidens, inte omdöme, till exempel ”Vände sex kvällar där gäster var på väg att gå” eller ”Höll personalen kvar genom en vecka med negativ kassa”. Den visas vid säsongsavslutet och kan öppnas när som helst från menyn.
+Portfolion fylls i automatiskt av det spelaren gör, aldrig av henne själv. Den registrerar valen i kvitt eller dubbelt (se Servicen > Insatsen). Varje rad är evidens, inte omdöme, till exempel ”Vände sex kvällar där gäster var på väg att gå” eller ”Höll personalen kvar genom en vecka med negativ kassa”. Den visas vid säsongsavslutet och kan öppnas när som helst från menyn.
 
 Förebilden är karriärstegen i *The Sims*: en titel man vill nå, med tydliga krav som går att arbeta mot.
 

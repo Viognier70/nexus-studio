@@ -1305,42 +1305,19 @@ export const MENU_ROCKETS = {
 } as const;
 
 // ORDER 280 — Back your knowledge (Vision Owner 2026-09-29, Designs B1):
-// insatsen görs bara i krediter och rör aldrig kassan. Spelaren startar
-// själv en raket och väljer för varje steg hur säker hen är. Skalan är den
-// klassiska för säkerhetsbaserad bedömning, 1 : 0, 2 : −2, 3 : −6 (Designs
-// economy.ts), i spelets krediter (en per bästa svar). Steget multiplicerar
-// bara rätt svar: episteme ×1, techne ×1,5, phronesis ×2. Ett fel kostar
-// insatsen och avslutar raketen; tiden ute räknas som fel på lägsta
-// säkerheten. Valda tal i spelets skala (F53).
-// ORDER 280 — säkerheten spelaren väljer: 0 gissar, 1 tror det, 2 vet det.
-export type Confidence = 0 | 1 | 2;
-
+// spelaren startar själv en raket, högst så här många per kväll.
+// ORDER 305b (Anders 2026-10-05) — säkerheten (Gissar / Tror det / Vet det)
+// med sin skala och stegens multiplikator är borttagen: kvitt eller dubbelt
+// (DOUBLE_OR_NOTHING) ersätter den i både de egna och de planerade
+// raketerna. Valet att gå vidare är säkerheten.
 export const BACK = {
   section: 'Servicen > Insatsen',
   openQuestion: 'F53',
-  confidence: [
-    { win: 1, loss: 0 },
-    { win: 2, loss: 2 },
-    { win: 3, loss: 6 }
-  ] as readonly { win: number; loss: number }[],
-  stepMultiplier: [1, 1.5, 2] as readonly number[],
-  maxPerEvening: 3,
-  // Vision Owner 2026-09-29 (provspel av 285): "Think so" är förvald i varje
-  // steg, och efter att svaret är låst finns en andra tidsgräns; när den går
-  // ut satsas "Guessing" automatiskt.
-  defaultConfidence: 1 as Confidence,
-  lockSeconds: 10,
-  // Resultatet syns i gränssnittet så här länge (ms).
-  resultVisibleMs: 5000,
-  // "Hur säker du var": Vet det räknas som för säkert under den här
-  // träffsäkerheten efter minst så här många svar, och gissningarna som
-  // för försiktiga över den (Designs calibrationNote).
-  calibrationShare: 0.75,
-  calibrationMinAnswers: 2
+  maxPerEvening: 3
 } as const;
 
 // ORDER 305 — kvitt eller dubbelt (förslag för beslut, Designs tillägg till
-// D5; avstängt tills beslut). Efter ett rätt steg som inte är det sista
+// D5; beslutat 2026-10-05, ORDER 305b). Efter ett rätt steg som inte är det sista
 // väljer spelaren: stanna och ta potten, eller satsa den på nästa steg.
 // Potten är raketens krediter för bästa svar (med potHoldsCash också bordets
 // merbeställning i kronor). Ett rätt steg efter att spelaren gått vidare ger
@@ -1354,13 +1331,17 @@ export const BACK = {
 // 133 000–147 000 kr, och den som stannade stängde krogen).
 export const DOUBLE_OR_NOTHING = {
   section: 'Servicen > Händelserna i servicen',
-  enabled: false,
+  // ORDER 305b (Anders 2026-10-05): förslag B påslaget.
+  enabled: true,
   growth: 2,
   potHoldsCash: false,
   // Den som stannar: personalen tar resten med sitt utfall för stegen som
   // återstod (true), eller händelsen slutar där utan mer följd (false).
   stopTakesStaffOutcome: false,
-  choiceSeconds: 8
+  choiceSeconds: 8,
+  // ORDER 305b (Anders 2026-10-05): en raket där spelaren stannar efter
+  // steg 2 räknas som klarad i stjärnans andel; efter steg 1 räknas den inte.
+  stopCountsAsClearedFrom: 2
 };
 
 // ORDER 278 — servicen syns (Vision Owner 2026-09-28, andra provspelet).

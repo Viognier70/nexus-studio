@@ -22,7 +22,7 @@ describe('ORDER 292 — kassan står still efter servicen', () => {
       s = { ...s, medals: { ...PLAYERS.baseline }, day: { ...s.day, dayNumber: firstDayOfWeek(2) } };
       const day = s.day.dayNumber;
       s = playMorning(s, { activities: ['train-service', 'book-dj'] });
-      s = tickUntil(reducer(s, { type: 'START_SERVICE' }), (x) => x.day.period === 'evening', 'best', 1);
+      s = tickUntil(reducer(s, { type: 'START_SERVICE' }), (x) => x.day.period === 'evening', 'best', true);
       const atClose = s.cash;
       // Kontot efter överföringen (T2) är kassan vid stängningen.
       expect(Math.round(atClose)).toBe(s.day.transfer!.accountAfterSek);

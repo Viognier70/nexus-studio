@@ -15,7 +15,7 @@ import { describe, expect, it } from 'vitest';
 import { reducer } from '../../strategic/simulation/reducer';
 import { makeNewGameState } from '../../strategic/simulation/model';
 import { firstDayOfWeek } from '../calendar';
-import { BACK } from '../balance';
+import { DOUBLE_OR_NOTHING } from '../balance';
 import { incidentById } from '../incidentBank';
 import { canStartBack, rankedStepOption } from '../incidents';
 import { PLAYERS } from '../../strategic/testHarness/randomness';
@@ -74,7 +74,7 @@ describe('ORDER 284 — portionerna per rätt', () => {
 });
 
 describe('ORDER 284 — klockan i Back your knowledge', () => {
-  it('stannar när svaret är valt, och svaret går inte att byta', () => {
+  it('stegets klocka står medan spelaren väljer i kvitt eller dubbelt (ORDER 305b)', () => {
     let s = monday(5);
     s = { ...s, day: { ...s.day, dayNumber: s.day.dayNumber + 4 } };
     s = reducer(s, { type: 'BUY_PACKAGE', packageId: 'vinbar-base' });
@@ -87,25 +87,16 @@ describe('ORDER 284 — klockan i Back your knowledge', () => {
     s = reducer(s, { type: 'START_BACK' });
     const a = s.incidents.active!;
     expect(a.backed).toBe(true);
+    // ORDER 305b — svaret låses inte längre (säkerheten är borttagen). I
+    // stället står stegets klocka medan spelaren väljer i kvitt eller dubbelt.
     const step = incidentById('vinbar', a.id)!.steps[a.step];
-    const [first, second] = step.options.filter((o) => !a.struck.includes(o.id)).map((o) => o.id);
-    // Före valet går klockan.
-    for (let i = 0; i < 10; i++) s = reducer(s, TICK);
-    const running = s.incidents.active!.secondsLeft;
-    expect(running).toBeLessThan(a.secondsLeft);
-    s = reducer(s, { type: 'PICK_BACK_ANSWER', optionId: first });
-    expect(s.incidents.active!.picked).toBe(first);
-    // Efter valet står stegets klocka; i stället går den andra tidsgränsen
-    // (ORDER 289, BACK.lockSeconds), och när den är ute satsas Guessing.
+    s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, 'best', a.struck, a.situation) });
+    expect(s.incidents.active!.choosing).toBe(true);
+    for (let i = 0; i < 300 && (s.incidents.active?.revealLeft ?? 0) > 0; i++) s = reducer(s, TICK);
+    const waiting = s.incidents.active!.secondsLeft;
     for (let i = 0; i < 5; i++) s = reducer(s, TICK);
-    expect(s.incidents.active!.secondsLeft).toBe(running);
-    expect(s.incidents.active!.lockLeft!).toBeLessThan(BACK.lockSeconds);
-    // Ett annat svar går inte att välja eller stå för.
-    expect(reducer(s, { type: 'PICK_BACK_ANSWER', optionId: second }).incidents.active!.picked).toBe(first);
-    expect(reducer(s, { type: 'ANSWER_INCIDENT', optionId: second, confidence: 0 })).toBe(s);
-    // Det låsta svaret går.
-    const after = reducer(s, { type: 'ANSWER_INCIDENT', optionId: first, confidence: 0 });
-    expect(after).not.toBe(s);
+    expect(s.incidents.active!.secondsLeft).toBe(waiting);
+    expect(s.incidents.active!.choiceLeft!).toBeLessThan(DOUBLE_OR_NOTHING.choiceSeconds);
   });
 });
 
