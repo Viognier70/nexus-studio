@@ -783,13 +783,16 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
   // ORDER 307 — ryktet i kvällens koncept: ett fel gånger förlåtelsen hos
   // bordets gästtyp.
   const tier = draft.day.booking?.dayNumber === draft.day.dayNumber ? draft.day.booking?.concept ?? null : null;
+  let conceptPoints: number | null = null;
   if (tier) {
     const payerType = table[0]?.guestType;
     const forgive = !right && payerType ? GUEST_TYPES.forgiveness[payerType] : 1;
-    moveConceptReputation(draft, tier, repPoints * forgive, REPUTATION.scale);
+    conceptPoints = repPoints * forgive;
+    moveConceptReputation(draft, tier, conceptPoints, REPUTATION.scale);
   }
   if (incidentId) {
-    draft.day = { ...draft.day, answerReviews: [...(draft.day.answerReviews ?? []), { incidentId, right, severity: right ? null : severity, reputation: repPoints, table: ctx.table, guestType: table[0]?.guestType ?? null }] };
+    // ORDER 309b — conceptReputation: konceptets poäng (Recensioner i morse).
+    draft.day = { ...draft.day, answerReviews: [...(draft.day.answerReviews ?? []), { incidentId, right, severity: right ? null : severity, reputation: repPoints, table: ctx.table, guestType: table[0]?.guestType ?? null, conceptReputation: conceptPoints }] };
   }
   if (!right) spreadWord(draft, CONSEQUENCES.street.perWrong);
   else if (rocketCleared) spreadWord(draft, CONSEQUENCES.street.perCleared);

@@ -10,6 +10,10 @@
 // efter morgonen och raderna en i taget med 180 ms emellan (stilla med
 // reducerad rörelse). Till inköpen, Enter eller ett klick utanför går vidare;
 // i morgonens högerspalt står sedan en liten rad som öppnar kortet igen.
+//
+// ORDER 309b — i klasserna med koncept är huvudet, stapeln och raderna
+// konceptets rykte (state.reputationByTier[bokningens koncept]) från när
+// servicen öppnade till morgonen; klasserna utan koncept visar krogens.
 
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import './foljder.css';
@@ -129,7 +133,9 @@ export function MorningReviewCard({ onOpenBuy }: { onOpenBuy?: () => void }) {
   const lines = review.lines ?? [];
   const from = review.from ?? null;
   const to = review.to ?? null;
-  const tier = review.tier ? strings.shopTabs.tier[review.tier] ?? null : null;
+  // ORDER 309b — "Ryktet som bistro" bara när talen är konceptets
+  // (review.scope, sim/morningReview.ts); annars krogens rykte.
+  const tier = review.scope === 'concept' && review.tier ? strings.shopTabs.tier[review.tier] ?? null : null;
   return (
     <div className="nx-review-backdrop" data-testid="morning-review-backdrop" onClick={() => close(false)}>
       <section
@@ -148,7 +154,7 @@ export function MorningReviewCard({ onOpenBuy }: { onOpenBuy?: () => void }) {
             <h2 className="nx-review-title">{r.title}</h2>
           </div>
           {from !== null && to !== null && (
-            <div className="nx-review-rep" data-testid="morning-review-rep" data-from={from} data-to={to}>
+            <div className="nx-review-rep" data-testid="morning-review-rep" data-from={from} data-to={to} data-scope={review.scope ?? 'restaurant'} data-tier={review.tier ?? ''}>
               <div className="nx-review-kicker" style={{ color: REVIEW_CARD.kicker }}>{tier ? r.classLine(tier) : r.rep}</div>
               <div className="nx-review-nums"><span className="nx-review-from">{from}</span><ArrowRight size={16} aria-hidden /><span className="nx-review-to">{to}</span></div>
               <div className="nx-review-bar" style={{ background: REVIEW_CARD.summary.bar }} aria-hidden>

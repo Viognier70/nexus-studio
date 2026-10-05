@@ -1,0 +1,86 @@
+{
+  "build": "produktion (vite build + preview)",
+  "size": "1440×900",
+  "save": "reports/order284/save-mandag-vinbaren.json (oförändrad)",
+  "steps": {
+    "concept": null,
+    "opened": {
+      "key": "nexus.v1.slot1",
+      "dayNumber": 8,
+      "period": "morning",
+      "reputation": 0.6,
+      "reputationByTier": null,
+      "conceptReputationAtServiceStart": null,
+      "booking": null,
+      "morningReview": null
+    },
+    "review": {
+      "change": "-3",
+      "rep": {
+        "scope": "concept",
+        "tier": "bistro",
+        "from": "60",
+        "to": "57",
+        "heading": "Ryktet som bistro"
+      },
+      "lines": [
+        {
+          "kind": "wrong",
+          "delta": -3,
+          "voice": "villager",
+          "text": "Ryktet −3\n\n”Det blev inte riktigt som vi hade tänkt oss.”\n\nEn bybo · Ett bord fick fel svar (Är det champagne?)."
+        }
+      ]
+    },
+    "morning": {
+      "key": "nexus.v1.slot1",
+      "dayNumber": 9,
+      "period": "morning",
+      "reputation": 0.5811063359911243,
+      "reputationByTier": {
+        "enkel": 0.6005404810556932,
+        "bistro": 0.5735404810556932,
+        "soigne": 0.6005404810556932
+      },
+      "conceptReputationAtServiceStart": null,
+      "booking": null,
+      "morningReview": {
+        "dayNumber": 8,
+        "change": -3,
+        "fromAnswers": -3,
+        "wrongTables": 1,
+        "rightTables": 0,
+        "grave": 0,
+        "wrongTitles": [
+          "Är det champagne?"
+        ],
+        "rightTitles": [],
+        "from": 60,
+        "to": 57,
+        "tier": "bistro",
+        "scope": "concept",
+        "lines": [
+          {
+            "kind": "wrong",
+            "voice": "villager",
+            "delta": -3,
+            "tables": 1,
+            "titles": [
+              "Är det champagne?"
+            ],
+            "seed": 2415
+          }
+        ]
+      }
+    },
+    "consistency": {
+      "linesSum": -3,
+      "change": -3,
+      "sumIsChange": true,
+      "fromIsSavedStart": null,
+      "toIsConceptMorning": true,
+      "restaurantMorning": 58
+    }
+  },
+  "errors": []
+}

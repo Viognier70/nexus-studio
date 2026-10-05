@@ -3,7 +3,7 @@ import { guestMoodValue } from '../../sim/guestMood';
 import { buildMorningReview } from '../../sim/morningReview';
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
-import { EQUIPMENT_IDS, GOODS_SUPPLIER_IDS, equipmentOpened, equipmentOwned, equipmentSpec, equipmentUnlocked, supplierOwned, supplierPrice, supplierUnlocked, type EquipmentId, type GoodsSupplierId } from '../../sim/goods';
+import { EQUIPMENT_IDS, GOODS_SUPPLIER_IDS, reputationByTier, equipmentOpened, equipmentOwned, equipmentSpec, equipmentUnlocked, supplierOwned, supplierPrice, supplierUnlocked, type EquipmentId, type GoodsSupplierId } from '../../sim/goods';
 import { CONSEQUENCES, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, canStartBack, closeIncidents, countDown, isIncidentOpen, lockAnswer, maybeOpenIncident, planIncidents, resolveIncident, settlePendingAnswer, startBack, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
@@ -1490,6 +1490,8 @@ function openService(
     OPENING.minPartiesAtDoor,
     Math.min(waitingCap, Math.round(baseWaiting * worldFactorWaitingMultiplier(worldFactors)))
   );
+  const bookingAtOpen = state.day.booking;
+  const conceptAtOpen = bookingAtOpen && bookingAtOpen.dayNumber === state.day.dayNumber ? bookingAtOpen.concept ?? null : null;
   const day: DayState = {
     ...state.day,
     period: service,
@@ -1537,6 +1539,9 @@ function openService(
     revenueAtServiceStart: state.revenue,
     costAtServiceStart: state.cost,
     reputationAtServiceStart: state.reputation,
+    // ORDER 309b — ryktet i kvällens koncept när servicen öppnar (bokningen
+    // låses före openService i startService). Klasserna utan koncept: null.
+    conceptReputationAtServiceStart: conceptAtOpen ? reputationByTier(state)[conceptAtOpen] : null,
     // ORDER 228 (etapp A) — snapshot kunskapskapitalet så
     // kvällsavräkningen kan visa dagens delta per axel. Deep-copy för
     // att undvika share med state.knowledgeCredits.

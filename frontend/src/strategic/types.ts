@@ -849,6 +849,11 @@ export interface DayState {
   // evening account uses this to say "kvällen bevarade ryktet" vs
   // "ryktet gick tillbaka" without surfacing the number itself.
   reputationAtServiceStart: number | null;
+  // ORDER 309b — ryktet i kvällens koncept (state.reputationByTier[booking.concept],
+  // skalan 0–1) när servicen öppnade. Recensioner i morse visar "Ryktet som
+  // bistro" ur det. Null i klasserna utan koncept och innan servicen öppnat;
+  // står kvar efter stängningen (till nästa dag) så att morgonen kan läsa det.
+  conceptReputationAtServiceStart?: number | null;
   // ORDER 228 (etapp A) — snapshot av kunskapskapital vid OPEN_SERVICE
   // så kvällsavräkningen kan visa dagens förändring per axel (per DoD
   // A.1: "förändring i kunskapskapital"). Null mellan services, samma
@@ -2035,4 +2040,7 @@ export interface AnswerReview {
   table: number | null;
   // ORDER 309 — bordets gästtyp (rösten i Recensioner i morse, D5 morningReviews.ts).
   guestType?: GuestType | null;
+  // ORDER 309b — poängen som flyttade ryktet i kvällens koncept (felen gånger
+  // förlåtelsen, sim/incidents.ts). Null när kvällen saknar koncept.
+  conceptReputation?: number | null;
 }
