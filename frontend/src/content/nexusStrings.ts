@@ -395,8 +395,6 @@ export const STRINGS = {
   // Förmågorna. Ett startförslag per paviljong (Vision Owner 2026-10-02).
   'ab.sommBottle.name': { sv: 'Sommeliern säljer in en flaska', en: 'The sommelier suggests a bottle' },
   'ab.sommBottle.fx': { sv: 'Vid loungerna föreslår sommeliern en hel flaska i stället för glas, och fler säger ja.', en: 'At the lounges the sommelier suggests a whole bottle instead of glasses, and more guests say yes.' },
-  'ab.wineFridge.name': { sv: 'Vinkylen', en: 'The wine fridge' },
-  'ab.wineFridge.fx': { sv: 'Vitt och bubbel håller rätt temperatur hela kvällen. Inget glas kommer tillbaka för att vinet är varmt.', en: 'White and sparkling stay at the right temperature all evening. No glass comes back because the wine is warm.' },
   'ab.wineTasting.name': { sv: 'Vinprovning för personalen', en: 'Wine tasting for the staff' },
   'ab.wineTasting.fx': { sv: 'Servitörerna svarar själva på frågor om vinlistan, så sommeliern hinner till fler bord.', en: 'The waiters answer questions about the wine list themselves, so the sommelier reaches more tables.' },
   'ab.fastPass.name': { sv: 'Snabbare pass', en: 'A quicker pass' },

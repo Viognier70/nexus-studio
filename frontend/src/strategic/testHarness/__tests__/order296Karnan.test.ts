@@ -43,7 +43,7 @@ const TOP_UP_SHARE = 1.1;
 const hand = (s: SimulationState) => (misePlan(s).backlogMin > 0 ? [{ type: 'HIRE_PREP_HAND' as const }] : []);
 // ORDER 296c — den kloka i butiken: köper det den har råd med i den här
 // ordningen (det som ger mest i vinbaren först) och lägger de bästa i facket.
-const WISE_SHOP = ['menuStory', 'sommBottle', 'fastPass', 'regulars', 'chefsTable', 'wineTasting', 'leftovers', 'mise', 'lova', 'birthday', 'wineFridge', 'signature', 'allergen', 'critic'];
+const WISE_SHOP = ['menuStory', 'sommBottle', 'fastPass', 'regulars', 'chefsTable', 'wineTasting', 'leftovers', 'mise', 'lova', 'birthday', 'signature', 'allergen', 'critic'];
 const wiseShop = (): SimAction[] => [
   ...WISE_SHOP.map((id) => ({ type: 'SHOP_BUY' as const, id })),
   ...WISE_SHOP.map((id) => ({ type: 'SHOP_SLOT' as const, id, on: false })),

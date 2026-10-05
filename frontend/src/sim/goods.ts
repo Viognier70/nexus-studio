@@ -14,7 +14,7 @@ export const GOODS_SUPPLIER_IDS: readonly GoodsSupplierId[] = ['grossisten', 'fi
 export type EquipmentId = 'vinkyl' | 'flamberingsvagn' | 'ostvagn' | 'avecvagn' | 'humidor';
 // Tabellerna i balance.ts utan fältet section.
 const SUPPLIER_SPEC = GOODS_SUPPLIERS as unknown as Record<Exclude<GoodsSupplierId, 'grossisten'>, { pavilion: PavilionKey; medal: string; credits: number }>;
-const EQUIPMENT_SPEC = EQUIPMENT as unknown as Record<EquipmentId, { tier: Tier; priceSek: number; pavilion: PavilionKey; medal: string; credits: number; avecShare?: number }>;
+const EQUIPMENT_SPEC = EQUIPMENT as unknown as Record<EquipmentId, { tier: Tier; priceSek: number; pavilion: PavilionKey; medal: string; credits: number; avecShare?: number; satisfaction?: number }>;
 export function equipmentSpec(id: EquipmentId) {
   return EQUIPMENT_SPEC[id];
 }

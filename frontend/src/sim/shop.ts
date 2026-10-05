@@ -12,7 +12,6 @@ export type ShopPavilion = 'stensota' | 'method' | 'library' | 'party' | 'theatr
 // är en kurs för personalen (rollens färg i ringen).
 export const ABILITY_LIST: readonly { id: string; pavilion: ShopPavilion; icon: string; course?: 'sommelier' | 'chef' | 'floor' }[] = [
   { id: 'sommBottle', pavilion: 'stensota', icon: 'wine', course: 'sommelier' },
-  { id: 'wineFridge', pavilion: 'stensota', icon: 'refrigerator' },
   { id: 'wineTasting', pavilion: 'stensota', icon: 'grape', course: 'floor' },
   { id: 'fastPass', pavilion: 'method', icon: 'timer', course: 'chef' },
   { id: 'leftovers', pavilion: 'method', icon: 'recycle' },

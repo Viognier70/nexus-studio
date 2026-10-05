@@ -117,7 +117,7 @@ const ab = (id: string, pavilion: Pavilion, icon: string, proposedRequires: Meda
 /** Ett startförslag per paviljong (Vision Owner 2026-10-02). Ordningen är stenarnas ordning från grinden. */
 export const ABILITIES: Ability[] = [
   ab('sommBottle', 'stensota', 'wine', 'bronze', 'sommelier'),
-  ab('wineFridge', 'stensota', 'refrigerator', 'silver'),
+  // ORDER 307b (Anders 2026-10-05) — vinkylen är utrustning ("Finare vinkyl"), inte en förmåga.
   ab('wineTasting', 'stensota', 'grape', 'gold', 'floor'),
   ab('fastPass', 'method', 'timer', 'bronze', 'chef'),
   ab('leftovers', 'method', 'recycle', 'silver'),

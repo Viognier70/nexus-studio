@@ -469,7 +469,6 @@ export const SHOP = {
   slotsAtStar: 3,
   abilities: {
     sommBottle: { requires: 'brons', price: 40 },
-    wineFridge: { requires: 'silver', price: 70 },
     wineTasting: { requires: 'guld', price: 110 },
     fastPass: { requires: 'brons', price: 40 },
     leftovers: { requires: 'silver', price: 70 },
@@ -486,7 +485,6 @@ export const SHOP = {
   // Förmågornas verkan när de ligger i facket (texterna ab.*.fx).
   effects: {
     sommBottleChance: 0.25,        // sällskapets chans att ta en flaska, utöver GUESTS.bottleChance
-    wineFridgeSatisfaction: 0.04,  // nöjdheten hos den som dricker vin
     wineTastingSecondDrink: 0.15,  // chansen till ett glas till, utöver STOCK.secondDrinkChance
     fastPassOrderTime: 0.8,        // tiden för köket att få ut maten (uppgiften order)
     leftoversWasteShare: 0.5,      // sopbilens avgift
@@ -1572,7 +1570,9 @@ export const EQUIPMENT = {
   section: 'Verksamhetsklasserna',
   // ORDER 304 §6: "Krediterna köper tillgången, och kassan köper saken" —
   // credits öppnar (en gång), priceSek köper.
-  vinkyl: { tier: 'soigne', priceSek: 15000, pavilion: 'stensota', medal: 'brons', credits: 20 },
+  // ORDER 307b — förmågan Vinkylen är borttagen; utrustningen ger dess verkan:
+  // nöjdheten hos den som dricker vin (satisfaction).
+  vinkyl: { tier: 'soigne', priceSek: 15000, pavilion: 'stensota', medal: 'brons', credits: 20, satisfaction: 0.04 },
   flamberingsvagn: { tier: 'soigne', priceSek: 12000, pavilion: 'metodkoket', medal: 'silver', credits: 40 },
   ostvagn: { tier: 'bistro', priceSek: 9000, pavilion: 'kalastorget', medal: 'silver', credits: 30 },
   avecvagn: { tier: 'bistro', priceSek: 8000, pavilion: 'stensota', medal: 'silver', credits: 30, avecShare: 0.2 },

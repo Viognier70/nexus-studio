@@ -17,6 +17,7 @@
 // Finns inget som passar går gästen utan att betala, ryktet sjunker och
 // sällskapet kan gå med hen.
 
+import { equipmentOwned, equipmentSpec } from '../../sim/goods';
 import type { Allergen, Guest, SimulationState } from '../types';
 import { GUESTS, GUEST_TYPES, HOST, INCIDENTS, SERVICE_STREAM, SHOP, STOCK } from '../../sim/balance';
 import { abilityActive } from '../../sim/shop';
@@ -264,9 +265,10 @@ export function orderForGuest(draft: SimulationState, guest: Guest, rand: () => 
     }
   }
 
-  // ORDER 296 — vinkylen: vinet har rätt temperatur.
-  if (abilityActive(draft, 'wineFridge') && drinks.some((d) => (findDish(d)?.drink ?? '').startsWith('wine'))) {
-    guest.satisfaction = Math.min(1, guest.satisfaction + SHOP.effects.wineFridgeSatisfaction);
+  // ORDER 296 — vinkylen: vinet har rätt temperatur. ORDER 307b — utrustningen
+  // Finare vinkyl (förut förmågan Vinkylen).
+  if (equipmentOwned(draft, 'vinkyl') && drinks.some((d) => (findDish(d)?.drink ?? '').startsWith('wine'))) {
+    guest.satisfaction = Math.min(1, guest.satisfaction + equipmentSpec('vinkyl').satisfaction!);
   }
   if (missing === 'wallet') {
     guest.satisfaction = Math.max(0, guest.satisfaction + GUESTS.drinkOnlySatisfaction);
