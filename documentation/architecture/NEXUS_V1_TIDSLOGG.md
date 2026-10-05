@@ -151,6 +151,7 @@ Uppskattningen skrivs innan etappen börjar. Faktisk tid fylls i när etappen ä
 | Öppningen före första morgonen | 308 | ~8: manuset och tidslinjen, byn och vinbaren i Designs bilder, Ingrid, texterna, hoppa över, flödet, kontrollen och layouten, rapport | 1,5 h (agent) | Byns ljus och kameran skiljer sig från prototypen | | — | 2026-10-05 | |
 | Kvitt eller dubbelt i Designs form | 310 | ~6: kolumnen, raden, valet och ringen, pyramiden i raketens ordning, kontrollen, rapport | 1,3 h (agent) | Designs lås och väntan före domen inte byggd (kräver beslut) | | — | 2026-10-05 | |
 | Konceptet och varukorgen, utan frågebanken | 307 | ~10: varornas nivå och konceptet, gästtyperna vid dörren, de två ryktena, leverantörerna och varorna, utrustningen i två steg och avec, butikens flikar, bokningsboken och skylten, harness med två korgar, rapport | 4 h | Turisternas betalningsvilja i bistro lyfte de bästa över målet; enkel stänger alltid | | — | 2026-10-05 | |
+| Designs D5 i 303 | 309 | ~12: modulerna in, orkringen och trivseln, korten och placeringen, statusläget och fokusläget, recensionerna, klippen, gästgrupperna, utrustningen, layouten och kontrollen, rapport | 1,3 h (agent) | 8 av 10 av gästernas kroppsfärger ligger utanför kontrastbandet mot golven | | — | 2026-10-05 | |
 
 ## Omräkning efter etapp 2
 
