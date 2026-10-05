@@ -3063,12 +3063,14 @@ export const TABLE = {
       // potten håller bara krediter.
       kvitt: {
         pot: {
-          sv: (credits: string) => `Potten: ${credits} krediter`,
-          en: (credits: string) => `The pot: ${credits} credits`
+          sv: (n: number) => `Potten: ${n} ${n === 1 ? 'kredit' : 'krediter'}`,
+          en: (n: number) => `The pot: ${n} ${n === 1 ? 'credit' : 'credits'}`
         },
         potShort: { sv: (n: number) => `Potten ${n}`, en: (n: number) => `Pot ${n}` },
-        potTaken: { sv: (n: number) => `+${n} krediter ur potten`, en: (n: number) => `+${n} credits from the pot` },
-        potLost: { sv: (n: number) => `potten förlorad (${n} krediter)`, en: (n: number) => `pot lost (${n} credits)` },
+        stoppedLabel: { sv: 'Du stannade', en: 'You stopped' },
+        stoppedText: { sv: 'Du stannar och tar potten. Gästen får det du visste, och bordet går vidare med sin kväll.', en: 'You stop and take the pot. The guest gets what you knew, and the table carries on with its evening.' },
+        potTaken: { sv: (n: number) => `+${n} ${n === 1 ? 'kredit' : 'krediter'} ur potten`, en: (n: number) => `+${n} ${n === 1 ? 'credit' : 'credits'} from the pot` },
+        potLost: { sv: (n: number) => `potten förlorad (${n} ${n === 1 ? 'kredit' : 'krediter'})`, en: (n: number) => `pot lost (${n} ${n === 1 ? 'credit' : 'credits'})` },
         stop: { sv: 'Stanna och ta potten', en: 'Stop and take the pot' },
         go: { sv: 'Kvitt eller dubbelt: nästa steg', en: 'Double or nothing: next step' },
         note: { sv: 'Rätt på nästa steg dubblar potten. Fel, och den är borta.', en: 'Right on the next step doubles the pot. Wrong, and it is gone.' }

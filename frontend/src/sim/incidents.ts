@@ -973,7 +973,8 @@ export function stopIncident(draft: SimulationState): void {
   const staff = DOUBLE_OR_NOTHING.stopTakesStaffOutcome
     ? applyOutcome(draft, incident, incident.staff, incident.text.staff, share, false)
     : { cashSek: 0, ongoing: null };
-  const text = formatIncidentText(incident.text.staff.outcome, ctx);
+  // ORDER 305b — utan personalens utfall säger texten att spelaren stannade.
+  const text = DOUBLE_OR_NOTHING.stopTakesStaffOutcome ? formatIncidentText(incident.text.staff.outcome, ctx) : strings.rocket.card.kvitt.stoppedText;
   const after = meanSatisfaction(presentGuests(draft));
   draft.eventStream = [...draft.eventStream, {
     at: draft.simTime, text, category: 'ambient',
@@ -995,7 +996,7 @@ export function stopIncident(draft: SimulationState): void {
     }],
     lastOutcome: {
       incidentId: incident.id, optionId: null, reveal: active.revealed ?? null,
-      takeover: takeoverFor(draft, incident, incident.steps[active.step]),
+      takeover: DOUBLE_OR_NOTHING.stopTakesStaffOutcome ? takeoverFor(draft, incident, incident.steps[active.step]) : null,
       text, at: draft.simTime,
       deltas: { cashSek, satisfaction: before !== null && after !== null ? after - before : 0, stamina: draft.morale - moraleBefore, reputation: draft.reputation - repBefore },
       pot: potRecord

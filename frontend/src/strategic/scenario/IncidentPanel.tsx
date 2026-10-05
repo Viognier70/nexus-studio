@@ -108,7 +108,8 @@ function useHeldOutcome(sim: SimulationState): Held | null {
   return held;
 }
 
-type Mode = 'ask' | 'right' | 'done' | 'wrong';
+// ORDER 305b — 'stopped': spelaren stannade och tog potten.
+type Mode = 'ask' | 'right' | 'done' | 'wrong' | 'stopped';
 type StepBox = 'cleared' | 'current' | 'next' | 'ahead' | 'failed' | 'unreached';
 type OptionLook = 'open' | 'struck' | 'chosen' | 'dim' | 'correct' | 'wrong';
 
@@ -190,12 +191,13 @@ export function IncidentCard() {
     const r = held.outcome.reveal;
     if (incident) {
       const cleared = r ? r.cleared : held.record.step === null;
+      const stopped = held.record.quality === 'stopped';
       view = {
         incident,
         context: held.record.context,
         situation: held.record.situation,
-        mode: cleared ? 'done' : 'wrong',
-        shown: r?.step ?? held.record.step ?? incident.steps.length - 1,
+        mode: stopped ? 'stopped' : cleared ? 'done' : 'wrong',
+        shown: stopped ? Math.max(0, (held.record.step ?? 1) - 1) : r?.step ?? held.record.step ?? incident.steps.length - 1,
         chosen: r ? r.optionId : held.record.optionId,
         correct: r?.correctId ?? null,
         struck: [],
@@ -287,6 +289,7 @@ export function IncidentCard() {
       case 'right': return i <= view!.shown ? 'cleared' : i === view!.shown + 1 ? 'next' : 'ahead';
       case 'done': return 'cleared';
       case 'wrong': return i < view!.shown ? 'cleared' : i === view!.shown ? 'failed' : 'unreached';
+      case 'stopped': return i <= view!.shown ? 'cleared' : 'unreached';
     }
   };
   const boxText = (st: IncidentStep, state: StepBox): string => {
@@ -306,6 +309,7 @@ export function IncidentCard() {
       case 'ask': return view!.struck.includes(id) ? 'struck' : 'open';
       case 'right':
       case 'done': return id === view!.chosen ? 'chosen' : 'dim';
+      case 'stopped': return 'dim';
       case 'wrong': return id === view!.correct ? 'correct' : id === view!.chosen ? 'wrong' : 'dim';
     }
   };
@@ -319,6 +323,8 @@ export function IncidentCard() {
     band = { kind: 'right', label: t.right(next ? s.stepName[next.axis] : ''), text: `${view.guestsIn > 0 ? `${t.guestsIn(view.guestsIn)} ` : ''}${f(explanation)}` };
   } else if (view.mode === 'done') {
     band = { kind: 'right', label: t.rightDone, text: `${view.guestsIn > 0 ? `${t.guestsIn(view.guestsIn)} ` : ''}${view.outcomeText ?? ''}` };
+  } else if (view.mode === 'stopped') {
+    band = { kind: 'right', label: t.kvitt.stoppedLabel, text: view.outcomeText ?? '' };
   } else if (view.mode === 'wrong') {
     // Designs band (2026-09-28): "Wrong · the {role} takes over" /
     // "Out of time · the {role} takes over"; rollen med sin artikel.
@@ -334,7 +340,7 @@ export function IncidentCard() {
   const linkLine = freshReaction ? consequenceLine(lang, freshReaction, view.chosen ? f(step.text.options[view.chosen].label) : null) : null;
 
   // ORDER 305b — kvitt eller dubbelt: bandet säger vad potten blev.
-  const pot = view.mode === 'done' || view.mode === 'wrong' ? (held?.outcome.pot ?? sim.incidents?.lastOutcome?.pot ?? null) : null;
+  const pot = view.mode === 'done' || view.mode === 'wrong' || view.mode === 'stopped' ? (held?.outcome.pot ?? sim.incidents?.lastOutcome?.pot ?? null) : null;
   if (band && pot && pot.credits > 0) {
     band = { ...band, label: `${band.label} · ${pot.taken ? t.kvitt.potTaken(pot.credits) : t.kvitt.potLost(pot.credits)}` };
   }
@@ -346,7 +352,7 @@ export function IncidentCard() {
       data-testid="incident-card"
       data-backed={backed}
       data-incident-id={incident.id}
-      data-step={view.mode === 'done' || view.mode === 'wrong' ? 'closed' : view.shown}
+      data-step={view.mode === 'done' || view.mode === 'wrong' || view.mode === 'stopped' ? 'closed' : view.shown}
       data-step-axis={step.axis}
       data-mode={view.mode}
       aria-label={f(incident.text.title)}
@@ -436,10 +442,12 @@ export function IncidentCard() {
       {/* ORDER 305 — kvitt eller dubbelt: stanna eller satsa potten på nästa steg. */}
       {choosing && active && (
         <div className="nx-rocket-kvitt" data-testid="incident-kvitt">
-          <p>{t.kvitt.pot(String(potCredits(active.pot)))}</p>
+          <p>{t.kvitt.pot(potCredits(active.pot))}</p>
           <p>{t.kvitt.note}</p>
-          <button type="button" className="nx-rocket-option" data-testid="incident-kvitt-stop" onClick={() => dispatch({ type: 'INCIDENT_STOP' })}>{t.kvitt.stop}</button>
-          <button type="button" className="nx-rocket-option" data-testid="incident-kvitt-go" onClick={() => dispatch({ type: 'INCIDENT_GO' })}>{t.kvitt.go}</button>
+          <div className="nx-rocket-kvitt-choices">
+            <button type="button" className="nx-btn" data-testid="incident-kvitt-stop" onClick={() => dispatch({ type: 'INCIDENT_STOP' })}>{t.kvitt.stop}</button>
+            <button type="button" className="nx-btn nx-btn-primary" data-testid="incident-kvitt-go" onClick={() => dispatch({ type: 'INCIDENT_GO' })}>{t.kvitt.go}</button>
+          </div>
         </div>
       )}
       {!choosing && <div role="group" aria-label={f(step.text.question)}>
