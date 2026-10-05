@@ -1,3 +1,4 @@
+// ORDER 309 — Designs figureClips.ts ur D5 (2026-10-04), ersätter förra versionen: sju nya klipp (trolley.push, trolley.present, cheese.cut, flambe.pour, flambe.tilt, staff.tiredIdle, staff.hesitate). Två lokala ändringar som förut: EVENT_FLOOR exporteras, och _u i staff.holdDoor (noUnusedParameters).
 // figureClips — rummets kroppsspråk: namngivna klipp på den befintliga riggen.
 //
 // Leverans 2 efter tredje provspelet (teaterns grund), 2026-09-29.
@@ -2092,6 +2093,90 @@ reg(def({
       [0.62, P(b, { torso: { pitch: 0.0 }, armR: A(0.9, 0.1, 0.8) })],
       [0.8, crossed], [1, crossed]
     ]);
+  }
+}));
+
+// ----- D5 följderna och konceptet (2026-10-04) -----
+// Vagnarna (equipment.ts) är inte handrekvisita: vagnen följer figurens rot, handtaget 0,92 m och 0,34 m framför den.
+// Händerna ligger på handtaget i trolley.push. Flamberingen och ostvagnen står vid bordets kortsida mot stråket.
+
+const ON_HANDLE: PoseArm = A(0.62, 0.1, 0.62);
+
+reg(def({
+  id: 'trolley.push', group: 'waiter', roles: ['waiter', 'host', 'sommelier', 'staff'], loop: true, travel: true, base: 1,
+  from: 'walk', to: 'walk', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['trolley.push', 'trolley.present', 'cheese.cut', 'flambe.pour', 'staff.idle'],
+  pose: function (u, c) {
+    // Båda händerna på handtaget, bålen lite fram, kortare steg än vanlig gång (vagnen bromsar).
+    return walking(P(STAND, { torso: { pitch: 0.14 }, head: { pitch: 0.12 }, armL: ON_HANDLE, armR: ON_HANDLE }), c.phase ?? u, (c.stride ?? 1) * 0.7, 'none');
+  }
+}));
+
+reg(def({
+  id: 'trolley.present', group: 'waiter', roles: ['waiter', 'host', 'sommelier', 'staff'], loop: false, travel: false, base: 2.6, handed: true,
+  from: 'stand', to: 'stand', needs: 'table', holds: {}, ends: {}, events: [],
+  next: ['cheese.cut', 'flambe.pour', 'trolley.push', 'staff.idle'],
+  pose: function (u) {
+    // Vänster hand kvar på handtaget. Höger hand öppnas och sveper över vagnen mot gästerna, en kort bugning.
+    const open = win(u, 0.12, 0.88, 0.18), bow = win(u, 0.35, 0.7, 0.12);
+    return withYaw(P(STAND, { torso: { pitch: 0.06 + 0.16 * bow }, head: { pitch: 0.1 + 0.1 * bow }, armL: ON_HANDLE, armR: A(0.35 + 0.5 * open, 0.12 + 0.4 * open, 0.5 - 0.25 * open) }), 0.25 * open, 0.35 * open);
+  }
+}));
+
+reg(def({
+  id: 'cheese.cut', group: 'waiter', roles: ['waiter', 'host', 'sommelier', 'staff'], loop: false, travel: false, base: 3.6,
+  from: 'stand', to: 'stand', needs: 'table', holds: {}, ends: {}, events: [{ u: 0.4, type: 'cut' }, { u: 0.7, type: 'cut' }],
+  next: ['trolley.present', 'trolley.push', 'staff.idle'],
+  pose: function (u) {
+    // Lutad över brädan: vänster hand håller osten, höger skär två gånger med långa drag, sedan en bit upp på kniven.
+    const lean = win(u, 0.05, 0.92, 0.12), saw = Math.sin(u * TAU * 4) * win(u, 0.2, 0.8, 0.08), lift = win(u, 0.8, 0.98, 0.06);
+    return P(STAND, { lift: -0.02 * lean, torso: { pitch: 0.06 + 0.32 * lean }, head: { pitch: 0.2 + 0.35 * lean }, armL: A(0.7, 0.18, 0.95), armR: A(0.6 + 0.12 * saw + 0.25 * lift, 0.14, 0.8 - 0.1 * saw), legL: LEG_FRONT, legR: LEG_BACK });
+  }
+}));
+
+reg(def({
+  id: 'flambe.pour', group: 'waiter', roles: ['host', 'waiter', 'sommelier', 'staff'], loop: false, travel: false, base: 2.4,
+  from: 'stand', to: 'stand', needs: 'table', holds: {}, ends: {}, events: [{ u: 0.82, type: 'light' }],
+  next: ['flambe.tilt'],
+  pose: function (u) {
+    // Vänster hand på pannans skaft över réchauden. Höger tar flaskan från vagnen och häller en skvätt, låg, nära pannan.
+    const reach = win(u, 0.0, 0.85, 0.15), pour = win(u, 0.42, 0.78, 0.1);
+    return P(STAND, { torso: { pitch: 0.16 + 0.08 * reach }, head: { pitch: 0.3 + 0.15 * pour }, armL: A(0.68, 0.14, 0.72), armR: A(0.55 + 0.25 * reach, 0.16 + 0.1 * pour, 1.05 - 0.2 * reach), legL: LEG_FRONT, legR: LEG_BACK });
+  },
+  tilt: function (u) { return { R: { pitch: 1.4 * win(u, 0.42, 0.78, 0.1) } }; }
+}));
+
+reg(def({
+  id: 'flambe.tilt', group: 'waiter', roles: ['host', 'waiter', 'sommelier', 'staff'], loop: false, travel: false, base: 3.4,
+  from: 'stand', to: 'stand', needs: 'table', holds: {}, ends: {}, events: [{ u: 0.06, type: 'light' }],
+  next: ['trolley.present', 'staff.idle', 'trolley.push'],
+  pose: function (u) {
+    // Pannan lutas mot lågan och den tar sig (u 0,06). Bålen drar sig lugnt bakåt ett ögonblick, inte ett ryck,
+    // sedan två mjuka varv med pannan medan lågan sjunker. Höger hand öppen mot gästerna på slutet.
+    const back = win(u, 0.05, 0.3, 0.1), swirl = Math.sin(u * TAU * 2) * win(u, 0.3, 0.8, 0.1), show = win(u, 0.78, 1, 0.12);
+    return withYaw(P(STAND, { torso: { pitch: 0.16 - 0.14 * back }, head: { pitch: 0.3 - 0.2 * back }, armL: A(0.68 + 0.06 * swirl, 0.14 + 0.05 * swirl, 0.72), armR: A(0.2 + 0.45 * show, 0.1 + 0.35 * show, 0.5), legL: LEG_FRONT, legR: LEG_BACK }), 0.2 * show, 0.3 * show);
+  }
+}));
+
+reg(def({
+  id: 'staff.tiredIdle', group: 'staff', roles: STAFF, loop: true, travel: false, base: 4.4,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['staff.tiredIdle', 'staff.idle', 'staff.walk'],
+  pose: function (u, c) {
+    // Låg ork: axlarna ned, tyngden på ett ben, handen mot ländryggen en gång per varv. Ingen puls, bara hållningen.
+    const back = win(u, 0.3, 0.75, 0.15);
+    return breathe(P(STAND, { lift: -0.015, torso: { pitch: 0.1, roll: 0.05 }, head: { pitch: 0.22 }, armL: A(0.04, 0.02, 0.12), armR: A(-0.35 * back, 0.12 * back, 1.6 * back + 0.1), legL: { ...LEG_STAND, knee: 0.16 }, legR: LEG_STAND }), (c.t ?? 0) * 0.7);
+  }
+}));
+
+reg(def({
+  id: 'staff.hesitate', group: 'staff', roles: STAFF, loop: false, travel: false, base: 2.2,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['staff.idle', 'staff.walk', 'staff.listen'],
+  pose: function (u) {
+    // Kunskapen saknas: handen till hakan, en blick åt sidan mot en kollega och tillbaka. Kortare i lugnt tempo.
+    const chin = win(u, 0.08, 0.86, 0.14), look = win(u, 0.3, 0.62, 0.1);
+    return withYaw(P(STAND, { torso: { pitch: 0.04 }, head: { pitch: 0.12 - 0.06 * chin }, armR: A(0.3 + 0.2 * chin, 0.12, 0.2 + 1.9 * chin), armL: A(0.25 * chin, 0.05, 1.3 * chin + 0.15) }), 0.15 * look, 0.7 * look);
   }
 }));
 

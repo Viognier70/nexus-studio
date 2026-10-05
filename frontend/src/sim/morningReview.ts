@@ -4,10 +4,35 @@
 // Byggs när dagen byts (reducer.ts), efter nattens självläkning: ryktets
 // ändring från kvällens början till morgonen, kvällens svar (day.answerReviews)
 // med händelsernas namn, och resten som gästernas egen kväll.
+//
+// ORDER 309 — Designs D5 (morningReviews.ts REVIEW_CARD): kortet har rader,
+// högst fyra, den största ändringen först. Varje rad är en följd av ett svar
+// eller av personalen: en röst (gästgruppen vid bordet, byn eller
+// personalen), ändringen och skälet. Raderna byggs här ur samma tal som
+// raden förut (svarens ryktespoäng och resten), så att summan är ändringen.
 
-import type { SimulationState } from '../strategic/types';
+import type { GuestType, SimulationState } from '../strategic/types';
 import { CONSEQUENCES, REPUTATION } from './balance';
 import { incidentById } from './incidentBank';
+import { REVIEW_CARD } from '../strategic/ui/morningReviews';
+import { staminaOf } from './staffCondition';
+
+export type ReviewVoice = 'student' | 'villager' | 'tourist' | 'gourmet' | 'business' | 'village' | 'staff';
+export type ReviewKind = 'wrong' | 'grave' | 'cleared' | 'rest' | 'staff' | 'quiet';
+
+export interface ReviewEntry {
+  kind: ReviewKind;
+  voice: ReviewVoice;
+  /** Ryktets ändring, poäng 0–100, avrundad. */
+  delta: number;
+  /** Antal bord (svarens rader). */
+  tables: number;
+  titles: string[];
+  /** Personalen som var slut (rollerna, för skälet). */
+  staff?: string[];
+  /** Väljer citatet, stabilt för samma kväll och rad. */
+  seed: number;
+}
 
 export interface MorningReview {
   dayNumber: number;
@@ -19,6 +44,66 @@ export interface MorningReview {
   grave: number;
   wrongTitles: string[];
   rightTitles: string[];
+  // ORDER 309 — ryktet före och efter (0–100), kvällens koncept och raderna.
+  from?: number;
+  to?: number;
+  tier?: string | null;
+  lines?: ReviewEntry[];
+}
+
+// Under den här orken räknas personen som slut (D5 staffStatus.ts staminaOf, gränsen 0,33).
+export const SPENT_BELOW = 0.33;
+
+const VOICE_OF: Record<GuestType, ReviewVoice> = {
+  student: 'student', middle: 'villager', social: 'villager', tourist: 'tourist', gourmet: 'gourmet', business: 'business', high: 'business', billionaire: 'business'
+};
+
+function hash(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+
+/** Den vanligaste rösten bland borden (byn när ingen typ finns). */
+function voiceOf(types: (GuestType | null | undefined)[]): ReviewVoice {
+  const n = new Map<ReviewVoice, number>();
+  for (const t of types) if (t) n.set(VOICE_OF[t], (n.get(VOICE_OF[t]) ?? 0) + 1);
+  let best: ReviewVoice = 'village';
+  let k = 0;
+  for (const [v, c] of n) if (c > k) { best = v; k = c; }
+  return best;
+}
+
+/** Kortets rader: svaren grupperade (fel, grovt fel, rätt hela vägen), och resten; största ändringen först, högst REVIEW_CARD.maxLines. */
+export function reviewLines(evening: SimulationState, change: number, dayNumber: number): ReviewEntry[] {
+  const reviews = evening.day.answerReviews ?? [];
+  const title = (id: string) => incidentById(evening.economy.businessClass, id)?.text.title ?? id;
+  const uniq = (xs: string[]) => [...new Set(xs)];
+  const out: ReviewEntry[] = [];
+  const group = (kind: 'wrong' | 'grave' | 'cleared', rs: typeof reviews) => {
+    if (rs.length === 0) return;
+    const delta = Math.round(rs.reduce((a, r) => a + r.reputation, 0));
+    const titles = uniq(rs.map((r) => title(r.incidentId)));
+    out.push({ kind, voice: voiceOf(rs.map((r) => r.guestType)), delta, tables: rs.length, titles, seed: hash(`${dayNumber}:${kind}:${titles.join('|')}`) });
+  };
+  const wrong = reviews.filter((r) => !r.right);
+  group('grave', wrong.filter((r) => r.severity === 'grave'));
+  group('wrong', wrong.filter((r) => r.severity !== 'grave'));
+  // Rätt hela vägen: svaren som också bar raketens ryktesdel. Klarade steg
+  // utan att raketen klarades räknas i resten (som raden förut).
+  group('cleared', reviews.filter((r) => r.right && r.reputation >= CONSEQUENCES.right.clearedReputation));
+  const counted = out.reduce((a, l) => a + l.delta, 0);
+  const rest = change - counted;
+  // Personalen som var slut när kvällen tog slut (före nattens vila).
+  const spent = evening.staff.filter((s) => staminaOf(s) < SPENT_BELOW).map((s) => s.role as string);
+  if (rest !== 0) {
+    const staffLine = rest < 0 && spent.length > 0;
+    out.push({ kind: staffLine ? 'staff' : 'rest', voice: staffLine ? 'staff' : 'village', delta: rest, tables: 0, titles: [], staff: staffLine ? spent : undefined, seed: hash(`${dayNumber}:rest`) });
+  }
+  const lines = out.filter((l) => l.delta !== 0 || l.kind !== 'rest');
+  lines.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+  if (lines.length === 0) return [{ kind: 'quiet', voice: 'village', delta: 0, tables: 0, titles: [], seed: hash(`${dayNumber}:quiet`) }];
+  return lines.slice(0, REVIEW_CARD.maxLines);
 }
 
 export function buildMorningReview(evening: SimulationState, morning: SimulationState): MorningReview | null {
@@ -32,14 +117,20 @@ export function buildMorningReview(evening: SimulationState, morning: Simulation
   // Raketer klarade hela vägen: svaret som också bar raketens ryktesdel.
   const cleared = reviews.filter((r) => r.right && r.reputation >= CONSEQUENCES.right.clearedReputation);
   const uniq = (xs: string[]) => [...new Set(xs)];
+  const change = Math.round((morning.reputation - start) * REPUTATION.scale);
+  const booking = evening.day.booking;
   return {
     dayNumber: evening.day.dayNumber,
-    change: Math.round((morning.reputation - start) * REPUTATION.scale),
+    change,
     fromAnswers: Math.round(reviews.reduce((a, r) => a + r.reputation, 0)),
     wrongTables: wrong.length,
     rightTables: cleared.length,
     grave: wrong.filter((r) => r.severity === 'grave').length,
     wrongTitles: uniq(wrong.map((r) => title(r.incidentId))),
-    rightTitles: uniq(cleared.map((r) => title(r.incidentId)))
+    rightTitles: uniq(cleared.map((r) => title(r.incidentId))),
+    from: Math.round(start * REPUTATION.scale),
+    to: Math.round(morning.reputation * REPUTATION.scale),
+    tier: booking && booking.dayNumber === evening.day.dayNumber ? booking.concept ?? null : null,
+    lines: reviewLines(evening, change, evening.day.dayNumber)
   };
 }

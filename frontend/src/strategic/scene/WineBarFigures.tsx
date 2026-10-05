@@ -30,9 +30,17 @@
 
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { statusModeOn, subscribeStatusMode } from '../ui/statusMode';
-import { skillsOf, staminaOf, wellbeingOf } from '../../sim/staffCondition';
-import { conditionLevel } from '../ui/StaffRingTag';
-import { GuestStatusCard } from '../ui/GuestStatusCard';
+import { staffKnows, incidentArea, staminaOf as simStamina, wellbeingOf as simWellbeing } from '../../sim/staffCondition';
+// ORDER 309 — Designs D5: orkringen, trivselplattan, kortet, gästgrupperna och utrustningen.
+import { staminaOf, wellbeingOf, type StaminaId } from './staffStatus';
+import { createOrkRing, orkFacing, orkRingShown, type OrkRing } from './orkRing';
+import { WellbeingLayer, type WellbeingItem } from './wellbeingLayer';
+import { dressAllGroups, disposeDressed, showGroup, HEAD_SIGNS, type DressedRig } from './guestLooks';
+import { GUEST_GROUPS } from './guestGroups';
+import { RoomEquipment } from './roomEquipment';
+import { hesitationElapsed } from './conditionClips';
+import { incidentById } from '../../sim/incidentBank';
+import { cardAnchor, openCard, setOpenCard, subscribeOpenCard } from '../ui/statusCardStore';
 import { Html } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -127,7 +135,6 @@ import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { play } from '../ui/sound/sound';
 import { createStaffMark, disposeStaffMark, updateStaffMark, type StaffMark } from './staffMarks';
 import { seatKindFromRoom, type ClipSample } from './figureClips';
-import { WARM } from '../../ui/theme/nexusTheme.warm';
 import type { GuestType } from '../types';
 import { THEATRE } from '../../sim/balance';
 import type { ActiveIncident } from '../../sim/incidents';
@@ -340,6 +347,10 @@ interface Cast {
   moodGestures: MoodGestures;
   /** ORDER 297 — ansiktena på manusfigurerna och svaren i händelsen. */
   scriptFaces: { key: string | null; answers: number; lastAt: number; answer: { at: number; kind: 'right' | 'wrong' } | null; faces: WeakMap<FigureRig, FaceHandle> };
+  /** ORDER 309 — orkringen per anställd (D5 ORK_RING), gästernas grupper och bonaderna. */
+  orkRings: OrkRing[];
+  dressed: DressedRig[];
+  toppings: (PropHandle | null)[];
 }
 
 /** Bildtexten vid figuren när raketen börjar i rummet (nexusStrings theatre.caption). */
@@ -372,18 +383,10 @@ export function WineBarFigures({ room, mood }: Props) {
   const statusOn = useSyncExternalStore(subscribeStatusMode, statusModeOn, statusModeOn);
   const statusRef = useRef(false);
   statusRef.current = statusOn;
-  const pinnedStaffRef = useRef<number | null>(null);
-  const [guestCard, setGuestCard] = useState<{ id: string } | null>(null);
-  const guestCardRef = useRef<THREE.Group>(null);
-  const staminaRings = useMemo(() => {
-    const geos = [1, 2, 3].map((k) => new THREE.RingGeometry(0.4, 0.46, 32, 1, Math.PI / 2, (2 * Math.PI * k) / 3));
-    for (const g of geos) g.rotateX(-Math.PI / 2);
-    const mat = new THREE.MeshBasicMaterial({ color: '#f4e6cc', transparent: true, opacity: 0.9, depthWrite: false, toneMapped: false, side: THREE.DoubleSide });
-    const meshes = STAFF_KEYS.map(() => { const m = new THREE.Mesh(geos[2], mat); m.visible = false; m.renderOrder = 6; return m; });
-    return { geos, mat, meshes };
-  }, []);
-  useEffect(() => () => { staminaRings.geos.forEach((g) => g.dispose()); staminaRings.mat.dispose(); }, [staminaRings]);
-  if (!statusOn && pinnedStaffRef.current !== null) pinnedStaffRef.current = null;
+  // ORDER 309 — kortet för gäst och personal (ui/StatusCard.tsx): vilket som är öppet.
+  const card = useSyncExternalStore(subscribeOpenCard, openCard, openCard);
+  const cardRef = useRef(card);
+  cardRef.current = card;
   const { actualRef, targetRef } = useCamera();
   // ORDER 299 — konsekvensögonblicket: reducerad rörelse (kameran nedan).
   const reducedMotion = usePrefersReducedMotion();
@@ -418,13 +421,30 @@ export function WineBarFigures({ room, mood }: Props) {
   }, [room]);
   // ORDER 299 — stämningens symboler över borden (moodSymbols.ts) på en duk över scenen.
   const moodLayerRef = useRef<MoodSymbolLayer | null>(null);
+  // ORDER 309 — trivselplattan vid orkringen (D5 drawWellbeing).
+  const wellbeingLayerRef = useRef<WellbeingLayer | null>(null);
   useEffect(() => {
     const parent = glEl.parentElement;
     if (!parent) return;
     const layer = new MoodSymbolLayer(parent);
     moodLayerRef.current = layer;
-    return () => { layer.dispose(); moodLayerRef.current = null; };
+    const plates = new WellbeingLayer(parent);
+    wellbeingLayerRef.current = plates;
+    return () => { layer.dispose(); moodLayerRef.current = null; plates.dispose(); wellbeingLayerRef.current = null; };
   }, [glEl]);
+  // ORDER 309 — utrustningen i rummet när krogen äger den (D5 equipment.ts, ORDER 307 state.equipment).
+  const equipmentRef = useRef<RoomEquipment | null>(null);
+  useEffect(() => {
+    const eq = new RoomEquipment(room.floorY);
+    room.group.add(eq.group);
+    equipmentRef.current = eq;
+    return () => { eq.dispose(); equipmentRef.current = null; };
+  }, [room]);
+  const ownedEquipment = sim.equipment;
+  useEffect(() => {
+    const shown = equipmentRef.current?.sync(ownedEquipment) ?? [];
+    if (typeof document !== 'undefined') document.body.dataset.roomEquipment = shown.join(',');
+  }, [ownedEquipment, room]);
   const furniture = useMemo(() => {
     const seatOf = new Map<number, { kind: string; furnitureId: string }>();
     const sum = new Map<string, { x: number; z: number; n: number }>();
@@ -443,13 +463,14 @@ export function WineBarFigures({ room, mood }: Props) {
       // Ett drag (vrid eller panorera) är inget klick.
       if (downAt && Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) > CLICK_SLOP_PX) return;
       const w = ringWorldRef.current;
-      if (w && simRef.current.day.period === 'dinner') { setMoveMenu(w); return; }
+      // ORDER 309 — i statusläget öppnar klicket kortet, inte Flytta.
+      if (w && simRef.current.day.period === 'dinner' && !statusRef.current) { setMoveMenu(w); return; }
       setMoveMenu(null);
       const cast = castRef.current;
       if (!cast || !roomShownRef.current) return;
       raycaster.setFromCamera(pointer, camera);
-      // ORDER 303 F — i statusläget öppnar ett klick på en gäst eller i
-      // personalen ett litet kort.
+      // ORDER 309 — i statusläget öppnar ett klick på en gäst eller i
+      // personalen kortet (Designs D5, ui/StatusCard.tsx).
       if (statusRef.current) {
         const owner = new Map<THREE.Object3D, { kind: 'staff'; i: number } | { kind: 'guest'; id: string }>();
         const targets: THREE.Object3D[] = [];
@@ -458,8 +479,11 @@ export function WineBarFigures({ room, mood }: Props) {
         const h = raycaster.intersectObjects(targets, true)[0];
         let picked: { kind: 'staff'; i: number } | { kind: 'guest'; id: string } | null = null;
         for (let o: THREE.Object3D | null = h?.object ?? null; o; o = o.parent) { if (owner.has(o)) { picked = owner.get(o)!; break; } }
-        pinnedStaffRef.current = picked?.kind === 'staff' ? picked.i : null;
-        setGuestCard(picked?.kind === 'guest' ? { id: picked.id } : null);
+        // Kortet finns för personalen i simuleringen (orken, trivseln, kunskapen).
+        const simMember = picked?.kind === 'staff' ? simRef.current.staff.some((x) => SIM_ROLE_TO_STAFF[x.role] === STAFF_KEYS[picked.i]) : false;
+        if (picked?.kind === 'staff' && simMember) setOpenCard({ kind: 'staff', key: STAFF_KEYS[picked.i] });
+        else if (picked?.kind === 'guest') setOpenCard({ kind: 'guest', guestId: picked.id });
+        else setOpenCard(null);
         if (picked) return;
       }
       const floorY = cast.group.localToWorld(new THREE.Vector3(0, room.floorY, 0)).y;
@@ -564,6 +588,8 @@ export function WineBarFigures({ room, mood }: Props) {
     const guestRigs: FigureRig[] = [];
     const guestHandProps: { briefcase: PropHandle; camera: PropHandle }[] = [];
     const guestFaces: FaceHandle[] = [];
+    const guestToppings: (PropHandle | null)[] = [];
+    const guestDressed: DressedRig[] = [];
     for (let i = 0; i < WINE_BAR_GUEST_POOL; i++) {
       const rig = createFigureRig({ variant: 'guest', garmentColour: GUEST_GARMENTS[i % GUEST_GARMENTS.length] });
       rig.root.visible = false;
@@ -571,7 +597,10 @@ export function WineBarFigures({ room, mood }: Props) {
       guestRigs.push(rig);
       // ORDER 292 — Designs figureProps.ts: en frisyr eller bonad per figur, och
       // handrekvisitan (portföljen, kameran) som tänds per gäst när hen går.
-      attachProps(rig, { headTopping: GUEST_TOPPINGS[i % GUEST_TOPPINGS.length] });
+      const [topping] = attachProps(rig, { headTopping: GUEST_TOPPINGS[i % GUEST_TOPPINGS.length] });
+      guestToppings.push(topping ?? null);
+      // ORDER 309 — Designs D5 gästgrupper: alla fem gruppernas tecken, dolda tills gästen har typ.
+      guestDressed.push(dressAllGroups(rig, i % 2));
       const [briefcase] = attachProps(rig, { hand: 'briefcase', side: 1 });
       const [camera] = attachProps(rig, { hand: 'camera', side: -1 });
       briefcase.group.visible = false;
@@ -614,6 +643,8 @@ export function WineBarFigures({ room, mood }: Props) {
     // ORDER 290 — ring och linje under personalen, med rollens färg.
     const staffMarks = STAFF_KEYS.map((k) => { const m = createStaffMark(k); group.add(m.group); return m; });
     const stage = new TheatreStage(group, room.floorY, STAFF_KEYS.length, WINE_BAR_GUEST_POOL);
+    // ORDER 309 — orkringen (D5 ORK_RING) vid varje anställds fötter.
+    const orkRings = STAFF_KEYS.map(() => { const r = createOrkRing(); group.add(r.group); return r; });
     castRef.current = {
       director, group, guestRigs, guestIds: guestRigs.map(() => null), guestTypes: guestRigs.map(() => null), lastPose: guestRigs.map(() => null), staffRigs, ring, staffMarks, shadowsOn: true, lights,
       stage,
@@ -635,7 +666,10 @@ export function WineBarFigures({ room, mood }: Props) {
       guestFaces,
       staffFaces,
       moodGestures: new MoodGestures(WINE_BAR_GUEST_POOL),
-      scriptFaces: { key: null, answers: 0, lastAt: -Infinity, answer: null, faces: new WeakMap() }
+      scriptFaces: { key: null, answers: 0, lastAt: -Infinity, answer: null, faces: new WeakMap() },
+      orkRings,
+      dressed: guestDressed,
+      toppings: guestToppings
     };
     if (import.meta.env.DEV && typeof window !== 'undefined') {
       (window as unknown as { __nxWineBarDirector?: unknown }).__nxWineBarDirector = director;
@@ -647,6 +681,8 @@ export function WineBarFigures({ room, mood }: Props) {
       staffRigs.forEach(disposeFigureRig);
       ring.dispose();
       staffMarks.forEach(disposeStaffMark);
+      orkRings.forEach((r) => r.dispose());
+      guestDressed.forEach(disposeDressed);
       stage.dispose();
       castRef.current?.events.dispose();
       group.removeFromParent();
@@ -785,7 +821,13 @@ export function WineBarFigures({ room, mood }: Props) {
       if (sample.guestId !== cast.guestIds[i] || guestType !== cast.guestTypes[i]) {
         cast.guestIds[i] = sample.guestId;
         cast.guestTypes[i] = guestType;
-        if (sample.guestId) rig.garment.color.set(guestType ? WARM.guest[guestType] : garmentFor(sample.guestId));
+        // ORDER 309 — gästgruppens kläder och tecken (Designs D5 guestGroups.ts, scene/guestLooks.ts);
+        // gäster utan typ (äldre fixturer) behåller rummets dova plagg.
+        if (sample.guestId) {
+          const g = showGroup(rig, cast.dressed[i], guestType, i % 2, garmentFor(sample.guestId));
+          const t = cast.toppings[i];
+          if (t) t.group.visible = !(g && HEAD_SIGNS.has(GUEST_GROUPS[g].sign));
+        }
       }
       // Sittregeln för alla sitsar (tillägget till leverans 2): barstol, lounge och stol.
       const seat = sample.guestId ? cast.director.guestSeat(sample.guestId) : null;
@@ -831,9 +873,15 @@ export function WineBarFigures({ room, mood }: Props) {
       if (isFigure) figureLocal = { x: rig.root.position.x, y: rig.root.position.y, z: rig.root.position.z };
     }
     const ss = cast.director.staffSamples;
+    // ORDER 309 — personalens läge i klippen (conditionClips.ts): orken och tvekan.
+    const rocketArea = active && !active.backed ? incidentArea(incidentById(s.economy.businessClass, active.id)?.track) : null;
+    const areaKnown = rocketArea ? staffKnows(s, rocketArea) : true;
+    const staminaByKey = new Map<string, StaminaId>();
+    for (const m of s.staff) staminaByKey.set(SIM_ROLE_TO_STAFF[m.role], staminaOf(simStamina(m)));
     for (let i = 0; i < ss.length; i++) {
       const key = STAFF_KEYS[i];
-      const clip = cast.stage.staffPose(i, key, ss[i], active && !active.backed ? active : null, now, together.staff.get(i) ?? null);
+      const cond = inService ? { stamina: staminaByKey.get(key) ?? null, hesitateAt: rocketArea ? hesitationElapsed(key, active, rocketArea, areaKnown) : null } : null;
+      const clip = cast.stage.staffPose(i, key, ss[i], active && !active.backed ? active : null, now, together.staff.get(i) ?? null, cond);
       cast.staffClips[i] = clip;
       applySample(cast.staffRigs[i], ss[i], true, visibility, clip);
       const rig = cast.staffRigs[i];
@@ -869,8 +917,6 @@ export function WineBarFigures({ room, mood }: Props) {
         }
         const h = raycaster.intersectObjects(targets, true)[0];
         for (let o: THREE.Object3D | null = h?.object ?? null; o; o = o.parent) { if (owner.has(o)) { hit = owner.get(o)!; break; } }
-        // ORDER 303 F — ett kort som öppnats med klick står kvar.
-        if (statusRef.current && pinnedStaffRef.current !== null) hit = pinnedStaffRef.current;
       }
       const key = hit >= 0 ? `${hit}:${ringTaskFor(ss[hit], cast.director.staffTaskDetail(STAFF_KEYS[hit], t)?.kind ?? null)}` : '';
       if (key !== ringTagKey.current) {
@@ -888,24 +934,60 @@ export function WineBarFigures({ room, mood }: Props) {
       }
     }
 
-    // ORDER 303 F — orken som en ring vid fötterna (tre lägen), i statusläget.
-    for (let i = 0; i < STAFF_KEYS.length; i++) {
-      const m = staminaRings.meshes[i];
-      if (m.parent !== cast.group) cast.group.add(m);
-      const member = s.staff.find((x) => SIM_ROLE_TO_STAFF[x.role] === STAFF_KEYS[i]);
-      const show = statusRef.current && roomShownRef.current && inService && ss[i].visible && !!member;
-      m.visible = show;
-      if (!show || !member) continue;
-      m.geometry = staminaRings.geos[conditionLevel(staminaOf(member))];
-      m.position.set(ss[i].x, room.floorY + 0.03, ss[i].z);
+    // ORDER 309 — orkringen (D5 ORK_RING): i statusläget vid all personal,
+    // annars bara vid den som är slut. Den första bågen mot kameran.
+    // Trivselplattan (D5 drawWellbeing) står bredvid ringen när den syns.
+    {
+      const camLocal = cast.group.worldToLocal(camera.getWorldPosition(new THREE.Vector3()));
+      const plates: WellbeingItem[] = [];
+      for (let i = 0; i < STAFF_KEYS.length; i++) {
+        const r = cast.orkRings[i];
+        const member = s.staff.find((x) => SIM_ROLE_TO_STAFF[x.role] === STAFF_KEYS[i]);
+        const stamina = member ? staminaOf(simStamina(member)) : null;
+        const show = !!stamina && roomShownRef.current && inService && ss[i].visible && cast.staffRigs[i].root.visible && orkRingShown(stamina, statusRef.current);
+        r.group.visible = show;
+        if (!show || !member || !stamina) continue;
+        r.set(stamina);
+        const x = cast.staffRigs[i].root.position.x, z = cast.staffRigs[i].root.position.z;
+        r.group.position.set(x, room.floorY, z);
+        r.group.rotation.y = orkFacing(camLocal.x - x, camLocal.z - z);
+        plates.push({ key: STAFF_KEYS[i], feet: cast.group.localToWorld(new THREE.Vector3(x, room.floorY, z)), id: wellbeingOf(simWellbeing(member)) });
+      }
+      const wl = wellbeingLayerRef.current;
+      if (wl) {
+        if (plates.length > 0) wl.draw(plates, camera); else if (wl.drawn.length > 0) wl.clear();
+        if (typeof document !== 'undefined') document.body.dataset.wellbeingPlates = wl.drawn.map((p) => `${p.key}:${p.id}`).join(',');
+      }
+      if (typeof document !== 'undefined') {
+        document.body.dataset.orkRings = STAFF_KEYS.filter((_, i) => cast.orkRings[i].group.visible).map((k) => `${k}:${staminaByKey.get(k)}`).join(',');
+        // Var figurerna står på skärmen i statusläget (andel av bredd och höjd), så att kontrollen kan klicka på dem.
+        if (statusRef.current && roomShownRef.current) {
+          const at = (x: number, y: number, z: number) => { const p = cast.group.localToWorld(new THREE.Vector3(x, y, z)).project(camera); return `${((p.x + 1) / 2).toFixed(3)},${((1 - p.y) / 2).toFixed(3)}`; };
+          document.body.dataset.staffScreen = STAFF_KEYS.map((k, i) => (staminaByKey.has(k) && cast.staffRigs[i].root.visible ? `${k}@${at(cast.staffRigs[i].root.position.x, room.floorY + 1.1, cast.staffRigs[i].root.position.z)}` : '')).filter(Boolean).join(';');
+          document.body.dataset.guestScreen = gs.map((g, i) => (g.visible && g.guestId && g.seated ? `${g.guestId}@${cast.guestTypes[i] ?? '-'}@${at(cast.guestRigs[i].root.position.x, cast.guestRigs[i].root.position.y + 0.9, cast.guestRigs[i].root.position.z)}` : '')).filter(Boolean).slice(0, 12).join(';');
+        }
+        document.body.dataset.guestGroups = [...new Set(cast.dressed.filter((d, i) => d.group && gs[i]?.visible).map((d) => d.group))].join(',');
+      }
     }
-    // ORDER 303 F — gästens kort följer gästen.
-    if (guestCard && guestCardRef.current?.parent) {
-      const idx = cast.guestIds.indexOf(guestCard.id);
-      if (idx >= 0) {
-        const p = cast.group.localToWorld(new THREE.Vector3(gs[idx].x, room.floorY + RING_TAG_HEIGHT_M, gs[idx].z));
-        guestCardRef.current.parent.worldToLocal(p);
-        guestCardRef.current.position.copy(p);
+    // ORDER 309 — kortets ankare: huvudet på figuren kortet gäller, i fönstrets pixlar.
+    {
+      const c = cardRef.current;
+      let head: THREE.Vector3 | null = null;
+      if (c && statusRef.current && roomShownRef.current) {
+        if (c.kind === 'staff') {
+          const i = STAFF_KEYS.indexOf(c.key);
+          if (i >= 0 && cast.staffRigs[i].root.visible) head = new THREE.Vector3(cast.staffRigs[i].root.position.x, room.floorY + RING_TAG_HEIGHT_M - 0.4, cast.staffRigs[i].root.position.z);
+        } else {
+          const i = cast.guestIds.indexOf(c.guestId);
+          if (i >= 0 && cast.guestRigs[i].root.visible) head = new THREE.Vector3(cast.guestRigs[i].root.position.x, cast.guestRigs[i].root.position.y + (gs[i].seated ? 1.3 : 1.7), cast.guestRigs[i].root.position.z);
+        }
+      }
+      if (head) {
+        const p = cast.group.localToWorld(head).project(camera);
+        const rect = glEl.getBoundingClientRect();
+        cardAnchor.current = p.z > 1 ? null : { x: rect.left + (p.x * 0.5 + 0.5) * rect.width, y: rect.top + (-p.y * 0.5 + 0.5) * rect.height };
+      } else if (c) {
+        cardAnchor.current = null;
       }
     }
 
@@ -943,7 +1025,7 @@ export function WineBarFigures({ room, mood }: Props) {
     // CLAUDE.md renderregler: skuggan följer opaciteten.
     if (shadows !== cast.shadowsOn) {
       cast.shadowsOn = shadows;
-      const marks = new Set(cast.staffMarks.map((m) => m.group));
+      const marks = new Set([...cast.staffMarks.map((m) => m.group), ...cast.orkRings.map((r) => r.group)]);
       cast.group.traverse((o) => { if ((o as THREE.Mesh).isMesh && o.name !== 'face' && o.parent !== cast.ring.group && !(o.parent && marks.has(o.parent as THREE.Group))) o.castShadow = shadows; });
     }
 
@@ -1143,22 +1225,10 @@ export function WineBarFigures({ room, mood }: Props) {
       {ringTag && roomShown && (
         <group ref={ringTagRef}>
           <Html center zIndexRange={[22, 0]} style={{ pointerEvents: 'none' }}>
-            <StaffRingTag role={ringTag.role} task={ringTag.task} condition={statusOn ? (() => { const m = sim.staff.find((x) => SIM_ROLE_TO_STAFF[x.role] === STAFF_KEYS[ringTag.i]); return m ? { stamina: staminaOf(m), wellbeing: wellbeingOf(m), skills: skillsOf(m) } : null; })() : null} />
+            <StaffRingTag role={ringTag.role} task={ringTag.task} />
           </Html>
         </group>
       )}
-      {statusOn && guestCard && roomShown && (() => {
-        const g = sim.guests.find((x) => x.id === guestCard.id);
-        if (!g) return null;
-        const mood = moodOf(guestMoodValue(g, sim.day.roomMoodLift ?? 0));
-        return (
-          <group ref={guestCardRef}>
-            <Html center zIndexRange={[22, 0]} style={{ pointerEvents: 'none' }}>
-              <GuestStatusCard who={g.guestType ? strings.guestTypes.label[g.guestType] : strings.feed.guest} mood={mood} />
-            </Html>
-          </group>
-        );
-      })()}
       {caption && roomShown && (
         <group ref={captionRef} visible={false}>
           {/* ORDER 299 — bildtexten hålls där ingen panel täcker den (safeCaptionPosition). */}

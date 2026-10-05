@@ -1,0 +1,115 @@
+/* ORDER 309 — Designs D5 (följderna och konceptet): knapparna Status och
+ * Fokus, kortet för gäst och personal med tråden, raketens list i
+ * fokusläget och Recensioner i morse som tidningens kort. Färgerna ur
+ * staffStatus.ts STATUS_CARD och morningReviews.ts REVIEW_CARD. */
+
+/* ---------- Status (S) och Fokus (H) ---------- */
+.nx-mode-keys { display: flex; gap: calc(10 * var(--nx-u)); pointer-events: auto; }
+.nx-mode-key {
+  display: inline-flex; align-items: center; gap: calc(10 * var(--nx-u));
+  min-width: max(108px, calc(150 * var(--nx-u))); height: max(40px, calc(56 * var(--nx-u)));
+  padding: 0 calc(16 * var(--nx-u)) 0 calc(8 * var(--nx-u));
+  border-radius: 999px; border: 1px solid rgba(216, 184, 119, 0.5); background: rgba(38, 25, 17, 0.92);
+  color: var(--w-cream, #f4e6cc); font: inherit; font-weight: 800; font-size: max(13px, calc(17 * var(--nx-u))); cursor: pointer;
+}
+.nx-mode-key.is-on { background: var(--w-gold, #e8b93a); color: var(--w-ink, #2a1c13); border-color: var(--w-gold, #e8b93a); }
+.nx-mode-key:focus-visible { outline: 2px solid var(--w-gold, #e8b93a); outline-offset: 2px; }
+.nx-mode-cap {
+  display: inline-grid; place-items: center; width: max(24px, calc(32 * var(--nx-u))); height: max(24px, calc(32 * var(--nx-u)));
+  border-radius: 50%; background: rgba(244, 230, 204, 0.16); font: inherit; font-size: max(12px, calc(14 * var(--nx-u)));
+}
+.nx-mode-key.is-on .nx-mode-cap { background: var(--w-ink, #2a1c13); color: var(--w-cream, #f4e6cc); }
+
+/* ---------- kortet för gäst och personal ---------- */
+.nx-scard {
+  position: fixed; left: 0; top: 0; z-index: 47; box-sizing: border-box; pointer-events: auto;
+  padding: max(14px, 2.2vh) max(16px, 2.4vh) max(12px, 1.8vh);
+  background: #f5ead5; color: #2a1c13; border-radius: 14px;
+  box-shadow: 0 18px 44px rgba(20, 13, 9, 0.45), 0 2px 0 rgba(255, 255, 255, 0.4) inset;
+}
+.nx-scard-close {
+  position: absolute; top: max(10px, 1.4vh); right: max(10px, 1.4vh); width: 30px; height: 30px; border-radius: 50%;
+  border: none; background: rgba(42, 28, 19, 0.1); color: #2a1c13; font-size: 18px; line-height: 1; cursor: pointer;
+}
+.nx-scard-kicker { font-size: max(12px, 1.35vh); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #9a6a2a; }
+.nx-scard-name { font-family: var(--w-font-heading, 'Young Serif', serif); font-size: max(20px, 3vh); line-height: 1.15; margin: 4px 0 6px; padding-right: 34px; }
+.nx-scard-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: max(7px, 1.1vh) 0; border-top: 1px dashed rgba(42, 28, 19, 0.22); font-weight: 700; font-size: max(13px, 1.6vh);
+}
+.nx-scard-label { font-size: max(12px, 1.3vh); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #9a6a2a; }
+.nx-scard-val { display: inline-flex; align-items: center; gap: 8px; }
+.nx-scard-icon { display: inline-flex; }
+.nx-scard-topics-head { display: block; padding-top: max(7px, 1.1vh); border-top: 1px dashed rgba(42, 28, 19, 0.22); }
+.nx-scard-topics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.nx-scard-topic {
+  display: flex; justify-content: space-between; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 10px;
+  background: #fbf4e6; border: 1px solid rgba(42, 28, 19, 0.14); font-weight: 700; font-size: max(13px, 1.5vh);
+}
+.nx-scard-topic[data-missing='true'] { background: transparent; border: 1.5px dashed rgba(42, 28, 19, 0.55); color: #6b5443; }
+.nx-scard-topic em { font-style: normal; font-weight: 700; font-size: max(12px, 1.3vh); }
+.nx-scard-dots { display: inline-flex; gap: 3px; }
+.nx-scard-dots i { width: 7px; height: 7px; border-radius: 50%; background: #2a1c13; }
+.nx-scard-hint { margin: 10px 0 0; font-size: max(12px, 1.45vh); color: #6b5443; }
+.nx-scard-thread { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 46; pointer-events: none; overflow: visible; }
+
+/* ---------- raketens list i fokusläget ---------- */
+.nx-focus-strip {
+  position: fixed; left: 0; top: 30vh; height: 40vh; width: max(44px, 5.6vh); z-index: 42;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  border: 1px solid rgba(216, 184, 119, 0.4); border-left: none; border-radius: 0 16px 16px 0;
+  background: rgba(38, 25, 17, 0.92); color: var(--w-cream, #f4e6cc); cursor: pointer; pointer-events: auto; font: inherit;
+}
+.nx-focus-strip span { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; font-size: max(12px, 1.3vh); }
+.nx-focus-strip:focus-visible { outline: 2px solid var(--w-gold, #e8b93a); outline-offset: 2px; }
+
+/* ---------- Recensioner i morse ---------- */
+.nx-review-backdrop {
+  position: fixed; inset: 0; z-index: 45; pointer-events: auto;
+  background: rgba(20, 13, 9, 0.45);
+  display: flex; align-items: flex-start; justify-content: flex-start;
+  padding: max(64px, 11.5vh) 16px 16px max(16px, 3.5vw); box-sizing: border-box;
+}
+.nx-review-card {
+  width: min(770px, 60vw, 100%); max-height: calc(100vh - max(80px, 13vh)); overflow: auto; box-sizing: border-box;
+  border-radius: 22px; padding: max(18px, 3.4vh) max(18px, 1.8vw) max(16px, 2.4vh);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  animation: nx-review-in 420ms cubic-bezier(.2,.8,.2,1) both;
+}
+.nx-review-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; padding-bottom: 12px; border-bottom: 2px solid rgba(42, 28, 19, 0.16); }
+.nx-review-kicker { font-size: max(12px, 1.35vh); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+.nx-review-title { margin: 4px 0 0; font-family: var(--w-font-heading, 'Young Serif', serif); font-weight: 400; font-size: max(22px, 3.6vh); line-height: 1.15; }
+.nx-review-rep { text-align: right; min-width: max(150px, 16vw); }
+.nx-review-nums { display: inline-flex; align-items: baseline; gap: 8px; font-family: var(--w-font-heading, 'Young Serif', serif); }
+.nx-review-from { font-size: max(18px, 2.6vh); opacity: 0.7; }
+.nx-review-to { font-size: max(26px, 4vh); }
+.nx-review-bar { position: relative; height: 6px; border-radius: 999px; overflow: hidden; margin-top: 6px; }
+.nx-review-bar span { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; }
+.nx-review-lines { list-style: none; margin: 0; padding: 0; }
+.nx-review-line {
+  display: grid; grid-template-columns: max-content minmax(0, 1fr); align-items: start; gap: 14px;
+  padding: max(10px, 1.5vh) 0; border-bottom: 1px dashed rgba(42, 28, 19, 0.2);
+  animation: nx-review-line 320ms ease-out both;
+}
+.nx-review-badge { display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; border-radius: 999px; font-weight: 800; font-size: max(12px, 1.45vh); white-space: nowrap; }
+.nx-review-quote { margin: 0; font-family: var(--w-font-heading, 'Young Serif', serif); font-size: max(16px, 2.3vh); line-height: 1.25; }
+.nx-review-who { margin: 4px 0 0; font-size: max(12px, 1.5vh); }
+.nx-review-foot { display: flex; justify-content: flex-end; padding-top: max(12px, 2vh); }
+.nx-review-next {
+  display: inline-flex; align-items: center; justify-content: space-between; gap: 24px; min-width: min(260px, 100%);
+  padding: 14px 18px; border-radius: 14px; border: none; background: #2a1c13; color: #f5ead5; font: inherit; font-weight: 800; font-size: max(14px, 1.8vh); cursor: pointer;
+}
+.nx-review-next:focus-visible { outline: 2px solid var(--w-gold, #e8b93a); outline-offset: 2px; }
+.nx-review-reopen {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; box-sizing: border-box;
+  padding: 12px 16px; border-radius: 14px; border: none; background: #f1e6d0; color: #2a1c13; font: inherit; cursor: pointer; text-align: left;
+}
+.nx-review-reopen .nx-review-kicker { color: #9a6a2a; }
+@keyframes nx-review-in { from { opacity: 0; transform: translateY(1.6vh); } to { opacity: 1; transform: none; } }
+@keyframes nx-review-line { from { opacity: 0; transform: translateY(0.8vh); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .nx-review-card, .nx-review-line { animation: none; } }
+@media (max-width: 720px) {
+  .nx-review-card { width: 100%; }
+  .nx-review-head { flex-direction: column; align-items: flex-start; }
+  .nx-review-rep { text-align: left; }
+}
