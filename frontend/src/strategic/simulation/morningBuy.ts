@@ -19,7 +19,8 @@ import { stockForecast } from '../../sim/stockForecast';
 import type { SimulationState } from '../types';
 import { findDish, GLASSES_PER_BOTTLE, minIngredientCost } from './m4Catalogue';
 import { packageDishIds, scaledBaseItems, type StockPackage } from './packages';
-import { goodAvailable } from '../../sim/goods';
+import { goodAvailable, tierOf } from '../../sim/goods';
+import { CONCEPT } from '../../sim/balance';
 import { computePlatesRemaining, menuFromStock, usesPackages } from './stockPackages';
 
 export interface DishRow {
@@ -48,8 +49,9 @@ export interface DrinkRow {
   items: Record<string, number>;
 }
 
+// ORDER 307b — som inköpet (packages.ts packageCostSek): gånger varans nivå.
 function dishCost(dishId: string): number {
-  return (findDish(dishId)?.recipe ?? []).reduce((a, r) => a + minIngredientCost(r.ingredientId) * r.units, 0);
+  return (findDish(dishId)?.recipe ?? []).reduce((a, r) => a + minIngredientCost(r.ingredientId) * r.units, 0) * CONCEPT.goodsCostFactor[tierOf(dishId)];
 }
 
 const BY_THE_GLASS = /, (by the glass|per glas)$/;

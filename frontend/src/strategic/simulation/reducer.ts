@@ -4,7 +4,7 @@ import { buildMorningReview } from '../../sim/morningReview';
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
 import { EQUIPMENT_IDS, GOODS_SUPPLIER_IDS, equipmentOpened, equipmentOwned, equipmentSpec, equipmentUnlocked, supplierOwned, supplierPrice, supplierUnlocked, type EquipmentId, type GoodsSupplierId } from '../../sim/goods';
-import { CONSEQUENCES, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
+import { CONCEPT, CONSEQUENCES, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, canStartBack, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
@@ -1787,6 +1787,9 @@ function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inL
       rev = bill * revenueMult * Math.max(0, 1 + (guest.billBonus ?? 0) + (lift < 0 ? CONSEQUENCES.moodBillPerLift : CONSEQUENCES.moodBillPerLiftUp) * lift);
       // ORDER 307 — betalningsviljan ovanpå plånboken (turisterna).
       if (guest.guestType) rev *= GUEST_TYPES.payFactor[guest.guestType];
+      // ORDER 307b — notan efter kvällens koncept (balance.ts CONCEPT.billFactor).
+      const concept = draft.day.booking?.dayNumber === draft.day.dayNumber ? draft.day.booking?.concept : null;
+      if (concept) rev *= CONCEPT.billFactor[concept];
       // ORDER 303 B — en nöjd gäst vid bord räknas i byns placering.
       if (guestMoodValue(guest, draft.day.roomMoodLift ?? 0) >= MOOD_BALANCE.threshold.content) draft.day.contentTonight = (draft.day.contentTonight ?? 0) + 1;
     } else if (draft.menu.length > 0) {

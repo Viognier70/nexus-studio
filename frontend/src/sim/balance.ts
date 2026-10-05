@@ -1545,6 +1545,15 @@ export const CONCEPT = {
   // Bistro 0: med 0,2 kom färre krävande gäster till den som alltid svarar
   // fel, och den blev 1:a en kväll vecka 3. Konceptets rykte styr soigné.
   highFullAt: { enkel: 0, bistro: 0, soigne: 0.4 },
+  // ORDER 307b (Anders 2026-10-05: "varje koncept ska gå att driva för den
+  // som kan"; spakar: lägre personalkostnad och billigare varor i enkel,
+  // högre pris och betalningsvilja i soigné). Personalens dagslön gånger
+  // wageFactor efter kvällens koncept; varornas inköpspris gånger
+  // goodsCostFactor efter varans nivå; notan gånger billFactor efter kvällens
+  // koncept (reports/order307b/kalib).
+  wageFactor: { enkel: 1, bistro: 1, soigne: 1 },
+  goodsCostFactor: { enkel: 1, bistro: 1, soigne: 1 },
+  billFactor: { enkel: 1, bistro: 1, soigne: 1 },
   reputationDriftPerDay: 0.1
 } as const;
 

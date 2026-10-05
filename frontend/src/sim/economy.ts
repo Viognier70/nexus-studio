@@ -32,7 +32,8 @@ import {
   type MedalLevel,
   type MedalRequirement,
   RENT,
-  DOUBLE_OR_NOTHING
+  DOUBLE_OR_NOTHING,
+  CONCEPT
 } from './balance';
 import { calendarFor } from './calendar';
 import type { GuestType, PavilionKey, SimulationState } from '../strategic/types';
@@ -367,7 +368,15 @@ export function dayEndCash(state: SimulationState): number {
 // ORDER 268 — lönerna för dagen: bara på servicedagar ("Söndag ingen lön").
 export function dailyWagesSek(state: SimulationState): number {
   if (WAGES.onlyOnServiceDays && !calendarFor(state.day.dayNumber).isServiceDay) return 0;
-  return state.team.members.filter((m) => !m.isAgency).reduce((sum, m) => sum + m.dailyCost, 0);
+  const f = wageFactor(state);
+  return state.team.members.filter((m) => !m.isAgency).reduce((sum, m) => sum + Math.round(m.dailyCost * f), 0);
+}
+
+// ORDER 307b — personalens dagslön efter kvällens koncept (balance.ts CONCEPT.wageFactor).
+export function wageFactor(state: SimulationState): number {
+  const b = state.day.booking;
+  const c = b && b.dayNumber === state.day.dayNumber ? b.concept : null;
+  return c ? CONCEPT.wageFactor[c] : 1;
 }
 
 // ORDER 268 — det nedgraderingen räknar: kassan vid dagsavslut plus
