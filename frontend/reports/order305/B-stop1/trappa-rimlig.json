@@ -1,0 +1,211 @@
+{
+ "tasting": false,
+ "definition": "Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).",
+ "start": null,
+ "variant": "{\"CONSEQUENCES\":{\"moodBillPerLiftUp\":0.12,\"right\":{\"stepReputation\":0.3,\"clearedReputation\":1,\"avecShare\":0.07}},\"MENU_ROCKETS\":{\"tipBonusPerClearedStep\":0.015,\"tipBonusOnRocketCleared\":0.02},\"STAR\":{\"judgementAtLeast\":0.42},\"DOUBLE_OR_NOTHING\":{\"enabled\":true,\"potHoldsCash\":false,\"stopTakesStaffOutcome\":false}}",
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20
+ ],
+ "weeks": 8,
+ "players": {
+  "rimlig": {
+   "closed": 0,
+   "closedWeeks": [],
+   "renegotiated": 0,
+   "lowestCash": 187,
+   "meanCashEnd": 13581,
+   "targetHitShare": 0.94,
+   "meanTastings": 0,
+   "meanOwned": 0,
+   "stars": 0,
+   "starEarned": 0,
+   "starWeeks": [],
+   "goldWeeks": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "meanRepAtSettlement": [
+    0.369,
+    0.417,
+    0.333,
+    0.403,
+    0.323,
+    0.368,
+    0.366,
+    0.315
+   ],
+   "meanJudgement": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "byWeek": [
+    {
+     "week": 1,
+     "n": 20,
+     "meanResultSek": 6827,
+     "meanRevenueSek": 50097,
+     "meanCashEnd": 21827,
+     "meanCredits": 12,
+     "targetHit": 20,
+     "rentSek": 7155
+    },
+    {
+     "week": 2,
+     "n": 20,
+     "meanResultSek": 6625,
+     "meanRevenueSek": 51168,
+     "meanCashEnd": 28451,
+     "meanCredits": 26,
+     "targetHit": 20,
+     "rentSek": 7155
+    },
+    {
+     "week": 3,
+     "n": 20,
+     "meanResultSek": -744,
+     "meanRevenueSek": 50537,
+     "meanCashEnd": 27708,
+     "meanCredits": 43,
+     "targetHit": 20,
+     "rentSek": 13469
+    },
+    {
+     "week": 4,
+     "n": 20,
+     "meanResultSek": -2983,
+     "meanRevenueSek": 46851,
+     "meanCashEnd": 24725,
+     "meanCredits": 58,
+     "targetHit": 16,
+     "rentSek": 13469
+    },
+    {
+     "week": 5,
+     "n": 20,
+     "meanResultSek": -2125,
+     "meanRevenueSek": 49093,
+     "meanCashEnd": 22600,
+     "meanCredits": 77,
+     "targetHit": 19,
+     "rentSek": 13469
+    },
+    {
+     "week": 6,
+     "n": 20,
+     "meanResultSek": -3637,
+     "meanRevenueSek": 45709,
+     "meanCashEnd": 18963,
+     "meanCredits": 92,
+     "targetHit": 19,
+     "rentSek": 13469
+    },
+    {
+     "week": 7,
+     "n": 20,
+     "meanResultSek": -2569,
+     "meanRevenueSek": 47474,
+     "meanCashEnd": 16394,
+     "meanCredits": 107,
+     "targetHit": 17,
+     "rentSek": 13469
+    },
+    {
+     "week": 8,
+     "n": 20,
+     "meanResultSek": -2813,
+     "meanRevenueSek": 47815,
+     "meanCashEnd": 13581,
+     "meanCredits": 122,
+     "targetHit": 19,
+     "rentSek": 13469
+    }
+   ],
+   "repByWeek": [
+    {
+     "week": 1,
+     "mon": 0.6,
+     "sat": 0.422
+    },
+    {
+     "week": 2,
+     "mon": 0.386,
+     "sat": 0.414
+    },
+    {
+     "week": 3,
+     "mon": 0.434,
+     "sat": 0.392
+    },
+    {
+     "week": 4,
+     "mon": 0.352,
+     "sat": 0.408
+    },
+    {
+     "week": 5,
+     "mon": 0.42,
+     "sat": 0.384
+    },
+    {
+     "week": 6,
+     "mon": 0.341,
+     "sat": 0.379
+    },
+    {
+     "week": 7,
+     "mon": 0.386,
+     "sat": 0.382
+    },
+    {
+     "week": 8,
+     "mon": 0.385,
+     "sat": 0.417
+    }
+   ]
+  }
+ },
+ "note": "ORDER 305: runs/rows borttagna, summeringen kvar."
+}
