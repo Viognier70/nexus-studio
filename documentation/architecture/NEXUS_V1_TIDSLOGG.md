@@ -148,6 +148,8 @@ Uppskattningen skrivs innan etappen börjar. Faktisk tid fylls i när etappen ä
 | Kvitt eller dubbelt, förslag | 305 | ~5: genomgång av raketens regler, potten och valet i simuleringen, harnessens val, två knappar på kortet, sex körningar (två varianter, tre val), rapport | 2 h | Variant A (kronorna i potten, personalens utfall vid stopp) bröt trappan | | — | 2026-10-05 | |
 | Kvitt eller dubbelt i spelet | 305b | ~6: potten och valet påslaget, säkerheten och det låsta svaret borttagna, portfolion, stjärnans räkning, kortet och pyramiden, nio tester om, kontrollen i spelarens flöde, rapport | 3 h | Kontrollen fann bandet "Tiden gick ut" efter Stanna; en måndag har få raketer, så kontrollen startar egna | | — | 2026-10-05 | |
 | Halva i trappan | 303c | ~5: sex rundor i harness (hyran, golvet, gästerna per steg, startkassan, de hyresfria veckorna), slutkörningen med 40 säsonger för halva, bankens text, rapport | 3 h | Spakar som verkar lika för alla flyttade inte halva; golvet gjorde "alltid fel" till 1:a; startkassan krockade med ett tidigare beslut | | — | 2026-10-05 | |
+| Öppningen före första morgonen | 308 | ~8: manuset och tidslinjen, byn och vinbaren i Designs bilder, Ingrid, texterna, hoppa över, flödet, kontrollen och layouten, rapport | 1,5 h (agent) | Byns ljus och kameran skiljer sig från prototypen | | — | 2026-10-05 | |
+| Kvitt eller dubbelt i Designs form | 310 | ~6: kolumnen, raden, valet och ringen, pyramiden i raketens ordning, kontrollen, rapport | 1,3 h (agent) | Designs lås och väntan före domen inte byggd (kräver beslut) | | — | 2026-10-05 | |
 
 ## Omräkning efter etapp 2
 
