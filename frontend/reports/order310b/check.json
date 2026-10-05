@@ -1,0 +1,348 @@
+{
+  "expected": {
+    "lockMs": 900,
+    "verdictMs": 3800
+  },
+  "runs": {
+    "1440x900": {
+      "how": "mouse+keys",
+      "errors": [],
+      "presses": [
+        {
+          "optionId": "a",
+          "how": "click",
+          "lockShownMs": 8,
+          "lockMs": 942,
+          "verdictMs": 3721,
+          "verdict": "wrong",
+          "phaseAtVerdict": "wrong",
+          "verdictSeq": [
+            {
+              "dt": 0,
+              "mode": "wrong",
+              "phase": "wrong"
+            }
+          ],
+          "lockedText": "Låst",
+          "lockShutInWait": true,
+          "reduced": false,
+          "underWait": {
+            "band": false,
+            "amount": false,
+            "verdictLook": false,
+            "meterEmphasis": false
+          }
+        },
+        {
+          "optionId": "b",
+          "how": "key",
+          "lockShownMs": 3,
+          "lockMs": 1032,
+          "verdictMs": 3850,
+          "verdict": "wrong",
+          "phaseAtVerdict": "wrong",
+          "verdictSeq": [
+            {
+              "dt": 0,
+              "mode": "wrong",
+              "phase": "wrong"
+            }
+          ],
+          "lockedText": "Låst",
+          "lockShutInWait": true,
+          "reduced": false,
+          "underWait": {
+            "band": false,
+            "amount": false,
+            "verdictLook": false,
+            "meterEmphasis": false
+          }
+        },
+        {
+          "optionId": "c",
+          "how": "click",
+          "lockShownMs": 4,
+          "lockMs": 935,
+          "verdictMs": 3751,
+          "verdict": "wrong",
+          "phaseAtVerdict": "wrong",
+          "verdictSeq": [
+            {
+              "dt": 0,
+              "mode": "wrong",
+              "phase": "wrong"
+            }
+          ],
+          "lockedText": "Låst",
+          "lockShutInWait": true,
+          "reduced": false,
+          "underWait": {
+            "band": false,
+            "amount": false,
+            "verdictLook": false,
+            "meterEmphasis": false
+          }
+        },
+        {
+          "optionId": "a",
+          "how": "key",
+          "lockShownMs": null,
+          "lockMs": null,
+          "verdictMs": null,
+          "verdict": null,
+          "phaseAtVerdict": null,
+          "verdictSeq": [],
+          "lockedText": null,
+          "lockShutInWait": null,
+          "reduced": null,
+          "underWait": {
+            "band": false,
+            "amount": false,
+            "verdictLook": false,
+            "meterEmphasis": false
+          }
+        },
+        {
+          "optionId": "b",
+          "how": "click",
+          "lockShownMs": 5,
+          "lockMs": 980,
+          "verdictMs": 3784,
+          "verdict": "wrong",
+          "phaseAtVerdict": "wrong",
+          "verdictSeq": [
+            {
+              "dt": 0,
+              "mode": "wrong",
+              "phase": "wrong"
+            }
+          ],
+          "lockedText": "Låst",
+          "lockShutInWait": true,
+          "reduced": false,
+          "underWait": {
+            "band": false,
+            "amount": false,
+            "verdictLook": false,
+            "meterEmphasis": false
+          }
+        }
+      ],
+      "choiceAfterVerdict": null
+    },
+    "1280x720-touch": {
+      "how": "touch",
+      "errors": [],
+      "presses": [
+        {
+          "optionId": "a",
+          "how": "click",
+          "lockShownMs": 8,
+          "lockMs": 984,
+          "verdictMs": 3803,
+          "verdict": "right",
+          "phaseAtVerdict": "right",
+          "verdictSeq": [
+            {
+              "dt": 0,
+              "mode": "right",
+              "phase": "right"
+            }
+          ],
+          "lockedText": "Låst",
+          "lockShutInWait": true,
+          "reduced": false,
+          "underWait": {
+            "band": false,
+            "amount": false,
+            "verdictLook": false,
+            "meterEmphasis": false
+          }
+        },
+        {
+          "optionId": "b",
+          "how": "click",
+          "lockShownMs": 5,
+          "lockMs": 1400,
+          "verdictMs": 3772,
+          "verdict": "wrong",
+          "phaseAtVerdict": "wrong",
+          "verdictSeq": [
+            {
+              "dt": 0,
+              "mode": null,
+              "phase": null
+            },
+            {
+              "dt": 61,
+              "mode": "wrong",
+              "phase": "wrong"
+            }
+          ],
+          "lockedText": "Låst",
+          "lockShutInWait": true,
+          "reduced": false,
+          "underWait": {
+            "band": false,
+            "amount": false,
+            "verdictLook": false,
+            "meterEmphasis": false
+          }
+        }
+      ],
+      "choiceAfterVerdict": {
+        "phase": "choosing",
+        "countdown": "8"
+      }
+    },
+    "1440x900-reduced": {
+      "how": "mouse+keys",
+      "errors": [],
+      "presses": [
+        {
+          "optionId": "a",
+          "how": "click",
+          "lockShownMs": 7,
+          "lockMs": 925,
+          "verdictMs": 3746,
+          "verdict": "wrong",
+          "phaseAtVerdict": "wrong",
+          "verdictSeq": [
+            {
+              "dt": 0,
+              "mode": null,
+              "phase": null
+            },
+            {
+              "dt": 44,
+              "mode": "wrong",
+              "phase": "wrong"
+            }
+          ],
+          "lockedText": "Låst",
+          "lockShutInWait": true,
+          "reduced": true,
+          "underWait": {
+            "band": false,
+            "amount": false,
+            "verdictLook": false,
+            "meterEmphasis": false
+          }
+        },
+        {
+          "optionId": "b",
+          "how": "key",
+          "lockShownMs": 3,
+          "lockMs": 1191,
+          "verdictMs": 3984,
+          "verdict": "wrong",
+          "phaseAtVerdict": "wrong",
+          "verdictSeq": [
+            {
+              "dt": 0,
+              "mode": "wrong",
+              "phase": "wrong"
+            }
+          ],
+          "lockedText": "Låst",
+          "lockShutInWait": true,
+          "reduced": true,
+          "underWait": {
+            "band": false,
+            "amount": false,
+            "verdictLook": false,
+            "meterEmphasis": false
+          }
+        },
+        {
+          "optionId": "c",
+          "how": "click",
+          "lockShownMs": 4,
+          "lockMs": 972,
+          "verdictMs": 3792,
+          "verdict": "wrong",
+          "phaseAtVerdict": "wrong",
+          "verdictSeq": [
+            {
+              "dt": 0,
+              "mode": "wrong",
+              "phase": "wrong"
+            }
+          ],
+          "lockedText": "Låst",
+          "lockShutInWait": true,
+          "reduced": true,
+          "underWait": {
+            "band": false,
+            "amount": false,
+            "verdictLook": false,
+            "meterEmphasis": false
+          }
+        },
+        {
+          "optionId": "d",
+          "how": "key",
+          "lockShownMs": null,
+          "lockMs": null,
+          "verdictMs": null,
+          "verdict": null,
+          "phaseAtVerdict": null,
+          "verdictSeq": [],
+          "lockedText": null,
+          "lockShutInWait": null,
+          "reduced": null,
+          "underWait": {
+            "band": false,
+            "amount": false,
+            "verdictLook": false,
+            "meterEmphasis": false
+          }
+        },
+        {
+          "optionId": "a",
+          "how": "click",
+          "lockShownMs": 5,
+          "lockMs": 979,
+          "verdictMs": 3775,
+          "verdict": "wrong",
+          "phaseAtVerdict": "wrong",
+          "verdictSeq": [
+            {
+              "dt": 0,
+              "mode": "wrong",
+              "phase": "wrong"
+            }
+          ],
+          "lockedText": "Låst",
+          "lockShutInWait": true,
+          "reduced": true,
+          "underWait": {
+            "band": false,
+            "amount": false,
+            "verdictLook": false,
+            "meterEmphasis": false
+          }
+        }
+      ],
+      "choiceAfterVerdict": null
+    }
+  },
+  "summary": {
+    "presses": 12,
+    "withVerdict": 10,
+    "lockMs": [
+      925,
+      1400
+    ],
+    "verdictMs": [
+      3721,
+      3984
+    ],
+    "shownBeforeVerdict": 0,
+    "verdicts": {
+      "wrong": 9,
+      "right": 1
+    },
+    "errors": []
+  }
+}

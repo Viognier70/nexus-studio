@@ -3180,7 +3180,11 @@ export const TABLE = {
         sv: (role: string) => `Tiden gick ut · ${role} tar över`,
         en: (role: string) => `Out of time · ${role} takes over`
       },
-      keys: { sv: 'Välj med 1–4', en: 'Choose with 1–4' }
+      keys: { sv: 'Välj med 1–4', en: 'Choose with 1–4' },
+      // ORDER 310b — Designs lås och väntan (kvitt eller dubbelt §3): svaret är
+      // låst, och avgörandet kommer när gästen reagerar.
+      locked: { sv: 'Låst', en: 'Locked' },
+      lockedNote: { sv: 'Svaret är låst. Avgörandet kommer när gästen reagerar.', en: 'Your answer is locked. The verdict comes when the guest reacts.' }
     },
     meters: {
       cash: { sv: 'Kassa', en: 'Takings' },
@@ -3361,6 +3365,8 @@ export const TABLE = {
     ifRight: { sv: 'Om rätt', en: 'If right' },
     none: { sv: 'Potten var tom', en: 'The pot was empty' },
     gone: { sv: 'Potten är borta', en: 'The pot is gone' },
+    // ORDER 310b — kvittStrings.ts stake.onTable: under låset och väntan.
+    onTable: { sv: 'Insatsen ligger på steget', en: 'Your stake is on the step' },
     rowAria: {
       sv: (step: string, a: number, b: number) => `${step}: potten ${a} → ${b} om rätt`,
       en: (step: string, a: number, b: number) => `${step}: the pot ${a} → ${b} if right`

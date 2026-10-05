@@ -12,6 +12,12 @@
 // accent de sista fem sekunderna, med ett tick per sekund. Inget blinkar.
 // Svaren väljs med tangenterna 1–4 eller musen.
 //
+// ORDER 310b — låset och väntan (Designs kvitt eller dubbelt §3): ett svar
+// låses vid trycket och avgörs INCIDENTS.verdictSeconds senare, när gästen
+// reagerar (motorns `active.pending`). Under tiden har det valda svaret en
+// bläckkant, kortet tonas till 45 % när låset slagit igen, listen visar Låst,
+// klockan står och kolumnen (PyramidMoment) visar marken på steget och pulsen.
+//
 // Svaret i stunden (R2/R3): rätt → det valda fylls med bläck ✓, övriga
 // tonas till 40 %, bandet "Rätt · vidare till …" medan motorn visar svaret
 // (`active.revealed`, `revealLeft`) innan nästa steg öppnas på full tid.
@@ -28,7 +34,7 @@
 // ui/service/serviceView.ts).
 
 import { PyramidMoment, type StakePhase } from '../ui/service/PyramidMoment';
-import { Check, X } from 'lucide-react';
+import { Check, Lock, X } from 'lucide-react';
 import { t as tt } from '../../content/nexusStrings';
 import { useLanguage } from '../../content/language';
 import { PyramidStrip, axesOf, type LevelState } from '../ui/service/KnowledgePyramid';
@@ -41,6 +47,7 @@ import { ANSWER_EFFECTS, BACK, DOUBLE_OR_NOTHING, INCIDENTS } from '../../sim/ba
 import { incidentById, type Incident, type IncidentStep } from '../../sim/incidentBank';
 import {
   formatIncidentText,
+  pendingPhase,
   potCredits,
   secondsFor,
   serviceMeters,
@@ -111,7 +118,8 @@ function useHeldOutcome(sim: SimulationState): Held | null {
 // ORDER 305b — 'stopped': spelaren stannade och tog potten.
 type Mode = 'ask' | 'right' | 'done' | 'wrong' | 'stopped';
 type StepBox = 'cleared' | 'current' | 'next' | 'ahead' | 'failed' | 'unreached';
-type OptionLook = 'open' | 'struck' | 'chosen' | 'dim' | 'correct' | 'wrong';
+// ORDER 310b — 'locked': det låsta svaret medan det väntar på avgörandet.
+type OptionLook = 'open' | 'struck' | 'chosen' | 'dim' | 'correct' | 'wrong' | 'locked';
 
 export function IncidentCard() {
   const sim = useSimState();
@@ -233,6 +241,8 @@ export function IncidentCard() {
       if (i < 0) return;
       // ORDER 286a — inga svar medan figurens klipp spelas i rummet.
       if ((active?.introLeft ?? 0) > 0) return;
+      // ORDER 310b — svaret är låst och väntar på avgörandet.
+      if (active?.pending) return;
       // ORDER 310 — Designs kvitt eller dubbelt: 1 stannar, 2 går vidare.
       if (active?.choosing) {
         if (i > 1) return;
@@ -249,7 +259,7 @@ export function IncidentCard() {
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
-  }, [mode, step, active?.struck, active?.choosing, dispatch, backed]);
+  }, [mode, step, active?.struck, active?.choosing, active?.pending, dispatch, backed]);
 
   if (!view || !step) return null;
   // ORDER 286a — raketen börjar i rummet: kortet öppnas när figurens klipp
@@ -264,6 +274,11 @@ export function IncidentCard() {
   const choosing = !!active?.choosing && view.mode === 'ask';
   // ORDER 310 — raketens egen ordning nedifrån och upp (incident.steps[].axis).
   const axes = axesOf(incident.steps);
+  // ORDER 310b — låset och väntan: svaret är låst men inte avgjort (motorns
+  // `active.pending`). Inget i kortet går att ändra, och om svaret var rätt
+  // eller fel syns först vid avgörandet.
+  const lockPhase = view.mode === 'ask' && !choosing ? pendingPhase(active) : null;
+  const lockedId = lockPhase ? active!.pending!.optionId : null;
 
   // ORDER 310 — Designs kvitt eller dubbelt: kolumnen med pyramiden, raden och valet.
   if (view.mode === 'ask' && active && !choosing) potBeforeRef.current = { key: `${incident.id}:${active.step}`, pot: potCredits(active.pot) };
@@ -275,7 +290,10 @@ export function IncidentCard() {
       return Math.max(0, Math.round((after - INCIDENTS.bestAnswerCredit) / DOUBLE_OR_NOTHING.growth));
     };
     const lastPot = held?.outcome.pot ?? null;
-    if (view.mode === 'right' && active) {
+    if (lockPhase && active) {
+      const pot = potCredits(active.pot);
+      stake = { phase: lockPhase, step: view.shown, potBefore: pot, potAfter: pot };
+    } else if (view.mode === 'right' && active) {
       const after = potCredits(active.pot);
       stake = { phase: 'right', step: view.shown, potBefore: before(view.shown, after), potAfter: after };
     } else if (choosing && active) {
@@ -294,7 +312,7 @@ export function IncidentCard() {
     }
   }
   const stakeLevels = (a: number, wrong: boolean): LevelState[] =>
-    incident.steps.map((_, i) => (i < a ? 'filled' : i === a ? (wrong ? 'cracked' : 'filled') : 'empty'));
+    incident.steps.map((_, i) => (i < a ? 'filled' : i === a ? (lockPhase ? 'current' : wrong ? 'cracked' : 'filled') : 'empty'));
 
   // Nedräkningen: stegets egen tid. Efter ett svar står den still i grått
   // på det värde den hade.
@@ -314,7 +332,8 @@ export function IncidentCard() {
     left = 0;
     total = secondsFor(sim, step);
   }
-  const isFrozen = view.mode !== 'ask';
+  // ORDER 310b — stegets klocka står medan svaret väntar på avgörandet.
+  const isFrozen = view.mode !== 'ask' || !!lockPhase;
   const lastFive = !isFrozen && left <= COUNTDOWN_ACCENT_SECONDS;
   const barShare = total > 0 ? Math.max(0, Math.min(1, left / total)) : 0;
 
@@ -349,7 +368,7 @@ export function IncidentCard() {
   };
   const lookFor = (id: string): OptionLook => {
     switch (view!.mode) {
-      case 'ask': return view!.struck.includes(id) ? 'struck' : 'open';
+      case 'ask': return lockedId ? (id === lockedId ? 'locked' : 'open') : view!.struck.includes(id) ? 'struck' : 'open';
       case 'right':
       case 'done': return id === view!.chosen ? 'chosen' : 'dim';
       case 'stopped': return 'dim';
@@ -399,6 +418,7 @@ export function IncidentCard() {
       data-step-axis={step.axis}
       data-mode={view.mode}
       data-choosing={choosing || undefined}
+      data-locked={lockPhase ?? undefined}
       aria-label={f(incident.text.title)}
     >
       <div className="nx-rocket-head">
@@ -442,7 +462,7 @@ export function IncidentCard() {
           eller dubbelt: kolumnen till höger om kortet, vid rätt och vid fel. */}
       {stake && (
         <PyramidMoment
-          key={`${incident.id}:${held ? `held@${held.outcome.at}` : 'active'}:${stake.step}`}
+          key={`${incident.id}:${held ? `held@${held.outcome.at}` : lockPhase ? 'wait' : 'active'}:${stake.step}`}
           phase={stake.phase}
           axes={axes}
           step={stake.step}
@@ -510,7 +530,8 @@ export function IncidentCard() {
               data-option-id={o.id}
               data-struck={view!.mode === 'ask' && struck}
               data-look={look}
-              disabled={view!.mode !== 'ask' || struck}
+              disabled={view!.mode !== 'ask' || struck || !!lockedId}
+              aria-pressed={lockedId ? look === 'locked' : undefined}
               title={struck ? s.struck : undefined}
               aria-keyshortcuts={String(i + 1)}
               onClick={() => dispatch({ type: 'ANSWER_INCIDENT', optionId: o.id })}
@@ -528,7 +549,13 @@ export function IncidentCard() {
         })}
       </div>}
 
-      {band ? (
+      {lockPhase ? (
+        // ORDER 310b — Designs knapp efter trycket: Låst, med låset.
+        <div className="nx-rocket-locked" data-testid="incident-locked" data-phase={lockPhase} role="status" aria-label={t.lockedNote}>
+          <span>{t.locked}</span>
+          <Lock size={18} aria-hidden />
+        </div>
+      ) : band ? (
         <div ref={bandRef} className="nx-rocket-band" data-kind={band.kind} data-testid="incident-band" aria-live="polite">
           {/* ORDER 290 — domen är Rätt eller Inte den här gången, aldrig Fel;
               förklaringen är lika vänlig i båda fallen. */}

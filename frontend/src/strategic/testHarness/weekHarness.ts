@@ -136,12 +136,16 @@ export function rankedChoice(scenarioId: string | null, answer: 'best' | 'worst'
 export function answerScenario(s: SimulationState, given: ScenarioAnswer = 'best'): SimulationState {
   // ORDER 270 — raketens aktuella steg besvaras direkt, som spelaren gör i
   // IncidentCard (samma åtgärd, ANSWER_INCIDENT). Nästa tick svarar på
-  // nästa steg.
+  // nästa steg. ORDER 310b — svaret avgörs INCIDENTS.verdictSeconds
+  // (verkliga sekunder) efter trycket; under väntan svarar harnessen inte.
   const active = s.incidents?.active;
   if (active) {
     const incident = incidentById(s.economy.businessClass, active.id);
     // ORDER 305 — kvitt eller dubbelt: KVITT_STOP_AFTER=n stannar och tar
     // potten efter n klarade steg (0, förvalt: går alltid vidare).
+    // ORDER 310b — ett låst svar väntar på avgörandet (INCIDENTS.verdictSeconds):
+    // spelaren svarar inte igen förrän det har kommit.
+    if (active.pending) return s;
     if (active.choosing) return reducer(s, { type: KVITT_STOP_AFTER > 0 && active.step >= KVITT_STOP_AFTER ? 'INCIDENT_STOP' : 'INCIDENT_GO' });
     const step = incident?.steps[active.step ?? 0];
     if (step) {

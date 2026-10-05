@@ -18,6 +18,7 @@ import { firstDayOfWeek } from '../calendar';
 import { DOUBLE_OR_NOTHING } from '../balance';
 import { incidentById } from '../incidentBank';
 import { canStartBack, rankedStepOption } from '../incidents';
+import { answerAndWait } from './verdict';
 import { PLAYERS } from '../../strategic/testHarness/randomness';
 import { computePlatesRemaining, takeFromStock, wasteAtDayEnd } from '../../strategic/simulation/stockPackages';
 import { pickParagraph } from '../../content/eveningAccount.en';
@@ -90,7 +91,8 @@ describe('ORDER 284 — klockan i Back your knowledge', () => {
     // ORDER 305b — svaret låses inte längre (säkerheten är borttagen). I
     // stället står stegets klocka medan spelaren väljer i kvitt eller dubbelt.
     const step = incidentById('vinbar', a.id)!.steps[a.step];
-    s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, 'best', a.struck, a.situation) });
+    // ORDER 310b — svaret avgörs efter låset och väntan.
+    s = answerAndWait(s, rankedStepOption(step, 'best', a.struck, a.situation));
     expect(s.incidents.active!.choosing).toBe(true);
     for (let i = 0; i < 300 && (s.incidents.active?.revealLeft ?? 0) > 0; i++) s = reducer(s, TICK);
     const waiting = s.incidents.active!.secondsLeft;
