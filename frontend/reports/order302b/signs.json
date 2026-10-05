@@ -1,0 +1,59 @@
+{
+  "source": "streetLooks.ts streetSignGeometry; villageEvening.ts LEVELS (dist, fov, figureScale)",
+  "figurePx": {
+    "street900": 68.8,
+    "block720": 32.9
+  },
+  "rows": [
+    {
+      "group": "student",
+      "sign": "backpack",
+      "topM": 0.36,
+      "tallM": 0.44,
+      "street900px": 15.8,
+      "street720px": 12.6,
+      "block900px": 9.4,
+      "block720px": 7.5
+    },
+    {
+      "group": "villager",
+      "sign": "cap",
+      "topM": 0.39,
+      "tallM": 0.06,
+      "street900px": 17.1,
+      "street720px": 13.7,
+      "block900px": 10.2,
+      "block720px": 8.2
+    },
+    {
+      "group": "tourist",
+      "sign": "sunhat",
+      "topM": 0.62,
+      "tallM": 0.135,
+      "street900px": 27.2,
+      "street720px": 21.7,
+      "block900px": 16.2,
+      "block720px": 13
+    },
+    {
+      "group": "gourmet",
+      "sign": "scarf",
+      "topM": 0.514,
+      "tallM": 0.485,
+      "street900px": 22.5,
+      "street720px": 18,
+      "block900px": 13.4,
+      "block720px": 10.8
+    },
+    {
+      "group": "business",
+      "sign": "shirt",
+      "topM": 0.387,
+      "tallM": 0.455,
+      "street900px": 17,
+      "street720px": 13.6,
+      "block900px": 10.1,
+      "block720px": 8.1
+    }
+  ]
+}

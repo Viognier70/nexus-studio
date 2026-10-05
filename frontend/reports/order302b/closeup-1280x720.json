@@ -1,0 +1,738 @@
+{
+  "viewport": "1280x720",
+  "save": "reports/order284/save-mandag-vinbaren.json, dayNumber + 4 (fredag)",
+  "errors": [],
+  "stops": [
+    {
+      "stop": "19.00",
+      "levels": [
+        {
+          "level": "street",
+          "camDistance": "42",
+          "clock": "19.05",
+          "street": {
+            "groups": {
+              "student": 4,
+              "villager": 4,
+              "tourist": 0,
+              "gourmet": 0,
+              "business": 0
+            },
+            "screen": [],
+            "sizes": [
+              1,
+              0,
+              1,
+              1
+            ],
+            "left": 0,
+            "right": 3,
+            "pausing": 0,
+            "gathering": 0,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-1900-gatan.jpg",
+          "crops": []
+        },
+        {
+          "level": "district",
+          "camDistance": "90",
+          "clock": "19.08",
+          "street": {
+            "groups": {
+              "student": 4,
+              "villager": 4,
+              "tourist": 0,
+              "gourmet": 0,
+              "business": 0
+            },
+            "screen": [
+              "villager:1:0@0.642,0.136",
+              "villager:3:0@-0.059,-0.797",
+              "student:4:0@-0.027,-0.747"
+            ],
+            "sizes": [
+              1,
+              0,
+              1,
+              1
+            ],
+            "left": 0,
+            "right": 3,
+            "pausing": 0,
+            "gathering": 0,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-1900-kvarteret.jpg",
+          "crops": []
+        },
+        {
+          "level": "district",
+          "target": "villager",
+          "camDistance": "90",
+          "clock": "19.10",
+          "street": {
+            "groups": {
+              "student": 4,
+              "villager": 8,
+              "tourist": 0,
+              "gourmet": 0,
+              "business": 0
+            },
+            "screen": [
+              "villager:1:0@0.363,0.601",
+              "villager:3:0@-0.131,-0.682",
+              "student:4:0@-0.111,-0.626",
+              "villager:2:0@0.571,-0.075",
+              "villager:2:0@1.081,-0.547"
+            ],
+            "sizes": [
+              1,
+              2,
+              1,
+              1
+            ],
+            "left": 0,
+            "right": 5,
+            "pausing": 0,
+            "gathering": 0,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-1900-kvarteret-panorerad.jpg",
+          "crops": []
+        }
+      ]
+    },
+    {
+      "stop": "19.30",
+      "levels": [
+        {
+          "level": "street",
+          "camDistance": "42",
+          "clock": "19.32",
+          "street": {
+            "groups": {
+              "student": 0,
+              "villager": 4,
+              "tourist": 0,
+              "gourmet": 0,
+              "business": 1
+            },
+            "screen": [
+              "villager:2:0@0.454,0.801",
+              "business:1:0@0.979,0.404"
+            ],
+            "sizes": [
+              1,
+              2,
+              0,
+              0
+            ],
+            "left": 1,
+            "right": 2,
+            "pausing": 0,
+            "gathering": 0,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-1930-gatan.jpg",
+          "crops": [
+            {
+              "group": "villager",
+              "item": "villager:2:0@0.454,0.801",
+              "x": 581,
+              "y": 577,
+              "file": "closeup-1280x720-1930-gatan-villager.png"
+            }
+          ]
+        },
+        {
+          "level": "street",
+          "target": "business",
+          "camDistance": "42",
+          "clock": "19.34",
+          "street": {
+            "groups": {
+              "student": 0,
+              "villager": 4,
+              "tourist": 0,
+              "gourmet": 9,
+              "business": 1
+            },
+            "screen": [
+              "villager:2:0@0.186,-0.286",
+              "villager:2:1@1.039,1.893",
+              "business:1:0@0.315,0.567",
+              "gourmet:2:0@-1.440,0.714"
+            ],
+            "sizes": [
+              2,
+              4,
+              0,
+              1
+            ],
+            "left": 4,
+            "right": 3,
+            "pausing": 0,
+            "gathering": 1,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-1930-gatan-panorerad.jpg",
+          "crops": [
+            {
+              "group": "business",
+              "item": "business:1:0@0.315,0.567",
+              "x": 403,
+              "y": 408,
+              "file": "closeup-1280x720-1930-gatan-panorerad-business.png"
+            }
+          ]
+        },
+        {
+          "level": "district",
+          "camDistance": "90",
+          "clock": "19.37",
+          "street": {
+            "groups": {
+              "student": 0,
+              "villager": 4,
+              "tourist": 0,
+              "gourmet": 9,
+              "business": 1
+            },
+            "screen": [
+              "villager:2:1@0.279,0.472",
+              "business:1:0@0.655,0.486",
+              "gourmet:1:0@0.541,-0.045",
+              "gourmet:2:0@0.521,-0.151",
+              "gourmet:4:0@0.537,-0.062",
+              "gourmet:2:0@0.598,-0.184"
+            ],
+            "sizes": [
+              2,
+              4,
+              0,
+              1
+            ],
+            "left": 4,
+            "right": 3,
+            "pausing": 0,
+            "gathering": 1,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-1930-kvarteret.jpg",
+          "crops": [
+            {
+              "group": "villager",
+              "item": "villager:2:1@0.279,0.472",
+              "x": 357,
+              "y": 340,
+              "file": "closeup-1280x720-1930-kvarteret-villager.png"
+            }
+          ]
+        },
+        {
+          "level": "district",
+          "target": "gourmet",
+          "camDistance": "90",
+          "clock": "19.39",
+          "street": {
+            "groups": {
+              "student": 0,
+              "villager": 4,
+              "tourist": 0,
+              "gourmet": 9,
+              "business": 1
+            },
+            "screen": [
+              "villager:2:1@0.113,0.883",
+              "business:1:0@0.616,1.381",
+              "gourmet:1:0@0.498,0.693",
+              "gourmet:2:0@0.473,0.378",
+              "gourmet:4:0@0.490,0.637",
+              "gourmet:2:0@0.517,0.134"
+            ],
+            "sizes": [
+              2,
+              4,
+              0,
+              1
+            ],
+            "left": 4,
+            "right": 3,
+            "pausing": 0,
+            "gathering": 1,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-1930-kvarteret-panorerad.jpg",
+          "crops": []
+        }
+      ]
+    },
+    {
+      "stop": "20.15",
+      "levels": [
+        {
+          "level": "street",
+          "camDistance": "42",
+          "clock": "20.31",
+          "street": {
+            "groups": {
+              "student": 12,
+              "villager": 20,
+              "tourist": 0,
+              "gourmet": 0,
+              "business": 4
+            },
+            "screen": [
+              "student:2:0@1.562,-0.803"
+            ],
+            "sizes": [
+              2,
+              5,
+              4,
+              3
+            ],
+            "left": 9,
+            "right": 5,
+            "pausing": 0,
+            "gathering": 0,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-2015-gatan.jpg",
+          "crops": []
+        },
+        {
+          "level": "street",
+          "target": "student",
+          "camDistance": "42",
+          "clock": "20.32",
+          "street": {
+            "groups": {
+              "student": 12,
+              "villager": 20,
+              "tourist": 0,
+              "gourmet": 0,
+              "business": 4
+            },
+            "screen": [
+              "villager:4:0@-1.078,0.677",
+              "villager:4:0@-1.418,0.233",
+              "villager:2:0@-0.134,-1.482",
+              "villager:2:0@-1.273,0.030",
+              "student:2:0@-1.415,0.244"
+            ],
+            "sizes": [
+              2,
+              5,
+              4,
+              3
+            ],
+            "left": 9,
+            "right": 5,
+            "pausing": 0,
+            "gathering": 0,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-2015-gatan-panorerad.jpg",
+          "crops": []
+        },
+        {
+          "level": "district",
+          "camDistance": "90",
+          "clock": "20.34",
+          "street": {
+            "groups": {
+              "student": 22,
+              "villager": 25,
+              "tourist": 0,
+              "gourmet": 3,
+              "business": 4
+            },
+            "screen": [
+              "villager:4:0@0.095,0.366",
+              "villager:4:0@-0.049,0.256",
+              "student:2:0@-1.003,1.089",
+              "villager:2:0@0.596,-0.089",
+              "villager:2:0@0.023,0.201",
+              "villager:3:0@-0.011,-0.613",
+              "student:3:0@2.433,0.889",
+              "student:2:0@-0.050,0.266",
+              "gourmet:2:0@0.775,-0.149",
+              "gourmet:1:0@0.948,1.368",
+              "student:3:0@0.038,-0.118"
+            ],
+            "sizes": [
+              3,
+              9,
+              7,
+              3
+            ],
+            "left": 13,
+            "right": 9,
+            "pausing": 0,
+            "gathering": 0,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-2015-kvarteret.jpg",
+          "crops": []
+        },
+        {
+          "level": "district",
+          "target": "student",
+          "camDistance": "90",
+          "clock": "20.37",
+          "street": {
+            "groups": {
+              "student": 22,
+              "villager": 21,
+              "tourist": 0,
+              "gourmet": 3,
+              "business": 4
+            },
+            "screen": [
+              "villager:4:0@1.370,0.530",
+              "student:2:0@0.684,0.445",
+              "villager:2:0@1.669,0.193",
+              "villager:2:0@1.258,0.413",
+              "villager:3:0@0.656,-0.515",
+              "student:2:0@1.382,0.526",
+              "gourmet:2:0@1.452,-0.176",
+              "gourmet:1:0@2.189,0.865",
+              "student:3:0@1.093,0.289"
+            ],
+            "sizes": [
+              3,
+              9,
+              7,
+              2
+            ],
+            "left": 13,
+            "right": 8,
+            "pausing": 0,
+            "gathering": 0,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-2015-kvarteret-panorerad.jpg",
+          "crops": []
+        }
+      ]
+    },
+    {
+      "stop": "21.00",
+      "levels": [
+        {
+          "level": "room",
+          "camDistance": "12",
+          "clock": "21.02",
+          "street": {
+            "groups": {
+              "student": 4,
+              "villager": 6,
+              "tourist": 0,
+              "gourmet": 3,
+              "business": 4
+            },
+            "screen": [
+              "student:2:0@-1.161,-0.035",
+              "villager:2:0@-0.301,-0.444",
+              "gourmet:3:0@2.302,0.474"
+            ],
+            "sizes": [
+              1,
+              5,
+              2,
+              0
+            ],
+            "left": 4,
+            "right": 4,
+            "pausing": 0,
+            "gathering": 0,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-2100-gatan.jpg",
+          "crops": []
+        },
+        {
+          "level": "room",
+          "target": "student",
+          "camDistance": "13",
+          "clock": "21.05",
+          "street": {
+            "groups": {
+              "student": 4,
+              "villager": 6,
+              "tourist": 0,
+              "gourmet": 0,
+              "business": 4
+            },
+            "screen": [
+              "student:2:0@1.735,-0.118"
+            ],
+            "sizes": [
+              1,
+              5,
+              1,
+              0
+            ],
+            "left": 4,
+            "right": 3,
+            "pausing": 0,
+            "gathering": 0,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-2100-gatan-panorerad.jpg",
+          "crops": []
+        },
+        {
+          "level": "room",
+          "camDistance": "12",
+          "clock": "21.07",
+          "street": {
+            "groups": {
+              "student": 6,
+              "villager": 16,
+              "tourist": 0,
+              "gourmet": 0,
+              "business": 4
+            },
+            "screen": [
+              "student:2:0@0.717,-0.482",
+              "villager:3:0@-1.452,-0.322"
+            ],
+            "sizes": [
+              1,
+              6,
+              3,
+              1
+            ],
+            "left": 7,
+            "right": 4,
+            "pausing": 0,
+            "gathering": 0,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-2100-kvarteret.jpg",
+          "crops": []
+        },
+        {
+          "level": "room",
+          "target": "student",
+          "camDistance": "12",
+          "clock": "21.09",
+          "street": {
+            "groups": {
+              "student": 4,
+              "villager": 16,
+              "tourist": 0,
+              "gourmet": 0,
+              "business": 5
+            },
+            "screen": [],
+            "sizes": [
+              2,
+              5,
+              3,
+              1
+            ],
+            "left": 6,
+            "right": 5,
+            "pausing": 0,
+            "gathering": 0,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-2100-kvarteret-panorerad.jpg",
+          "crops": []
+        }
+      ]
+    },
+    {
+      "stop": "21.45",
+      "levels": [
+        {
+          "level": "street",
+          "camDistance": "42",
+          "clock": "21.47",
+          "street": {
+            "groups": {
+              "student": 8,
+              "villager": 14,
+              "tourist": 0,
+              "gourmet": 0,
+              "business": 1
+            },
+            "screen": [
+              "business:1:0@-0.422,-0.870",
+              "villager:3:0@0.826,0.565",
+              "villager:1:1@0.841,0.898",
+              "villager:3:0@1.987,0.132"
+            ],
+            "sizes": [
+              3,
+              4,
+              4,
+              0
+            ],
+            "left": 5,
+            "right": 6,
+            "pausing": 0,
+            "gathering": 3,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-2145-gatan.jpg",
+          "crops": [
+            {
+              "group": "villager",
+              "item": "villager:3:0@0.826,0.565",
+              "x": 1057,
+              "y": 407,
+              "file": "closeup-1280x720-2145-gatan-villager.png"
+            }
+          ]
+        },
+        {
+          "level": "district",
+          "camDistance": "90",
+          "clock": "21.49",
+          "street": {
+            "groups": {
+              "student": 6,
+              "villager": 17,
+              "tourist": 0,
+              "gourmet": 0,
+              "business": 1
+            },
+            "screen": [
+              "villager:3:1@0.279,0.472",
+              "villager:1:1@0.515,0.329",
+              "villager:3:0@-0.518,0.462"
+            ],
+            "sizes": [
+              4,
+              4,
+              4,
+              0
+            ],
+            "left": 6,
+            "right": 6,
+            "pausing": 0,
+            "gathering": 4,
+            "wordAway": 0
+          },
+          "file": "closeup-1280x720-2145-kvarteret.jpg",
+          "crops": [
+            {
+              "group": "villager",
+              "item": "villager:3:1@0.279,0.472",
+              "x": 357,
+              "y": 340,
+              "file": "closeup-1280x720-2145-kvarteret-villager.png"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "blocked": [
+    {
+      "stop": "19.00",
+      "level": "kvarteret",
+      "item": "villager:1:0@0.642,0.136",
+      "over": [
+        "street-arrival",
+        "span.nx-mood-word",
+        "span.nx-mood-step",
+        "span.nx-mood-step"
+      ]
+    },
+    {
+      "stop": "19.00",
+      "level": "kvarteret (panorerad)",
+      "item": "villager:1:0@0.363,0.601",
+      "over": [
+        "player-sign",
+        "div.nx-venue-food",
+        "span.nx-venue-price",
+        "div.nx-venue-state"
+      ]
+    },
+    {
+      "stop": "19.30",
+      "level": "kvarteret",
+      "item": "business:1:0@0.655,0.486",
+      "over": [
+        "player-sign",
+        "div.nx-venue-state"
+      ]
+    },
+    {
+      "stop": "19.30",
+      "level": "kvarteret (panorerad)",
+      "item": "villager:2:1@0.113,0.883",
+      "over": [
+        "service-tabs",
+        "service-tab-room"
+      ]
+    },
+    {
+      "stop": "19.30",
+      "level": "kvarteret (panorerad)",
+      "item": "gourmet:1:0@0.498,0.693",
+      "over": [
+        "player-sign"
+      ]
+    },
+    {
+      "stop": "19.30",
+      "level": "kvarteret (panorerad)",
+      "item": "gourmet:2:0@0.473,0.378",
+      "over": [
+        "street-arrival"
+      ]
+    },
+    {
+      "stop": "19.30",
+      "level": "kvarteret (panorerad)",
+      "item": "gourmet:4:0@0.490,0.637",
+      "over": [
+        "street-arrival"
+      ]
+    },
+    {
+      "stop": "19.30",
+      "level": "kvarteret (panorerad)",
+      "item": "gourmet:2:0@0.517,0.134",
+      "over": [
+        "street-arrival",
+        "till-bar",
+        "span.nx-till-line",
+        "span.nx-till-caption"
+      ]
+    },
+    {
+      "stop": "20.15",
+      "level": "kvarteret",
+      "item": "villager:4:0@0.095,0.366",
+      "over": [
+        "span.nx-small",
+        "strong."
+      ]
+    },
+    {
+      "stop": "20.15",
+      "level": "kvarteret (panorerad)",
+      "item": "student:2:0@0.684,0.445",
+      "over": [
+        "street-arrival"
+      ]
+    },
+    {
+      "stop": "21.45",
+      "level": "gatan",
+      "item": "villager:1:1@0.841,0.898",
+      "over": [
+        "level-bar"
+      ]
+    }
+  ],
+  "note": "Helbilderna är konverterade till JPEG (kvalitet 80) efter körningen; utsnitten är PNG som skriptet skrev dem."
+}
