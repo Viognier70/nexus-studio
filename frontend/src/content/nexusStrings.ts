@@ -3467,7 +3467,9 @@ export const TABLE = {
     place: { sv: 'Grythyttan', en: 'Grythyttan' },
     line1: { sv: 'En säsong. Åtta veckor.', en: 'One season. Eight weeks.' },
     line2: { sv: 'Från midsommar till kräftskiva.', en: 'From midsummer to the crayfish party.' },
-    yours: { sv: 'Din vinbar', en: 'Your wine bar' },
+    // ORDER 308b (Anders 2026-10-05): nålen säger vinbar redan innan banken har
+    // öppnat verksamheten, så den lovar inte mer än så. Designs förslag var Din vinbar / Your wine bar.
+    yours: { sv: 'Vinbaren som kan bli din', en: 'The wine bar that could be yours' },
     empty: { sv: 'Än så länge är den tom.', en: 'For now, it is empty.' },
     fill: { sv: 'Det du vet fyller den.', en: 'What you know fills it.' },
     mentor: { sv: 'Ingrid, din mentor', en: 'Ingrid, your mentor' },
