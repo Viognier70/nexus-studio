@@ -113,4 +113,4 @@ Talen står i `frontend/reports/order303c/efter/`:
   - `order294IntroRent`: fyra hyresfria veckor;
   - `economy.test`: ingen hyresrad en hyresfri vecka, full hyra vecka 5;
   - `order276GuestFlow`: en kväll med rätta svar säljer mer; antalet gäster skiljer inte längre över en kväll.
-- **Typecheck, hela sviten och bygget:** se commit.
+- **Typecheck och bygget** är gröna. **Hela sviten:** 2 355 gröna och 16 överhoppade.
