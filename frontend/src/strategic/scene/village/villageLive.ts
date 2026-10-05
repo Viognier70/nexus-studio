@@ -8,6 +8,8 @@ export interface OnWayGroup {
   key: string;
   n: number;
   type: string;
+  // ORDER 302b — D5:s grupp (village/streetLooks.ts), så att etiketten säger det figuren bär.
+  group?: string;
   metres: number;
   x: number;
   z: number;
@@ -25,7 +27,7 @@ export interface VillageLiveState {
   turnedAway: number;
   // ORDER 302 — gatans folk just nu: sällskapen per storlek, sidan, pauserna
   // och samlingen vid dörren, och de som vände för ordet på gatan (ORDER 303 C).
-  street?: { sizes: number[]; left: number; right: number; pausing: number; gathering: number; wordAway: number };
+  street?: { groups?: Record<string, number>; screen?: string[]; sizes: number[]; left: number; right: number; pausing: number; gathering: number; wordAway: number };
 }
 
 let state: VillageLiveState = { arrived: {}, onWay: [], groupsWalking: 0, inside: {}, outHomes: [], turnedAway: 0 };
