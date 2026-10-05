@@ -562,7 +562,9 @@ export const STAR = {
   pavilion: 'gastronomiskateatern' as const,
   medal: 'guld' as const,
   reputationAtLeast: 0.2,
-  judgementAtLeast: 0.45,
+  // ORDER 303b — 0,45 före. Med den lägre uppsidan nådde 0,75 rätt per steg
+  // stjärnan i 12–20 % av säsongerna; med 0,42 i 25 % (298b:s mål 20–40 %).
+  judgementAtLeast: 0.42,
   minRocketsInWeek: 5,
   weeksToEarn: 3
 } as const;
@@ -1296,8 +1298,10 @@ export const MENU_ROCKETS = {
   // "Rätt svar ger högre dricks": varje klarat steg höjer dricksen hos
   // bordets gäster med så här stor andel av notan, och en hel raket med
   // så här mycket till. Gäller alla raketer.
-  tipBonusPerClearedStep: 0.03,
-  tipBonusOnRocketCleared: 0.04
+  // ORDER 303b (Anders 2026-10-05: "sänk belöningen för rätt svar") —
+  // hälften av förut (0,03 och 0,04; reports/order303b/kalib/V3).
+  tipBonusPerClearedStep: 0.015,
+  tipBonusOnRocketCleared: 0.02
 } as const;
 
 // ORDER 280 — Back your knowledge (Vision Owner 2026-09-29, Designs B1):
@@ -1585,7 +1589,8 @@ export const CONSEQUENCES = {
   right: {
     stepReputation: 0.3,
     clearedReputation: 1,
-    avecShare: 0.2
+    // ORDER 303b — 0,2 före (reports/order303b/kalib/V3).
+    avecShare: 0.07
   },
   street: { perWrong: -0.08, perCleared: 0.04, min: -0.4, max: 0.2, decayPerGameMinute: 0.004 },
   // ORDER 303 B — notan följer kunskapens lyft i stämningen (MOOD_BALANCE:
@@ -1594,7 +1599,9 @@ export const CONSEQUENCES = {
   // 1 + moodBillPerLiftUp × lyftet när det är positivt (uppåt mindre, så att
   // den skickliga spelarens kassa inte skenar; reports/order303/kalib).
   moodBillPerLift: 1.4,
-  moodBillPerLiftUp: 0.9,
+  // ORDER 303b (Anders 2026-10-05) — uppsidan sänkt från 0,9: de bästa
+  // spelarna slutar säsongen på 70 000–90 000 kr (reports/order303b/kalib/V1–V4).
+  moodBillPerLiftUp: 0.12,
   // ORDER 303 B — placeringen i byn räknas på kvällens nöjda gäster vid bord:
   // hos oss gästerna vars stämning var minst nöjd när de betalade
   // (MOOD_BALANCE.threshold.content); hos konkurrenterna gästerna gånger en
