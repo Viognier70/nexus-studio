@@ -54,7 +54,9 @@ Introduktionen i Måltidens hus har tre korta kort och raden om det dubbla grepp
 - Raden: *Det dubbla greppet: att hålla analys och upplevelse samtidigt, och handla. (Anders Crichton-Fock, tidigare Herdenstam)*
 - Länken "Läs mer" leder till Kunskapsgrunden. Citaten och källorna står där, inte i introduktionen.
 
-**Avvikelse:** ordern skriver raden med "(Anders Crichton-Fock)". Filens §1 säger att namnet står som "Crichton-Fock (tidigare Herdenstam)" första gången på en skärm, och introduktionen är en egen skärm. Därför står "(Anders Crichton-Fock, tidigare Herdenstam)". Beslut: behåll, eller stryk "tidigare Herdenstam" på just den raden.
+**Avvikelse:** ordern skriver raden med "(Anders Crichton-Fock)". Filens §1 säger att namnet står som "Crichton-Fock (tidigare Herdenstam)" första gången på en skärm, och introduktionen är en egen skärm. Därför står "(Anders Crichton-Fock, tidigare Herdenstam)".
+
+**Beslut 2026-10-05 (Anders):** namnformen "Anders Crichton-Fock (tidigare Herdenstam)" första gången är rätt, enligt avsnitt 1 i kunskapsgrunden. Raden står kvar som den är.
 
 ## 5. Förslag: raketen följer greppet (för beslut, inget byggt)
 
