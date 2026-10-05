@@ -148,6 +148,7 @@ Uppskattningen skrivs innan etappen börjar. Faktisk tid fylls i när etappen ä
 | Kvitt eller dubbelt, förslag | 305 | ~5: genomgång av raketens regler, potten och valet i simuleringen, harnessens val, två knappar på kortet, sex körningar (två varianter, tre val), rapport | 2 h | Variant A (kronorna i potten, personalens utfall vid stopp) bröt trappan | | — | 2026-10-05 | |
 | Kvitt eller dubbelt i spelet | 305b | ~6: potten och valet påslaget, säkerheten och det låsta svaret borttagna, portfolion, stjärnans räkning, kortet och pyramiden, nio tester om, kontrollen i spelarens flöde, rapport | 3 h | Kontrollen fann bandet "Tiden gick ut" efter Stanna; en måndag har få raketer, så kontrollen startar egna | | — | 2026-10-05 | |
 | Halva i trappan | 303c | ~5: sex rundor i harness (hyran, golvet, gästerna per steg, startkassan, de hyresfria veckorna), slutkörningen med 40 säsonger för halva, bankens text, rapport | 3 h | Spakar som verkar lika för alla flyttade inte halva; golvet gjorde "alltid fel" till 1:a; startkassan krockade med ett tidigare beslut | | — | 2026-10-05 | |
+| Konceptet och varukorgen, utan frågebanken | 307 | ~10: varornas nivå och konceptet, gästtyperna vid dörren, de två ryktena, leverantörerna och varorna, utrustningen i två steg och avec, butikens flikar, bokningsboken och skylten, harness med två korgar, rapport | 4 h | Turisternas betalningsvilja i bistro lyfte de bästa över målet; enkel stänger alltid | | — | 2026-10-05 | |
 
 ## Omräkning efter etapp 2
 

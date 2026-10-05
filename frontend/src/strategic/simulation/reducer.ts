@@ -3,7 +3,7 @@ import { guestMoodValue } from '../../sim/guestMood';
 import { buildMorningReview } from '../../sim/morningReview';
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
-import { EQUIPMENT_IDS, GOODS_SUPPLIER_IDS, equipmentOwned, equipmentSpec, equipmentUnlocked, supplierOwned, supplierPrice, supplierUnlocked, type EquipmentId, type GoodsSupplierId } from '../../sim/goods';
+import { EQUIPMENT_IDS, GOODS_SUPPLIER_IDS, equipmentOpened, equipmentOwned, equipmentSpec, equipmentUnlocked, supplierOwned, supplierPrice, supplierUnlocked, type EquipmentId, type GoodsSupplierId } from '../../sim/goods';
 import { CONSEQUENCES, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, canStartBack, closeIncidents, countDown, isIncidentOpen, maybeOpenIncident, planIncidents, resolveIncident, startBack, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
@@ -470,6 +470,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     // ORDER 307 — butikens flikar: en leverantör för krediter, utrustning för kassan.
     case 'BUY_SUPPLIER':
       return buySupplier(state, action.id);
+    case 'OPEN_EQUIPMENT':
+      return openEquipment(state, action.id);
     case 'BUY_EQUIPMENT':
       return buyEquipment(state, action.id);
     case 'SHOP_SLOT':
@@ -1361,10 +1363,24 @@ function buySupplier(state: SimulationState, id: string): SimulationState {
   return { ...s, goodsSuppliers: [...(s.goodsSuppliers ?? []), sid] };
 }
 
-// ORDER 307 — utrustningen öppnas med medaljen och köps för kassan.
+// ORDER 307 — krediterna öppnar utrustningen (en gång, medaljen krävs) …
+function openEquipment(state: SimulationState, id: string): SimulationState {
+  const eid = id as EquipmentId;
+  if (!EQUIPMENT_IDS.includes(eid) || equipmentOpened(state, eid) || !equipmentUnlocked(state, eid)) return state;
+  const price = equipmentSpec(eid).credits;
+  if (creditsOf(state) < price) return state;
+  let s: SimulationState = state;
+  for (let i = 0; i < price; i++) {
+    const axis = BACK_AXES.reduce((best, a) => (s.knowledgeCredits[a] > s.knowledgeCredits[best] ? a : best), BACK_AXES[0]);
+    s = debitQuestion(s, axis, null, 1);
+  }
+  return { ...s, equipmentOpened: [...(s.equipmentOpened ?? []), eid] };
+}
+
+// … och kassan köper den.
 function buyEquipment(state: SimulationState, id: string): SimulationState {
   const eid = id as EquipmentId;
-  if (!EQUIPMENT_IDS.includes(eid) || equipmentOwned(state, eid) || !equipmentUnlocked(state, eid)) return state;
+  if (!EQUIPMENT_IDS.includes(eid) || equipmentOwned(state, eid) || !equipmentOpened(state, eid)) return state;
   const price = equipmentSpec(eid).priceSek;
   if (state.cash < price) return state;
   const next: SimulationState = { ...state, ledger: [...state.ledger], equipment: [...(state.equipment ?? []), eid] };

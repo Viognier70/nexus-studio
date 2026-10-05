@@ -1490,7 +1490,7 @@ export const GUEST_TYPES = {
   // blir snittet 1,05.
   legacyBillFactor: { tight: 0.8, normal: 1, generous: 1.35, gold: 3 },
   // Sittiden gånger detta: studenten tar platsen en lång stund.
-  stayFactor: { student: 1.25, middle: 1, high: 1, social: 1, billionaire: 1, tourist: 1, gourmet: 1.1, business: 0.9 },
+  stayFactor: { student: 1.25, middle: 1, high: 1, social: 1, billionaire: 1, tourist: 1, gourmet: 1, business: 1 },
   // Nöjdheten vid ankomst plus detta: höginkomsttagaren förväntar sig mer.
   satisfactionOffset: { student: 0, middle: 0, high: -0.05, social: 0, billionaire: -0.05, tourist: 0, gourmet: -0.05, business: -0.05 },
   // Bokningsboken: andelen av kvällens väntade gäster per typ (studenter,
@@ -1537,11 +1537,16 @@ export const CONCEPT = {
     bistro: { student: 0.2, middle: 0.55, high: 0.25 },
     soigne: { student: 0.05, middle: 0.35, high: 0.6 }
   },
-  touristOfMiddle: { enkel: 0.1, bistro: 0.2, soigne: 0.3 },
+  // Bistro 0: med turisternas betalningsvilja (1,1) i bistro slutade de bästa
+  // på 94 000–96 000 kr, över målet 70 000–90 000 (reports/order307/forsta,
+  // probe/m2–m4). Turisterna kommer till soigné tills Anders beslutar.
+  touristOfMiddle: { enkel: 0.1, bistro: 0, soigne: 0.3 },
   gourmetOfHigh: { enkel: 0.3, bistro: 0.5, soigne: 0.55 },
   // Per koncept: krogarnas rykte ligger omkring 0,3 för den som svarar väl
-  // (reports/order303c), så bistro märker det knappt och soigné kräver mest.
-  highFullAt: { enkel: 0, bistro: 0.2, soigne: 0.4 },
+  // (reports/order303c); soigné kräver mest.
+  // Bistro 0: med 0,2 kom färre krävande gäster till den som alltid svarar
+  // fel, och den blev 1:a en kväll vecka 3. Konceptets rykte styr soigné.
+  highFullAt: { enkel: 0, bistro: 0, soigne: 0.4 },
   reputationDriftPerDay: 0.1
 } as const;
 
@@ -1565,11 +1570,13 @@ export const GOODS_SUPPLIERS = {
 // som utrustningen öppnar (flambering, ostvagnen …) kommer med frågorna i ORDER 306.
 export const EQUIPMENT = {
   section: 'Verksamhetsklasserna',
-  vinkyl: { tier: 'soigne', priceSek: 15000, pavilion: 'stensota', medal: 'brons' },
-  flamberingsvagn: { tier: 'soigne', priceSek: 12000, pavilion: 'metodkoket', medal: 'silver' },
-  ostvagn: { tier: 'bistro', priceSek: 9000, pavilion: 'kalastorget', medal: 'silver' },
-  avecvagn: { tier: 'bistro', priceSek: 8000, pavilion: 'stensota', medal: 'silver', avecShare: 0.2 },
-  humidor: { tier: 'soigne', priceSek: 14000, pavilion: 'stensota', medal: 'guld' }
+  // ORDER 304 §6: "Krediterna köper tillgången, och kassan köper saken" —
+  // credits öppnar (en gång), priceSek köper.
+  vinkyl: { tier: 'soigne', priceSek: 15000, pavilion: 'stensota', medal: 'brons', credits: 20 },
+  flamberingsvagn: { tier: 'soigne', priceSek: 12000, pavilion: 'metodkoket', medal: 'silver', credits: 40 },
+  ostvagn: { tier: 'bistro', priceSek: 9000, pavilion: 'kalastorget', medal: 'silver', credits: 30 },
+  avecvagn: { tier: 'bistro', priceSek: 8000, pavilion: 'stensota', medal: 'silver', credits: 30, avecShare: 0.2 },
+  humidor: { tier: 'soigne', priceSek: 14000, pavilion: 'stensota', medal: 'guld', credits: 60 }
 } as const;
 
 // ORDER 290 — kvällens ekonomi (Vision Owner 2026-09-30, provspel):

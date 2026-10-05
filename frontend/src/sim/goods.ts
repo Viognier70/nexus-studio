@@ -14,7 +14,7 @@ export const GOODS_SUPPLIER_IDS: readonly GoodsSupplierId[] = ['grossisten', 'fi
 export type EquipmentId = 'vinkyl' | 'flamberingsvagn' | 'ostvagn' | 'avecvagn' | 'humidor';
 // Tabellerna i balance.ts utan fältet section.
 const SUPPLIER_SPEC = GOODS_SUPPLIERS as unknown as Record<Exclude<GoodsSupplierId, 'grossisten'>, { pavilion: PavilionKey; medal: string; credits: number }>;
-const EQUIPMENT_SPEC = EQUIPMENT as unknown as Record<EquipmentId, { tier: Tier; priceSek: number; pavilion: PavilionKey; medal: string; avecShare?: number }>;
+const EQUIPMENT_SPEC = EQUIPMENT as unknown as Record<EquipmentId, { tier: Tier; priceSek: number; pavilion: PavilionKey; medal: string; credits: number; avecShare?: number }>;
 export function equipmentSpec(id: EquipmentId) {
   return EQUIPMENT_SPEC[id];
 }
@@ -103,9 +103,28 @@ export function ownedEquipment(state: Pick<SimulationState, 'equipment'>): Equip
 export function equipmentOwned(state: Pick<SimulationState, 'equipment'>, id: EquipmentId): boolean {
   return ownedEquipment(state).includes(id);
 }
+// Medaljen öppnar stenen; krediterna öppnar saken (en gång, equipmentOpened);
+// kassan köper den (equipmentOwned).
 export function equipmentUnlocked(state: Pick<SimulationState, 'medals'>, id: EquipmentId): boolean {
   const e = EQUIPMENT_SPEC[id];
   return medalOpens(state, e.pavilion, e.medal);
+}
+export function equipmentOpened(state: Pick<SimulationState, 'equipmentOpened' | 'equipment'>, id: EquipmentId): boolean {
+  return (state.equipmentOpened ?? []).includes(id) || equipmentOwned(state, id);
+}
+
+// Stenens läge (som butikens förmågor): din, öppen, krediterna räcker inte, låst.
+export type GoodsStone = 'owned' | 'open' | 'short' | 'locked';
+export function supplierStone(state: SimulationState, id: GoodsSupplierId, credits: number): GoodsStone {
+  if (supplierOwned(state, id)) return 'owned';
+  if (!supplierUnlocked(state, id)) return 'locked';
+  return credits >= supplierPrice(id) ? 'open' : 'short';
+}
+export function equipmentStone(state: SimulationState, id: EquipmentId, credits: number): GoodsStone {
+  if (equipmentOwned(state, id)) return 'owned';
+  if (!equipmentUnlocked(state, id)) return 'locked';
+  if (equipmentOpened(state, id)) return state.cash >= EQUIPMENT_SPEC[id].priceSek ? 'open' : 'short';
+  return credits >= EQUIPMENT_SPEC[id].credits ? 'open' : 'short';
 }
 // ORDER 307 — avecvagnen öppnar avec (balance.ts EQUIPMENT.avecvagn).
 export function avecShareFor(state: Pick<SimulationState, 'equipment'>): number {

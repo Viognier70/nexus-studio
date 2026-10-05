@@ -26,7 +26,7 @@ const SRC = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 // Egennamn och interna nycklar som får innehålla å, ä, ö.
 const ALLOWED = [
-  'Grythyttan', 'Hjälmaren', 'Hjälmarens', 'Örebro', 'Bergslagen', 'Bergslagens', 'Nora', 'Sävsjön',
+  'Grythyttan', 'Västerbotten', 'Hjälmaren', 'Hjälmarens', 'Örebro', 'Bergslagen', 'Bergslagens', 'Nora', 'Sävsjön',
   'Måltidens hus', 'Måltidens Hus', 'Måltidsbiblioteket', 'Metodköket', 'Stensöta', 'Kalastorget', 'Gastronomiska Teatern',
   'Björken', 'Prästgatans krog', 'Bergsmansöl', 'Torgets vinkällare', 'prästgatans', 'bergsmansöl', 'vinkällare',
   // ORDER 297 — byns krogar (Designs Byn i kvällsljus).

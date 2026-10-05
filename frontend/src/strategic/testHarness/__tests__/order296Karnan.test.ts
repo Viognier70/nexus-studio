@@ -29,8 +29,9 @@ import { EXAM } from '../../../sim/balance';
 import { hashKey } from '../../util/hash';
 import { reputationHoldsGuests } from '../../simulation/arrivals';
 import { TASTING } from '../../../sim/balance';
+import { conceptTonight } from '../../simulation/guestTypes';
 
-type PlayerId = 'mentorn' | 'klok' | 'per' | 'stjarna' | 'rimlig' | 'halva' | 'halvbra' | 'slarvig';
+type PlayerId = 'mentorn' | 'klok' | 'per' | 'stjarna' | 'rimlig' | 'halva' | 'halvbra' | 'slarvig' | 'enkel' | 'soigne';
 // Den rimliga köper baspaketet bara när lagret inte räcker till bokningen
 // (fyller på); mentorn köper det varje morgon och svarar bäst; den halva
 // svarar rätt på varannan raket hela vägen; den halvbra svarar alltid fel;
@@ -74,7 +75,14 @@ function nextStarExam(s: SimulationState): MorningPlan['exams'] {
   if (!next) return [];
   return [{ pavilion: next.pavilion, correct: correctCount(s, next.pavilion === 'gastronomiskateatern' ? STAR_SKILL.theatre : STAR_SKILL.other) }];
 }
+// ORDER 307 (ORDER 304 §7) — konceptet: två spelare som köper en enkel
+// respektive soigné varukorg varje morgon (sim/goods.ts conceptOf), med
+// ROCKET_SKILL rätt per steg. Korgarna ger nivån 0,31 och 1,48 på skalan 0–2.
+const SIMPLE_BASKET: Record<string, number> = { 'root-soup': 14, 'lentil-plate': 12, 'chicken-plate': 8, 'dairy-dessert': 6, 'lingon-sorbet': 4, 'beer-pairing': 20, 'alcohol-free-glass': 8, 'house-wine-glass': 10 };
+const SOIGNE_BASKET: Record<string, number> = { 'game-plate': 16, 'lamb-plate': 12, 'chanterelle-toast': 8, 'fine-wine-glass': 30, 'fine-wine-bottle': 4, 'alcohol-free-glass': 6 };
 const PLANS: Record<PlayerId, (s: SimulationState) => MorningPlan> = {
+  enkel: () => ({ stock: 'none', scenarioAnswer: 'skill', actions: (s) => [{ type: 'BUY_ITEMS', items: SIMPLE_BASKET }, ...hand(s)] }),
+  soigne: () => ({ stock: 'none', scenarioAnswer: 'skill', actions: (s) => [{ type: 'BUY_ITEMS', items: SOIGNE_BASKET }, ...hand(s)] }),
   mentorn: () => ({ actions: hand }),
   // ORDER 296c (Vision Owner 2026-10-02): "en spelare som väljer klokt på
   // nålarna och i butiken, och en som låter Per välja allt". Båda har
@@ -104,7 +112,7 @@ function withTasting(s: SimulationState, plan: MorningPlan): MorningPlan {
 }
 
 interface Week { week: number; credits: number; resultSek: number; revenueSek: number; rentSek: number; wagesSek: number; cashEnd: number; targetSek: number; targetHit: boolean; renegotiatedNow: boolean; closedNow: boolean }
-interface Morning { week: number; weekday: string; needMin: number; capacityMin: number; backlogMin: number; hand: boolean; booked: number; rep: number }
+interface Morning { week: number; weekday: string; needMin: number; capacityMin: number; backlogMin: number; hand: boolean; booked: number; rep: number; concept: string | null }
 
 function season(seed: number, player: PlayerId, weeks: number, start: number | null) {
   let s: SimulationState = makeNewGameState(seed);
@@ -127,7 +135,7 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
     if (cal.isServiceDay && s.economy.businessClass) {
       const m = playMorning(s, plan);
       const mp = misePlan(m);
-      mornings.push({ week: cal.week, weekday: cal.weekday, needMin: mp.needMin, capacityMin: mp.capacityMin, backlogMin: mp.backlogMin, hand: mp.extraHand, booked: mp.booked, rep: s.reputation });
+      mornings.push({ week: cal.week, weekday: cal.weekday, needMin: mp.needMin, capacityMin: mp.capacityMin, backlogMin: mp.backlogMin, hand: mp.extraHand, booked: mp.booked, rep: s.reputation, concept: conceptTonight(m) });
     }
     s = playDay(s, plan).state;
     const st = s.economy.lastSettlement;
@@ -164,7 +172,7 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
     // Prövning av tal i minnet: KARNAN_VARIANT='{"INCIDENTS":{"wrongCashShare":1}}'.
     const balance = await import('../../../sim/balance');
     for (const [k, v] of Object.entries(JSON.parse(process.env.KARNAN_VARIANT ?? '{}') as Record<string, Record<string, unknown>>)) Object.assign((balance as unknown as Record<string, Record<string, unknown>>)[k], v);
-    const all: PlayerId[] = ['mentorn', 'klok', 'per', 'stjarna', 'rimlig', 'halva', 'halvbra', 'slarvig'];
+    const all: PlayerId[] = ['mentorn', 'klok', 'per', 'stjarna', 'rimlig', 'halva', 'halvbra', 'slarvig', 'enkel', 'soigne'];
     // KARNAN_PLAYERS=halva,rimlig kör bara de spelarna (kalibreringen).
     const players = process.env.KARNAN_PLAYERS ? all.filter((p) => process.env.KARNAN_PLAYERS!.split(',').includes(p)) : all;
     const result: Record<string, unknown> = {};
@@ -201,6 +209,8 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
         goldWeeks: runs.map((r) => r.goldWeek),
         meanRepAtSettlement: Array.from({ length: weeks }, (_, i) => { const xs = runs.map((r) => r.starWeeks[i]?.reputation).filter((x): x is number => x !== undefined); return +(xs.reduce((a, b) => a + b, 0) / Math.max(1, xs.length)).toFixed(3); }),
         meanJudgement: Array.from({ length: weeks }, (_, i) => { const xs = runs.map((r) => r.starWeeks[i]?.judgement).filter((x): x is number => x !== undefined); return +(xs.reduce((a, b) => a + b, 0) / Math.max(1, xs.length)).toFixed(2); }),
+        // ORDER 307 — kvällarnas koncept (andel per koncept).
+        concepts: Object.fromEntries(['enkel', 'bistro', 'soigne'].map((c) => [c, Math.round((allMornings.filter((x) => x.concept === c).length / Math.max(1, allMornings.length)) * 100) / 100])),
         byWeek, repByWeek, mise, runs
       };
     }

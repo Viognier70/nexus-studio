@@ -227,3 +227,17 @@
   .nx-mood-fill { transition: none; }
   .nx-mood-lost { animation: none; opacity: 0; }
 }
+
+/* ORDER 307 — butikens flikar och krogens klass (Designs D5 shopTabs.ts TAB_STYLE och VENUE_CLASS). */
+.nx-shop-tabs { display: inline-flex; gap: 2px; padding: 2px; margin-top: calc(6 * var(--nx-u)); border-radius: 999px; background: rgba(245,234,213,.08); }
+.nx-shop-tab { min-height: 40px; padding: 0 calc(14 * var(--nx-u)); border: 0; border-radius: 999px; background: transparent; color: #f4e6cc; font: inherit; font-size: max(13px, calc(14 * var(--nx-u))); cursor: pointer; }
+.nx-shop-tab[data-active="true"] { background: #e8b93a; color: #2a1c13; font-weight: 600; }
+.nx-shop-class { display: flex; align-items: center; gap: calc(10 * var(--nx-u)); flex-wrap: wrap; margin: calc(4 * var(--nx-u)) 0 calc(8 * var(--nx-u)); }
+.nx-shop-class-steps { display: inline-flex; gap: 4px; }
+.nx-shop-class-step { padding: 2px calc(10 * var(--nx-u)); border-radius: 999px; border: 1px solid rgba(244,230,204,.35); color: rgba(244,230,204,.75); font-size: max(12px, calc(13 * var(--nx-u))); }
+.nx-shop-class-step[data-filled="true"] { border-color: #e8b93a; }
+.nx-shop-class-step[data-current="true"] { background: #e8b93a; color: #2a1c13; font-weight: 600; }
+.nx-shop-goods { min-width: 0; overflow-y: auto; }
+.nx-shop-goods-stones { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: calc(8 * var(--nx-u)); }
+.nx-shop-list-intro { margin: 0 0 calc(8 * var(--nx-u)); }
+

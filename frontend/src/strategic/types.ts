@@ -1669,6 +1669,8 @@ export interface SimulationState {
   // rummet (sim/goods.ts), och ryktet per koncept.
   goodsSuppliers?: string[];
   equipment?: string[];
+  // Utrustning som krediterna har öppnat men kassan ännu inte köpt.
+  equipmentOpened?: string[];
   reputationByTier?: Record<import('../sim/goods').Tier, number>;
   // ORDER 296c — stjärnan (balance.ts STAR): hålls den, och veckorna i rad på nivån.
   star?: { held: boolean; weeksQualified: number; earnedWeek: number | null; lostWeek: number | null };
@@ -1889,6 +1891,7 @@ export type SimAction =
   | { type: 'INCIDENT_STOP' }
   // ORDER 307 — butikens flikar: en leverantör (krediter) och utrustning (kassan).
   | { type: 'BUY_SUPPLIER'; id: string }
+  | { type: 'OPEN_EQUIPMENT'; id: string }
   | { type: 'BUY_EQUIPMENT'; id: string }
   | { type: 'INCIDENT_GO' }
   | { type: 'END_EVENING' }

@@ -96,23 +96,24 @@ describe('ORDER 278 — strömmen i stunden', () => {
 
 describe('ORDER 278 — det som tar slut ger missnöjda gäster', () => {
   it('gästen som ville ha en rätt som tagit slut får en annan och blir missnöjd', () => {
-    // Fisken är slut (noll kvar på menyn), kycklingen finns.
-    let s = open({ 'fish-plate': 1, 'chicken-plate': 6, 'house-wine-glass': 6 });
-    s = { ...s, day: { ...s.day, platesRemaining: { ...s.day.platesRemaining, 'fish-plate': 0 } } };
+    // Lammet är slut (noll kvar på menyn), kycklingen finns. ORDER 307 — förut
+    // fisken, som nu kommer från fiskaren.
+    let s = open({ 'lamb-plate': 1, 'chicken-plate': 6, 'house-wine-glass': 6 });
+    s = { ...s, day: { ...s.day, platesRemaining: { ...s.day.platesRemaining, 'lamb-plate': 0 } } };
     for (let i = 0; i < 400; i++) {
       const g = { ...makeGuest(0), state: 'dining' as const, seatIndex: 2 };
       const p = profileFor(SEED, g);
       if (p.diet !== 'any' || p.allergy || p.wallet !== 'generous') continue;
       const draft = structuredClone(s);
       const before = g.satisfaction;
-      // Högsta slumpen väljer den dyraste rätten för en generös plånbok: fisken.
+      // Högsta slumpen väljer den dyraste rätten för en generös plånbok: lammet.
       const order = orderForGuest(draft, g, () => 0.999);
       if (order.kind === 'served' && order.dishId === 'chicken-plate' && draft.eventStream.some((e) => e.kind === 'guest_substituted')) {
         expect(g.satisfaction).toBeCloseTo(before + SERVICE_STREAM.soldOutSatisfaction, 9);
         return;
       }
     }
-    throw new Error('ingen gäst ville ha fisken');
+    throw new Error('ingen gäst ville ha lammet');
   });
 });
 

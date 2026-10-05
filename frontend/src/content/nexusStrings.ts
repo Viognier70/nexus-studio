@@ -2140,14 +2140,18 @@ export const TABLE = {
       middle: { sv: 'Par och familjer från byn', en: 'Couples and families from the village' },
       high: { sv: 'Bilar från Örebro och Karlstad', en: 'Cars from Örebro and Karlstad' },
       social: { sv: (name: string) => name, en: (name: string) => name },
-      walkIns: { sv: 'Utan bokning', en: 'Walk-ins' }
+      walkIns: { sv: 'Utan bokning', en: 'Walk-ins' },
+      // ORDER 307 — med kvällens koncept.
+      conceptMiddle: { sv: 'Bybor och turister', en: 'Villagers and tourists' },
+      conceptHigh: { sv: 'Gourmeter och affärsfolk', en: 'Gourmets and business guests' }
     },
     bookNote: {
       student: { sv: 'Billig öl · tar platsen länge', en: 'Cheap beer · keep the table a long time' },
       middle: { sv: 'Den vanliga notan', en: 'The usual bill' },
       high: { sv: 'Frågar efter vinlistan · förväntar sig mer', en: 'Ask for the wine list · expect more' },
       social: { sv: 'Hälsar på alla · tar med sig byn om hen trivs', en: 'Greets everyone · brings the village if they enjoy it' },
-      walkIns: { sv: 'Kommer när det finns plats', en: 'Come when there is room' }
+      walkIns: { sv: 'Kommer när det finns plats', en: 'Come when there is room' },
+      conceptHigh: { sv: 'Betalar mest · förlåter minst', en: 'Pay the most · forgive the least' }
     },
     bookNoteBuzz: {
       sv: (name: string, up: boolean) => up ? `${name} talade gott om er: fler gäster i kväll.` : `${name} talade illa om er: färre gäster i kväll.`,
@@ -3257,13 +3261,9 @@ export const TABLE = {
     equipmentTab: { sv: 'Utrustning', en: 'Equipment' },
     suppliersIntro: { sv: 'Leverantörerna ger krogen nya varor i morgonens inköp. De öppnas med en medalj och betalas med krediter.', en: 'Suppliers bring new goods to the morning purchase. They open with a medal and are paid in credits.' },
     equipmentIntro: { sv: 'Utrustningen köps för kassan, står i rummet och lyfter krogens koncept.', en: 'Equipment is bought with cash, stands in the room and lifts the restaurant’s concept.' },
-    owned: { sv: 'Din', en: 'Yours' },
     open: { sv: 'Öppen från start', en: 'Open from the start' },
-    needs: { sv: (medal: string, pavilion: string) => `Kräver ${medal} i ${pavilion}`, en: (medal: string, pavilion: string) => `Needs ${medal} in ${pavilion}` },
     buyCredits: { sv: (n: number) => `Öppna för ${n} krediter`, en: (n: number) => `Open for ${n} credits` },
     buyCash: { sv: (kr: string) => `Köp för ${kr} kr`, en: (kr: string) => `Buy for ${kr} kr` },
-    goods: { sv: (list: string) => `Varor: ${list}`, en: (list: string) => `Goods: ${list}` },
-    lifts: { sv: (tier: string) => `Lyfter mot ${tier}`, en: (tier: string) => `Lifts towards ${tier}` },
     equipmentLedger: { sv: (name: string) => `Utrustning: ${name}`, en: (name: string) => `Equipment: ${name}` },
     supplier: {
       sv: {
@@ -3301,6 +3301,30 @@ export const TABLE = {
       sv: { enkel: 'Enkel', bistro: 'Bistro', soigne: 'Soigné' } as Record<string, string>,
       en: { enkel: 'Simple', bistro: 'Bistro', soigne: 'Soigné' } as Record<string, string>
     },
+    // Designs ordval (D5 foljderStrings.ts shop.*).
+    classTitle: { sv: 'Krogens klass', en: 'Your venue’s class' },
+    classNote: { sv: 'Det du tar in avgör klassen, gästerna och frågorna.', en: 'What you bring in sets your class, your guests and their questions.' },
+    stone: {
+      sv: { owned: 'Din', open: 'Öppen', short: 'Räcker inte', locked: 'Låst' } as Record<string, string>,
+      en: { owned: 'Yours', open: 'Available', short: 'Not enough', locked: 'Locked' } as Record<string, string>
+    },
+    bringsLabel: { sv: 'Tar in:', en: 'Brings in:' },
+    questionsLabel: { sv: 'Nya frågor om', en: 'New questions on' },
+    questionsLater: { sv: 'Frågorna kommer med frågebanken.', en: 'The questions come with the question bank.' },
+    pullsLabel: { sv: 'Drar mot', en: 'Pulls towards' },
+    topic: {
+      sv: { fish: 'fisk', wine: 'vin', cheese: 'ost', charcuterie: 'chark', spirits: 'sprit', kitchen: 'köket', cigar: 'cigarrer' } as Record<string, string>,
+      en: { fish: 'fish', wine: 'wine', cheese: 'cheese', charcuterie: 'charcuterie', spirits: 'spirits', kitchen: 'the kitchen', cigar: 'cigars' } as Record<string, string>
+    },
+    unlockMedal: { sv: (medal: string, pav: string, n: number) => `Öppnas med ${medal}-medaljen i ${pav} och ${n} krediter`, en: (medal: string, pav: string, n: number) => `Unlocked with the ${medal} medal in ${pav} and ${n} credits` },
+    payTill: { sv: (kr: string) => `Köp för ${kr} kr ur kassan`, en: (kr: string) => `Buy for ${kr} kr from the till` },
+    payPurchases: { sv: 'Varorna betalas i morgonens inköp.', en: 'The goods are paid for in the morning purchase.' },
+    ownedSupplier: { sv: 'Levererar från morgon', en: 'Delivers from tomorrow' },
+    ownedEquipment: { sv: 'Står i rummet', en: 'In the room' },
+    locked: { sv: 'Låst', en: 'Locked' },
+    shortCredits: { sv: 'Krediterna räcker inte', en: 'Not enough credits' },
+    shortCash: { sv: 'Kassan räcker inte', en: 'Not enough in the till' },
+    done: { sv: 'Klar för i kväll', en: 'Ready for tonight' },
     tonight: { sv: (tier: string) => `I kväll: ${tier}`, en: (tier: string) => `Tonight: ${tier}` },
     tonightNote: { sv: 'Konceptet följer varukorgen: det du köper in avgör vilka gäster som kommer.', en: 'The concept follows the basket: what you buy decides which guests come.' }
   },
