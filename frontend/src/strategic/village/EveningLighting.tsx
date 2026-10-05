@@ -90,7 +90,24 @@ export function nightFromEvening(e: number): number {
   return t * t * (3 - 2 * t);
 }
 
-export function EveningLighting({ e, level: fixedLevel }: { e: number; level?: number }) {
+/** Ljusets värden en bildruta: halvklotet, månen och exponeringen på kamerans avstånd d.
+ *  gain är öppningens eget ljus (ORDER 308b, opening/openingLight.ts); utan den är värdena spelets kvällsljus. */
+export function eveningLightAt(
+  sky: SkyNow,
+  d: number,
+  level: number,
+  gain?: (d: number) => { light: number; exposure: number }
+): { hemi: number; moon: number; exposure: number } {
+  const g = gain ? gain(d) : null;
+  const LL = level * levelLight(d) * paletteScale(d) * (g ? g.light : 1);
+  return {
+    hemi: sky.hemi * LL,
+    moon: sky.moonI * (0.5 + 0.5 * LL),
+    exposure: sky.exposure * (1 + VILLAGE_LIGHT.exposurePerLevel * (level - 1)) * (g ? g.exposure : 1)
+  };
+}
+
+export function EveningLighting({ e, level: fixedLevel, gain }: { e: number; level?: number; gain?: (d: number) => { light: number; exposure: number } }) {
   const { scene, gl } = useThree();
   const { actualRef } = useCamera();
   // ORDER 308 — öppningen sätter byns ljusnivå själv (oppningManus VILLAGE_LIGHT_LEVEL).
@@ -116,18 +133,18 @@ export function EveningLighting({ e, level: fixedLevel }: { e: number; level?: n
   useFrame(() => {
     const d = actualRef.current.distance;
     const focus = actualRef.current.focus;
-    const LL = level * levelLight(d) * paletteScale(d);
+    const L = eveningLightAt(sky, d, level, gain);
     scene.background = sky.bg;
     fog.color.copy(sky.bg);
     fog.near = d * 1.3;
     fog.far = d * 2.6 + 160;
-    gl.toneMappingExposure = sky.exposure * (1 + VILLAGE_LIGHT.exposurePerLevel * (level - 1));
+    gl.toneMappingExposure = L.exposure;
     const h = hemi.current;
-    if (h) { h.color.copy(sky.hemiSky); h.groundColor.copy(sky.hemiGround); h.intensity = sky.hemi * LL; }
+    if (h) { h.color.copy(sky.hemiSky); h.groundColor.copy(sky.hemiGround); h.intensity = L.hemi; }
     const m = moon.current;
     if (m) {
       m.color.copy(sky.moon);
-      m.intensity = sky.moonI * (0.5 + 0.5 * LL);
+      m.intensity = L.moon;
       // Månens skugga följer kameran, så att skuggan är skarp på varje nivå.
       const R = clamp(d * 0.95, 30, MOON_SHADOW_MAX_M);
       const ss = Math.max(1, R / 140);

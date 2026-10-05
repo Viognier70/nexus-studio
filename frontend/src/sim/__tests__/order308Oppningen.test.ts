@@ -184,6 +184,8 @@ describe('ORDER 308 — 6. strängarna', () => {
     for (const key of new Set([...OPENING_KEYS, 'opening.place', 'opening.yours', 'opening.empty', 'opening.fill', 'opening.mentor', 'opening.goal'])) {
       const k = key.replace('opening.', '');
       expect(OPENING_STRINGS[key], key).toBeDefined();
+      // ORDER 308b: nålen över krogen har Anders text, inte Designs (order308bOppningen.test.tsx).
+      if (key === 'opening.yours') continue;
       expect(sv[k], key).toBe(OPENING_STRINGS[key].sv);
       expect(en[k], key).toBe(OPENING_STRINGS[key].en);
     }

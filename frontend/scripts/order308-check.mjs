@@ -14,9 +14,14 @@
 // som fel (öppningen får inte hämta något, t.ex. three.js från ett CDN).
 // Tiden läses ur överläggets data-t (öppningens klocka, OpeningSequence.tsx),
 // inte ur väggklockan: med långsam rendering går öppningens tid långsammare.
-// Utdata: reports/<REPORT_ORDER|order308>/check.json och oppning-*.png.
+// ORDER 308b: nålen över krogen heter Vinbaren som kan bli din / The wine bar
+// that could be yours (summary.pinVenue, summary.english); E. den som har sett
+// öppningen ser den igen och kan hoppa över direkt (summary.returning*). Ljuset
+// mot Designs skärmar mäts av scripts/order308b-ljus.mjs ur skärmarna här.
+// FLOWS=full,skip,reduced,english,returning väljer flödena (förval alla).
+// Utdata: reports/<REPORT_ORDER|order308b>/check.json och oppning-*.png.
 //
-//   [REPORT_ORDER=order308] [SKIP_BUILD=1] [PORT=4188] [SIZE=1280x720] node scripts/order308-check.mjs
+//   [REPORT_ORDER=order308b] [SKIP_BUILD=1] [PORT=4188] [SIZE=1280x720] [FLOWS=…] node scripts/order308-check.mjs
 
 import { spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -26,10 +31,11 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FRONTEND = resolve(HERE, '..');
-const OUT = resolve(FRONTEND, 'reports', process.env.REPORT_ORDER ?? 'order308');
+const OUT = resolve(FRONTEND, 'reports', process.env.REPORT_ORDER ?? 'order308b');
 mkdirSync(OUT, { recursive: true });
 const PORT = Number(process.env.PORT ?? 4188);
 const URL = `http://localhost:${PORT}`;
+const FLOWS = new Set((process.env.FLOWS ?? 'full,skip,reduced,english,returning').split(','));
 const [W, H] = (process.env.SIZE ?? '1280x720').split('x').map(Number);
 // Designs skärmar (LEVERANSNOT §2), och taket som lyfts, och en tid i varje, mitt i radens eller nålens fönster (oppningManus.js).
 const SHOTS = [
@@ -109,7 +115,7 @@ const visible = (page) => page.evaluate(() => {
 
 try {
   // A. Hela öppningen på svenska.
-  {
+  if (FLOWS.has('full')) {
     const { ctx, page } = await newPage('sv');
     const flow = { steps: await toOpening(page), shots: [] };
     flow.rulesDuringOpening = (await visible(page)).rulesVisible;
@@ -133,7 +139,7 @@ try {
     await ctx.close();
   }
   // B. Hoppa över.
-  {
+  if (FLOWS.has('skip')) {
     const { ctx, page } = await newPage('sv');
     const flow = { steps: await toOpening(page) };
     await waitT(page, 1.0);
@@ -156,7 +162,7 @@ try {
     await ctx.close();
   }
   // C. Minskad rörelse.
-  {
+  if (FLOWS.has('reduced')) {
     const { ctx, page } = await newPage('sv', { reducedMotion: 'reduce' });
     const flow = { steps: await toOpening(page), samples: [] };
     flow.reducedAttr = await page.$eval('[data-testid=opening]', (el) => el.getAttribute('data-reduced'));
@@ -175,7 +181,7 @@ try {
     await ctx.close();
   }
   // D. Engelska.
-  {
+  if (FLOWS.has('english')) {
     const { ctx, page } = await newPage('en');
     const flow = { steps: await toOpening(page), shots: [] };
     for (const s of [SHOTS[0], SHOTS[1], SHOTS[3]]) {
@@ -187,6 +193,27 @@ try {
     await page.click('[data-testid=opening-skip]');
     await page.waitForSelector('[data-testid=rules-card]', { state: 'visible', timeout: 30000 });
     report.flows.english = flow;
+    await ctx.close();
+  }
+  // E. Den som har sett öppningen (ORDER 308b, Anders 2026-10-05): öppningen
+  // spelas igen, och Hoppa över syns och fungerar direkt, före 3 s.
+  if (FLOWS.has('returning')) {
+    const { ctx, page } = await newPage('sv');
+    await ctx.addInitScript(() => localStorage.setItem('nexus.openingSeen', '1'));
+    const flow = { steps: await toOpening(page) };
+    await waitT(page, 0.3);
+    const v = await visible(page);
+    flow.openingShown = v.t !== null;
+    flow.tAtCheck = v.t;
+    flow.skipShownBefore3s = v.skip && v.t < 3;
+    await page.screenshot({ path: resolve(OUT, `oppning-sett-forut-${W}x${H}.png`) });
+    const t0 = Date.now();
+    await page.click('[data-testid=opening-skip]');
+    await page.waitForSelector('[data-testid=rules-card]', { state: 'visible', timeout: 30000 });
+    await page.waitForSelector('[data-testid=opening]', { state: 'detached', timeout: 30000 });
+    flow.skipToRulesMs = Date.now() - t0;
+    flow.steps.push('skip', 'rules-card');
+    report.flows.returning = flow;
     await ctx.close();
   }
 } catch (e) {
@@ -209,6 +236,11 @@ try {
     reducedAttr: f.reduced?.reducedAttr ?? null,
     reducedCameraStillInFly: f.reduced?.cameraStillInFly ?? null,
     reducedCameraStillInDescend: f.reduced?.cameraStillInDescend ?? null,
+    pinVenue: f.full?.shots?.find((s) => s.name === 'oppning-nalen-din-vinbar')?.pins?.map((p) => p.label) ?? null,
+    returningOpeningShown: f.returning?.openingShown ?? null,
+    returningSkipBefore3s: f.returning?.skipShownBefore3s ?? null,
+    returningSkipAtT: f.returning?.tAtCheck ?? null,
+    returningSkipToRulesMs: f.returning?.skipToRulesMs ?? null,
     english: f.english?.shots?.map((s) => [...s.title, s.caption, ...s.pins.map((p) => p.label)].filter(Boolean)) ?? null,
     externalRequests: report.externalRequests.length,
     errors: report.errors.length
