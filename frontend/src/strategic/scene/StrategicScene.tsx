@@ -54,6 +54,7 @@ import { VillageVenues } from './village/VillageVenues';
 import { VillageLife } from './village/VillageLife';
 import { StreetArrivals } from './village/StreetArrivals';
 import { VillageWindows } from './village/VillageWindows';
+import { OpeningMentor } from '../opening/OpeningMentor';
 
 // GL config for stable rendering.
 //
@@ -170,6 +171,8 @@ export const StrategicScene = memo(function StrategicScene({ onSelect, selectedI
         <group name="part:OsmBoats"><OsmBoats /></group>
         <group name="part:ChimneySmoke"><ChimneySmoke /></group>
         <group name="part:StreetLabels"><StreetLabels /></group>
+        {/* ORDER 308 — Ingrid i dörren till Måltidens hus, bara under öppningen. */}
+        <group name="part:OpeningMentor"><OpeningMentor /></group>
         <RenderProfileProbe />
         <ScaleReference enabled={showScaleRef} halfSize={80} groundY={0.02} />
         {import.meta.env.DEV && <FpsProbe />}

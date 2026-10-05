@@ -3320,6 +3320,24 @@ export const TABLE = {
     language: { sv: 'Språk', en: 'Language' },
     english: { sv: 'English', en: 'English' },
     swedish: { sv: 'Svenska', en: 'Svenska' }
+  },
+  // ORDER 308 — öppningen före första morgonen (Designs leverans
+  // nexus-leverans-2026-10-04-oppningen-omtag, openingStrings.ts, ordagrant
+  // för spelets nycklar opening.*; prototypens panel open.* används inte i
+  // spelet). Nycklarna i manuset (oppningManus.js) är 'opening.<namn>'; här
+  // heter grenen prologue, eftersom opening redan är dörröppningens panel.
+  prologue: {
+    place: { sv: 'Grythyttan', en: 'Grythyttan' },
+    line1: { sv: 'En säsong. Åtta veckor.', en: 'One season. Eight weeks.' },
+    line2: { sv: 'Från midsommar till kräftskiva.', en: 'From midsummer to the crayfish party.' },
+    yours: { sv: 'Din vinbar', en: 'Your wine bar' },
+    empty: { sv: 'Än så länge är den tom.', en: 'For now, it is empty.' },
+    fill: { sv: 'Det du vet fyller den.', en: 'What you know fills it.' },
+    mentor: { sv: 'Ingrid, din mentor', en: 'Ingrid, your mentor' },
+    goal: { sv: 'Målet är stjärnan.', en: 'The goal is the star.' },
+    // Spelets egna: knappen och skärmläsarens namn på öppningen.
+    skip: { sv: 'Hoppa över', en: 'Skip' },
+    label: { sv: 'Öppningen', en: 'The opening' }
   }
 };
 

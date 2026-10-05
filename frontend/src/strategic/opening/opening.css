@@ -1,0 +1,73 @@
+/* ORDER 308 — öppningen före första morgonen (Designs D2, omtag 2026-10-04).
+   Måtten är prototypens (Oppningen.html): rad 1 och rad 2 nere till vänster
+   7 % in och 15 % upp, Young Serif; raderna efter flygturen 4,2 % av höjden;
+   nålarna med ring, stjälk och namn (PIN_STYLE). cqh/cqw är överläggets
+   höjd och bredd, som prototypens scen. */
+
+/* HUD:en är dold medan öppningen pågår; byns duk syns under överlägget. */
+body[data-opening='1'] .gb-root > :not(.gb-canvas-host) { visibility: hidden !important; }
+/* Också byns etiketter (krogarna, gatorna; drei Html i dukens behållare): ingen text i bilden utom öppningens. */
+body[data-opening='1'] .gb-canvas-host div:not(:has(canvas)) { visibility: hidden !important; }
+
+.nx-opening {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  overflow: hidden;
+  container-type: size;
+  cursor: default;
+  font-family: var(--w-font-body, 'Figtree', system-ui, sans-serif);
+  color: var(--w-cream, #f4e6cc);
+}
+.nx-opening.is-fading { pointer-events: none; }
+
+.nx-opening-layer { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.nx-opening-bar { display: block; filter: saturate(1.1) brightness(.92); }
+.nx-opening-vignette { background: radial-gradient(ellipse at 50% 45%, rgba(255, 170, 80, .12), rgba(20, 10, 5, .72) 85%); }
+.nx-opening-black { background: #000; }
+
+.nx-opening-pin { position: absolute; width: 0; height: 0; pointer-events: none; }
+.nx-opening-pin-ring {
+  position: absolute; left: -0.65cqh; top: -0.65cqh; width: 1.3cqh; height: 1.3cqh; box-sizing: border-box;
+  border-radius: 50%; border: 2px solid var(--w-candle, #ffd58f); box-shadow: 0 0 14px rgba(255, 190, 90, .85);
+}
+.nx-opening-pin-stem {
+  position: absolute; left: -1px; bottom: 0.65cqh; width: 2px;
+  background: var(--w-candle, #ffd58f); box-shadow: 0 0 8px rgba(255, 190, 90, .6);
+}
+.nx-opening-pin-label {
+  position: absolute; left: -2px; white-space: nowrap;
+  font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); font-size: max(14px, 3.2cqh); line-height: 1;
+  color: var(--w-cream, #f4e6cc); text-shadow: 0 2px 18px rgba(20, 10, 5, .9);
+}
+
+.nx-opening-caption {
+  position: absolute; left: 7cqw; bottom: 15cqh; pointer-events: none;
+  font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); font-size: max(18px, 4.2cqh); line-height: 1.15;
+  color: var(--w-cream, #f4e6cc); text-shadow: 0 2px 22px rgba(20, 10, 5, .85);
+}
+.nx-opening-title {
+  position: absolute; left: 7cqw; bottom: 15cqh; display: flex; flex-direction: column; gap: 1.6cqh; pointer-events: none;
+}
+.nx-opening-place {
+  font-size: max(12px, 1.9cqh); font-weight: 800; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--w-brass-light, #f0cd82); text-shadow: 0 2px 16px rgba(20, 10, 5, .8);
+}
+.nx-opening-line1 {
+  font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); font-size: max(28px, 6.4cqh); line-height: 1.1;
+  color: var(--w-cream, #f4e6cc); text-shadow: 0 2px 24px rgba(20, 10, 5, .75);
+}
+.nx-opening-line2 {
+  font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); font-size: max(16px, 3.6cqh); line-height: 1.2;
+  color: var(--w-cream-muted, #e7d6b8); text-shadow: 0 2px 20px rgba(20, 10, 5, .75);
+}
+
+/* Hoppa över: nere till höger, i den varma formen (dämpad knapp på trä). */
+.nx-opening-skip {
+  position: absolute; right: max(16px, 3cqw); bottom: max(16px, 4cqh);
+  min-height: 44px; padding: 0 18px; border-radius: var(--w-radius-button, 16px);
+  border: var(--w-hud-border, 1px solid rgba(215, 162, 76, .45)); background: rgba(44, 30, 21, .72);
+  color: var(--w-cream, #f4e6cc); font-family: inherit; font-weight: 800; font-size: var(--w-fs-button, 15px);
+  cursor: pointer; opacity: .85;
+}
+.nx-opening-skip:hover { opacity: 1; background: rgba(44, 30, 21, .94); }
