@@ -189,6 +189,8 @@ G kan aldrig bli högre än 90. Veckogolvet är G procent av klassens normala ve
 
 *Beslut 2026-10-01 (Vision Owner, efter rättelserna från provspelet):* hyran ändras inte nu, fast den rimliga spelaren går plus med mer än målet. Vinsten kalibreras när rivalerna delar gästerna.
 
+*Beslut 2026-10-05 (Anders):* den som har hälften rätt ska stänga i ungefär en tredjedel till hälften av säsongerna, och spaken väljs fritt. Säsongens fyra första veckor har ingen hyra, i stället för den lägre hyran de två första veckorna. Startkassan står kvar, enligt beslutet att den sänks kraftigt. Rätt svar ger inte längre avec, merförsäljning när stämningen lyfter, eller en gäst per klarat steg. En klarad raket släpper fortfarande in en gäst.
+
 *Beslut 2026-09-30 (Vision Owner, provspel): kvällens ekonomi gör kvällen spännande.*
 - Under servicen visas kvällskassan, inte företagskontot. Den börjar på noll och visar kvällens intäkter.
 - När dörrarna öppnas visas kvällens insats: råvaror, personal, DJ, satsningar och kompetens. Kvällskassan fylls mot en synlig linje för break-even, så att spelaren ser om kvällen går mot vinst eller förlust.

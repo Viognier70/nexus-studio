@@ -1151,10 +1151,15 @@ export const TABLE = {
     bankButton: { sv: 'Banken', en: 'The bank' },
     bankHeading: { sv: 'Banken', en: 'The bank' },
     bankCurrent: { sv: (name: string) => `Du driver ${name}.`, en: (name: string) => `You run ${name}.` },
-    // ORDER 294 — introduktionshyran de två första veckorna.
+    // ORDER 294 — introduktionshyran de första veckorna. ORDER 303c — antalet
+    // veckor ur balance.ts (RENT.introWeeks) och ingen hyra när den är 0.
     introRent: {
-      sv: (intro: string, full: string) => `De två första veckorna har du introduktionshyra: ${intro} kr i veckan. Från vecka 3 är hyran ${full} kr.`,
-      en: (intro: string, full: string) => `For your first two weeks you pay an introductory rent of ${intro} kr a week. From week 3 the rent is ${full} kr.`
+      sv: (weeks: string, firstFullWeek: string, intro: string, full: string) => `De ${weeks} första veckorna har du introduktionshyra: ${intro} kr i veckan. Från vecka ${firstFullWeek} är hyran ${full} kr.`,
+      en: (weeks: string, firstFullWeek: string, intro: string, full: string) => `For your first ${weeks} weeks you pay an introductory rent of ${intro} kr a week. From week ${firstFullWeek} the rent is ${full} kr.`
+    },
+    introRentFree: {
+      sv: (weeks: string, firstFullWeek: string, full: string) => `De ${weeks} första veckorna betalar du ingen hyra. Från vecka ${firstFullWeek} är hyran ${full} kr i veckan.`,
+      en: (weeks: string, firstFullWeek: string, full: string) => `For your first ${weeks} weeks you pay no rent. From week ${firstFullWeek} the rent is ${full} kr a week.`
     },
     bankNone: { sv: 'Du har ingen verksamhet.', en: 'You have no business.' },
     bankNoLoan: {
