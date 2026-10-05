@@ -2407,10 +2407,11 @@ export const TABLE = {
     title: { sv: 'Stå för ditt svar', en: 'Back your knowledge' },
     kicker: { sv: (role: string, place: string) => `Stå för ditt svar · ${role} · ${place}`, en: (role: string, place: string) => `Back your knowledge · ${role} · ${place}` },
     steps: { sv: 'Tre steg', en: 'Three steps' },
-    introTitle: { sv: 'Tre frågor. Du bestämmer hur mycket du står för varje svar.', en: 'Three questions. You decide how firmly you back each answer.' },
+    // ORDER 305b — kvitt eller dubbelt ersätter säkerheten.
+    introTitle: { sv: 'Tre frågor. Kvitt eller dubbelt efter varje rätt svar.', en: 'Three questions. Double or nothing after each right answer.' },
     introBody: {
-      sv: 'Efter varje svar väljer du hur säker du är. Ju säkrare du är, desto mer vinner du om det stämmer och desto mer förlorar du om det inte gör det. Steget du har kommit till multiplicerar vinsten.',
-      en: 'After each answer, choose how sure you are. The surer you are, the more you gain if you’re right and the more you lose if you’re not. The step you’ve reached multiplies the gain.'
+      sv: 'Varje rätt svar lägger krediter i potten. Sedan väljer du: stanna och ta potten, eller gå vidare. Rätt på nästa steg dubblar potten, fel tar den.',
+      en: 'Each right answer puts credits in the pot. Then you choose: stop and take the pot, or go on. Right on the next step doubles the pot; wrong loses it.'
     },
     introSource: {
       sv: 'Krediterna har du tjänat på proven i Måltidens hus och på raketerna i servicen. De kan inte köpas och växlas aldrig mot kassan.',
@@ -2425,15 +2426,6 @@ export const TABLE = {
     track: { sv: 'Raketen', en: 'The rocket' },
     trackSub: { sv: 'Varje rätt steg lyfter den', en: 'Each right step lifts it' },
     trackGoal: { sv: 'Mål', en: 'Goal' },
-    howSure: { sv: 'Hur säker är du?', en: 'How sure are you?' },
-    // ORDER 284 — när krediterna inte räcker till mer än en gissning.
-    earn: { sv: 'Slut på krediter? Du tjänar dem med rätta svar: en för varje rätt svar när du övar eller gör prov i Måltidens hus, och för det bästa svaret i kvällens raketer.', en: 'Out of credits? You earn them with right answers: one for each right answer when you practise or take a test in the House of the Meal, and for the best answer in the evening\'s rockets.' },
-    earnShort: { sv: 'Krediterna räcker bara till Gissar. Nya tjänas med rätta svar, i Måltidens hus och i raketerna.', en: 'Your credits only cover Guessing. You earn more with right answers, in the House of the Meal and in the rockets.' },
-    // ORDER 284 — klockan stannar när svaret är valt.
-    pickFirst: { sv: 'Välj ett svar först, då stannar klockan.', en: 'Pick an answer first; the clock then stops.' },
-    pickedHint: { sv: (s: number) => `Svaret är låst. Välj hur säker du är, annars räknas Gissar om ${s} s.`, en: (s: number) => `Answer locked. Choose how sure you are, or it counts as Guessing in ${s} s.` },
-    // Provspel av 285: en grå knapp säger alltid varför.
-    chooseHow: { sv: 'Välj hur säker du är', en: 'Choose how sure you are' },
     why: {
       busy: { sv: 'En raket pågår redan', en: 'A rocket is already under way' },
       maxed: { sv: 'Alla tre är använda i kväll', en: 'All three are used tonight' },
@@ -2444,27 +2436,8 @@ export const TABLE = {
       // ORDER 291 — verksamheter utan egna raketer ännu (food trucken).
       noRockets: { sv: 'Den här verksamheten har inga raketer ännu', en: 'This business has no rockets yet' }
     },
-    odds: { sv: (win: number, loss: number) => `+${win} om rätt · ${loss > 0 ? `−${loss}` : '±0'} om fel`, en: (win: number, loss: number) => `+${win} if right · ${loss > 0 ? `−${loss}` : '±0'} if wrong` },
-    lock: { sv: 'Stå för svaret', en: 'Back it' },
-    confidence: { sv: ['Gissar', 'Tror det', 'Vet det'], en: ['Guessing', 'Think so', 'Know it'] },
     boxCredits: { sv: 'Krediter', en: 'Credits' },
     boxWrong: { sv: (level: string) => `${level} · fel`, en: (level: string) => `${level} · wrong` },
-    wrongNoMult: { sv: 'Steget multiplicerar bara rätt svar.', en: 'The step only multiplies right answers.' },
-    bandRight: {
-      sv: ['Rätt, men du gissade. Nästa gång kan du stå för det.', 'Rätt. Du trodde det, och det stämde.', 'Du visste, och du stod för det.'],
-      en: ['Right, but you guessed. Next time, back it.', 'Right. You thought so, and you were.', 'You knew it, and you backed it.']
-    },
-    bandWrong: {
-      sv: ['Fel, men en gissning kostar inget. Nu vet du svaret. Raketen slutar här.', 'Du trodde det, men det stämde inte. Raketen slutar här.', 'Du var säker, men det stämde inte. Det är värt att veta. Raketen slutar här.'],
-      en: ['Wrong, but a guess costs nothing. Now you know. The rocket ends here.', 'You thought so, but it wasn’t. The rocket ends here.', 'You were sure, and you were wrong. That’s worth knowing. The rocket ends here.']
-    },
-    calibTitle: { sv: 'Hur säker du var', en: 'How sure you were' },
-    calibTonight: { sv: 'I kväll', en: 'Tonight' },
-    calibRow: { sv: (r: number, n: number) => `${r} av ${n} rätt`, en: (r: number, n: number) => `${r} of ${n} right` },
-    calibNote: {
-      sv: { overconfident: (r: number, n: number) => `Vet det höll i ${r} av ${n}. Här tror du dig kunna mer än du kan.`, underconfident: () => 'Dina gissningar stämmer oftare än du tror. Stå för dem.', default: () => 'Stå för så mycket som du kan. Då mäter krediterna vad du vet.' } as Record<string, (r: number, n: number) => string>,
-      en: { overconfident: (r: number, n: number) => `Know it held ${r} of ${n} ${pl(n, 'time', 'times')}. Here you think you know more than you do.`, underconfident: () => 'Your guesses are right more often than you think. Back them.', default: () => 'Back what you know. Then your credits measure what you know.' } as Record<string, (r: number, n: number) => string>
-    },
     credits: { sv: 'Krediter', en: 'Credits' },
     creditsAria: { sv: (n: number) => `Krediter: ${n}`, en: (n: number) => `Credits: ${n}` },
     juice: { sv: 'Animationer', en: 'Animations' },
@@ -3086,12 +3059,16 @@ export const TABLE = {
   // mätarna, kvällens lärdom L1, kvällsberättelsen K1 och rutan X1.
   rocket: {
     card: {
-      // ORDER 305 — kvitt eller dubbelt (förslag; Designs form i D5).
+      // ORDER 305 — kvitt eller dubbelt (Designs form i D5). ORDER 305b:
+      // potten håller bara krediter.
       kvitt: {
         pot: {
-          sv: (credits: string, sek: string) => `Potten: ${credits} krediter och ${sek} kr`,
-          en: (credits: string, sek: string) => `The pot: ${credits} credits and ${sek} kr`
+          sv: (credits: string) => `Potten: ${credits} krediter`,
+          en: (credits: string) => `The pot: ${credits} credits`
         },
+        potShort: { sv: (n: number) => `Potten ${n}`, en: (n: number) => `Pot ${n}` },
+        potTaken: { sv: (n: number) => `+${n} krediter ur potten`, en: (n: number) => `+${n} credits from the pot` },
+        potLost: { sv: (n: number) => `potten förlorad (${n} krediter)`, en: (n: number) => `pot lost (${n} credits)` },
         stop: { sv: 'Stanna och ta potten', en: 'Stop and take the pot' },
         go: { sv: 'Kvitt eller dubbelt: nästa steg', en: 'Double or nothing: next step' },
         note: { sv: 'Rätt på nästa steg dubblar potten. Fel, och den är borta.', en: 'Right on the next step doubles the pot. Wrong, and it is gone.' }
@@ -3237,7 +3214,8 @@ export const TABLE = {
   },
   // ORDER 303 G — pyramidens ögonblick.
   pyramidMoment: {
-    label: { sv: 'Säkerhet × steg → kvällens utfall', en: 'Confidence × step → tonight’s outcome' },
+    // ORDER 305b — kvitt eller dubbelt ersätter säkerheten.
+    label: { sv: 'Potten × steg → kvällens utfall', en: 'The pot × step → tonight’s outcome' },
     line: { sv: (sure: string, step: string, outcome: string) => `${sure} × ${step} → ${outcome}`, en: (sure: string, step: string, outcome: string) => `${sure} × ${step} → ${outcome}` },
     credits: { sv: (n: number) => `${n > 0 ? '+' : n < 0 ? '−' : '±'}${Math.abs(n)} krediter`, en: (n: number) => `${n > 0 ? '+' : n < 0 ? '−' : '±'}${Math.abs(n)} credits` },
     guests: { sv: (n: number) => `${n} ${n === 1 ? 'ny gäst' : 'nya gäster'} in`, en: (n: number) => `${n} new ${n === 1 ? 'guest' : 'guests'} in` },

@@ -1514,6 +1514,9 @@ export interface SimulationState {
   // via ACCUMULATE_KNOWLEDGE. Ingen summa/genomsnitt exponeras — formen
   // läses som helhet i businessProfile.ts:readProfile().
   knowledgeCredits: KnowledgeCredits;
+  // ORDER 305b — portfolion: varje val i kvitt eller dubbelt (gick vidare
+  // och hade rätt eller fel, stannade med rätt), hela säsongen (sim/incidents.ts).
+  kvittLog?: import('../sim/incidents').KvittEntry[];
   // ORDER 105 — spårnedbrytning per axel. Läses av readSpar(); används
   // av R4 för att skilja verksamheter med identisk axel-profil (vinbar
   // vs restaurang) utan att växa vektorn ovan. Invariant: för varje axis,
@@ -1871,7 +1874,7 @@ export type SimAction =
   | { type: 'ANSWER_VISIT'; chosenIndex: number }
   | { type: 'NEXT_VISIT_QUESTION' }
   | { type: 'CLOSE_VISIT' }
-  | { type: 'ANSWER_INCIDENT'; optionId: string; confidence?: 0 | 1 | 2 }
+  | { type: 'ANSWER_INCIDENT'; optionId: string }
   // ORDER 305 — kvitt eller dubbelt efter ett rätt steg.
   | { type: 'INCIDENT_STOP' }
   | { type: 'INCIDENT_GO' }
@@ -1957,8 +1960,6 @@ export type SimAction =
   | { type: 'START_BACK' }
   // ORDER 293 — provspel: köa en raket till kvällens nästa plats (#playtest=1&rocket=…).
   | { type: 'QUEUE_INCIDENT'; incidentId: string }
-  // ORDER 284 — Back your knowledge: svaret låses och klockan stannar.
-  | { type: 'PICK_BACK_ANSWER'; optionId: string }
   // ORDER 285 — gårdagens rester: svaret på frågan, och kortet stängt.
   | { type: 'ANSWER_SALVAGE'; optionId: string }
   | { type: 'CLOSE_SALVAGE' }

@@ -7,13 +7,14 @@
 // - Spricker (fel svar): våningen skakar, en röd spricka ritas och kanten blir
 //   röd och streckad; våningarna ovanför släcks till 38 %.
 // - Hel pyramid: guld nedifrån och upp, strålar och ett lugnt sken.
-// Stegets multiplikator i Back your knowledge (balance.ts BACK.stepMultiplier)
+// Stegets multiplikator i kvitt eller dubbelt (ORDER 305b: potten gånger
+// DOUBLE_OR_NOTHING.growth för varje steg; förut BACK.stepMultiplier)
 // står vid våningens namn.
 
 import { strings } from '../../../content/strings';
 import { t as tt } from '../../../content/nexusStrings';
 import { useLanguage } from '../../../content/language';
-import { BACK } from '../../../sim/balance';
+import { DOUBLE_OR_NOTHING } from '../../../sim/balance';
 import { WARM_RIGHT_WRONG } from '../../../ui/theme/nexusTheme.warm.rattfel';
 
 export type LevelState = 'empty' | 'current' | 'filled' | 'cracked';
@@ -31,7 +32,7 @@ export function KnowledgePyramid({ levels, full, small = false, testId, showMult
   const lang = useLanguage();
   const cracked = levels.indexOf('cracked');
   const asks = strings.service.incident.stepAsks as Record<string, string>;
-  const mult = (i: number) => `×${(BACK.stepMultiplier[i] ?? 1).toLocaleString(lang === 'sv' ? 'sv-SE' : 'en-GB')}`;
+  const mult = (i: number) => `×${(DOUBLE_OR_NOTHING.growth ** i).toLocaleString(lang === 'sv' ? 'sv-SE' : 'en-GB')}`;
   const stateOf = (i: number): string => (full ? 'gold' : cracked >= 0 && i > cracked ? 'above' : levels[i] ?? 'empty');
   return (
     <div className="nx-pyramid" data-small={small} data-full={full} data-testid={testId} role="img"
@@ -84,7 +85,7 @@ export function PyramidStrip({ levels, full, testId, showMult, confidence }: { l
   const lang = useLanguage();
   const cracked = levels.indexOf('cracked');
   const stateOf = (i: number): string => (full ? 'gold' : cracked >= 0 && i > cracked ? 'above' : levels[i] ?? 'empty');
-  const mult = (i: number) => `×${(BACK.stepMultiplier[i] ?? 1).toLocaleString(lang === 'sv' ? 'sv-SE' : 'en-GB')}`;
+  const mult = (i: number) => `×${(DOUBLE_OR_NOTHING.growth ** i).toLocaleString(lang === 'sv' ? 'sv-SE' : 'en-GB')}`;
   return (
     <div className="nx-pyr-strip" data-testid={testId} data-full={full}>
       <KnowledgePyramid levels={levels} full={full} small testId={testId ? `${testId}-mini` : undefined} />

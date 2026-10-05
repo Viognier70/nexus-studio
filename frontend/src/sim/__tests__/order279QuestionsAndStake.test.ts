@@ -37,7 +37,9 @@ function evening(seed: number, items: Record<string, number> | 'base' = 'base'):
 }
 
 
+// ORDER 305b — kvitt eller dubbelt: efter ett rätt steg går spelaren vidare.
 function answer(s: SimulationState, rank: 'best' | 'worst'): SimulationState {
+  if (s.incidents.active?.choosing) s = reducer(s, { type: 'INCIDENT_GO' });
   const a = s.incidents.active!;
   const step = incidentById('vinbar', a.id)!.steps[a.step];
   return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, rank, a.struck, a.situation) });

@@ -1,5 +1,5 @@
-// ORDER 305 — kvitt eller dubbelt (förslag för beslut; balance.ts
-// DOUBLE_OR_NOTHING). Efter ett rätt steg väljer spelaren att stanna och ta
+// ORDER 305 — kvitt eller dubbelt (balance.ts DOUBLE_OR_NOTHING; påslaget
+// i ORDER 305b). Efter ett rätt steg väljer spelaren att stanna och ta
 // potten, eller satsa den på nästa steg.
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { SimulationState } from '../../strategic/types';
@@ -10,6 +10,8 @@ import { DOUBLE_OR_NOTHING, INCIDENTS } from '../balance';
 import { incidentById } from '../incidentBank';
 import { rankedStepOption, totalCredits } from '../incidents';
 import { stocked } from '../../strategic/testHarness/stocked';
+import { rocketTally } from '../economy';
+import type { IncidentRecord } from '../incidents';
 
 const TICK = { type: 'TICK', dt: 0.2 } as const;
 const ID = 'vb09-getosten';
@@ -51,7 +53,8 @@ describe('ORDER 305 — kvitt eller dubbelt', () => {
     expect(open.incidents.active?.id).toBe(ID);
   });
   afterEach(() => {
-    DOUBLE_OR_NOTHING.enabled = false;
+    // ORDER 305b — påslaget i spelet.
+    DOUBLE_OR_NOTHING.enabled = true;
   });
 
   it('avstängt: nästa steg öppnas direkt och stegets kredit bokförs som förut', () => {
@@ -101,5 +104,20 @@ describe('ORDER 305 — kvitt eller dubbelt', () => {
     let s = answer(open);
     for (let i = 0; i < 2000 && s.incidents.active; i++) s = reducer(s, TICK);
     expect(last(s).quality).toBe('stopped');
+  });
+});
+
+describe('ORDER 305b — stjärnans andel klarade raketer', () => {
+  const rec = (quality: IncidentRecord['quality'], step: number | null): IncidentRecord =>
+    ({ id: ID, step, optionId: null, quality, situation: null, context: { table: 1, guestIds: [], staff: '', clock: '' } as unknown as IncidentRecord['context'], at: 0, kind: 'planned' });
+
+  it('stannar efter steg 2: klarad; efter steg 1: inte klarad', () => {
+    expect(DOUBLE_OR_NOTHING.stopCountsAsClearedFrom).toBe(2);
+    const t = rocketTally([rec('stopped', 2), rec('stopped', 1), rec('best', null), rec('wrong', 1)], 'vinbar');
+    expect(t.fired).toBe(4);
+    expect(t.cleared).toBe(2);
+    // Stegen: 2 + 1 + 3 rätt, och felet på steg 2 räknas som ett steg.
+    expect(t.stepsRight).toBe(2 + 1 + 3 + 1);
+    expect(t.steps).toBe(2 + 1 + 3 + 2);
   });
 });

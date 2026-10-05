@@ -31,7 +31,8 @@ import {
   type BusinessClassSpec,
   type MedalLevel,
   type MedalRequirement,
-  RENT
+  RENT,
+  DOUBLE_OR_NOTHING
 } from './balance';
 import { calendarFor } from './calendar';
 import type { GuestType, PavilionKey, SimulationState } from '../strategic/types';
@@ -41,6 +42,7 @@ import { playerChoiceShare, villageEvening, type VenueEvening } from './village'
 import { teamForClass } from '../strategic/simulation/team';
 import { strings } from '../content/strings';
 import { incidentById } from './incidentBank';
+import type { IncidentRecord } from './incidents';
 import { abilityActive } from './shop';
 
 export const ALL_PAVILIONS: readonly PavilionKey[] = [
@@ -112,6 +114,22 @@ export interface EveningRecord {
 // stängning (reducer.ts) och när den faller ihop (collapse.ts). `before`
 // bär servicens startvärden (day.revenueAtServiceStart m.fl.), `after`
 // kvällens utfall.
+
+// ORDER 296e — kvällens planerade raketer till stjärnans räkning: avfyrade,
+// klarade, och stegen (de klarade raketernas alla steg, och för en raket som
+// föll de steg som var rätt före felet).
+// ORDER 305b — en raket där spelaren stannade har `step` klarade steg och
+// inget fel; den räknas som klarad när spelaren stannade efter minst
+// DOUBLE_OR_NOTHING.stopCountsAsClearedFrom steg (efter steg 2, inte 1).
+export function rocketTally(all: IncidentRecord[], cls: BusinessClassId | null): { fired: number; cleared: number; steps: number; stepsRight: number } {
+  const log = all.filter((r) => (r.kind ?? 'planned') === 'planned');
+  const stepsOf = (r: IncidentRecord) => incidentById(cls, r.id)?.steps.length ?? 1;
+  const stepsRight = log.reduce((a, r) => a + (r.quality === 'best' ? stepsOf(r) : r.step ?? 0), 0);
+  const steps = log.reduce((a, r) => a + (r.quality === 'best' ? stepsOf(r) : (r.step ?? 0) + (r.quality === 'stopped' ? 0 : 1)), 0);
+  const cleared = log.filter((r) => r.quality === 'best' || (r.quality === 'stopped' && (r.step ?? 0) >= DOUBLE_OR_NOTHING.stopCountsAsClearedFrom)).length;
+  return { fired: log.length, cleared, steps, stepsRight };
+}
+
 export function recordEvening(before: SimulationState, after: SimulationState): EconomyState {
   const d = before.day;
   const record: EveningRecord = {
@@ -126,15 +144,7 @@ export function recordEvening(before: SimulationState, after: SimulationState): 
     typeGuests: { ...(d.guestTypeArrivals ?? {}) },
     typeRevenue: { ...(d.guestTypeRevenue ?? {}) },
     social: d.booking?.social ? { nameIndex: d.booking.social.nameIndex, outcome: (after.day.socialGuest ?? d.socialGuest)?.outcome ?? null } : null,
-    rockets: (() => {
-      const log = (after.incidents?.log ?? []).filter((r) => (r.kind ?? 'planned') === 'planned');
-      // ORDER 296e — också stegen: de klarade raketernas alla steg, och för en
-      // raket som föll de steg som var rätt före felet.
-      const stepsOf = (r: (typeof log)[number]) => incidentById(after.economy.businessClass, r.id)?.steps.length ?? 1;
-      const stepsRight = log.reduce((a, r) => a + (r.quality === 'best' ? stepsOf(r) : r.step ?? 0), 0);
-      const steps = log.reduce((a, r) => a + (r.quality === 'best' ? stepsOf(r) : (r.step ?? 0) + 1), 0);
-      return { fired: log.length, cleared: log.filter((r) => r.quality === 'best').length, steps, stepsRight };
-    })(),
+    rockets: rocketTally((after.incidents?.log ?? []), after.economy.businessClass),
     staff: { ...staffSnapshot(after), tipsSek: Math.round(after.day.tipsSek ?? d.tipsSek ?? 0) },
     billionaire: {
       inTown: d.booking?.billionaireInTown ?? false,

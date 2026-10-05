@@ -27,7 +27,7 @@ describe.skipIf(!process.env.PINS_SEEDS)('ORDER 296b — nålarna per kväll', (
         s = reducer(s, { type: 'START_SERVICE' });
         let real = 0;
         for (let i = 0; i < 40000 && s.day.period === 'dinner'; i++) {
-          if (s.incidents?.active) s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: null as never, confidence: 0 });
+          if (s.incidents?.active) s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: null as never });
           s = reducer(s, { type: 'TICK', dt: 0.2 });
           real += 0.2 / Math.max(1, s.speed);
         }

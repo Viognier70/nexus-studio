@@ -34,7 +34,7 @@ import { clockMinutes, formatClock } from './clock';
 import { clampReputation } from '../strategic/simulation/reputation';
 import { strings } from '../content/strings';
 import { rocketClipFor, rocketFigure, type RocketFigure } from './theatreTriggers';
-import { ANSWER_EFFECTS, CONSEQUENCES, DOUBLE_OR_NOTHING, STAFF_CONDITION, THEATRE, BACK, type Confidence, INCIDENTS, MENU_ROCKETS, REPUTATION, SERVICE_STREAM, SHOP } from './balance';
+import { ANSWER_EFFECTS, CONSEQUENCES, DOUBLE_OR_NOTHING, STAFF_CONDITION, THEATRE, BACK, INCIDENTS, MENU_ROCKETS, REPUTATION, SERVICE_STREAM, SHOP } from './balance';
 import { abilityActive } from './shop';
 import { calendarFor } from './calendar';
 import { clampScenarioCash, scenarioUnitSek } from './economy';
@@ -88,18 +88,13 @@ export interface ActiveIncident {
   // Kvällens läge när händelsen kom (händelsens `situations`), annars null.
   situation: string | null;
   context: IncidentContext;
-  // ORDER 280 — Back your knowledge: spelaren startade raketen själv och
-  // väljer säkerhet för varje steg. Rör bara krediterna.
+  // ORDER 280 — Back your knowledge: spelaren startade raketen själv.
+  // ORDER 305b — säkerheten (och det låsta svaret) är borttagen: valet att
+  // gå vidare i kvitt eller dubbelt är säkerheten, i alla raketer.
   backed?: boolean;
-  // ORDER 284 — i Back your knowledge låses svaret när spelaren väljer det,
-  // och stegets klocka stannar, så att hen hinner välja säkerhet ("två
-  // raketer gick ut på tid", tredje provspelet).
-  picked?: string | null;
-  // ORDER 285 — det raketen gett hittills (klarade steg): krediter, varav
-  // Back your knowledge, och gäster som kommit in. Summeras i loggen.
+  // ORDER 285 — det raketen gett hittills (klarade steg): krediter och
+  // gäster som kommit in. Summeras i loggen.
   earned?: { credits: number; guestsIn: number };
-  // Den andra tidsgränsen efter att svaret är låst (BACK.lockSeconds).
-  lockLeft?: number;
   // ORDER 286a — raketen börjar i rummet: figurens klipp spelas i så här
   // många verkliga sekunder innan kortet öppnas och stegets klocka går.
   introLeft?: number;
@@ -150,22 +145,17 @@ export function tableStake(state: SimulationState, guestIds: string[]): TableSta
   return { billSek: Math.round(billSek), guests: table.length, types };
 }
 
-// ORDER 280 — säkerheten spelaren valde (balance.ts Confidence).
-export type { Confidence } from './balance';
-
-// ORDER 280 — ett låst svar i Back your knowledge.
-export interface BackResult {
-  step: number;
-  confidence: Confidence;
-  correct: boolean;
-  // Krediterna svaret gav (negativt vid fel).
-  delta: number;
-  endsRocket: boolean;
+// ORDER 305b (Anders 2026-10-05) — portfolion registrerar valet i kvitt
+// eller dubbelt: gick vidare och hade rätt, gick vidare och hade fel,
+// stannade med rätt. `step` är steget valet gällde (1 = andra steget).
+export type KvittChoice = 'goRight' | 'goWrong' | 'stopRight';
+export interface KvittEntry {
   at: number;
+  day: number;
+  incidentId: string;
+  step: number;
+  choice: KvittChoice;
 }
-
-// ORDER 280 — kvällens träffsäkerhet per säkerhet: [rätt, totalt].
-export type Calibration = [[number, number], [number, number], [number, number]];
 
 // En raket i kvällens logg. `step` är steget där raketen föll (null när
 // hela raketen klarades); `optionId` svaret där, null när personalen
@@ -218,8 +208,6 @@ export interface IncidentOutcomeView {
   text: string;
   at: number;
   deltas: IncidentDeltas;
-  // ORDER 280 — Back your knowledge: svaret på det sista steget.
-  back?: BackResult | null;
   // ORDER 305 — kvitt eller dubbelt: potten som togs eller förlorades.
   pot?: IncidentRecord['pot'];
 }
@@ -269,15 +257,12 @@ export interface IncidentsState {
   eveningsTurned: number;
   lessonEvenings: number;
   turnedTonight: boolean;
-  // ORDER 280 — Back your knowledge: kvällens raketer, krediter att bokföra
-  // (positivt = tillbaka, negativt = dras; reducern bokför dem), det
-  // senaste låsta svaret och kvällens träffsäkerhet.
+  // ORDER 280 — Back your knowledge: kvällens egna raketer.
   betsTonight?: number;
-  betCreditsDue?: number;
   // ORDER 305 — en tagen pott: krediterna per kunskapsform (reducern bokför dem).
   potCreditsDue?: Partial<Record<KnowledgeAxis, number>>;
-  lastBack?: BackResult | null;
-  calibration?: Calibration;
+  // ORDER 305b — kvällens val i kvitt eller dubbelt (portfolion har hela säsongen).
+  kvittTonight?: Record<KvittChoice, number>;
 }
 
 export function initialIncidents(): IncidentsState {
@@ -625,50 +610,12 @@ export function totalCredits(state: SimulationState): number {
   return state.knowledgeCredits.episteme + state.knowledgeCredits.techne + state.knowledgeCredits.phronesis;
 }
 
-// Kan spelaren stå för ett svar på den här säkerheten? Bara om krediterna
-// räcker till förlusten (Designs canBack).
-export function canBack(state: SimulationState, c: Confidence): boolean {
-  return totalCredits(state) >= BACK.confidence[c].loss;
-}
-
-// Ett låst svar: krediterna efter säkerhet och steg (Designs backAnswer).
-// Ingen slump: samma svar och samma säkerhet ger alltid samma krediter.
-export function backAnswer(correct: boolean, c: Confidence, step: number): { delta: number; endsRocket: boolean } {
-  const conf = BACK.confidence[c];
-  const last = INCIDENTS.stepAxes.length - 1;
-  return correct
-    ? { delta: Math.round(conf.win * (BACK.stepMultiplier[step] ?? 1)), endsRocket: step === last }
-    : { delta: 0 - conf.loss, endsRocket: true };
-}
-
-export function recordCalibration(cal: Calibration | undefined, c: Confidence, correct: boolean): Calibration {
-  const n = (cal ?? [[0, 0], [0, 0], [0, 0]]).map((x) => [...x]) as Calibration;
-  n[c][1]++;
-  if (correct) n[c][0]++;
-  return n;
-}
-
-export type CalibrationNote = 'overconfident' | 'underconfident' | 'default';
-export function calibrationNote(cal: Calibration | undefined): CalibrationNote {
-  if (!cal) return 'default';
-  const [g, , k] = cal;
-  if (k[1] >= BACK.calibrationMinAnswers && k[0] / k[1] < BACK.calibrationShare) return 'overconfident';
-  if (g[1] >= BACK.calibrationMinAnswers && g[0] / g[1] >= BACK.calibrationShare) return 'underconfident';
-  return 'default';
-}
-
-// Bokför ett låst svar i Back your knowledge (anropas av resolveIncident).
-function settleBack(draft: SimulationState, step: number, c: Confidence, correct: boolean): BackResult {
-  const { delta, endsRocket } = backAnswer(correct, c, step);
-  const inc = draft.incidents!;
-  const result: BackResult = { step, confidence: c, correct, delta, endsRocket, at: draft.simTime };
-  draft.incidents = {
-    ...inc,
-    betCreditsDue: (inc.betCreditsDue ?? 0) + delta,
-    lastBack: result,
-    calibration: recordCalibration(inc.calibration, c, correct)
-  };
-  return result;
+// ORDER 305b — portfolion och kvällens räkning av valen i kvitt eller dubbelt.
+function recordKvitt(draft: SimulationState, incidentId: string, step: number, choice: KvittChoice): void {
+  draft.kvittLog = [...(draft.kvittLog ?? []), { at: draft.simTime, day: draft.day.dayNumber, incidentId, step, choice }];
+  const t = { goRight: 0, goWrong: 0, stopRight: 0, ...(draft.incidents!.kvittTonight ?? {}) };
+  t[choice]++;
+  draft.incidents = { ...draft.incidents!, kvittTonight: t };
 }
 
 // ORDER 279 — "Rätt svar ger högre dricks": bordets gäster lämnar en större
@@ -1021,6 +968,7 @@ export function stopIncident(draft: SimulationState): void {
   const repBefore = draft.reputation;
   const pot = active.pot ?? null;
   if (pot) takePot(draft, pot);
+  recordKvitt(draft, incident.id, active.step, 'stopRight');
   const share = INCIDENTS.staffShareByFailedStep[active.step] ?? 1;
   const staff = DOUBLE_OR_NOTHING.stopTakesStaffOutcome
     ? applyOutcome(draft, incident, incident.staff, incident.text.staff, share, false)
@@ -1050,7 +998,7 @@ export function stopIncident(draft: SimulationState): void {
       takeover: takeoverFor(draft, incident, incident.steps[active.step]),
       text, at: draft.simTime,
       deltas: { cashSek, satisfaction: before !== null && after !== null ? after - before : 0, stamina: draft.morale - moraleBefore, reputation: draft.reputation - repBefore },
-      back: null, pot: potRecord
+      pot: potRecord
     }
   };
 }
@@ -1062,7 +1010,7 @@ export function goOnIncident(draft: SimulationState): void {
   draft.incidents = { ...draft.incidents!, active: { ...active, choosing: false, choiceLeft: 0 } };
 }
 
-export function resolveIncident(draft: SimulationState, optionId: string | null, confidence: Confidence = 0): CreditChange | null {
+export function resolveIncident(draft: SimulationState, optionId: string | null): CreditChange | null {
   const inc = draft.incidents;
   const active = inc?.active;
   if (!inc || !active) return null;
@@ -1079,10 +1027,8 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
   const creditFor = (amount: number): CreditChange | null =>
     amount === 0 ? null : { axis: step.axis, track: step.track, amount };
 
-  // ORDER 280 — Back your knowledge: varje låst svar ger eller tar
-  // krediter efter säkerheten. Tiden ute räknas som fel på gissar.
-  const backC: Confidence = option ? confidence : 0;
-  const backResult = active.backed ? settleBack(draft, stepIndex, backC, option !== null && quality !== 'wrong') : null;
+  // ORDER 305b — ett svar efter att spelaren gått vidare i kvitt eller dubbelt.
+  if (DOUBLE_OR_NOTHING.enabled && stepIndex > 0) recordKvitt(draft, incident.id, stepIndex, option && quality !== 'wrong' ? 'goRight' : 'goWrong');
 
   // Klarat steg: nästa steg öppnas i samma sammanhang.
   if (option && quality !== 'wrong' && stepIndex < incident.steps.length - 1) {
@@ -1100,11 +1046,11 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
     const held = answerConsequence(draft, active.context, true, guestsIn, false, 'grave', false, incident.id, false, kvitt && DOUBLE_OR_NOTHING.potHoldsCash);
     const revealed: StepReveal = { step: stepIndex, optionId: option.id, correctId: correctOptionId(step, active.situation), cleared: true, guestsIn };
     const stepCredit = quality === 'best' ? INCIDENTS.bestAnswerCredit : 0;
-    const earned = { credits: (active.earned?.credits ?? 0) + (kvitt ? 0 : stepCredit) + (backResult?.delta ?? 0), guestsIn: (active.earned?.guestsIn ?? 0) + guestsIn };
+    const earned = { credits: (active.earned?.credits ?? 0) + (kvitt ? 0 : stepCredit), guestsIn: (active.earned?.guestsIn ?? 0) + guestsIn };
     const pot = kvitt ? growPot(active.pot, step.axis, stepCredit, held, payer) : null;
     draft.incidents = {
       ...draft.incidents!,
-      active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: eventRevealSeconds(active, stepIndex), picked: null, earned, pot, choosing: kvitt, choiceLeft: kvitt ? DOUBLE_OR_NOTHING.choiceSeconds : 0 }
+      active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: eventRevealSeconds(active, stepIndex), earned, pot, choosing: kvitt, choiceLeft: kvitt ? DOUBLE_OR_NOTHING.choiceSeconds : 0 }
     };
     return kvitt ? null : creditFor(stepCredit);
   }
@@ -1180,7 +1126,7 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
     deltas: {
       cashSek,
       reputation: draft.reputation - repBefore,
-      credits: (active.earned?.credits ?? 0) + credit + (backResult?.delta ?? 0) + (potRecord?.taken ? potRecord.credits : 0),
+      credits: (active.earned?.credits ?? 0) + credit + (potRecord?.taken ? potRecord.credits : 0),
       guestsIn: (active.earned?.guestsIn ?? 0) + guestsIn
     },
     pot: potRecord
@@ -1204,7 +1150,6 @@ export function resolveIncident(draft: SimulationState, optionId: string | null,
         stamina: draft.morale - moraleBefore,
         reputation: draft.reputation - repBefore
       },
-      back: backResult,
       pot: potRecord
     }
   };
@@ -1262,28 +1207,9 @@ export function countDown(draft: SimulationState, dt: number): boolean {
     return choice <= 0;
   }
   const a = draft.incidents.active!;
-  // ORDER 284 — ett låst svar i Back your knowledge: stegets klocka står.
-  // Provspel av 285: i stället går den andra tidsgränsen (BACK.lockSeconds);
-  // när den är slut satsas Guessing på det låsta svaret (reducer.ts TICK).
-  if (a.backed && a.picked) {
-    const lock = (a.lockLeft ?? BACK.lockSeconds) - real;
-    draft.incidents = { ...draft.incidents, active: { ...a, lockLeft: Math.max(0, lock) } };
-    return lock <= 0;
-  }
   const left = a.secondsLeft - real;
   draft.incidents = { ...draft.incidents, active: { ...a, secondsLeft: Math.max(0, left) } };
   return left <= 0;
-}
-
-// ORDER 284 — Back your knowledge: spelaren väljer svar. Svaret låses och
-// stegets klocka stannar tills hen valt säkerhet och står för svaret.
-export function pickBackAnswer(state: SimulationState, optionId: string): SimulationState {
-  const a = state.incidents?.active;
-  if (!a?.backed || a.picked || (a.revealLeft ?? 0) > 0 || a.secondsLeft <= 0 || a.struck.includes(optionId)) return state;
-  const inc = incidentById(state.economy.businessClass, a.id);
-  const step = inc?.steps[a.step];
-  if (!step?.options.some((o) => o.id === optionId)) return state;
-  return { ...state, incidents: { ...state.incidents!, active: { ...a, picked: optionId, lockLeft: BACK.lockSeconds } } };
 }
 
 // Kvällens lärdom: förklaringen till steget där raketen föll, när spelaren
