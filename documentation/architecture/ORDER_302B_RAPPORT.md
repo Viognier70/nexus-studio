@@ -141,3 +141,11 @@ Se avsnittet Sviten.
 
 - **Gourmeternas andel hos konkurrenterna:** 0,5 (bistrons) är vårt val. Ska konkurrenterna ha egna koncept (Torgkrogen soigné och så vidare), så att gatan visar vilka gäster som går dit?
 - **Paletten:** ORDER 309 noterade att åtta av D5:s tio kroppsfärger ligger utanför kontrastbandet mot vinbarens golv. På gatan är figurerna oupplysta (`MeshBasicMaterial`, som förut). Gourmeternas plommon och kol och affärsfolkets grafit är mörka mot kvällens gata, och tecknen bär läsningen. Fråga till Design: ska gatan ha egen ljushet för kropparna?
+
+## Tillägg 2026-10-06: bildfrekvensen på en ledig dator
+
+ORDER 302:s mätning (`scripts/order297-check.mjs`) kördes om på `main` med 302b, 307b, 308b, 309b och 310b inmergade, när ingen annan körning gick (lastsnittet omkring 5). Talen står i `frontend/reports/order302b/ledig/check-*.json`.
+- **1440 × 900:** 53,6–60,1 bilder per sekund. Lägst är byns nivå (660 m).
+- **1280 × 720:** 58,2–60,2 bilder per sekund.
+
+Kravet, minst 30 på byns nivå, är uppfyllt. Förut var det 54–60 i ORDER 302.
