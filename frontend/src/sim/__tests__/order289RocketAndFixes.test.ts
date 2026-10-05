@@ -10,6 +10,7 @@ import { makeNewGameState } from '../../strategic/simulation/model';
 import { firstDayOfWeek } from '../calendar';
 import { incidentById } from '../incidentBank';
 import { canStartBack, rankedStepOption } from '../incidents';
+import { answerAndWait } from './verdict';
 import { rocketCounter } from '../../strategic/ui/service/serviceView';
 import { PLAYERS } from '../../strategic/testHarness/randomness';
 import type { SimulationState } from '../../strategic/types';
@@ -63,7 +64,8 @@ describe('ORDER 289 — en egen raket spelas till slut', () => {
     for (let step = 0; step < 3; step++) {
       s = toNextStep(s, step);
       expect(s.incidents.active?.id).toBe(id);
-      s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: best(s) });
+      // ORDER 310b — svaret avgörs efter låset och väntan.
+      s = answerAndWait(s, best(s));
       if (s.incidents.active?.choosing) s = reducer(s, { type: 'INCIDENT_GO' });
     }
     expect(s.incidents.active).toBeNull();

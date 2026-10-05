@@ -9,6 +9,7 @@ import { INCIDENTS } from '../balance';
 import { incidentById } from '../incidentBank';
 import { rankedStepOption } from '../incidents';
 import type { SimulationState } from '../../strategic/types';
+import { answerAndWait } from './verdict';
 
 const TICK = { type: 'TICK', dt: 0.2 } as const;
 
@@ -21,11 +22,14 @@ function evening(seed: number): SimulationState {
 }
 
 // ORDER 305b — kvitt eller dubbelt: efter ett rätt steg går spelaren vidare.
-function answer(s: SimulationState, rank: 'best' | 'worst'): SimulationState {
+// ORDER 310b — wait=false låser bara svaret; kvällens TICK för det till avgörandet.
+function answer(s: SimulationState, rank: 'best' | 'worst', wait = true): SimulationState {
   if (s.incidents.active?.choosing) s = reducer(s, { type: 'INCIDENT_GO' });
   const a = s.incidents.active!;
   const step = incidentById('vinbar', a.id)!.steps[a.step];
-  return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, rank, a.struck, a.situation) });
+  // ORDER 310b — svaret avgörs efter låset och väntan.
+  const optionId = rankedStepOption(step, rank, a.struck, a.situation);
+  return wait ? answerAndWait(s, optionId) : reducer(s, { type: 'ANSWER_INCIDENT', optionId });
 }
 
 function toFirstRocket(s: SimulationState): SimulationState {
@@ -59,7 +63,7 @@ describe('ORDER 276 — raketerna styr gästflödet', () => {
       let s = evening(seed);
       const seen = new Set<string>();
       for (let i = 0; i < 20000 && s.day.period === 'dinner'; i++) {
-        if (s.incidents.active && !(s.incidents.active.revealLeft ?? 0)) s = answer(s, rank);
+        if (s.incidents.active && !(s.incidents.active.revealLeft ?? 0) && !s.incidents.active.pending) s = answer(s, rank, false);
         s = reducer(s, TICK);
         for (const g of s.guests) seen.add(g.id);
       }
@@ -75,7 +79,11 @@ describe('ORDER 276 — raketerna styr gästflödet', () => {
     // ORDER 303c — stegen släpper inte längre in gäster (bara en klarad
     // raket gör det), så antalet gäster skiljer bara lite under en kväll;
     // intäkten skiljer fortfarande.
-    expect(good.guests).toBeGreaterThanOrEqual(bad.guests - 2);
+    // ORDER 310b — med låset och väntan (3,8 s före avgörandet) står en raket
+    // längre öppen; den som svarar rätt går tre steg och väntar tre gånger.
+    // Fröna 1–4 gav 159 gäster med rätt svar och 164 med fel (förut inom 2):
+    // gränsen är nu 5 % av kvällens gäster.
+    expect(good.guests).toBeGreaterThanOrEqual(Math.floor(bad.guests * 0.95));
     expect(good.revenue).toBeGreaterThan(bad.revenue);
   });
 });

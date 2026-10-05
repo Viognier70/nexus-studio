@@ -108,6 +108,22 @@
 .nx-rocket-option[data-look='dim'] .nx-rocket-key { background: transparent; color: var(--nx-ink-2); }
 .nx-rocket-option[data-look='dim'] { opacity: 0.38; }
 .nx-rocket-option[data-look='struck'] { opacity: 0.45; text-decoration: line-through; }
+/* ORDER 310b — Designs lås och väntan: det valda svaret har en bläckkant fram
+ * till avgörandet, och om det var rätt eller fel syns inte än. Vid 900 ms
+ * (låset) tonas kortet till 45 % och listen visar Låst. */
+.nx-rocket-option[data-look='locked'] { border-color: var(--w-ink, #2a1c13); box-shadow: 0 0 0 1px var(--w-ink, #2a1c13), var(--w-shadow-answer); }
+.nx-rocket[data-locked='wait'] .nx-rocket-option,
+.nx-rocket[data-locked='wait'] .nx-rocket-story,
+.nx-rocket[data-locked='wait'] .nx-rocket-situation,
+.nx-rocket[data-locked='wait'] .nx-rocket-ask,
+.nx-rocket[data-locked='wait'] .nx-rocket-bar { opacity: .45; transition: opacity .2s; }
+.nx-rocket-locked {
+  display: flex; align-items: center; justify-content: space-between; gap: calc(12 * var(--nx-u));
+  margin-top: auto; margin-bottom: calc(24 * var(--nx-u)); padding: calc(14 * var(--nx-u)) calc(22 * var(--nx-u));
+  border-radius: calc(18 * var(--nx-u)); background: rgba(232,185,58,.55); color: rgba(42,28,19,.7);
+  font-weight: 800; font-size: max(14px, calc(22 * var(--nx-u))); flex-shrink: 0;
+}
+.nx-rocket-locked .nx-small { font-weight: 700; font-size: max(12px, calc(16 * var(--nx-u))); }
 
 .nx-rocket-band { margin-top: auto; margin-bottom: calc(24 * var(--nx-u)); padding: calc(18 * var(--nx-u)) calc(22 * var(--nx-u)); flex-shrink: 0; }
 .nx-rocket-band[data-kind='right'] { background: var(--w-gold); color: var(--w-ink); }
@@ -883,6 +899,21 @@ body:has(.nx-stake) .nx-room-notices { display: none; }
 @keyframes nx-stake-fall { to { opacity: 0; transform: translateY(16vh) rotate(40deg); } }
 @keyframes nx-stake-away { to { opacity: 0; } }
 @keyframes nx-stake-ring-pulse { from { box-shadow: 0 0 8px rgba(255,190,90,.5); } to { box-shadow: 0 0 22px rgba(255,190,90,.9); } }
+/* ORDER 310b — låset och väntan (Designs kvitt eller dubbelt §3, lägena 1–2):
+ * marken glider upp på steget 150–780 ms, låset slår igen vid 900 ms, och
+ * steget pulserar från glöd till ljuslåga (--stake-pulse 0–1, waitPulse). */
+.nx-stake-token[data-phase] { animation: nx-stake-token-in .63s cubic-bezier(.65,0,.35,1) .15s both; }
+.nx-stake-lock { position: absolute; top: -1.4vh; right: -1.8vh; width: 3.6vh; height: 3.6vh; min-width: 20px; min-height: 20px; padding: .7vh; box-sizing: border-box; border-radius: 50%; background: #2a1c13; color: #f0cd82; display: grid; place-items: center; }
+.nx-stake-lock[data-shut='true'] { animation: nx-stake-shackle .12s ease-out both; }
+.nx-stake[data-phase='lock'] .nx-pyr-floor[data-state='current'] .nx-pyr-edge,
+.nx-stake[data-phase='wait'] .nx-pyr-floor[data-state='current'] .nx-pyr-edge { stroke: #ffd58f; stroke-width: calc(2px + var(--stake-pulse, 0) * 2.5px); }
+.nx-stake[data-phase='wait'] .nx-pyr-floor[data-state='current'] { filter: drop-shadow(0 0 calc(4px + var(--stake-pulse, 0) * 22px) rgba(255, 190, 90, calc(.35 + var(--stake-pulse, 0) * .55))); }
+.nx-stake-cell[data-kind='step'][data-state='wait'] { background: #6b4a2a; color: #f5ead5; border: 2px solid #f0cd82; }
+.nx-stake-cell[data-kind='step'][data-state='wait'] .nx-stake-label { color: #f0cd82; }
+.nx-stake-wait-note { position: absolute; left: 0; right: 0; top: 73.5vh; }
+@keyframes nx-stake-token-in { from { opacity: 0; transform: translateY(14vh) scale(.8); } to { opacity: 1; transform: none; } }
+@keyframes nx-stake-shackle { from { transform: scale(1.25); } to { transform: scale(1); } }
+
 /* Smala skärmar: kolumnen tar hela bredden, ovanpå kortet. */
 @media (max-width: 900px) {
   .nx-stake { --stake-cx: 50vw; --stake-w: calc(100vw - 32px); }
@@ -897,5 +928,8 @@ body:has(.nx-stake) .nx-room-notices { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .nx-stake-pyr, .nx-stake-row, .nx-stake-choice, .nx-stake-ring, .nx-stake-pyr .nx-pyr-floor, .nx-stake-cell .nx-stake-val, .nx-stake-pyr .nx-pyr-edge { animation: none !important; }
   .nx-stake-token { animation: nx-stake-away .5s linear .2s forwards; }
+  /* ORDER 310b — marken tonas in på steget i stället för att glida dit; pulsen står still. */
+  .nx-stake-token[data-phase] { animation: nx-stake-in .63s linear .15s both; }
+  .nx-stake-lock { animation: none !important; }
   .nx-stake-cell[data-kind='pot'][data-state='out'] .nx-stake-val { opacity: .55; }
 }

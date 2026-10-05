@@ -26,6 +26,7 @@ vi.mock('../../../simulation/SimulationProvider', () => ({
 }));
 
 import { reducer } from '../../../simulation/reducer';
+import { answerAndWait } from '../../../../sim/__tests__/verdict';
 import { makeNewGameState } from '../../../simulation/model';
 import { changeClass, minimumStakeSek } from '../../../../sim/economy';
 import { firstDayOfWeek } from '../../../../sim/calendar';
@@ -66,7 +67,8 @@ function wineBarService(): SimulationState {
 function answer(s: SimulationState, rank: 'best' | 'worst' = 'best'): SimulationState {
   const a = s.incidents.active!;
   const step = incidentById('vinbar', a.id)!.steps[a.step];
-  return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, rank, a.struck, a.situation) });
+  // ORDER 310b — svaret avgörs efter låset och väntan.
+  return answerAndWait(s, rankedStepOption(step, rank, a.struck, a.situation));
 }
 
 function openNow(s: SimulationState, id: string): SimulationState {
@@ -125,7 +127,7 @@ describe('ORDER 271 — raketkortet (R1–R3)', () => {
   });
 
   it('R2: rätt svar visas i stunden, sedan öppnas nästa steg', () => {
-    const s = reducer(openNow(wineBarService(), 'vb09-getosten'), { type: 'ANSWER_INCIDENT', optionId: 'c' });
+    const s = answerAndWait(openNow(wineBarService(), 'vb09-getosten'), 'c');
     sim.state = s;
     const { container, rerender } = render(<IncidentCard />);
     const card = byTestId(container, 'incident-card')!;
@@ -150,7 +152,7 @@ describe('ORDER 271 — raketkortet (R1–R3)', () => {
     const open = openNow(wineBarService(), 'vb09-getosten');
     sim.state = open;
     const { container, rerender } = render(<IncidentCard />);
-    const after = reducer(open, { type: 'ANSWER_INCIDENT', optionId: 'a' });
+    const after = answerAndWait(open, 'a');
     sim.state = after;
     rerender(<IncidentCard />);
     const card = byTestId(container, 'incident-card')!;
@@ -186,7 +188,7 @@ describe('ORDER 271 — mätarna', () => {
     }
     expect(byTestId(container, 'meter-cash')).toBeNull();
     expect(byTestId(container, 'service-meters')!.getAttribute('data-emph')).toBe('false');
-    sim.state = reducer(open, { type: 'ANSWER_INCIDENT', optionId: 'a' });
+    sim.state = answerAndWait(open, 'a');
     rerender(<ServiceMeters />);
     expect(byTestId(container, 'service-meters')!.getAttribute('data-emph')).toBe('true');
     act(() => { vi.advanceTimersByTime(METER_EMPHASIS_MS + 10); });

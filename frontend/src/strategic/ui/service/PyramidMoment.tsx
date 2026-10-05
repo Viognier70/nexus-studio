@@ -16,9 +16,17 @@
 //     sekunderna pulserar ringen i ljuslåga) och raden "När tiden går ut stannar du".
 // Ögonblicket visas vid både rätt och fel (Designs §3).
 //
-// Tiderna i ms från avgörandet (D). I spelet kommer avgörandet när spelaren
-// svarar (motorn avgör direkt), så Designs lås och väntan (0–3 800 ms före
-// D) finns inte här; se ORDER_310_RAPPORT.md.
+// ORDER 310b (Anders 2026-10-05) — låset och väntan före avgörandet. Motorn
+// låser svaret vid trycket och avgör det INCIDENTS.verdictSeconds senare
+// (sim/incidents.ts `pending`), så kolumnen har två lägen till:
+//   lock (0–900 ms): marken med kreditsymbolen och potten glider upp på
+//         steget 150–780 och låset slår igen vid 900 (INCIDENTS.lockSeconds);
+//   wait (900–3 800 ms): steget pulserar från glöd till ljuslåga, perioden
+//         kortas från 900 till 320 ms (Designs waitPulse), raden visar
+//         potten → om rätt. Avgörandet kommer när motorn avgör svaret.
+// Reducerad rörelse: pulsen står still på 100 % och marken tonas in. Tiderna
+// är desamma, eftersom väntan är spelets regel.
+// Tiderna nedan i ms från avgörandet (D).
 //   rätt: våningen fylls 0–500 (flash 500–750), potten rullar upp i 8 steg
 //         200–900 (STAKE_MOMENT.right.potRoll);
 //   fel:  våningen skakar och spricker, marken faller 200–900, potten slocknar
@@ -31,7 +39,7 @@
 
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { GraduationCap } from 'lucide-react';
+import { GraduationCap, Lock, LockOpen } from 'lucide-react';
 import { strings } from '../../../content/strings';
 import { DOUBLE_OR_NOTHING, INCIDENTS } from '../../../sim/balance';
 import type { KnowledgeAxis } from '../../types';
@@ -48,15 +56,27 @@ export const STAKE_T = {
   wrongOut: 2250,
   doneShrink: [2150, 2600],
   stoppedHold: 1200,
-  lastSeconds: 3
+  lastSeconds: 3,
+  /** Väntan: pulsens period från 900 till 320 ms (pyramidStake.ts STAKE_MOMENT.wait.pulse). */
+  waitPulseMs: [900, 320]
 } as const;
+
+/** Designs waitPulse (pyramidStake.ts): 0–1 vid ms från trycket, fasen integreras så att den inte hoppar.
+ *  Väntan räknas från låset (INCIDENTS.lockSeconds) till avgörandet (INCIDENTS.verdictSeconds). */
+export function waitPulse(ms: number): number {
+  const a = INCIDENTS.lockSeconds * 1000, b = INCIDENTS.verdictSeconds * 1000;
+  const [p0, p1] = STAKE_T.waitPulseMs;
+  const u = Math.max(0, Math.min(1, (ms - a) / (b - a))), f0 = 1 / p0, f1 = 1 / p1;
+  const phase = (b - a) * (f0 * u + (f1 - f0) * u * u / 2);
+  return 0.5 - 0.5 * Math.cos(2 * Math.PI * phase);
+}
 
 /** Potten efter ett rätt steg med bästa svaret: potten × growth + stegets kredit (sim/incidents.ts growPot). */
 export function potIfRight(pot: number): number {
   return pot * DOUBLE_OR_NOTHING.growth + INCIDENTS.bestAnswerCredit;
 }
 
-export type StakePhase = 'right' | 'choosing' | 'done' | 'wrong' | 'stopped';
+export type StakePhase = 'lock' | 'wait' | 'right' | 'choosing' | 'done' | 'wrong' | 'stopped';
 
 function useElapsed(untilMs: number): number {
   const [t, setT] = useState(0);
@@ -108,7 +128,8 @@ export function PyramidMoment({
     const id = window.setTimeout(() => setGone(true), life);
     return () => window.clearTimeout(id);
   }, [life]);
-  const t = useElapsed(1000);
+  const waiting = phase === 'lock' || phase === 'wait';
+  const t = useElapsed(waiting ? INCIDENTS.verdictSeconds * 1000 : 1000);
   if (gone) return null;
 
   const p = strings.pyramidMoment;
@@ -123,8 +144,10 @@ export function PyramidMoment({
   const rolls = phase === 'right' || phase === 'done';
   const roll = !rolls ? 1 : reduced ? (t >= r0 ? 1 : 0) : Math.floor(Math.max(0, Math.min(1, (t - r0) / (r1 - r0))) * STAKE_T.potRollSteps) / STAKE_T.potRollSteps;
   const shownPot = right ? Math.round(potBefore + (potAfter - potBefore) * roll) : potBefore;
-  const potLabel = !right ? (potBefore > 0 ? p.gone : p.none) : phase === 'stopped' ? p.pot : potBefore > 0 ? p.doubled : p.first;
-  const ifRight = right ? potAfter : potIfRight(potBefore);
+  const potLabel = waiting ? p.pot : !right ? (potBefore > 0 ? p.gone : p.none) : phase === 'stopped' ? p.pot : potBefore > 0 ? p.doubled : p.first;
+  const ifRight = right && !waiting ? potAfter : potIfRight(potBefore);
+  // ORDER 310b — pulsen i väntan (0–1); stilla på 100 % med reducerad rörelse.
+  const pulse = phase === 'wait' ? (reduced ? 1 : waitPulse(t)) : 0;
 
   // Valet: efter varje rätt steg som inte är det sista. Stannade: Stanna markerad.
   const showChoice = (phase === 'choosing' || phase === 'stopped') && !last;
@@ -139,10 +162,22 @@ export function PyramidMoment({
   const [y0, y1] = floorBand(step);
 
   return createPortal(
-    <div className="nx nx-stake" role="status" data-testid="pyramid-moment" data-phase={phase} data-step={step} data-axis={axes[step]} data-reduced={reduced || undefined}>
+    <div className="nx nx-stake" role="status" data-testid="pyramid-moment" data-phase={phase} data-step={step} data-axis={axes[step]} data-reduced={reduced || undefined}
+      aria-label={waiting ? p.onTable : undefined}>
       <div className="nx-stake-col">
-        <div className="nx-stake-pyr" data-shrink={phase === 'done' || undefined} data-out={phase === 'wrong' || undefined}>
+        <div className="nx-stake-pyr" data-shrink={phase === 'done' || undefined} data-out={phase === 'wrong' || undefined}
+          style={waiting ? { ['--stake-pulse' as string]: pulse.toFixed(3) } : undefined} data-pulse={waiting ? pulse.toFixed(2) : undefined}>
           <KnowledgePyramid levels={nextLevels} full={phase === 'done'} axes={axes} legend={false} instantBelow={step} testId="pyramid-moment-pyramid" />
+          {waiting && (
+            // ORDER 310b — marken på steget och mässingslåset (öppet tills låset slår igen).
+            <span className="nx-stake-token" data-phase={phase} data-testid="stake-token" style={{ top: `${(((y0 + y1) / 2) / 250) * 100}%` }} aria-hidden>
+              <GraduationCap size="42%" strokeWidth={2.2} />
+              {potBefore > 0 && <span>{potBefore}</span>}
+              <span className="nx-stake-lock" data-testid="stake-lock" data-shut={phase === 'wait' || undefined}>
+                {phase === 'wait' ? <Lock size="100%" strokeWidth={2.4} /> : <LockOpen size="100%" strokeWidth={2.4} />}
+              </span>
+            </span>
+          )}
           {!right && (
             <span className="nx-stake-token" data-testid="stake-token" style={{ top: `${(((y0 + y1) / 2) / 250) * 100}%` }} aria-hidden>
               <GraduationCap size="42%" strokeWidth={2.2} />
@@ -152,21 +187,23 @@ export function PyramidMoment({
         </div>
 
         <div className="nx-stake-row" data-testid="pyramid-moment-line" data-out={phase === 'wrong' || undefined} aria-label={p.rowAria(stepName, potBefore, ifRight)}>
-          <div className="nx-stake-cell" data-kind="step" data-state={right ? 'right' : 'wrong'} data-testid="stake-step">
+          <div className="nx-stake-cell" data-kind="step" data-state={waiting ? 'wait' : right ? 'right' : 'wrong'} data-testid="stake-step">
             <span className="nx-stake-label">{p.stepTerm(step + 1)}</span>
             <span className="nx-stake-val">{stepName}</span>
           </div>
           <span className="nx-stake-op" aria-hidden>·</span>
-          <div className="nx-stake-cell" data-kind="pot" data-state={right ? 'lit' : 'out'} data-doubled={rolls && t >= r0 ? true : undefined} data-testid="stake-pot" data-value={shownPot}>
+          <div className="nx-stake-cell" data-kind="pot" data-state={right || waiting ? 'lit' : 'out'} data-doubled={rolls && t >= r0 ? true : undefined} data-testid="stake-pot" data-value={shownPot}>
             <span className="nx-stake-label">{potLabel}</span>
             <span className="nx-stake-val"><GraduationCap className="nx-stake-icon" aria-hidden /><span data-testid="stake-pot-value">{shownPot}</span></span>
           </div>
-          <span className="nx-stake-op" data-after aria-hidden>→</span>
-          <div className="nx-stake-cell" data-kind="ifRight" data-after data-testid="stake-if-right" data-value={ifRight}>
+          <span className="nx-stake-op" data-after={!waiting || undefined} aria-hidden>→</span>
+          <div className="nx-stake-cell" data-kind="ifRight" data-after={!waiting || undefined} data-testid="stake-if-right" data-value={ifRight}>
             <span className="nx-stake-label">{p.ifRight}</span>
             <span className="nx-stake-val"><GraduationCap className="nx-stake-icon" aria-hidden /><span>{ifRight}</span></span>
           </div>
         </div>
+
+        {waiting && <p className="nx-stake-note nx-stake-wait-note" data-testid="stake-wait-note">{p.onTable}</p>}
 
         {showChoice && (
           <div className="nx-stake-choice" data-testid="incident-kvitt" role="group" aria-label={k.aria} data-picked={picked ?? undefined}>

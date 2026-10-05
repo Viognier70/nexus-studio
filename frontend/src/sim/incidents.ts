@@ -107,6 +107,26 @@ export interface ActiveIncident {
   pot?: RocketPot | null;
   choosing?: boolean;
   choiceLeft?: number;
+  // ORDER 310b — låset och väntan: svaret är låst men inte avgjort.
+  pending?: PendingAnswer | null;
+}
+
+// ORDER 310b (Anders 2026-10-05, Designs kvitt eller dubbelt) — ett låst svar
+// som väntar på avgörandet. Tiderna är verkliga sekunder kvar: låset slår igen
+// när lockLeft når 0 (INCIDENTS.lockSeconds), avgörandet kommer när
+// verdictLeft når 0 (INCIDENTS.verdictSeconds). Stegets klocka står under
+// tiden, och svarets följd verkar först vid avgörandet.
+export interface PendingAnswer {
+  optionId: string;
+  lockLeft: number;
+  verdictLeft: number;
+}
+
+// Var i väntan svaret står: 'lock' tills låset slagit igen, sedan 'wait'.
+export function pendingPhase(active: ActiveIncident | null | undefined): 'lock' | 'wait' | null {
+  const p = active?.pending;
+  if (!p) return null;
+  return p.lockLeft > 0 ? 'lock' : 'wait';
 }
 
 // ORDER 305 — raketens pott i kvitt eller dubbelt.
@@ -1021,6 +1041,34 @@ export function goOnIncident(draft: SimulationState): void {
   draft.incidents = { ...draft.incidents!, active: { ...active, choosing: false, choiceLeft: 0 } };
 }
 
+// ORDER 310b — spelaren svarar: svaret låses och väntar på avgörandet
+// (INCIDENTS.verdictSeconds). Inget av svarets följd verkar ännu. Ett struket
+// eller okänt svar, ett svar under valet i kvitt eller dubbelt och ett andra
+// svar medan det första väntar avvisas (false).
+export function lockAnswer(draft: SimulationState, optionId: string): boolean {
+  const inc = draft.incidents;
+  const active = inc?.active;
+  if (!inc || !active || active.pending || active.choosing) return false;
+  const incident = incidentById(draft.economy.businessClass, active.id);
+  const step = incident?.steps[active.step ?? 0];
+  if (!step || !step.options.some((o) => o.id === optionId && !active.struck.includes(o.id))) return false;
+  draft.incidents = {
+    ...inc,
+    active: { ...active, pending: { optionId, lockLeft: INCIDENTS.lockSeconds, verdictLeft: INCIDENTS.verdictSeconds } }
+  };
+  return true;
+}
+
+// ORDER 310b — avgörandet: det låsta svaret avgörs (resolveIncident).
+export function settlePendingAnswer(draft: SimulationState): CreditChange | null {
+  const inc = draft.incidents;
+  const active = inc?.active;
+  const p = active?.pending;
+  if (!inc || !active || !p) return null;
+  draft.incidents = { ...inc, active: { ...active, pending: null } };
+  return resolveIncident(draft, p.optionId);
+}
+
 export function resolveIncident(draft: SimulationState, optionId: string | null): CreditChange | null {
   const inc = draft.incidents;
   const active = inc?.active;
@@ -1190,24 +1238,37 @@ function eventRevealSeconds(active: ActiveIncident, stepIndex: number): number {
 
 // Nedräkningen går i verklig tid: en tick är dt spelsekunder, och i farten
 // `speed` motsvarar det dt / speed verkliga sekunder.
-export function countDown(draft: SimulationState, dt: number): boolean {
-  const inc = draft.incidents;
-  if (!inc?.active) return false;
+// ORDER 310b — 'expired' när stegets tid eller valets tid är ute, 'verdict'
+// när ett låst svar ska avgöras (settlePendingAnswer), annars null.
+export function countDown(draft: SimulationState, dt: number): 'expired' | 'verdict' | null {
+  let inc = draft.incidents;
+  if (!inc?.active) return null;
   let real = dt / Math.max(1, draft.speed);
-  // ORDER 286a — först figurens klipp i rummet; stegets klocka står under tiden.
-  const intro = inc.active.introLeft ?? 0;
-  if (intro > 0) {
-    draft.incidents = { ...inc, active: { ...inc.active, introLeft: Math.max(0, intro - real) } };
-    return false;
+  // ORDER 310b — väntan på avgörandet räknas från trycket, i verklig tid.
+  const p = inc.active.pending;
+  let verdict = false;
+  if (p) {
+    const v = p.verdictLeft - real;
+    verdict = v <= 0;
+    draft.incidents = inc = { ...inc, active: { ...inc.active, pending: { ...p, lockLeft: Math.max(0, p.lockLeft - real), verdictLeft: Math.max(0, v) } } };
   }
-  const reveal = inc.active.revealLeft ?? 0;
+  const held = verdict ? 'verdict' : null;
+  // ORDER 286a — först figurens klipp i rummet; stegets klocka står under tiden.
+  const intro = inc.active!.introLeft ?? 0;
+  if (intro > 0) {
+    draft.incidents = { ...inc, active: { ...inc.active!, introLeft: Math.max(0, intro - real) } };
+    return held;
+  }
+  const reveal = inc.active!.revealLeft ?? 0;
   if (reveal > 0) {
     // Svaret i stunden visas först; stegets tid börjar sedan på full tid.
     const rest = reveal - real;
-    draft.incidents = { ...inc, active: { ...inc.active, revealLeft: Math.max(0, rest), revealed: rest > 0 ? inc.active.revealed : null } };
-    if (rest > 0) return false;
+    draft.incidents = { ...inc, active: { ...inc.active!, revealLeft: Math.max(0, rest), revealed: rest > 0 ? inc.active!.revealed : null } };
+    if (rest > 0) return held;
     real = -rest;
   }
+  // ORDER 310b — stegets klocka står medan svaret väntar på avgörandet.
+  if (p) return held;
   // ORDER 305 — kvitt eller dubbelt: valet efter ett rätt steg har sin egen
   // tid, och stegets klocka börjar först när spelaren gått vidare. När tiden
   // går ut stannar spelaren (reducer.ts TICK).
@@ -1215,12 +1276,12 @@ export function countDown(draft: SimulationState, dt: number): boolean {
   if (c.choosing) {
     const choice = (c.choiceLeft ?? DOUBLE_OR_NOTHING.choiceSeconds) - real;
     draft.incidents = { ...draft.incidents, active: { ...c, choiceLeft: Math.max(0, choice) } };
-    return choice <= 0;
+    return choice <= 0 ? 'expired' : null;
   }
   const a = draft.incidents.active!;
   const left = a.secondsLeft - real;
   draft.incidents = { ...draft.incidents, active: { ...a, secondsLeft: Math.max(0, left) } };
-  return left <= 0;
+  return left <= 0 ? 'expired' : null;
 }
 
 // Kvällens lärdom: förklaringen till steget där raketen föll, när spelaren
@@ -1262,7 +1323,8 @@ export function lessonFor(state: SimulationState): LessonItem[] {
 export function closeIncidents(draft: SimulationState): CreditChange | null {
   const inc = draft.incidents;
   if (!inc || !inc.enabled) return null;
-  const credit = inc.active ? resolveIncident(draft, null) : null;
+  // ORDER 310b — ett låst svar som väntar avgörs när servicen stänger.
+  const credit = inc.active ? (inc.active.pending ? settlePendingAnswer(draft) : resolveIncident(draft, null)) : null;
   const after = draft.incidents;
   draft.incidents = {
     ...after,

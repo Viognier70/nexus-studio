@@ -918,6 +918,16 @@ export const INCIDENTS = {
   // kortet så här många sekunder (verklig tid) innan nästa steg öppnas på
   // full tid, eller kortet stängs.
   revealSeconds: 2.4,
+  // ORDER 310b (Anders 2026-10-05: "Det ska dröja, för det är där spänningen
+  // finns"; Designs kvitt eller dubbelt, pyramidStake.ts STAKE_MOMENT) —
+  // låset och väntan. Ett svar avgörs inte när spelaren trycker: det låses
+  // (svaret kan inte ändras, mässingslåset slår igen vid lockSeconds) och
+  // avgörs efter verdictSeconds, när gästens reaktion syns. Under väntan står
+  // stegets klocka still, och ingenting av svarets följd (rummet, kassan,
+  // krediterna, bandet) syns förrän avgörandet kommer. Verkliga sekunder
+  // från trycket, som choiceSeconds. Tiden ute avgörs direkt, som förut.
+  lockSeconds: 0.9,
+  verdictSeconds: 3.8,
   // ORDER 276 (Vision Owner 2026-09-28, provspel): "Raketerna styr
   // gästflödet: fler rätta svar ger fler gäster in i lokalen, som köper
   // mer ur lagret." Varje klarat steg släpper in så här många gäster, och

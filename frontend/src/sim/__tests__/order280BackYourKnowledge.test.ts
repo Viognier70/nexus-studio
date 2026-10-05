@@ -13,6 +13,7 @@ import { incidentById } from '../incidentBank';
 import { canStartBack, rankedStepOption, totalCredits } from '../incidents';
 import { PLAYERS } from '../../strategic/testHarness/randomness';
 import type { SimulationState } from '../../strategic/types';
+import { answerAndWait } from './verdict';
 
 const TICK = { type: 'TICK', dt: 0.2 } as const;
 
@@ -40,7 +41,8 @@ function answer(s: SimulationState, rank: 'best' | 'worst'): SimulationState {
   const a = s.incidents.active!;
   if (a.choosing) return reducer(s, { type: 'INCIDENT_GO' });
   const step = incidentById('vinbar', a.id)!.steps[a.step];
-  return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, rank, a.struck, a.situation) });
+  // ORDER 310b — svaret avgörs efter låset och väntan.
+  return answerAndWait(s, rankedStepOption(step, rank, a.struck, a.situation));
 }
 
 function toBackable(s: SimulationState): SimulationState {
