@@ -43,6 +43,7 @@ import {
   calibrationNote,
   canBack,
   formatIncidentText,
+  potCredits,
   secondsFor,
   serviceMeters,
   type IncidentOutcomeView,
@@ -451,7 +452,16 @@ export function IncidentCard() {
         <div style={{ width: `${barShare * 100}%` }} />
       </div>
 
-      <div role="group" aria-label={f(step.text.question)}>
+      {/* ORDER 305 — kvitt eller dubbelt: stanna eller satsa potten på nästa steg. */}
+      {active?.choosing && view.mode === 'ask' && (
+        <div className="nx-rocket-kvitt" data-testid="incident-kvitt">
+          <p>{t.kvitt.pot(String(potCredits(active.pot)), String(active.pot?.cashSek ?? 0))}</p>
+          <p>{t.kvitt.note}</p>
+          <button type="button" className="nx-rocket-option" data-testid="incident-kvitt-stop" onClick={() => dispatch({ type: 'INCIDENT_STOP' })}>{t.kvitt.stop}</button>
+          <button type="button" className="nx-rocket-option" data-testid="incident-kvitt-go" onClick={() => dispatch({ type: 'INCIDENT_GO' })}>{t.kvitt.go}</button>
+        </div>
+      )}
+      {!active?.choosing && <div role="group" aria-label={f(step.text.question)}>
         {step.options.map((o, i) => {
           if (backed && pick !== null && o.id !== pick && view!.mode === 'ask') return null;
           const look = lookFor(o.id);
@@ -482,7 +492,7 @@ export function IncidentCard() {
             </button>
           );
         })}
-      </div>
+      </div>}
 
       {backed && view.mode === 'ask' && pick === null && (
         <p className="nx-small nx-muted" data-testid="back-picked-hint" data-picked="false">{strings.back.pickFirst}</p>
