@@ -5,8 +5,8 @@
 //
 // Produktionsbygget (vite build + preview). Två flöden:
 //   1. Spelarens flöde från början: startskärmen → Nytt spel → namn och
-//      samtycke → regelkortet → mentorn → första morgonen, och sidan Spelets
-//      regler i menyn.
+//      samtycke → öppningen (ORDER 308; mäts och hoppas över) → regelkortet →
+//      mentorn → första morgonen, och sidan Spelets regler i menyn.
 //   2. Sparfilen måndag morgon vecka 2 i vinbaren (reports/order284/
 //      save-mandag-vinbaren.json): morgonen, inköpen, byn före öppning och
 //      servicen.
@@ -154,6 +154,12 @@ try {
     await page.fill('[data-testid=register-name]', 'Anders');
     await measure(page, 'registrering', ['[data-testid=register-sign]', '[data-testid=register-skip]', '[data-testid=register-research-yes]', '[data-testid=register-research-no]']);
     await page.click('[data-testid=register-sign]');
+    // ORDER 308 — öppningen före första morgonen: mäts när platsen och rad 1
+    // står (efter 3,5 s, då Hoppa över syns), och hoppas sedan över.
+    await page.waitForSelector('[data-testid=opening]', { timeout: 60000 });
+    for (let i = 0; i < 600; i++) { const t = await page.$eval('[data-testid=opening]', (el) => Number(el.getAttribute('data-t'))).catch(() => 99); if (t >= 3.5) break; await delay(100); }
+    await measure(page, 'oppningen', ['[data-testid=opening-skip]']);
+    await page.click('[data-testid=opening-skip]');
     await page.waitForSelector('[data-testid=rules-card]', { timeout: 60000 });
     await delay(800);
     await measure(page, 'regelkortet', ['[data-testid=rules-close]']);

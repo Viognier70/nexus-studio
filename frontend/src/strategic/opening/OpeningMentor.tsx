@@ -3,9 +3,15 @@
 // 1,2 m ut från dörren, vänd mot gatan, i spelets figurrigg och klipp. Hon
 // tittar ut mot vägen en gång (glanceAt). Syns bara medan öppningen pågår,
 // från 30 s (som i prototypen), och ritas av byns scen.
+//
+// Under öppningen är vinbarens egna figurer dolda (oppningManus: "byns figurer
+// i rummet är dolda under nedstigningen, så att rummet är tomt redan då").
+// WineBarFigures sätter sin grupps visible varje bildruta, så gruppen
+// ('wineBarFigures') skalas till noll medan öppningen pågår och tillbaka efteråt.
 
-import { useFrame } from '@react-three/fiber';
-import { useEffect, useMemo } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
+import { useEffect, useMemo, useRef } from 'react';
+import type * as THREE from 'three';
 import { applyPose, createFigureRig } from '../scene/figureRig';
 import { sampleClip } from '../scene/figureClips';
 import { MENTOR } from './oppningManus';
@@ -29,9 +35,20 @@ export function OpeningMentor() {
   // kör effekten två gånger, och riggen ska stå kvar i scenen efter den första).
   useEffect(() => () => rig.materials.forEach((m) => m.dispose()), [rig]);
 
+  const { scene } = useThree();
+  const hidden = useRef<THREE.Object3D | null>(null);
+  useEffect(() => () => { if (hidden.current) hidden.current.scale.setScalar(1); }, []);
+
   useFrame(() => {
     markOpeningSceneReady();
     const st = openingStage();
+    if (st.active) {
+      const figs = scene.getObjectByName('wineBarFigures');
+      if (figs && figs !== hidden.current) { figs.scale.setScalar(0); hidden.current = figs; }
+    } else if (hidden.current) {
+      hidden.current.scale.setScalar(1);
+      hidden.current = null;
+    }
     const show = st.active && st.t > MENTOR_FROM_S;
     rig.root.visible = show;
     if (!show) return;

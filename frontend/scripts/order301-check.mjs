@@ -46,6 +46,8 @@ try {
     await page.click('[data-testid=new-game]');
     await page.fill('[data-testid=register-name]', 'Anders');
     await page.click('[data-testid=register-sign]');
+    // ORDER 308 — öppningen före första morgonen hoppas över (knappen syns efter 3 s).
+    await page.waitForSelector('[data-testid=opening-skip]', { timeout: 120000 }).then(() => page.click('[data-testid=opening-skip]')).catch(() => {});
     await page.waitForSelector('[data-testid=rules-card]', { timeout: 60000 });
     await page.click('[data-testid=rules-close]');
     await page.waitForSelector('[data-testid=mentor-next]', { timeout: 30000 });
