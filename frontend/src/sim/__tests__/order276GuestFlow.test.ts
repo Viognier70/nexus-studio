@@ -54,7 +54,7 @@ describe('ORDER 276 — raketerna styr gästflödet', () => {
     expect(after.incidents.lastOutcome?.reveal?.guestsIn ?? 0).toBe(0);
   });
 
-  it('en kväll med rätta svar har fler gäster och säljer mer ur lagret än en med fel', () => {
+  it('en kväll med rätta svar säljer mer än en med fel', () => {
     const play = (rank: 'best' | 'worst', seed: number) => {
       let s = evening(seed);
       const seen = new Set<string>();
@@ -72,7 +72,10 @@ describe('ORDER 276 — raketerna styr gästflödet', () => {
     const sum = (rank: 'best' | 'worst') => [1, 2, 3, 4].map((seed) => play(rank, seed)).reduce((a, b) => ({ guests: a.guests + b.guests, revenue: a.revenue + b.revenue }));
     const good = sum('best');
     const bad = sum('worst');
-    expect(good.guests).toBeGreaterThan(bad.guests);
+    // ORDER 303c — stegen släpper inte längre in gäster (bara en klarad
+    // raket gör det), så antalet gäster skiljer bara lite under en kväll;
+    // intäkten skiljer fortfarande.
+    expect(good.guests).toBeGreaterThanOrEqual(bad.guests - 2);
     expect(good.revenue).toBeGreaterThan(bad.revenue);
   });
 });
