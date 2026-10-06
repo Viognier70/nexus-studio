@@ -35,7 +35,7 @@ import { staffKnows, incidentArea, staminaOf as simStamina, wellbeingOf as simWe
 import { staminaOf, wellbeingOf, type StaminaId } from './staffStatus';
 import { createOrkRing, orkFacing, orkRingShown, type OrkRing } from './orkRing';
 import { WellbeingLayer, type WellbeingItem } from './wellbeingLayer';
-import { dressAllGroups, disposeDressed, showGroup, HEAD_SIGNS, type DressedRig } from './guestLooks';
+import { applyStreetBlend, beyondDoorMat, dressAllGroups, disposeDressed, showGroup, stepStreetBlend, streetShare, HEAD_SIGNS, type DressedRig } from './guestLooks';
 import { GUEST_GROUPS } from './guestGroups';
 import { RoomEquipment } from './roomEquipment';
 import { hesitationElapsed } from './conditionClips';
@@ -351,6 +351,8 @@ interface Cast {
   orkRings: OrkRing[];
   dressed: DressedRig[];
   toppings: (PropHandle | null)[];
+  /** ORDER 302c — dörrmattan (room.queueSpots[0]) och riktningen mot gatan, i rummets ram. */
+  doorMat: { at: [number, number]; out: [number, number] };
 }
 
 /** Bildtexten vid figuren när raketen börjar i rummet (nexusStrings theatre.caption). */
@@ -669,7 +671,11 @@ export function WineBarFigures({ room, mood }: Props) {
       scriptFaces: { key: null, answers: 0, lastAt: -Infinity, answer: null, faces: new WeakMap() },
       orkRings,
       dressed: guestDressed,
-      toppings: guestToppings
+      toppings: guestToppings,
+      doorMat: (() => {
+        const at: [number, number] = spots[0] ? [spots[0].local[0], spots[0].local[1]] : [room.entrance[0], room.entrance[1]];
+        return { at, out: [room.waitingSpot[0] - at[0], room.waitingSpot[1] - at[1]] as [number, number] };
+      })()
     };
     if (import.meta.env.DEV && typeof window !== 'undefined') {
       (window as unknown as { __nxWineBarDirector?: unknown }).__nxWineBarDirector = director;
@@ -818,6 +824,12 @@ export function WineBarFigures({ room, mood }: Props) {
       // ORDER 290 — klirr när gäster skålar (ljudet, sound.ts).
       if (sample.visible && sample.pose === 'toast' && cast.lastPose[i] !== 'toast') play('clink');
       cast.lastPose[i] = sample.visible ? sample.pose : null;
+      // ORDER 302c — gatans färger utanför dörrmattan, rummets innanför (D5 tillägg
+      // 2026-10-06 §4): en ny gäst i figuren får sidan direkt, annars byts det på 0,6 s.
+      const newGuest = sample.guestId !== cast.guestIds[i];
+      if (sample.visible && sample.guestId) {
+        stepStreetBlend(cast.dressed[i].blend, beyondDoorMat(sample.x, sample.z, cast.doorMat.at, cast.doorMat.out), Math.min(delta, 0.1), newGuest);
+      }
       if (sample.guestId !== cast.guestIds[i] || guestType !== cast.guestTypes[i]) {
         cast.guestIds[i] = sample.guestId;
         cast.guestTypes[i] = guestType;
@@ -828,6 +840,9 @@ export function WineBarFigures({ room, mood }: Props) {
           const t = cast.toppings[i];
           if (t) t.group.visible = !(g && HEAD_SIGNS.has(GUEST_GROUPS[g].sign));
         }
+      }
+      if (sample.guestId) {
+        applyStreetBlend(rig, cast.dressed[i], streetShare(cast.dressed[i].blend));
       }
       // Sittregeln för alla sitsar (tillägget till leverans 2): barstol, lounge och stol.
       const seat = sample.guestId ? cast.director.guestSeat(sample.guestId) : null;

@@ -1,11 +1,14 @@
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useCamera } from '../camera/CameraContext';
 import { LANDMARK_BY_ID } from '../content/world';
 import type { Vec2Tuple } from '../content/world';
 import { createRng } from '../util/rng';
 import { readabilityScale } from '../util/readability';
+import { GUEST_GROUPS, type GuestGroupId } from './guestGroups';
+import { GROUP_IDS } from './guestLooks';
+import { OSM_FRAME, streetSignGeometry } from './village/streetLooks';
 
 // Static-ish figures placed at named landmarks. They are the reason the
 // player's eye is drawn to Torget, Campus, Gästgivaregården etc. — not
@@ -31,7 +34,16 @@ interface GatherPoint {
   count: number;
   // Visual mix — students at Campus, tourists at Gästgivar / Cornelis,
   // conference guests at Campus / Gästgivar, mixed elsewhere.
-  palette: string[];
+  // ORDER 302c — D5:s grupper i gatans färger ('grupp:variant', guestGroups.ts
+  // looks[].street): förut en egen palett med rött (#c9482f), som 302b missade.
+  palette: GathererLook[];
+}
+
+type GathererLook = `${GuestGroupId}:${0 | 1}`;
+function lookParts(l: GathererLook): { group: GuestGroupId; body: string; accent: string } {
+  const [g, v] = l.split(':') as [GuestGroupId, string];
+  const L = GUEST_GROUPS[g].looks[Number(v) % 2].street;
+  return { group: g, body: L.body, accent: L.accent };
 }
 
 // Where the gatherings happen. Radius is *around* the landmark centre —
@@ -44,55 +56,55 @@ const GATHER_POINTS_RAW: Array<
     landmarkId: 'gry-torget',
     radius: 12,
     count: 8,
-    palette: ['#8b8478', '#c69b6a', '#d6ac4f', '#5c8fa8', '#a05236', '#7a7770']
+    palette: ['villager:0', 'villager:1', 'tourist:0', 'student:0', 'tourist:1', 'business:1']
   },
   {
     landmarkId: 'gry-campus',
     radius: 16,
     count: 10,
-    palette: ['#d6ac4f', '#5c8fa8', '#7ab27a', '#8874a8', '#2d2b26', '#efe7d3']
+    palette: ['student:0', 'student:1', 'student:0', 'business:0', 'student:1', 'villager:1']
   },
   {
     landmarkId: 'gry-gastgivaregard',
     radius: 8,
     count: 5,
-    palette: ['#c9482f', '#e08c66', '#c69b6a', '#3a3630', '#efe7d3']
+    palette: ['tourist:0', 'tourist:1', 'gourmet:0', 'business:0', 'gourmet:1']
   },
   {
     landmarkId: 'gry-kringlan',
     radius: 6,
     count: 4,
-    palette: ['#8b8478', '#c69b6a', '#d6ac4f', '#c9482f']
+    palette: ['villager:0', 'villager:1', 'tourist:0', 'student:1']
   },
   {
     landmarkId: 'gry-cornelis',
     radius: 7,
     count: 5,
-    palette: ['#c9482f', '#e08c66', '#c69b6a', '#5c8fa8']
+    palette: ['tourist:0', 'tourist:1', 'gourmet:1', 'villager:0']
   },
   {
     landmarkId: 'gry-pizzanshus',
     radius: 6,
     count: 3,
-    palette: ['#8b8478', '#c69b6a', '#c9482f']
+    palette: ['villager:0', 'student:0', 'student:1']
   },
   {
     landmarkId: 'gry-glass',
     radius: 5,
     count: 3,
-    palette: ['#c9482f', '#e08c66', '#d6ac4f', '#7ab27a']
+    palette: ['tourist:0', 'student:1', 'villager:1', 'tourist:1']
   },
   {
     landmarkId: 'gry-kyrka',
     radius: 8,
     count: 3,
-    palette: ['#8b8478', '#7a7770', '#96917f', '#2d2b26']
+    palette: ['villager:0', 'villager:1', 'villager:0', 'business:1']
   },
   {
     landmarkId: 'gry-herrgard',
     radius: 8,
     count: 3,
-    palette: ['#8b8478', '#c69b6a', '#3a3630']
+    palette: ['business:0', 'gourmet:0', 'tourist:1']
   }
 ];
 
@@ -103,7 +115,7 @@ interface Gatherer {
   offZ: number;
   targetOffX: number;
   targetOffZ: number;
-  colour: string;
+  colour: GathererLook;
   yaw: number;
   targetYaw: number;
   // Presence lifecycle. life ∈ [0, 1]. Rises to 1 (arrived), holds, then
@@ -166,11 +178,35 @@ export function LandmarkGatherers() {
   const headRefs = useRef<Array<THREE.InstancedMesh | null>>([]);
   const tempObj = useMemo(() => new THREE.Object3D(), []);
   const tempColour = useMemo(() => new THREE.Color(), []);
+  // ORDER 302c — gruppens tecken (ryggsäcken, kepsen, solhatten, sjalen,
+  // skjortan) som på byns fotgängare: ett InstancedMesh per grupp, platserna
+  // delas ut varje bildruta efter vem som står där just nu.
+  const signs = useMemo(() => {
+    const total = Math.max(1, groups.reduce((a, g) => a + g.gatherers.length, 0));
+    const root = new THREE.Group();
+    const meshes = {} as Record<GuestGroupId, THREE.InstancedMesh>;
+    for (const g of GROUP_IDS) {
+      const mesh = new THREE.InstancedMesh(streetSignGeometry(g, OSM_FRAME), new THREE.MeshStandardMaterial({ roughness: 0.85 }), total);
+      mesh.count = 0;
+      mesh.frustumCulled = false;
+      mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      meshes[g] = mesh;
+      root.add(mesh);
+    }
+    return { root, meshes };
+  }, [groups]);
+  useEffect(() => () => {
+    for (const g of GROUP_IDS) {
+      signs.meshes[g].geometry.dispose();
+      (signs.meshes[g].material as THREE.Material).dispose();
+    }
+  }, [signs]);
 
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05);
     const camDist = actualRef.current.distance;
     const scale = readabilityScale(camDist, GATHERER_CURVE);
+    const used = { student: 0, villager: 0, tourist: 0, gourmet: 0, business: 0 } as Record<GuestGroupId, number>;
 
     for (let g = 0; g < groups.length; g++) {
       const body = bodyRefs.current[g];
@@ -232,7 +268,16 @@ export function LandmarkGatherers() {
         tempObj.scale.set(s, s, s);
         tempObj.updateMatrix();
         body.setMatrixAt(i, tempObj.matrix);
-        body.setColorAt(i, tempColour.set(a.colour));
+        const look = lookParts(a.colour);
+        body.setColorAt(i, tempColour.set(look.body));
+        if (s > 0.001) {
+          const sm = signs.meshes[look.group];
+          tempObj.position.set(a.cx + a.offX, 0, a.cz + a.offZ);
+          tempObj.updateMatrix();
+          sm.setMatrixAt(used[look.group], tempObj.matrix);
+          sm.setColorAt(used[look.group], tempColour.set(look.accent));
+          used[look.group]++;
+        }
 
         tempObj.position.set(
           a.cx + a.offX,
@@ -248,10 +293,17 @@ export function LandmarkGatherers() {
       head.instanceMatrix.needsUpdate = true;
       if (body.instanceColor) body.instanceColor.needsUpdate = true;
     }
+    for (const g of GROUP_IDS) {
+      const sm = signs.meshes[g];
+      sm.count = used[g];
+      sm.instanceMatrix.needsUpdate = true;
+      if (sm.instanceColor) sm.instanceColor.needsUpdate = true;
+    }
   });
 
   return (
     <group>
+      <primitive object={signs.root} />
       {groups.map((g, gi) => (
         <group key={g.point.landmarkId}>
           <instancedMesh

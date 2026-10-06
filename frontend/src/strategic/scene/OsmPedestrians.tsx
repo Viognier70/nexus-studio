@@ -14,7 +14,7 @@ import { createRng } from '../util/rng';
 import { readabilityScale, type ReadabilityCurve } from '../util/readability';
 import { GUEST_GROUPS, type GuestGroupId } from './guestGroups';
 import { GROUP_IDS } from './guestLooks';
-import { streetSignGeometry, type SignFrame } from './village/streetLooks';
+import { OSM_FRAME, streetSignGeometry } from './village/streetLooks';
 
 // Village-scale readability treatment. At close and district range the
 // walker keeps its authored 1.2 m height; from ~320 m up the visual scale
@@ -157,7 +157,9 @@ const ROLE_GROUP: Record<WalkerRole, GuestGroupId | null> = {
   conference: 'business',
   staff: null
 };
-const groupBodies = (g: GuestGroupId) => GUEST_GROUPS[g].looks.map((l) => l.body);
+// ORDER 302c — gatans variant (Designs tillägg 2026-10-06, looks[].street): kroppen
+// ljusare än marken, tecknet i gatans accentfärg.
+const groupBodies = (g: GuestGroupId) => GUEST_GROUPS[g].looks.map((l) => l.street.body);
 const ROLE_PALETTE: Record<WalkerRole, string[]> = {
   resident: groupBodies('villager'),
   student: groupBodies('student'),
@@ -165,8 +167,13 @@ const ROLE_PALETTE: Record<WalkerRole, string[]> = {
   conference: groupBodies('business'),
   staff: ['#efe7d3', '#c9b28e']
 };
-// Kroppen är en låda 0,42 × 1,2 × 0,32 m (fötterna vid 0) och huvudet r 0,22 vid 1,35 m.
-const OSM_FRAME: SignFrame = { headY: 1.35, headR: 0.22, neckY: 1.2, frontZ: 0.17, backZ: 0.16 };
+// Kroppen är en låda 0,42 × 1,2 × 0,32 m (fötterna vid 0) och huvudet r 0,22 vid 1,35 m (streetLooks.ts OSM_FRAME).
+
+// ORDER 302c — cyklisterna (cykeln och den som cyklar, en låda) i gatans
+// färger för bybor och studenter (guestGroups.ts looks[].street.body). Förut
+// fanns ett tegelrött bland dem, och D5 säger inget rött. Fyra färger som
+// förut, så att slumpflödet är detsamma.
+const CYCLIST_PALETTE: string[] = [...groupBodies('villager'), ...groupBodies('student')];
 
 // Rough share of population. Sums to 1.
 const ROLE_MIX: Array<[WalkerRole, number]> = [
@@ -267,7 +274,7 @@ export function OsmPedestrians() {
       speed: rng.range(0.016, 0.028),
       forward: rng.chance(0.5) ? 1 : -1,
       swap: rng.range(50, 110),
-      colour: rng.pick(['#5b5245', '#7a6a5a', '#4a4c50', '#c9482f']),
+      colour: rng.pick(CYCLIST_PALETTE),
       entering: 1
     }));
   }, [cyclePaths, paths]);
@@ -297,7 +304,7 @@ export function OsmPedestrians() {
       const c = new THREE.Color();
       idx.forEach((wi, k) => {
         slot[wi] = k;
-        mesh.setColorAt(k, c.set(GUEST_GROUPS[g].looks[walkers[wi].variant % 2].accent));
+        mesh.setColorAt(k, c.set(GUEST_GROUPS[g].looks[walkers[wi].variant % 2].street.accent));
       });
       if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
       meshes[g] = mesh;

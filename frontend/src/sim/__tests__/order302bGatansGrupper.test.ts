@@ -54,9 +54,10 @@ describe('ORDER 302b — gatans sorter i D5:s grupper', () => {
     for (const g of GROUP_IDS) {
       for (const v of [0, 1]) {
         const l = streetLookOf('middle', g, v);
-        expect(l.body).toBe(GUEST_GROUPS[g].looks[v].body);
-        expect(l.limb).toBe(GUEST_GROUPS[g].looks[v].limb);
-        expect(l.accent).toBe(GUEST_GROUPS[g].looks[v].accent);
+        // ORDER 302c — gatans variant (Designs tillägg 2026-10-06, looks[].street).
+        expect(l.body).toBe(GUEST_GROUPS[g].looks[v].street.body);
+        expect(l.limb).toBe(GUEST_GROUPS[g].looks[v].street.limb);
+        expect(l.accent).toBe(GUEST_GROUPS[g].looks[v].street.accent);
       }
     }
     expect(streetLookOf('billionaire', 'business', 0).body).toBe(BILLIONAIRE_GOLD);
@@ -75,7 +76,7 @@ describe('ORDER 302b — gatans sorter i D5:s grupper', () => {
       const top = Math.max(b.max.x - b.min.x, b.max.z - b.min.z);
       const tall = b.max.y - b.min.y;
       geo.dispose();
-      const row: Record<string, number | string> = { group: g, sign: GUEST_GROUPS[g].sign, topM: +top.toFixed(3), tallM: +tall.toFixed(3) };
+      const row: Record<string, number | string> = { group: g, sign: GUEST_GROUPS[g].sign, topM: +top.toFixed(3), topXM: +(b.max.x - b.min.x).toFixed(3), tallM: +tall.toFixed(3) };
       for (const [level, h] of [['street', 900], ['street', 720], ['block', 900], ['block', 720]] as const) {
         row[`${level}${h}px`] = +(top * pxPerM(level, h)).toFixed(1);
       }
@@ -86,8 +87,13 @@ describe('ORDER 302b — gatans sorter i D5:s grupper', () => {
     writeFileSync(resolve(OUT, 'signs.json'), JSON.stringify({ source: 'streetLooks.ts streetSignGeometry; villageEvening.ts LEVELS (dist, fov, figureScale)', figurePx, rows }, null, 2) + '\n');
     const by = Object.fromEntries(rows.map((r) => [r.group, r])) as Record<GuestGroupId, Record<string, number>>;
     // Hatten och sjalen är störst uppifrån, kepsen och skjortan sedan.
+    // ORDER 302c — studentens luva (mörk krage på axlarna, inom kroppens kontur
+    // uppifrån) och ryggsäcken ger tillsammans en ram från ryggen till bröstet
+    // som är djupare än hattens brätte; ramen mäter inte tecknets yta. Ordningen
+    // prövas mot kepsen och skjortan, och ryggsäckens bredd (x) mot hatten.
     for (const first of ['tourist', 'gourmet'] as GuestGroupId[]) {
-      for (const then of ['villager', 'business', 'student'] as GuestGroupId[]) expect(by[first].topM).toBeGreaterThan(by[then].topM);
+      for (const then of ['villager', 'business'] as GuestGroupId[]) expect(by[first].topM).toBeGreaterThan(by[then].topM);
+      expect(by[first].topM).toBeGreaterThan(by.student.topXM);
     }
     // Minst 10 bildpunkter på gatans nivå i den minsta storleken.
     for (const r of rows) expect(r.street720px as number).toBeGreaterThanOrEqual(10);
