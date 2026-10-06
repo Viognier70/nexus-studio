@@ -3,7 +3,7 @@
 ## Överlämning (2026-10-06, före omstart efter ORDER 312)
 
 **Var vi är.**
-- `main` står på `12cbd9ae` och är pushad. Arbetsträden är rena; inget pågående arbete på någon gren.
+- `main` står på `12cbd9ae` (plus den här överlämningen) och är pushad. Arbetsträden är rena; inget pågående arbete på någon gren.
 - **Klart och mergat:** 303b/303c (ekonomin), 305b (kvitt eller dubbelt), 307/307b (konceptet och varukorgen), 308b, 309b, 310/310b (låset och väntan), 311 (konkurs i säsongens sista bokslut), 311b (bistron mot 1,0), 302d (gatans figurer belysta, `STREET_FIGURE_LIGHT.minLight` 0,55 tills Design ger värdet) och 312 (inget i spelet på vägen; testet `order312PaVagen.test.ts` på den riktiga kartan). Hela sviten efter 312: 2 483 gröna, 16 överhoppade.
 - **Den förra sessionen hängde sig** under 312, men 312 hann mergas och pushas. Inget arbete gick förlorat.
 
@@ -24,7 +24,7 @@
 **Ordningen framåt.**
 1. **312** — klar; tillägget från Design väntar (punkt 2 ovan).
 2. **Bistrons kalibrering** — efter Anders beslut om halva (punkt 1).
-3. **313** — specen `~/Downloads/ORDRAR_313_D6.md` finns inte på datorn (2026-10-06). Anders behöver lägga den där igen.
+3. **313 Åsa, början och tydligheten** — mentorn blir Intendent Åsa; spelaren börjar från noll (satsningarna låsta tills första provet är klart); varje meddelande har en avsändare; ny text i "Tre sätt att kunna"; kurskortet, teckenförklaringen, felen i rummet och konkurrensen. Formen för Åsa kommer från Design (D6). Spec: `~/Downloads/ORDRAR_313_D6.md` (finns på datorn sedan 2026-10-06).
 4. **314 Situationerna** — inga frivilliga raketer; kvitt eller dubbelt inne i varje situation; personalen tar över efter sin kompetens; 4–6 situationer per kväll; spelaren "ignorerar" i harness. Spec: `~/Downloads/ORDRAR_314-316_D7.md`.
 5. **316 Fikat** — ett dilemma per kväll efter stängning; först ett utkast med 12 dilemman som Anders granskar.
 6. **315 Karriärstegen** — börjar med en rapport och utkast (datamodell, foodtruckens ekonomi, harness-mål, 20 frågor). Klasserna döps om till Enkel · Mellan · Exklusiv.
