@@ -14,12 +14,15 @@
 // ORDER 309b — i klasserna med koncept är huvudet, stapeln och raderna
 // konceptets rykte (state.reputationByTier[bokningens koncept]) från när
 // servicen öppnade till morgonen; klasserna utan koncept visar krogens.
+//
+// ORDER 309c — under stapeln står båda ändringarna, konceptets och krogens
+// ("Ryktet som bistro +3 · Krogens rykte +1"); utan koncept bara krogens.
 
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import './foljder.css';
 import { ArrowDown, ArrowUp, ArrowRight } from 'lucide-react';
 import { strings } from '../../content/strings';
-import type { MorningReview, ReviewEntry } from '../../sim/morningReview';
+import { reviewChanges, type MorningReview, type ReviewEntry } from '../../sim/morningReview';
 import { REVIEW_CARD } from './morningReviews';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { useSimState } from '../simulation/SimulationProvider';
@@ -136,6 +139,13 @@ export function MorningReviewCard({ onOpenBuy }: { onOpenBuy?: () => void }) {
   // ORDER 309b — "Ryktet som bistro" bara när talen är konceptets
   // (review.scope, sim/morningReview.ts); annars krogens rykte.
   const tier = review.scope === 'concept' && review.tier ? strings.shopTabs.tier[review.tier] ?? null : null;
+  // ORDER 309c — under stapeln båda ändringarna: "Ryktet som bistro +3 · Krogens
+  // rykte +1"; klasserna utan koncept bara krogens.
+  const changes = reviewChanges(review);
+  const changeParts = [
+    tier && changes.concept !== null ? r.classChange(tier, changes.concept) : null,
+    changes.restaurant !== null ? r.venueChange(changes.restaurant) : null
+  ].filter((x): x is string => x !== null);
   return (
     <div className="nx-review-backdrop" data-testid="morning-review-backdrop" onClick={() => close(false)}>
       <section
@@ -161,6 +171,17 @@ export function MorningReviewCard({ onOpenBuy }: { onOpenBuy?: () => void }) {
                 <span style={{ width: `${Math.max(from, to)}%`, background: from > to ? REVIEW_CARD.summary.before : REVIEW_CARD.summary.after }} />
                 <span style={{ width: `${Math.min(from, to)}%`, background: REVIEW_CARD.summary.after }} />
               </div>
+              {changeParts.length > 0 && (
+                <div
+                  className="nx-review-changes"
+                  data-testid="morning-review-changes"
+                  data-concept-change={changes.concept ?? ''}
+                  data-restaurant-change={changes.restaurant ?? ''}
+                  style={{ color: REVIEW_CARD.muted }}
+                >
+                  {changeParts.join(r.changesJoin)}
+                </div>
+              )}
             </div>
           )}
         </header>
