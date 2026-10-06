@@ -49,6 +49,7 @@ import { NxIcon, ACTIVITY_ICON, PAVILION_ICON } from '../ui/screens/icons';
 import { useMentor } from '../ui/screens/mentor';
 import '../ui/screens/screens.css';
 import { useOpenGuard } from '../ui/OpenGuard';
+import { SenderTag } from '../ui/SenderTag';
 
 interface Props {
   // ORDER 264 — öppnar Måltidens hus (paviljongerna).
@@ -262,6 +263,7 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
           {mentorLine && (
             <div className="nxs-dark-box nxs-mentor-box" data-testid="mentor-line" data-step={mentor.step ?? undefined}>
               <div style={{ flex: 1 }}>
+                <SenderTag sender="asa" />
                 <div className="nx-label nx-accent-text">{strings.introduction.mentor}</div>
                 <p className="nx-small nxs-mt-8"><span className="nxs-quote-mark">{mentorLine}</span></p>
                 {mentor.step === 'farewell' && (
@@ -304,11 +306,12 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
           ) : (
             <div className="nxs-dark-box" data-testid="morning-bank-note">
               <NxIcon name="bank" size={36} />
-              <p className="nx-body">{shownInWords(sim.medals)}</p>
+              <div><SenderTag sender="bank" /><p className="nx-body">{shownInWords(sim.medals)}</p></div>
             </div>
           )}
           {settlement.length > 0 && !onOpenNewspaper && (
             <div className="nxs-dark-box nxs-mt-24" data-testid="settlement">
+              <SenderTag sender="bank" />
               <p className="nx-body">
                 <strong>{strings.economy.settlement.heading}.</strong> {settlement.join(' ')}
               </p>

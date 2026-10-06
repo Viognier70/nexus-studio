@@ -297,6 +297,14 @@ export function guestPatience(
 
 // #region spår
 
+// ORDER 313 §8 — arbetsplatserna vid ett bord: mitten, sedan åt sidorna.
+export const WORK_SPOT_STEP_M = 0.7;
+export const WORK_SPOT_CLEAR_M = 0.5;
+const WORK_SPOT_OFFSETS = [0, 1, -1, 2, -2] as const;
+const WORK_SPOT_MARGIN_S = 0.5;
+// Hur länge den som hämtar i passet kan få vänta på tallriken (plate), sekunder.
+const PICKUP_WAIT_S = 4;
+
 interface Seg {
   t0: number;
   t1: number;
@@ -1041,6 +1049,26 @@ export class WineBarDirector {
     this.pending = keep;
   }
 
+  /**
+   * ORDER 313 §8 — arbetsplatsen vid bordet: `at` (bordets serveAt) eller
+   * WORK_SPOT_STEP_M åt sidan längs bordet, den första där ingen annan i
+   * personalen har en stående uppgift (hold) inom WORK_SPOT_CLEAR_M under
+   * [from, to]. Platser utanför rummets golv prövas inte.
+   */
+  private workSpot(actor: ActorTrack, at: Vec2, facing: number, from: number, to: number): Vec2 {
+    const side: Vec2 = [Math.cos(facing), -Math.sin(facing)];
+    const halfW = this.room.width / 2 - 0.5;
+    for (const k of WORK_SPOT_OFFSETS) {
+      const p: Vec2 = k === 0 ? at : [at[0] + side[0] * k * WORK_SPOT_STEP_M, at[1] + side[1] * k * WORK_SPOT_STEP_M];
+      if (Math.abs(p[0]) > halfW) continue;
+      const taken = this.actors.some((o) => o !== actor && o.segs.some((sg) =>
+        sg.kind === 'hold' && sg.at && sg.t1 > from - WORK_SPOT_MARGIN_S && sg.t0 < to + WORK_SPOT_MARGIN_S &&
+        Math.hypot(sg.at[0] - p[0], sg.at[1] - p[1]) < WORK_SPOT_CLEAR_M));
+      if (!taken) return p;
+    }
+    return at;
+  }
+
   /** serviceFlow.assign i realtid: den i rollen som kan vara framme först tar uppgiften. */
   private assign(task: Task, t: number): boolean {
     const cook = this.actors.find((a) => a.key === 'cook')!;
@@ -1061,6 +1089,15 @@ export class WineBarDirector {
     }
     if (!best) return false;
     const a = best.a;
+    // ORDER 313 §8 — varje bord har en arbetsplats per servitör: den första
+    // platsen bredvid bordet som ingen annan i personalen står på under
+    // samma tid. Vägen räknas om till den platsen.
+    // Passet och baren likadant: den som hämtar står bredvid den som redan väntar där.
+    const target = this.workSpot(a, task.target, task.facing, best.arrive, best.arrive + task.dur);
+    const pickup = task.pickup ? this.workSpot(a, task.pickup, Math.PI / 2, best.atPickup, best.atPickup + (task.pickupHold ?? 0) + PICKUP_WAIT_S) : undefined;
+    if (target !== task.target || pickup !== task.pickup) {
+      best.legs = pickup ? [staffRoute(best.origin, pickup), staffRoute(pickup, target)] : [staffRoute(best.origin, target)];
+    }
     if (this.homewardAt(a, t)) this.truncate(a, t);
     else if (a.free > t) { /* planerar efter det som redan ligger */ }
     task.firstSeg = a.segs.length;
@@ -1076,7 +1113,7 @@ export class WineBarDirector {
         const plated = this.plate(cook, t, tt);
         hold = Math.max(hold, plated - tt + 0.3);
       }
-      a.segs.push({ t0: tt, t1: tt + hold, kind: 'hold', at: task.pickup, facing: Math.PI / 2, pose: 'serve', envelope: true });
+      a.segs.push({ t0: tt, t1: tt + hold, kind: 'hold', at: pickup, facing: Math.PI / 2, pose: 'serve', envelope: true });
       tt += hold;
       const d1 = pathLen(best.legs[1]) / best.speed;
       a.segs.push({ t0: tt, t1: tt + d1, kind: 'walk', path: best.legs[1], len: pathLen(best.legs[1]), pose: 'serveWalk', carrying: task.carry ?? null, stride });
@@ -1087,17 +1124,17 @@ export class WineBarDirector {
       tt += d0;
     }
     task.arrive = tt;
-    a.segs.push({ t0: tt, t1: tt + task.dur, kind: 'hold', at: task.target, facing: task.facing, pose: task.pose, envelope: true, targetYaw: 0, carrying: CARRY_WHILE_HOLDING.includes(task.pose) ? task.carry ?? null : null });
+    a.segs.push({ t0: tt, t1: tt + task.dur, kind: 'hold', at: target, facing: task.facing, pose: task.pose, envelope: true, targetYaw: 0, carrying: CARRY_WHILE_HOLDING.includes(task.pose) ? task.carry ?? null : null });
     tt += task.dur;
     task.done = tt;
     if (task.carryBack) {
-      const toPass = staffRoute(task.target, PASS_FLOOR);
+      const toPass = staffRoute(target, PASS_FLOOR);
       const dp = pathLen(toPass) / best.speed;
       a.segs.push({ t0: tt, t1: tt + dp, kind: 'walk', path: toPass, len: pathLen(toPass), pose: 'serveWalk', carrying: task.carryBack, stride });
       tt += dp;
       a.pos = [PASS_FLOOR[0], PASS_FLOOR[1]];
     } else {
-      a.pos = [task.target[0], task.target[1]];
+      a.pos = [target[0], target[1]];
     }
     a.free = tt;
     task.state = 'assigned';

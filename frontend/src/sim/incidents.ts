@@ -27,6 +27,7 @@ import { applyAnswerMood } from './guestMood';
 import { spreadWord } from './streetWord';
 import { complaintStamina, hesitationWellbeing, incidentArea, staffEffect, staffKnows } from './staffCondition';
 import { createRng } from '../strategic/util/rng';
+import { investLocked } from './introduction';
 import { bumpMorale } from '../strategic/simulation/morale';
 import { applyCashDelta, applyCashRevenue, postLedger } from '../strategic/simulation/cashReading';
 import { takeFromStock } from '../strategic/simulation/stockPackages';
@@ -588,8 +589,10 @@ function openIncident(
 // (gissar kostar inget); säkerheten väljs för varje steg.
 // Provspel av 285 — varför Back your knowledge inte går att starta just nu,
 // eller null när den går (samma villkor som canStartBack).
-export function whyNotBack(state: SimulationState): 'busy' | 'maxed' | 'noneFits' | 'notOpen' | 'noRockets' | null {
+export function whyNotBack(state: SimulationState): 'busy' | 'maxed' | 'noneFits' | 'notOpen' | 'noRockets' | 'locked' | null {
   const inc = state.incidents;
+  // ORDER 313 §2 — låst tills första provet är klarat.
+  if (investLocked(state)) return 'locked';
   // ORDER 291 — en verksamhet utan raketer säger det, inte att dörrarna är stängda.
   if (incidentBankFor(state.economy.businessClass).length === 0) return 'noRockets';
   if (!inc?.enabled || state.day.period !== 'dinner' || !state.day.doorsOpenedThisService) return 'notOpen';
@@ -600,6 +603,7 @@ export function whyNotBack(state: SimulationState): 'busy' | 'maxed' | 'noneFits
 
 export function canStartBack(state: SimulationState): boolean {
   const inc = state.incidents;
+  if (investLocked(state)) return false;
   if (!inc?.enabled || inc.active || state.day.period !== 'dinner' || !state.day.doorsOpenedThisService) return false;
   if ((inc.betsTonight ?? 0) >= BACK.maxPerEvening) return false;
   return backPool(state).length > 0;

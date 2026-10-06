@@ -115,6 +115,11 @@
 .nx-shop-card { padding: calc(22 * var(--nx-u)) calc(24 * var(--nx-u)); border-radius: var(--w-radius-panel, 22px); display: grid; gap: calc(8 * var(--nx-u)); color: var(--w-ink, #2a1c13); }
 .nx-shop-card .nx-label { color: var(--w-ink-label, #9a6a2a); }
 .nx-shop-card-when { margin-top: 6px; }
+/* ORDER 313 §6 — kurskortets fyra rader. */
+.nx-shop-card-rows { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 8px; }
+.nx-shop-card-rows li { display: grid; gap: 2px; font-size: 14px; }
+.nx-shop-card-rows li[data-row='needs'] { padding-top: 8px; border-top: 1px dashed rgba(42,28,19,.2); font-size: 13px; }
+.nx-shop-card-rows [data-met='false'] { color: #8a3a2a; }
 .nx-shop-card-need { display: flex; gap: 10px; align-items: center; padding-top: 10px; border-top: 1px dashed rgba(42,28,19,.2); }
 .nx-shop-card-need > span:last-child { display: grid; font-size: 13px; }
 .nx-shop-card-need-disc { width: 16px; height: 16px; border-radius: 50%; background: #c58a4a; flex: none; }
@@ -241,3 +246,10 @@
 .nx-shop-goods-stones { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: calc(8 * var(--nx-u)); }
 .nx-shop-list-intro { margin: 0 0 calc(8 * var(--nx-u)); }
 
+
+/* ORDER 313 §9 — Byn just nu (VillageNowPanel.tsx). Formen kommer från D6. */
+.nx-village-now { margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(240,205,130,.25); }
+.nx-village-now-list { list-style: none; margin: 4px 0; padding: 0; display: grid; gap: 2px; font-size: 13px; }
+.nx-village-now-list li { display: grid; grid-template-columns: 1fr auto 18px; gap: 8px; align-items: center; }
+.nx-village-now-list li[data-player='true'] { font-weight: 800; color: #f0cd82; }
+.nx-village-now-line { margin: 2px 0 0; }

@@ -8,6 +8,7 @@ import { t as tt, type StringKey } from '../../../content/nexusStrings';
 import type { Lang } from '../../../content/language';
 import type { PinKind } from '../../../sim/hostPins';
 import './host.css';
+import { SenderTag } from '../SenderTag';
 
 const s = (lang: Lang, key: string, vars?: Record<string, string | number>) => tt(lang, key as StringKey, vars);
 const ICON: Record<PinKind, typeof Users> = { door: Users, wine: Wine, bar: Martini, waited: GlassWater };
@@ -29,6 +30,7 @@ export function PinView(props: {
       <span className="nx-pin-dot" />
       {open && (
         <div className="nx-pin-card nx-paper" role="dialog" aria-label={texts.where} data-testid="host-pin-card" data-kind={kind}>
+          <SenderTag sender="per" />
           <div className="nx-label">{texts.where}</div>
           <p className="nx-pin-q">{texts.q}</p>
           {([0, 1] as const).map((a) => {

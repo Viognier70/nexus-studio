@@ -21,6 +21,7 @@ import { useSimState } from '../simulation/SimulationProvider';
 import { missingInWords, settlementInWords } from './BankDialog';
 import { NxButton } from '../ui/system/components';
 import '../ui/screens/screens.css';
+import { SenderTag } from '../ui/SenderTag';
 
 const t = strings.newspaper;
 const PHOTO_TRIES = 40;
@@ -82,6 +83,7 @@ export function NewspaperDialog({ open, onClose, onOpenBank }: { open: boolean; 
     <div className="nx nx-screen nxs-paper-back" role="dialog" aria-modal="true" aria-label={paper.masthead}>
       <article className="nxs-paper nx-paper" data-testid="newspaper">
         <header className="nxs-paper-head" data-testid="screen-T1">
+          <SenderTag sender="byn" />
           <h1 className="nxs-masthead">{paper.masthead}</h1>
           <div className="nx-small" style={{ fontWeight: 700, textAlign: 'right' }}>
             <div>{strings.calendar.weekdays[cal.weekday]}</div>

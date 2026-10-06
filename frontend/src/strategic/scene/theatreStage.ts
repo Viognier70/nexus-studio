@@ -30,7 +30,13 @@ import { conditionClip, type ConditionInput } from './conditionClips';
 const LEDGER_PROP: Record<LedgerEntry['item'], PropId> = { plate: 'plate', dishes: 'plate', glass: 'wineGlass', bottle: 'wineBottle' };
 // Det som följer klippets händer (inte ägarboken): kort, block, mapp, servett, bestick, bricka.
 const HAND_PROPS = new Set<PropId>(['menu', 'pad', 'billFolder', 'napkin', 'fork', 'knife', 'tray']);
+type Vec2 = [number, number];
 const TABLE_INSET = 0.45;
+// ORDER 313 §8 — flaskorna på bardisken (rummets lokala meter: barens östra
+// ände, x 1,8–2,2, på båda diskarna innanför gästernas sida) och karaffens
+// avstånd från bordets mitt.
+const BAR_BOTTLES: readonly Vec2[] = [[1.85, 1.5], [2.1, 1.5], [1.85, -1.5], [2.1, -1.5]];
+const TABLE_CARAFE_OFFSET = 0.32;
 const TABLE_SPREAD = 0.22;
 
 interface ClipState { id: string | null; tempo: TempoId }
@@ -142,6 +148,30 @@ export class TheatreStage {
     this.free.push(p);
   }
 
+  // ORDER 313 §8 (provspelet: "Inga flaskor syns") — det som står kvar i
+  // rummet utöver ägarboken: flaskorna på bardisken (BAR_BOTTLES, i barens
+  // öppna östra ände, utanför gästernas platser) och en vattenkaraff på
+  // varje bord där något serverats (bordets tableAt, TABLE_CARAFE_OFFSET åt
+  // sidan). Ägarboken har flaskan bara vid loungerna.
+  private readonly dressing: PropHandle[] = [];
+  private readonly carafes = new Map<string, PropHandle>();
+  private tableAtOf = new Map<string, { at: Vec2; kind: 'two' | 'lounge' | 'bar' }>();
+
+  /** Dukningen som står kvar: flaskorna i baren. Anropas en gång när rummet monteras. */
+  dress(groups: readonly { id: string; kind: 'two' | 'lounge' | 'bar'; tableAt?: Vec2 }[]): void {
+    for (const g of groups) if (g.tableAt) this.tableAtOf.set(g.id, { at: g.tableAt, kind: g.kind });
+    for (const [x, z] of BAR_BOTTLES) {
+      const p = this.take('wineBottle');
+      placeProp(p, this.group, x, this.floorY + SURFACE_HEIGHT.bar, z, 0);
+      this.dressing.push(p);
+    }
+  }
+
+  /** Antal föremål i dukningen och karafferna (för provet). */
+  dressingCount(): { barBottles: number; carafes: number } {
+    return { barBottles: this.dressing.filter((p) => p.group.visible).length, carafes: [...this.carafes.values()].filter((p) => p.group.visible).length };
+  }
+
   /** Rekvisitan ur ägarboken och klippens händer, en gång per bildruta. */
   props(director: WineBarDirector, t: number, staffKeys: readonly StaffKey[], staffRigs: FigureRig[], staffSamples: (ClipSample | null)[], guestRigs: FigureRig[], guestSamples: (ClipSample | null)[], guestClipIds: (string | null)[]): LedgerEntry[] {
     const ledger = director.propLedger(t);
@@ -168,6 +198,16 @@ export class TheatreStage {
       }
     }
     for (const [id, p] of this.ledgerProps) if (!seen.has(id)) { this.giveBack(p); this.ledgerProps.delete(id); }
+    // ORDER 313 §8 — karaffen på bordet så länge något av sällskapets står där.
+    const served = new Set(ledger.filter((e) => e.owner.kind === 'table' && e.owner.groupKind !== 'bar').map((e) => (e.owner as { group: string }).group));
+    for (const gid of served) {
+      const g = this.tableAtOf.get(gid);
+      if (!g || this.carafes.has(gid)) continue;
+      const p = this.take('carafe');
+      placeProp(p, this.group, g.at[0] + TABLE_CARAFE_OFFSET, this.floorY + SURFACE_HEIGHT[g.kind], g.at[1], 0);
+      this.carafes.set(gid, p);
+    }
+    for (const [gid, p] of this.carafes) if (!served.has(gid)) { this.giveBack(p); this.carafes.delete(gid); }
     // Klippens händer: menyn, blocket, notamappen, servetten och brickan.
     const handSeen = new Set<string>();
     const hands = (key: string, rig: FigureRig, clipId: string | null, sample: ClipSample | null) => {

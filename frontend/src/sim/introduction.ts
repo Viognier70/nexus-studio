@@ -33,6 +33,20 @@ export function inIntroduction(s: SimulationState): boolean {
   return introductionStep(s) !== null;
 }
 
+/** ORDER 313 §2 — har spelaren klarat ett prov (minst en medalj)? */
+export function firstExamPassed(s: SimulationState): boolean {
+  return ALL_PAVILIONS.some((p) => s.medals[p]);
+}
+
+/**
+ * ORDER 313 §2 (Anders 2026-10-06) — spelaren börjar från noll: före det
+ * första klarade provet går det inte att investera eller satsa. Låst är
+ * satsningarna på morgonen, butiken och "Stå för ditt svar".
+ */
+export function investLocked(s: SimulationState): boolean {
+  return !!s.startLocked && !firstExamPassed(s);
+}
+
 // Ett nytt spel efter registreringen (ORDER 300 §4: startskärmen → namn
 // och samtycke → första morgonen): ingen verksamhet, inget lån.
 export function beginIntroduction(s: SimulationState, player?: PlayerRegistration): SimulationState {
@@ -40,6 +54,7 @@ export function beginIntroduction(s: SimulationState, player?: PlayerRegistratio
     ...s,
     ...(player ? { player } : {}),
     introduction: { practiced: false },
+    startLocked: true,
     economy: initialEconomy(null, SEASON.weeks, s.economy.weekRevenueStartSek)
   };
 }

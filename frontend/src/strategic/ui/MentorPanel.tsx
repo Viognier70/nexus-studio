@@ -15,11 +15,12 @@
 import { strings } from '../../content/strings';
 import { calendarFor } from '../../sim/calendar';
 import { SEASON } from '../../sim/balance';
-import { useSimState } from '../simulation/SimulationProvider';
+import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { NxButton } from './system/components';
 import { MENTOR_STEPS, useMentor } from './screens/mentor';
 import { Monogram } from './screens/Monogram';
 import './screens/screens.css';
+import { SenderTag } from './SenderTag';
 
 const t = strings.introduction;
 const s = strings.screens;
@@ -32,16 +33,36 @@ export function splitLine(line: string): { head: string; body: string } {
 
 export function MentorPanel() {
   const sim = useSimState();
+  const dispatch = useSimDispatch();
   const mentor = useMentor();
   if (!mentor.showScreen || mentor.step === null || mentor.line === null) return null;
+
+  // ORDER 313 §2 — Åsa när satsningarna öppnas (efter första provet).
+  if (mentor.step === 'unlocked') {
+    return (
+      <div className="nx nxs-mentor-card" role="status" data-testid="mentor" data-step="unlocked">
+        <div className="nxs-row-between">
+          <SenderTag sender="asa" />
+          <div className="nx-label nx-accent-text">{s.mentor.label}</div>
+        </div>
+        <p className="nx-body nxs-mt-16 nx-speech">{mentor.line}</p>
+        <div className="nxs-mt-24 nxs-w-220">
+          <button type="button" className="nx-btn nxs-btn-ink" data-testid="mentor-close-unlocked" onClick={() => dispatch({ type: 'SAY_UNLOCKED' })}>
+            <span>{s.mentor.understood}</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (mentor.step === 'service') {
     return (
       <div className="nx nxs-mentor-card" role="status" data-testid="mentor" data-step="service">
         <div className="nxs-row-between">
+          <SenderTag sender="asa" />
           <div className="nx-label nx-accent-text" data-testid="screen-M2">{s.mentor.label}</div>
         </div>
-        <p className="nx-body nxs-mt-16">{mentor.line}</p>
+        <p className="nx-body nxs-mt-16 nx-speech">{mentor.line}</p>
         <div className="nxs-mt-24 nxs-w-220">
           <button type="button" className="nx-btn nxs-btn-ink" data-testid="mentor-close-service" onClick={mentor.closeService}>
             <span>{s.mentor.understood}</span>
@@ -62,6 +83,7 @@ export function MentorPanel() {
       <Monogram name={t.mentor} caption={s.mentor.label} className="nxs-mentor-portrait" testId="portrait-mentor" />
       <div className="nxs-mentor-dialog">
         <div className="nxs-row-between">
+          <SenderTag sender="asa" />
           <div className="nx-label nx-accent-text">{s.mentor.label}</div>
           <div className="nxs-dots" aria-label={s.mentor.stepOf(mentor.index ?? 1, MENTOR_STEPS.length)} role="img">
             {MENTOR_STEPS.map((st, i) => (

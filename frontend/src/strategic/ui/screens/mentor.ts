@@ -16,11 +16,14 @@
 
 import { useEffect, useSyncExternalStore } from 'react';
 import { strings } from '../../../content/strings';
-import { introductionStep, type IntroductionStep } from '../../../sim/introduction';
+import { firstExamPassed, introductionStep, type IntroductionStep } from '../../../sim/introduction';
 import { useBusiness } from '../../business/BusinessContext';
 import { useSimState } from '../../simulation/SimulationProvider';
 
-export type MentorStep = IntroductionStep | 'farewell' | 'service';
+// ORDER 313 §2 — 'unlocked': Åsa säger att satsningarna är upplåsta, när
+// första provet klarats efter introduktionen (i introduktionen säger
+// bankens steg det).
+export type MentorStep = IntroductionStep | 'farewell' | 'service' | 'unlocked';
 
 // Stegen som räknas i "1 av 4" (M1).
 export const MENTOR_STEPS: readonly MentorStep[] = ['practice', 'exam', 'bank', 'farewell'];
@@ -82,6 +85,7 @@ export function useMentor(): MentorView {
 
   let step: MentorStep | null = null;
   if (intro !== null) step = intro;
+  else if (sim.startLocked && !sim.unlockSaid && firstExamPassed(sim)) step = 'unlocked';
   else if (m.sawIntroduction && hasName && !m.farewellDone && period === 'morning') step = 'farewell';
   else if (m.sawIntroduction && !m.serviceDone && (period === 'dinner' || period === 'lunch') && sim.economy.businessClass !== null) {
     step = 'service';
@@ -95,9 +99,11 @@ export function useMentor(): MentorView {
       ? t.farewell
       : step === 'service'
         ? strings.screens.mentor.service
-        : t.steps[step];
+        : step === 'unlocked'
+          ? t.unlocked
+          : t.steps[step];
   const i = step ? MENTOR_STEPS.indexOf(step) : -1;
-  const showScreen = step !== null && !m.skipped && (step === 'farewell' || step === 'service' || !m.acknowledged.has(step));
+  const showScreen = step !== null && (step === 'unlocked' || (!m.skipped && (step === 'farewell' || step === 'service' || !m.acknowledged.has(step))));
 
   return {
     step,
@@ -105,7 +111,7 @@ export function useMentor(): MentorView {
     index: i >= 0 ? i + 1 : null,
     showScreen,
     next: () => {
-      if (step && step !== 'farewell' && step !== 'service') update({ acknowledged: new Set([...memory.acknowledged, step]) });
+      if (step && step !== 'farewell' && step !== 'service' && step !== 'unlocked') update({ acknowledged: new Set([...memory.acknowledged, step]) });
     },
     skip: () => update({ skipped: true }),
     closeFarewell: () => update({ farewellDone: true }),

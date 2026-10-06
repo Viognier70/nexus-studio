@@ -32,6 +32,7 @@ import { t as tt, type StringKey } from '../../content/nexusStrings';
 import { useLanguage } from '../../content/language';
 import type { StaffRole } from '../types';
 import { packagesFor } from '../simulation/packages';
+import { SenderTag } from './SenderTag';
 
 export function morningReviewText(r: MorningReview): string {
   const t = strings.reviews;
@@ -158,6 +159,7 @@ export function MorningReviewCard({ onOpenBuy }: { onOpenBuy?: () => void }) {
         style={{ background: REVIEW_CARD.paper, color: REVIEW_CARD.ink }}
         onClick={(e) => e.stopPropagation()}
       >
+        <SenderTag sender="byn" />
         <header className="nx-review-head">
           <div>
             <div className="nx-review-kicker" style={{ color: REVIEW_CARD.kicker }}>{r.kicker}</div>

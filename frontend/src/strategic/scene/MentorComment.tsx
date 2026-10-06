@@ -14,6 +14,7 @@ import { Html } from '@react-three/drei';
 import { useMemo } from 'react';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import { useSimState } from '../simulation/SimulationProvider';
+import { SenderTag } from '../ui/SenderTag';
 
 const BUBBLE_HOLD_SIM_S = 15;
 const BUBBLE_FADE_SIM_S = 3;
@@ -77,7 +78,8 @@ export function MentorComment() {
       zIndexRange={[30, 0]}
       style={{ pointerEvents: 'none' }}
     >
-      <div style={{ ...BUBBLE_STYLE, opacity }}>{mentorComment}</div>
+      {/* ORDER 313 §3 — avsändaren: Åsa. */}
+      <div style={{ ...BUBBLE_STYLE, opacity }}><SenderTag sender="asa" /> {mentorComment}</div>
     </Html>
   );
 }

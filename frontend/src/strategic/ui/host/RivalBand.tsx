@@ -29,6 +29,7 @@ import { rankedVillage } from '../../scenario/CompareScreen';
 import { RIVAL_BAND } from './hostShop';
 import { reputationHoldsGuests } from '../../simulation/arrivals';
 import type { SimulationState } from '../../types';
+import { VillageNowPanel } from './VillageNowPanel';
 import './host.css';
 
 export function ordinal(lang: Lang, n: number): string {
@@ -122,6 +123,8 @@ function RivalBandInService() {
         {overtook && <span className="nx-rival-overtake nx-rival-overtake-static" data-testid="rival-overtake">{tt(lang, 'rival.overtake', { name: strings.village.venues[overtook] ?? overtook })}</span>}
       </div>
       <CalmLine sim={sim} lang={lang} />
+      {/* ORDER 313 §9 — Byn just nu. */}
+      <VillageNowPanel />
     </div>
   );
 }

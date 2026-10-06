@@ -92,7 +92,8 @@ export const STRINGS = {
   'role.bartender': { sv: 'Bartender', en: 'Bartender' },
   'role.cook': { sv: 'Kock', en: 'Cook' },
   'role.dish': { sv: 'Diskare', en: 'Kitchen porter' },
-  'role.mentor': { sv: 'Mentorn', en: 'The Mentor' },
+  // ORDER 313 §1 — mentorn heter Intendent Åsa.
+  'role.mentor': { sv: 'Intendent Åsa', en: 'Intendant Åsa' },
 
   // ── Rocket ───────────────────────────────────────────────────
   'rocket.no': { sv: 'Raket {n} av {of}', en: 'Rocket {n} of {of}' },
@@ -379,6 +380,16 @@ export const STRINGS = {
   'shop.slot.star': { sv: 'Fler platser vid stjärnan', en: 'More slots at the star' },
   'shop.slot.count': { sv: '{used} av {n}', en: '{used} of {n}' },
   'shop.done': { sv: 'Till morgonen', en: 'On to the morning' },
+  // ORDER 313 §6 — kurskortets fyra rader: vad, ger, när, kräver och kostar.
+  'shop.row.teaches': { sv: 'Vad kursen lär ut', en: 'What it teaches' },
+  'shop.row.gives': { sv: 'Vad den ger', en: 'What it gives' },
+  'shop.row.when': { sv: 'När den gäller', en: 'When it applies' },
+  'shop.row.needs': { sv: 'Vad den kräver', en: 'What it needs' },
+  'shop.when': { sv: 'Från i morgon kväll.', en: 'From tomorrow evening.' },
+  'shop.cost': { sv: 'Kostar {price} krediter · du har {have}', en: 'Costs {price} credits · you have {have}' },
+  'shop.shortBy': { sv: 'Du behöver {n} krediter till', en: 'You need {n} more credits' },
+  'shop.shortByOne': { sv: 'Du behöver 1 kredit till', en: 'You need 1 more credit' },
+  'shop.lockedStart': { sv: 'Öppnas när du klarat ditt första prov', en: 'Opens when you have passed your first exam' },
 
   'medal.bronze': { sv: 'brons', en: 'bronze' },
   'medal.silver': { sv: 'silver', en: 'silver' },
@@ -395,30 +406,44 @@ export const STRINGS = {
 
   // Förmågorna. Ett startförslag per paviljong (Vision Owner 2026-10-02).
   'ab.sommBottle.name': { sv: 'Sommeliern säljer in en flaska', en: 'The sommelier suggests a bottle' },
-  'ab.sommBottle.fx': { sv: 'Vid loungerna föreslår sommeliern en hel flaska i stället för glas, och fler säger ja.', en: 'At the lounges the sommelier suggests a whole bottle instead of glasses, and more guests say yes.' },
+  'ab.sommBottle.teaches': { sv: 'Sommeliern lär sig sälja in en hel flaska.', en: 'The sommelier learns to suggest a whole bottle.' },
+  // ORDER 313 §6 — kurskortets andra rad, vad den ger.
+  'ab.sommBottle.fx': { sv: 'Vid loungerna säger fler ja till en flaska i stället för glas.', en: 'At the lounges more guests say yes to a bottle instead of glasses.' },
   'ab.wineTasting.name': { sv: 'Vinprovning för personalen', en: 'Wine tasting for the staff' },
+  'ab.wineTasting.teaches': { sv: 'Servitörerna provar vinlistan tillsammans med sommeliern.', en: 'The waiters taste the wine list together with the sommelier.' },
   'ab.wineTasting.fx': { sv: 'Servitörerna svarar själva på frågor om vinlistan, så sommeliern hinner till fler bord.', en: 'The waiters answer questions about the wine list themselves, so the sommelier reaches more tables.' },
   'ab.fastPass.name': { sv: 'Snabbare pass', en: 'A quicker pass' },
+  'ab.fastPass.teaches': { sv: 'Köket lär sig skicka varmrätterna i jämn takt.', en: 'The kitchen learns to send out the mains at an even pace.' },
   'ab.fastPass.fx': { sv: 'Köket skickar varmrätterna tätare när det är fullt, och väntan på maten blir kortare.', en: 'The kitchen sends mains out closer together when it is full, and the wait for food is shorter.' },
   'ab.leftovers.name': { sv: 'Dagens rätt av gårdagens rester', en: 'Today’s dish from yesterday’s leftovers' },
+  'ab.leftovers.teaches': { sv: 'Kocken lär sig göra en dagens rätt av det som blev över.', en: 'The chef learns to make a dish of the day from what was left over.' },
   'ab.leftovers.fx': { sv: 'Det som blev över i går blir en dagens rätt. Mindre svinn och ett mindre inköp på morgonen.', en: 'What was left over yesterday becomes a dish of the day. Less waste and a smaller order in the morning.' },
   'ab.mise.name': { sv: 'Mise en place-rutin', en: 'A mise en place routine' },
+  'ab.mise.teaches': { sv: 'Kocken lär sig en rutin för att ha allt framme i tid.', en: 'The chef learns a routine for having everything ready in time.' },
   'ab.mise.fx': { sv: 'Kocken har allt framme innan dörren öppnar, och den första timmen går fortare.', en: 'The chef has everything ready before the door opens, and the first hour runs faster.' },
   'ab.menuStory.name': { sv: 'Menyns berättelse', en: 'The story of the menu' },
+  'ab.menuStory.teaches': { sv: 'Menyn skrivs om så att den berättar var råvarorna kommer ifrån.', en: 'The menu is rewritten to tell where the produce comes from.' },
   'ab.menuStory.fx': { sv: 'Menyn berättar var råvarorna kommer ifrån. Gästerna läser längre och väljer oftare det som kostar mer.', en: 'The menu tells guests where the produce comes from. They read for longer and more often choose what costs more.' },
   'ab.allergen.name': { sv: 'Allergenkort', en: 'Allergen cards' },
+  'ab.allergen.teaches': { sv: 'Varje rätt får ett kort med sina allergener.', en: 'Every dish gets a card listing its allergens.' },
   'ab.allergen.fx': { sv: 'Varje rätt har ett kort med allergenerna, så servitören behöver inte fråga köket.', en: 'Every dish has a card listing its allergens, so the waiter need not ask the kitchen.' },
   'ab.critic.name': { sv: 'Förvarning om recensenten', en: 'Word of the critic' },
+  'ab.critic.teaches': { sv: 'Du får en kontakt som vet när recensenten är i trakten.', en: 'You get a contact who knows when the critic is in the area.' },
   'ab.critic.fx': { sv: 'På morgonen får du veta om recensenten kommer i kväll, men inte när.', en: 'In the morning you learn whether the critic is coming tonight, but not when.' },
   'ab.regulars.name': { sv: 'Stamgästboken', en: 'The regulars’ book' },
+  'ab.regulars.teaches': { sv: 'Per börjar föra bok över stamgästerna.', en: 'Per starts keeping a book of the regulars.' },
   'ab.regulars.fx': { sv: 'Per känner igen stamgästerna vid dörren. De kommer tillbaka oftare och har mer tålamod i kön.', en: 'Per knows the regulars at the door. They come back more often and are more patient in the queue.' },
   'ab.birthday.name': { sv: 'Födelsedagspaket', en: 'Birthday package' },
+  'ab.birthday.teaches': { sv: 'Krogen tar fram ett paket för sällskap som firar.', en: 'The bar puts together a package for parties who are celebrating.' },
   'ab.birthday.fx': { sv: 'Sällskap som firar kan boka tårta och bubbel i förväg, så att köket vet i tid.', en: 'Parties who are celebrating can book cake and fizz in advance, so the kitchen knows in good time.' },
   'ab.lova.name': { sv: 'Lovas nätverk', en: 'Lova’s network' },
+  'ab.lova.teaches': { sv: 'Lova blir krogens kontakt i byn.', en: 'Lova becomes the bar’s contact in the village.' },
   'ab.lova.fx': { sv: 'Lova tipsar sina vänner, och fler gäster med socialt kapital söker sig till vinbaren.', en: 'Lova tells her friends, and more guests with social capital find their way to the wine bar.' },
   'ab.chefsTable.name': { sv: 'Kockens bord', en: 'The chef’s table' },
+  'ab.chefsTable.teaches': { sv: 'Kocken lär sig servera ett bord själv vid köket.', en: 'The chef learns to serve a table in person by the kitchen.' },
   'ab.chefsTable.fx': { sv: 'Ett bord vid köket där kocken serverar själv. Ett sällskap per kväll kan få det.', en: 'A table by the kitchen where the chef serves in person. One party each evening can have it.' },
   'ab.signature.name': { sv: 'Signaturrätten', en: 'The signature dish' },
+  'ab.signature.teaches': { sv: 'Kocken tar fram en rätt som bara finns hos dig.', en: 'The chef creates a dish found only at your place.' },
   'ab.signature.fx': { sv: 'En rätt som bara finns hos dig. Recensenten frågar efter den.', en: 'A dish found only at your place. The critic asks for it.' },
   // ORDER 290 — Designs leveranser 2026-09-30 (serviceläget, rätt och fel med
   // pyramiden, ringen), inslagna oförändrade.
@@ -700,7 +725,11 @@ export const TABLE = {
       withoutSigning: { sv: 'Fortsätt utan att skriva under', en: 'Continue without signing' },
       back: { sv: 'Tillbaka', en: 'Back' }
     },
-    mentor: { sv: 'Mentorn', en: 'The Mentor' },
+    mentor: { sv: 'Intendent Åsa', en: 'Intendant Åsa' },
+    // ORDER 313 §2 — det som är låst tills första provet är klarat, och
+    // Åsas replik när det öppnas.
+    lockedUntilExam: { sv: 'Öppnas när du klarat ditt första prov', en: 'Opens when you have passed your first exam' },
+    unlocked: { sv: 'Nu har du visat vad du kan. Banken lyssnar, och du kan börja satsa.', en: 'Now you have shown what you can do. The bank is listening, and you can start to invest.' },
     steps: {
       practice: {
         sv: 'Välkommen till Grythyttan. Jag kommer från Campus och följer dig i dag. Banken lånar inte ut något förrän den har sett vad du kan, så vi börjar med att öva. Öppna Måltidens hus och öva i Stensöta, där sommelierna håller till. Inget står på spel.',
@@ -710,9 +739,10 @@ export const TABLE = {
         sv: 'Bra. Nu provet i samma paviljong: åtta frågor, och sex rätt ger brons. Med brons i Stensöta kan banken låna ut till en vinbar. Går det inte, gör om det. I dag räknas besöken inte bland dagens val.',
         en: "Good. Now the exam in the same pavilion: eight questions, and six right gives bronze. With bronze in Stensöta the bank can lend you enough for a wine bar. If it doesn't work, try again. Today the visits don't use up any of today's choices."
       },
+      // ORDER 313 §2 — Åsas replik när första provet är klarat.
       bank: {
-        sv: 'Brons. Gå till Banken i morgonraden. Där får du höra vad du har visat och vad du kan låna till.',
-        en: "Bronze. Go to the Bank in the morning row. There you'll hear what you have shown and what you can borrow for."
+        sv: 'Nu har du visat vad du kan. Banken lyssnar, och du kan börja satsa. Gå till Banken i morgonraden. Där får du höra vad du har visat och vad du kan låna till.',
+        en: "Now you have shown what you can do. The bank is listening, and you can start to invest. Go to the Bank in the morning row. There you'll hear what you have shown and what you can borrow for."
       }
     },
     farewell: {
@@ -922,12 +952,44 @@ export const TABLE = {
     better: { sv: (label: string) => `Bättre: ${label}`, en: (label: string) => `Better: ${label}` },
     nextMorning: { sv: 'Till nästa morgon', en: 'On to the next morning' }
   },
+  // ORDER 313 §9 — panelen Byn just nu.
+  villageNow: {
+    title: { sv: 'Byn just nu', en: 'The village right now' },
+    guests: { sv: (n: number) => `${n} ${pl(n, 'gäst', 'gäster')}`, en: (n: number) => `${n} ${pl(n, 'guest', 'guests')}` },
+    up: { sv: 'drar fler', en: 'drawing more' },
+    down: { sv: 'drar färre', en: 'drawing fewer' },
+    you: { sv: 'Du', en: 'You' },
+    youLead: { sv: 'Du drar flest gäster i kväll.', en: 'You are drawing the most guests tonight.' },
+    leads: { sv: (name: string) => `${name} drar flest gäster i kväll.`, en: (name: string) => `${name} is drawing the most guests tonight.` },
+    youAre: {
+      sv: (n: number) => `Du är ${['etta', 'tvåa', 'trea', 'fyra', 'femma', 'sexa', 'sjua', 'åtta'][n - 1] ?? `nummer ${n}`}.`,
+      en: (n: number) => `You are ${['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth'][n - 1] ?? `number ${n}`}.`
+    },
+    youWait: { sv: 'Du väntar på dina första gäster.', en: 'You are waiting for your first guests.' },
+    quiet: { sv: 'Byn väntar på kvällens gäster.', en: 'The village is waiting for tonight’s guests.' }
+  },
+  // ORDER 313 §7 — teckenförklaringen (statusläget och Spelets regler).
+  legend: {
+    heading: { sv: 'Teckenförklaring', en: 'Key' },
+    staff: { sv: 'Personalen: ringen i rollens färg', en: 'Staff: the ring in the role’s colour' },
+    ork: { sv: 'Orken: fylld ring orkar, streckad ring är trött', en: 'Energy: a filled ring has energy, a dashed ring is tired' },
+    wellbeing: { sv: 'Trivseln: hel låga, liten låga, släckt veke', en: 'Morale: full flame, small flame, snuffed wick' },
+    guests: { sv: 'Gästernas stämning', en: 'The guests’ mood' }
+  },
+  // ORDER 313 §3 — avsändarna på meddelandena till spelaren.
+  senders: {
+    asa: { sv: 'Åsa', en: 'Åsa' },
+    bank: { sv: 'Banken', en: 'The bank' },
+    per: { sv: 'Per', en: 'Per' },
+    byn: { sv: 'Byn', en: 'The village' },
+    house: { sv: 'Måltidens hus', en: 'The House of the Meal' }
+  },
   // ORDER 271 — skärmarna i paket 1 (mentorn M1/M2, morgonens schema
   // S1/S2, banken B0/B1, tidningen T1, Måltidens hus O1/O2/MD1/MD2).
   // Speldesignens text där den finns; övrigt är skärmarnas egna rader.
   screens: {
     mentor: {
-      label: { sv: 'Mentorn · från Campus', en: 'The Mentor · from Campus' },
+      label: { sv: 'Intendent Åsa · från Campus', en: 'Intendant Åsa · from Campus' },
       campus: { sv: 'Campus', en: 'Campus' },
       stepOf: {
         sv: (n: number, total: number) => `Steg ${n} av ${total}`,
@@ -997,13 +1059,13 @@ export const TABLE = {
       },
       firstHeading: { sv: 'Första mötet med banken', en: 'First meeting with the bank' },
       firstOpening: {
-        sv: 'Mentorn sa att du gjorde provet i dag. Låt mig se.',
-        en: 'The Mentor said you took the exam today. Let me see.'
+        sv: 'Åsa sa att du gjorde provet i dag. Låt mig se.',
+        en: 'Åsa said you took the exam today. Let me see.'
       },
       // ORDER 289 — repliken efter vad spelaren har gjort (provspel av 285).
       firstOpeningNoMedal: {
-        sv: 'Mentorn sa att du gjorde ett prov i dag, men det räckte inte till en medalj. Låt mig se vad du har.',
-        en: 'The Mentor said you took an exam today, but it did not earn a medal. Let me see what you have.'
+        sv: 'Åsa sa att du gjorde ett prov i dag, men det räckte inte till en medalj. Låt mig se vad du har.',
+        en: 'Åsa said you took an exam today, but it did not earn a medal. Let me see what you have.'
       },
       firstOpeningNoExam: {
         sv: 'Du har inte gjort något prov än. Banken lånar ut på det du har visat, så låt mig se vad som finns.',
@@ -1879,7 +1941,7 @@ export const TABLE = {
       sv: (where: 'kitchen' | 'room' | 'house') => `Kvällen tog slut i förtid — ${where === 'kitchen' ? 'köket' : where === 'room' ? 'salen' : 'huset'} höll inte.`,
       en: (where: 'kitchen' | 'room' | 'house') => `The evening was cut short — ${where === 'kitchen' ? 'the kitchen' : where === 'room' ? 'the room' : 'the house'} did not hold.`
     },
-    mentor: { sv: (c: string) => `Mentorn: ${c}`, en: (c: string) => `Mentor: ${c}` },
+    mentor: { sv: (c: string) => `Åsa: ${c}`, en: (c: string) => `Åsa: ${c}` },
     scenarioChose: { sv: (c: string) => `Scenario: valde ${c}`, en: (c: string) => `Scenario: chose ${c}` }
   },
   // ORDER 291 — kassabokens rader (EveningAccountPanel) på spelarens språk.
@@ -2232,28 +2294,38 @@ export const TABLE = {
   // tre korta kort och en rad om det dubbla greppet; citaten och källorna står
   // på sidan Kunskapsgrunden i Måltidsbiblioteket ("Läs mer"). Formerna är
   // TRIAD-modellens; ingen text påstår att Aristoteles definierade dem så.
+  // ORDER 313 §4 (Anders 2026-10-06) — ny text, ersätter beslutet i 301.
+  // Ingen hänvisning till Anders på den här skärmen; den står kvar i
+  // Kunskapsgrunden i Måltidsbiblioteket och i eftertexterna.
   houseIntro: {
     label: { sv: 'Måltidens hus', en: 'The House of the Meal' },
     heading: { sv: 'Tre sätt att kunna', en: 'Three ways of knowing' },
-    lead: { sv: 'Kunskapsformerna enligt TRIAD-modellen.', en: 'The forms of knowledge according to the TRIAD model.' },
+    lead: {
+      sv: 'På Nexus Grythyttan, Campus, går du kurser i Måltidens hus. Kunskapen du tränar och prövas i bygger på en modern tolkning av Aristoteles kunskapsbegrepp:',
+      en: 'At Nexus Grythyttan, Campus, you take courses in the House of the Meal. The knowledge you train and are tested in builds on a modern reading of Aristotle’s concepts of knowledge:'
+    },
     forms: {
       sv: [
-        { name: 'Episteme', title: 'Att veta', question: 'Vad finns i glaset?', pavilion: 'Måltidsbiblioteket' },
-        { name: 'Phronesis', title: 'Att bedöma', question: 'Vad väcker det, för just den här gästen?', pavilion: 'Kalastorget' },
-        { name: 'Techne', title: 'Att göra', question: 'Vad gör du nu?', pavilion: 'Metodköket och Stensöta' }
-      ] as { name: string; title: string; question: string; pavilion: string }[],
+        { name: 'Episteme', title: 'att veta' },
+        { name: 'Techne', title: 'att kunna göra' },
+        { name: 'Phronesis', title: 'att kunna bedöma' }
+      ] as { name: string; title: string }[],
       en: [
-        { name: 'Episteme', title: 'To know', question: 'What is in the glass?', pavilion: 'Måltidsbiblioteket' },
-        { name: 'Phronesis', title: 'To judge', question: 'What does it evoke, for this particular guest?', pavilion: 'Kalastorget' },
-        { name: 'Techne', title: 'To do', question: 'What do you do now?', pavilion: 'Metodköket and Stensöta' }
-      ] as { name: string; title: string; question: string; pavilion: string }[]
+        { name: 'Episteme', title: 'to know' },
+        { name: 'Techne', title: 'to be able to do' },
+        { name: 'Phronesis', title: 'to be able to judge' }
+      ] as { name: string; title: string }[]
     },
-    doubleGrip: {
-      sv: 'Det dubbla greppet: att hålla analys och upplevelse samtidigt, och handla. (Anders Crichton-Fock, tidigare Herdenstam)',
-      en: 'The double grip: holding analysis and experience at the same time, and acting. (Anders Crichton-Fock, formerly Herdenstam)'
+    closing: {
+      sv: 'Det räcker inte att veta. Den som kan rör sig mellan analys och upplevelse, mellan erfarenhet och omdöme, och handlar.',
+      en: 'Knowing is not enough. The one who can moves between analysis and experience, between experience and judgement, and acts.'
+    },
+    challenge: {
+      sv: 'Det är i den konkreta situationen som kunskapen visar sig. Har du det som krävs?',
+      en: 'It is in the concrete situation that knowledge shows itself. Do you have what it takes?'
     },
     readMore: { sv: 'Läs mer', en: 'Read more' },
-    where: { sv: (p: string) => `Övas i ${p}`, en: (p: string) => `Practised in ${p}` },
+    readMoreWhere: { sv: 'Kunskapsgrunden i Måltidsbiblioteket', en: 'The knowledge foundation in Måltidsbiblioteket' },
     continue: { sv: 'Till paviljongerna', en: 'To the pavilions' }
   },
   // ORDER 301 — sidan Kunskapsgrunden i Måltidsbiblioteket, och källorna i
@@ -2471,7 +2543,9 @@ export const TABLE = {
       // ORDER 292b — med klockslaget när dörrarna öppnar.
       notOpenAt: { sv: (hhmm: string) => `Öppnar ${hhmm}, när dörrarna öppnar`, en: (hhmm: string) => `Opens at ${hhmm}, when the doors open` },
       // ORDER 291 — verksamheter utan egna raketer ännu (food trucken).
-      noRockets: { sv: 'Den här verksamheten har inga raketer ännu', en: 'This business has no rockets yet' }
+      noRockets: { sv: 'Den här verksamheten har inga raketer ännu', en: 'This business has no rockets yet' },
+      // ORDER 313 §2 — låst tills första provet är klarat.
+      locked: { sv: 'Öppnas när du klarat ditt första prov', en: 'Opens when you have passed your first exam' }
     },
     boxCredits: { sv: 'Krediter', en: 'Credits' },
     boxWrong: { sv: (level: string) => `${level} · fel`, en: (level: string) => `${level} · wrong` },
@@ -2712,9 +2786,21 @@ export const TABLE = {
   // of the internal StaffRole (which stays lowercase for code-side).
   team: {
     heading: { sv: 'Laget', en: 'The team' },
+    // ORDER 313 §5 — panelen förklarar sig: vad, vad det kostar, vad det ger i kväll.
     body: {
-      sv: 'Anställ och säg upp inför dagen. Kontrakt löper i sju dagar.',
-      en: 'Hire and let go before the day. Contracts run for seven days.'
+      sv: 'Laget är de som jobbar i kväll. Den du anställer stannar i sju dagar.',
+      en: 'The team are the people working tonight. Whoever you hire stays for seven days.'
+    },
+    row: {
+      sv: (role: string, kr: string, gives: string) => `${role} · ${kr} kr/kväll · ${gives}`,
+      en: (role: string, kr: string, gives: string) => `${role} · SEK ${kr}/evening · ${gives}`
+    },
+    contractUntil: { sv: (day: number) => `Stannar t.o.m. dag ${day}`, en: (day: number) => `Stays until day ${day}` },
+    gives: {
+      'värd': { sv: 'tar emot vid dörren och sätter gästerna', en: 'greets at the door and seats the guests' },
+      'servitör': { sv: 'tar beställningar och bär ut till borden', en: 'takes orders and carries out to the tables' },
+      'kock': { sv: 'lagar maten och håller köket', en: 'cooks the food and runs the kitchen' },
+      'lärling': { sv: 'avlastar där det behövs', en: 'lends a hand wherever it is needed' }
     },
     contractLabel: { sv: 'kontrakt t.o.m. dag', en: 'contract until day' },
     dailyCostLabel: { sv: 'kr/dag', en: 'SEK/day' },
@@ -3482,7 +3568,7 @@ export const TABLE = {
     yours: { sv: 'Vinbaren som kan bli din', en: 'The wine bar that could be yours' },
     empty: { sv: 'Än så länge är den tom.', en: 'For now, it is empty.' },
     fill: { sv: 'Det du vet fyller den.', en: 'What you know fills it.' },
-    mentor: { sv: 'Ingrid, din mentor', en: 'Ingrid, your mentor' },
+    mentor: { sv: 'Intendent Åsa, din mentor', en: 'Intendant Åsa, your mentor' },
     goal: { sv: 'Målet är stjärnan.', en: 'The goal is the star.' },
     // Spelets egna: knappen och skärmläsarens namn på öppningen.
     skip: { sv: 'Hoppa över', en: 'Skip' },

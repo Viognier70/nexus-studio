@@ -12,7 +12,8 @@ export const OPENING_STRINGS: Record<string, { sv: string; en: string }> = {
   'opening.yours': { sv: 'Din vinbar', en: 'Your wine bar' },
   'opening.empty': { sv: 'Än så länge är den tom.', en: 'For now, it is empty.' },
   'opening.fill': { sv: 'Det du vet fyller den.', en: 'What you know fills it.' },
-  'opening.mentor': { sv: 'Ingrid, din mentor', en: 'Ingrid, your mentor' },
+  // ORDER 313 §1 — Åsa ersätter Ingrid.
+  'opening.mentor': { sv: 'Intendent Åsa, din mentor', en: 'Intendant Åsa, your mentor' },
   'opening.goal': { sv: 'Målet är stjärnan.', en: 'The goal is the star.' },
 
   'open.kicker': { sv: 'D2 · omtag 2026-10-04', en: 'D2 · retake 4 Oct 2026' },
@@ -39,8 +40,8 @@ export const OPENING_STRINGS: Record<string, { sv: string; en: string }> = {
   'open.why.decant': { sv: 'Hantverket: flaskan högt, karaffen lågt, gästerna tittar.', en: 'The craft: bottle high, decanter low, the guests watching.' },
   'open.ch.toast': { sv: 'Glimt: skålen i loungen', en: 'Glimpse: the toast in the lounge' },
   'open.why.toast': { sv: 'Glasen möts över bordets mitt och någon skrattar. Det är det kvällen ska ge.', en: 'Glasses meet over the middle of the table and someone laughs. That is what the evening should give.' },
-  'open.ch.mentor': { sv: 'Ingrid i dörren till Måltidens hus', en: 'Ingrid in the doorway of Måltidens hus' },
-  'open.why.mentor': { sv: 'På 36–40 m, aldrig närmare, med en nål: Ingrid, din mentor. Hon tittar ut mot vägen en gång. Det är hon som tar emot vid liggaren i ankomstens scen 4.', en: 'At 36–40 m, never closer, with a pin: Ingrid, your mentor. She looks out towards the road once. She is the one who receives the player at the ledger in the arrival’s scene 4.' },
+  'open.ch.mentor': { sv: 'Åsa i dörren till Måltidens hus', en: 'Åsa in the doorway of Måltidens hus' },
+  'open.why.mentor': { sv: 'På 36–40 m, aldrig närmare, med en nål: Intendent Åsa, din mentor. Hon tittar ut mot vägen en gång. Det är hon som tar emot vid liggaren i ankomstens scen 4.', en: 'At 36–40 m, never closer, with a pin: Intendant Åsa, your mentor. She looks out towards the road once. She is the one who receives the player at the ledger in the arrival’s scene 4.' },
   'open.ch.black': { sv: 'Upp mot infarten och svart', en: 'Up towards the village entrance, then black' },
   'open.why.black': { sv: 'Kameran lyfter över byn under raden: målet är stjärnan. Svärtan är början på ankomstens scen 1.', en: 'The camera rises over the village under the line: the goal is the star. The black is the start of the arrival’s scene 1.' }
 };

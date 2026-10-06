@@ -1,0 +1,18 @@
+{
+  "build": "produktion",
+  "size": "1440×900",
+  "lang": "en",
+  "errors": [],
+  "mentorScreen": "Monday · Campus · Week 1 of 8ÅIntendant Åsa · from CampusÅsaIntendant Åsa · from CampusWelcome to Grythyttan.I'm from Campus and I'll be with you today. The bank won't lend you anything until it has seen what you can do, so we start by practising. Open the House of the Meal and practise in Stensöta, where the sommeliers are. Nothing is at stake.Next→I'll manage — skip the guide",
+  "mentorSender": "asa",
+  "mentorLine": "ÅsaIntendant ÅsaWelcome to Grythyttan. I'm from Campus and I'll be with you today. The bank won't lend you anything until it has seen what you can do, so we start by practising. Open the House of the Meal and practise in Stensöta, where the sommeliers are. Nothing is at stake.",
+  "activitiesLocked": 8,
+  "houseIntro": "The House of the MealThree ways of knowingAt Nexus Grythyttan, Campus, you take courses in the House of the Meal. The knowledge you train and are tested in builds on a modern reading of Aristotle’s concepts of knowledge:Episteme: to know.Techne: to be able to do.Phronesis: to be able to judge.Knowing is not enough. The one who can moves between analysis and experience, between experience and judgement, and acts.It is in the concrete situation that knowledge shows itself. Do you have what it takes?Read more→ The knowledge foundation in MåltidsbiblioteketTo the pavilions→",
+  "checks": {
+    "asaOnM1": true,
+    "noIngrid": true,
+    "senderAsa": true,
+    "houseIntroNoAnders": true,
+    "houseIntroOrder": true
+  }
+}
