@@ -1,4 +1,4 @@
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useCamera } from '../camera/CameraContext';
@@ -9,6 +9,7 @@ import { readabilityScale } from '../util/readability';
 import { GUEST_GROUPS, type GuestGroupId } from './guestGroups';
 import { GROUP_IDS } from './guestLooks';
 import { OSM_FRAME, streetSignGeometry } from './village/streetLooks';
+import { addProbeFigures, lampProbeRequested, type ProbeFigure } from './village/lampProbe';
 
 // Static-ish figures placed at named landmarks. They are the reason the
 // player's eye is drawn to Torget, Campus, Gästgivaregården etc. — not
@@ -133,6 +134,9 @@ const GATHERER_CURVE = { rampStart: 320, rampEnd: 1400, maxScale: 6 };
 
 export function LandmarkGatherers() {
   const { actualRef } = useCamera();
+  const gl = useThree((x) => x.gl);
+  const camera = useThree((x) => x.camera);
+  const scene = useThree((x) => x.scene);
 
   const groups = useMemo(() => {
     const rng = createRng(0xa9b3c1);
@@ -207,6 +211,8 @@ export function LandmarkGatherers() {
     const camDist = actualRef.current.distance;
     const scale = readabilityScale(camDist, GATHERER_CURVE);
     const used = { student: 0, villager: 0, tourist: 0, gourmet: 0, business: 0 } as Record<GuestGroupId, number>;
+    // ORDER 302c — mätningen under lyktorna (village/lampProbe.ts), bara på begäran.
+    const probe: ProbeFigure[] | null = lampProbeRequested() ? [] : null;
 
     for (let g = 0; g < groups.length; g++) {
       const body = bodyRefs.current[g];
@@ -277,6 +283,7 @@ export function LandmarkGatherers() {
           sm.setMatrixAt(used[look.group], tempObj.matrix);
           sm.setColorAt(used[look.group], tempColour.set(look.accent));
           used[look.group]++;
+          if (probe && fade >= 1) probe.push({ src: 'gatherers', group: look.group, variant: Number(a.colour.split(':')[1]), colour: look.body, x: a.cx + a.offX, z: a.cz + a.offZ, bodyY: 0.6 * s, halfW: 0.21 * s, scale: s });
         }
 
         tempObj.position.set(
@@ -293,6 +300,7 @@ export function LandmarkGatherers() {
       head.instanceMatrix.needsUpdate = true;
       if (body.instanceColor) body.instanceColor.needsUpdate = true;
     }
+    if (probe) addProbeFigures(gl, scene, camera, probe, [...bodyRefs.current, ...headRefs.current, signs.root]);
     for (const g of GROUP_IDS) {
       const sm = signs.meshes[g];
       sm.count = used[g];

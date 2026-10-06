@@ -45,7 +45,8 @@ import { BLEND, LEVELS } from '../../village/villageEvening';
 import { conceptTonight } from '../../simulation/guestTypes';
 import { GROUP_IDS } from '../guestLooks';
 import type { GuestGroupId } from '../guestGroups';
-import { STREET_SKIN, streetGroupOf, streetHeadGeometry, streetLegsGeometry, streetLookOf, streetSignGeometry, streetTorsoGeometry } from './streetLooks';
+import { addProbeFigures, lampProbeRequested, type ProbeFigure } from './lampProbe';
+import { STREET_FIGURE, STREET_SKIN, streetGroupOf, streetHeadGeometry, streetLegsGeometry, streetLookOf, streetSignGeometry, streetTorsoGeometry } from './streetLooks';
 
 type Vec2 = [number, number];
 type WalkerKind = PoolType | 'social' | 'billionaire' | 'tourist';
@@ -313,6 +314,8 @@ export function VillageLife() {
   simRef.current = sim;
   const { actualRef } = useCamera();
   const camera = useThree((x) => x.camera);
+  const gl = useThree((x) => x.gl);
+  const scene = useThree((x) => x.scene);
   const root = useMemo(() => new THREE.Group(), []);
   const clockRef = useRef(sim.simTime);
   const live = useRef({
@@ -760,6 +763,8 @@ export function VillageLife() {
     const kd = Math.max(0.7, Math.min(2.4, dist / 150));
     const showMarkers = lantern > 0.01;
     const showFigures = dist < BLEND.figuresUntil;
+    // ORDER 302c — mätningen under lyktorna (lampProbe.ts), bara när skriptet ber om den.
+    const probe: ProbeFigure[] | null = showFigures && lampProbeRequested() ? [] : null;
     (markers.material as THREE.MeshBasicMaterial).opacity = 0.4 * lantern;
     (cores.material as THREE.MeshBasicMaterial).opacity = lantern;
     (patches.material as THREE.MeshBasicMaterial).opacity = 0.16 * patch;
@@ -803,6 +808,7 @@ export function VillageLife() {
         const look = streetLookOf(w.type, group, (w.variant ?? 0) + k);
         figures.setMatrixAt(fi, tmp.m);
         figures.setColorAt(fi, tmpLook.set(look.body));
+        if (probe) probe.push({ src: 'life', group, variant: ((w.variant ?? 0) + k) % 2, colour: look.body, x, z, bodyY: 0.05 + ((STREET_FIGURE.torso.y0 + STREET_FIGURE.torso.y1) / 2) * tmp.s.x, halfW: STREET_FIGURE.torso.r0 * tmp.s.x, scale: tmp.s.x });
         legs.setMatrixAt(fi, tmp.m);
         legs.setColorAt(fi, tmpLook.set(look.limb));
         heads.setMatrixAt(fi, tmp.m);
@@ -850,6 +856,7 @@ export function VillageLife() {
         ri++;
       }
     }
+    if (probe) addProbeFigures(gl, scene, camera, probe, [figures, legs, heads, ...GROUP_IDS.map((g) => signs[g])]);
     for (const mesh of [figures, legs, heads]) {
       mesh.count = fi;
       mesh.instanceMatrix.needsUpdate = true;

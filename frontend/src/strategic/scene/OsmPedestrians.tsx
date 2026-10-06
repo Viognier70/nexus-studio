@@ -1,4 +1,4 @@
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useCamera } from '../camera/CameraContext';
@@ -15,6 +15,7 @@ import { readabilityScale, type ReadabilityCurve } from '../util/readability';
 import { GUEST_GROUPS, type GuestGroupId } from './guestGroups';
 import { GROUP_IDS } from './guestLooks';
 import { OSM_FRAME, streetSignGeometry } from './village/streetLooks';
+import { addProbeFigures, lampProbeRequested, type ProbeFigure } from './village/lampProbe';
 
 // Village-scale readability treatment. At close and district range the
 // walker keeps its authored 1.2 m height; from ~320 m up the visual scale
@@ -196,6 +197,9 @@ function pickRole(rng: { next(): number }): WalkerRole {
 
 export function OsmPedestrians() {
   const { actualRef } = useCamera();
+  const gl = useThree((x) => x.gl);
+  const camera = useThree((x) => x.camera);
+  const scene = useThree((x) => x.scene);
   const { paths, weights } = useMemo(() => pickPedPaths(), []);
   const cyclePaths = useMemo(
     () =>
@@ -332,6 +336,8 @@ export function OsmPedestrians() {
     const camDist = actualRef.current.distance;
     const walkerRead = readabilityScale(camDist, WALKER_CURVE);
     const cyclistRead = readabilityScale(camDist, CYCLIST_CURVE);
+    // ORDER 302c — mätningen under lyktorna (village/lampProbe.ts), bara på begäran.
+    const probe: ProbeFigure[] | null = lampProbeRequested() ? [] : null;
     if (walkerMesh.current) {
       for (let i = 0; i < walkers.length; i++) {
         const w = walkers[i];
@@ -404,6 +410,7 @@ export function OsmPedestrians() {
         }
         // ORDER 302b — gruppens tecken i figurens ram (fötterna vid 0).
         const group = ROLE_GROUP[w.role];
+        if (probe && group && w.entering >= 1) probe.push({ src: 'peds', group, variant: w.variant % 2, colour: w.colour, x: p.x, z: p.z, bodyY: (0.6 + bob) * scale, halfW: 0.21 * scale, scale });
         if (group) {
           tempObj.position.set(p.x, bob * scale, p.z);
           tempObj.updateMatrix();
@@ -415,6 +422,7 @@ export function OsmPedestrians() {
         walkerHeadMesh.current.instanceMatrix.needsUpdate = true;
       }
       for (const g of GROUP_IDS) signs.meshes[g].instanceMatrix.needsUpdate = true;
+      if (probe) addProbeFigures(gl, scene, camera, probe, [walkerMesh.current, walkerHeadMesh.current, signs.root]);
       if (walkerMesh.current.instanceColor) {
         walkerMesh.current.instanceColor.needsUpdate = true;
       }
