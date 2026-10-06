@@ -1569,9 +1569,12 @@ export const CONCEPT = {
   // Soigné har dyrare råvaror och mer personal (fler händer vid borden) men
   // högre notor; notan skalar med intäkten och gynnar den som kan.
   // ORDER 311 (säsongens sista bokslut räknas) — kalibrerat igen (reports/order311/kalib/W1–Z2).
-  wageFactor: { enkel: 0.71, bistro: 0.88, soigne: 1.47 },
+  // ORDER 311b (Anders 2026-10-06): bistrons personal tillbaka mot 1,0 (0,96), så att
+  // den som har 0,85 rätt slutar på 90 000–100 000 kr (reports/order311b/kalib).
+  wageFactor: { enkel: 0.71, bistro: 0.96, soigne: 1.4 },
   goodsCostFactor: { enkel: 0.81, bistro: 1, soigne: 1.8 },
-  billFactor: { enkel: 0.94, bistro: 1.005, soigne: 1.65 },
+  // Soigné 1,68: soigné med 0,85 tjänar minst 10 % mer än den kloka i bistron.
+  billFactor: { enkel: 0.94, bistro: 1.005, soigne: 1.68 },
   // Ett fel svars förlust i kassan gånger detta (304: hårdare följder av fel i högre klass).
   wrongFactor: { enkel: 0.75, bistro: 1, soigne: 1.5 },
   // ORDER 311 — rummets mindre beställningar efter fel svar (CONSEQUENCES.moodBillPerLift)
