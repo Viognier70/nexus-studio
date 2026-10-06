@@ -23,6 +23,10 @@
 //
 //   PHASE=fore|efter [SKIP_BUILD=1] [SKIP_AUDIT=1] [SKIP_SHOTS=1] [START_AT=n] [ONLY=n,m] [PORT=4312] node scripts/order312-on-road.mjs
 //
+// ORDER 312b: OUT_DIR=reports/order312b TARGETS=<fil.json> tar bilder av
+// platserna i filen ([{ at: [x, z], kinds: [..], subjects: [..] }]) i stället
+// för konflikterna; mätningen hoppas då över (den görs av testerna).
+//
 // Utdata: reports/order312/conflicts.json (PHASE=efter) eller
 // conflicts-fore.json (PHASE=fore), shots-<phase>.json och <phase>-NN-*.png.
 import { spawn } from 'node:child_process';
@@ -32,7 +36,8 @@ import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FRONTEND = resolve(HERE, '..');
-const OUT = resolve(FRONTEND, 'reports', 'order312');
+const OUT = resolve(FRONTEND, process.env.OUT_DIR ?? 'reports/order312');
+const TARGETS = process.env.TARGETS ? JSON.parse(readFileSync(resolve(FRONTEND, process.env.TARGETS), 'utf8')) : null;
 mkdirSync(OUT, { recursive: true });
 const PHASE = process.env.PHASE === 'fore' ? 'fore' : 'efter';
 const AUDIT = resolve(OUT, PHASE === 'fore' ? 'conflicts-fore.json' : 'conflicts.json');
@@ -49,7 +54,7 @@ const run = (cmd, args, env = {}) => new Promise((res) => {
 
 // ---------- 1. Mätningen ----------
 // SKIP_AUDIT=1: mätningen i AUDIT finns redan (bara bilderna tas om).
-if (process.env.SKIP_AUDIT !== '1') {
+if (process.env.SKIP_AUDIT !== '1' && !TARGETS) {
   const t0 = Date.now();
   const test = await run('npx', ['vitest', 'run', 'src/strategic/__tests__/order312PaVagen.test.ts'], { ORDER312_OUT: AUDIT });
   const a = JSON.parse(readFileSync(AUDIT, 'utf8'));
@@ -57,8 +62,8 @@ if (process.env.SKIP_AUDIT !== '1') {
   a.test = { file: 'src/strategic/__tests__/order312PaVagen.test.ts', exitCode: test.code, summary: (test.out.match(/Tests\s+[^\n]+/) ?? [''])[0].trim(), seconds: Math.round((Date.now() - t0) / 100) / 10 };
   writeFileSync(AUDIT, JSON.stringify(a, null, 2) + '\n');
 }
-const audit = JSON.parse(readFileSync(AUDIT, 'utf8'));
-console.log(PHASE, audit.counts, audit.test);
+const audit = TARGETS ? { conflicts: [] } : JSON.parse(readFileSync(AUDIT, 'utf8'));
+if (!TARGETS) console.log(PHASE, audit.counts, audit.test);
 if (process.env.SKIP_SHOTS === '1') process.exit(0);
 
 // ---------- 2. Platserna ----------
@@ -74,9 +79,9 @@ function places(report) {
   }
   return out.slice(0, 30);
 }
-let targets = places(audit).map((p) => ({ ...p, from: PHASE }));
+let targets = TARGETS ? TARGETS.map((p) => ({ ...p, from: PHASE })) : places(audit).map((p) => ({ ...p, from: PHASE }));
 const forePath = resolve(OUT, 'conflicts-fore.json');
-if (PHASE === 'efter' && existsSync(forePath)) {
+if (PHASE === 'efter' && !TARGETS && existsSync(forePath)) {
   const fore = JSON.parse(readFileSync(forePath, 'utf8'));
   const old = places(fore).map((p) => ({ ...p, from: 'fore' }));
   targets = [...old, ...targets.filter((t) => !old.some((o) => Math.hypot(o.at[0] - t.at[0], o.at[1] - t.at[1]) < 12))];
@@ -249,7 +254,7 @@ try {
       if (Math.hypot(c.x - t.at[0], c.z - t.at[1]) < 3) break;
     }
     await delay(800);
-    const label = `${t.from === 'fore' ? 'före-platsen' : 'konflikt'} ${t.kinds.join(', ')} · (${t.at[0]}, ${t.at[1]}) m · ${t.subjects.slice(0, 3).join(', ')}${t.subjects.length > 3 ? ' …' : ''}`;
+    const label = `${TARGETS ? 'plats' : t.from === 'fore' ? 'före-platsen' : 'konflikt'} ${t.kinds.join(', ')} · (${t.at[0]}, ${t.at[1]}) m · ${t.subjects.slice(0, 3).join(', ')}${t.subjects.length > 3 ? ' …' : ''}`;
     await page.evaluate((txt) => {
       document.getElementById('o312-mark')?.remove();
       const d = document.createElement('div');

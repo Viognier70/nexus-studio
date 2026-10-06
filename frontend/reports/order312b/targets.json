@@ -1,0 +1,9 @@
+[
+  { "at": [25.71, -23.32], "kinds": ["vinbarens-rum-hörn"], "subjects": ["vinbaren:w869907975 (rummet 14,47 × 10,05 m)"] },
+  { "at": [37.49, -10.15], "kinds": ["vinbarens-rum-hörn"], "subjects": ["vinbaren:w869907975 (rummet 14,47 × 10,05 m)"] },
+  { "at": [26.6, 0.24], "kinds": ["leveransstopp"], "subjects": ["leveransbilen på Prästgatan (on-road.json deliveryStop.bay)"] },
+  { "at": [12.49, -27.59], "kinds": ["gående"], "subjects": ["Torget"] },
+  { "at": [44.0, 17.0], "kinds": ["gående"], "subjects": ["Prästgatan × Västra Bergvägen"] },
+  { "at": [160.0, -95.0], "kinds": ["gående"], "subjects": ["Östra Bergvägen"] },
+  { "at": [411.0, 0.0], "kinds": ["gående"], "subjects": ["Hälleforsvägen vid Ingo"] }
+]

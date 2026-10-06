@@ -440,6 +440,8 @@ export interface OnRoadReport {
   conflicts: Conflict[];
   wineBar: WineBarAudit | null;
   truckStands: Array<Omit<TruckStand, 'footprint'>>;
+  /** ORDER 312b: leveransbilens stopp (business/deliveryStop.ts) och gatan det står på. */
+  deliveryStop: { bay: Vec2Tuple; approach: Vec2Tuple; street: string | null } | null;
   checked: { renderedFootprints: number; outbuildings: number; trafficRoads: number; villageLifeRoutes: number };
 }
 
@@ -463,6 +465,13 @@ export function auditOnRoad(): OnRoadReport {
     conflicts,
     wineBar,
     truckStands: truckStands().map(({ footprint: _f, ...rest }) => rest),
+    deliveryStop: (() => {
+      const layout = computePlayerBusinessInterior();
+      const stop = layout ? deliveryStop(layout) : null;
+      if (!stop) return null;
+      const q = roadQuadsAt(stop.bay[0], stop.bay[1]).find((x) => x.surface === 'carriageway');
+      return { bay: pt(stop.bay), approach: pt(stop.approach), street: q?.piece.road.name ?? null };
+    })(),
     checked: {
       renderedFootprints: fps.filter((f) => f.source === 'building').length,
       outbuildings: fps.filter((f) => f.source === 'outbuilding').length,

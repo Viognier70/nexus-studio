@@ -1,0 +1,25 @@
+{
+  "note": "ORDER 312b: avståndet (m) från krogens husmitt till dörrens nod i gångnätet, före (villageNetwork.ts på main) och efter (villagePlaces.ts venuePlaces)",
+  "doors": {
+    "player": {
+      "fore": 12.19,
+      "efter": 11.25
+    },
+    "torgkrogen": {
+      "fore": 15.52,
+      "efter": 9.86
+    },
+    "pizzeria-grytan": {
+      "fore": 12.86,
+      "efter": 22.69
+    },
+    "sjoboden": {
+      "fore": 13.68,
+      "efter": 13.02
+    },
+    "hotellets-matsal": {
+      "fore": 12.26,
+      "efter": 18.91
+    }
+  }
+}
