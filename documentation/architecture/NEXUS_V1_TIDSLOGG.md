@@ -1,5 +1,36 @@
 # Nexus v1 — tidslogg
 
+## Överlämning (2026-10-06, före omstart efter ORDER 312)
+
+**Var vi är.**
+- `main` står på `12cbd9ae` och är pushad. Arbetsträden är rena; inget pågående arbete på någon gren.
+- **Klart och mergat:** 303b/303c (ekonomin), 305b (kvitt eller dubbelt), 307/307b (konceptet och varukorgen), 308b, 309b, 310/310b (låset och väntan), 311 (konkurs i säsongens sista bokslut), 311b (bistron mot 1,0), 302d (gatans figurer belysta, `STREET_FIGURE_LIGHT.minLight` 0,55 tills Design ger värdet) och 312 (inget i spelet på vägen; testet `order312PaVagen.test.ts` på den riktiga kartan). Hela sviten efter 312: 2 483 gröna, 16 överhoppade.
+- **Den förra sessionen hängde sig** under 312, men 312 hann mergas och pushas. Inget arbete gick förlorat.
+
+**Pågår.** Ingenting. Grenen `order-261` (lokal och på origin, samma commit) är gammal och orörd.
+
+**Väntar på Anders.**
+1. Halva i bistron stänger 80 % (mål högst 65 %): godta, personalen 0,90, eller byns val läser menyns pris (egen order). Se `ORDER_311B_RAPPORT.md`.
+2. Designs tillägg: ingången, rummet och köplatserna mot `grythyttan-world.json`. Jämförs med `order312PaVagen.test.ts` innan något rättas. Vinbarens rum står 0,46–0,47 m utanför huset.
+3. Leveransstoppet: Västra Bergvägen eller Prästgatan.
+4. Designs värde för gatans minsta kvällsljus (i dag 0,55).
+5. ORDER 306:s tio utkast till raketer (`documentation/blueprints/ORDER_306_UTKAST/`).
+
+**Konkurrenternas nivåer (Anders 2026-10-06).**
+- Enkel: Pizzeria Grytan, Grillvagnen och Tacovagnen.
+- Mellan: Torgkrogen och Sjöboden.
+- Exklusiv: Hotellets matsal.
+
+**Ordningen framåt.**
+1. **312** — klar; tillägget från Design väntar (punkt 2 ovan).
+2. **Bistrons kalibrering** — efter Anders beslut om halva (punkt 1).
+3. **313** — specen `~/Downloads/ORDRAR_313_D6.md` finns inte på datorn (2026-10-06). Anders behöver lägga den där igen.
+4. **314 Situationerna** — inga frivilliga raketer; kvitt eller dubbelt inne i varje situation; personalen tar över efter sin kompetens; 4–6 situationer per kväll; spelaren "ignorerar" i harness. Spec: `~/Downloads/ORDRAR_314-316_D7.md`.
+5. **316 Fikat** — ett dilemma per kväll efter stängning; först ett utkast med 12 dilemman som Anders granskar.
+6. **315 Karriärstegen** — börjar med en rapport och utkast (datamodell, foodtruckens ekonomi, harness-mål, 20 frågor). Klasserna döps om till Enkel · Mellan · Exklusiv.
+
+---
+
 ## Överlämning (2026-09-30, stopp för provspel efter ORDER 290)
 
 **Var vi är.**
