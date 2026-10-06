@@ -1,0 +1,138 @@
+{
+  "source": "scene/guestGroups.ts checkGroupsAgainstStreet, checkStreetSigns (leveransens STREET_SURFACES ur byKvall.js, LIGHT_SCALES)",
+  "band": [
+    1.8,
+    3.6
+  ],
+  "surfaces": [
+    {
+      "id": "road",
+      "colour": "#4f4030"
+    },
+    {
+      "id": "path",
+      "colour": "#5e4c38"
+    },
+    {
+      "id": "torget",
+      "colour": "#6b5842"
+    },
+    {
+      "id": "ourPavement",
+      "colour": "#4b433c"
+    },
+    {
+      "id": "venuePavement",
+      "colour": "#6b5d4e"
+    },
+    {
+      "id": "grass",
+      "colour": "#3a4434"
+    },
+    {
+      "id": "residential",
+      "colour": "#3d4536"
+    },
+    {
+      "id": "greens",
+      "colour": "#36442f"
+    }
+  ],
+  "lights": {
+    "day": 1,
+    "evening": 0.62,
+    "lateEvening": 0.48
+  },
+  "rows": [
+    {
+      "group": "student",
+      "variant": 0,
+      "streetBody": "#529bd8",
+      "streetAccent": "#3a2412",
+      "streetMin": 1.853,
+      "streetMax": 3.476,
+      "sign": 4.885
+    },
+    {
+      "group": "student",
+      "variant": 1,
+      "streetBody": "#7494de",
+      "streetAccent": "#3d2614",
+      "streetMin": 1.851,
+      "streetMax": 3.474,
+      "sign": 4.734
+    },
+    {
+      "group": "villager",
+      "variant": 0,
+      "streetBody": "#bb8b62",
+      "streetAccent": "#3a2c20",
+      "streetMin": 1.84,
+      "streetMax": 3.449,
+      "sign": 4.473
+    },
+    {
+      "group": "villager",
+      "variant": 1,
+      "streetBody": "#7f9e6c",
+      "streetAccent": "#3a3028",
+      "streetMin": 1.846,
+      "streetMax": 3.462,
+      "sign": 4.292
+    },
+    {
+      "group": "tourist",
+      "variant": 0,
+      "streetBody": "#aa934a",
+      "streetAccent": "#efe1c0",
+      "streetMin": 1.84,
+      "streetMax": 3.448,
+      "sign": 2.321
+    },
+    {
+      "group": "tourist",
+      "variant": 1,
+      "streetBody": "#61a095",
+      "streetAccent": "#efe1c0",
+      "streetMin": 1.837,
+      "streetMax": 3.443,
+      "sign": 2.324
+    },
+    {
+      "group": "gourmet",
+      "variant": 0,
+      "streetBody": "#bf81b5",
+      "streetAccent": "#f6d98e",
+      "streetMin": 1.849,
+      "streetMax": 3.468,
+      "sign": 2.169
+    },
+    {
+      "group": "gourmet",
+      "variant": 1,
+      "streetBody": "#a28cbe",
+      "streetAccent": "#f2cf86",
+      "streetMin": 1.851,
+      "streetMax": 3.473,
+      "sign": 1.998
+    },
+    {
+      "group": "business",
+      "variant": 0,
+      "streetBody": "#7e98b4",
+      "streetAccent": "#f1ece2",
+      "streetMin": 1.852,
+      "streetMax": 3.476,
+      "sign": 2.535
+    },
+    {
+      "group": "business",
+      "variant": 1,
+      "streetBody": "#9a948d",
+      "streetAccent": "#f1ece2",
+      "streetMin": 1.842,
+      "streetMax": 3.455,
+      "sign": 2.55
+    }
+  ]
+}

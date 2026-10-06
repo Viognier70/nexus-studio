@@ -45,6 +45,9 @@ const POINT_DISTANCE_M = 16;
 const hash = (i: number, k = 0) => { const s = Math.sin(i * 127.1 + k * 311.7) * 43758.5453; return s - Math.floor(s); };
 const smooth = (a: number, b: number, x: number) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 
+/** ORDER 302c — lyktorna och hur tända de är just nu (0..1), för mätningen under lyktorna (village/lampProbe.ts). */
+export const lampLive: { pos: Array<[number, number]>; k: Float32Array } = { pos: [], k: new Float32Array(0) };
+
 export function lampPositions(): Array<[number, number]> {
   const room = computePlayerBusinessInterior();
   const inOurRoom = (x: number, z: number) => {
@@ -146,10 +149,12 @@ export function StreetLamps() {
     const group = new THREE.Group();
     group.add(poles, heads, glows, pools, ...lights.map((x) => x.l));
     const thr = pos.map((_, i) => LIGHTS.lamps.on[0] + (LIGHTS.lamps.on[1] - LIGHTS.lamps.on[0]) * hash(i, 21));
-    return { group, poles, heads, glows, pools, lights, tex, n, thr, k: new Float32Array(n), off, on: new THREE.Color(COLOURS.lampHead).multiplyScalar(2.4), lamp: new THREE.Color(COLOURS.lamp) };
+    return { group, poles, heads, glows, pools, lights, tex, n, pos, thr, k: new Float32Array(n), off, on: new THREE.Color(COLOURS.lampHead).multiplyScalar(2.4), lamp: new THREE.Color(COLOURS.lamp) };
   }, []);
 
   useEffect(() => {
+    lampLive.pos = built.pos;
+    lampLive.k = built.k;
     if (typeof document !== 'undefined') document.body.dataset.streetLamps = String(built.n);
     return () => {
       built.group.traverse((o) => (o as THREE.Mesh).geometry?.dispose?.());

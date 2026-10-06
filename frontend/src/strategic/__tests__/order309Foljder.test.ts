@@ -228,8 +228,8 @@ describe('ORDER 309 — gästgrupperna per gästtyp (D5 guestGroups.ts)', () => 
     const outside = [...new Set(fails.map((f) => f.figure))];
     mkdirSync(resolve(__dirname, '../../../reports/order309'), { recursive: true });
     writeFileSync(resolve(__dirname, '../../../reports/order309/palett.json'), JSON.stringify({ band: [1.8, 3.6], bodies, outside, fails }, null, 2) + '\n');
-    expect(outside).toHaveLength(8);
-    expect(GUEST_GROUPS.business.looks.every((l) => !outside.includes(l.body))).toBe(true);
+    // ORDER 302c — Designs tillägg 2026-10-05 (i leveransen 2026-10-06, guestGroups.ts) lade alla tio i bandet.
+    expect(outside).toHaveLength(0);
   });
 
   it('förlåtelsen som ord följer balance.ts (studenter mycket, gourmeter lite)', () => {

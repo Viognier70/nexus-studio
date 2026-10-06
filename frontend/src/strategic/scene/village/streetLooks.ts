@@ -64,10 +64,14 @@ export function streetGroupOf(kind: StreetKind, key: string, seed: number, toPla
   }
 }
 
-/** Figurens färger på gatan: D5:s kropp och lemmar (lookOf), tecknets färg (accent); miljardären i guld. */
+/**
+ * Figurens färger på gatan: D5:s gatuvariant (ORDER 302c, Designs tillägg
+ * 2026-10-06, guestGroups.ts looks[].street via lookOf(…, 'street')), kroppen
+ * ljusare än marken med rummets kulör, och tecknets gatufärg; miljardären i guld.
+ */
 export function streetLookOf(kind: StreetKind, group: GuestGroupId, variant: number): { body: string; limb: string; accent: string } {
-  const l = lookOf(group, variant);
-  return { body: kind === 'billionaire' ? BILLIONAIRE_GOLD : l.body, limb: l.limb, accent: GUEST_GROUPS[group].looks[variant % 2].accent };
+  const l = lookOf(group, variant, 'street');
+  return { body: kind === 'billionaire' ? BILLIONAIRE_GOLD : l.body, limb: l.limb, accent: GUEST_GROUPS[group].looks[variant % 2].street.accent };
 }
 
 // ----- Figuren på gatan -----
@@ -129,6 +133,9 @@ export const STREET_FRAME: SignFrame = {
   backZ: STREET_FIGURE.torso.r1
 };
 
+/** Byns lådfigur (OsmPedestrians, LandmarkGatherers): kroppen 0,42 × 1,2 × 0,32 m, huvudet r 0,22 vid 1,35 m. */
+export const OSM_FRAME: SignFrame = { headY: 1.35, headR: 0.22, neckY: 1.2, frontZ: 0.17, backZ: 0.16 };
+
 /** Tecknets geometri i figurens ram (+z framåt, y uppåt, fötterna vid 0). */
 export function streetSignGeometry(group: GuestGroupId, F: SignFrame = STREET_FRAME): THREE.BufferGeometry {
   const top = F.headY + F.headR; // hjässan
@@ -136,11 +143,17 @@ export function streetSignGeometry(group: GuestGroupId, F: SignFrame = STREET_FR
   const parts: THREE.BufferGeometry[] = [];
   switch (GUEST_GROUPS[group].sign) {
     case 'backpack': {
-      // Ryggsäcken (D5 0,30 × 0,38 × 0,14 m) på ryggen. Luvan är i kroppens
-      // färg i D5 och syns inte mot den på gatan; den ritas inte här.
+      // Ryggsäcken (D5 0,30 × 0,38 × 0,14 m) på ryggen.
       const b = new THREE.BoxGeometry(0.36, 0.44, 0.2);
       b.translate(0, neck - 0.27, -(F.backZ + 0.1));
-      parts.push(b);
+      // ORDER 302c — luvan i ryggsäckens färg (D5 tillägg 2026-10-05: nedfälld
+      // som en krage runt halsen; på gatan mörk, tillägget 2026-10-06), så att
+      // studenterna läses också framifrån. Kragen ligger på axlarna inom
+      // kroppens kontur uppifrån (yttre radien 0,18 m mot bålens 0,2 m).
+      const hood = new THREE.TorusGeometry(0.13, 0.05, 6, 14);
+      hood.rotateX(Math.PI / 2 + 0.25);
+      hood.translate(0, neck + 0.01, -0.02);
+      parts.push(b, hood);
       break;
     }
     case 'cap': {
