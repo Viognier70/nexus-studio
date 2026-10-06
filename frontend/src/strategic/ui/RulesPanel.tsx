@@ -43,6 +43,8 @@ export function RulesPanel({ open, onClose }: { open: boolean; onClose: () => vo
         </ol>
         {!card && (
           <>
+            {/* ORDER 311 — konkurs i säsongens sista bokslut. */}
+            <p className="nx-small nxs-mt-16" data-testid="rules-season-end">{r.seasonEnd}</p>
             <h3 className="nx-label nxs-mt-24">{r.notHeading}</h3>
             <ul className="nxs-rules-not">
               <li className="nx-small">{r.notMoney}</li>

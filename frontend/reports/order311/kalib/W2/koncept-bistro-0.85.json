@@ -1,0 +1,235 @@
+{
+ "tasting": false,
+ "definition": "Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).",
+ "start": null,
+ "variant": "{\"CONCEPT\": {\"touristOfMiddle\": {\"enkel\": 0.1, \"bistro\": 0.3, \"soigne\": 0.3}, \"highFullAt\": {\"enkel\": 0, \"bistro\": 0, \"soigne\": 1.0}, \"goodsCostFactor\": {\"enkel\": 0.81, \"bistro\": 1, \"soigne\": 1.8}, \"reputationDriftPerDay\": 0.05, \"wageFactor\": {\"enkel\": 0.63, \"bistro\": 0.75, \"soigne\": 1.45}, \"billFactor\": {\"enkel\": 0.94, \"bistro\": 0.92, \"soigne\": 1.6}, \"wrongFactor\": {\"enkel\": 0.5, \"bistro\": 1, \"soigne\": 1.5}, \"moodDownFactor\": {\"enkel\": 0.3, \"bistro\": 1, \"soigne\": 1}}, \"STAR\": {\"judgementAtLeast\": 0.4}}",
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20
+ ],
+ "weeks": 8,
+ "players": {
+  "bistro": {
+   "closed": 0,
+   "closedWeeks": [],
+   "renegotiated": 0,
+   "lowestCash": 23372,
+   "meanCashEnd": 106615,
+   "targetHitShare": 0.98,
+   "meanTastings": 0,
+   "meanOwned": 6,
+   "stars": 14,
+   "starEarned": 18,
+   "starWeeks": [
+    4,
+    4,
+    7,
+    5,
+    4,
+    8,
+    5,
+    4,
+    5,
+    6,
+    5,
+    6,
+    4,
+    4,
+    8,
+    6,
+    6,
+    5
+   ],
+   "goldWeeks": [
+    2,
+    2,
+    3,
+    5,
+    3,
+    2,
+    5,
+    3,
+    2,
+    3,
+    3,
+    3,
+    4,
+    2,
+    2,
+    6,
+    7,
+    3,
+    2,
+    3
+   ],
+   "meanRepAtSettlement": [
+    0.42,
+    0.411,
+    0.33,
+    0.412,
+    0.429,
+    0.393,
+    0.433,
+    0.371
+   ],
+   "meanJudgement": [
+    0.63,
+    0.63,
+    0.6,
+    0.67,
+    0.63,
+    0.62,
+    0.63,
+    0.61
+   ],
+   "concepts": {
+    "enkel": 0.01,
+    "bistro": 0.99,
+    "soigne": 0
+   },
+   "byWeek": [
+    {
+     "week": 1,
+     "n": 20,
+     "meanResultSek": 17988,
+     "meanRevenueSek": 48189,
+     "meanCashEnd": 32988,
+     "meanCredits": 35,
+     "targetHit": 19,
+     "rentSek": 0
+    },
+    {
+     "week": 2,
+     "n": 20,
+     "meanResultSek": 18669,
+     "meanRevenueSek": 50925,
+     "meanCashEnd": 51657,
+     "meanCredits": 37,
+     "targetHit": 20,
+     "rentSek": 0
+    },
+    {
+     "week": 3,
+     "n": 20,
+     "meanResultSek": 18538,
+     "meanRevenueSek": 51347,
+     "meanCashEnd": 70195,
+     "meanCredits": 54,
+     "targetHit": 20,
+     "rentSek": 0
+    },
+    {
+     "week": 4,
+     "n": 20,
+     "meanResultSek": 20322,
+     "meanRevenueSek": 52204,
+     "meanCashEnd": 90517,
+     "meanCredits": 61,
+     "targetHit": 20,
+     "rentSek": 0
+    },
+    {
+     "week": 5,
+     "n": 20,
+     "meanResultSek": 5282,
+     "meanRevenueSek": 52027,
+     "meanCashEnd": 95799,
+     "meanCredits": 78,
+     "targetHit": 20,
+     "rentSek": 13469
+    },
+    {
+     "week": 6,
+     "n": 20,
+     "meanResultSek": 1899,
+     "meanRevenueSek": 48613,
+     "meanCashEnd": 97698,
+     "meanCredits": 119,
+     "targetHit": 18,
+     "rentSek": 13469
+    },
+    {
+     "week": 7,
+     "n": 20,
+     "meanResultSek": 5126,
+     "meanRevenueSek": 51426,
+     "meanCashEnd": 102825,
+     "meanCredits": 92,
+     "targetHit": 20,
+     "rentSek": 13469
+    },
+    {
+     "week": 8,
+     "n": 20,
+     "meanResultSek": 3791,
+     "meanRevenueSek": 50312,
+     "meanCashEnd": 106615,
+     "meanCredits": 141,
+     "targetHit": 20,
+     "rentSek": 13469
+    }
+   ],
+   "repByWeek": [
+    {
+     "week": 1,
+     "mon": 0.6,
+     "sat": 0.47
+    },
+    {
+     "week": 2,
+     "mon": 0.436,
+     "sat": 0.43
+    },
+    {
+     "week": 3,
+     "mon": 0.427,
+     "sat": 0.413
+    },
+    {
+     "week": 4,
+     "mon": 0.348,
+     "sat": 0.43
+    },
+    {
+     "week": 5,
+     "mon": 0.428,
+     "sat": 0.394
+    },
+    {
+     "week": 6,
+     "mon": 0.443,
+     "sat": 0.423
+    },
+    {
+     "week": 7,
+     "mon": 0.409,
+     "sat": 0.416
+    },
+    {
+     "week": 8,
+     "mon": 0.447,
+     "sat": 0.429
+    }
+   ]
+  }
+ },
+ "note": "ORDER 311: runs/rows borttagna, summeringen kvar; hela körningen för de valda talen står i ../efter."
+}

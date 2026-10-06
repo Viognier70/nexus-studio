@@ -33,7 +33,8 @@ import {
   type MedalRequirement,
   RENT,
   DOUBLE_OR_NOTHING,
-  CONCEPT
+  CONCEPT,
+  SEASON
 } from './balance';
 import { calendarFor } from './calendar';
 import type { GuestType, PavilionKey, SimulationState } from '../strategic/types';
@@ -82,6 +83,9 @@ export interface RiskState {
   belowZeroInRow: number;
   renegotiated: boolean;
   closedWeek: number | null;
+  // ORDER 311 — varför krogen stängde: tre bokslut under noll i rad, eller
+  // kassan under noll i säsongens sista bokslut (konkurs).
+  closedReason?: 'inRow' | 'seasonEnd';
 }
 
 // ORDER 267 — en kväll i veckan, för söndagstidningen (sim/newspaper.ts).
@@ -695,8 +699,15 @@ export function settleWeek(state: SimulationState): SimulationState {
   const renegotiatedNow = !prevRisk.renegotiated && !!e.loan && missedInRow >= RISK.renegotiateAfterMissedWeeks;
   const renegotiated = prevRisk.renegotiated || renegotiatedNow;
   const belowZeroInRow = e.businessClass && draft.cash < 0 ? prevRisk.belowZeroInRow + 1 : 0;
-  const closedNow = prevRisk.closedWeek === null && belowZeroInRow >= RISK.closeAfterWeeksBelowZero;
-  const risk: RiskState = { missedInRow, belowZeroInRow, renegotiated, closedWeek: closedNow ? week : prevRisk.closedWeek };
+  const closedInRow = belowZeroInRow >= RISK.closeAfterWeeksBelowZero;
+  // ORDER 311 — konkurs: kassan under noll i säsongens sista bokslut.
+  const closedAtSeasonEnd = RISK.closeBelowZeroAtSeasonEnd && !!e.businessClass && week >= SEASON.weeks && draft.cash < 0;
+  const closedNow = prevRisk.closedWeek === null && (closedInRow || closedAtSeasonEnd);
+  const risk: RiskState = {
+    missedInRow, belowZeroInRow, renegotiated,
+    closedWeek: closedNow ? week : prevRisk.closedWeek,
+    closedReason: closedNow ? (closedInRow ? 'inRow' : 'seasonEnd') : prevRisk.closedReason
+  };
   const loan = e.loan
     ? {
         ...e.loan,
