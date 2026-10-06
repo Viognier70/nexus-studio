@@ -9,6 +9,7 @@
 // vägen räknas med Dijkstra och sparas.
 
 import { WORLD } from './world';
+import { segmentOnCarCarriageway } from './roadSurface';
 
 type Vec2 = [number, number];
 
@@ -21,7 +22,10 @@ export interface RoadGraph {
 
 const SNAP = 0.5;
 
-function build(filter: (r: (typeof WORLD.roads)[number]) => boolean): RoadGraph {
+function build(
+  filter: (r: (typeof WORLD.roads)[number]) => boolean,
+  edgeOk: (a: Vec2, b: Vec2) => boolean = () => true
+): RoadGraph {
   const index = new Map<string, number>();
   const nodes: Vec2[] = [];
   const adj: Array<Array<{ to: number; d: number }>> = [];
@@ -41,7 +45,7 @@ function build(filter: (r: (typeof WORLD.roads)[number]) => boolean): RoadGraph 
     let prev = nodeFor(road.poly[0] as Vec2);
     for (let k = 1; k < road.poly.length; k++) {
       const cur = nodeFor(road.poly[k] as Vec2);
-      if (cur !== prev) {
+      if (cur !== prev && edgeOk(nodes[prev], nodes[cur])) {
         const d = Math.hypot(nodes[cur][0] - nodes[prev][0], nodes[cur][1] - nodes[prev][1]);
         adj[prev].push({ to: cur, d });
         adj[cur].push({ to: prev, d });
@@ -78,8 +82,13 @@ export function walkNetwork(): RoadGraph {
   return (walkGraph ??= build(() => true));
 }
 
+// ORDER 312 — bilarna och bussen kör bara där körbanan är ritad. OsmRoads
+// klipper vägen där remsan skulle gå in i ett hus (ORDER 158); en kant i
+// bilnätet som inte ligger helt på den ritade körbanan för bilar
+// (content/roadSurface.ts) tas bort. Annars körde byns bilar 9–44 m över
+// gräs och gårdar där vägen var bortklippt.
 export function driveNetwork(): RoadGraph {
-  return (driveGraph ??= build((r) => r.car && r.kind !== 'track'));
+  return (driveGraph ??= build((r) => r.car && r.kind !== 'track', (a, b) => segmentOnCarCarriageway(a, b)));
 }
 
 export function nearestNode(g: RoadGraph, x: number, z: number): number {

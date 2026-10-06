@@ -1,12 +1,14 @@
 import { LANDMARK_BUILDING_IDS, WORLD } from '../content/world';
-import type { RawBuilding } from '../content/world';
+import type { RawBuilding, Vec2Tuple } from '../content/world';
+import { boxFootprint, polygonNearMapRoad, polygonsOverlap, roadOverlapsForPolygon } from '../content/roadSurface';
 import {
   idHash,
   inAnyWater,
   nearAnyBuilding,
   obbLocalToWorld,
   orientedBbox,
-  polygonArea
+  polygonArea,
+  polygonBounds
 } from './geom';
 
 // Parcel-composition helpers layered on top of the geom primitives.
@@ -26,6 +28,42 @@ interface Placement {
   wx: number;
   wz: number;
   size: 'small' | 'medium';
+}
+
+// Uthusens mått (OsmProceduralOutbuildings ritar väggarna i de här måtten):
+// bredd längs OBB:ns lokala x, djup längs lokala z, meter.
+export const OUTBUILDING_SIZE: Record<Placement['size'], { w: number; d: number }> = {
+  small: { w: 3.6, d: 3.0 },
+  medium: { w: 5.6, d: 4.2 }
+};
+
+// ORDER 312 — ett uthus får inte stå på en väg eller i ett annat hus. Vägytan
+// är den som OsmRoads ritar (content/roadSurface.ts: körbanan i ROLE_SPECS-
+// bredd och trottoaren). Uthuset ska stå minst ROAD_GAP_M från vägytans kant,
+// så att en bil i körfältet inte når det i en kurva.
+const ROAD_GAP_M = 0.5;
+
+/** Uthusets fot i byns ram: lådan i OUTBUILDING_SIZE, vriden som OBB:n (rotation.y = −angle). */
+export function outbuildingFootprintAt(wx: number, wz: number, angle: number, size: Placement['size']): Vec2Tuple[] {
+  const s = OUTBUILDING_SIZE[size];
+  return boxFootprint(wx, wz, -angle, s.w, s.d);
+}
+
+function blocked(wx: number, wz: number, angle: number, size: Placement['size'], hostId: string): boolean {
+  const s = OUTBUILDING_SIZE[size];
+  const grown = boxFootprint(wx, wz, -angle, s.w + 2 * ROAD_GAP_M, s.d + 2 * ROAD_GAP_M);
+  if (roadOverlapsForPolygon(grown).length > 0) return true;
+  const foot = outbuildingFootprintAt(wx, wz, angle, size);
+  // Inte heller i vägens lucka, där OsmRoads klippt bort remsan nära ett hus.
+  if (polygonNearMapRoad(foot, ROAD_GAP_M)) return true;
+  const fb = polygonBounds(foot);
+  for (const other of WORLD.buildings) {
+    if (other.id === hostId || other.poly.length < 3) continue;
+    const ob = polygonBounds(other.poly);
+    if (ob.maxX < fb.minX || ob.minX > fb.maxX || ob.maxZ < fb.minZ || ob.minZ > fb.maxZ) continue;
+    if (polygonsOverlap(foot, other.poly)) return true;
+  }
+  return false;
 }
 
 // Cached per building id. Same value is used by
@@ -66,6 +104,7 @@ export function outbuildingPlacementFor(b: RawBuilding): Placement | null {
     const [wx, wz] = obbLocalToWorld(obb, c.lx, c.lz);
     if (nearAnyBuilding(wx, wz, b.id, 1.5)) continue;
     if (inAnyWater(wx, wz)) continue;
+    if (blocked(wx, wz, obb.angle, size, b.id)) continue;
     const placement: Placement = { side: c.side, wx, wz, size };
     CACHE.set(b.id, placement);
     return placement;

@@ -2,7 +2,7 @@ import { Instance, Instances } from '@react-three/drei';
 import { useMemo } from 'react';
 import { WORLD } from '../content/world';
 import { idHash, orientedBbox } from '../procgen/geom';
-import { outbuildingPlacementFor } from '../procgen/parcel';
+import { OUTBUILDING_SIZE, outbuildingPlacementFor } from '../procgen/parcel';
 import { STATIC_INSTANCE_FRAMES } from './staticInstances';
 
 // Small secondary structures (garden sheds, small outbuildings) placed
@@ -63,7 +63,7 @@ export function OsmOutbuildings() {
       {/* Small shed walls (3.6 × 2.6 × 3.0 m) */}
       {smalls.length > 0 && (
         <Instances frames={STATIC_INSTANCE_FRAMES} limit={smalls.length} range={smalls.length}>
-          <boxGeometry args={[3.6, 2.6, 3.0]} />
+          <boxGeometry args={[OUTBUILDING_SIZE.small.w, 2.6, OUTBUILDING_SIZE.small.d]} />
           <meshStandardMaterial roughness={0.95} />
           {smalls.map((o, i) => (
             <Instance
@@ -92,7 +92,7 @@ export function OsmOutbuildings() {
       {/* Medium outbuilding walls (5.6 × 3.2 × 4.2 m) */}
       {mediums.length > 0 && (
         <Instances frames={STATIC_INSTANCE_FRAMES} limit={mediums.length} range={mediums.length}>
-          <boxGeometry args={[5.6, 3.2, 4.2]} />
+          <boxGeometry args={[OUTBUILDING_SIZE.medium.w, 3.2, OUTBUILDING_SIZE.medium.d]} />
           <meshStandardMaterial roughness={0.95} />
           {mediums.map((o, i) => (
             <Instance

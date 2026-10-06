@@ -1,18 +1,9 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
-import { CLIPPED_ROADS, GROUND_Y, WORLD } from '../content/world';
-import type { RawRoad, Vec2Tuple } from '../content/world';
+import { GROUND_Y } from '../content/world';
+import type { RawRoad } from '../content/world';
 import { specFor, type RoadRole } from '../content/roadRoles';
-import { clipPolylineForVehicles, inside, polygonBounds } from '../procgen/geom';
-
-// Surfaces where a paved sidewalk would visually contradict the road
-// itself. A compacted gravel local_street receives no paved kerb + walk
-// even though its role tier normally carries one — real gravel roads
-// don't have concrete kerbs.
-const UNPAVED_SURFACES: ReadonlySet<string> = new Set([
-  'unpaved', 'compacted', 'gravel', 'fine_gravel',
-  'ground', 'dirt', 'grass', 'mud', 'sand'
-]);
+import { roadRenderPieces } from '../content/roadSurface';
 
 // Y-level for the sidewalk layer — a hair below the road plane so major
 // roads still win the middle at intersections, but enough separation to
@@ -65,37 +56,6 @@ function buildRoadShape(road: RawRoad, half: number): THREE.Shape | null {
     shape.lineTo(right[i][0], -right[i][1]);
   shape.closePath();
   return shape;
-}
-
-// Sample the sidewalk envelope of a road piece and return true if any
-// corner would sit inside a building polygon. Sidewalks widen the
-// effective envelope beyond the CLIPPED_ROADS geometry; where the road
-// terminates at a wall, the sidewalk cap can still project into a
-// neighbouring building. Skipping the sidewalk on those pieces (not
-// the road itself) is a pure procedural rule — no per-road exceptions.
-function sidewalkClearsBuildings(poly: Vec2Tuple[], envHalf: number): boolean {
-  if (poly.length < 2) return true;
-  for (let i = 0; i < poly.length; i++) {
-    const p = poly[i];
-    const prev = poly[Math.max(0, i - 1)];
-    const next = poly[Math.min(poly.length - 1, i + 1)];
-    const dx = next[0] - prev[0];
-    const dz = next[1] - prev[1];
-    const len = Math.hypot(dx, dz) || 1;
-    const nx = -dz / len;
-    const nz = dx / len;
-    for (const sign of [1, -1]) {
-      const ex = p[0] + nx * envHalf * sign;
-      const ez = p[1] + nz * envHalf * sign;
-      for (const b of WORLD.buildings) {
-        if (b.poly.length < 3) continue;
-        const bb = polygonBounds(b.poly);
-        if (ex < bb.minX || ex > bb.maxX || ez < bb.minZ || ez > bb.maxZ) continue;
-        if (inside(b.poly, ex, ez)) return false;
-      }
-    }
-  }
-  return true;
 }
 
 // Same as buildRoadShape but the centreline is first offset by
@@ -195,10 +155,8 @@ function tierForRole(
 // Footpath / cycleway / track are NOT excluded: an envelope through
 // a wall reads wrong regardless of tier, and the narrow envelope of
 // these roles rarely triggers the guard anyway.
-function clipRoadForEnvelope(road: RawRoad, halfEnvelope: number): Vec2Tuple[][] {
-  if (halfEnvelope <= 0) return [road.poly];
-  return clipPolylineForVehicles(road.poly, halfEnvelope);
-}
+// ORDER 312 — klippet och trottoarens val står nu i content/roadSurface.ts
+// (roadRenderPieces), så att mätningarna läser samma vägyta som ritas.
 
 export function OsmRoads() {
   const { ped, base, local, secondary, main, primary } = useMemo(() => {
@@ -208,43 +166,19 @@ export function OsmRoads() {
     const secondary: RoadPiece[] = [];
     const main: RoadPiece[] = [];
     const primary: RoadPiece[] = [];
-    for (const road of CLIPPED_ROADS) {
-      if (road.poly.length < 2) continue;
-      const spec = specFor(road);
-      const half = spec.width / 2;
-      const surfaceIsUnpaved =
-        road.surface != null && UNPAVED_SURFACES.has(road.surface);
-      // ORDER 158 — envelope clip. The half-envelope is asphalt half
-      // plus sidewalk per side; unpaved surfaces skip the sidewalk band
-      // (same rule the sidewalk renderer below already applies) so the
-      // clip clearance matches the geometry that will actually draw.
-      const halfEnvelope =
-        half + (surfaceIsUnpaved ? 0 : spec.sidewalkWidth);
-      const envelopePieces = clipRoadForEnvelope(road, halfEnvelope);
-      for (let pi = 0; pi < envelopePieces.length; pi++) {
-        const piecePoly = envelopePieces[pi];
-        if (piecePoly.length < 2) continue;
-        // Each polyline piece is treated as its own RawRoad. Piece 0
-        // inherits the parent id (so any existing lookup still resolves
-        // to the first piece, matching the CLIPPED_ROADS `#pN` convention);
-        // subsequent pieces get an `#eN` suffix (`e` = envelope-clip).
-        const pieceRoad: RawRoad = {
-          ...road,
-          id: pi === 0 ? road.id : `${road.id}#e${pi}`,
-          poly: piecePoly
-        };
+    for (const rp of roadRenderPieces()) {
+      {
+        const pieceRoad = rp.road;
+        const spec = specFor(pieceRoad);
+        const half = rp.half;
         const shape = buildRoadShape(pieceRoad, half);
         if (!shape) continue;
         const geo = new THREE.ShapeGeometry(shape);
         geo.rotateX(-Math.PI / 2);
         let sidewalkGeo: THREE.BufferGeometry | null = null;
         let kerbGeo: THREE.BufferGeometry | null = null;
-        if (
-          spec.sidewalkWidth > 0 &&
-          !surfaceIsUnpaved &&
-          sidewalkClearsBuildings(pieceRoad.poly, half + spec.sidewalkWidth)
-        ) {
-          const swShape = buildRoadShape(pieceRoad, half + spec.sidewalkWidth);
+        if (rp.sidewalk > 0) {
+          const swShape = buildRoadShape(pieceRoad, half + rp.sidewalk);
           if (swShape) {
             sidewalkGeo = new THREE.ShapeGeometry(swShape);
             sidewalkGeo.rotateX(-Math.PI / 2);

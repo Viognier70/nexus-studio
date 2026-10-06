@@ -11,6 +11,7 @@ import {
 } from '../content/world';
 import type { RawRoad } from '../content/world';
 import { specFor, type RoadRole } from '../content/roadRoles';
+import { trimPolylineToCarSurface } from '../content/roadSurface';
 import { createRng } from '../util/rng';
 import { readabilityScale, type ReadabilityCurve } from '../util/readability';
 
@@ -79,7 +80,7 @@ function weightedPick<T>(items: T[], weights: number[], rng: () => number): T {
   return items[items.length - 1];
 }
 
-type VehicleKind =
+export type VehicleKind =
   | 'car'
   | 'van'
   | 'bus'
@@ -105,7 +106,7 @@ interface Vehicle {
 // only need a small nudge. Widths are kept comfortably below road width
 // (~7 m) even at maximum scale. All ramps start at or above district range
 // so no vehicle ever inflates on the kvarteret view.
-const KIND_CONFIG: Record<
+export const KIND_CONFIG: Record<
   VehicleKind,
   {
     count: number;
@@ -247,11 +248,36 @@ const KIND_SPEED_FLOOR: Record<VehicleKind, number | null> = {
   tourist_bus: 50
 };
 
-function eligibleRoads(kind: VehicleKind): RawRoad[] {
+// ORDER 312 — bilarna kör bara där körbanan är ritad. VILLAGE_CAR_ROADS och
+// MAJOR_ROADS är klippta mot husen med fordonens marginal (world.ts), men
+// OsmRoads klipper vägen med hela remsans bredd (asfalt + trottoar). Där
+// remsan är bortklippt körde bilarna 1–3 m ut på gräset. Här klipps varje
+// väg till den ritade körbanan för bilar (content/roadSurface.ts), med
+// körfältets största förskjutning (1,2 m) på båda sidor.
+// Framåt och bakåt provas halva det längsta fordonets längd plus 0,2 m, så
+// att nosen inte sticker ut där vägen slutar.
+const TRAFFIC_LATERAL_M = 1.2;
+const trimmedCache = new WeakMap<RawRoad[], RawRoad[]>();
+function onRenderedSurface(pool: RawRoad[], longestVehicleM: number): RawRoad[] {
+  const hit = trimmedCache.get(pool);
+  if (hit) return hit;
+  const out: RawRoad[] = [];
+  for (const road of pool) {
+    const lateral = Math.min(TRAFFIC_LATERAL_M, specFor(road).width / 2 - 0.05);
+    trimPolylineToCarSurface(road.poly, lateral, longestVehicleM / 2 + 0.2).forEach((poly, i) => {
+      out.push({ ...road, id: i === 0 ? road.id : `${road.id}#t${i}`, poly });
+    });
+  }
+  trimmedCache.set(pool, out);
+  return out;
+}
+
+export function eligibleRoads(kind: VehicleKind): RawRoad[] {
   const cfg = KIND_CONFIG[kind];
   // Use VILLAGE_CAR_ROADS (excludes forest tracks) as the general pool so no
   // car / taxi / van ever spawns on a hunting track deep in the forest.
-  const pool = cfg.roads === 'major' ? MAJOR_ROADS : VILLAGE_CAR_ROADS;
+  const longest = Math.max(...Object.values(KIND_CONFIG).filter((c) => c.roads === cfg.roads).map((c) => c.size[2]));
+  const pool = onRenderedSurface(cfg.roads === 'major' ? MAJOR_ROADS : VILLAGE_CAR_ROADS, longest);
   const filtered = pool.filter((r) => polylineLength(r.poly) >= cfg.minRoad);
   const base = filtered.length > 0 ? filtered : pool;
   const floor = KIND_SPEED_FLOOR[kind];
@@ -289,6 +315,15 @@ function eligibleRoads(kind: VehicleKind): RawRoad[] {
 // tick doesn't reallocate for every vehicle every frame.
 function weightsFor(pool: RawRoad[]): number[] {
   return pool.map(roadTrafficWeight);
+}
+
+// ORDER 312 — körfältets förskjutning från mittlinjen (meter), samma som
+// bilarna ritas med: halva körbanan (ROLE_SPECS) minus halva fordonet minus
+// 0,2 m, högst 1,2 m.
+export function vehicleLaneOffset(road: RawRoad, vehicleWidth: number): number {
+  const halfW = specFor(road).width / 2;
+  const maxOffset = Math.max(0, halfW - vehicleWidth / 2 - 0.2);
+  return Math.min(1.2, maxOffset);
 }
 
 export function OsmTraffic() {
@@ -390,10 +425,7 @@ export function OsmTraffic() {
         // vehicles ride the right lane on wide roads without spilling
         // off narrow service tracks. Falls back to 0 (centre) when
         // the road is too narrow to fit a vehicle at any offset.
-        const halfW = specFor(v.road).width / 2;
-        const vehHalf = cfg.size[0] / 2;
-        const maxOffset = Math.max(0, halfW - vehHalf - 0.2);
-        const laneOffset = Math.min(1.2, maxOffset);
+        const laneOffset = vehicleLaneOffset(v.road, cfg.size[0]);
         const sign = v.forward === 1 ? 1 : -1;
         const offX = -Math.cos(p.yaw) * laneOffset * sign;
         const offZ = Math.sin(p.yaw) * laneOffset * sign;

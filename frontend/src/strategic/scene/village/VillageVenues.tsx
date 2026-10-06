@@ -20,8 +20,7 @@ import { useCamera } from '../../camera/CameraContext';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { skyState } from '../../../lib/lighting/skyState';
 import { PLAYER_VENUE, venuesTonight } from '../../../sim/village';
-import { truckSpotPlace, venuePlaces } from '../../content/villagePlaces';
-import { walkNetwork } from '../../content/villageNetwork';
+import { truckPlacement, truckSpotPlace, venueLampPoint, venuePlaces } from '../../content/villagePlaces';
 import { readabilityScale } from '../../util/readability';
 import { subscribeVillageLive, villageLive } from './villageLive';
 import { VenueLabel } from '../../ui/VillageLabels';
@@ -126,7 +125,8 @@ export function VillageVenues() {
     const made: typeof glows.current = [];
     for (const [id, p] of Object.entries(places)) {
       const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
-      sprite.position.set(p.doorPoint[0] * 0.6 + p.centre[0] * 0.4, 5, p.doorPoint[1] * 0.6 + p.centre[1] * 0.4);
+      const lampAt = venueLampPoint(p);
+      sprite.position.set(lampAt[0], 5, lampAt[1]);
       const lamp = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.5, 0.5), new THREE.MeshStandardMaterial({ color: '#4a3020', emissive: new THREE.Color('#ffb060'), emissiveIntensity: 0 }));
       lamp.position.copy(sprite.position).setY(3.2);
       root.add(sprite, lamp);
@@ -145,7 +145,6 @@ export function VillageVenues() {
 
   // Vagnarna på kvällens plats.
   useEffect(() => {
-    const g = walkNetwork();
     for (const v of venues) {
       if (v.kind !== 'truck') continue;
       let truck = trucks.current.get(v.id);
@@ -156,18 +155,11 @@ export function VillageVenues() {
       }
       truck.visible = v.open && !!v.spot;
       if (!v.spot) continue;
-      const place = truckSpotPlace(v.spot);
-      const node = place.door;
-      const nb = g.adj[node][0]?.to ?? node;
-      const [ax, az] = g.nodes[node];
-      const [bx, bz] = g.nodes[nb];
-      const heading = Math.atan2(bx - ax, bz - az);
-      // Vid sidan av gatan, luckan mot gatan; två vagnar på samma plats står efter varandra.
+      // Två vagnar på samma plats står efter varandra (villagePlaces.ts truckPlacement).
       const same = venues.filter((o) => o.kind === 'truck' && o.spot === v.spot);
-      const k = same.findIndex((o) => o.id === v.id);
-      const side = 4.2;
-      truck.position.set(ax + Math.cos(heading) * side + Math.sin(heading) * k * 7, 0, az - Math.sin(heading) * side + Math.cos(heading) * k * 7);
-      truck.rotation.y = heading + Math.PI;
+      const at = truckPlacement(v.spot, same.findIndex((o) => o.id === v.id));
+      truck.position.set(at.x, 0, at.z);
+      truck.rotation.y = at.rotationY;
     }
   }, [venues, root]);
 
