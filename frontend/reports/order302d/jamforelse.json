@@ -1,0 +1,457 @@
+{
+  "band": [
+    1.8,
+    3.6
+  ],
+  "fore": {
+    "file": "fore-lyktor-1440x900.json",
+    "dist": "/private/tmp/claude-501/-Users-acf/cc07fbcc-a98e-4a3c-9042-6a444a0692d1/scratchpad/o302d/main-7dd7939f",
+    "load1": [
+      18.4,
+      17.3,
+      15.2,
+      10.6,
+      7.7
+    ],
+    "stops": [
+      {
+        "stop": "19.15",
+        "clock": "19.17",
+        "camDistance": "42",
+        "rows": 97
+      },
+      {
+        "stop": "20.00",
+        "clock": "20.02",
+        "camDistance": "28",
+        "rows": 5
+      },
+      {
+        "stop": "21.00",
+        "clock": "21.02",
+        "camDistance": "12",
+        "rows": 10
+      },
+      {
+        "stop": "22.00",
+        "clock": "22.02",
+        "camDistance": "42",
+        "rows": 84
+      },
+      {
+        "stop": "22.45",
+        "clock": "22.47",
+        "camDistance": "42",
+        "rows": 122
+      }
+    ],
+    "skipped": [
+      "20.00",
+      "21.00"
+    ],
+    "n": 303,
+    "summary": {
+      "alla|away": {
+        "n": 137,
+        "below": 49,
+        "above": 15,
+        "ratioMedian": 1.871,
+        "bodyLMedian": 0.0212,
+        "backLMedian": 0.0718
+      },
+      "alla|near": {
+        "n": 148,
+        "below": 59,
+        "above": 17,
+        "ratioMedian": 1.99,
+        "bodyLMedian": 0.0413,
+        "backLMedian": 0.0907
+      },
+      "alla|under": {
+        "n": 18,
+        "below": 5,
+        "above": 1,
+        "ratioMedian": 2.3695,
+        "bodyLMedian": 0.0347,
+        "backLMedian": 0.105
+      },
+      "business|away": {
+        "n": 12,
+        "below": 2,
+        "above": 0,
+        "ratioMedian": 2.11,
+        "bodyLMedian": 0.0345,
+        "backLMedian": 0.1257
+      },
+      "business|near": {
+        "n": 8,
+        "below": 7,
+        "above": 0,
+        "ratioMedian": 1.22,
+        "bodyLMedian": 0.1024,
+        "backLMedian": 0.1278
+      },
+      "business|under": {
+        "n": 1,
+        "below": 0,
+        "above": 0,
+        "ratioMedian": 2.065,
+        "bodyLMedian": 0.0268,
+        "backLMedian": 0.1087
+      },
+      "gatherers|away": {
+        "n": 15,
+        "below": 1,
+        "above": 0,
+        "ratioMedian": 3.129,
+        "bodyLMedian": 0.0259,
+        "backLMedian": 0.1832
+      },
+      "gatherers|near": {
+        "n": 20,
+        "below": 13,
+        "above": 0,
+        "ratioMedian": 1.45,
+        "bodyLMedian": 0.0398,
+        "backLMedian": 0.1278
+      },
+      "gatherers|under": {
+        "n": 1,
+        "below": 0,
+        "above": 1,
+        "ratioMedian": 4,
+        "bodyLMedian": 0.0337,
+        "backLMedian": 0.2846
+      },
+      "life|away": {
+        "n": 29,
+        "below": 2,
+        "above": 15,
+        "ratioMedian": 3.601,
+        "bodyLMedian": 0.4963,
+        "backLMedian": 0.0968
+      },
+      "life|near": {
+        "n": 23,
+        "below": 1,
+        "above": 17,
+        "ratioMedian": 6.767,
+        "bodyLMedian": 0.4975,
+        "backLMedian": 0.0307
+      },
+      "peds|away": {
+        "n": 93,
+        "below": 46,
+        "above": 0,
+        "ratioMedian": 1.8,
+        "bodyLMedian": 0.0178,
+        "backLMedian": 0.0679
+      },
+      "peds|near": {
+        "n": 105,
+        "below": 45,
+        "above": 0,
+        "ratioMedian": 1.928,
+        "bodyLMedian": 0.0327,
+        "backLMedian": 0.0917
+      },
+      "peds|under": {
+        "n": 17,
+        "below": 5,
+        "above": 0,
+        "ratioMedian": 2.341,
+        "bodyLMedian": 0.0357,
+        "backLMedian": 0.104
+      },
+      "student|away": {
+        "n": 42,
+        "below": 27,
+        "above": 0,
+        "ratioMedian": 1.7445,
+        "bodyLMedian": 0.0195,
+        "backLMedian": 0.0696
+      },
+      "student|near": {
+        "n": 44,
+        "below": 12,
+        "above": 0,
+        "ratioMedian": 1.9605,
+        "bodyLMedian": 0.0383,
+        "backLMedian": 0.1305
+      },
+      "student|under": {
+        "n": 6,
+        "below": 1,
+        "above": 0,
+        "ratioMedian": 2.3225,
+        "bodyLMedian": 0.0306,
+        "backLMedian": 0.1384
+      },
+      "tourist|away": {
+        "n": 22,
+        "below": 1,
+        "above": 0,
+        "ratioMedian": 3.0625,
+        "bodyLMedian": 0.0198,
+        "backLMedian": 0.178
+      },
+      "tourist|near": {
+        "n": 15,
+        "below": 7,
+        "above": 0,
+        "ratioMedian": 2.111,
+        "bodyLMedian": 0.0345,
+        "backLMedian": 0.0862
+      },
+      "tourist|under": {
+        "n": 4,
+        "below": 1,
+        "above": 0,
+        "ratioMedian": 2.4645,
+        "bodyLMedian": 0.011,
+        "backLMedian": 0.1003
+      },
+      "villager|away": {
+        "n": 61,
+        "below": 19,
+        "above": 15,
+        "ratioMedian": 1.864,
+        "bodyLMedian": 0.0276,
+        "backLMedian": 0.0677
+      },
+      "villager|near": {
+        "n": 81,
+        "below": 33,
+        "above": 17,
+        "ratioMedian": 2.245,
+        "bodyLMedian": 0.0496,
+        "backLMedian": 0.0874
+      },
+      "villager|under": {
+        "n": 7,
+        "below": 3,
+        "above": 1,
+        "ratioMedian": 2.548,
+        "bodyLMedian": 0.0876,
+        "backLMedian": 0.1024
+      }
+    }
+  },
+  "efter": {
+    "file": "efter-lyktor-1440x900.json",
+    "dist": "/private/tmp/claude-501/-Users-acf/cc07fbcc-a98e-4a3c-9042-6a444a0692d1/scratchpad/o302d/gren-dist",
+    "load1": [
+      18.8,
+      18.8,
+      20.1,
+      19.6,
+      18.7
+    ],
+    "stops": [
+      {
+        "stop": "19.15",
+        "clock": "19.17",
+        "camDistance": "42",
+        "rows": 114
+      },
+      {
+        "stop": "20.00",
+        "clock": "20.02",
+        "camDistance": "42",
+        "rows": 89
+      },
+      {
+        "stop": "21.00",
+        "clock": "21.02",
+        "camDistance": "42",
+        "rows": 71
+      },
+      {
+        "stop": "22.00",
+        "clock": "22.02",
+        "camDistance": "13",
+        "rows": 0
+      },
+      {
+        "stop": "22.45",
+        "clock": "22.50",
+        "camDistance": "42",
+        "rows": 48
+      }
+    ],
+    "skipped": [
+      "22.00"
+    ],
+    "n": 322,
+    "summary": {
+      "alla|away": {
+        "n": 129,
+        "below": 9,
+        "above": 4,
+        "ratioMedian": 2.256,
+        "bodyLMedian": 0.2934,
+        "backLMedian": 0.1032
+      },
+      "alla|near": {
+        "n": 155,
+        "below": 45,
+        "above": 14,
+        "ratioMedian": 1.887,
+        "bodyLMedian": 0.2921,
+        "backLMedian": 0.1321
+      },
+      "alla|under": {
+        "n": 38,
+        "below": 26,
+        "above": 0,
+        "ratioMedian": 1.622,
+        "bodyLMedian": 0.2934,
+        "backLMedian": 0.1605
+      },
+      "business|away": {
+        "n": 24,
+        "below": 1,
+        "above": 4,
+        "ratioMedian": 2.2705,
+        "bodyLMedian": 0.2956,
+        "backLMedian": 0.1023
+      },
+      "business|near": {
+        "n": 14,
+        "below": 2,
+        "above": 4,
+        "ratioMedian": 2.856,
+        "bodyLMedian": 0.2956,
+        "backLMedian": 0.0833
+      },
+      "gatherers|near": {
+        "n": 41,
+        "below": 19,
+        "above": 2,
+        "ratioMedian": 2.034,
+        "bodyLMedian": 0.2934,
+        "backLMedian": 0.1188
+      },
+      "gatherers|under": {
+        "n": 15,
+        "below": 15,
+        "above": 0,
+        "ratioMedian": 1.238,
+        "bodyLMedian": 0.2934,
+        "backLMedian": 0.3751
+      },
+      "life|away": {
+        "n": 9,
+        "below": 9,
+        "above": 0,
+        "ratioMedian": 1.187,
+        "bodyLMedian": 0.2914,
+        "backLMedian": 0.2429
+      },
+      "life|near": {
+        "n": 10,
+        "below": 2,
+        "above": 8,
+        "ratioMedian": 4.425,
+        "bodyLMedian": 0.2918,
+        "backLMedian": 0.0272
+      },
+      "peds|away": {
+        "n": 120,
+        "below": 0,
+        "above": 4,
+        "ratioMedian": 2.279,
+        "bodyLMedian": 0.2934,
+        "backLMedian": 0.1032
+      },
+      "peds|near": {
+        "n": 104,
+        "below": 24,
+        "above": 4,
+        "ratioMedian": 1.8735,
+        "bodyLMedian": 0.2921,
+        "backLMedian": 0.1325
+      },
+      "peds|under": {
+        "n": 23,
+        "below": 11,
+        "above": 0,
+        "ratioMedian": 1.82,
+        "bodyLMedian": 0.2934,
+        "backLMedian": 0.1503
+      },
+      "student|away": {
+        "n": 45,
+        "below": 4,
+        "above": 0,
+        "ratioMedian": 2.374,
+        "bodyLMedian": 0.2903,
+        "backLMedian": 0.1032
+      },
+      "student|near": {
+        "n": 40,
+        "below": 21,
+        "above": 0,
+        "ratioMedian": 1.7935,
+        "bodyLMedian": 0.2861,
+        "backLMedian": 0.138
+      },
+      "student|under": {
+        "n": 23,
+        "below": 17,
+        "above": 0,
+        "ratioMedian": 1.684,
+        "bodyLMedian": 0.2903,
+        "backLMedian": 0.155
+      },
+      "tourist|away": {
+        "n": 5,
+        "below": 0,
+        "above": 0,
+        "ratioMedian": 2.49,
+        "bodyLMedian": 0.2937,
+        "backLMedian": 0.0853
+      },
+      "tourist|near": {
+        "n": 19,
+        "below": 3,
+        "above": 0,
+        "ratioMedian": 2.358,
+        "bodyLMedian": 0.2937,
+        "backLMedian": 0.0957
+      },
+      "tourist|under": {
+        "n": 3,
+        "below": 0,
+        "above": 0,
+        "ratioMedian": 2.449,
+        "bodyLMedian": 0.2961,
+        "backLMedian": 0.0913
+      },
+      "villager|away": {
+        "n": 55,
+        "below": 4,
+        "above": 0,
+        "ratioMedian": 2.235,
+        "bodyLMedian": 0.2934,
+        "backLMedian": 0.1036
+      },
+      "villager|near": {
+        "n": 82,
+        "below": 19,
+        "above": 10,
+        "ratioMedian": 1.932,
+        "bodyLMedian": 0.2921,
+        "backLMedian": 0.132
+      },
+      "villager|under": {
+        "n": 12,
+        "below": 9,
+        "above": 0,
+        "ratioMedian": 1.2545,
+        "bodyLMedian": 0.2934,
+        "backLMedian": 0.3755
+      }
+    }
+  }
+}
