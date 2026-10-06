@@ -1551,6 +1551,13 @@ export interface SimulationState {
   // bussen tills banken öppnat hennes första verksamhet; saknas annars.
   // Stegen härleds i sim/introduction.ts.
   introduction?: { practiced: boolean } | null;
+  // ORDER 313 §2 — spelaren börjar från noll: satsningarna, butiken och
+  // "Stå för ditt svar" är låsta tills första provet är klarat (en medalj).
+  // Sätts när ett nytt spel börjar (sim/introduction.ts beginIntroduction);
+  // saknas i spel och fixturer från före ORDER 313, som då inte låses.
+  startLocked?: boolean;
+  // ORDER 313 §2 — Åsas replik när låset släppts har visats.
+  unlockSaid?: boolean;
   // ORDER 300 §4 — spelaren skriver in sig efter startskärmen: namnet och
   // samtycket (Vision Owner 2026-09-30: "ankomsten frågar efter spelarens
   // namn och efter samtycke"). Saknas i spel som började före ORDER 300.
@@ -1905,6 +1912,7 @@ export type SimAction =
   | { type: 'BEGIN_INTRODUCTION' }
   // ORDER 300b — spelaren ändrar svaret om forskningen i menyn.
   | { type: 'SET_RESEARCH_CONSENT'; on: boolean }
+  | { type: 'SAY_UNLOCKED' }
   // ORDER 266 — rycka in själv (action-knappen).
   // ORDER 043 v3 §10 step 5 agency-staff mid-service offer response.
   | { type: 'ACCEPT_AGENCY' }

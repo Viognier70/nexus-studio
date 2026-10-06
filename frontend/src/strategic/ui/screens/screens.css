@@ -433,3 +433,21 @@
 @media (max-width: 900px) { .nxs-kf-cols { grid-template-columns: minmax(0, 1fr); } }
 /* ORDER 301 — Måltidens hus (MD1) ryms i 1280 × 720: bottenraden tunnare. */
 .nx-screen.nxs-over:has([data-testid=screen-MD1]) > .nxs-foot { margin-top: calc(12 * var(--nx-u)); padding-top: calc(14 * var(--nx-u)); padding-bottom: calc(20 * var(--nx-u)); }
+
+/* ORDER 313 §3 — avsändarens märke (ui/SenderTag.tsx). Formen kommer från D6. */
+.nx-sender { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1.5px solid var(--nx-sender, currentColor); color: inherit; background: color-mix(in srgb, var(--nx-sender, currentColor) 22%, transparent); margin-right: 6px; }
+.nx-sender[data-sender='asa'] { --nx-sender: #6fa8dc; }
+.nx-sender[data-sender='bank'] { --nx-sender: #c9a24a; }
+.nx-sender[data-sender='per'] { --nx-sender: #d07a5a; }
+.nx-sender[data-sender='byn'] { --nx-sender: #7fb26a; }
+.nx-sender[data-sender='house'] { --nx-sender: #b48ac0; }
+.nx-speech { position: relative; padding: 10px 14px; border-radius: 12px; background: rgba(255,255,255,.06); }
+
+/* ORDER 313 §4 — Tre sätt att kunna. */
+.nxs-ways-list { margin: calc(12 * var(--nx-u)) 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+/* ORDER 313 §7 — teckenförklaringen (ui/StatusLegend.tsx). */
+.nx-status-legend { position: fixed; left: 16px; bottom: 96px; z-index: 30; max-width: 300px; padding: 12px 14px; }
+.nx-legend-list { list-style: none; margin: 4px 0 10px; padding: 0; display: grid; gap: 4px; font-size: 13px; }
+.nx-legend-list li { display: flex; align-items: center; gap: 6px; }
+.nx-legend-ring { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 3px solid; box-sizing: border-box; }

@@ -8,6 +8,7 @@ import { VILLAGE } from '../../sim/balance';
 import { formatClock } from '../../sim/clock';
 import { PLAYER_VENUE, venuesTonight } from '../../sim/village';
 import { useSimState } from '../simulation/SimulationProvider';
+import { SenderTag } from './SenderTag';
 
 export function VillageNotice() {
   const sim = useSimState();
@@ -30,7 +31,7 @@ export function VillageNotice() {
   if (!text) return null;
   return (
     <div className="nx nx-village-notice" role="status" data-testid="village-notice" data-kind={kind}>
-      {text}
+      <SenderTag sender="byn" /> {text}
     </div>
   );
 }

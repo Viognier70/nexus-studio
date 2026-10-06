@@ -25,6 +25,7 @@ import { CLASS_ICON, NxIcon, PAVILION_ICON } from '../ui/screens/icons';
 import { MedalDisc } from '../ui/screens/MedalDisc';
 import '../ui/screens/screens.css';
 import { getLanguage, numberLocale } from '../../content/language';
+import { SenderTag } from '../ui/SenderTag';
 
 const e = strings.economy;
 
@@ -103,7 +104,7 @@ const SEEN_ORDER: readonly PavilionKey[] = ['maltidbiblioteket', 'stensota', 'me
 function Say({ who, children, you }: { who: string; children: React.ReactNode; you?: boolean }) {
   return (
     <div className="nxs-say" data-you={you ? 'true' : undefined}>
-      <div className="nx-label">{who}</div>
+      {you ? <div className="nx-label">{who}</div> : <SenderTag sender="bank" />}
       <p className="nx-body">{children}</p>
     </div>
   );

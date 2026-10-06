@@ -18,6 +18,7 @@ import { strings } from '../../content/strings';
 import '../ui/screens/room.css';
 import type { StaffRole } from '../types';
 import { ROLE_DEFAULTS } from '../simulation/team';
+import { wageFactor } from '../../sim/economy';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 
 const HIRE_ROLES: readonly StaffRole[] = ['värd', 'servitör', 'kock', 'lärling'];
@@ -32,6 +33,10 @@ export function TeamPanel() {
   if (sim.day.period !== 'morning') return null;
 
   const today = sim.day.dayNumber;
+  // ORDER 313 §5 — kostnaden per kväll som ekonomin drar den (sim/economy.ts
+  // dailyWagesSek: dagslönen gånger kvällens koncept).
+  const f = wageFactor(sim);
+  const krTonight = (dailyCost: number) => Math.round(dailyCost * f).toLocaleString('sv-SE');
 
   return (
     <div className="nx nxr-panel">
@@ -40,18 +45,12 @@ export function TeamPanel() {
       {sim.team.members.map((m) => {
         const remainingDays = Math.max(0, m.contractEndsDay - today);
         const buyout = remainingDays * m.dailyCost;
-        const label = strings.team.roleLabel[m.role];
+        const label = strings.team.roleLabel[m.role] + (m.isAgency ? strings.team.agencyTag : '');
         return (
-          <div key={m.id} className="nxr-row">
+          <div key={m.id} className="nxr-row" data-testid="team-row">
             <div style={{ flex: 1 }}>
-              <div>
-                <strong>{label}</strong>
-                {m.isAgency ? strings.team.agencyTag : ''}
-              </div>
-              <div className="nxs-row-sub">
-                {m.dailyCost} {strings.team.dailyCostLabel} · {strings.team.contractLabel}{' '}
-                {m.contractEndsDay}
-              </div>
+              <div>{strings.team.row(label, krTonight(m.dailyCost), strings.team.gives[m.role])}</div>
+              <div className="nxs-row-sub">{strings.team.contractUntil(m.contractEndsDay)}</div>
             </div>
             {m.isAgency ? null : (
               <button
@@ -84,12 +83,10 @@ export function TeamPanel() {
             key={role}
             type="button"
             className="nxs-list-row nxr-option"
+            data-testid={`team-hire-${role}`}
             onClick={() => dispatch({ type: 'HIRE_TEAM_MEMBER', role })}
           >
-            <div>
-              {strings.team.roleLabel[role]} — {defaults.dailyCost}{' '}
-              {strings.team.dailyCostLabel}
-            </div>
+            <div>{strings.team.row(strings.team.roleLabel[role], krTonight(defaults.dailyCost), strings.team.gives[role])}</div>
             <div className="nxs-row-sub">{strings.team.roleDescription[role]}</div>
           </button>
         );

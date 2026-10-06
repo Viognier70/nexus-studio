@@ -3,7 +3,7 @@
 // ram i designsystemets mässing på mörkt trä.
 
 export function Monogram(props: { name: string; caption?: string; className?: string; testId?: string }) {
-  const initial = props.name.replace(/^(the|den|det)\s+/i, '').trim().charAt(0).toUpperCase();
+  const initial = props.name.replace(/^(the|den|det|intendent|intendant)\s+/i, '').trim().charAt(0).toUpperCase();
   return (
     <div className={`nxs-monogram ${props.className ?? ''}`} aria-hidden data-testid={props.testId}>
       <div className="nxs-monogram-ring"><span>{initial}</span></div>

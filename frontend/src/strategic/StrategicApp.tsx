@@ -41,6 +41,7 @@ import { AboutPanel } from './ui/AboutPanel';
 import { RulesPanel } from './ui/RulesPanel';
 import { ModeKeys } from './ui/StatusButton';
 import { StatusCard } from './ui/StatusCard';
+import { StatusLegend } from './ui/StatusLegend';
 import { MorningReviewCard } from './ui/MorningReviewLine';
 import { FocusMode } from './ui/FocusMode';
 import { KnowledgeFoundationLayer, openCredits } from './knowledge/ui/KnowledgeFoundation';
@@ -431,6 +432,7 @@ function StrategicShell() {
       <AboutPanel open={aboutOpen} onClose={() => setAboutOpen(false)} />
       {/* ORDER 309 — fokusläget (Designs D5: under 14 m eller H, av över 15,5 m) och kortet för gäst och personal. */}
       <StatusCard />
+      <StatusLegend />
       <FocusMode />
       {/* ORDER 300 §5 — regelkortet första morgonen och sidan i menyn. */}
       <RulesPanel open={rulesOpen} onClose={() => setRulesOpen(false)} />

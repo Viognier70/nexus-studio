@@ -1,0 +1,18 @@
+{
+  "build": "produktion",
+  "size": "1440×900",
+  "lang": "sv",
+  "errors": [],
+  "mentorScreen": "Måndag · Campus · Vecka 1 av 8ÅIntendent Åsa · från CampusÅsaIntendent Åsa · från CampusVälkommen till Grythyttan.Jag kommer från Campus och följer dig i dag. Banken lånar inte ut något förrän den har sett vad du kan, så vi börjar med att öva. Öppna Måltidens hus och öva i Stensöta, där sommelierna håller till. Inget står på spel.Nästa→Jag klarar mig — hoppa över guiden",
+  "mentorSender": "asa",
+  "mentorLine": "ÅsaIntendent ÅsaVälkommen till Grythyttan. Jag kommer från Campus och följer dig i dag. Banken lånar inte ut något förrän den har sett vad du kan, så vi börjar med att öva. Öppna Måltidens hus och öva i Stensöta, där sommelierna håller till. Inget står på spel.",
+  "activitiesLocked": 8,
+  "houseIntro": "Måltidens husTre sätt att kunnaPå Nexus Grythyttan, Campus, går du kurser i Måltidens hus. Kunskapen du tränar och prövas i bygger på en modern tolkning av Aristoteles kunskapsbegrepp:Episteme: att veta.Techne: att kunna göra.Phronesis: att kunna bedöma.Det räcker inte att veta. Den som kan rör sig mellan analys och upplevelse, mellan erfarenhet och omdöme, och handlar.Det är i den konkreta situationen som kunskapen visar sig. Har du det som krävs?Läs mer→ Kunskapsgrunden i MåltidsbiblioteketTill paviljongerna→",
+  "checks": {
+    "asaOnM1": true,
+    "noIngrid": true,
+    "senderAsa": true,
+    "houseIntroNoAnders": true,
+    "houseIntroOrder": true
+  }
+}

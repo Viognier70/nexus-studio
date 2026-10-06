@@ -21,6 +21,7 @@ import { ROLE_COLOUR } from '../../scene/staffRing';
 import { MedalDisc } from '../screens/MedalDisc';
 import { SHOP as DESIGN } from './hostShop';
 import type { MedalLevelId } from '../../types';
+import { investLocked } from '../../../sim/introduction';
 import { ClassStrip, GoodsShop, ShopTabBar, type ShopTab } from './ShopTabs';
 import './host.css';
 
@@ -50,6 +51,7 @@ export function ShopScreen({ onDone }: { onDone: () => void }) {
   const selPav = SHOP_PAVILION[sel.pavilion];
   const held = sim.medals[selPav] as MedalLevelId | undefined;
   const inSlot = shop.slot.includes(sel.id);
+  const locked = investLocked(sim);
   // Vägen är guld fram till den sista grinden som är öppen.
   const lastOpen = useMemo(() => {
     let last = -1;
@@ -59,13 +61,19 @@ export function ShopScreen({ onDone }: { onDone: () => void }) {
   const goldTo = lastOpen >= 0 ? DESIGN.road[lastOpen].x : 0.06;
 
   const action = (() => {
+    // ORDER 313 §2 — låst tills första provet är klarat.
+    if (locked) return { label: s(lang, 'shop.lockedStart'), on: null, kind: 'locked' as const };
     if (selState === 'owned') {
       if (inSlot) return { label: s(lang, 'shop.fromSlot'), on: () => dispatch({ type: 'SHOP_SLOT', id: sel.id, on: false }), kind: 'quiet' as const };
       if (shop.slot.length >= slots) return { label: s(lang, 'shop.slot.full'), on: null, kind: 'muted' as const };
       return { label: s(lang, 'shop.toSlot'), on: () => dispatch({ type: 'SHOP_SLOT', id: sel.id, on: true }), kind: 'primary' as const };
     }
     if (selState === 'locked') return { label: s(lang, 'shop.locked'), on: null, kind: 'locked' as const };
-    if (selState === 'short') return { label: s(lang, 'shop.short'), on: null, kind: 'muted' as const };
+    // ORDER 313 §6 — knappen säger hur många krediter som fattas.
+    if (selState === 'short') {
+      const missing = Math.max(1, selSpec.price - credits);
+      return { label: missing === 1 ? s(lang, 'shop.shortByOne') : s(lang, 'shop.shortBy', { n: missing }), on: null, kind: 'muted' as const };
+    }
     return { label: s(lang, 'shop.buy', { price: s(lang, 'shop.price', { n: selSpec.price }) }), on: () => dispatch({ type: 'SHOP_BUY', id: sel.id }), kind: 'primary' as const };
   })();
 
@@ -89,6 +97,7 @@ export function ShopScreen({ onDone }: { onDone: () => void }) {
         </div>
       </header>
       <ClassStrip />
+      {locked && <p className="nx-small nx-shop-locked" data-testid="shop-locked"><Lock size={14} aria-hidden /> {s(lang, 'shop.lockedStart')}</p>}
       {tab !== 'abilities' ? <GoodsShop kind={tab} onDone={onDone} /> : <div className="nx-shop-grid">
         <section className="nx-shop-road" aria-label={s(lang, 'shop.road')}>
           <div className="nx-label nx-shop-road-title">{s(lang, 'shop.road')}</div>
@@ -155,16 +164,21 @@ export function ShopScreen({ onDone }: { onDone: () => void }) {
           <div className="nx-paper nx-shop-card" data-testid="shop-card" data-ability={sel.id} data-state={selState}>
             <div className="nx-label">{s(lang, PAV_KEY[sel.pavilion])}</div>
             <h2 className="nx-heading" style={{ margin: 0 }}>{s(lang, `ab.${sel.id}.name`)}</h2>
-            <div className="nx-label nx-shop-card-when">{s(lang, 'shop.tomorrow')}</div>
-            <p style={{ margin: 0 }}>{s(lang, `ab.${sel.id}.fx`)}</p>
+            {/* ORDER 313 §6 — fyra rader i ordning: vad, ger, när, kräver och kostar. */}
+            <ol className="nx-shop-card-rows" data-testid="shop-card-rows">
+              <li data-row="teaches"><span className="nx-label">{s(lang, 'shop.row.teaches')}</span><span>{s(lang, `ab.${sel.id}.teaches`)}</span></li>
+              <li data-row="gives"><span className="nx-label">{s(lang, 'shop.row.gives')}</span><span>{s(lang, `ab.${sel.id}.fx`)}</span></li>
+              <li data-row="when"><span className="nx-label">{s(lang, 'shop.row.when')}</span><span>{s(lang, 'shop.when')}</span></li>
+              <li data-row="needs">
+                <span className="nx-label">{s(lang, 'shop.row.needs')}</span>
+                <span data-testid="shop-card-need" data-met={selState !== 'locked'}>
+                  {selState !== 'locked' ? '✓' : '✗'} {s(lang, 'shop.needs', { medal: s(lang, MEDAL_KEY[selSpec.requires]), pavilion: s(lang, PAV_KEY[sel.pavilion]) })}
+                  {' · '}{held ? s(lang, 'shop.have', { medal: s(lang, MEDAL_KEY[held]) }) : s(lang, 'shop.noMedal')}
+                </span>
+                <span data-testid="shop-card-cost">{s(lang, 'shop.cost', { price: selSpec.price, have: credits })}</span>
+              </li>
+            </ol>
             {sel.course && <p className="nx-small" style={{ margin: 0 }}>{s(lang, 'shop.course')} · {s(lang, `shop.role.${sel.course}`)}</p>}
-            <div className="nx-shop-card-need">
-              <span className="nx-shop-card-need-disc" data-level={selSpec.requires} />
-              <span>
-                <strong>{s(lang, 'shop.needs', { medal: s(lang, MEDAL_KEY[selSpec.requires]), pavilion: s(lang, PAV_KEY[sel.pavilion]) })}</strong>
-                <span>{held ? s(lang, 'shop.have', { medal: s(lang, MEDAL_KEY[held]) }) : s(lang, 'shop.noMedal')}</span>
-              </span>
-            </div>
             <button type="button" className="nx-shop-action" data-kind={action.kind} disabled={!action.on} onClick={action.on ?? undefined} data-testid="shop-action">
               <span>{action.label}</span>
               {action.kind === 'locked' ? <Lock size={18} aria-hidden /> : <ArrowRight size={18} aria-hidden />}

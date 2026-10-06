@@ -34,15 +34,15 @@ describe('ORDER 301 — kunskapsgrunden', () => {
     expect(pickLang(TABLE, 'sv').knowledgeBase.attribution).toMatch(/TRIAD-modellen/);
   });
 
-  it('Tre sätt att kunna: tre korta kort och raden om det dubbla greppet', () => {
+  // ORDER 313 §4 — texten ersätter beslutet i 301: ingen hänvisning till
+  // Anders på skärmen (den står kvar i Kunskapsgrunden och eftertexterna).
+  it('Tre sätt att kunna: de tre formerna, slutet och utmaningen, utan hänvisning till Anders', () => {
     const h = pickLang(TABLE, 'sv').houseIntro;
-    expect(h.forms.map((f) => `${f.name} – ${f.title}. ${f.question}`)).toEqual([
-      'Episteme – Att veta. Vad finns i glaset?',
-      'Phronesis – Att bedöma. Vad väcker det, för just den här gästen?',
-      'Techne – Att göra. Vad gör du nu?'
-    ]);
-    expect(h.doubleGrip).toContain('Det dubbla greppet: att hålla analys och upplevelse samtidigt, och handla.');
+    expect(h.forms.map((f) => `${f.name}: ${f.title}.`)).toEqual(['Episteme: att veta.', 'Techne: att kunna göra.', 'Phronesis: att kunna bedöma.']);
+    expect(h.lead).toContain('modern tolkning av Aristoteles kunskapsbegrepp');
+    expect(h.challenge).toBe('Det är i den konkreta situationen som kunskapen visar sig. Har du det som krävs?');
     expect(h.readMore).toBe('Läs mer');
+    for (const lang of ['sv', 'en'] as const) expect(JSON.stringify(pickLang(TABLE, lang).houseIntro)).not.toMatch(/Crichton|Herdenstam|Anders/);
     expect(JSON.stringify(h)).not.toMatch(/”|“/);
   });
 

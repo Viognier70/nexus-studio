@@ -9,6 +9,7 @@ import { RISK, SEASON, STAR } from '../../sim/balance';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { NxButton } from './system/components';
 import './screens/screens.css';
+import { StatusLegendBody } from './StatusLegend';
 
 const word = (n: number, capital = false) => {
   const w = strings.rules.numberWord[n] ?? String(n);
@@ -51,6 +52,9 @@ export function RulesPanel({ open, onClose }: { open: boolean; onClose: () => vo
               <li className="nx-small">{r.notAnswers}</li>
               <li className="nx-small">{r.notLuck}</li>
             </ul>
+            {/* ORDER 313 §7 — teckenförklaringen, samma som i statusläget. */}
+            <h3 className="nx-label nxs-mt-24">{strings.legend.heading}</h3>
+            <StatusLegendBody />
             <h3 className="nx-label nxs-mt-24">{r.starHeading}</h3>
             <p className="nx-small nxs-measure" data-testid="rules-star">
               {r.star({

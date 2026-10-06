@@ -278,6 +278,10 @@ export const LOAN = {
 // nexus-leverans-2026-10-01-byn-och-gasterna (Byn och gasterna.html PREF,
 // choose; byTruckar.js SPOTS, TRUCKS, EVENINGS), talen omräknade till
 // spelets notor (GUESTS.walletSek) och valda (F63). sim/village.ts läser dem.
+// ORDER 313 §9 — Byn just nu: pilen jämför de senaste trendWindowMin
+// spelminuterna med lika många dessförinnan (sim/villageNow.ts).
+export const VILLAGE_NOW = { trendWindowMin: 10 } as const;
+
 export const VILLAGE = {
   section: 'Ekonomin > Byn',
   openQuestion: 'F63',

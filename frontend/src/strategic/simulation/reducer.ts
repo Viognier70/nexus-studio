@@ -8,7 +8,7 @@ import { CONCEPT, CONSEQUENCES, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MIN
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, canStartBack, closeIncidents, countDown, isIncidentOpen, lockAnswer, maybeOpenIncident, planIncidents, resolveIncident, settlePendingAnswer, startBack, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
-import { afterVisitClosed, beginIntroduction } from '../../sim/introduction';
+import { afterVisitClosed, beginIntroduction, firstExamPassed, investLocked } from '../../sim/introduction';
 import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek, isClosed } from '../../sim/economy';
 import { answerVisit, closeVisit, nextVisitQuestion, scheduleSlotsLeft, startVisit } from '../knowledge/pavilionVisit';
 import { createRng } from '../util/rng';
@@ -427,7 +427,10 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       // ORDER 268 — ett avslutat prov utan verksamhet räknas mot bankens
       // krav för ett nytt lån.
       const examDone = next.pavilionVisit?.mode === 'exam' && next.pavilionVisit.result && !state.pavilionVisit?.result;
-      return examDone ? { ...next, economy: recordExamWithoutBusiness(next.economy) } : next;
+      // ORDER 313 §2 — i introduktionen säger Åsa i bankens steg att
+      // satsningarna öppnas; repliken efteråt behövs då inte.
+      const said = examDone && next.introduction && next.startLocked && firstExamPassed(next) ? { unlockSaid: true } : {};
+      return examDone ? { ...next, ...said, economy: recordExamWithoutBusiness(next.economy) } : next;
     }
     case 'CLOSE_VISIT': {
       const closed = afterVisitClosed(state, closeVisit(state));
@@ -439,6 +442,9 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     }
     case 'BEGIN_INTRODUCTION':
       return beginIntroduction(state);
+    case 'SAY_UNLOCKED':
+      // ORDER 313 §2 — Åsas replik om att satsningarna är upplåsta är visad.
+      return { ...state, unlockSaid: true };
     case 'SET_RESEARCH_CONSENT':
       // ORDER 300b — bara lokalt; ingen data skickas någonstans.
       if (!state.player) return state;
@@ -469,15 +475,20 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     case 'HOST_MOVE':
       return hostAction(state, action);
     case 'SHOP_BUY':
+      if (investLocked(state)) return state;
       return shopBuy(state, action.id);
     // ORDER 307 — butikens flikar: en leverantör för krediter, utrustning för kassan.
     case 'BUY_SUPPLIER':
+      if (investLocked(state)) return state;
       return buySupplier(state, action.id);
     case 'OPEN_EQUIPMENT':
+      if (investLocked(state)) return state;
       return openEquipment(state, action.id);
     case 'BUY_EQUIPMENT':
+      if (investLocked(state)) return state;
       return buyEquipment(state, action.id);
     case 'SHOP_SLOT':
+      if (investLocked(state)) return state;
       return setSlot(state, action.id, action.on);
     case 'RESTART_SEASON': {
       // ORDER 296 — efter stängningen: en ny säsong. Det spelaren lärt sig
@@ -536,6 +547,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
 // applies at end-of-day.
 function pickActivity(state: SimulationState, id: string): SimulationState {
   if (state.day.period !== 'morning') return state;
+  // ORDER 313 §2 — låst tills första provet är klarat.
+  if (investLocked(state)) return state;
   if (state.day.pickedActivityIds.includes(id)) return state;
   // ORDER 264 — satsningar och paviljongsbesök delar schemaplatserna.
   if (scheduleSlotsLeft(state) <= 0) return state;

@@ -42,6 +42,7 @@ import { NxIcon, PAVILION_ICON } from '../../ui/screens/icons';
 import { MedalDisc } from '../../ui/screens/MedalDisc';
 import { Portrait } from '../../ui/screens/Portrait';
 import '../../ui/screens/screens.css';
+import { SenderTag } from '../../ui/SenderTag';
 
 const ORDER: readonly PavilionKey[] = ['maltidbiblioteket', 'metodkoket', 'stensota', 'kalastorget', THEATRE];
 const k = strings.knowledge;
@@ -126,6 +127,7 @@ export function MaltidensHusDialog({ open, onClose }: Props) {
         <div data-testid="visit-result" style={{ display: 'flex', flexDirection: 'column', minHeight: '100%' }}>
           <header className="nxs-head" data-testid="screen-O2">
             <div>
+              <SenderTag sender="house" />
               <div className="nx-label nx-accent-text">
                 {pavilionName} · {visit.mode === 'practice' ? k.practice : k.exam(k.medals[visit.level])}
               </div>
@@ -220,19 +222,17 @@ export function MaltidensHusDialog({ open, onClose }: Props) {
         <div className="nx-label nx-accent-text">{t.label}</div>
         <h1 className="nx-heading">{t.heading}</h1>
         <p className="nx-body nxs-measure" style={{ marginTop: 'calc(12 * var(--nx-u))' }}>{t.lead}</p>
-        {/* ORDER 301 — tre korta kort och en rad om det dubbla greppet; citaten och källorna i biblioteket. */}
-        <div className="nxs-ways">
+        {/* ORDER 313 §4 — de tre formerna, slutet och utmaningen; källorna i biblioteket. */}
+        <ul className="nxs-ways-list" data-testid="house-intro-forms">
           {t.forms.map((f) => (
-            <section key={f.name} className="nxs-way" data-testid={`house-intro-${f.name.toLowerCase()}`}>
-              <div className="nxs-way-name">{f.name} – {f.title}.</div>
-              <p className="nxs-way-q">{f.question}</p>
-              <div className="nx-small nx-muted nxs-mt-16">{t.where(f.pavilion)}</div>
-            </section>
+            <li key={f.name} data-testid={`house-intro-${f.name.toLowerCase()}`}><strong>{f.name}</strong>: {f.title}.</li>
           ))}
-        </div>
-        <p className="nxs-grip-line" data-testid="house-intro-grip">{t.doubleGrip}</p>
-        <div className="nxs-mt-8">
+        </ul>
+        <p className="nx-body nxs-measure" data-testid="house-intro-closing">{t.closing}</p>
+        <p className="nx-body nxs-measure" data-testid="house-intro-challenge"><em>{t.challenge}</em></p>
+        <div className="nxs-mt-8 nxs-row">
           <NxButton kind="quiet" testId="house-intro-read-more" onClick={openKnowledgeFoundation}>{t.readMore}</NxButton>
+          <span className="nx-small nx-muted">→ {t.readMoreWhere}</span>
         </div>
         <div style={{ marginTop: 'calc(24 * var(--nx-u))', maxWidth: 'calc(420 * var(--nx-u))' }}>
           <NxButton testId="house-intro-continue" onClick={() => dispatch({ type: 'SEE_HOUSE_INTRO' })} autoFocus>{t.continue}</NxButton>

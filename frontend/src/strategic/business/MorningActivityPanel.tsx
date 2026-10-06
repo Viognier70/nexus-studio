@@ -24,6 +24,7 @@ import { t as tt } from '../../content/nexusStrings';
 import { useLanguage } from '../../content/language';
 import { TASTING } from '../../sim/balance';
 import { reputationHoldsGuests, tastingPartiesFor } from '../simulation/arrivals';
+import { investLocked } from '../../sim/introduction';
 import '../ui/screens/screens.css';
 
 export function MorningActivityPanel() {
@@ -42,6 +43,8 @@ export function MorningActivityPanel() {
   const used = scheduleSlotsUsed(sim);
   const atCap = used >= slots;
 
+  const locked = investLocked(sim);
+
   const isWeeklyGated = (a: Activity): boolean => {
     if (a.availability !== 'weekly') return false;
     const cutoff = sim.day.dayNumber - WEEKLY_GATE_DAYS;
@@ -53,7 +56,8 @@ export function MorningActivityPanel() {
       {(calm ? [...ACTIVITY_CATALOGUE].sort((a, b) => Number(b.id === TASTING.activityId) - Number(a.id === TASTING.activityId)) : ACTIVITY_CATALOGUE).map((a) => {
         const picked = sim.day.pickedActivityIds.includes(a.id);
         const gated = isWeeklyGated(a);
-        const disabled = !picked && (atCap || gated);
+        // ORDER 313 §2 — låst tills första provet är klarat.
+        const disabled = !picked && (atCap || gated || locked);
         const tasting = a.id === TASTING.activityId;
         const row = (
           <button
@@ -76,6 +80,7 @@ export function MorningActivityPanel() {
                 {activityDescription(a)}
                 {a.availability === 'weekly' && <> · {strings.morning.weekly}</>}
               </span>
+              {locked && <span className="nxs-row-sub" style={{ display: 'block' }} data-testid="activity-locked">{strings.introduction.lockedUntilExam}</span>}
               {tasting && <span className="nxs-row-sub" style={{ display: 'block' }} data-testid="tasting-parties" data-parties={tastingPartiesFor(sim)}>{tt(lang, 'tasting.parties', { n: tastingPartiesFor(sim) })}</span>}
             </span>
             {picked && <span className="nx-label nx-accent-text nxs-tag">{strings.screens.morning.picked}</span>}
