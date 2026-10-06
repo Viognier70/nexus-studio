@@ -40,7 +40,8 @@ export function ClosedBox() {
         <NxLabel>{tt(lang, 'risk.closed.kicker')}</NxLabel>
         <h2 id="closed-heading" className="nx-heading">{tt(lang, 'risk.closed.title')}</h2>
         <p className="nx-stranded-body">{tt(lang, 'risk.closed.medals')}</p>
-        <p className="nx-stranded-body">{tt(lang, 'risk.closed.body', { week })}</p>
+        {/* ORDER 311 — konkurs i säsongens sista bokslut. */}
+        <p className="nx-stranded-body" data-reason={sim.economy.risk?.closedReason ?? 'inRow'}>{tt(lang, sim.economy.risk?.closedReason === 'seasonEnd' ? 'risk.closed.bodySeasonEnd' : 'risk.closed.body', { week })}</p>
         <div style={{ marginTop: 'calc(32 * var(--nx-u))' }}>
           <NxButton testId="closed-restart" onClick={() => dispatch({ type: 'RESTART_SEASON' })} autoFocus>{tt(lang, 'risk.closed.again')}</NxButton>
         </div>

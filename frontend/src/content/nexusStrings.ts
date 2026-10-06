@@ -196,6 +196,7 @@ export const STRINGS = {
   'risk.closed.kicker': { sv: 'Säsongen är slut', en: 'The season is over' },
   'risk.closed.title': { sv: 'Krogen stänger', en: 'The restaurant closes' },
   'risk.closed.body': { sv: 'Kassan har stått under noll vid tre veckoavräkningar i rad. Banken säger upp lånet efter vecka {week}, och dörren förblir stängd.', en: 'The account has been below zero at three weekly settlements in a row. The bank calls in the loan after week {week}, and the door stays shut.' },
+  'risk.closed.bodySeasonEnd': { sv: 'Kassan står under noll i säsongens sista bokslut. Det är konkurs: banken säger upp lånet efter vecka {week}, och dörren förblir stängd.', en: 'The account is below zero at the season\'s last settlement. That is bankruptcy: the bank calls in the loan after week {week}, and the door stays closed.' },
   'risk.closed.medals': { sv: 'Dina medaljer och det du lärt dig är kvar. En ny säsong börjar med samma kunskap.', en: 'Your medals and what you have learned remain. A new season starts with the same knowledge.' },
   // ORDER 296 (punkt 3) — recensionen i morgonens tidning, förvarningen och
   // gästen med socialt kapital som går till en rival.
@@ -3425,6 +3426,11 @@ export const TABLE = {
     rule1: {
       sv: (closings: string) => `Klarar du veckans mål blir krogen kvar. ${closings} bokslut under noll i rad, och den stänger.`,
       en: (closings: string) => `Meet the week's target and the restaurant stays. ${closings} accounts below zero in a row, and it closes.`
+    },
+    // ORDER 311 — säsongens sista bokslut.
+    seasonEnd: {
+      sv: 'Står kassan under noll i säsongens sista bokslut är det konkurs, och krogen stänger.',
+      en: 'If the account is below zero at the season\'s last settlement, that is bankruptcy, and the restaurant closes.'
     },
     rule2: {
       sv: 'Det du visar i Måltidens hus öppnar satsningar och lån.',

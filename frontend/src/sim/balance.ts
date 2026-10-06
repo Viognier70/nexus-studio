@@ -424,6 +424,9 @@ export const RISK = {
   renegotiateAfterMissedWeeks: 2,
   renegotiatedInterestFactor: 2,
   closeAfterWeeksBelowZero: 3,
+  // ORDER 311 (Anders 2026-10-06): står kassan under noll i säsongens sista
+  // bokslut (vecka SEASON.weeks) räknas det som konkurs, och krogen stänger.
+  closeBelowZeroAtSeasonEnd: true,
   floorTopUp: false,
   downgrade: false,
   // ORDER 296c (Vision Owner 2026-10-02): "Ta bort den dolda regeln om att
