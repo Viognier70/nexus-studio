@@ -16,6 +16,10 @@
 // Utdata: reports/order302b/fps-ab.json.
 //
 //   MAIN_DIST=/sökväg/till/dist-main [CHECK_CLOCKS=19.30,22.20] [CHECK_SIZES=1440x900,1280x720] node scripts/order302b-fps.mjs
+//
+// ORDER 302d — samma jämförelse för en annan order: REPORT_DIR (förval
+// order302b) väljer mappen under reports/, MAIN_LABEL och GREN_LABEL beskriver
+// byggena i rapporten.
 import { spawn } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -24,14 +28,15 @@ import { loadavg, cpus } from 'node:os';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FRONTEND = resolve(HERE, '..');
-const OUT = resolve(FRONTEND, 'reports', 'order302b');
+const OUT = resolve(FRONTEND, 'reports', process.env.REPORT_DIR ?? 'order302b');
 mkdirSync(OUT, { recursive: true });
 const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 const CLOCKS = (process.env.CHECK_CLOCKS ?? '19.30,22.20').split(',');
 const SIZES = (process.env.CHECK_SIZES ?? '1440x900,1280x720').split(',').map((s) => s.split('x').map(Number));
 const MAIN_DIST = process.env.MAIN_DIST;
 if (!MAIN_DIST) throw new Error('MAIN_DIST saknas');
-const BUILDS = { gren: { dir: resolve(FRONTEND, 'dist'), port: 4185 }, main: { dir: MAIN_DIST, port: 4186 } };
+const PORT0 = Number(process.env.PORT ?? 4185);
+const BUILDS = { gren: { dir: resolve(FRONTEND, 'dist'), port: PORT0 }, main: { dir: MAIN_DIST, port: PORT0 + 1 } };
 const procs = [];
 for (const b of Object.values(BUILDS)) {
   procs.push(spawn('npx', ['vite', 'preview', '--port', String(b.port), '--strictPort', '--outDir', b.dir], { cwd: FRONTEND, stdio: 'ignore', detached: true }));
@@ -104,7 +109,7 @@ async function run(build, width, height) {
   return out;
 }
 
-const report = { cores: cpus().length, mainDist: 'main 508822e (npm run build), MAIN_DIST', grenDist: 'order-302b dist/', runs: [] };
+const report = { cores: cpus().length, mainDist: process.env.MAIN_LABEL ?? 'main 508822e (npm run build), MAIN_DIST', grenDist: process.env.GREN_LABEL ?? 'order-302b dist/', runs: [] };
 try {
   for (const [w, h] of SIZES) {
     for (const build of ['gren', 'main', 'main', 'gren']) {

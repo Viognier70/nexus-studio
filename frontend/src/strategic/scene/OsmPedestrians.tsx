@@ -15,6 +15,7 @@ import { readabilityScale, type ReadabilityCurve } from '../util/readability';
 import { GUEST_GROUPS, type GuestGroupId } from './guestGroups';
 import { GROUP_IDS } from './guestLooks';
 import { OSM_FRAME, streetSignGeometry } from './village/streetLooks';
+import { streetFigureMaterial, streetFloorRef } from './village/streetFigureLight';
 import { addProbeFigures, lampProbeRequested, type ProbeFigure } from './village/lampProbe';
 
 // Village-scale readability treatment. At close and district range the
@@ -301,7 +302,7 @@ export function OsmPedestrians() {
     const root = new THREE.Group();
     for (const g of GROUP_IDS) {
       const idx = walkers.map((w, i) => (ROLE_GROUP[w.role] === g ? i : -1)).filter((i) => i >= 0);
-      const mesh = new THREE.InstancedMesh(streetSignGeometry(g, OSM_FRAME), new THREE.MeshStandardMaterial({ roughness: 0.85 }), Math.max(1, idx.length));
+      const mesh = new THREE.InstancedMesh(streetSignGeometry(g, OSM_FRAME), streetFigureMaterial({ roughness: 0.85 }), Math.max(1, idx.length));
       mesh.count = idx.length;
       mesh.frustumCulled = false;
       mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
@@ -477,7 +478,7 @@ export function OsmPedestrians() {
             args={[undefined, undefined, walkers.length]}
           >
             <boxGeometry args={[0.42, 1.2, 0.32]} />
-            <meshStandardMaterial roughness={0.9} />
+            <meshStandardMaterial ref={streetFloorRef} roughness={0.9} />
           </instancedMesh>
           {/* Head — small warm neutral sphere. Shares per-instance colour
               with body via the head material fixed to a skin tone. */}
@@ -487,7 +488,7 @@ export function OsmPedestrians() {
             args={[undefined, undefined, walkers.length]}
           >
             <sphereGeometry args={[0.22, 8, 6]} />
-            <meshStandardMaterial color="#d9b48a" roughness={0.8} />
+            <meshStandardMaterial ref={streetFloorRef} color="#d9b48a" roughness={0.8} />
           </instancedMesh>
         </>
       )}
@@ -503,6 +504,7 @@ export function OsmPedestrians() {
             <meshStandardMaterial
               ref={(ref) => {
                 cyclistMatRefs.current[i] = ref;
+                if (ref) streetFloorRef(ref);
               }}
               color={c.colour}
               roughness={0.85}
@@ -512,7 +514,7 @@ export function OsmPedestrians() {
           </mesh>
           <mesh position={[0, 0.85, -0.2]}>
             <boxGeometry args={[0.35, 0.35, 0.5]} />
-            <meshStandardMaterial color="#c8b39a" roughness={0.75} />
+            <meshStandardMaterial ref={streetFloorRef} color="#c8b39a" roughness={0.75} />
           </mesh>
         </group>
       ))}

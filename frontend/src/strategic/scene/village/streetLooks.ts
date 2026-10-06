@@ -93,17 +93,30 @@ function cyl(rTop: number, rBottom: number, y0: number, y1: number, seg = 8): TH
   return g;
 }
 
-/** Slår ihop geometrier till en icke-indexerad med position (MeshBasicMaterial behöver inga normaler). */
+/**
+ * Slår ihop geometrier till en icke-indexerad med position och normaler.
+ * ORDER 302d — figurerna tar ljus (streetFigureLight.ts), så delarnas egna
+ * normaler följer med (runda kroppar och huvuden, inte facetterade).
+ */
 export function mergeGeometries(parts: THREE.BufferGeometry[]): THREE.BufferGeometry {
-  const arrays = parts.map((p) => (p.index ? p.toNonIndexed() : p).attributes.position.array as Float32Array);
-  const pos = new Float32Array(arrays.reduce((a, x) => a + x.length, 0));
+  const flat = parts.map((p) => (p.index ? p.toNonIndexed() : p));
+  const pos = new Float32Array(flat.reduce((a, x) => a + x.attributes.position.array.length, 0));
+  const nor = new Float32Array(pos.length);
   let o = 0;
-  for (const a of arrays) { pos.set(a, o); o += a.length; }
+  for (const f of flat) {
+    const a = f.attributes.position.array as Float32Array;
+    pos.set(a, o);
+    const n = f.attributes.normal?.array as Float32Array | undefined;
+    if (n && n.length === a.length) nor.set(n, o);
+    o += a.length;
+  }
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  g.computeVertexNormals();
+  g.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
+  if (flat.some((f) => !f.attributes.normal)) g.computeVertexNormals();
   g.computeBoundingBox();
   parts.forEach((p) => p.dispose());
+  flat.forEach((f) => f.dispose());
   return g;
 }
 

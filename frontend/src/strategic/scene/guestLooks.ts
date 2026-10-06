@@ -21,6 +21,7 @@ import type { GuestType } from '../types';
 import { GUEST_TYPES } from '../../sim/balance';
 import { dressGroup, GUEST_GROUPS, lookOf, STREET_BLEND, type GuestGroupId, type LookWhere } from './guestGroups';
 import type { FigureRig } from './figureRig';
+import type { StreetFloorShare } from './village/streetFigureLight';
 
 export const GROUP_IDS: readonly GuestGroupId[] = ['student', 'villager', 'tourist', 'gourmet', 'business'];
 
@@ -75,6 +76,12 @@ export interface DressedRig {
   blend: StreetBlendState;
   /** Gatans andel som senast sattes på materialen (−1: inte satt). */
   applied: number;
+  /**
+   * ORDER 302d — riggens andel av kvällens lägsta ljushet (village/streetFigureLight.ts):
+   * gatans andel i bytet vid dörren, så att kön utanför har golvet och rummet inte.
+   * Läggs på riggens material med withStreetFloorOnTree när riggen är klädd.
+   */
+  lightShare: StreetFloorShare;
 }
 
 /** Klär en gästrigg med alla fem gruppernas tecken (dolda). Materialen läggs i rig.materials (tonas och städas med riggen). */
@@ -111,7 +118,8 @@ export function dressAllGroups(rig: FigureRig, variant: number): DressedRig {
     body: { room: rig.garment.color.clone(), street: rig.garment.color.clone() },
     limb: { room: rig.materials[1].color.clone(), street: rig.materials[1].color.clone() },
     blend: { u: 0, target: 0 },
-    applied: -1
+    applied: -1,
+    lightShare: { value: 0 }
   };
 }
 
@@ -138,6 +146,7 @@ export function showGroup(rig: FigureRig, dressed: DressedRig, t: GuestType | nu
 export function applyStreetBlend(rig: FigureRig, dressed: DressedRig, k: number): void {
   if (k === dressed.applied) return;
   dressed.applied = k;
+  dressed.lightShare.value = k;
   rig.garment.color.copy(dressed.body.room).lerp(dressed.body.street, k);
   rig.materials[1].color.copy(dressed.limb.room).lerp(dressed.limb.street, k);
   for (const g of GROUP_IDS) {

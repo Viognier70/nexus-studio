@@ -46,6 +46,7 @@ import { conceptTonight } from '../../simulation/guestTypes';
 import { GROUP_IDS } from '../guestLooks';
 import type { GuestGroupId } from '../guestGroups';
 import { addProbeFigures, lampProbeRequested, type ProbeFigure } from './lampProbe';
+import { streetFigureMaterial } from './streetFigureLight';
 import { STREET_FIGURE, STREET_SKIN, streetGroupOf, streetHeadGeometry, streetLegsGeometry, streetLookOf, streetSignGeometry, streetTorsoGeometry } from './streetLooks';
 
 type Vec2 = [number, number];
@@ -296,10 +297,12 @@ function glowTexture(): THREE.Texture {
 
 // ORDER 302b — figuren på gatan i D5:s grupper (village/streetLooks.ts):
 // överkroppen i gruppens kroppsfärg, benen i lemmarnas, huvudet i hyns färg
-// och gruppens tecken, ett InstancedMesh per del. Oupplysta färger som förut:
-// gästerna ska synas i kvällsbyn.
-function makeInstanced(geo: THREE.BufferGeometry, colour?: string): THREE.InstancedMesh {
-  const mat = new THREE.MeshBasicMaterial(colour ? { color: colour } : {});
+// och gruppens tecken, ett InstancedMesh per del.
+// ORDER 302d — figurerna tar scenens ljus som byns övriga folk, med kvällens
+// lägsta ljushet (streetFigureLight.ts, STREET_FIGURE_LIGHT i villageEvening.ts).
+// Undantaget för de oupplysta gästerna är borta.
+export function makeInstanced(geo: THREE.BufferGeometry, colour?: string): THREE.InstancedMesh {
+  const mat = streetFigureMaterial(colour ? { color: colour } : {});
   const mesh = new THREE.InstancedMesh(geo, mat, MAX_FIGURES);
   mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   mesh.count = 0;
