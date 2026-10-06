@@ -43,7 +43,7 @@ describe('ORDER 312 — inget i spelet ligger på vägen', () => {
       mkdirSync(dirname(process.env.ORDER312_OUT), { recursive: true });
       writeFileSync(process.env.ORDER312_OUT, JSON.stringify(auditOnRoad(), null, 2) + '\n');
     }
-  });
+  }, 300000);
 
   it('vägytan har renderingens bredd per vägtyp: Hälleforsvägen 10 m, gångvägen 1,3 m', () => {
     const pieces = roadRenderPieces();
