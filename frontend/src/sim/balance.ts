@@ -1568,11 +1568,15 @@ export const CONCEPT = {
   // Kalibrerat mot Anders mål (reports/order307b/kalib/B0–V11b, slutkörningen i efter/).
   // Soigné har dyrare råvaror och mer personal (fler händer vid borden) men
   // högre notor; notan skalar med intäkten och gynnar den som kan.
-  wageFactor: { enkel: 0.63, bistro: 1, soigne: 1.4 },
+  // ORDER 311 (säsongens sista bokslut räknas) — kalibrerat igen (reports/order311/kalib/W1–Z2).
+  wageFactor: { enkel: 0.71, bistro: 0.88, soigne: 1.47 },
   goodsCostFactor: { enkel: 0.81, bistro: 1, soigne: 1.8 },
-  billFactor: { enkel: 0.94, bistro: 1.005, soigne: 1.6 },
+  billFactor: { enkel: 0.94, bistro: 1.005, soigne: 1.65 },
   // Ett fel svars förlust i kassan gånger detta (304: hårdare följder av fel i högre klass).
-  wrongFactor: { enkel: 1, bistro: 1, soigne: 1.5 },
+  wrongFactor: { enkel: 0.75, bistro: 1, soigne: 1.5 },
+  // ORDER 311 — rummets mindre beställningar efter fel svar (CONSEQUENCES.moodBillPerLift)
+  // gånger detta efter kvällens koncept.
+  moodDownFactor: { enkel: 0.4, bistro: 1, soigne: 1.25 },
   // ORDER 307b — 0,05 (förut 0,1): konceptets rykte minns längre.
   reputationDriftPerDay: 0.05
 } as const;

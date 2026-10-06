@@ -1792,7 +1792,11 @@ function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inL
       // sim/guestMood.ts) flyttar vad gästen beställer: ett rum som har sett
       // fel svar beställer mindre, ett som har sett rätt beställer mer.
       const lift = (guest.moodLift ?? 0) + (draft.day.roomMoodLift ?? 0);
-      rev = bill * revenueMult * Math.max(0, 1 + (guest.billBonus ?? 0) + (lift < 0 ? CONSEQUENCES.moodBillPerLift : CONSEQUENCES.moodBillPerLiftUp) * lift);
+      // ORDER 311 — ett rum som sett fel svar beställer mindre, gånger kvällens
+      // koncepts moodDownFactor (mildare i enkel).
+      const tonight = draft.day.booking?.dayNumber === draft.day.dayNumber ? draft.day.booking?.concept : null;
+      const down = CONSEQUENCES.moodBillPerLift * (tonight ? CONCEPT.moodDownFactor[tonight] : 1);
+      rev = bill * revenueMult * Math.max(0, 1 + (guest.billBonus ?? 0) + (lift < 0 ? down : CONSEQUENCES.moodBillPerLiftUp) * lift);
       // ORDER 307 — betalningsviljan ovanpå plånboken (turisterna).
       if (guest.guestType) rev *= GUEST_TYPES.payFactor[guest.guestType];
       // ORDER 307b — notan efter kvällens koncept (balance.ts CONCEPT.billFactor).
