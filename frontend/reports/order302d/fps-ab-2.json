@@ -1,0 +1,235 @@
+{
+  "cores": 12,
+  "mainDist": "main 7dd7939f (npm run build), MAIN_DIST",
+  "grenDist": "order-302d 75518e70 dist/",
+  "runs": [
+    {
+      "build": "gren",
+      "viewport": "1440x900",
+      "errors": [],
+      "stops": [
+        {
+          "stop": "19.30",
+          "levels": [
+            {
+              "level": "village",
+              "fps": 18.9,
+              "load1": 15.7,
+              "camDistance": "660",
+              "clock": "19.34",
+              "groups": "9"
+            },
+            {
+              "level": "street",
+              "fps": 22,
+              "load1": 16.8,
+              "camDistance": "42",
+              "clock": "19.36",
+              "groups": "9"
+            }
+          ]
+        },
+        {
+          "stop": "22.20",
+          "levels": [
+            {
+              "level": "village",
+              "fps": 20.6,
+              "load1": 9.1,
+              "camDistance": "660",
+              "clock": "22.24",
+              "groups": "7"
+            },
+            {
+              "level": "street",
+              "fps": 24.3,
+              "load1": 8.9,
+              "camDistance": "42",
+              "clock": "22.27",
+              "groups": "11"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "build": "main",
+      "viewport": "1440x900",
+      "errors": [],
+      "stops": [
+        {
+          "stop": "19.30",
+          "levels": [
+            {
+              "level": "village",
+              "fps": 19.7,
+              "load1": 13.3,
+              "camDistance": "660",
+              "clock": "19.33",
+              "groups": "9"
+            },
+            {
+              "level": "street",
+              "fps": 24.1,
+              "load1": 14.8,
+              "camDistance": "42",
+              "clock": "19.36",
+              "groups": "9"
+            }
+          ]
+        },
+        {
+          "stop": "22.20",
+          "levels": [
+            {
+              "level": "village",
+              "fps": 19.7,
+              "load1": 15.7,
+              "camDistance": "660",
+              "clock": "22.23",
+              "groups": "7"
+            },
+            {
+              "level": "street",
+              "fps": 24.5,
+              "load1": 16.2,
+              "camDistance": "42",
+              "clock": "22.26",
+              "groups": "7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "build": "main",
+      "viewport": "1440x900",
+      "errors": [],
+      "stops": [
+        {
+          "stop": "19.30",
+          "levels": [
+            {
+              "level": "village",
+              "fps": 20.7,
+              "load1": 10.4,
+              "camDistance": "660",
+              "clock": "19.33",
+              "groups": "8"
+            },
+            {
+              "level": "street",
+              "fps": 25.2,
+              "load1": 10.1,
+              "camDistance": "42",
+              "clock": "19.36",
+              "groups": "8"
+            }
+          ]
+        },
+        {
+          "stop": "22.20",
+          "levels": [
+            {
+              "level": "room",
+              "fps": 21.2,
+              "load1": 6.2,
+              "camDistance": "24",
+              "clock": "22.23",
+              "groups": "7"
+            },
+            {
+              "level": "room",
+              "fps": 36.3,
+              "load1": 6.1,
+              "camDistance": "13",
+              "clock": "22.26",
+              "groups": "8"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "build": "gren",
+      "viewport": "1440x900",
+      "errors": [],
+      "stops": [
+        {
+          "stop": "19.30",
+          "levels": [
+            {
+              "level": "village",
+              "fps": 53.9,
+              "load1": 4.1,
+              "camDistance": "660",
+              "clock": "19.32",
+              "groups": "7"
+            },
+            {
+              "level": "street",
+              "fps": 60,
+              "load1": 4.3,
+              "camDistance": "42",
+              "clock": "19.35",
+              "groups": "8"
+            }
+          ]
+        },
+        {
+          "stop": "22.20",
+          "levels": [
+            {
+              "level": "village",
+              "fps": 54.9,
+              "load1": 2.1,
+              "camDistance": "660",
+              "clock": "22.22",
+              "groups": "9"
+            },
+            {
+              "level": "room",
+              "fps": 60.1,
+              "load1": 2,
+              "camDistance": "13",
+              "clock": "22.25",
+              "groups": "7"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "1440x900 gren village": {
+      "min": 18.9,
+      "mean": 37.1,
+      "n": 4
+    },
+    "1440x900 gren street": {
+      "min": 22,
+      "mean": 35.4,
+      "n": 3
+    },
+    "1440x900 main village": {
+      "min": 19.7,
+      "mean": 20,
+      "n": 3
+    },
+    "1440x900 main street": {
+      "min": 24.1,
+      "mean": 24.6,
+      "n": 3
+    },
+    "1440x900 main room": {
+      "min": 21.2,
+      "mean": 28.8,
+      "n": 2
+    },
+    "1440x900 gren room": {
+      "min": 60.1,
+      "mean": 60.1,
+      "n": 1
+    }
+  }
+}

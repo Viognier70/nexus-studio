@@ -9,6 +9,7 @@ import { readabilityScale } from '../util/readability';
 import { GUEST_GROUPS, type GuestGroupId } from './guestGroups';
 import { GROUP_IDS } from './guestLooks';
 import { OSM_FRAME, streetSignGeometry } from './village/streetLooks';
+import { streetFigureMaterial, streetFloorRef } from './village/streetFigureLight';
 import { addProbeFigures, lampProbeRequested, type ProbeFigure } from './village/lampProbe';
 
 // Static-ish figures placed at named landmarks. They are the reason the
@@ -190,7 +191,7 @@ export function LandmarkGatherers() {
     const root = new THREE.Group();
     const meshes = {} as Record<GuestGroupId, THREE.InstancedMesh>;
     for (const g of GROUP_IDS) {
-      const mesh = new THREE.InstancedMesh(streetSignGeometry(g, OSM_FRAME), new THREE.MeshStandardMaterial({ roughness: 0.85 }), total);
+      const mesh = new THREE.InstancedMesh(streetSignGeometry(g, OSM_FRAME), streetFigureMaterial({ roughness: 0.85 }), total);
       mesh.count = 0;
       mesh.frustumCulled = false;
       mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
@@ -321,7 +322,7 @@ export function LandmarkGatherers() {
             args={[undefined, undefined, g.gatherers.length]}
           >
             <boxGeometry args={[0.42, 1.2, 0.32]} />
-            <meshStandardMaterial roughness={0.9} />
+            <meshStandardMaterial ref={streetFloorRef} roughness={0.9} />
           </instancedMesh>
           <instancedMesh
             ref={(ref) => {
@@ -330,7 +331,7 @@ export function LandmarkGatherers() {
             args={[undefined, undefined, g.gatherers.length]}
           >
             <sphereGeometry args={[0.22, 8, 6]} />
-            <meshStandardMaterial color="#d9b48a" roughness={0.8} />
+            <meshStandardMaterial ref={streetFloorRef} color="#d9b48a" roughness={0.8} />
           </instancedMesh>
         </group>
       ))}

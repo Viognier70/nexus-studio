@@ -19,6 +19,13 @@
 // summary: per grupp, källa och zon).
 //
 //   [SKIP_BUILD=1] [CHECK_CLOCKS=19.15,20.00] [CHECK_SIZES=1440x900] [PROBES=8] node scripts/order302c-lyktor.mjs
+//
+// ORDER 302d — samma mätning före och efter: REPORT_DIR (förval order302c)
+// väljer mappen under reports/, LABEL (t.ex. fore, efter) läggs först i
+// filnamnen, DIST pekar på ett annat bygge (då byggs inget). Sammanfattningen
+// har också källa och zon (summary["källa|zon"]) och klockslaget (stops[].clock).
+//
+//   DIST=/sökväg/dist-main REPORT_DIR=order302d LABEL=fore node scripts/order302c-lyktor.mjs
 import { spawn } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { loadavg } from 'node:os';
@@ -29,7 +36,9 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const FRONTEND = resolve(HERE, '..');
 const PORT = Number(process.env.PORT ?? 4187);
 const URL = `http://localhost:${PORT}`;
-const OUT = resolve(FRONTEND, 'reports', 'order302c');
+const OUT = resolve(FRONTEND, 'reports', process.env.REPORT_DIR ?? 'order302c');
+const LABEL = process.env.LABEL ? `${process.env.LABEL}-` : '';
+const DIST = process.env.DIST ?? null;
 mkdirSync(OUT, { recursive: true });
 const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 const CLOCKS = (process.env.CHECK_CLOCKS ?? '19.15,20.00,21.00,22.00,22.45').split(',');
@@ -41,10 +50,10 @@ const src = readFileSync(resolve(FRONTEND, 'src/strategic/village/villageEvening
 if (!new RegExp(`poolRadiusM:\\s*${POOL_M}\\b`).test(src)) throw new Error('poolRadiusM i villageEvening.ts är inte 5: uppdatera POOL_M');
 const BAND = [1.8, 3.6];
 
-if (process.env.SKIP_BUILD !== '1') {
+if (process.env.SKIP_BUILD !== '1' && !DIST) {
   await new Promise((res, rej) => { const b = spawn('npm', ['run', 'build'], { cwd: FRONTEND, stdio: 'ignore' }); b.on('exit', (c) => (c === 0 ? res() : rej(new Error(`build ${c}`)))); });
 }
-const proc = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], { cwd: FRONTEND, stdio: 'ignore', detached: true });
+const proc = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort', ...(DIST ? ['--outDir', DIST] : [])], { cwd: FRONTEND, stdio: 'ignore', detached: true });
 for (let i = 0; i < 240; i++) { try { const r = await fetch(URL); if (r.ok) break; } catch { /* väntar */ } await delay(500); }
 const { chromium } = await import('playwright');
 const browser = await chromium.launch().catch(() => chromium.launch({ channel: 'chrome' }));
@@ -79,7 +88,7 @@ async function run(width, height) {
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
   const tag = `${width}x${height}`;
-  const report = { viewport: tag, save: 'reports/order284/save-mandag-vinbaren.json, dayNumber + 4 (fredag)', band: BAND, poolRadiusM: POOL_M, load1: [], errors, stops: [], rows: [] };
+  const report = { viewport: tag, label: process.env.LABEL ?? null, dist: DIST ?? 'dist/', save: 'reports/order284/save-mandag-vinbaren.json, dayNumber + 4 (fredag)', band: BAND, poolRadiusM: POOL_M, load1: [], errors, stops: [], rows: [] };
   try {
     await page.goto(`${URL}/`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('[data-testid=start-screen]', { timeout: 120000 });
@@ -116,7 +125,7 @@ async function run(width, height) {
       await page.keyboard.press('x');
       await delay(3500);
       const info = await page.evaluate(() => ({ level: document.body.dataset.level ?? null, camDistance: document.body.dataset.camDistance ?? document.body.dataset.camDist ?? null, clock: document.querySelector('[data-testid=service-clock-time]')?.textContent ?? null, lampsLit: document.body.dataset.streetLampsLit ?? null }));
-      const file = `lyktor-${tag}-${stop.replace('.', '')}.jpg`;
+      const file = `${LABEL}lyktor-${tag}-${stop.replace('.', '')}.jpg`;
       await page.screenshot({ path: resolve(OUT, file), type: 'jpeg', quality: 80 });
       const probes = [];
       for (let k = 0; k < PROBES; k++) {
@@ -131,7 +140,7 @@ async function run(width, height) {
     }
   } catch (e) {
     report.error = String(e?.message ?? e);
-    await page.screenshot({ path: resolve(OUT, `lyktor-${tag}-fel.jpg`), type: 'jpeg', quality: 80 }).catch(() => {});
+    await page.screenshot({ path: resolve(OUT, `${LABEL}lyktor-${tag}-fel.jpg`), type: 'jpeg', quality: 80 }).catch(() => {});
   } finally {
     // Sammanfattningen per grupp, källa och zon (och per grupp och zon för alla källor).
     const summary = {};
@@ -146,6 +155,7 @@ async function run(width, height) {
       const g = `${r.group ?? '-'}:${r.variant}`;
       add(`${g}|${r.zone}|alla`, r);
       add(`${g}|${r.zone}|${r.src}`, r);
+      add(`${r.src}|${r.zone}`, r);
     }
     for (const s of Object.values(summary)) {
       const a = s.ratios.sort((p, q) => p - q);
@@ -153,7 +163,7 @@ async function run(width, height) {
       delete s.ratios;
     }
     report.summary = summary;
-    writeFileSync(resolve(OUT, `lyktor-${tag}.json`), JSON.stringify(report, null, 2) + '\n');
+    writeFileSync(resolve(OUT, `${LABEL}lyktor-${tag}.json`), JSON.stringify(report, null, 2) + '\n');
     await ctx.close();
   }
   return report;

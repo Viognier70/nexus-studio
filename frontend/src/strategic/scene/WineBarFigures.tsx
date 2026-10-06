@@ -35,6 +35,7 @@ import { staffKnows, incidentArea, staminaOf as simStamina, wellbeingOf as simWe
 import { staminaOf, wellbeingOf, type StaminaId } from './staffStatus';
 import { createOrkRing, orkFacing, orkRingShown, type OrkRing } from './orkRing';
 import { WellbeingLayer, type WellbeingItem } from './wellbeingLayer';
+import { withStreetFloorOnTree } from './village/streetFigureLight';
 import { applyStreetBlend, beyondDoorMat, dressAllGroups, disposeDressed, showGroup, stepStreetBlend, streetShare, HEAD_SIGNS, type DressedRig } from './guestLooks';
 import { GUEST_GROUPS } from './guestGroups';
 import { RoomEquipment } from './roomEquipment';
@@ -610,6 +611,9 @@ export function WineBarFigures({ room, mood }: Props) {
       guestHandProps.push({ briefcase, camera });
       // ORDER 299 — ansiktet i närbild (Designs figureFace.ts).
       guestFaces.push(attachFace(rig));
+      // ORDER 302d — kön utanför tar kvällens lägsta ljushet som gatans figurer:
+      // alla riggens upplysta material, med gatans andel i bytet vid dörren.
+      withStreetFloorOnTree(rig.root, guestDressed[i].lightShare);
     }
     const staffRigs: FigureRig[] = STAFF_KEYS.map((k) => {
       const rig = createFigureRig({ variant: 'staff', garmentColour: STAFF_COLOUR[k] });

@@ -16,7 +16,8 @@ import { useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import * as THREE from 'three';
 import { useCamera } from '../camera/CameraContext';
 import { writeSkyState } from '../../lib/lighting/skyState';
-import { LEVELS, PHASES, SKY, VILLAGE_LIGHT, type SkyKey } from './villageEvening';
+import { LEVELS, PHASES, SKY, STREET_FIGURE_LIGHT, VILLAGE_LIGHT, type SkyKey } from './villageEvening';
+import { streetFigureFloor } from '../scene/village/streetFigureLight';
 import { subscribeVillageLight, villageLightLevel } from './villageLight';
 import { EveningAccents } from './EveningAccents';
 
@@ -127,7 +128,9 @@ export function EveningLighting({ e, level: fixedLevel, gain }: { e: number; lev
     const prevFog = scene.fog;
     const prevExposure = gl.toneMappingExposure;
     scene.fog = fog;
-    return () => { scene.background = prevBg; scene.fog = prevFog; gl.toneMappingExposure = prevExposure; };
+    // ORDER 302d — gatans figurer har kvällens lägsta ljushet medan kvällsljuset är tänt.
+    streetFigureFloor.value = STREET_FIGURE_LIGHT.minLight;
+    return () => { scene.background = prevBg; scene.fog = prevFog; gl.toneMappingExposure = prevExposure; streetFigureFloor.value = 0; };
   }, [scene, gl, fog]);
 
   useFrame(() => {
@@ -139,6 +142,7 @@ export function EveningLighting({ e, level: fixedLevel, gain }: { e: number; lev
     fog.near = d * 1.3;
     fog.far = d * 2.6 + 160;
     gl.toneMappingExposure = L.exposure;
+    streetFigureFloor.value = STREET_FIGURE_LIGHT.minLight;
     const h = hemi.current;
     if (h) { h.color.copy(sky.hemiSky); h.groundColor.copy(sky.hemiGround); h.intensity = L.hemi; }
     const m = moon.current;

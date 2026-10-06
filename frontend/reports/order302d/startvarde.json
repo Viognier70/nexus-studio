@@ -1,0 +1,374 @@
+{
+  "source": "reports/order302c/lyktor-1440x900.json",
+  "band": [
+    1.8,
+    3.6
+  ],
+  "exposures": [
+    1.35,
+    1.4,
+    1.45,
+    1.45
+  ],
+  "exposureUsed": 1.45,
+  "replicaCheck": {
+    "1.35": 0.4728,
+    "1.4": 0.4857,
+    "1.45": 0.498,
+    "measuredLifeBodyLMedian": 0.4975
+  },
+  "backLMedian": {
+    "all": 0.0927,
+    "offLamp": 0.0889
+  },
+  "sweep": [
+    {
+      "minLight": 0.3,
+      "floorLMedian": 0.1391,
+      "outside": 471,
+      "n": 537,
+      "zones": {
+        "away": {
+          "n": 285,
+          "below": 258,
+          "above": 0
+        },
+        "near": {
+          "n": 224,
+          "below": 190,
+          "above": 0
+        },
+        "under": {
+          "n": 28,
+          "below": 23,
+          "above": 0
+        }
+      }
+    },
+    {
+      "minLight": 0.35,
+      "floorLMedian": 0.1713,
+      "outside": 323,
+      "n": 537,
+      "zones": {
+        "away": {
+          "n": 285,
+          "below": 134,
+          "above": 1
+        },
+        "near": {
+          "n": 224,
+          "below": 159,
+          "above": 1
+        },
+        "under": {
+          "n": 28,
+          "below": 28,
+          "above": 0
+        }
+      }
+    },
+    {
+      "minLight": 0.4,
+      "floorLMedian": 0.2031,
+      "outside": 282,
+      "n": 537,
+      "zones": {
+        "away": {
+          "n": 285,
+          "below": 103,
+          "above": 1
+        },
+        "near": {
+          "n": 224,
+          "below": 145,
+          "above": 6
+        },
+        "under": {
+          "n": 28,
+          "below": 27,
+          "above": 0
+        }
+      }
+    },
+    {
+      "minLight": 0.45,
+      "floorLMedian": 0.234,
+      "outside": 222,
+      "n": 537,
+      "zones": {
+        "away": {
+          "n": 285,
+          "below": 71,
+          "above": 1
+        },
+        "near": {
+          "n": 224,
+          "below": 111,
+          "above": 16
+        },
+        "under": {
+          "n": 28,
+          "below": 23,
+          "above": 0
+        }
+      }
+    },
+    {
+      "minLight": 0.5,
+      "floorLMedian": 0.2643,
+      "outside": 169,
+      "n": 537,
+      "zones": {
+        "away": {
+          "n": 285,
+          "below": 49,
+          "above": 1
+        },
+        "near": {
+          "n": 224,
+          "below": 84,
+          "above": 18
+        },
+        "under": {
+          "n": 28,
+          "below": 17,
+          "above": 0
+        }
+      }
+    },
+    {
+      "minLight": 0.55,
+      "floorLMedian": 0.2934,
+      "outside": 115,
+      "n": 537,
+      "zones": {
+        "away": {
+          "n": 285,
+          "below": 28,
+          "above": 7
+        },
+        "near": {
+          "n": 224,
+          "below": 44,
+          "above": 24
+        },
+        "under": {
+          "n": 28,
+          "below": 12,
+          "above": 0
+        }
+      }
+    },
+    {
+      "minLight": 0.6,
+      "floorLMedian": 0.3212,
+      "outside": 118,
+      "n": 537,
+      "zones": {
+        "away": {
+          "n": 285,
+          "below": 25,
+          "above": 23
+        },
+        "near": {
+          "n": 224,
+          "below": 32,
+          "above": 26
+        },
+        "under": {
+          "n": 28,
+          "below": 12,
+          "above": 0
+        }
+      }
+    },
+    {
+      "minLight": 0.65,
+      "floorLMedian": 0.3477,
+      "outside": 136,
+      "n": 537,
+      "zones": {
+        "away": {
+          "n": 285,
+          "below": 24,
+          "above": 45
+        },
+        "near": {
+          "n": 224,
+          "below": 28,
+          "above": 29
+        },
+        "under": {
+          "n": 28,
+          "below": 10,
+          "above": 0
+        }
+      }
+    },
+    {
+      "minLight": 0.7,
+      "floorLMedian": 0.3728,
+      "outside": 224,
+      "n": 537,
+      "zones": {
+        "away": {
+          "n": 285,
+          "below": 24,
+          "above": 125
+        },
+        "near": {
+          "n": 224,
+          "below": 26,
+          "above": 41
+        },
+        "under": {
+          "n": 28,
+          "below": 8,
+          "above": 0
+        }
+      }
+    },
+    {
+      "minLight": 0.75,
+      "floorLMedian": 0.3967,
+      "outside": 264,
+      "n": 537,
+      "zones": {
+        "away": {
+          "n": 285,
+          "below": 18,
+          "above": 151
+        },
+        "near": {
+          "n": 224,
+          "below": 25,
+          "above": 62
+        },
+        "under": {
+          "n": 28,
+          "below": 8,
+          "above": 0
+        }
+      }
+    },
+    {
+      "minLight": 0.8,
+      "floorLMedian": 0.4193,
+      "outside": 267,
+      "n": 537,
+      "zones": {
+        "away": {
+          "n": 285,
+          "below": 18,
+          "above": 151
+        },
+        "near": {
+          "n": 224,
+          "below": 23,
+          "above": 68
+        },
+        "under": {
+          "n": 28,
+          "below": 7,
+          "above": 0
+        }
+      }
+    },
+    {
+      "minLight": 0.85,
+      "floorLMedian": 0.4406,
+      "outside": 273,
+      "n": 537,
+      "zones": {
+        "away": {
+          "n": 285,
+          "below": 18,
+          "above": 159
+        },
+        "near": {
+          "n": 224,
+          "below": 15,
+          "above": 74
+        },
+        "under": {
+          "n": 28,
+          "below": 7,
+          "above": 0
+        }
+      }
+    },
+    {
+      "minLight": 0.9,
+      "floorLMedian": 0.4608,
+      "outside": 307,
+      "n": 537,
+      "zones": {
+        "away": {
+          "n": 285,
+          "below": 18,
+          "above": 183
+        },
+        "near": {
+          "n": 224,
+          "below": 14,
+          "above": 84
+        },
+        "under": {
+          "n": 28,
+          "below": 7,
+          "above": 1
+        }
+      }
+    },
+    {
+      "minLight": 0.95,
+      "floorLMedian": 0.4799,
+      "outside": 317,
+      "n": 537,
+      "zones": {
+        "away": {
+          "n": 285,
+          "below": 12,
+          "above": 186
+        },
+        "near": {
+          "n": 224,
+          "below": 14,
+          "above": 96
+        },
+        "under": {
+          "n": 28,
+          "below": 6,
+          "above": 3
+        }
+      }
+    },
+    {
+      "minLight": 1,
+      "floorLMedian": 0.498,
+      "outside": 317,
+      "n": 537,
+      "zones": {
+        "away": {
+          "n": 285,
+          "below": 5,
+          "above": 187
+        },
+        "near": {
+          "n": 224,
+          "below": 11,
+          "above": 104
+        },
+        "under": {
+          "n": 28,
+          "below": 6,
+          "above": 4
+        }
+      }
+    }
+  ],
+  "best": 0.55,
+  "inVillageEvening": 0.55,
+  "matches": true
+}

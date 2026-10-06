@@ -141,6 +141,17 @@ export const COLOURS = {
 };
 
 /**
+ * ORDER 302d (Anders 2026-10-06) — gatans figurer tar scenens ljus och har en lägsta ljushet på kvällen
+ * (scene/village/streetFigureLight.ts). minLight är andelen av figurens egen färg som kroppen minst lyser
+ * med, före exponeringen och tonmappningen. Golvet gäller medan byns kvällsljus är tänt (EveningLighting.tsx).
+ *
+ * PLATSHÅLLARE: värdet levereras av Design. Startvärdet 0,55 är ur 302c:s lyktmätning
+ * (scripts/order302d-startvarde.mjs → reports/order302d/startvarde.json): det värde som ger flest mätningar
+ * inom bandet 1,8–3,6 mot bakgrunden som 302c mätte.
+ */
+export const STREET_FIGURE_LIGHT = { minLight: 0.55 };
+
+/**
  * Kön vid vår dörr har inga egna platser här: den står på rummets köplatser (wineBarRoom.ts room.queueSpots,
  * dörrmattan och trottoaren), omräknade till byn med rummets placering. Medlemmarna står inom
  * memberRadiusM från platsen, bredvid varandra. Köns gränser står i balance (VILLAGE_QUEUE).
