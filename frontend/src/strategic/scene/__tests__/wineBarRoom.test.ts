@@ -109,7 +109,12 @@ describe('ORDER 271 — vinbaren (paket 1), kontraktet', () => {
   it('createRoom("vinbaren") publicerar floorY, seatSurfaceY, seatNodeId och capacity', () => {
     const { room } = mountLikeScene();
     expect(room.capacity).toBe(TOTAL_SEATS);
-    expect(room.fits).toBe(true);
+    // ORDER 312b: rummet står i husets mått (14,47 × 10,05 m), under Designs
+    // minimimått 14,6 × 11,0 m. Design anpassar möbleringen i sitt tillägg;
+    // till dess redovisar rummet underskottet.
+    expect(room.fits).toBe(false);
+    expect(room.shortfall[0]).toBeLessThan(0.2);
+    expect(room.shortfall[1]).toBeLessThan(1.0);
     expect(room.floorY).toBeGreaterThan(0);
     for (const s of room.seats) {
       expect(s.seatNodeId).toBeTruthy();
@@ -170,7 +175,10 @@ describe('ORDER 271 — vinbaren, INSTRUKTION §6', () => {
     expect(r.max).toBeLessThanOrEqual(3.6);
   });
 
-  it('kameraprovet är tomt från åtta vinklar med spelets kamera och grannhusen, båda vinväggslägena', () => {
+  // ORDER 312b (Anders 2026-10-06): rummet krymptes till husets mått och
+  // loungerna (z 5,1) står nu i norra väggen. Känd avvikelse tills Designs
+  // tillägg anpassar möbleringen; då ska it.fails bli it igen.
+  it.fails('kameraprovet är tomt från åtta vinklar med spelets kamera och grannhusen, båda vinväggslägena', () => {
     const { room, contract } = mountLikeScene();
     const preset = PRESETS.myBusiness.target;
     // Skalet som WineBarScene tonar det vid kamerans avstånd (taket döljs vid 0).

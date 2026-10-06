@@ -14,7 +14,9 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { ROLE_SPECS } from '../content/roadRoles';
-import { boxFootprint, roadOverlapsForPolygon, roadRenderPieces, stripEdges } from '../content/roadSurface';
+import { boxFootprint, roadOverlapsForPolygon, roadQuadsAt, roadRenderPieces, stripEdges } from '../content/roadSurface';
+import { deliveryStop } from '../business/deliveryStop';
+import { computePlayerBusinessInterior } from '../business/interiorLayout';
 import type { Vec2Tuple } from '../content/world';
 import {
   auditDeliveryVan,
@@ -30,12 +32,8 @@ import {
 
 const show = (c: Conflict[]) => c.map((x) => `${x.kind} ${x.subject} @(${x.at[0]}, ${x.at[1]}) ${x.other ?? ''} ${x.depthM ?? x.lengthM ?? ''}`).join('\n');
 
-// ORDER 271 (businessRoom.ts roomSizeFor): vinbarens rum byggs i Designs
-// minimimått 14,6 × 11,0 m, centrerat i huset w869907975 som är 14,5 × 10,1 m.
-// Väggarna står därför upp till 0,47 m utanför husets fot på långsidorna.
-// Det är en känd, öppen fråga till Design och Vision Owner (ORDER 271 och
-// ORDER_312_RAPPORT.md). Testet tillåter just det, och inget mer.
-const KNOWN_ROOM_OVERHANG_M = 0.5;
+// ORDER 312b (Anders 2026-10-06): vinbarens rum byggs i husets mått
+// (businessRoom.ts roomSizeFor), så inget överhäng tillåts.
 
 describe('ORDER 312 — inget i spelet ligger på vägen', () => {
   beforeAll(() => {
@@ -75,15 +73,20 @@ describe('ORDER 312 — inget i spelet ligger på vägen', () => {
     expect(c, show(c)).toEqual([]);
   });
 
-  it('3. vinbaren: entrén i husets fot och mot en gata, rummet inte på vägen eller i grannhuset', () => {
+  it('2b. leveransbilen stannar på Prästgatan (Anders 2026-10-06, ORDER 312b)', () => {
+    const layout = computePlayerBusinessInterior();
+    const stop = deliveryStop(layout!);
+    expect(stop).not.toBeNull();
+    const names = (p: Vec2Tuple) => roadQuadsAt(p[0], p[1]).filter((q) => q.surface === 'carriageway').map((q) => q.piece.road.name);
+    expect(names(stop!.bay)).toContain('Prästgatan');
+    expect(names(stop!.approach)).toContain('Prästgatan');
+  });
+
+  it('3. vinbaren: entrén i husets fot och mot en gata, rummet inne i huset, inte på vägen eller i grannhuset', () => {
     const wb = auditWineBar();
     expect(wb).not.toBeNull();
-    const other = wb!.conflicts.filter((c) => c.kind !== 'winebar-room-outside-building');
-    expect(other, show(other)).toEqual([]);
+    expect(wb!.conflicts, show(wb!.conflicts)).toEqual([]);
     expect(wb!.facing.hit).not.toBeNull();
-    // Den kända avvikelsen (ORDER 271): bara rummets hörn, högst 0,5 m ut.
-    const overhang = wb!.conflicts.filter((c) => c.kind === 'winebar-room-outside-building');
-    for (const c of overhang) expect(c.depthM!, show([c])).toBeLessThanOrEqual(KNOWN_ROOM_OVERHANG_M);
   });
 
   it('4. rivalernas krogar och vagnarnas platser står på land, inte på vägen', () => {

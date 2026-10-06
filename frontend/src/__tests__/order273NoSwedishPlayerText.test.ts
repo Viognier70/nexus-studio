@@ -31,6 +31,8 @@ const ALLOWED = [
   'Björken', 'Prästgatans krog', 'Bergsmansöl', 'Torgets vinkällare', 'prästgatans', 'bergsmansöl', 'vinkällare',
   // ORDER 297 — byns krogar (Designs Byn i kvällsljus).
   'Sjöboden',
+  // ORDER 312b — gatan leveransbilen stannar på (kartans namn, inte spelartext).
+  'Prästgatan',
   // ORDER 301 — avhandlingarnas titlar i Kunskapsgrundens källor (egennamn).
   'Sinnesupplevelsens estetik: vinprovaren, i gränslandet mellan konsten och vetenskapen', 'Den arbetande gommen: vinprovarens dubbla grepp, från analys till upplevelse',
   // Kodens interna nycklar (typer och uppräkningar), inte spelartext.

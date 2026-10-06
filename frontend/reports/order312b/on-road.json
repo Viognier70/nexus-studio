@@ -1,0 +1,155 @@
+{
+  "toleranceM": 0.1,
+  "counts": {},
+  "conflicts": [],
+  "wineBar": {
+    "buildingId": "w869907975",
+    "room": {
+      "centre": [
+        31.6,
+        -16.74
+      ],
+      "width": 14.47,
+      "depth": 10.05,
+      "angle": -1.69,
+      "corners": [
+        [
+          27.49,
+          -8.94
+        ],
+        [
+          25.73,
+          -23.31
+        ],
+        [
+          35.7,
+          -24.53
+        ],
+        [
+          37.47,
+          -10.17
+        ]
+      ]
+    },
+    "entrance": [
+      30.79,
+      -23.34
+    ],
+    "facing": {
+      "hit": "w122157681 (Torget)",
+      "role": "village_street",
+      "distanceM": 2.75,
+      "blockedBy": null
+    },
+    "conflicts": []
+  },
+  "truckStands": [
+    {
+      "truck": "grillvagnen",
+      "day": "tue",
+      "spot": "maltidens-hus",
+      "k": 0,
+      "centre": [
+        547,
+        -60.87
+      ]
+    },
+    {
+      "truck": "grillvagnen",
+      "day": "wed",
+      "spot": "sjon",
+      "k": 0,
+      "centre": [
+        376.16,
+        230.32
+      ]
+    },
+    {
+      "truck": "tacovagnen",
+      "day": "wed",
+      "spot": "maltidens-hus",
+      "k": 0,
+      "centre": [
+        547,
+        -60.87
+      ]
+    },
+    {
+      "truck": "grillvagnen",
+      "day": "thu",
+      "spot": "torget",
+      "k": 0,
+      "centre": [
+        1.2,
+        -22.03
+      ]
+    },
+    {
+      "truck": "tacovagnen",
+      "day": "thu",
+      "spot": "maltidens-hus",
+      "k": 0,
+      "centre": [
+        547,
+        -60.87
+      ]
+    },
+    {
+      "truck": "grillvagnen",
+      "day": "fri",
+      "spot": "torget",
+      "k": 0,
+      "centre": [
+        1.2,
+        -22.03
+      ]
+    },
+    {
+      "truck": "tacovagnen",
+      "day": "fri",
+      "spot": "sjon",
+      "k": 0,
+      "centre": [
+        376.16,
+        230.32
+      ]
+    },
+    {
+      "truck": "grillvagnen",
+      "day": "sat",
+      "spot": "sjon",
+      "k": 0,
+      "centre": [
+        376.16,
+        230.32
+      ]
+    },
+    {
+      "truck": "tacovagnen",
+      "day": "sat",
+      "spot": "maltidens-hus",
+      "k": 0,
+      "centre": [
+        547,
+        -60.87
+      ]
+    }
+  ],
+  "deliveryStop": {
+    "bay": [
+      26.6,
+      0.24
+    ],
+    "approach": [
+      33.32,
+      4.58
+    ],
+    "street": "Prästgatan"
+  },
+  "checked": {
+    "renderedFootprints": 322,
+    "outbuildings": 56,
+    "trafficRoads": 209,
+    "villageLifeRoutes": 4
+  }
+}

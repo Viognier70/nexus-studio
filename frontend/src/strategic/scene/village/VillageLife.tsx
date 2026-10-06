@@ -33,7 +33,7 @@ import { GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, VILLAGE, VILLAGE_QUEUE } from
 import { clockMinutes } from '../../../sim/clock';
 import { busTonight, PLAYER_VENUE, POOL_TYPES, venuesTonight, type PoolType } from '../../../sim/village';
 import { plannedVillage } from '../../../sim/villageLive';
-import { driveNetwork, pointAlong, pointAlongSeg, routeBetween, routeLength, sidewalkOffsets, walkNetwork } from '../../content/villageNetwork';
+import { driveNetwork, pointAlong, routeBetween, routeLength, sidewalkOffsets, walkerPoint, walkNetwork } from '../../content/villageNetwork';
 import { streetWordNow } from '../../../sim/streetWord';
 import { hashKey } from '../../util/hash';
 import { CAMPUS_POINT, truckSpotPlace, venuePlaces, villageSources } from '../../content/villagePlaces';
@@ -774,10 +774,8 @@ export function VillageLife() {
     for (const w of L.walkers) {
       // ORDER 302 — sällskapet på sin trottoar (sidan och avståndet från
       // mittlinjen), medlemmarna två i bredd.
-      const a = w.standAt ? null : pointAlongSeg(w.route, w.s);
-      const off = a && w.offsets ? w.offsets[a.seg] * (1 - a.t) + (w.offsets[a.seg + 1] ?? w.offsets[a.seg]) * a.t : 0;
       const side = w.side ?? 1;
-      const p = w.standAt || !a ? { x: w.standAt?.[0] ?? 0, z: w.standAt?.[1] ?? 0, heading: 0 } : { x: a.x + Math.cos(a.heading) * off * side, z: a.z - Math.sin(a.heading) * off * side, heading: a.heading };
+      const p = w.standAt ? { x: w.standAt[0], z: w.standAt[1], heading: 0 } : walkerPoint(w.route, w.offsets, w.s, side);
       const gathering = w.gatherUntil != null;
       w.drawnAt = [p.x, p.z];
       tmp.c.set(TYPE_COLOUR[w.type] ?? WARM.guest.middle);

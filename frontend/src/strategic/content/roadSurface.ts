@@ -358,6 +358,56 @@ export function segmentOnCarCarriageway(a: Vec2Tuple, b: Vec2Tuple, stepM = 1): 
   return true;
 }
 
+// ---------- Gångytan (ORDER 312b) ----------
+
+/**
+ * Ligger punkten på en ritad gångyta: en gång-, cykel- eller skogsväg
+ * (ROLE_SPECS.ped), en ritad trottoar som inte ligger på en körbana för
+ * bilar, eller kanten av en bilgata utan trottoar (EDGE_WALK_M)? Anders 2026-10-06: folk till fots går bara där, på samma sätt
+ * som bilarna bara kör på körbanan.
+ */
+export function onWalkSurface(x: number, z: number): boolean {
+  const qs = quadsNear(x, x, z, z).filter((q) => pointInPolygon(q.quad, x, z));
+  if (qs.some((q) => q.piece.ped && q.surface === 'carriageway')) return true;
+  const car = qs.filter((q) => !q.piece.ped && q.surface === 'carriageway');
+  if (car.length > 0) return car.every((q) => q.piece.sidewalk === 0 && distToSegment(x, z, q.a, q.b) >= q.piece.half - EDGE_WALK_M);
+  return qs.some((q) => q.surface === 'sidewalk');
+}
+
+/**
+ * På en bilgata utan ritad trottoar går man i körbanans kant: inom
+ * EDGE_WALK_M (1,0 m) från kanten, aldrig mitt i gatan (ORDER 302). ORDER 312b,
+ * Claude Codes val: utan det når ingen Sjöboden (servicevägen w860753013)
+ * eller de andra 140 servicegatorna; frågan står i ORDER_312B_RAPPORT.md.
+ */
+export const EDGE_WALK_M = 1.0;
+
+function distToSegment(x: number, z: number, a: Vec2Tuple, b: Vec2Tuple): number {
+  const dx = b[0] - a[0];
+  const dz = b[1] - a[1];
+  const L2 = dx * dx + dz * dz;
+  const t = L2 > 0 ? Math.max(0, Math.min(1, ((x - a[0]) * dx + (z - a[1]) * dz) / L2)) : 0;
+  return Math.hypot(a[0] + dx * t - x, a[1] + dz * t - z);
+}
+
+/** OSM-vägarna (wayId) vars ritade körbana för bilar täcker punkten. */
+export function carriagewayWaysAt(x: number, z: number): Set<string> {
+  const out = new Set<string>();
+  for (const q of quadsNear(x, x, z, z)) {
+    if (q.surface === 'carriageway' && !q.piece.ped && pointInPolygon(q.quad, x, z)) out.add(q.piece.wayId);
+  }
+  return out;
+}
+
+/** OSM-vägarna (wayId) vars ritade mittlinje-remsa (körbana eller gångväg) täcker punkten. */
+export function roadWaysAt(x: number, z: number): Set<string> {
+  const out = new Set<string>();
+  for (const q of quadsNear(x, x, z, z)) {
+    if (q.surface === 'carriageway' && pointInPolygon(q.quad, x, z)) out.add(q.piece.wayId);
+  }
+  return out;
+}
+
 /**
  * ORDER 312 — en bils linje klipps till den ritade körbanan för bilar. Linjen
  * provas var `stepM` meter: mittlinjen, ± `lateralM` åt sidorna och

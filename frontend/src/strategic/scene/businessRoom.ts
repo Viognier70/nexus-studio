@@ -215,17 +215,24 @@ function moduleFor(roomClass: RoomClass): any {
 }
 
 /**
- * ORDER 271 — rummets mått i spelarens byggnad. Vinbaren ur Designs paket 1
- * kräver minst MIN_WIDTH_M × MIN_DEPTH_M (14,6 × 11,0 m); byggnadens OBB
- * (w869907975, interiorLayout) är 14,5 × 10,1 m. Under minimimåtten står
- * loungerna (z 5,1) utanför norra väggen och kameraprovet faller. Rummet
- * byggs därför i minst minimimåtten, centrerat i byggnaden: väggarna står
- * upp till 0,45 m utanför OSM-polygonen på långsidorna. Övriga klasser får
- * byggnadens mått oförändrade. Öppen fråga till Design/VO i rapporten.
+ * Rummets mått i spelarens byggnad: byggnadens OBB (interiorLayout),
+ * oförändrad för alla klasser.
+ *
+ * ORDER 271 byggde vinbaren i Designs minimimått (WineBar.MIN_WIDTH_M ×
+ * MIN_DEPTH_M, 14,6 × 11,0 m) i huset w869907975 som är 14,51 × 10,09 m, så
+ * väggarna stod 0,46–0,47 m utanför husets fot (ORDER 312 §4). Anders
+ * 2026-10-06 (ORDER 312b): rummet krymps till husets mått; Design anpassar
+ * möbleringen i sitt tillägg. Testet order312PaVagen tillåter inget överhäng.
+ *
+ * OBB:n är husets omskrivna rektangel; OSM-polygonen är inte exakt
+ * rektangulär, så OBB:ns hörn ligger upp till 0,01 m utanför husets fot
+ * (reports/order312b/on-road-utan-indrag.json, wineBar.conflicts). Rummet dras därför in
+ * ROOM_INSET_M på varje sida: vinbaren blir 14,47 × 10,05 m.
  */
-export function roomSizeFor(roomClass: RoomClass, width: number, depth: number): { width: number; depth: number } {
-  if (roomClass !== 'vinbaren') return { width, depth };
-  return { width: Math.max(width, WineBar.MIN_WIDTH_M), depth: Math.max(depth, WineBar.MIN_DEPTH_M) };
+export const ROOM_INSET_M = 0.02;
+
+export function roomSizeFor(_roomClass: RoomClass, width: number, depth: number): { width: number; depth: number } {
+  return { width: width - 2 * ROOM_INSET_M, depth: depth - 2 * ROOM_INSET_M };
 }
 
 /**

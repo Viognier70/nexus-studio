@@ -1,0 +1,148 @@
+{
+  "phase": "efter",
+  "viewport": "1440x900",
+  "save": "reports/order284/save-mandag-vinbaren.json (+3 dagar, torsdag)",
+  "errors": [],
+  "shots": [
+    {
+      "file": "efter-01-vinbarens-rum-hörn.png",
+      "target": [
+        25.71,
+        -23.32
+      ],
+      "kinds": [
+        "vinbarens-rum-hörn"
+      ],
+      "subjects": [
+        "vinbaren:w869907975 (rummet 14,47 × 10,05 m)"
+      ],
+      "from": "efter",
+      "camFocus": [
+        25.7,
+        -23.4
+      ],
+      "camDistance": 81,
+      "focusErrorM": 0.1
+    },
+    {
+      "file": "efter-02-vinbarens-rum-hörn.png",
+      "target": [
+        37.49,
+        -10.15
+      ],
+      "kinds": [
+        "vinbarens-rum-hörn"
+      ],
+      "subjects": [
+        "vinbaren:w869907975 (rummet 14,47 × 10,05 m)"
+      ],
+      "from": "efter",
+      "camFocus": [
+        37.5,
+        -10.1
+      ],
+      "camDistance": 81,
+      "focusErrorM": 0.1
+    },
+    {
+      "file": "efter-03-leveransstopp.png",
+      "target": [
+        26.6,
+        0.24
+      ],
+      "kinds": [
+        "leveransstopp"
+      ],
+      "subjects": [
+        "leveransbilen på Prästgatan (on-road.json deliveryStop.bay)"
+      ],
+      "from": "efter",
+      "camFocus": [
+        26.6,
+        0.2
+      ],
+      "camDistance": 81,
+      "focusErrorM": 0
+    },
+    {
+      "file": "efter-04-gående.png",
+      "target": [
+        12.49,
+        -27.59
+      ],
+      "kinds": [
+        "gående"
+      ],
+      "subjects": [
+        "Torget"
+      ],
+      "from": "efter",
+      "camFocus": [
+        12.4,
+        -27.6
+      ],
+      "camDistance": 81,
+      "focusErrorM": 0.1
+    },
+    {
+      "file": "efter-05-gående.png",
+      "target": [
+        44,
+        17
+      ],
+      "kinds": [
+        "gående"
+      ],
+      "subjects": [
+        "Prästgatan × Västra Bergvägen"
+      ],
+      "from": "efter",
+      "camFocus": [
+        43.4,
+        16.1
+      ],
+      "camDistance": 81,
+      "focusErrorM": 1.1
+    },
+    {
+      "file": "efter-06-gående.png",
+      "target": [
+        160,
+        -95
+      ],
+      "kinds": [
+        "gående"
+      ],
+      "subjects": [
+        "Östra Bergvägen"
+      ],
+      "from": "efter",
+      "camFocus": [
+        160.1,
+        -94.9
+      ],
+      "camDistance": 48,
+      "focusErrorM": 0.1
+    },
+    {
+      "file": "efter-07-gående.png",
+      "target": [
+        411,
+        0
+      ],
+      "kinds": [
+        "gående"
+      ],
+      "subjects": [
+        "Hälleforsvägen vid Ingo"
+      ],
+      "from": "efter",
+      "camFocus": [
+        411.2,
+        0.2
+      ],
+      "camDistance": 48,
+      "focusErrorM": 0.3
+    }
+  ]
+}

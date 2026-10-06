@@ -7,7 +7,8 @@
 //
 // Här stannar bilen i stället på den ritade körbanan för bilar närmast
 // lastplatsen (content/roadSurface.ts, samma yta som OsmRoads ritar), i
-// högra körfältet, och kör in längs gatan. Lastplatsen i interiorLayout står
+// högra körfältet, och kör in längs gatan. Gatan kan bestämmas per hus
+// (DELIVERY_STREET). Lastplatsen i interiorLayout står
 // kvar som husets baksida; den här modulen räknar bara bilens väg.
 //
 // Meter, byns ram.
@@ -30,6 +31,16 @@ const APPROACH_ALONG_M = 8;
 /** Bilens halva bredd (DeliveryVan VAN_WIDTH_M / 2) plus 0,2 m till kanten. */
 const VAN_HALF_PLUS_MARGIN_M = 0.9 + 0.2;
 
+/**
+ * Gatan bilen stannar på, per hus (byggnadens id → vägens namn i kartan).
+ * Saknas huset här stannar bilen på närmaste bilgata bakom huset.
+ * Anders 2026-10-06 (ORDER 312b): vinbarens leveranser kommer från
+ * Prästgatan, söder om huset (ORDER 312 lade dem på Västra Bergvägen).
+ */
+export const DELIVERY_STREET: Readonly<Record<string, string>> = {
+  w869907975: 'Prästgatan'
+};
+
 const cache = new WeakMap<object, DeliveryStop | null>();
 
 export function deliveryStop(layout: Pick<InteriorLayout, 'building' | 'deliveryBay' | 'entrance' | 'centre'>): DeliveryStop | null {
@@ -39,8 +50,10 @@ export function deliveryStop(layout: Pick<InteriorLayout, 'building' | 'delivery
   // Baksidan: punkter på gatan som ligger bakom husets mitt (motsatt entrén).
   const back: Vec2Tuple = [layout.centre[0] - layout.entrance[0], layout.centre[1] - layout.entrance[1]];
   let best: { p: Vec2Tuple; dir: Vec2Tuple; half: number; d: number } | null = null;
+  const street = DELIVERY_STREET[layout.building.id];
   for (const piece of roadRenderPieces()) {
     if (piece.ped || !piece.road.car) continue;
+    if (street && piece.road.name !== street) continue;
     for (let i = 1; i < piece.poly.length; i++) {
       const a = piece.poly[i - 1];
       const b = piece.poly[i];
