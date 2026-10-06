@@ -1,0 +1,570 @@
+{
+  "phase": "efter",
+  "viewport": "1440x900",
+  "save": "reports/order284/save-mandag-vinbaren.json (+3 dagar, torsdag)",
+  "errors": [],
+  "shots": [
+    {
+      "file": "efter-01-outbuilding-on-road.png",
+      "target": [
+        183.34,
+        65.82
+      ],
+      "kinds": [
+        "outbuilding-on-road"
+      ],
+      "subjects": [
+        "w193810959:uthus"
+      ],
+      "from": "fore",
+      "camFocus": [
+        184,
+        65.6
+      ],
+      "camDistance": 48,
+      "focusErrorM": 0.7
+    },
+    {
+      "file": "efter-02-outbuilding-on-road.png",
+      "target": [
+        -338.06,
+        -151.89
+      ],
+      "kinds": [
+        "outbuilding-on-road",
+        "car-through-building"
+      ],
+      "subjects": [
+        "w870510856:uthus",
+        "w870510856:uthus",
+        "trafik:car:w1329020083:fram",
+        "trafik:van:w1329020083:fram",
+        "trafik:motorcycle:w1329020083:fram"
+      ],
+      "from": "fore",
+      "camFocus": [
+        -339,
+        -151.7
+      ],
+      "camDistance": 48,
+      "focusErrorM": 1
+    },
+    {
+      "file": "efter-03-outbuilding-on-road.png",
+      "target": [
+        -80.66,
+        -204.51
+      ],
+      "kinds": [
+        "outbuilding-on-road",
+        "car-through-building"
+      ],
+      "subjects": [
+        "w1239589275:uthus",
+        "w1239589275:uthus",
+        "trafik:car:w1329020065:fram",
+        "trafik:van:w1329020065:fram",
+        "trafik:motorcycle:w1329020065:fram"
+      ],
+      "from": "fore",
+      "camFocus": [
+        -80.8,
+        -204.7
+      ],
+      "camDistance": 48,
+      "focusErrorM": 0.2
+    },
+    {
+      "file": "efter-04-outbuilding-on-road.png",
+      "target": [
+        -52.09,
+        -146.46
+      ],
+      "kinds": [
+        "outbuilding-on-road",
+        "car-through-building"
+      ],
+      "subjects": [
+        "w1239589279:uthus",
+        "w1239589279:uthus",
+        "w1239589281:uthus",
+        "w1239589281:uthus",
+        "trafik:car:w1239628612#p1:fram",
+        "trafik:car:w1239628612#p1:bak",
+        "trafik:van:w1239628612#p1:fram",
+        "trafik:van:w1239628612#p1:bak",
+        "trafik:truck:w1239628612#p1:fram",
+        "trafik:truck:w1239628612#p1:bak",
+        "trafik:motorcycle:w1239628612#p1:fram",
+        "trafik:motorcycle:w1239628612#p1:bak"
+      ],
+      "from": "fore",
+      "camFocus": [
+        -52.1,
+        -146.4
+      ],
+      "camDistance": 48,
+      "focusErrorM": 0.1
+    },
+    {
+      "file": "efter-05-outbuilding-on-road.png",
+      "target": [
+        -51.45,
+        -132.46
+      ],
+      "kinds": [
+        "outbuilding-on-road",
+        "car-through-building"
+      ],
+      "subjects": [
+        "w1239589282:uthus",
+        "w1239589282:uthus",
+        "trafik:car:w1239628612#p1:bak",
+        "trafik:van:w1239628612#p1:bak",
+        "trafik:truck:w1239628612#p1:bak",
+        "trafik:motorcycle:w1239628612#p1:bak"
+      ],
+      "from": "fore",
+      "camFocus": [
+        -51.4,
+        -132.5
+      ],
+      "camDistance": 48,
+      "focusErrorM": 0.1
+    },
+    {
+      "file": "efter-06-outbuilding-on-road.png",
+      "target": [
+        -16.75,
+        56.8
+      ],
+      "kinds": [
+        "outbuilding-on-road",
+        "car-through-building"
+      ],
+      "subjects": [
+        "vw-kyr-25:uthus",
+        "vw-kyr-25:uthus",
+        "trafik:car:w122157683:fram",
+        "trafik:car:w122157683:bak",
+        "trafik:van:w122157683:fram",
+        "trafik:van:w122157683:bak",
+        "trafik:truck:w122157683:fram",
+        "trafik:truck:w122157683:bak",
+        "trafik:bus:w122157683:fram",
+        "trafik:bus:w122157683:bak",
+        "trafik:motorcycle:w122157683:bak",
+        "trafik:tourist_bus:w122157683:fram",
+        "trafik:tourist_bus:w122157683:bak"
+      ],
+      "from": "fore",
+      "camFocus": [
+        -16.8,
+        56.8
+      ],
+      "camDistance": 48,
+      "focusErrorM": 0.1
+    },
+    {
+      "file": "efter-07-outbuilding-on-road.png",
+      "target": [
+        -348.2,
+        -169.5
+      ],
+      "kinds": [
+        "outbuilding-on-road",
+        "car-through-building"
+      ],
+      "subjects": [
+        "vw-hjv-5:uthus",
+        "trafik:car:w862853198:fram",
+        "trafik:car:w862853198:bak",
+        "trafik:motorcycle:w862853198:fram",
+        "trafik:motorcycle:w862853198:bak"
+      ],
+      "from": "fore",
+      "camFocus": [
+        -348.3,
+        -169.7
+      ],
+      "camDistance": 48,
+      "focusErrorM": 0.2
+    },
+    {
+      "file": "efter-08-winebar-room-outside-building.png",
+      "target": [
+        27.03,
+        -8.82
+      ],
+      "kinds": [
+        "winebar-room-outside-building",
+        "car-off-car-road"
+      ],
+      "subjects": [
+        "vinbaren:w869907975",
+        "vinbaren:w869907975",
+        "leveransbilen"
+      ],
+      "from": "fore",
+      "camFocus": [
+        27.3,
+        -8.6
+      ],
+      "camDistance": 81,
+      "focusErrorM": 0.3
+    },
+    {
+      "file": "efter-09-winebar-room-outside-building.png",
+      "target": [
+        25.25,
+        -23.31
+      ],
+      "kinds": [
+        "winebar-room-outside-building"
+      ],
+      "subjects": [
+        "vinbaren:w869907975",
+        "vinbaren:w869907975"
+      ],
+      "from": "fore",
+      "camFocus": [
+        25.2,
+        -23.3
+      ],
+      "camDistance": 81,
+      "focusErrorM": 0.1
+    },
+    {
+      "file": "efter-10-truck-on-road.png",
+      "target": [
+        0.19,
+        -29.44
+      ],
+      "kinds": [
+        "truck-on-road",
+        "truck-in-building"
+      ],
+      "subjects": [
+        "vagn@torget",
+        "vagn@torget",
+        "vagn@torget#2",
+        "vagn@torget#2"
+      ],
+      "from": "fore",
+      "camFocus": [
+        0.1,
+        -29.6
+      ],
+      "camDistance": 81,
+      "focusErrorM": 0.2
+    },
+    {
+      "file": "efter-11-truck-on-road.png",
+      "target": [
+        542.81,
+        -54.63
+      ],
+      "kinds": [
+        "truck-on-road"
+      ],
+      "subjects": [
+        "vagn@maltidens-hus#2"
+      ],
+      "from": "fore",
+      "camFocus": [
+        542.8,
+        -56.1
+      ],
+      "camDistance": 46,
+      "focusErrorM": 1.5
+    },
+    {
+      "file": "efter-12-car-off-car-road.png",
+      "target": [
+        -262.5,
+        68.24
+      ],
+      "kinds": [
+        "car-off-car-road"
+      ],
+      "subjects": [
+        "byns-bil:infart-1→parkeringen"
+      ],
+      "from": "fore",
+      "camFocus": [
+        -261.3,
+        67.5
+      ],
+      "camDistance": 48,
+      "focusErrorM": 1.4
+    },
+    {
+      "file": "efter-13-car-off-car-road.png",
+      "target": [
+        -65.22,
+        -29.83
+      ],
+      "kinds": [
+        "car-off-car-road"
+      ],
+      "subjects": [
+        "byns-bil:infart-1→parkeringen"
+      ],
+      "from": "fore",
+      "camFocus": [
+        -65.1,
+        -29.8
+      ],
+      "camDistance": 48,
+      "focusErrorM": 0.1
+    },
+    {
+      "file": "efter-14-car-off-car-road.png",
+      "target": [
+        -19.32,
+        -27.16
+      ],
+      "kinds": [
+        "car-off-car-road"
+      ],
+      "subjects": [
+        "byns-bil:infart-1→parkeringen"
+      ],
+      "from": "fore",
+      "camFocus": [
+        -19.6,
+        -26.7
+      ],
+      "camDistance": 46,
+      "focusErrorM": 0.5
+    },
+    {
+      "file": "efter-15-car-off-car-road.png",
+      "target": [
+        400.53,
+        3.62
+      ],
+      "kinds": [
+        "car-off-car-road"
+      ],
+      "subjects": [
+        "byns-bil:infart-2→parkeringen"
+      ],
+      "from": "fore",
+      "camFocus": [
+        400.4,
+        3.2
+      ],
+      "camDistance": 46,
+      "focusErrorM": 0.4
+    },
+    {
+      "file": "efter-16-car-off-car-road.png",
+      "target": [
+        305.89,
+        37.52
+      ],
+      "kinds": [
+        "car-off-car-road"
+      ],
+      "subjects": [
+        "byns-bil:infart-2→parkeringen"
+      ],
+      "from": "fore",
+      "camFocus": [
+        306,
+        38
+      ],
+      "camDistance": 46,
+      "focusErrorM": 0.5
+    },
+    {
+      "file": "efter-17-car-off-car-road.png",
+      "target": [
+        75.23,
+        13.59
+      ],
+      "kinds": [
+        "car-off-car-road"
+      ],
+      "subjects": [
+        "byns-bil:infart-2→parkeringen"
+      ],
+      "from": "fore",
+      "camFocus": [
+        74.7,
+        14.1
+      ],
+      "camDistance": 46,
+      "focusErrorM": 0.7
+    },
+    {
+      "file": "efter-18-car-on-footpath.png",
+      "target": [
+        -442.52,
+        -146.04
+      ],
+      "kinds": [
+        "car-on-footpath"
+      ],
+      "subjects": [
+        "trafik:car:w191323431:bak",
+        "trafik:motorcycle:w191323431:bak"
+      ],
+      "from": "fore",
+      "camFocus": [
+        -442.6,
+        -145.5
+      ],
+      "camDistance": 46,
+      "focusErrorM": 0.5
+    },
+    {
+      "file": "efter-19-car-off-car-road.png",
+      "target": [
+        -38.4,
+        -84.18
+      ],
+      "kinds": [
+        "car-off-car-road"
+      ],
+      "subjects": [
+        "trafik:car:w1239628612#p1:fram",
+        "trafik:car:w1239628612#p1:bak",
+        "trafik:van:w1239628612#p1:fram",
+        "trafik:van:w1239628612#p1:bak",
+        "trafik:truck:w1239628612#p1:fram",
+        "trafik:truck:w1239628612#p1:bak",
+        "trafik:motorcycle:w1239628612#p1:fram",
+        "trafik:motorcycle:w1239628612#p1:bak"
+      ],
+      "from": "fore",
+      "camFocus": [
+        -38.5,
+        -84.3
+      ],
+      "camDistance": 48,
+      "focusErrorM": 0.2
+    },
+    {
+      "file": "efter-20-car-on-footpath.png",
+      "target": [
+        729.35,
+        177.22
+      ],
+      "kinds": [
+        "car-on-footpath"
+      ],
+      "subjects": [
+        "trafik:car:w1329020045:fram",
+        "trafik:van:w1329020045:fram",
+        "trafik:motorcycle:w1329020045:fram"
+      ],
+      "from": "fore",
+      "camFocus": [
+        729.7,
+        177.5
+      ],
+      "camDistance": 48,
+      "focusErrorM": 0.4
+    },
+    {
+      "file": "efter-21-car-on-footpath.png",
+      "target": [
+        -380.53,
+        112.85
+      ],
+      "kinds": [
+        "car-on-footpath"
+      ],
+      "subjects": [
+        "trafik:car:w1329020063:fram",
+        "trafik:motorcycle:w1329020063:fram"
+      ],
+      "from": "fore",
+      "camFocus": [
+        -379.9,
+        111.8
+      ],
+      "camDistance": 46,
+      "focusErrorM": 1.2
+    },
+    {
+      "file": "efter-22-car-off-car-road.png",
+      "target": [
+        -88.5,
+        -217.41
+      ],
+      "kinds": [
+        "car-off-car-road"
+      ],
+      "subjects": [
+        "trafik:car:w1329020065:fram",
+        "trafik:car:w1329020065:bak",
+        "trafik:van:w1329020065:fram",
+        "trafik:van:w1329020065:bak",
+        "trafik:motorcycle:w1329020065:fram",
+        "trafik:motorcycle:w1329020065:bak"
+      ],
+      "from": "fore",
+      "camFocus": [
+        -88.6,
+        -217.5
+      ],
+      "camDistance": 48,
+      "focusErrorM": 0.1
+    },
+    {
+      "file": "efter-23-car-off-car-road.png",
+      "target": [
+        -96.82,
+        -229.85
+      ],
+      "kinds": [
+        "car-off-car-road"
+      ],
+      "subjects": [
+        "trafik:car:w1329020065#v1:fram",
+        "trafik:car:w1329020065#v1:bak",
+        "trafik:van:w1329020065#v1:fram",
+        "trafik:van:w1329020065#v1:bak",
+        "trafik:truck:w1329020065#v1:fram",
+        "trafik:truck:w1329020065#v1:bak",
+        "trafik:bus:w1329020065#v1:fram",
+        "trafik:bus:w1329020065#v1:bak",
+        "trafik:motorcycle:w1329020065#v1:fram",
+        "trafik:motorcycle:w1329020065#v1:bak",
+        "trafik:tourist_bus:w1329020065#v1:fram",
+        "trafik:tourist_bus:w1329020065#v1:bak"
+      ],
+      "from": "fore",
+      "camFocus": [
+        -96.9,
+        -229.8
+      ],
+      "camDistance": 48,
+      "focusErrorM": 0.1
+    },
+    {
+      "file": "efter-24-car-on-footpath.png",
+      "target": [
+        -806.6,
+        1076.46
+      ],
+      "kinds": [
+        "car-on-footpath"
+      ],
+      "subjects": [
+        "trafik:car:w1329020106:fram",
+        "trafik:motorcycle:w1329020106:fram"
+      ],
+      "from": "fore",
+      "camFocus": [
+        31.8,
+        -17
+      ],
+      "camDistance": 41,
+      "focusErrorM": 1377.9
+    }
+  ]
+}

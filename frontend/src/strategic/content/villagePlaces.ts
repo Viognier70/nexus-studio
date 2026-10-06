@@ -66,6 +66,47 @@ export function venuePlaces(): Record<string, VenuePlace> {
   return out;
 }
 
+// Vagnens mått (VillageVenues makeTruck): lådan 2,4 m bred, från −3,2 till
+// +3,6 m längs vagnen (skåpet och hytten). Meter.
+export const TRUCK_BODY = { width: 2.4, zMin: -3.2, zMax: 3.6 } as const;
+
+export interface TruckPlacement { x: number; z: number; rotationY: number }
+
+// ORDER 312 — var vagnarna står, som data. Förut räknades platsen ur
+// gatunätets nod närmast TRUCK_SPOT_POINTS, 4,2 m åt sidan. På torget
+// hamnade grillvagnen då i Torgkrogens hus (w869907973) och på Torgets
+// trottoar, (0,74, −30,70). Nu står varje plats här: vagnens mitt i byns ram
+// (meter) och rotation.y. Luckan (lokala +x) vetter mot gatan; vagn nummer
+// två står 7 m bakom (lokala −z). Testet order312PaVagen.test.ts prövar att
+// båda vagnarna på varje plats står på land, inte på en väg och inte i ett hus.
+//   - torget: på torgytan söder om Torget (w122157681), luckan mot norr;
+//   - maltidens-hus: 4 m norr om den gamla platsen, där vagn nummer två inte
+//     står på gångvägen w983402520;
+//   - sjon: där den gamla regeln ställde den (den stod fritt).
+export const TRUCK_STANDS: Record<TruckSpot, TruckPlacement> = {
+  torget: { x: 1.2, z: -22.03, rotationY: Math.PI / 2 },
+  'maltidens-hus': { x: 547, z: -60.87, rotationY: Math.PI },
+  sjon: { x: 376.16, z: 230.32, rotationY: 1.485 }
+};
+
+/**
+ * Var vagnen står på kvällens plats (VillageVenues ritar den här). `k` är
+ * vagnens nummer bland vagnarna på samma plats (de står efter varandra).
+ */
+export function truckPlacement(spot: TruckSpot, k: number): TruckPlacement {
+  const s = TRUCK_STANDS[spot];
+  return {
+    x: s.x - Math.sin(s.rotationY) * k * 7,
+    z: s.z - Math.cos(s.rotationY) * k * 7,
+    rotationY: s.rotationY
+  };
+}
+
+/** ORDER 312 — lyktan och skenet vid en krogs dörr (VillageVenues): 60 % mot dörrnoden från husets mitt. */
+export function venueLampPoint(p: VenuePlace): Vec2 {
+  return [p.doorPoint[0] * 0.6 + p.centre[0] * 0.4, p.doorPoint[1] * 0.6 + p.centre[1] * 0.4];
+}
+
 export function truckSpotPlace(spot: TruckSpot): VenuePlace {
   const g = walkNetwork();
   const p = TRUCK_SPOT_POINTS[spot];

@@ -19,6 +19,7 @@
 // along the building's own axis. Fades in/out with a small opacity
 // ramp at the start and end of the trip so it doesn't pop.
 
+import { deliveryStop } from '../business/deliveryStop';
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
@@ -100,11 +101,17 @@ export function DeliveryVan() {
       return;
     }
     g.visible = true;
-    const [wx, wz] = progressPosition(d.progress, layout.deliveryApproach, layout.deliveryBay);
+    // ORDER 312 — bilen stannar på gatan bakom krogen (business/deliveryStop.ts),
+    // inte på gården: lastplatsen i layouten är husets baksida, bilens väg
+    // går längs den ritade körbanan. Utan gata bakom huset: som förut.
+    const stop = deliveryStop(layout);
+    const [wx, wz] = stop
+      ? progressPosition(d.progress, stop.approach, stop.bay)
+      : progressPosition(d.progress, layout.deliveryApproach, layout.deliveryBay);
     g.position.set(wx, VAN_Y, wz);
-    // Rotate the van to align with the OBB's long axis (same convention
-    // as tables + bar in PlayerBusiness). mesh rotation-Y = -worldAngle.
-    g.rotation.y = -layout.worldAngle;
+    // Bilen längs gatan (lokala +x, hytten, mot lastplatsen); utan gata
+    // längs rummets axel som förut (rotation-Y = -worldAngle).
+    g.rotation.y = stop ? stop.rotationY : -layout.worldAngle;
     const op = progressOpacity(d.progress);
     for (const mat of [bodyMatRef.current, cabMatRef.current]) {
       if (!mat) continue;

@@ -1,0 +1,235 @@
+{
+  "toleranceM": 0.1,
+  "counts": {
+    "winebar-room-outside-building": 4
+  },
+  "conflicts": [
+    {
+      "kind": "winebar-room-outside-building",
+      "subject": "vinbaren:w869907975",
+      "at": [
+        27.03,
+        -8.82
+      ],
+      "depthM": 0.46,
+      "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+    },
+    {
+      "kind": "winebar-room-outside-building",
+      "subject": "vinbaren:w869907975",
+      "at": [
+        25.25,
+        -23.31
+      ],
+      "depthM": 0.46,
+      "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+    },
+    {
+      "kind": "winebar-room-outside-building",
+      "subject": "vinbaren:w869907975",
+      "at": [
+        36.17,
+        -24.65
+      ],
+      "depthM": 0.47,
+      "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+    },
+    {
+      "kind": "winebar-room-outside-building",
+      "subject": "vinbaren:w869907975",
+      "at": [
+        37.95,
+        -10.16
+      ],
+      "depthM": 0.46,
+      "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+    }
+  ],
+  "wineBar": {
+    "buildingId": "w869907975",
+    "room": {
+      "centre": [
+        31.6,
+        -16.74
+      ],
+      "width": 14.6,
+      "depth": 11,
+      "angle": -1.69,
+      "corners": [
+        [
+          27.03,
+          -8.82
+        ],
+        [
+          25.25,
+          -23.31
+        ],
+        [
+          36.17,
+          -24.65
+        ],
+        [
+          37.95,
+          -10.16
+        ]
+      ]
+    },
+    "entrance": [
+      30.79,
+      -23.34
+    ],
+    "facing": {
+      "hit": "w122157681 (Torget)",
+      "role": "village_street",
+      "distanceM": 2.75,
+      "blockedBy": null
+    },
+    "conflicts": [
+      {
+        "kind": "winebar-room-outside-building",
+        "subject": "vinbaren:w869907975",
+        "at": [
+          27.03,
+          -8.82
+        ],
+        "depthM": 0.46,
+        "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+      },
+      {
+        "kind": "winebar-room-outside-building",
+        "subject": "vinbaren:w869907975",
+        "at": [
+          25.25,
+          -23.31
+        ],
+        "depthM": 0.46,
+        "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+      },
+      {
+        "kind": "winebar-room-outside-building",
+        "subject": "vinbaren:w869907975",
+        "at": [
+          36.17,
+          -24.65
+        ],
+        "depthM": 0.47,
+        "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+      },
+      {
+        "kind": "winebar-room-outside-building",
+        "subject": "vinbaren:w869907975",
+        "at": [
+          37.95,
+          -10.16
+        ],
+        "depthM": 0.46,
+        "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+      }
+    ]
+  },
+  "truckStands": [
+    {
+      "truck": "grillvagnen",
+      "day": "tue",
+      "spot": "maltidens-hus",
+      "k": 0,
+      "centre": [
+        547,
+        -60.87
+      ]
+    },
+    {
+      "truck": "grillvagnen",
+      "day": "wed",
+      "spot": "sjon",
+      "k": 0,
+      "centre": [
+        376.16,
+        230.32
+      ]
+    },
+    {
+      "truck": "tacovagnen",
+      "day": "wed",
+      "spot": "maltidens-hus",
+      "k": 0,
+      "centre": [
+        547,
+        -60.87
+      ]
+    },
+    {
+      "truck": "grillvagnen",
+      "day": "thu",
+      "spot": "torget",
+      "k": 0,
+      "centre": [
+        1.2,
+        -22.03
+      ]
+    },
+    {
+      "truck": "tacovagnen",
+      "day": "thu",
+      "spot": "maltidens-hus",
+      "k": 0,
+      "centre": [
+        547,
+        -60.87
+      ]
+    },
+    {
+      "truck": "grillvagnen",
+      "day": "fri",
+      "spot": "torget",
+      "k": 0,
+      "centre": [
+        1.2,
+        -22.03
+      ]
+    },
+    {
+      "truck": "tacovagnen",
+      "day": "fri",
+      "spot": "sjon",
+      "k": 0,
+      "centre": [
+        376.16,
+        230.32
+      ]
+    },
+    {
+      "truck": "grillvagnen",
+      "day": "sat",
+      "spot": "sjon",
+      "k": 0,
+      "centre": [
+        376.16,
+        230.32
+      ]
+    },
+    {
+      "truck": "tacovagnen",
+      "day": "sat",
+      "spot": "maltidens-hus",
+      "k": 0,
+      "centre": [
+        547,
+        -60.87
+      ]
+    }
+  ],
+  "checked": {
+    "renderedFootprints": 322,
+    "outbuildings": 56,
+    "trafficRoads": 209,
+    "villageLifeRoutes": 4
+  },
+  "phase": "efter",
+  "test": {
+    "file": "src/strategic/__tests__/order312PaVagen.test.ts",
+    "exitCode": 0,
+    "summary": "Tests  5 passed (5)",
+    "seconds": 12
+  }
+}

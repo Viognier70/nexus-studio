@@ -1,0 +1,4192 @@
+{
+  "toleranceM": 0.1,
+  "counts": {
+    "outbuilding-on-road": 14,
+    "winebar-room-outside-building": 4,
+    "truck-on-road": 3,
+    "truck-in-building": 2,
+    "car-off-car-road": 363,
+    "car-through-building": 33,
+    "car-on-footpath": 9
+  },
+  "conflicts": [
+    {
+      "kind": "outbuilding-on-road",
+      "subject": "w193810959:uthus",
+      "at": [
+        183.34,
+        65.82
+      ],
+      "other": "w193810985",
+      "role": "footpath",
+      "surface": "carriageway",
+      "depthM": 0.65
+    },
+    {
+      "kind": "outbuilding-on-road",
+      "subject": "w870510856:uthus",
+      "at": [
+        -338.06,
+        -151.89
+      ],
+      "other": "w1329020083 (Hantverksgatan)",
+      "role": "village_street",
+      "surface": "sidewalk",
+      "depthM": 2.31
+    },
+    {
+      "kind": "outbuilding-on-road",
+      "subject": "w870510856:uthus",
+      "at": [
+        -338.06,
+        -151.89
+      ],
+      "other": "w1329020083 (Hantverksgatan)",
+      "role": "village_street",
+      "surface": "carriageway",
+      "depthM": 1.41
+    },
+    {
+      "kind": "outbuilding-on-road",
+      "subject": "w1239589275:uthus",
+      "at": [
+        -80.66,
+        -204.51
+      ],
+      "other": "w1329020065 (Kyrkogatan)",
+      "role": "secondary_connector",
+      "surface": "sidewalk",
+      "depthM": 3.79
+    },
+    {
+      "kind": "outbuilding-on-road",
+      "subject": "w1239589275:uthus",
+      "at": [
+        -80.66,
+        -204.51
+      ],
+      "other": "w1329020065 (Kyrkogatan)",
+      "role": "secondary_connector",
+      "surface": "carriageway",
+      "depthM": 2.59
+    },
+    {
+      "kind": "outbuilding-on-road",
+      "subject": "w1239589279:uthus",
+      "at": [
+        -52.09,
+        -146.46
+      ],
+      "other": "w1239628612 (Kyrkogatan)",
+      "role": "secondary_connector",
+      "surface": "sidewalk",
+      "depthM": 3.07
+    },
+    {
+      "kind": "outbuilding-on-road",
+      "subject": "w1239589279:uthus",
+      "at": [
+        -52.09,
+        -146.46
+      ],
+      "other": "w1239628612 (Kyrkogatan)",
+      "role": "secondary_connector",
+      "surface": "carriageway",
+      "depthM": 1.87
+    },
+    {
+      "kind": "outbuilding-on-road",
+      "subject": "w1239589281:uthus",
+      "at": [
+        -55.43,
+        -150.67
+      ],
+      "other": "w1239628612 (Kyrkogatan)",
+      "role": "secondary_connector",
+      "surface": "sidewalk",
+      "depthM": 3.19
+    },
+    {
+      "kind": "outbuilding-on-road",
+      "subject": "w1239589281:uthus",
+      "at": [
+        -55.43,
+        -150.67
+      ],
+      "other": "w1239628612 (Kyrkogatan)",
+      "role": "secondary_connector",
+      "surface": "carriageway",
+      "depthM": 1.99
+    },
+    {
+      "kind": "outbuilding-on-road",
+      "subject": "w1239589282:uthus",
+      "at": [
+        -51.45,
+        -132.46
+      ],
+      "other": "w1239628612 (Kyrkogatan)",
+      "role": "secondary_connector",
+      "surface": "sidewalk",
+      "depthM": 3.08
+    },
+    {
+      "kind": "outbuilding-on-road",
+      "subject": "w1239589282:uthus",
+      "at": [
+        -51.45,
+        -132.46
+      ],
+      "other": "w1239628612 (Kyrkogatan)",
+      "role": "secondary_connector",
+      "surface": "carriageway",
+      "depthM": 1.88
+    },
+    {
+      "kind": "outbuilding-on-road",
+      "subject": "vw-kyr-25:uthus",
+      "at": [
+        -16.75,
+        56.8
+      ],
+      "other": "w122157683 (Smedsgatan)",
+      "role": "secondary_connector",
+      "surface": "sidewalk",
+      "depthM": 4.3
+    },
+    {
+      "kind": "outbuilding-on-road",
+      "subject": "vw-kyr-25:uthus",
+      "at": [
+        -16.75,
+        56.8
+      ],
+      "other": "w122157683 (Smedsgatan)",
+      "role": "secondary_connector",
+      "surface": "carriageway",
+      "depthM": 3.1
+    },
+    {
+      "kind": "outbuilding-on-road",
+      "subject": "vw-hjv-5:uthus",
+      "at": [
+        -348.2,
+        -169.5
+      ],
+      "other": "w862853198",
+      "role": "service",
+      "surface": "carriageway",
+      "depthM": 1.4
+    },
+    {
+      "kind": "winebar-room-outside-building",
+      "subject": "vinbaren:w869907975",
+      "at": [
+        27.03,
+        -8.82
+      ],
+      "depthM": 0.46,
+      "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+    },
+    {
+      "kind": "winebar-room-outside-building",
+      "subject": "vinbaren:w869907975",
+      "at": [
+        25.25,
+        -23.31
+      ],
+      "depthM": 0.46,
+      "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+    },
+    {
+      "kind": "winebar-room-outside-building",
+      "subject": "vinbaren:w869907975",
+      "at": [
+        36.17,
+        -24.65
+      ],
+      "depthM": 0.47,
+      "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+    },
+    {
+      "kind": "winebar-room-outside-building",
+      "subject": "vinbaren:w869907975",
+      "at": [
+        37.95,
+        -10.16
+      ],
+      "depthM": 0.46,
+      "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+    },
+    {
+      "kind": "truck-on-road",
+      "subject": "vagn@torget",
+      "at": [
+        0.19,
+        -29.44
+      ],
+      "other": "w122157681 (Torget)",
+      "role": "village_street",
+      "surface": "sidewalk",
+      "depthM": 0.22
+    },
+    {
+      "kind": "truck-in-building",
+      "subject": "vagn@torget",
+      "at": [
+        0.74,
+        -30.7
+      ],
+      "other": "w869907973"
+    },
+    {
+      "kind": "truck-on-road",
+      "subject": "vagn@torget#2",
+      "at": [
+        6.42,
+        -30.12
+      ],
+      "other": "w122157681 (Torget)",
+      "role": "village_street",
+      "surface": "sidewalk",
+      "depthM": 0.2
+    },
+    {
+      "kind": "truck-in-building",
+      "subject": "vagn@torget#2",
+      "at": [
+        7.7,
+        -31.47
+      ],
+      "other": "w869907973"
+    },
+    {
+      "kind": "truck-on-road",
+      "subject": "vagn@maltidens-hus#2",
+      "at": [
+        542.81,
+        -54.63
+      ],
+      "other": "w983402520",
+      "role": "footpath",
+      "surface": "carriageway",
+      "depthM": 0.65
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "byns-bil:infart-1→parkeringen",
+      "at": [
+        -262.5,
+        68.24
+      ],
+      "lengthM": 13
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "byns-bil:infart-1→parkeringen",
+      "at": [
+        -65.22,
+        -29.83
+      ],
+      "lengthM": 39
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "byns-bil:infart-1→parkeringen",
+      "at": [
+        -19.32,
+        -27.16
+      ],
+      "lengthM": 21
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "byns-bil:infart-2→parkeringen",
+      "at": [
+        400.53,
+        3.62
+      ],
+      "lengthM": 44
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "byns-bil:infart-2→parkeringen",
+      "at": [
+        305.89,
+        37.52
+      ],
+      "lengthM": 9
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "byns-bil:infart-2→parkeringen",
+      "at": [
+        75.23,
+        13.59
+      ],
+      "lengthM": 23
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w25514870:fram",
+      "at": [
+        -1249.63,
+        -3958.99
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w25514870:bak",
+      "at": [
+        -1247.37,
+        -3959.77
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:car:w122157683:fram",
+      "at": [
+        -15.43,
+        58.15
+      ],
+      "other": "vw-kyr-25:uthus",
+      "role": "outbuilding",
+      "lengthM": 7
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:car:w122157683:bak",
+      "at": [
+        -17.81,
+        58.46
+      ],
+      "other": "vw-kyr-25:uthus",
+      "role": "outbuilding",
+      "lengthM": 8
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w122157685:fram",
+      "at": [
+        31.53,
+        22.34
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w122157689:fram",
+      "at": [
+        306.16,
+        36.35
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w122157689:bak",
+      "at": [
+        305.72,
+        38.71
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w122157689#v1:bak",
+      "at": [
+        168.2,
+        11.82
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w122157691#p1:fram",
+      "at": [
+        0.74,
+        -13.44
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w122157691#p1:fram",
+      "at": [
+        53.38,
+        18.42
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w122157691#p1:bak",
+      "at": [
+        2.03,
+        -15.47
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w122157691#p1:bak",
+      "at": [
+        52.7,
+        16.11
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w191294488:fram",
+      "at": [
+        4405.57,
+        2072.82
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w191294488:bak",
+      "at": [
+        4403.37,
+        2071.84
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-on-footpath",
+      "subject": "trafik:car:w191323431:bak",
+      "at": [
+        -442.52,
+        -146.04
+      ],
+      "other": "w982335615 (Stationsgatan)",
+      "role": "cycleway",
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w191323431#v1:fram",
+      "at": [
+        -416.91,
+        -41.96
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w191323431#v1:bak",
+      "at": [
+        -414.58,
+        -42.51
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w191323432#p1:fram",
+      "at": [
+        -291.58,
+        42
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w191323432#p1:bak",
+      "at": [
+        -291.42,
+        44.39
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w191323432#p1:bak",
+      "at": [
+        -390.63,
+        48.93
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w193810981:fram",
+      "at": [
+        412.65,
+        -127.64
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w193810981:bak",
+      "at": [
+        412.11,
+        -127.2
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w193810986:fram",
+      "at": [
+        184.02,
+        119.52
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w193810986:bak",
+      "at": [
+        183.96,
+        118.82
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w193810990:fram",
+      "at": [
+        207.65,
+        -44.04
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w193810990:bak",
+      "at": [
+        207.19,
+        -44.56
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w193810994:fram",
+      "at": [
+        634.44,
+        -944.08
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w193810998:fram",
+      "at": [
+        355.26,
+        -215.68
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w193810998:bak",
+      "at": [
+        353.1,
+        -214.64
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w241108733:fram",
+      "at": [
+        1947.76,
+        -1678.36
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w241108733:bak",
+      "at": [
+        1948.16,
+        -1676
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w241108734:fram",
+      "at": [
+        580.33,
+        -6530.68
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w241108734:bak",
+      "at": [
+        578.81,
+        -6528.82
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w286377545:fram",
+      "at": [
+        481.2,
+        -28.23
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w287143008:bak",
+      "at": [
+        -952.59,
+        363.96
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w287145624:bak",
+      "at": [
+        -858.53,
+        412.43
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w287145627:fram",
+      "at": [
+        -983.07,
+        -335.69
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w287145627:bak",
+      "at": [
+        -982.67,
+        -336.27
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w287145628:fram",
+      "at": [
+        -696.2,
+        21.44
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w287145628:bak",
+      "at": [
+        -697.68,
+        21.64
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w287145637:fram",
+      "at": [
+        -668.25,
+        -1088.54
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w287145637:bak",
+      "at": [
+        -670.49,
+        -1087.7
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w287145640:fram",
+      "at": [
+        -565.18,
+        -1142.73
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w287145640:bak",
+      "at": [
+        -566.62,
+        -1142.29
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w287145641:fram",
+      "at": [
+        -514.58,
+        -1196.2
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w287145644:bak",
+      "at": [
+        -346.19,
+        147.08
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w287145822:fram",
+      "at": [
+        592.55,
+        733.45
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w568472821:fram",
+      "at": [
+        -683.73,
+        2717.51
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w614988987:bak",
+      "at": [
+        -437.35,
+        821.77
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w860753005:fram",
+      "at": [
+        -83.17,
+        -384.37
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w860753005:bak",
+      "at": [
+        -83.85,
+        -384.19
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w860753007:fram",
+      "at": [
+        93.6,
+        -108.19
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w860753007:bak",
+      "at": [
+        92.9,
+        -108.27
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w860753009:fram",
+      "at": [
+        -65.13,
+        -28.56
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w860753009:bak",
+      "at": [
+        -66.09,
+        -30.76
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w860753013:fram",
+      "at": [
+        429.7,
+        302.45
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w860753013:bak",
+      "at": [
+        430.1,
+        303.03
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:car:w862853198:fram",
+      "at": [
+        -346.45,
+        -170.39
+      ],
+      "other": "vw-hjv-5:uthus",
+      "role": "outbuilding",
+      "lengthM": 8
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w862853198:bak",
+      "at": [
+        -310.12,
+        -178.9
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:car:w862853198:bak",
+      "at": [
+        -346.28,
+        -169.71
+      ],
+      "other": "vw-hjv-5:uthus",
+      "role": "outbuilding",
+      "lengthM": 8
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w862853214:fram",
+      "at": [
+        55.54,
+        67.13
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w862853214:bak",
+      "at": [
+        53.28,
+        67.95
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w862853219:bak",
+      "at": [
+        173.15,
+        2800.27
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w862853235:fram",
+      "at": [
+        324.96,
+        1917.45
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w862853235:bak",
+      "at": [
+        324.76,
+        1916.77
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w869907959:fram",
+      "at": [
+        -666.34,
+        369.52
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w869907959:bak",
+      "at": [
+        -667.02,
+        369.66
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w869907978:fram",
+      "at": [
+        100.83,
+        136.53
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w869907978:bak",
+      "at": [
+        100.69,
+        135.85
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w869907983:fram",
+      "at": [
+        -1160.18,
+        -1230.63
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w869907983:bak",
+      "at": [
+        -1160.68,
+        -1230.15
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w870510804:fram",
+      "at": [
+        -793.31,
+        -754.98
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w870510804:bak",
+      "at": [
+        -793.33,
+        -754.28
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w870510843#v2:fram",
+      "at": [
+        -471.4,
+        -220.86
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w870510843#v2:bak",
+      "at": [
+        -472.02,
+        -220.54
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w875778815:fram",
+      "at": [
+        -650.75,
+        -1644.51
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w875778815:bak",
+      "at": [
+        -650.85,
+        -1645.21
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w935531272:fram",
+      "at": [
+        -448.86,
+        1807.37
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w935531272:bak",
+      "at": [
+        -448.9,
+        1806.67
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w948705766:bak",
+      "at": [
+        -793.57,
+        -1412.6
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w956968640:bak",
+      "at": [
+        312.24,
+        -73.48
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w958593522:fram",
+      "at": [
+        -301.71,
+        -1011.19
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w958593522:fram",
+      "at": [
+        -199.54,
+        -1031.24
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w958593522:bak",
+      "at": [
+        -200.2,
+        -1031.48
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w958714771:fram",
+      "at": [
+        -544.95,
+        603.12
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w958714771:bak",
+      "at": [
+        -545.65,
+        603.14
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w983402519:fram",
+      "at": [
+        663.88,
+        91.94
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w983402526:fram",
+      "at": [
+        578.13,
+        90.78
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1006216361:bak",
+      "at": [
+        525.86,
+        134.91
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1006216362:bak",
+      "at": [
+        -472.31,
+        472.25
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1006222227:fram",
+      "at": [
+        133.21,
+        -354.28
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1071570852:fram",
+      "at": [
+        -1057.81,
+        81.57
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1071570852:bak",
+      "at": [
+        -1058.51,
+        81.59
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1083999822:fram",
+      "at": [
+        -711.42,
+        2756.1
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1084428646:fram",
+      "at": [
+        -606.97,
+        1461.16
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1084428646:bak",
+      "at": [
+        -606.99,
+        1460.46
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1095501034:fram",
+      "at": [
+        796.81,
+        2565.03
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1095501034:bak",
+      "at": [
+        796.17,
+        2565.33
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1239628612#p1:fram",
+      "at": [
+        -38.4,
+        -84.18
+      ],
+      "lengthM": 2
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:car:w1239628612#p1:fram",
+      "at": [
+        -50.99,
+        -141.48
+      ],
+      "other": "w1239589279:uthus",
+      "role": "outbuilding",
+      "lengthM": 7
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1239628612#p1:bak",
+      "at": [
+        -40.75,
+        -83.71
+      ],
+      "lengthM": 2
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:car:w1239628612#p1:bak",
+      "at": [
+        -49.85,
+        -125.44
+      ],
+      "other": "w1239589282:uthus",
+      "role": "outbuilding",
+      "lengthM": 10
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:car:w1239628612#p1:bak",
+      "at": [
+        -55.08,
+        -148.71
+      ],
+      "other": "w1239589281:uthus",
+      "role": "outbuilding",
+      "lengthM": 8
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020034:fram",
+      "at": [
+        -834.64,
+        13.26
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020035#p1:fram",
+      "at": [
+        -916.87,
+        23.74
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020035#p1:bak",
+      "at": [
+        -918.35,
+        23.92
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-on-footpath",
+      "subject": "trafik:car:w1329020045:fram",
+      "at": [
+        729.35,
+        177.22
+      ],
+      "other": "w1329020043",
+      "role": "track",
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020050:fram",
+      "at": [
+        43.97,
+        -15.41
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020051:fram",
+      "at": [
+        30.95,
+        -87.1
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020052:fram",
+      "at": [
+        -619.83,
+        -744.81
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020052:bak",
+      "at": [
+        -620.21,
+        -743.35
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020053:fram",
+      "at": [
+        1781.47,
+        -510.6
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020053:bak",
+      "at": [
+        1780.81,
+        -510.82
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-on-footpath",
+      "subject": "trafik:car:w1329020063:fram",
+      "at": [
+        -380.53,
+        112.85
+      ],
+      "other": "w875778822",
+      "role": "cycleway",
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020063:bak",
+      "at": [
+        -381.21,
+        113.03
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020064#p1:fram",
+      "at": [
+        -263.49,
+        67.53
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020064#p1:bak",
+      "at": [
+        -261.86,
+        69.29
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:car:w1329020065:fram",
+      "at": [
+        -78.69,
+        -202.59
+      ],
+      "other": "w1239589275:uthus",
+      "role": "outbuilding",
+      "lengthM": 9
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020065:fram",
+      "at": [
+        -88.5,
+        -217.41
+      ],
+      "lengthM": 2
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020065:bak",
+      "at": [
+        -90.49,
+        -216.07
+      ],
+      "lengthM": 2
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020065#v1:fram",
+      "at": [
+        -96.82,
+        -229.85
+      ],
+      "lengthM": 3
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020065#v1:fram",
+      "at": [
+        -256.17,
+        -529.98
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020065#v1:bak",
+      "at": [
+        -98.84,
+        -228.55
+      ],
+      "lengthM": 3
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020072:fram",
+      "at": [
+        -878.74,
+        -1893.78
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020072:bak",
+      "at": [
+        -879.44,
+        -1893.68
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020073:fram",
+      "at": [
+        -465.56,
+        -84.91
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020078:fram",
+      "at": [
+        -681.43,
+        -394.8
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020078:bak",
+      "at": [
+        -680.75,
+        -394.92
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:car:w1329020083:fram",
+      "at": [
+        -337.41,
+        -150.7
+      ],
+      "other": "w870510856:uthus",
+      "role": "outbuilding",
+      "lengthM": 7
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020083:fram",
+      "at": [
+        -339.25,
+        -157.37
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020083:bak",
+      "at": [
+        -341.57,
+        -156.73
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020087:fram",
+      "at": [
+        -552.75,
+        546.9
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020087:bak",
+      "at": [
+        -553.41,
+        546.7
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020097:fram",
+      "at": [
+        -528.61,
+        728.97
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020097:bak",
+      "at": [
+        -529.11,
+        729.45
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020099:fram",
+      "at": [
+        -690.47,
+        -2063.54
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020099:bak",
+      "at": [
+        -690.55,
+        -2064.24
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020100:fram",
+      "at": [
+        -621.11,
+        854.24
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020100:bak",
+      "at": [
+        -621.77,
+        854
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-on-footpath",
+      "subject": "trafik:car:w1329020106:fram",
+      "at": [
+        -806.6,
+        1076.46
+      ],
+      "other": "w1329020038",
+      "role": "track",
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020107:bak",
+      "at": [
+        -870.92,
+        442.68
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020123:fram",
+      "at": [
+        1750.92,
+        -509.28
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020123:bak",
+      "at": [
+        1750.86,
+        -509.98
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020126:fram",
+      "at": [
+        -1039.2,
+        247.28
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1329020128:fram",
+      "at": [
+        -1009.24,
+        339.56
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1330918241:fram",
+      "at": [
+        212.39,
+        2771.56
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1330918241:bak",
+      "at": [
+        211.95,
+        2771.02
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1330918302:fram",
+      "at": [
+        -1753.81,
+        2647.38
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:car:w1330918302:bak",
+      "at": [
+        -1754.51,
+        2647.4
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:van:w122157683:fram",
+      "at": [
+        -15.43,
+        58.15
+      ],
+      "other": "vw-kyr-25:uthus",
+      "role": "outbuilding",
+      "lengthM": 8
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:van:w122157683:bak",
+      "at": [
+        -17.81,
+        58.46
+      ],
+      "other": "vw-kyr-25:uthus",
+      "role": "outbuilding",
+      "lengthM": 8
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w122157685:fram",
+      "at": [
+        31.52,
+        22.24
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w122157689:fram",
+      "at": [
+        306.14,
+        36.45
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w122157689:bak",
+      "at": [
+        305.73,
+        38.61
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w122157689#v1:bak",
+      "at": [
+        168.22,
+        11.72
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w122157691#p1:fram",
+      "at": [
+        0.8,
+        -13.53
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w122157691#p1:fram",
+      "at": [
+        53.35,
+        18.32
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w122157691#p1:bak",
+      "at": [
+        1.98,
+        -15.38
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w122157691#p1:bak",
+      "at": [
+        52.73,
+        16.21
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w191323432#p1:fram",
+      "at": [
+        -291.58,
+        42.1
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w191323432#p1:bak",
+      "at": [
+        -291.42,
+        44.29
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w191323432#p1:bak",
+      "at": [
+        -390.61,
+        48.83
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w193810981:fram",
+      "at": [
+        412.54,
+        -127.54
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w193810981:bak",
+      "at": [
+        412.22,
+        -127.3
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w193810990:fram",
+      "at": [
+        207.55,
+        -44.15
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w193810990:bak",
+      "at": [
+        207.29,
+        -44.45
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w193810998:fram",
+      "at": [
+        355.26,
+        -215.68
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w193810998:bak",
+      "at": [
+        353.1,
+        -214.64
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w286377545:fram",
+      "at": [
+        481.2,
+        -28.23
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w860753005:fram",
+      "at": [
+        -83.32,
+        -384.33
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w860753005:bak",
+      "at": [
+        -83.7,
+        -384.23
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w860753007:fram",
+      "at": [
+        93.45,
+        -108.21
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w860753007:bak",
+      "at": [
+        93.05,
+        -108.25
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w860753009:fram",
+      "at": [
+        -65.17,
+        -28.65
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w860753009:bak",
+      "at": [
+        -66.05,
+        -30.67
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w860753013:fram",
+      "at": [
+        429.78,
+        302.58
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w860753013:bak",
+      "at": [
+        430.02,
+        302.9
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w862853214:fram",
+      "at": [
+        55.44,
+        67.16
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w862853214:bak",
+      "at": [
+        53.38,
+        67.92
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w983402519:fram",
+      "at": [
+        663.81,
+        92.07
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w983402526:fram",
+      "at": [
+        578.16,
+        90.64
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w1006222227:fram",
+      "at": [
+        133.21,
+        -354.28
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w1239628612#p1:fram",
+      "at": [
+        -38.4,
+        -84.18
+      ],
+      "lengthM": 2
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:van:w1239628612#p1:fram",
+      "at": [
+        -50.99,
+        -141.48
+      ],
+      "other": "w1239589279:uthus",
+      "role": "outbuilding",
+      "lengthM": 8
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w1239628612#p1:bak",
+      "at": [
+        -40.75,
+        -83.71
+      ],
+      "lengthM": 2
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:van:w1239628612#p1:bak",
+      "at": [
+        -49.85,
+        -125.44
+      ],
+      "other": "w1239589282:uthus",
+      "role": "outbuilding",
+      "lengthM": 10
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:van:w1239628612#p1:bak",
+      "at": [
+        -55.08,
+        -148.71
+      ],
+      "other": "w1239589281:uthus",
+      "role": "outbuilding",
+      "lengthM": 9
+    },
+    {
+      "kind": "car-on-footpath",
+      "subject": "trafik:van:w1329020045:fram",
+      "at": [
+        729.23,
+        177.14
+      ],
+      "other": "w1329020043",
+      "role": "track",
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w1329020051:fram",
+      "at": [
+        31.05,
+        -87.11
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w1329020064#p1:fram",
+      "at": [
+        -263.42,
+        67.6
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w1329020064#p1:bak",
+      "at": [
+        -261.93,
+        69.22
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:van:w1329020065:fram",
+      "at": [
+        -78.19,
+        -201.74
+      ],
+      "other": "w1239589275:uthus",
+      "role": "outbuilding",
+      "lengthM": 11
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w1329020065:fram",
+      "at": [
+        -88.5,
+        -217.41
+      ],
+      "lengthM": 2
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w1329020065:bak",
+      "at": [
+        -90.49,
+        -216.07
+      ],
+      "lengthM": 2
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w1329020065#v1:fram",
+      "at": [
+        -96.82,
+        -229.85
+      ],
+      "lengthM": 3
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w1329020065#v1:fram",
+      "at": [
+        -256.17,
+        -529.98
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w1329020065#v1:bak",
+      "at": [
+        -98.84,
+        -228.55
+      ],
+      "lengthM": 3
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:van:w1329020083:fram",
+      "at": [
+        -337.24,
+        -149.72
+      ],
+      "other": "w870510856:uthus",
+      "role": "outbuilding",
+      "lengthM": 8
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w1329020083:fram",
+      "at": [
+        -339.35,
+        -157.34
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:van:w1329020083:bak",
+      "at": [
+        -341.47,
+        -156.76
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w25514870:fram",
+      "at": [
+        -1249.63,
+        -3958.99
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w25514870:bak",
+      "at": [
+        -1247.37,
+        -3959.77
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:truck:w122157683:fram",
+      "at": [
+        -15.31,
+        59.14
+      ],
+      "other": "vw-kyr-25:uthus",
+      "role": "outbuilding",
+      "lengthM": 10
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:truck:w122157683:bak",
+      "at": [
+        -17.69,
+        59.45
+      ],
+      "other": "vw-kyr-25:uthus",
+      "role": "outbuilding",
+      "lengthM": 10
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w191294488:fram",
+      "at": [
+        4405.57,
+        2072.82
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w191294488:bak",
+      "at": [
+        4403.37,
+        2071.84
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w193810994:fram",
+      "at": [
+        634.36,
+        -944.15
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w286377545:fram",
+      "at": [
+        481.24,
+        -28.32
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w287143008:bak",
+      "at": [
+        -952.57,
+        363.86
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w287145822:fram",
+      "at": [
+        592.55,
+        733.45
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w614988987:bak",
+      "at": [
+        -437.35,
+        821.77
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w1006216361:bak",
+      "at": [
+        525.86,
+        134.91
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w1006216362:bak",
+      "at": [
+        -472.31,
+        472.25
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w1006222227:fram",
+      "at": [
+        133.21,
+        -354.28
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w1083999822:fram",
+      "at": [
+        -711.42,
+        2756.1
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w1239628612#p1:fram",
+      "at": [
+        -38.4,
+        -84.18
+      ],
+      "lengthM": 2
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:truck:w1239628612#p1:fram",
+      "at": [
+        -50.78,
+        -140.51
+      ],
+      "other": "w1239589279:uthus",
+      "role": "outbuilding",
+      "lengthM": 10
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w1239628612#p1:bak",
+      "at": [
+        -40.75,
+        -83.71
+      ],
+      "lengthM": 2
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:truck:w1239628612#p1:bak",
+      "at": [
+        -49.63,
+        -124.47
+      ],
+      "other": "w1239589282:uthus",
+      "role": "outbuilding",
+      "lengthM": 12
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:truck:w1239628612#p1:bak",
+      "at": [
+        -54.86,
+        -147.74
+      ],
+      "other": "w1239589281:uthus",
+      "role": "outbuilding",
+      "lengthM": 10
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w1329020065#v1:fram",
+      "at": [
+        -96.82,
+        -229.85
+      ],
+      "lengthM": 3
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w1329020065#v1:fram",
+      "at": [
+        -256.17,
+        -529.98
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:truck:w1329020065#v1:bak",
+      "at": [
+        -98.84,
+        -228.55
+      ],
+      "lengthM": 3
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w25514870:fram",
+      "at": [
+        -1249.63,
+        -3958.99
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w25514870:bak",
+      "at": [
+        -1247.37,
+        -3959.77
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:bus:w122157683:fram",
+      "at": [
+        -15.05,
+        61.12
+      ],
+      "other": "vw-kyr-25:uthus",
+      "role": "outbuilding",
+      "lengthM": 13
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:bus:w122157683:bak",
+      "at": [
+        -17.44,
+        61.42
+      ],
+      "other": "vw-kyr-25:uthus",
+      "role": "outbuilding",
+      "lengthM": 14
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w191294488:fram",
+      "at": [
+        4405.57,
+        2072.82
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w191294488:bak",
+      "at": [
+        4403.37,
+        2071.84
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w193810994:fram",
+      "at": [
+        634.32,
+        -944.18
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w286377545:fram",
+      "at": [
+        481.26,
+        -28.37
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w287143008:bak",
+      "at": [
+        -952.56,
+        363.81
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w287145822:fram",
+      "at": [
+        592.55,
+        733.45
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w614988987:bak",
+      "at": [
+        -437.35,
+        821.77
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w1006216361:bak",
+      "at": [
+        525.86,
+        134.91
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w1006216362:bak",
+      "at": [
+        -472.31,
+        472.25
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w1006222227:fram",
+      "at": [
+        133.21,
+        -354.28
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w1083999822:fram",
+      "at": [
+        -711.42,
+        2756.1
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w1329020065#v1:fram",
+      "at": [
+        -96.82,
+        -229.85
+      ],
+      "lengthM": 3
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w1329020065#v1:fram",
+      "at": [
+        -256.17,
+        -529.98
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:bus:w1329020065#v1:bak",
+      "at": [
+        -98.84,
+        -228.55
+      ],
+      "lengthM": 3
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w25514870:fram",
+      "at": [
+        -1249.63,
+        -3958.99
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w25514870:bak",
+      "at": [
+        -1247.37,
+        -3959.77
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:motorcycle:w122157683:bak",
+      "at": [
+        -17.94,
+        57.47
+      ],
+      "other": "vw-kyr-25:uthus",
+      "role": "outbuilding",
+      "lengthM": 6
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w122157685:fram",
+      "at": [
+        31.53,
+        22.34
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w122157689:fram",
+      "at": [
+        306.16,
+        36.35
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w122157689:bak",
+      "at": [
+        305.72,
+        38.71
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w122157689#v1:bak",
+      "at": [
+        168.2,
+        11.82
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w122157691#p1:fram",
+      "at": [
+        0.74,
+        -13.44
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w122157691#p1:fram",
+      "at": [
+        53.38,
+        18.42
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w122157691#p1:bak",
+      "at": [
+        2.03,
+        -15.47
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w122157691#p1:bak",
+      "at": [
+        52.7,
+        16.11
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w191294488:fram",
+      "at": [
+        4405.57,
+        2072.82
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w191294488:bak",
+      "at": [
+        4403.37,
+        2071.84
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-on-footpath",
+      "subject": "trafik:motorcycle:w191323431:bak",
+      "at": [
+        -442.52,
+        -146.04
+      ],
+      "other": "w982335615 (Stationsgatan)",
+      "role": "cycleway",
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w191323431#v1:fram",
+      "at": [
+        -416.91,
+        -41.96
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w191323431#v1:bak",
+      "at": [
+        -414.58,
+        -42.51
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w191323432#p1:fram",
+      "at": [
+        -291.58,
+        42
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w191323432#p1:bak",
+      "at": [
+        -291.42,
+        44.39
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w191323432#p1:bak",
+      "at": [
+        -390.63,
+        48.93
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w193810981:fram",
+      "at": [
+        413.08,
+        -127.98
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w193810981:bak",
+      "at": [
+        411.68,
+        -126.86
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w193810986:fram",
+      "at": [
+        184.08,
+        120.07
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w193810986:bak",
+      "at": [
+        183.9,
+        118.27
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w193810990:fram",
+      "at": [
+        208.01,
+        -43.62
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w193810990:bak",
+      "at": [
+        206.83,
+        -44.98
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w193810994:fram",
+      "at": [
+        634.44,
+        -944.08
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w193810998:fram",
+      "at": [
+        355.26,
+        -215.68
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w193810998:bak",
+      "at": [
+        353.1,
+        -214.64
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w241108733:fram",
+      "at": [
+        1947.76,
+        -1678.36
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w241108733:bak",
+      "at": [
+        1948.16,
+        -1676
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w241108734:fram",
+      "at": [
+        580.33,
+        -6530.68
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w241108734:bak",
+      "at": [
+        578.81,
+        -6528.82
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w286377545:fram",
+      "at": [
+        481.2,
+        -28.23
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w287143008:bak",
+      "at": [
+        -952.59,
+        363.96
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w287145624:bak",
+      "at": [
+        -857.99,
+        412.34
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w287145627:fram",
+      "at": [
+        -983.37,
+        -335.24
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w287145627:bak",
+      "at": [
+        -982.37,
+        -336.72
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w287145628:fram",
+      "at": [
+        -695.75,
+        21.38
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w287145628:bak",
+      "at": [
+        -698.13,
+        21.7
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w287145637:fram",
+      "at": [
+        -668.25,
+        -1088.54
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w287145637:bak",
+      "at": [
+        -670.49,
+        -1087.7
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w287145640:fram",
+      "at": [
+        -564.75,
+        -1142.86
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w287145640:bak",
+      "at": [
+        -567.05,
+        -1142.16
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w287145641:fram",
+      "at": [
+        -514.39,
+        -1196.61
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w287145644:bak",
+      "at": [
+        -346.19,
+        147.08
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w287145822:fram",
+      "at": [
+        592.55,
+        733.45
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w568472821:fram",
+      "at": [
+        -683.73,
+        2717.51
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w614988987:bak",
+      "at": [
+        -437.35,
+        821.77
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w860753005:fram",
+      "at": [
+        -82.64,
+        -384.52
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w860753005:bak",
+      "at": [
+        -84.38,
+        -384.04
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w860753007:fram",
+      "at": [
+        94.14,
+        -108.12
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w860753007:bak",
+      "at": [
+        92.36,
+        -108.34
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w860753009:fram",
+      "at": [
+        -65.13,
+        -28.56
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w860753009:bak",
+      "at": [
+        -66.09,
+        -30.76
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w860753013:fram",
+      "at": [
+        429.38,
+        302.01
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w860753013:bak",
+      "at": [
+        430.42,
+        303.47
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:motorcycle:w862853198:fram",
+      "at": [
+        -347.54,
+        -170.69
+      ],
+      "other": "vw-hjv-5:uthus",
+      "role": "outbuilding",
+      "lengthM": 6
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w862853198:bak",
+      "at": [
+        -310,
+        -178.36
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:motorcycle:w862853198:bak",
+      "at": [
+        -348.06,
+        -168.71
+      ],
+      "other": "vw-hjv-5:uthus",
+      "role": "outbuilding",
+      "lengthM": 5
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w862853214:fram",
+      "at": [
+        55.54,
+        67.13
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w862853214:bak",
+      "at": [
+        53.28,
+        67.95
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w862853219:bak",
+      "at": [
+        173.15,
+        2800.27
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w862853235:fram",
+      "at": [
+        325.11,
+        1917.97
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w862853235:bak",
+      "at": [
+        324.61,
+        1916.25
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w869907959:fram",
+      "at": [
+        -665.8,
+        369.42
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w869907959:bak",
+      "at": [
+        -667.56,
+        369.76
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w869907978:fram",
+      "at": [
+        100.93,
+        137.07
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w869907978:bak",
+      "at": [
+        100.59,
+        135.31
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w869907983:fram",
+      "at": [
+        -1159.78,
+        -1231.01
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w869907983:bak",
+      "at": [
+        -1161.08,
+        -1229.77
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w870510804:fram",
+      "at": [
+        -793.29,
+        -755.53
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w870510804:bak",
+      "at": [
+        -793.35,
+        -753.73
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w870510843#v2:fram",
+      "at": [
+        -470.92,
+        -221.12
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w870510843#v2:bak",
+      "at": [
+        -472.5,
+        -220.28
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w875778815:fram",
+      "at": [
+        -650.66,
+        -1643.97
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w875778815:bak",
+      "at": [
+        -650.94,
+        -1645.75
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w935531272:fram",
+      "at": [
+        -448.83,
+        1807.92
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w935531272:bak",
+      "at": [
+        -448.93,
+        1806.12
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w948705766:bak",
+      "at": [
+        -793.57,
+        -1412.6
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w956968640:bak",
+      "at": [
+        312.51,
+        -73.96
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w958593522:fram",
+      "at": [
+        -301.8,
+        -1010.65
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w958593522:fram",
+      "at": [
+        -199.03,
+        -1031.04
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w958593522:bak",
+      "at": [
+        -200.71,
+        -1031.68
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w958714771:fram",
+      "at": [
+        -544.4,
+        603.1
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w958714771:bak",
+      "at": [
+        -546.2,
+        603.16
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w983402519:fram",
+      "at": [
+        664.13,
+        91.45
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w983402526:fram",
+      "at": [
+        578.01,
+        91.32
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1006216361:bak",
+      "at": [
+        525.86,
+        134.91
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1006216362:bak",
+      "at": [
+        -472.31,
+        472.25
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1006222227:fram",
+      "at": [
+        133.21,
+        -354.28
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1071570852:fram",
+      "at": [
+        -1057.26,
+        81.56
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1071570852:bak",
+      "at": [
+        -1059.06,
+        81.6
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1083999822:fram",
+      "at": [
+        -711.42,
+        2756.1
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1084428646:fram",
+      "at": [
+        -606.96,
+        1461.71
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1084428646:bak",
+      "at": [
+        -607,
+        1459.91
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1095501034:fram",
+      "at": [
+        797.3,
+        2564.8
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1095501034:bak",
+      "at": [
+        795.68,
+        2565.56
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1239628612#p1:fram",
+      "at": [
+        -38.4,
+        -84.18
+      ],
+      "lengthM": 2
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:motorcycle:w1239628612#p1:fram",
+      "at": [
+        -51.21,
+        -142.45
+      ],
+      "other": "w1239589279:uthus",
+      "role": "outbuilding",
+      "lengthM": 6
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1239628612#p1:bak",
+      "at": [
+        -40.75,
+        -83.71
+      ],
+      "lengthM": 2
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:motorcycle:w1239628612#p1:bak",
+      "at": [
+        -50.07,
+        -126.41
+      ],
+      "other": "w1239589282:uthus",
+      "role": "outbuilding",
+      "lengthM": 8
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:motorcycle:w1239628612#p1:bak",
+      "at": [
+        -55.29,
+        -149.68
+      ],
+      "other": "w1239589281:uthus",
+      "role": "outbuilding",
+      "lengthM": 4
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020034:fram",
+      "at": [
+        -834.2,
+        13.18
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020035#p1:fram",
+      "at": [
+        -916.42,
+        23.68
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020035#p1:bak",
+      "at": [
+        -918.8,
+        23.98
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-on-footpath",
+      "subject": "trafik:motorcycle:w1329020045:fram",
+      "at": [
+        729.81,
+        177.53
+      ],
+      "other": "w1329020043",
+      "role": "track",
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020050:fram",
+      "at": [
+        43.97,
+        -15.41
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020051:fram",
+      "at": [
+        30.95,
+        -87.1
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020052:fram",
+      "at": [
+        -619.72,
+        -745.24
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020052:bak",
+      "at": [
+        -620.32,
+        -742.92
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020053:fram",
+      "at": [
+        1781.99,
+        -510.42
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020053:bak",
+      "at": [
+        1780.29,
+        -511
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-on-footpath",
+      "subject": "trafik:motorcycle:w1329020063:fram",
+      "at": [
+        -380,
+        112.71
+      ],
+      "other": "w875778822",
+      "role": "cycleway",
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020063:bak",
+      "at": [
+        -381.74,
+        113.17
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020064#p1:fram",
+      "at": [
+        -263.49,
+        67.53
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020064#p1:bak",
+      "at": [
+        -261.86,
+        69.29
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:motorcycle:w1329020065:fram",
+      "at": [
+        -79.2,
+        -203.43
+      ],
+      "other": "w1239589275:uthus",
+      "role": "outbuilding",
+      "lengthM": 7
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020065:fram",
+      "at": [
+        -88.5,
+        -217.41
+      ],
+      "lengthM": 2
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020065:bak",
+      "at": [
+        -90.49,
+        -216.07
+      ],
+      "lengthM": 2
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020065#v1:fram",
+      "at": [
+        -96.82,
+        -229.85
+      ],
+      "lengthM": 3
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020065#v1:fram",
+      "at": [
+        -256.17,
+        -529.98
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020065#v1:bak",
+      "at": [
+        -98.84,
+        -228.55
+      ],
+      "lengthM": 3
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020072:fram",
+      "at": [
+        -878.2,
+        -1893.86
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020072:bak",
+      "at": [
+        -879.98,
+        -1893.6
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020073:fram",
+      "at": [
+        -465.56,
+        -84.91
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020078:fram",
+      "at": [
+        -681.98,
+        -394.7
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020078:bak",
+      "at": [
+        -680.2,
+        -395.02
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:motorcycle:w1329020083:fram",
+      "at": [
+        -337.67,
+        -151.65
+      ],
+      "other": "w870510856:uthus",
+      "role": "outbuilding",
+      "lengthM": 5
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020083:fram",
+      "at": [
+        -339.25,
+        -157.37
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020083:bak",
+      "at": [
+        -341.57,
+        -156.73
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020087:fram",
+      "at": [
+        -552.22,
+        547.06
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020087:bak",
+      "at": [
+        -553.94,
+        546.54
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020097:fram",
+      "at": [
+        -528.21,
+        728.59
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020097:bak",
+      "at": [
+        -529.51,
+        729.83
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020099:fram",
+      "at": [
+        -690.42,
+        -2062.99
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020099:bak",
+      "at": [
+        -690.6,
+        -2064.79
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020100:fram",
+      "at": [
+        -620.59,
+        854.42
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020100:bak",
+      "at": [
+        -622.29,
+        853.82
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-on-footpath",
+      "subject": "trafik:motorcycle:w1329020106:fram",
+      "at": [
+        -806.94,
+        1076.89
+      ],
+      "other": "w1329020038",
+      "role": "track",
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020107:bak",
+      "at": [
+        -870.39,
+        442.82
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020123:fram",
+      "at": [
+        1750.96,
+        -508.73
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020123:bak",
+      "at": [
+        1750.82,
+        -510.53
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020126:fram",
+      "at": [
+        -1038.67,
+        247.11
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1329020128:fram",
+      "at": [
+        -1009.24,
+        339.56
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1330918241:fram",
+      "at": [
+        212.74,
+        2771.98
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1330918241:bak",
+      "at": [
+        211.6,
+        2770.6
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1330918302:fram",
+      "at": [
+        -1753.26,
+        2647.35
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:motorcycle:w1330918302:bak",
+      "at": [
+        -1755.06,
+        2647.43
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:tourist_bus:w122157683:fram",
+      "at": [
+        -15.05,
+        61.12
+      ],
+      "other": "vw-kyr-25:uthus",
+      "role": "outbuilding",
+      "lengthM": 14
+    },
+    {
+      "kind": "car-through-building",
+      "subject": "trafik:tourist_bus:w122157683:bak",
+      "at": [
+        -17.44,
+        61.42
+      ],
+      "other": "vw-kyr-25:uthus",
+      "role": "outbuilding",
+      "lengthM": 14
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:tourist_bus:w193810994:fram",
+      "at": [
+        634.28,
+        -944.21
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:tourist_bus:w286377545:fram",
+      "at": [
+        481.28,
+        -28.41
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:tourist_bus:w1006216361:bak",
+      "at": [
+        525.86,
+        134.91
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:tourist_bus:w1006222227:fram",
+      "at": [
+        133.21,
+        -354.28
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:tourist_bus:w1329020065#v1:fram",
+      "at": [
+        -96.82,
+        -229.85
+      ],
+      "lengthM": 3
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:tourist_bus:w1329020065#v1:fram",
+      "at": [
+        -256.17,
+        -529.98
+      ],
+      "lengthM": 1
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "trafik:tourist_bus:w1329020065#v1:bak",
+      "at": [
+        -98.84,
+        -228.55
+      ],
+      "lengthM": 3
+    },
+    {
+      "kind": "car-off-car-road",
+      "subject": "leveransbilen",
+      "at": [
+        33.46,
+        -1.6
+      ],
+      "lengthM": 7
+    }
+  ],
+  "wineBar": {
+    "buildingId": "w869907975",
+    "room": {
+      "centre": [
+        31.6,
+        -16.74
+      ],
+      "width": 14.6,
+      "depth": 11,
+      "angle": -1.69,
+      "corners": [
+        [
+          27.03,
+          -8.82
+        ],
+        [
+          25.25,
+          -23.31
+        ],
+        [
+          36.17,
+          -24.65
+        ],
+        [
+          37.95,
+          -10.16
+        ]
+      ]
+    },
+    "entrance": [
+      30.79,
+      -23.34
+    ],
+    "facing": {
+      "hit": "w122157681 (Torget)",
+      "role": "village_street",
+      "distanceM": 2.75,
+      "blockedBy": null
+    },
+    "conflicts": [
+      {
+        "kind": "winebar-room-outside-building",
+        "subject": "vinbaren:w869907975",
+        "at": [
+          27.03,
+          -8.82
+        ],
+        "depthM": 0.46,
+        "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+      },
+      {
+        "kind": "winebar-room-outside-building",
+        "subject": "vinbaren:w869907975",
+        "at": [
+          25.25,
+          -23.31
+        ],
+        "depthM": 0.46,
+        "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+      },
+      {
+        "kind": "winebar-room-outside-building",
+        "subject": "vinbaren:w869907975",
+        "at": [
+          36.17,
+          -24.65
+        ],
+        "depthM": 0.47,
+        "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+      },
+      {
+        "kind": "winebar-room-outside-building",
+        "subject": "vinbaren:w869907975",
+        "at": [
+          37.95,
+          -10.16
+        ],
+        "depthM": 0.46,
+        "note": "rummet 14.6 × 11 m, huset (OBB) 14.51 × 10.09 m"
+      }
+    ]
+  },
+  "truckStands": [
+    {
+      "truck": "grillvagnen",
+      "day": "tue",
+      "spot": "maltidens-hus",
+      "k": 0,
+      "centre": [
+        546.52,
+        -56.8
+      ]
+    },
+    {
+      "truck": "grillvagnen",
+      "day": "wed",
+      "spot": "sjon",
+      "k": 0,
+      "centre": [
+        376.16,
+        230.32
+      ]
+    },
+    {
+      "truck": "tacovagnen",
+      "day": "wed",
+      "spot": "maltidens-hus",
+      "k": 0,
+      "centre": [
+        546.52,
+        -56.8
+      ]
+    },
+    {
+      "truck": "grillvagnen",
+      "day": "thu",
+      "spot": "torget",
+      "k": 0,
+      "centre": [
+        0.74,
+        -30.7
+      ]
+    },
+    {
+      "truck": "tacovagnen",
+      "day": "thu",
+      "spot": "maltidens-hus",
+      "k": 0,
+      "centre": [
+        546.52,
+        -56.8
+      ]
+    },
+    {
+      "truck": "grillvagnen",
+      "day": "fri",
+      "spot": "torget",
+      "k": 0,
+      "centre": [
+        0.74,
+        -30.7
+      ]
+    },
+    {
+      "truck": "tacovagnen",
+      "day": "fri",
+      "spot": "sjon",
+      "k": 0,
+      "centre": [
+        376.16,
+        230.32
+      ]
+    },
+    {
+      "truck": "grillvagnen",
+      "day": "sat",
+      "spot": "sjon",
+      "k": 0,
+      "centre": [
+        376.16,
+        230.32
+      ]
+    },
+    {
+      "truck": "tacovagnen",
+      "day": "sat",
+      "spot": "maltidens-hus",
+      "k": 0,
+      "centre": [
+        546.52,
+        -56.8
+      ]
+    }
+  ],
+  "checked": {
+    "renderedFootprints": 322,
+    "outbuildings": 56,
+    "trafficRoads": 206,
+    "villageLifeRoutes": 4
+  },
+  "phase": "fore",
+  "test": {
+    "file": "src/strategic/__tests__/order312PaVagen.test.ts",
+    "exitCode": 1,
+    "summary": "Tests  5 skipped (5)",
+    "seconds": 38.3
+  }
+}
