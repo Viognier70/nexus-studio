@@ -1,0 +1,187 @@
+{
+  "definition": "Marken = medelfärgen i rutorna ZONES (scripts/order308c-mark.mjs; inritade i reports/order308c/zoner/), där bilden visar mark. pixels = antal bildpunkter, rgb 0–255, hue i grader (HSV), sat och val 0–1, green = g − (r + b) / 2. dist = RGB-avståndet till Designs markfärg, dHue och dGreen = spelet − Design. before = reports/order308c/fore/ (main 51c7cbb7), after = reports/order308c/ (ORDER 308c). Designs skärmar: skarmar/1280x720/. controlVillageAfter: byn efter öppningen (Byn, V), hela bilden, meanAbsDiff = medelavvikelse per bildpunkt och kanal mellan faserna. scripts/order308c-mark.mjs.",
+  "rows": [
+    {
+      "shot": "oppning-texten",
+      "design": {
+        "pixels": 14300,
+        "rgb": [
+          70.7,
+          72.2,
+          62.6
+        ],
+        "hue": 69.4,
+        "sat": 0.13,
+        "val": 0.28,
+        "green": 5.5
+      },
+      "before": {
+        "file": "reports/order308c/fore/oppning-texten-1280x720.png",
+        "pixels": 15000,
+        "rgb": [
+          74.1,
+          64.9,
+          54.1
+        ],
+        "hue": 32.2,
+        "sat": 0.27,
+        "val": 0.29,
+        "green": 0.7,
+        "dist": 11.7,
+        "dHue": -37.2,
+        "dGreen": -4.8
+      },
+      "after": {
+        "file": "reports/order308c/oppning-texten-1280x720.png",
+        "pixels": 15000,
+        "rgb": [
+          69,
+          67.1,
+          57.3
+        ],
+        "hue": 50.1,
+        "sat": 0.17,
+        "val": 0.27,
+        "green": 3.9,
+        "dist": 7.5,
+        "dHue": -19.2,
+        "dGreen": -1.6
+      }
+    },
+    {
+      "shot": "oppning-nalen-ingrid",
+      "design": {
+        "pixels": 40800,
+        "rgb": [
+          54.8,
+          52.4,
+          46.1
+        ],
+        "hue": 43.9,
+        "sat": 0.16,
+        "val": 0.21,
+        "green": 2
+      },
+      "before": {
+        "file": "reports/order308c/fore/oppning-nalen-ingrid-1280x720.png",
+        "pixels": 44000,
+        "rgb": [
+          59.6,
+          51.9,
+          43.9
+        ],
+        "hue": 30.6,
+        "sat": 0.26,
+        "val": 0.23,
+        "green": 0.1,
+        "dist": 5.3,
+        "dHue": -13.3,
+        "dGreen": -1.9
+      },
+      "after": {
+        "file": "reports/order308c/oppning-nalen-ingrid-1280x720.png",
+        "pixels": 44000,
+        "rgb": [
+          54.8,
+          54.7,
+          48.1
+        ],
+        "hue": 59.1,
+        "sat": 0.12,
+        "val": 0.22,
+        "green": 3.3,
+        "dist": 3.1,
+        "dHue": 15.2,
+        "dGreen": 1.3
+      }
+    },
+    {
+      "shot": "oppning-raden-stjarnan",
+      "design": {
+        "pixels": 64800,
+        "rgb": [
+          68.4,
+          67.9,
+          60.6
+        ],
+        "hue": 56.1,
+        "sat": 0.11,
+        "val": 0.27,
+        "green": 3.4
+      },
+      "before": {
+        "file": "reports/order308c/fore/oppning-raden-stjarnan-1280x720.png",
+        "pixels": 43200,
+        "rgb": [
+          68.8,
+          60.8,
+          52.1
+        ],
+        "hue": 31.1,
+        "sat": 0.24,
+        "val": 0.27,
+        "green": 0.3,
+        "dist": 11.1,
+        "dHue": -25,
+        "dGreen": -3.1
+      },
+      "after": {
+        "file": "reports/order308c/oppning-raden-stjarnan-1280x720.png",
+        "pixels": 43200,
+        "rgb": [
+          65.4,
+          64.1,
+          56.8
+        ],
+        "hue": 51.2,
+        "sat": 0.13,
+        "val": 0.26,
+        "green": 3,
+        "dist": 6.1,
+        "dHue": -4.8,
+        "dGreen": -0.4
+      }
+    }
+  ],
+  "summary": {
+    "design": {
+      "meanHue": 56.5,
+      "meanGreen": 3.6
+    },
+    "before": {
+      "meanHue": 31.3,
+      "meanGreen": 0.4,
+      "meanDist": 9.4,
+      "maxDist": 11.7,
+      "meanAbsDHue": 25.2
+    },
+    "after": {
+      "meanHue": 53.5,
+      "meanGreen": 3.4,
+      "meanDist": 5.6,
+      "maxDist": 7.5,
+      "meanAbsDHue": 13.1
+    }
+  },
+  "controlVillageAfter": {
+    "shot": "oppning-byn-efter",
+    "before": {
+      "file": "reports/order308c/fore/oppning-byn-efter-1280x720.png",
+      "rgb": [
+        58.2,
+        55.9,
+        55.7
+      ]
+    },
+    "after": {
+      "file": "reports/order308c/oppning-byn-efter-1280x720.png",
+      "rgb": [
+        58,
+        55.7,
+        55.6
+      ]
+    },
+    "meanAbsDiff": 0.23,
+    "dist": 0.3
+  }
+}
