@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { WORLD_BOUNDS } from '../content/world';
+import { openingGroundRgb, useOpeningGround } from '../opening/openingGround';
 
 // Segmented terrain plane with gentle Bergslag-hill displacement outside
 // the village core. Vertices within the village bounds (plus a safety
@@ -14,7 +15,10 @@ import { WORLD_BOUNDS } from '../content/world';
 // (avoids the previous shimmering ground); we simply move it from a
 // hard-coded plane to a low-segment BufferGeometry.
 export function OsmTerrain() {
-  const geometry = useMemo(() => {
+  // ORDER 308c — under öppningen markens färg mot Designs (openingGround.ts);
+  // spelets färger per hörn sparas och läggs tillbaka när öppningen slutar.
+  const opening = useOpeningGround();
+  const { geometry, gameColours } = useMemo(() => {
     const cx = (WORLD_BOUNDS.maxX + WORLD_BOUNDS.minX) / 2;
     const cz = (WORLD_BOUNDS.maxZ + WORLD_BOUNDS.minZ) / 2;
     const halfX = (WORLD_BOUNDS.maxX - WORLD_BOUNDS.minX) / 2;
@@ -102,8 +106,16 @@ export function OsmTerrain() {
     pos.needsUpdate = true;
     geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
     geo.computeVertexNormals();
-    return geo;
+    return { geometry: geo, gameColours: colors.slice() };
   }, []);
+
+  useEffect(() => {
+    const attr = geometry.attributes.color as THREE.BufferAttribute;
+    const arr = attr.array as Float32Array;
+    arr.set(gameColours);
+    if (opening) openingGroundRgb(arr);
+    attr.needsUpdate = true;
+  }, [opening, geometry, gameColours]);
 
   return (
     <mesh geometry={geometry}>

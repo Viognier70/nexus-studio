@@ -13,6 +13,7 @@ import {
   polygonArea
 } from '../procgen/geom';
 import { STATIC_INSTANCE_FRAMES } from './staticInstances';
+import { openingGroundColour, useOpeningGround } from '../opening/openingGround';
 
 // ORDER 031 — Property character (Phase 2).
 //
@@ -68,7 +69,12 @@ const SURFACE_APPEARANCE: Record<SurfaceStyle, { colour: string; roughness: numb
   mixed:          { colour: '#8a7c66', roughness: 0.95 }    // grass + gravel + trodden
 };
 
+// ORDER 308c — gårdarnas mjuka ytor följer markens färg under öppningen
+// (openingGround.ts); de hårda (asfalt, plattor, betong) är oförändrade.
+const SOFT_SURFACES = new Set<SurfaceStyle>(['grass', 'gravel', 'worn-dirt', 'mixed']);
+
 export function OsmYardSurfaces() {
+  const opening = useOpeningGround();
   const patches = useMemo<SurfacePatch[]>(() => {
     const segments = carRoadSegments();
     const out: SurfacePatch[] = [];
@@ -138,7 +144,10 @@ export function OsmYardSurfaces() {
         return (
           <Instances frames={STATIC_INSTANCE_FRAMES} key={style} limit={stylePatches.length} range={stylePatches.length}>
             <boxGeometry args={[1, 0.02, 1]} />
-            <meshStandardMaterial color={appearance.colour} roughness={appearance.roughness} />
+            <meshStandardMaterial
+              color={opening && SOFT_SURFACES.has(style) ? openingGroundColour(appearance.colour) : appearance.colour}
+              roughness={appearance.roughness}
+            />
             {stylePatches.map((p, i) => (
               <Instance
                 key={`${style}-${i}`}

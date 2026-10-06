@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import * as THREE from 'three';
 import { GROUND_Y, WORLD, tintColour } from '../content/world';
 import type { RawPolygon, Vec2Tuple } from '../content/world';
+import { openingGroundColour, useOpeningGround } from '../opening/openingGround';
 
 // FNV-1a 32-bit hash of a polygon id — used to wobble the base tint
 // per neighbourhood so 12 residential polygons don't read as one flat
@@ -79,6 +80,8 @@ interface Layer {
 }
 
 export function OsmDistricts() {
+  // ORDER 308c — under öppningen landytornas färg mot Designs mark (openingGround.ts).
+  const opening = useOpeningGround();
   const layers: Layer[] = useMemo(() => {
     return [
       // Forest: darker, cooler green than the base meadow so treed areas
@@ -117,27 +120,34 @@ export function OsmDistricts() {
     ];
   }, []);
 
+  // Ytorna byggs en gång (förut i varje rendering): med öppningens färg ritas
+  // komponenten om när öppningen börjar och slutar (ORDER 308c).
+  const pieces = useMemo(() => layers.map((layer) => ({
+    y: layer.y,
+    items: layer.polys.flatMap((p) => {
+      if (!insideRange(p.poly)) return [];
+      const geo = toShapeGeom(p.poly);
+      if (!geo) return [];
+      const game = layer.wobble > 0
+        ? districtWobble(layer.colour, p.id, layer.wobble)
+        : layer.colour;
+      return [{ id: p.id, geo, game }];
+    })
+  })), [layers]);
+
   return (
     <group>
-      {layers.map((layer, li) => (
+      {pieces.map((layer, li) => (
         <group key={`layer-${li}`} position={[0, layer.y, 0]}>
-          {layer.polys.map((p) => {
-            if (!insideRange(p.poly)) return null;
-            const geo = toShapeGeom(p.poly);
-            if (!geo) return null;
-            const c = layer.wobble > 0
-              ? districtWobble(layer.colour, p.id, layer.wobble)
-              : layer.colour;
-            return (
-              <mesh key={`${p.id}`} geometry={geo}>
-                <meshStandardMaterial
-                  color={c}
-                  roughness={0.95}
-                  depthWrite={false}
-                />
-              </mesh>
-            );
-          })}
+          {layer.items.map((p) => (
+            <mesh key={p.id} geometry={p.geo}>
+              <meshStandardMaterial
+                color={opening ? openingGroundColour(p.game) : p.game}
+                roughness={0.95}
+                depthWrite={false}
+              />
+            </mesh>
+          ))}
         </group>
       ))}
     </group>

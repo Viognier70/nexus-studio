@@ -1,0 +1,43 @@
+{
+  "build": "produktion (vite build + preview)",
+  "size": "1280×720",
+  "errors": [],
+  "externalRequests": [],
+  "flows": {
+    "village": {
+      "steps": [
+        "morning",
+        "service",
+        "village"
+      ],
+      "openingActive": false,
+      "level": "village",
+      "camDistance": 660,
+      "clock": "18.52"
+    }
+  },
+  "summary": {
+    "order": null,
+    "rulesHiddenDuringOpening": null,
+    "villageLabelsDuringOpening": null,
+    "mentorAtPin": null,
+    "streetLampsLit": null,
+    "wallSeconds": null,
+    "shotsWithText": null,
+    "skipHiddenBefore3s": null,
+    "earlyKeyIgnored": null,
+    "skipShownAt3s": null,
+    "skipToRulesMs": null,
+    "reducedAttr": null,
+    "reducedCameraStillInFly": null,
+    "reducedCameraStillInDescend": null,
+    "pinVenue": null,
+    "returningOpeningShown": null,
+    "returningSkipBefore3s": null,
+    "returningSkipAtT": null,
+    "returningSkipToRulesMs": null,
+    "english": null,
+    "externalRequests": 0,
+    "errors": 0
+  }
+}

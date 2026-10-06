@@ -18,16 +18,18 @@
 // that could be yours (summary.pinVenue, summary.english); E. den som har sett
 // öppningen ser den igen och kan hoppa över direkt (summary.returning*). Ljuset
 // mot Designs skärmar mäts av scripts/order308b-ljus.mjs ur skärmarna här.
-// FLOWS=full,skip,reduced,english,returning väljer flödena (förval alla).
+// ORDER 308c: F. byn efter öppningen ur en sparfil (oppning-byn-efter, Byn (V));
+// markens färg mäts av scripts/order308c-mark.mjs.
+// FLOWS=full,skip,reduced,english,returning,village väljer flödena (förval alla).
 // Utdata: reports/<REPORT_ORDER|order308b>/check.json och oppning-*.png.
 //
-//   [REPORT_ORDER=order308b] [SKIP_BUILD=1] [PORT=4188] [SIZE=1280x720] [FLOWS=…] node scripts/order308-check.mjs
+//   [CHECK_JSON=check.json] [REPORT_ORDER=order308b] [SKIP_BUILD=1] [PORT=4188] [SIZE=1280x720] [FLOWS=…] node scripts/order308-check.mjs
 
 import { spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FRONTEND = resolve(HERE, '..');
@@ -35,7 +37,7 @@ const OUT = resolve(FRONTEND, 'reports', process.env.REPORT_ORDER ?? 'order308b'
 mkdirSync(OUT, { recursive: true });
 const PORT = Number(process.env.PORT ?? 4188);
 const URL = `http://localhost:${PORT}`;
-const FLOWS = new Set((process.env.FLOWS ?? 'full,skip,reduced,english,returning').split(','));
+const FLOWS = new Set((process.env.FLOWS ?? 'full,skip,reduced,english,returning,village').split(','));
 const [W, H] = (process.env.SIZE ?? '1280x720').split('x').map(Number);
 // Designs skärmar (LEVERANSNOT §2), och taket som lyfts, och en tid i varje, mitt i radens eller nålens fönster (oppningManus.js).
 const SHOTS = [
@@ -195,6 +197,57 @@ try {
     report.flows.english = flow;
     await ctx.close();
   }
+  // F. ORDER 308c — byn efter öppningen, i spelets eget ljus och med spelets mark:
+  // sparfilen måndag vecka 2 i vinbaren (reports/order284/save-mandag-vinbaren.json,
+  // oförändrad; öppningen är sedd), Fortsätt, baspaketet, dörrarna öppnas, Byn (V)
+  // under servicen (kvällsljuset; klockan går, så ljuset kan skilja något mellan
+  // körningarna). Ingen öppning spelas här. scripts/order308c-mark.mjs jämför bilden före och efter.
+  if (FLOWS.has('village')) {
+    const save = readFileSync(resolve(FRONTEND, 'reports/order284/save-mandag-vinbaren.json'), 'utf8');
+    const { ctx, page } = await newPage('sv');
+    await ctx.addInitScript((v) => { if (!sessionStorage.getItem('o308c')) { localStorage.setItem('nexus.v1.slot1', v); sessionStorage.setItem('o308c', '1'); } }, save);
+    const flow = { steps: [] };
+    await page.goto(`${URL}/`, { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('[data-testid=start-screen]', { timeout: 120000 });
+    await page.click('[data-testid=continue-saved]');
+    await page.waitForSelector('[data-testid=load-slot-1]', { timeout: 30000 }).then(() => page.click('[data-testid=load-slot-1]')).catch(() => {});
+    await page.waitForSelector('[data-testid=day-action-bar]', { timeout: 60000 });
+    flow.steps.push('morning');
+    await delay(1500);
+    // Byn syns under servicen (på morgonen täcker morgonens sida den): baspaketet,
+    // dörrarna öppnas, mentorns kort stängs, sedan V.
+    await page.click('[data-testid=open-buy-foot]');
+    await page.waitForSelector('[data-testid=screen-M1]', { timeout: 20000 });
+    await page.click('[data-testid=buy-base]').catch(() => {});
+    await delay(800);
+    await page.click('[data-testid=open-doors]');
+    await delay(500);
+    if (await page.$('[data-testid=open-short-open]')) await page.click('[data-testid=open-short-open]');
+    await page.waitForSelector('[data-testid=mentor-close-service]', { timeout: 15000 }).then(() => page.click('[data-testid=mentor-close-service]')).catch(() => {});
+    flow.steps.push('service');
+    flow.openingActive = await page.$('[data-testid=opening]') !== null;
+    await page.keyboard.press('v');
+    let last = NaN;
+    for (let i = 0; i < 60; i++) {
+      await delay(500);
+      const r = await page.evaluate(() => ({ level: document.body.dataset.level ?? null, d: Number(document.body.dataset.camDistance ?? NaN) }));
+      if (r.level === 'village' && Math.abs(r.d - last) < 0.5) break;
+      last = r.d;
+    }
+    // Kvällsljuset följer klockan i steg om tre spelminuter (DayLighting.tsx);
+    // bilden tas när klockan visar 18.52, så att ljuset är detsamma i varje körning.
+    for (let i = 0; i < 600; i++) {
+      const c = await page.evaluate(() => document.querySelector('[data-testid=service-clock-time]')?.textContent ?? null);
+      if (c === '18.52') break;
+      await delay(100);
+    }
+    flow.steps.push('village');
+    Object.assign(flow, await page.evaluate(() => ({ level: document.body.dataset.level ?? null, camDistance: Number(document.body.dataset.camDistance ?? NaN), clock: document.querySelector('[data-testid=service-clock-time]')?.textContent ?? null })));
+    await page.screenshot({ path: resolve(OUT, `oppning-byn-efter-${W}x${H}.png`) });
+    report.flows.village = flow;
+    await ctx.close();
+  }
+
   // E. Den som har sett öppningen (ORDER 308b, Anders 2026-10-05): öppningen
   // spelas igen, och Hoppa över syns och fungerar direkt, före 3 s.
   if (FLOWS.has('returning')) {
@@ -245,7 +298,7 @@ try {
     externalRequests: report.externalRequests.length,
     errors: report.errors.length
   };
-  writeFileSync(resolve(OUT, 'check.json'), JSON.stringify(report, null, 2) + '\n');
+  writeFileSync(resolve(OUT, process.env.CHECK_JSON ?? 'check.json'), JSON.stringify(report, null, 2) + '\n');
   console.log(JSON.stringify(report.summary, null, 1));
   await browser.close();
   try { process.kill(-proc.pid, 'SIGTERM'); } catch { proc.kill('SIGTERM'); }
