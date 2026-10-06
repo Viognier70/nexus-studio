@@ -1,0 +1,146 @@
+{
+  "build": "produktion (vite build + preview)",
+  "size": "1440×900",
+  "save": "reports/order284/save-mandag-vinbaren.json (oförändrad)",
+  "steps": {
+    "concept": null,
+    "opened": {
+      "key": "nexus.v1.slot1",
+      "dayNumber": 8,
+      "period": "morning",
+      "reputation": 0.6,
+      "reputationByTier": null,
+      "conceptReputationAtServiceStart": null,
+      "booking": null,
+      "morningReview": null
+    },
+    "review": {
+      "change": "-1",
+      "rep": {
+        "scope": "concept",
+        "tier": "bistro",
+        "from": "60",
+        "to": "60",
+        "heading": "Ryktet som bistro"
+      },
+      "changes": {
+        "text": "Ryktet som bistro −1 · Krogens rykte ±0",
+        "concept": "-1",
+        "restaurant": "0"
+      },
+      "lines": [
+        {
+          "kind": "wrong",
+          "delta": -2,
+          "voice": "student",
+          "text": "Ryktet −2\n\n”Det blev inte riktigt som vi hade tänkt oss.”\n\nEn student · Ett bord fick fel svar (Är det champagne?)."
+        },
+        {
+          "kind": "rest",
+          "delta": 1,
+          "voice": "village",
+          "text": "Ryktet +1\n\n”En fin kväll i vinbaren.”\n\nByn · Gästernas kväll i övrigt."
+        }
+      ]
+    },
+    "morning": {
+      "key": "nexus.v1.slot1",
+      "dayNumber": 9,
+      "period": "morning",
+      "reputation": 0.6007232211067361,
+      "reputationByTier": {
+        "enkel": 0.6132331960691765,
+        "bistro": 0.5961331960691765,
+        "soigne": 0.6132331960691765
+      },
+      "conceptReputationAtServiceStart": null,
+      "booking": null,
+      "morningReview": {
+        "dayNumber": 8,
+        "change": -1,
+        "fromAnswers": -2,
+        "wrongTables": 1,
+        "rightTables": 0,
+        "grave": 0,
+        "wrongTitles": [
+          "Är det champagne?"
+        ],
+        "rightTitles": [],
+        "from": 60,
+        "to": 60,
+        "tier": "bistro",
+        "scope": "concept",
+        "restaurant": {
+          "from": 60,
+          "to": 60,
+          "change": 0
+        },
+        "lines": [
+          {
+            "kind": "wrong",
+            "voice": "student",
+            "delta": -2,
+            "tables": 1,
+            "titles": [
+              "Är det champagne?"
+            ],
+            "seed": 2415
+          },
+          {
+            "kind": "rest",
+            "voice": "village",
+            "delta": 1,
+            "tables": 0,
+            "titles": [],
+            "seed": 560
+          }
+        ]
+      }
+    },
+    "reviewEn": {
+      "change": "-1",
+      "rep": {
+        "scope": "concept",
+        "tier": "bistro",
+        "from": "60",
+        "to": "60",
+        "heading": "Reputation as a bistro"
+      },
+      "changes": {
+        "text": "Reputation as a bistro −1 · Your venue’s reputation ±0",
+        "concept": "-1",
+        "restaurant": "0"
+      },
+      "lines": [
+        {
+          "kind": "wrong",
+          "delta": -2,
+          "voice": "student",
+          "text": "Reputation −2\n\n“It wasn’t quite what we had hoped for.”\n\nA student · One table got a wrong answer (Är det champagne?)."
+        },
+        {
+          "kind": "rest",
+          "delta": 1,
+          "voice": "village",
+          "text": "Reputation +1\n\n“A lovely evening at the wine bar.”\n\nThe village · The rest of the guests’ evening."
+        }
+      ]
+    },
+    "consistency": {
+      "text": "Ryktet som bistro −1 · Krogens rykte ±0",
+      "textEn": "Reputation as a bistro −1 · Your venue’s reputation ±0",
+      "conceptChangeIsCardChange": true,
+      "restaurantChangeIsSim": true,
+      "restaurantFromTo": {
+        "from": 60,
+        "to": 60,
+        "change": 0
+      },
+      "restaurantToIsMorning": true,
+      "conceptToIsMorning": true,
+      "linesSum": -1,
+      "sumIsChange": true
+    }
+  },
+  "errors": []
+}

@@ -54,6 +54,10 @@ export interface MorningReview {
   // ORDER 309b — vems rykte kortet visar: konceptets (reputationByTier) när
   // kvällen hade ett koncept och dess startvärde sparades, annars krogens.
   scope?: 'concept' | 'restaurant';
+  // ORDER 309c — krogens rykte samma kväll (0–100, avrundat), också när kortet
+  // visar konceptets: kortet visar båda ändringarna ("Ryktet som bistro +3 ·
+  // Krogens rykte +1"). Klasserna utan koncept har samma tal som from/to/change.
+  restaurant?: { from: number; to: number; change: number };
 }
 
 // ORDER 309b — ett svars poäng i det rykte kortet visar. Konceptet: poängen
@@ -64,6 +68,17 @@ function answerPoints(r: { right: boolean; reputation: number; guestType?: Guest
   if (scope === 'restaurant') return r.reputation;
   if (typeof r.conceptReputation === 'number') return r.conceptReputation;
   return !r.right && r.guestType ? r.reputation * GUEST_TYPES.forgiveness[r.guestType] : r.reputation;
+}
+
+/**
+ * ORDER 309c — ändringarna som kortet visar under stapeln: konceptets (bara när
+ * kortet visar konceptets rykte) och krogens. Äldre kort utan `restaurant`:
+ * i klasserna utan koncept är krogens ändring kortets egen; med koncept saknas den.
+ */
+export function reviewChanges(r: MorningReview): { concept: number | null; restaurant: number | null } {
+  const concept = r.scope === 'concept' ? r.change : null;
+  const restaurant = r.restaurant ? r.restaurant.change : r.scope === 'concept' ? null : r.change;
+  return { concept, restaurant };
 }
 
 /** Kvällens koncept (bokningen, låst när dörrarna öppnade), eller null. */
@@ -147,6 +162,11 @@ export function buildMorningReview(evening: SimulationState, morning: Simulation
   const cleared = reviews.filter((r) => r.right && r.reputation >= CONSEQUENCES.right.clearedReputation);
   const uniq = (xs: string[]) => [...new Set(xs)];
   const change = Math.round((end - start) * REPUTATION.scale);
+  const restaurant = {
+    from: Math.round(restaurantStart * REPUTATION.scale),
+    to: Math.round(morning.reputation * REPUTATION.scale),
+    change: Math.round((morning.reputation - restaurantStart) * REPUTATION.scale)
+  };
   return {
     dayNumber: evening.day.dayNumber,
     change,
@@ -160,6 +180,7 @@ export function buildMorningReview(evening: SimulationState, morning: Simulation
     to: Math.round(end * REPUTATION.scale),
     tier,
     scope,
+    restaurant,
     lines: reviewLines(evening, change, evening.day.dayNumber, scope)
   };
 }

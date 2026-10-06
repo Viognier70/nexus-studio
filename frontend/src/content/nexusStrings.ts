@@ -3539,6 +3539,16 @@ export const TABLE = {
       title: { sv: 'Vad byn säger om i går', en: 'What the village says about last night' },
       rep: { sv: 'Ryktet', en: 'Reputation' },
       classLine: { sv: (cls: string) => `Ryktet som ${cls.toLowerCase()}`, en: (cls: string) => `Reputation as a ${cls.toLowerCase()}` },
+      // ORDER 309c — båda ändringarna under stapeln: konceptets och krogens.
+      classChange: {
+        sv: (cls: string, n: number) => `Ryktet som ${cls.toLowerCase()} ${n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '±0'}`,
+        en: (cls: string, n: number) => `Reputation as a ${cls.toLowerCase()} ${n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '±0'}`
+      },
+      venueChange: {
+        sv: (n: number) => `Krogens rykte ${n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '±0'}`,
+        en: (n: number) => `Your venue’s reputation ${n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '±0'}`
+      },
+      changesJoin: { sv: ' · ', en: ' · ' },
       down: { sv: (n: number) => `Ryktet −${n}`, en: (n: number) => `Reputation −${n}` },
       up: { sv: (n: number) => `Ryktet +${n}`, en: (n: number) => `Reputation +${n}` },
       even: { sv: 'Ryktet ±0', en: 'Reputation ±0' },
