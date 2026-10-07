@@ -28,7 +28,7 @@ import { NxButton, NxScreen } from '../ui/system/components';
 import { formatSek } from '../ui/CashCounter';
 import { popIn } from '../ui/juice/juice';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
-import { eveningEvents, eveningResult, type EveningEvent, type ResultRow } from '../simulation/eveningResult';
+import { eveningDrags, eveningEvents, eveningResult, type EveningDrag, type EveningEvent, type ResultRow } from '../simulation/eveningResult';
 import '../ui/service/service.css';
 
 const GAP_MS = 120;
@@ -98,6 +98,7 @@ export function ResultScreen({ sim, onContinue }: { sim: SimulationState; onCont
   const still = usePrefersReducedMotion();
   const rows = eveningResult(sim);
   const events = eveningEvents(sim);
+  const drags = eveningDrags(sim);
   const rootRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     (rootRef.current?.querySelectorAll('[data-pop]') ?? []).forEach((el, i) => popIn(el, still ? 0 : i * GAP_MS));
@@ -154,6 +155,13 @@ export function ResultScreen({ sim, onContinue }: { sim: SimulationState; onCont
     return e.steps ? t.stepsOf(e.steps.cleared, e.steps.total) : '';
   };
   const wasteKg = rows.find((r) => r.key === 'ecological')!.detail.kg;
+  const dragLine = (d: EveningDrag): string => {
+    switch (d.key) {
+      case 'waste': return t.drags.waste(formatSek(d.detail.thrown), formatSek(d.detail.fee));
+      case 'wrong': return t.drags.wrong(d.detail.count, signedSek(-d.sek));
+      case 'stock': return t.drags.stock(formatSek(d.sek));
+    }
+  };
   const day = strings.calendar.weekdays[calendarFor(sim.day.dayNumber).weekday];
   return (
     <NxScreen testId="screen-R1" label={t.title} className="nx-result-screen">
@@ -225,6 +233,16 @@ export function ResultScreen({ sim, onContinue }: { sim: SimulationState; onCont
               <div className="nx-small nx-muted">{t.wasteNote}</div>
             </div>
           </div>
+          {/* ORDER 318 — vad som drog ned kvällen (svinn, fel svar, inköp), störst först. */}
+          {drags.length > 0 && (
+            <div className="nx-panel nx-result-drags" data-pop data-testid="result-drags">
+              <div className="nx-label">{t.drags.title}</div>
+              <ul>
+                {drags.map((d) => <li key={d.key} data-testid={`result-drag-${d.key}`} data-sek={d.sek}>{dragLine(d)}</li>)}
+              </ul>
+              {drags.some((d) => d.key === 'waste') && drags.some((d) => d.key === 'stock') && <div className="nx-small nx-muted">{t.drags.note}</div>}
+            </div>
+          )}
           <div className="nx-result-foot">
             <NxButton testId="result-continue" onClick={onContinue}>{t.continue}</NxButton>
           </div>

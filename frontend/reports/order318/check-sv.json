@@ -1,0 +1,83 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "errors": [],
+  "ok": true,
+  "buy": {
+    "clockSub": "Dörrarna öppnar 19.05",
+    "button": "Öppna dörrarna 19.05→",
+    "clockTime": "19.05",
+    "buttonTime": "19.05",
+    "stockRows": 13,
+    "chickenBefore": "0",
+    "chickenAfter": "5",
+    "chickenLine": "I lager: 5 portioner · räcker inte hela kvällen · går ut efter i morgon",
+    "bandVisibleOverBuy": false,
+    "sameTime": true
+  },
+  "folded": {
+    "rank": "3:e av 4 efter nöjda gäster",
+    "open": "false",
+    "panel": false,
+    "calm": false,
+    "venues": 4
+  },
+  "open": {
+    "rank": "3:e av 4 efter nöjda gäster",
+    "open": "true",
+    "panel": true,
+    "calm": false,
+    "venues": 4,
+    "rows": [
+      {
+        "id": "village-now-torgkrogen",
+        "guests": 9,
+        "content": 6,
+        "place": 1,
+        "player": false
+      },
+      {
+        "id": "village-now-pizzeria-grytan",
+        "guests": 8,
+        "content": 3,
+        "place": 2,
+        "player": false
+      },
+      {
+        "id": "village-now-player",
+        "guests": 18,
+        "content": 2,
+        "place": 3,
+        "player": true
+      },
+      {
+        "id": "village-now-hotellets-matsal",
+        "guests": 3,
+        "content": 2,
+        "place": 4,
+        "player": false
+      }
+    ],
+    "line": "Du drar flest gäster, men få är nöjda. Torgkrogen leder.",
+    "head": [
+      "Krog",
+      "Gäster",
+      "Nöjda",
+      ""
+    ],
+    "sorted": true,
+    "playerMostGuests": true,
+    "calmRule": true
+  },
+  "closedAgain": {
+    "rank": "4:e av 4 efter nöjda gäster",
+    "open": "false",
+    "panel": false,
+    "calm": false,
+    "venues": 4
+  },
+  "clickOpens": true,
+  "bank": {
+    "text": "BankenLån och satsningarKassan är under noll. Två bokslut till i rad, så stänger krogen."
+  }
+}

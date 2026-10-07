@@ -21,7 +21,8 @@ import { findDish, GLASSES_PER_BOTTLE, minIngredientCost } from './m4Catalogue';
 import { packageDishIds, scaledBaseItems, type StockPackage } from './packages';
 import { goodAvailable, tierOf } from '../../sim/goods';
 import { CONCEPT } from '../../sim/balance';
-import { computePlatesRemaining, menuFromStock, usesPackages } from './stockPackages';
+import { boughtTodayOf, computePlatesRemaining, dishShelfEvenings, menuFromStock, usesPackages } from './stockPackages';
+import { firstLastEvening, openBottleLastEvening, syncLots } from '../../sim/shelfLife';
 
 export interface DishRow {
   kind: 'dish';
@@ -32,6 +33,10 @@ export interface DishRow {
   portions: number;
   step: number;
   items: Record<string, number>;
+  /** ORDER 318 — köpt i dag (portioner), kvällar lagret räcker och dagar tills det första partiet går ut. */
+  today: number;
+  evenings: number | null;
+  expiresInDays: number | null;
 }
 
 export interface DrinkRow {
@@ -47,6 +52,10 @@ export interface DrinkRow {
   openGlasses: number;
   step: number;
   items: Record<string, number>;
+  /** ORDER 318 — flaskor köpta i dag, kvällar lagret räcker, och dagar tills den öppnade flaskan går ut (null: ingen öppen). */
+  todayBottles: number;
+  evenings: number | null;
+  openExpiresInDays: number | null;
 }
 
 // ORDER 307b — som inköpet (packages.ts packageCostSek): gånger varans nivå.
@@ -60,6 +69,13 @@ export function morningRows(state: SimulationState): { dishes: DishRow[]; drinks
   // ORDER 307 — bara varor från öppnade leverantörer (sim/goods.ts).
   const ids = packageDishIds(state.economy.businessClass).filter((id) => goodAvailable(state, id));
   const plates = computePlatesRemaining(ids.map((dishId) => ({ dishId, price: 0, ingredientCostSek: 0 })), state.stock, state.dishPortions);
+  const day = state.day.dayNumber;
+  const lots = state.dishPortions ? syncLots(state.dishLots, state.dishPortions, day, dishShelfEvenings) : undefined;
+  const expected = dailyGuestCap(state);
+  const guests = Number.isFinite(expected) && expected > 0 ? expected : null;
+  // Kvällar lagret räcker: gästerna fördelade på varorna som finns i lager.
+  const foodInStock = Math.max(1, ids.filter((id) => findDish(id)?.kind !== 'drink' && (plates[id] ?? 0) > 0).length);
+  const lasts = (have: number, perEvening: number | null) => (perEvening && perEvening > 0 ? Math.floor(have / perEvening) : null);
   const dishes: DishRow[] = ids
     .filter((id) => findDish(id)?.kind !== 'drink')
     .map((id) => ({
@@ -70,7 +86,10 @@ export function morningRows(state: SimulationState): { dishes: DishRow[]; drinks
       priceSek: findDish(id)!.suggestedPrice,
       portions: plates[id] ?? 0,
       step: ITEM_BATCH.dish,
-      items: { [id]: ITEM_BATCH.dish }
+      items: { [id]: ITEM_BATCH.dish },
+      today: boughtTodayOf(state, id),
+      evenings: lasts(plates[id] ?? 0, guests ? guests / foodInStock : null),
+      expiresInDays: (plates[id] ?? 0) > 0 && lots ? ((firstLastEvening(lots, id) ?? day) - day) : null
     }));
   // En rad per dryck: glaset (eller ölen) är den rätt som köps.
   const drinks: DrinkRow[] = [];
@@ -97,9 +116,16 @@ export function morningRows(state: SimulationState): { dishes: DishRow[]; drinks
       bottles: Math.floor(units / gpb),
       openGlasses: units % gpb,
       step,
-      items: { [id]: step * gpb }
+      items: { [id]: step * gpb },
+      todayBottles: Math.floor(boughtTodayOf(state, ing) / gpb),
+      evenings: null,
+      openExpiresInDays: units % gpb > 0 ? (() => { const last = openBottleLastEvening(state.openBottles, ing); return last === null ? null : last - day; })() : null
     });
   }
+  // Glas per gäst fördelade på dryckerna i lager.
+  const drinksInStock = Math.max(1, drinks.filter((d) => d.bottles * d.glassesPerBottle + d.openGlasses > 0).length);
+  const glassesPerEvening = guests ? (guests * (1 + STOCK.secondDrinkChance)) / drinksInStock : null;
+  for (const d of drinks) d.evenings = lasts(d.bottles * d.glassesPerBottle + d.openGlasses, glassesPerEvening);
   return { dishes, drinks };
 }
 

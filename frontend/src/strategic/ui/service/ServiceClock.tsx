@@ -17,7 +17,7 @@
 import { strings } from '../../../content/strings';
 import { CLOCK, INCIDENTS, SITTING } from '../../../sim/balance';
 import { clockCells, serviceLabel, serviceClock } from '../../../sim/serviceClock';
-import { beforeDoors, doorsOpenMinutes } from '../../../sim/clock';
+import { beforeDoors, doorsOpenMinutes, formatClock } from '../../../sim/clock';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { u } from '../system/components';
 import '../system/system.css';
@@ -25,11 +25,8 @@ import '../system/system.css';
 const MINUTES_PER_HOUR = INCIDENTS.minutesPerHour;
 const START = SITTING.serviceStartHour * MINUTES_PER_HOUR;
 
-function hhmm(minutes: number): string {
-  const h = Math.floor(minutes / MINUTES_PER_HOUR);
-  const m = minutes % MINUTES_PER_HOUR;
-  return strings.clock.time(String(h), String(m).padStart(INCIDENTS.clockDigits, '0'));
-}
+// ORDER 318 — samma klockslag som knappen Öppna dörrarna (sim/clock.ts formatClock).
+const hhmm = formatClock;
 
 export function ServiceClock() {
   const sim = useSimState();

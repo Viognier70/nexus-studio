@@ -14,7 +14,7 @@ import { settleWaste } from '../../strategic/simulation/stockPackages';
 import { SALVAGE_BEST, salvageGroup } from '../../strategic/simulation/salvage';
 import { eveningResult } from '../../strategic/simulation/eveningResult';
 import { eveningGrid, stepsCleared } from '../../strategic/ui/service/serviceView';
-import { SALVAGE } from '../balance';
+import { SALVAGE, WASTE } from '../balance';
 import type { SimulationState } from '../../strategic/types';
 
 const TICK = { type: 'TICK', dt: 0.2 } as const;
@@ -28,7 +28,8 @@ function monday(seed = 3): SimulationState {
 function leftovers(): SimulationState {
   let s = reducer(monday(), { type: 'BUY_ITEMS', items: { 'chicken-plate': 10, 'house-wine-glass': 5 } });
   s = reducer(s, { type: 'START_SERVICE' });
-  const d: SimulationState = { ...s, day: { ...s.day, wasteSettled: false } };
+  // ORDER 318 — kycklingen blir svinn först efter sin sista kväll (WASTE.shelfEvenings).
+  const d: SimulationState = { ...s, day: { ...s.day, wasteSettled: false, dayNumber: s.day.dayNumber + WASTE.shelfEvenings.chicken - 1 } };
   settleWaste(d);
   return d;
 }

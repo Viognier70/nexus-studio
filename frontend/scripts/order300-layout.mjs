@@ -21,7 +21,13 @@
 //   - overlaps: HUD:ens paneler som ligger på varandra (ORDER 303 G), när ingen helskärm är öppen;
 //   - shelfHidden: paviljongerna i morgonens lista som inte syns utan att listan rullas (§3);
 //   - clipped: knappar vars text radbryts eller skärs (scrollWidth > clientWidth
-//     eller två rader), bland dem som anges per skärm.
+//     eller två rader), bland dem som anges per skärm;
+//   - covered (ORDER 318): rubriker och etiketter på en öppen skärm (.nx-screen)
+//     som en av HUD:ens paneler ligger över (t.ex. bandet Byn i kväll över
+//     inköpens rubriker Meny och Dryckeslista).
+// ORDER 318 — bland panelerna räknas också situationens kort, händelsens
+// textrad (theatre-caption), meddelandena i rummet och Byn just nu, och
+// situationen mäts med Byn just nu ihopfälld och utfälld (B).
 // Utdata: reports/<REPORT_ORDER|order300>/layout.json och layout-*.png.
 //
 //   [REPORT_ORDER=order300] [SKIP_BUILD=1] [LAYOUT_SIZES=1280x720,...] node scripts/order300-layout.mjs
@@ -101,7 +107,7 @@ async function probe(page, buttons) {
     // 4 px², där ingen innehåller den andra.
     const overlaps = [];
     if (!document.querySelector('.nx-screen, .nxs-mentor-screen, .business-name-overlay, .nxs-rules')) {
-      const sel = '.gb-topleft > *, .nx-hud-stack > *, .nx-hud-row > *, .gb-topright > *, .nx-hud-tools > *, .nx-tabs, .nx-tab-dock, .nx-queue, [data-testid=event-stream], .nx-rocket, .nx-agency, .nx-mood-meter, .nx-prep-hint, .nx-scard, .nx-focus-strip';
+      const sel = '.gb-topleft > *, .nx-hud-stack > *, .nx-hud-row > *, .gb-topright > *, .nx-hud-tools > *, .nx-tabs, .nx-tab-dock, .nx-queue, [data-testid=event-stream], .nx-rocket, .nx-agency, .nx-mood-meter, .nx-prep-hint, .nx-scard, .nx-focus-strip, [data-testid=theatre-caption], .nx-room-notice, [data-testid=village-now]';
       const els = [...new Set(document.querySelectorAll(sel))].filter((el) => visibleEl(el) && !el.matches('.nx-hud-stack, .nx-hud-row'));
       for (let i = 0; i < els.length; i++) for (let j = i + 1; j < els.length; j++) {
         const a = els[i], b = els[j];
@@ -112,7 +118,23 @@ async function probe(page, buttons) {
         if (w > 2 && hh > 2) overlaps.push({ a: name(a), b: name(b), px: Math.round(w * hh) });
       }
     }
-    return { pageScroll, scrollers, shelfRows: shelf.length, shelfHidden, overlaps, screenScroll: scrollers.filter((s) => s.screen).map((s) => s.el), minFontPx: minFont === Infinity ? null : +minFont.toFixed(1), minFontAt, clipped };
+    // ORDER 318 — text på en öppen skärm som något utanför skärmen ligger över.
+    const covered = [];
+    for (const scr of document.querySelectorAll('.nx-screen')) {
+      if (!visibleEl(scr)) continue;
+      for (const el of scr.querySelectorAll('.nx-label, .nxs-list-head, h1, h2, h3')) {
+        if (!visibleEl(el)) continue;
+        const r = el.getBoundingClientRect();
+        for (const [fx, fy] of [[0.5, 0.5], [0.1, 0.5], [0.9, 0.5]]) {
+          const x = r.left + r.width * fx, y = r.top + r.height * fy;
+          if (x < 0 || y < 0 || x >= W || y >= H) continue;
+          const top = document.elementFromPoint(x, y);
+          // Bara HUD:ens paneler räknas (ett kort eller en dialog över skärmen är meningen).
+          if (top && !scr.contains(top) && top.closest('.gb-topleft, .gb-topright, .nx-hud-tools, .nx-hud-stack')) { covered.push({ el: name(el), text: el.textContent.trim().slice(0, 30), by: name(top) }); break; }
+        }
+      }
+    }
+    return { pageScroll, scrollers, shelfRows: shelf.length, shelfHidden, overlaps, covered, screenScroll: scrollers.filter((s) => s.screen).map((s) => s.el), minFontPx: minFont === Infinity ? null : +minFont.toFixed(1), minFontAt, clipped };
   }, [SCREEN_SHARE, buttons]);
 }
 
@@ -123,7 +145,7 @@ async function measure(page, name, buttons = []) {
     await page.setViewportSize({ width: w, height: h });
     await delay(500);
     const p = await probe(page, buttons);
-    const ok = !p.pageScroll && p.overlaps.length === 0 && p.shelfHidden.length === 0 && p.screenScroll.length === 0 && (p.minFontPx ?? 99) >= MIN_FONT_PX && p.clipped.length === 0;
+    const ok = !p.pageScroll && p.overlaps.length === 0 && p.covered.length === 0 && p.shelfHidden.length === 0 && p.screenScroll.length === 0 && (p.minFontPx ?? 99) >= MIN_FONT_PX && p.clipped.length === 0;
     rows.push({ size: `${w}×${h}`, ok, ...p });
     await page.screenshot({ path: resolve(OUT, `layout-${name}-${w}x${h}.png`) });
   }
@@ -248,6 +270,13 @@ try {
     // ORDER 303 G — med ett raketkort öppet (panelerna får inte ligga på varandra).
     await page.waitForSelector('[data-testid=incident-card][data-mode=ask]', { timeout: 180000 }).catch(() => {});
     await measure(page, 'raketen', []);
+    // ORDER 318 — samma situation med Byn just nu utfälld (B), sedan ihop igen.
+    if (await page.$('[data-testid=incident-card]')) {
+      await page.keyboard.press('b');
+      await delay(400);
+      await measure(page, 'raketen-byn-utfalld', []);
+      await page.keyboard.press('b');
+    }
     await ctx.close();
   }
 } catch (e) {

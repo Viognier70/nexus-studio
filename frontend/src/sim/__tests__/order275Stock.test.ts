@@ -103,7 +103,10 @@ describe('ORDER 275 — svinnet', () => {
     for (let i = 0; i < 5000 && t.day.dayNumber === s.day.dayNumber; i++) t = reducer(t, TICK);
     expect(t.day.dayNumber).toBe(s.day.dayNumber + 1);
     expect(t.lastWaste).toMatchObject({ dayNumber: s.day.dayNumber });
-    expect(t.lastWaste!.sek).toBeGreaterThan(0);
+    // ORDER 318 — svinnet följer hållbarheten (WASTE.shelfEvenings): baspaketets
+    // mat håller minst en kväll till, så inget av den är svinn första kvällen.
+    expect(t.lastWaste!.sek).toBe(0);
+    expect(t.lastWaste!.kept).toBeGreaterThan(0);
     // ORDER 278 — en del av maten sparas till nästa dag (WASTE.carryShare).
     // ORDER 280 — det avräknas när servicen stänger, och dygnsskiftet rör
     // inte lagret igen.

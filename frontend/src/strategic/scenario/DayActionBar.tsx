@@ -33,7 +33,7 @@ import { SEASON } from '../../sim/balance';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { scheduleSlotsUsed } from '../knowledge/pavilionVisit';
 import { MedalShelf } from '../knowledge/ui/MedalShelf';
-import { settlementInWords, shownInWords } from '../economy/BankDialog';
+import { bankBelowZeroWarning, settlementInWords, shownInWords } from '../economy/BankDialog';
 import { stockForecast } from '../../sim/stockForecast';
 import { eventsSince } from '../../sim/serviceEvents';
 import { numberWord } from '../simulation/eveningAccount';
@@ -313,6 +313,13 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
             <div className="nxs-dark-box" data-testid="morning-bank-note">
               <NxIcon name="bank" size={36} />
               <div><SenderTag sender="bank" /><p className="nx-body">{shownInWords(sim.medals)}</p></div>
+            </div>
+          )}
+          {/* ORDER 318 — Bankens varning före stängningen, varje morgon tills nästa bokslut. */}
+          {bankBelowZeroWarning(sim) && (
+            <div className="nxs-dark-box nxs-mt-24" data-testid="bank-below-zero" data-below={sim.economy.risk?.belowZeroInRow ?? 0} role="alert">
+              <NxIcon name="bank" size={36} />
+              <div><SenderTag sender="bank" /><p className="nx-body" style={{ fontWeight: 700 }}>{bankBelowZeroWarning(sim)}</p></div>
             </div>
           )}
           {settlement.length > 0 && !onOpenNewspaper && (

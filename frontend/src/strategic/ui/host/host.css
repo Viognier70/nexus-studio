@@ -253,3 +253,35 @@
 .nx-village-now-list li { display: grid; grid-template-columns: 1fr auto 18px; gap: 8px; align-items: center; }
 .nx-village-now-list li[data-player='true'] { font-weight: 800; color: #f0cd82; }
 .nx-village-now-line { margin: 2px 0 0; font-size: 12px; }
+
+/* ORDER 318 — bandet ihopfällt till en rad (placeringen, pilen, ryktet);
+   klick eller B fäller ut Byn just nu med kolumnerna Gäster och Nöjda. */
+.nx-rival-toggle {
+  display: inline-flex; align-items: baseline; gap: calc(14 * var(--nx-u));
+  background: none; border: 0; padding: 0; margin: 0; color: inherit; font: inherit; cursor: pointer; text-align: left;
+}
+.nx-rival-toggle:focus-visible { outline: 2px solid var(--w-gold, #e8b93a); outline-offset: 3px; border-radius: 6px; }
+.nx-rival-band[data-state='service'] .nx-rival-rank { font-size: max(14px, calc(22 * var(--nx-u))); }
+.nx-rival-chevron { font-size: 12px; color: rgba(244,230,204,.7); }
+.nx-rival-toggle .nx-village-now-trend { align-self: center; color: var(--w-candle, #ffd58f); }
+.nx-village-now-table { border-collapse: collapse; font-size: 12px; line-height: 1.35; width: 100%; max-width: 380px; }
+.nx-village-now-table th, .nx-village-now-table td { padding: 0 6px 0 0; text-align: right; font-weight: 400; }
+.nx-village-now-table thead th { color: rgba(244,230,204,.7); font-weight: 700; }
+.nx-village-now-table th:first-child { text-align: left; }
+.nx-village-now-table tr[data-player='true'] th, .nx-village-now-table tr[data-player='true'] td { font-weight: 800; color: #f0cd82; }
+.nx-village-now-table td:last-child { width: 18px; }
+/* ORDER 318 — bandet före öppning står inte över inköpens rubriker (Meny, Dryckeslista). */
+body:has([data-testid=screen-M1]) .nx-rival-band[data-state='before'] { display: none; }
+/* ORDER 318 — raden och tabellen ryms i bandets bredd (kolumnen under klockan):
+   placeringen bryts till en egen rad, krogens namn kortas med ellips och
+   talens kolumner har fast bredd. */
+.nx-rival-band[data-state='service'] { min-width: 0; overflow: hidden; }
+.nx-rival-band[data-state='service'] .nx-rival-head { min-width: 0; }
+.nx-rival-toggle { flex-wrap: wrap; row-gap: 2px; min-width: 0; max-width: 100%; }
+.nx-rival-toggle .nx-rival-rank { white-space: normal; }
+.nx-village-now-table { table-layout: fixed; max-width: 100%; }
+.nx-village-now-table th:first-child { width: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nx-village-now-table th:nth-child(2), .nx-village-now-table th:nth-child(3) { width: 4.6em; }
+.nx-village-now-table th:nth-child(4) { width: 18px; }
+/* Bandet under servicen är lika brett som klockan (ServiceClock u(440)), också utfällt. */
+.nx-rival-band[data-state='service'] { align-self: flex-start; box-sizing: border-box; width: calc(440 * var(--nx-u)); max-width: calc(440 * var(--nx-u)); }

@@ -216,8 +216,10 @@ describe('ORDER 271 — vinbaren, INSTRUKTION §6', () => {
         if (view.blocked.length > 0) failures.push(row);
       }
     }
-    mkdirSync(REPORT_DIR, { recursive: true });
-    writeFileSync(resolve(REPORT_DIR, 'wineBar-camera-view.json'), JSON.stringify({
+    // ORDER 318 — rapporten skrivs bara med WRITE_REPORTS=1, så att hela sviten
+    // inte skriver över ORDER 271:s rapport (rummet står nu i huset, ORDER 317).
+    if (process.env.WRITE_REPORTS) mkdirSync(REPORT_DIR, { recursive: true });
+    if (process.env.WRITE_REPORTS) writeFileSync(resolve(REPORT_DIR, 'wineBar-camera-view.json'), JSON.stringify({
       source: 'src/strategic/scene/__tests__/wineBarRoom.test.ts',
       shellOpacity: shell,
       camera: { preset: 'myBusiness', distance: preset.distance, pitch: preset.pitch, fov: camera.fov, apply: 'CameraController.applyCameraState' },

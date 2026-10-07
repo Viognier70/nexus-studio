@@ -933,3 +933,7 @@ body:has(.nx-stake) .nx-room-notices { display: none; }
   .nx-stake-lock { animation: none !important; }
   .nx-stake-cell[data-kind='pot'][data-state='out'] .nx-stake-val { opacity: .55; }
 }
+/* ORDER 318 — vad som drog ned kvällen, under raderna. */
+.nx-result-drags { margin-top: calc(14 * var(--nx-u)); padding: calc(14 * var(--nx-u)) calc(20 * var(--nx-u)); }
+.nx-result-drags ul { list-style: none; margin: calc(6 * var(--nx-u)) 0; padding: 0; display: grid; gap: calc(4 * var(--nx-u)); font-size: max(13px, calc(17 * var(--nx-u))); }
+.nx-result-drags li::before { content: '▼ '; color: #f08a6a; font-size: .8em; }

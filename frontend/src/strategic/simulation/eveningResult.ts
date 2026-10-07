@@ -21,6 +21,7 @@ import { eveningGrid, stepsCleared } from '../ui/service/serviceView';
 import { incidentsOf } from '../../sim/incidents';
 import { incidentById } from '../../sim/incidentBank';
 import { INCIDENTS } from '../../sim/balance';
+import { spentTodaySek } from './morningBuy';
 
 export type ResultKey = 'money' | 'credits' | 'reputation' | 'knowledge' | 'experience' | 'social' | 'economic' | 'ecological';
 export type Tone = 'won' | 'lost' | 'even';
@@ -141,4 +142,32 @@ export function eveningEvents(state: SimulationState): EveningEvent[] {
     out.push({ kind: 'truck', at: Number.MAX_SAFE_INTEGER, clock: null, id: 'truck', title: '', kg: w.kg ?? 0, cashSek: -(w.feeSek ?? 0) });
   }
   return out.sort((a, b) => a.at - b.at);
+}
+
+// ORDER 318 (Anders 2026-10-07: "Visa också vad som drog ned kvällen
+// (svinn, fel svar, inköp) i kvällens resultat.") — det som kostade i
+// kväll, störst först:
+// - svinnet: värdet av maten och glasen som slängdes (lastWaste.sek, redan
+//   betalt vid inköpet) och sopbilens avgift (lastWaste.feeSek);
+// - fel svar: situationerna där svaret var fel, och vad de kostade i kassan
+//   (IncidentRecord.deltas.cashSek);
+// - inköpen: dagens inköp (kassabokens lagerrader i dag, spentTodaySek).
+// Svinnets värde ingår i inköpen; raderna förklarar och läggs inte ihop.
+export type DragKey = 'waste' | 'wrong' | 'stock';
+export interface EveningDrag { key: DragKey; sek: number; detail: Record<string, number> }
+
+export function eveningDrags(state: SimulationState): EveningDrag[] {
+  const out: EveningDrag[] = [];
+  const w = state.lastWaste && state.lastWaste.dayNumber === state.day.dayNumber ? state.lastWaste : null;
+  if (w) {
+    const thrown = Math.round(w.sek ?? 0);
+    const fee = Math.round(w.feeSek ?? 0);
+    if (thrown + fee > 0) out.push({ key: 'waste', sek: thrown + fee, detail: { thrown, fee, portions: w.units ?? 0, glasses: w.openGlasses ?? 0 } });
+  }
+  const wrong = incidentsOf(state).log.filter((r) => r.quality === 'wrong');
+  const wrongSek = Math.round(-wrong.reduce((a, r) => a + Math.min(0, r.deltas?.cashSek ?? 0), 0));
+  if (wrong.length > 0) out.push({ key: 'wrong', sek: wrongSek, detail: { count: wrong.length } });
+  const stock = spentTodaySek(state);
+  if (stock > 0) out.push({ key: 'stock', sek: stock, detail: {} });
+  return out.sort((a, b) => b.sek - a.sek);
 }

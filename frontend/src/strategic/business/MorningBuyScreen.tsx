@@ -13,6 +13,7 @@
 import { useRef, useState } from 'react';
 import { strings } from '../../content/strings';
 import { creditLineSek } from '../../sim/economy';
+import { doorsOpenMinutes, formatClock } from '../../sim/clock';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { itemsCostSek, packagesFor } from '../simulation/packages';
 import { misePlan } from '../../sim/miseEnPlace';
@@ -44,6 +45,8 @@ function Stepper({ id, qty, unit, name, onLess, onMore }: { id: string; qty: num
       <div style={{ textAlign: 'center', minWidth: u(52) }}>
         <div className="nx-num" style={{ fontSize: u(34), lineHeight: 1 }} data-testid={`buy-qty-${id}`}>{qty}</div>
         <div className="nx-label" style={{ fontSize: `max(12px, ${u(14)})`, letterSpacing: '0.06em' }}>{unit}</div>
+        {/* ORDER 318 — talet är dagens inköp; lagret står under varans namn. */}
+        <div className="nx-label" style={{ fontSize: `max(12px, ${u(12)})`, letterSpacing: '0.04em', opacity: 0.75 }}>{T.today}</div>
       </div>
       <button ref={moreRef} type="button" className="nx-btn nx-btn-primary nxs-buy-more" style={{ ...btn, background: 'var(--w-ink)', color: 'var(--w-paper)' }} aria-label={T.more(name)} data-testid={`buy-more-${id}`} onClick={() => moreRef.current && onMore(moreRef.current)}>
         <span>+</span>
@@ -89,9 +92,12 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
       <div style={{ minWidth: 0 }}>
         <div className="nxs-row-title">{r.name}</div>
         <div className="nxs-row-sub">{T.dishSub(formatSek(r.costSek), formatSek(r.priceSek))}</div>
+        <div className="nxs-row-sub nxs-row-stock" data-testid={`stock-${r.dishId}`} data-portions={r.portions} data-evenings={r.evenings ?? ''} data-expires={r.expiresInDays ?? ''}>
+          {r.portions > 0 ? [T.stockDish(r.portions), r.evenings !== null ? T.lasts(r.evenings) : null, r.expiresInDays !== null ? T.expires(r.expiresInDays) : null].filter(Boolean).join(' · ') : T.stockEmpty}
+        </div>
       </div>
-      <Stepper id={r.dishId} qty={r.portions} unit={T.unitPortion} name={r.name}
-        onLess={(el) => giveBack(r.items, r.portions, el)} onMore={(el) => buy(r.items, el)} />
+      <Stepper id={r.dishId} qty={r.today} unit={T.unitPortion} name={r.name}
+        onLess={(el) => giveBack(r.items, r.today, el)} onMore={(el) => buy(r.items, el)} />
     </div>
   );
   const drinkRow = (r: DrinkRow) => (
@@ -101,9 +107,14 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
         <div className="nxs-row-sub">
           {r.beer ? T.beerSub(formatSek(r.costPerBottleSek), formatSek(r.glassPriceSek)) : T.wineSub(formatSek(r.costPerBottleSek), r.glassesPerBottle, formatSek(r.glassPriceSek))}
         </div>
+        <div className="nxs-row-sub nxs-row-stock" data-testid={`stock-${r.ingredientId}`} data-bottles={r.bottles} data-open={r.openGlasses} data-evenings={r.evenings ?? ''} data-open-expires={r.openExpiresInDays ?? ''}>
+          {r.bottles > 0 || r.openGlasses > 0
+            ? [T.stockDrink(r.bottles, r.openGlasses), r.evenings !== null ? T.lasts(r.evenings) : null, r.bottles > 0 && !r.beer ? T.unopenedKeeps : null, r.openExpiresInDays !== null ? T.openExpires(r.openExpiresInDays) : null].filter(Boolean).join(' · ')
+            : T.stockEmpty}
+        </div>
       </div>
-      <Stepper id={r.ingredientId} qty={r.bottles} unit={T.unitBottle} name={r.name}
-        onLess={(el) => giveBack(r.items, r.bottles * r.glassesPerBottle + r.openGlasses, el)} onMore={(el) => buy(r.items, el)} />
+      <Stepper id={r.ingredientId} qty={r.todayBottles} unit={T.unitBottle} name={r.name}
+        onLess={(el) => giveBack(r.items, r.todayBottles * r.glassesPerBottle, el)} onMore={(el) => buy(r.items, el)} />
     </div>
   );
   const portionsTotal = dishes.reduce((a, d) => a + d.portions, 0);
@@ -128,7 +139,7 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
             <div className="nx-num" style={{ fontSize: u(44) }} data-testid="buy-spent" data-value={spent}>{formatSek(spent)}</div>
           </div>
           <div className="nxs-buy-block">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: u(12) }}>
               <NxLabel>{T.mains}</NxLabel>
               {/* ORDER 290 — varmrätter som inte räcker pulserar i ljuslåga (Designs beslut 2026-09-30). */}
               <strong className={cov.share < 1 ? 'nx-pulse' : undefined} data-testid="buy-coverage" data-covers={cov.covers} data-guests={cov.guests}>{T.mainsCover(cov.covers, cov.guests)}</strong>
@@ -150,7 +161,7 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
           )}
           {/* ORDER 296 (kärnan punkt 5) — förberedelsen efter inköpen och bokningen. */}
           <div className="nxs-buy-block" data-testid="buy-prep" data-need={prep.needMin} data-capacity={prep.capacityMin} data-backlog={prep.backlogMin}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: u(12) }}>
               <NxLabel>{tt(lang, 'prep.label')}</NxLabel>
               <strong className={prep.backlogMin > 0 ? 'nx-pulse' : undefined}>{tt(lang, 'prep.minutes', { need: prep.needMin, capacity: prep.capacityMin })}</strong>
             </div>
@@ -176,7 +187,7 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
               <span>{T.base}</span>
             </button>
             <NxButton kind="secondary" testId="buy-back" onClick={onClose} arrow={false}>{T.back}</NxButton>
-            <NxButton testId="open-doors" disabled={!readiness.ready} onClick={() => guard.request(onClose)}>{T.openDoors}</NxButton>
+            <NxButton testId="open-doors" disabled={!readiness.ready} onClick={() => guard.request(onClose)}>{T.openDoors(formatClock(doorsOpenMinutes(sim)))}</NxButton>
             {guard.dialog}
           </div>
         </aside>

@@ -14,6 +14,10 @@
 // ännu lågt i byn" under raden, före och under kvällen.
 // Ryktet står kvar, med ändringen sedan dagen började. Vid en omkörning visas
 // "Förbi …" och kassans ljud spelas svagare.
+// ORDER 318 — under kvällen är bandet en rad: placeringen i klartext ("3:e av 7
+// efter nöjda gäster", samma mått som byns kväll) och pilen för den senaste
+// kvarten. Klick eller B fäller ut Byn just nu (VillageNowPanel.tsx). "Lugn
+// kväll" står inte när krogen har flest gäster i byn.
 
 import { useEffect, useRef, useState } from 'react';
 import { t as tt } from '../../../content/nexusStrings';
@@ -21,7 +25,8 @@ import { strings } from '../../../content/strings';
 import { useLanguage, type Lang } from '../../../content/language';
 import { PLAYER_VENUE } from '../../../sim/village';
 import { REPUTATION } from '../../../sim/balance';
-import { villageLive, villageRank } from '../../../sim/villageLive';
+import { playerHasMostGuests, playerPlace } from '../../../sim/villageNow';
+import type { VenueLive } from '../../../sim/villageLive';
 import { doorsOpenMinutes, formatClock } from '../../../sim/clock';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { play } from '../sound/sound';
@@ -29,7 +34,7 @@ import { rankedVillage } from '../../scenario/CompareScreen';
 import { RIVAL_BAND } from './hostShop';
 import { reputationHoldsGuests } from '../../simulation/arrivals';
 import type { SimulationState } from '../../types';
-import { VillageNowPanel } from './VillageNowPanel';
+import { TrendArrow, VillageNowPanel, toggleVillageNow, useVillageNow, useVillageNowKey, useVillageNowOpen } from './VillageNowPanel';
 import './host.css';
 
 export function ordinal(lang: Lang, n: number): string {
@@ -45,16 +50,22 @@ export function ordinal(lang: Lang, n: number): string {
 
 // Gårdagens placering: senaste kvällen i veckans lista (spelarens rad efter gäster).
 export function yesterdayRank(sim: SimulationState): number | null {
+  return yesterdayPlace(sim)?.rank ?? null;
+}
+
+/** Gårdagens placering och hur många krogar den räknades bland. */
+export function yesterdayPlace(sim: SimulationState): { rank: number; of: number } | null {
   const last = [...(sim.economy?.weekEvenings ?? [])].reverse().find((e) => e.dayNumber < sim.day.dayNumber && e.village && e.village.length > 1);
   if (!last?.village) return null;
   const rows = rankedVillage(last.village);
   const ours = rows.find((r) => r.id === PLAYER_VENUE);
   if (!ours || ours.guests <= 0) return null;
-  return rows.indexOf(ours) + 1;
+  return { rank: rows.indexOf(ours) + 1, of: rows.length };
 }
 
-function CalmLine({ sim, lang }: { sim: SimulationState; lang: Lang }) {
+function CalmLine({ sim, lang, live }: { sim: SimulationState; lang: Lang; live?: VenueLive[] }) {
   if (!reputationHoldsGuests(sim)) return null;
+  if (live && playerHasMostGuests(live)) return null;
   return <div className="nx-rival-calm" data-testid="calm-evening">{tt(lang, 'calm.evening')}</div>;
 }
 
@@ -69,15 +80,14 @@ function RivalBandBefore() {
   const sim = useSimState();
   const lang = useLanguage();
   if (sim.day.period !== 'morning' && sim.day.period !== 'afternoon' && sim.day.period !== 'dinner') return null;
-  const yesterday = yesterdayRank(sim);
+  const yesterday = yesterdayPlace(sim);
   return (
-    <div className="nx-rival-band" data-testid="rival-band" data-state="before" data-rank={yesterday ?? ''}>
+    <div className="nx-rival-band" data-testid="rival-band" data-state="before" data-rank={yesterday?.rank ?? ''}>
       <div className="nx-rival-head">
         <div className="nx-label">{tt(lang, 'rival.title')}</div>
         <div className="nx-rival-rank" data-testid="rival-rank">
-          {yesterday ? tt(lang, 'rival.yesterday', { rank: ordinal(lang, yesterday) }) : tt(lang, 'rival.opens', { time: formatClock(doorsOpenMinutes(sim)) })}
+          {yesterday ? tt(lang, 'rival.yesterday', { rank: strings.villageNow.place(ordinal(lang, yesterday.rank), yesterday.of) }) : tt(lang, 'rival.opens', { time: formatClock(doorsOpenMinutes(sim)) })}
         </div>
-        <div className="nx-rival-measure">{tt(lang, 'rival.measures')}</div>
       </div>
       <CalmLine sim={sim} lang={lang} />
     </div>
@@ -87,17 +97,17 @@ function RivalBandBefore() {
 function RivalBandInService() {
   const sim = useSimState();
   const lang = useLanguage();
-  const rows = villageLive(sim);
-  const rank = villageRank(rows);
+  useVillageNowKey();
+  const expanded = useVillageNowOpen();
+  const { live, now } = useVillageNow(sim);
+  const me = now.find((r) => r.player);
+  // Ingen placering utan nöjda gäster (ORDER 298: inte 1:a med 0).
+  const rank = playerPlace(now);
   const rep = Math.round(sim.reputation * REPUTATION.scale);
   const repDelta = rep - Math.round((sim.day.reputationAtDayStart ?? sim.reputation) * REPUTATION.scale);
   const [overtook, setOvertook] = useState<string | null>(null);
   const prev = useRef<{ rank: number | null; ahead: string[] } | null>(null);
-  // ORDER 303 B — efter nöjda gäster vid bord, som placeringen.
-  const score = (r: (typeof rows)[number]) => r.content ?? r.guests;
-  const ourRow = rows.find((r) => r.id === PLAYER_VENUE);
-  const ours = ourRow ? score(ourRow) : 0;
-  const ahead = rows.filter((r) => r.id !== PLAYER_VENUE && score(r) >= ours).map((r) => r.id);
+  const ahead = rank === null ? [] : now.filter((r) => !r.player && r.place < rank).map((r) => r.id);
   useEffect(() => {
     const before = prev.current;
     prev.current = { rank, ahead };
@@ -110,21 +120,25 @@ function RivalBandInService() {
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rank]);
+  const v = strings.villageNow;
   return (
-    <div className="nx-rival-band" data-testid="rival-band" data-state="service" data-rank={rank ?? ''} data-guests={ours} data-venues={rows.length}>
+    <div className="nx-rival-band" data-testid="rival-band" data-state="service" data-rank={rank ?? ''} data-guests={me?.guests ?? 0} data-content={me?.content ?? 0} data-venues={now.length} data-open={expanded}>
       <div className="nx-rival-head">
-        <div className="nx-label">{tt(lang, 'rival.title')}</div>
-        <div className="nx-rival-rank" data-testid="rival-rank">{rank === null ? tt(lang, 'rival.noGuests') : tt(lang, 'rival.rank', { rank: ordinal(lang, rank) })}</div>
-        <div className="nx-rival-measure">{tt(lang, 'rival.measures')}</div>
+        <button type="button" className="nx-rival-toggle" data-testid="rival-toggle" aria-expanded={expanded} aria-controls="village-now" title={expanded ? v.close : v.open} onClick={toggleVillageNow}>
+          <span className="nx-label">{tt(lang, 'rival.title')}</span>
+          <span className="nx-rival-rank" data-testid="rival-rank">{rank !== null ? v.place(ordinal(lang, rank), now.length) : me && me.guests > 0 ? v.noContentYet : tt(lang, 'rival.noGuests')}</span>
+          {rank !== null && me && <TrendArrow trend={me.trend} />}
+          <span className="nx-rival-chevron" aria-hidden>{expanded ? '▴' : '▾'}</span>
+        </button>
         <div className="nx-rival-rep" data-testid="hud-reputation" data-rep={rep} data-delta={repDelta}>
           {tt(lang, 'rep.label')} <strong>{rep}</strong>
           {repDelta !== 0 && <span data-dir={repDelta > 0 ? 'up' : 'down'}>{repDelta > 0 ? '▲' : '▼'}{Math.abs(repDelta)}</span>}
         </div>
         {overtook && <span className="nx-rival-overtake nx-rival-overtake-static" data-testid="rival-overtake">{tt(lang, 'rival.overtake', { name: strings.village.venues[overtook] ?? overtook })}</span>}
       </div>
-      <CalmLine sim={sim} lang={lang} />
-      {/* ORDER 313 §9 — Byn just nu. */}
-      <VillageNowPanel />
+      <CalmLine sim={sim} lang={lang} live={live} />
+      {/* ORDER 313 §9, ORDER 318 — Byn just nu, utfälld med klick eller B. */}
+      {expanded && <VillageNowPanel now={now} />}
     </div>
   );
 }

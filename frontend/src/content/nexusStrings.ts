@@ -210,6 +210,9 @@ export const STRINGS = {
   'risk.settle.miss': { sv: 'Veckomålet är missat: {n} av {target}.', en: 'The weekly target is missed: {n} of {target}.' },
   'risk.settle.renegotiated': { sv: 'Två missade veckor i rad. Banken har förhandlat om lånet, och räntan är dubbel resten av säsongen.', en: 'Two missed weeks running. The bank has renegotiated the loan, and the interest is doubled for the rest of the season.' },
   'risk.settle.below': { sv: 'Kassan är under noll efter avräkningen, {weeks} av {max} veckor i rad. Vid {max} stänger krogen.', en: 'The account is below zero after the settlement, {weeks} of {max} weeks in a row. At {max} the restaurant closes.' },
+  // ORDER 318 (Anders 2026-10-07) — Bankens varning efter första och andra bokslutet under noll.
+  'risk.bank.twoLeft': { sv: 'Kassan är under noll. Två bokslut till i rad, så stänger krogen.', en: 'The account is below zero. Two more settlements in a row, and the restaurant closes.' },
+  'risk.bank.oneLeft': { sv: 'Ett bokslut till under noll, så stänger vi.', en: 'One more settlement below zero, and we close you down.' },
   'risk.closed.kicker': { sv: 'Säsongen är slut', en: 'The season is over' },
   'risk.closed.title': { sv: 'Krogen stänger', en: 'The restaurant closes' },
   'risk.closed.body': { sv: 'Kassan har stått under noll vid tre veckoavräkningar i rad. Banken säger upp lånet efter vecka {week}, och dörren förblir stängd.', en: 'The account has been below zero at three weekly settlements in a row. The bank calls in the loan after week {week}, and the door stays shut.' },
@@ -315,7 +318,8 @@ export const STRINGS = {
   // ORDER 303 B — placeringen räknas på kvällens nöjda gäster vid bord.
   'rival.measures': { sv: 'Placering efter kvällens nöjda gäster vid bord', en: 'Ranked by tonight’s satisfied seated guests' },
   'rival.noGuests': { sv: 'Väntar på gäster', en: 'Waiting for guests' },
-  'rival.yesterday': { sv: 'I går: {rank} i byn', en: 'Yesterday: {rank} in the village' },
+  // ORDER 318 — {rank} är hela placeringen: "3:e av 7 efter nöjda gäster".
+  'rival.yesterday': { sv: 'I går: {rank}', en: 'Yesterday: {rank}' },
   'rival.opens': { sv: 'Byn öppnar {time}', en: 'The village opens at {time}' },
   // ORDER 298b — när ryktet håller nere gästerna (arrivals.ts reputationHoldsGuests),
   // och provsmakningens sällskap med spelarens medaljer.
@@ -1037,13 +1041,30 @@ export const TABLE = {
     up: { sv: 'drar fler', en: 'drawing more' },
     down: { sv: 'drar färre', en: 'drawing fewer' },
     you: { sv: 'Du', en: 'You' },
-    youLead: { sv: 'Du drar flest gäster i kväll.', en: 'You are drawing the most guests tonight.' },
-    leads: { sv: (name: string) => `${name} drar flest gäster i kväll.`, en: (name: string) => `${name} is drawing the most guests tonight.` },
+    // ORDER 318 — ett mått för placeringen (nöjda gäster), två kolumner, och
+    // sammanfattningen som följer placeringen.
+    place: { sv: (rank: string, of: number) => `${rank} av ${of} efter nöjda gäster`, en: (rank: string, of: number) => `${rank} of ${of} by satisfied guests` },
+    venue: { sv: 'Krog', en: 'Venue' },
+    noContentYet: { sv: 'Inga nöjda gäster än', en: 'No satisfied guests yet' },
+    noContent: { sv: 'Ingen krog i byn har nöjda gäster än.', en: 'No venue in the village has satisfied guests yet.' },
+    noContentMostGuests: { sv: 'Du har flest gäster, men ingen krog har nöjda gäster än.', en: 'You have the most guests, but no venue has satisfied guests yet.' },
+    colGuests: { sv: 'Gäster', en: 'Guests' },
+    colContent: { sv: 'Nöjda', en: 'Satisfied' },
+    open: { sv: 'Visa hela byn (B)', en: 'Show the whole village (B)' },
+    close: { sv: 'Fäll ihop (B)', en: 'Fold (B)' },
+    youLead: {
+      sv: (second: string | null) => (second ? `Du har flest nöjda gäster i kväll. ${second} är tvåa.` : 'Du har flest nöjda gäster i kväll.'),
+      en: (second: string | null) => (second ? `You have the most satisfied guests tonight. ${second} is second.` : 'You have the most satisfied guests tonight.')
+    },
+    mostGuests: {
+      sv: (leader: string) => `Du drar flest gäster, men få är nöjda. ${leader} leder.`,
+      en: (leader: string) => `You draw the most guests, but few are satisfied. ${leader} leads.`
+    },
+    leads: { sv: (name: string) => `${name} har flest nöjda gäster i kväll.`, en: (name: string) => `${name} has the most satisfied guests tonight.` },
     youAre: {
       sv: (n: number) => `Du är ${['etta', 'tvåa', 'trea', 'fyra', 'femma', 'sexa', 'sjua', 'åtta'][n - 1] ?? `nummer ${n}`}.`,
       en: (n: number) => `You are ${['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth'][n - 1] ?? `number ${n}`}.`
     },
-    youWait: { sv: 'Du väntar på dina första gäster.', en: 'You are waiting for your first guests.' },
     quiet: { sv: 'Byn väntar på kvällens gäster.', en: 'The village is waiting for tonight’s guests.' }
   },
   // ORDER 313 §7 — teckenförklaringen (statusläget och Spelets regler).
@@ -1808,6 +1829,20 @@ export const TABLE = {
     none: { sv: 'Inga situationer eller händelser i kväll.', en: 'No situations or events tonight.' },
     waste: { sv: 'Svinn', en: 'Waste' },
     wasteNote: { sv: 'Till sopbilen efter stängning', en: 'To the bin lorry after closing' },
+    // ORDER 318 — vad som drog ned kvällen.
+    drags: {
+      title: { sv: 'Det här drog ned kvällen', en: 'What pulled the evening down' },
+      waste: {
+        sv: (thrown: string, fee: string) => `Svinn: ${thrown} i mat och dryck som slängdes, och ${fee} till sopbilen`,
+        en: (thrown: string, fee: string) => `Waste: ${thrown} of food and drink thrown away, and ${fee} to the bin lorry`
+      },
+      wrong: {
+        sv: (n: number, kr: string) => `Fel svar: ${n} ${n === 1 ? 'situation' : 'situationer'}, ${kr} i kassan`,
+        en: (n: number, kr: string) => `Wrong answers: ${n} ${n === 1 ? 'situation' : 'situations'}, ${kr} from the till`
+      },
+      stock: { sv: (kr: string) => `Inköp i dag: ${kr}`, en: (kr: string) => `Bought today: ${kr}` },
+      note: { sv: 'Svinnets värde ingår i inköpen.', en: 'The value of the waste is part of the purchases.' }
+    },
     won: { sv: 'Vann', en: 'Won' },
     lost: { sv: 'Förlorade', en: 'Lost' },
     even: { sv: 'Oförändrat', en: 'Unchanged' },
@@ -2504,7 +2539,6 @@ export const TABLE = {
       sv: { service: 'Servicen', rush: 'Rusning', lastOrders: 'Sista beställning', closed: 'Stängt', morning: 'Morgon', evening: 'Kväll', prep: 'Förberedelser', calm: 'Lugnt', waiting: 'Väntar på gäster' } as Record<string, string>,
       en: { service: 'Service', rush: 'Rush', lastOrders: 'Last orders', closed: 'Closed', morning: 'Morning', evening: 'Evening', prep: 'Getting ready', calm: 'Quiet', waiting: 'Waiting for guests' } as Record<string, string>
     },
-    doorsAt: { sv: 'Dörrarna öppnar 18.00', en: 'Doors open 18:00' },
     // ORDER 292b — när dörrarna faktiskt öppnar (efter förberedelserna).
     doorsAtTime: { sv: (hhmm: string) => `Dörrarna öppnar ${hhmm}`, en: (hhmm: string) => `Doors open ${hhmm}` },
     pickup: { sv: 'Sopbilen hämtar', en: 'Bin lorry collecting' },
@@ -2528,8 +2562,30 @@ export const TABLE = {
     dishSub: { sv: (cost: string, price: string) => `Inköp ${cost} · säljs för ${price}`, en: (cost: string, price: string) => `Cost ${cost} · sells for ${price}` },
     wineSub: { sv: (cost: string, glasses: number, price: string) => `Inköp ${cost}/fl · ${glasses} glas à ${price}`, en: (cost: string, glasses: number, price: string) => `Cost ${cost}/btl · ${glasses} ${pl(glasses, 'glass', 'glasses')} at ${price}` },
     beerSub: { sv: (cost: string, price: string) => `Inköp ${cost}/fl · säljs för ${price}`, en: (cost: string, price: string) => `Cost ${cost}/btl · sells for ${price}` },
-    dishSum: { sv: (n: number, kr: string) => `${n} ${pl(n, 'portion', 'portioner')} · ${kr} i inköp`, en: (n: number, kr: string) => `${n} ${pl(n, 'portion', 'portions')} · ${kr} spent` },
-    wineSum: { sv: (n: number, kr: string) => `${n} ${pl(n, 'flaska', 'flaskor')} · ${kr} i inköp`, en: (n: number, kr: string) => `${n} ${pl(n, 'bottle', 'bottles')} · ${kr} spent` },
+    // ORDER 318 — foten är lagret (värdet till inköpspris), inte dagens inköp.
+    dishSum: { sv: (n: number, kr: string) => `I lager: ${n} ${pl(n, 'portion', 'portioner')} · värde ${kr}`, en: (n: number, kr: string) => `In stock: ${n} ${pl(n, 'portion', 'portions')} · worth ${kr}` },
+    wineSum: { sv: (n: number, kr: string) => `I lager: ${n} ${pl(n, 'flaska', 'flaskor')} · värde ${kr}`, en: (n: number, kr: string) => `In stock: ${n} ${pl(n, 'bottle', 'bottles')} · worth ${kr}` },
+    // ORDER 318 — lagret per vara: hur mycket, hur många kvällar det räcker och när det går ut.
+    stockDish: { sv: (n: number) => `I lager: ${n} ${pl(n, 'portion', 'portioner')}`, en: (n: number) => `In stock: ${n} ${pl(n, 'portion', 'portions')}` },
+    stockDrink: {
+      sv: (bottles: number, open: number) => `I lager: ${bottles} ${pl(bottles, 'flaska', 'flaskor')}${open > 0 ? ` och ${open} glas i en öppnad` : ''}`,
+      en: (bottles: number, open: number) => `In stock: ${bottles} ${pl(bottles, 'bottle', 'bottles')}${open > 0 ? ` and ${open} ${pl(open, 'glass', 'glasses')} in an open one` : ''}`
+    },
+    stockEmpty: { sv: 'Inget i lager', en: 'Nothing in stock' },
+    lasts: {
+      sv: (n: number) => (n < 1 ? 'räcker inte hela kvällen' : n === 1 ? 'räcker en kväll' : `räcker ${n} kvällar`),
+      en: (n: number) => (n < 1 ? 'will not last the evening' : n === 1 ? 'lasts one evening' : `lasts ${n} evenings`)
+    },
+    expires: {
+      sv: (d: number) => (d <= 0 ? 'går ut efter i kväll' : d === 1 ? 'går ut efter i morgon' : `går ut om ${d} dagar`),
+      en: (d: number) => (d <= 0 ? 'expires after tonight' : d === 1 ? 'expires after tomorrow' : `expires in ${d} days`)
+    },
+    unopenedKeeps: { sv: 'oöppnade flaskor håller', en: 'unopened bottles keep' },
+    openExpires: {
+      sv: (d: number) => (d <= 0 ? 'den öppnade går ut efter i kväll' : d === 1 ? 'den öppnade går ut efter i morgon' : `den öppnade går ut om ${d} dagar`),
+      en: (d: number) => (d <= 0 ? 'the open one expires after tonight' : d === 1 ? 'the open one expires after tomorrow' : `the open one expires in ${d} days`)
+    },
+    today: { sv: 'i dag', en: 'today' },
     spent: { sv: 'Inköp i dag', en: 'Bought today' },
     mains: { sv: 'Rätter', en: 'Dishes' },
     // ORDER 291 — "79 portioner till 15 väntade gäster", inte "79 av 15 gäster".
@@ -2547,7 +2603,8 @@ export const TABLE = {
     potential: { sv: 'Om allt säljs', en: 'If everything sells' },
     potentialNote: { sv: 'Det som inte säljs blir svinn när sopbilen kommer.', en: 'Whatever doesn’t sell is waste when the bin lorry comes.' },
     potentialIn: { sv: (kr: string) => `${kr} in`, en: (kr: string) => `${kr} in` },
-    openDoors: { sv: 'Öppna dörrarna 18.00', en: 'Open the doors 18:00' },
+    // ORDER 318 — samma tid som klockans "Dörrarna öppnar" (sim/clock.ts doorsOpenMinutes).
+    openDoors: { sv: (hhmm: string) => `Öppna dörrarna ${hhmm}`, en: (hhmm: string) => `Open the doors ${hhmm}` },
     base: { sv: '+ Baspaketet', en: '+ Base package' },
     back: { sv: 'Tillbaka till dagens val', en: 'Back to today’s choices' },
     notEnough: { sv: 'Kassan räcker inte till partiet.', en: 'The till cannot cover that batch.' },
