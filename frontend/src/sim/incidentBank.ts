@@ -30,10 +30,6 @@ import crisesText from '../content/incidents/crises.text.en.json';
 // finnas på båda språken"). De svenska texterna är utkasten som skrevs
 // bredvid den engelska; metadata är densamma, så kvällen spelar likadant.
 import vinbarTextSv from '../content/incidents/vinbar.text.sv.draft.json';
-// ORDER 315c — foodtruckens situationer ur Anders godkända frågor (BESLUT 2026-10-07 del 3).
-import foodtruckMeta from '../content/incidents/foodtruck.meta.json';
-import foodtruckText from '../content/incidents/foodtruck.text.en.json';
-import foodtruckTextSv from '../content/incidents/foodtruck.text.sv.draft.json';
 import menuTextSv from '../content/incidents/menu.text.sv.draft.json';
 import { getLanguage } from '../content/language';
 
@@ -114,6 +110,10 @@ export interface StepOptionMeta {
 
 export interface StepMeta {
   axis: KnowledgeAxis;
+  // ORDER 319a.3 — frågans nummer i klassens frågebank (foodtrucken), och ⚖: en fråga om regler
+  // eller temperaturer som väntar på granskning. En situation med ⚖ består bara av ⚖-frågor.
+  question?: number;
+  legal?: boolean;
   options: StepOptionMeta[];
   // Stegets konsekvens när svaret är fel eller uteblir.
   fail: IncidentOutcomeMeta;
@@ -153,9 +153,20 @@ export interface IncidentMeta {
   // ORDER 315c — frågornas nummer i Anders frågebank (foodtrucken), och ⚖:
   // en situation med en fråga om regler eller temperaturer visas inte förrän
   // den är granskad (legalReviewed, som dilemmana i ORDER 316).
-  questions?: number[];
-  legal?: { legalReviewed: boolean; questions: number[] };
+  // ORDER 319a.3 — frågornas nummer står på stegen (StepMeta.question), och situationen med
+  // ⚖-frågor har legal; den visas inte förrän legalReviewed är satt.
+  legal?: { legalReviewed: boolean };
+  // ORDER 306b/319a.3 — 'triad': stegen i ordningen analys → upplevelse → handling
+  // (INCIDENTS.stepAxesTriad). Utan form gäller INCIDENTS.stepAxes.
+  form?: 'triad';
+  // ORDER 319a.4 (Anders 2026-10-07) — "Kortet kommer inte ur tomma intet": det som syns innan
+  // kortet öppnas (THEATRE.cueSeconds). Krävs i foodtrucken.
+  cue?: IncidentCue;
 }
+
+/** ORDER 319a.4 — förvarningen: en gäst går fram till luckan och pekar, eller leveransen kommer. */
+export type IncidentCue = 'guestAtHatch' | 'delivery';
+export const INCIDENT_CUES: readonly IncidentCue[] = ['guestAtHatch', 'delivery'];
 
 export interface OutcomeText {
   outcome: string;
@@ -199,7 +210,7 @@ export interface Incident extends Omit<IncidentMeta, 'steps'> {
   text: IncidentText;
 }
 
-interface MetaFile { schemaVersion: number; businessClass: string; incidents: IncidentMeta[] }
+interface MetaFile { schemaVersion: number; businessClass: string; delivery?: string; incidents: IncidentMeta[] }
 interface TextFile { language: string; status: string; texts: Record<string, IncidentText> }
 
 // Stegets paviljong: episteme → Måltidsbiblioteket, techne → spårets
@@ -228,7 +239,15 @@ export function validateIncidentBank(meta: MetaFile, text: TextFile): string[] {
     if (m.track !== 'kok' && m.track !== 'sommellerie') errors.push(`${m.id}: okänt spår ${m.track}`);
     if (!ARC_PHASES.includes(m.arc)) errors.push(`${m.id}: okänd fas ${m.arc}`);
     const axes = m.steps.map((s) => s.axis).join(',');
-    if (axes !== INCIDENTS.stepAxes.join(',')) errors.push(`${m.id}: stegen ska vara ${INCIDENTS.stepAxes.join(', ')}`);
+    const want = m.form === 'triad' ? INCIDENTS.stepAxesTriad : INCIDENTS.stepAxes;
+    if (axes !== want.join(',')) errors.push(`${m.id}: stegen ska vara ${want.join(', ')}`);
+    // ORDER 319a.3 (Anders 2026-10-07) — ett ⚖-märke döljer aldrig frågor utan ⚖, och en ⚖-fråga
+    // visas aldrig ogranskad.
+    const legalSteps = m.steps.filter((s) => s.legal).length;
+    if (legalSteps > 0 && !m.legal) errors.push(`${m.id}: ⚖-frågor utan granskningsstatus (legal)`);
+    if (m.legal && legalSteps !== m.steps.length) errors.push(`${m.id}: ⚖ döljer frågor utan ⚖`);
+    if (m.cue !== undefined && !INCIDENT_CUES.includes(m.cue)) errors.push(`${m.id}: okänd förvarning ${m.cue}`);
+    if (meta.businessClass === 'foodtruck' && !m.cue) errors.push(`${m.id}: saknar förvarning (cue)`);
     const t = text.texts[m.id];
     if (!t) { errors.push(`${m.id}: saknar text`); continue; }
     for (const x of m.situations ?? []) if (!t.situations?.[x.id]) errors.push(`${m.id}: läget ${x.id} saknar text`);
@@ -292,15 +311,48 @@ export function legallyCleared(i: Pick<IncidentMeta, 'legal'>): boolean {
   return !i.legal || i.legal.legalReviewed;
 }
 
+// ORDER 319a.3 (Anders 2026-10-07) — foodtruckens situationer kommer i leveranser: varje leverans
+// är tre filer i content/incidents/foodtruck/ (<namn>.meta.json, <namn>.text.sv.draft.json,
+// <namn>.text.en.json). En ny leverans läggs bara in som filer; banken läser alla och
+// validerar dem tillsammans (id och frågenummer unika över leveranserna). README.md i katalogen
+// beskriver formen.
+type DeliveryFiles = Record<string, { default: unknown }>;
+const FT_META = import.meta.glob('../content/incidents/foodtruck/*.meta.json', { eager: true }) as DeliveryFiles;
+const FT_SV = import.meta.glob('../content/incidents/foodtruck/*.text.sv.draft.json', { eager: true }) as DeliveryFiles;
+const FT_EN = import.meta.glob('../content/incidents/foodtruck/*.text.en.json', { eager: true }) as DeliveryFiles;
+
+/** Leveransernas filer samlade till en bank (meta och en text per språk), i filnamnens ordning. */
+export function mergeDeliveries(metas: DeliveryFiles, texts: DeliveryFiles, suffix: string): { meta: MetaFile; text: TextFile } {
+  const names = Object.keys(metas).sort();
+  const meta: MetaFile = { schemaVersion: 1, businessClass: 'foodtruck', incidents: [] };
+  const text: TextFile = { language: '', status: 'utkast', texts: {} };
+  for (const path of names) {
+    const m = metas[path].default as MetaFile;
+    const t = texts[path.replace(/\.meta\.json$/, suffix)]?.default as TextFile | undefined;
+    if (!t) throw new Error(`Händelsebanken foodtruck: ${path} saknar ${suffix}`);
+    meta.incidents.push(...m.incidents);
+    text.language = t.language;
+    Object.assign(text.texts, t.texts);
+  }
+  const nums = meta.incidents.flatMap((i) => i.steps.map((s) => s.question)).filter((n): n is number => n !== undefined);
+  const dup = nums.filter((n, i) => nums.indexOf(n) !== i);
+  if (dup.length > 0) throw new Error(`Händelsebanken foodtruck: frågorna ${dup.join(', ')} finns i två situationer`);
+  return { meta, text };
+}
+const FT_BANK_EN = mergeDeliveries(FT_META, FT_EN, '.text.en.json');
+const FT_BANK_SV = mergeDeliveries(FT_META, FT_SV, '.text.sv.draft.json');
+/** ORDER 319a.3 — foodtruckens samlade filer (för testerna). */
+export const FOODTRUCK_FILES = { meta: FT_BANK_SV.meta, sv: FT_BANK_SV.text, en: FT_BANK_EN.text };
+
 const BANKS: Partial<Record<BusinessClassId, Incident[]>> = {
-  foodtruck: build(foodtruckMeta as unknown as MetaFile, foodtruckText as unknown as TextFile).filter(legallyCleared),
+  foodtruck: build(FT_BANK_EN.meta, FT_BANK_EN.text).filter(legallyCleared),
   vinbar: [
     ...build(vinbarMeta as unknown as MetaFile, vinbarText as unknown as TextFile),
     ...build(menuMeta as unknown as MetaFile, menuText as unknown as TextFile)
   ]
 };
 const BANKS_SV: Partial<Record<BusinessClassId, Incident[]>> = {
-  foodtruck: build(foodtruckMeta as unknown as MetaFile, foodtruckTextSv as unknown as TextFile).filter(legallyCleared),
+  foodtruck: build(FT_BANK_SV.meta, FT_BANK_SV.text).filter(legallyCleared),
   vinbar: [
     ...build(vinbarMeta as unknown as MetaFile, vinbarTextSv as unknown as TextFile),
     ...build(menuMeta as unknown as MetaFile, menuTextSv as unknown as TextFile)
@@ -310,8 +362,8 @@ const BANKS_SV: Partial<Record<BusinessClassId, Incident[]>> = {
 // ORDER 283 — utkasten: validerade och byggda som banken, men inte med i
 // någon klass bank. En raket blir spelbar när den flyttas till klassens
 // bankfil utan status 'utkast'.
-/** ORDER 315c — alla sju foodtrucksituationer, också de som väntar på granskning (för testerna). */
-export const FOODTRUCK_ALL: Incident[] = build(foodtruckMeta as unknown as MetaFile, foodtruckTextSv as unknown as TextFile);
+/** ORDER 315c — alla foodtrucksituationer, också de som väntar på granskning (för testerna). */
+export const FOODTRUCK_ALL: Incident[] = build(FT_BANK_SV.meta, FT_BANK_SV.text);
 export const CRISIS_DRAFTS: Incident[] = build(crisesMeta as unknown as MetaFile, crisesText as unknown as TextFile);
 export const CRISIS_DRAFT_FILES = { meta: crisesMeta as unknown as MetaFile, text: crisesText as unknown as TextFile };
 

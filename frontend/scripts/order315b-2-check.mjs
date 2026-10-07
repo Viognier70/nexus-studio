@@ -191,7 +191,7 @@ try {
         if (!c) return null;
         const w = (o) => { const v = o.getWorldPosition(new o.position.constructor()); return [+v.x.toFixed(2), +v.y.toFixed(2), +v.z.toFixed(2)]; };
         const shown = (o) => { let p = o; while (p) { if (!p.visible) return false; p = p.parent; } return true; };
-        return { grill: w(c.grill), hatch: w(c.hatch), visible: shown(c.grill) && shown(c.hatch), guests: c.g.children.filter((o) => o.visible).length - 2 };
+        return { grill: w(c.grill), hatch: w(c.hatch), visible: shown(c.grill) && shown(c.hatch), guests: (c.guests ?? c.g).children.filter((o) => o.visible).length - (c.guests ? 0 : 2) };
       })
     };
     await shot(page, '6b-vagnen-krogen');

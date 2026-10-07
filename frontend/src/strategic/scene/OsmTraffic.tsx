@@ -1,4 +1,4 @@
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useCamera } from '../camera/CameraContext';
@@ -326,8 +326,13 @@ export function vehicleLaneOffset(road: RawRoad, vehicleWidth: number): number {
   return Math.min(1.2, maxOffset);
 }
 
+// ORDER 319a.2 — bilens höjd vid prövningen mot kamerans bild.
+const VEHICLE_TOP_M = 2;
+
 export function OsmTraffic() {
   const { actualRef } = useCamera();
+  const camera = useThree((x) => x.camera);
+  const view = useMemo(() => ({ f: new THREE.Frustum(), m: new THREE.Matrix4(), p: new THREE.Vector3() }), []);
   // Cache per-kind pool + weights once so spawn and swap both use the
   // same numbers and neither pays the reweight cost per event.
   const pools = useMemo(() => {
@@ -380,6 +385,9 @@ export function OsmTraffic() {
     // simulation state (speed, position, direction, spawn logic) are
     // unchanged. Per-kind curves keep large vehicles from ballooning.
     const camDist = actualRef.current.distance;
+    camera.updateMatrixWorld();
+    view.f.setFromProjectionMatrix(view.m.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
+    const inView = (x: number, z: number) => view.f.containsPoint(view.p.set(x, 0, z)) || view.f.containsPoint(view.p.set(x, VEHICLE_TOP_M, z));
     for (let i = 0; i < vehicles.length; i++) {
       const v = vehicles[i];
       v.swap -= dt;
@@ -394,15 +402,23 @@ export function OsmTraffic() {
         v.t = -v.t;
         v.forward = 1;
       }
-      if (v.swap <= 0) {
+      // ORDER 319a.2 — en bil byter väg bara när varken den gamla eller den nya platsen syns (förut
+      // försvann den mitt i bilden).
+      const here = v.swap <= 0 ? samplePolyline(v.road.poly, v.t) : null;
+      if (v.swap <= 0 && here && !inView(here.x, here.z)) {
         const { pool, weights } = pools[v.kind];
         if (pool.length) {
           const rng = createRng(Math.floor(performance.now() * 13 + i * 7));
-          v.road = weightedPick(pool, weights, () => rng.next());
-          v.forward = rng.chance(0.5) ? 1 : -1;
-          v.t = rng.next();
-          v.swap = rng.range(45, 120);
-          v.entering = 0;
+          const road = weightedPick(pool, weights, () => rng.next());
+          const t = rng.next();
+          const there = samplePolyline(road.poly, t);
+          if (!inView(there.x, there.z)) {
+            v.road = road;
+            v.forward = rng.chance(0.5) ? 1 : -1;
+            v.t = t;
+            v.swap = rng.range(45, 120);
+            v.entering = 0;
+          }
         }
       }
       if (v.entering < 1) {

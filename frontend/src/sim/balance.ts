@@ -967,6 +967,9 @@ export const INCIDENTS = {
   // (vad, 15 s), Techne (hur, 20 s), Phronesis (när och varför, 30 s)."
   // Nedräkningen går i verklig tid.
   stepAxes: ['episteme', 'techne', 'phronesis'] as readonly KnowledgeAxis[],
+  // ORDER 306b (Anders 2026-10-07) — situationerna i formen analys → upplevelse → handling
+  // (form 'triad'): episteme, phronesis, techne.
+  stepAxesTriad: ['episteme', 'phronesis', 'techne'] as readonly KnowledgeAxis[],
   // Vision Owner 2026-09-29 (efter rapporterna om felen och kvällens
   // resultat): "episteme 20 sekunder, techne 20 sekunder och phronesis 30
   // sekunder. Omdömet ska ha mest tid." Byggs med ORDER 287a (registret).
@@ -1410,6 +1413,13 @@ export const THEATRE = {
     'vb35-tillsynen-d': [14.5, 22, 38.5],
     'vb36-passet': [7.2, 14.5, 27.5]
   } as Record<string, readonly number[]>,
+  // ORDER 319a.4 (Anders 2026-10-07) — förvarningen före foodtruckens kort, i verkliga sekunder:
+  // gästen vid luckan spelar askPointMenu (samma längd som klippet), leveransbilen hinner stanna.
+  cueSeconds: { guestAtHatch: 4, delivery: 6 } as Record<'guestAtHatch' | 'delivery', number>,
+  // Gästen som pekar har hunnit gå fram i bild: gästerna börjar minst 40 m bort fågelvägen
+  // (scene/village/truckGuestFlow.ts TRUCK_GUESTS.minSpawnM), längs gångnätet upp till omkring 70 m,
+  // och går 1,4 m/s, alltså inom 50 s i normal fart (reports/order319a/gaster.json cueSettledShare).
+  cueGuestSettledSeconds: 50,
   camera: { distanceM: 12, glideInSeconds: 1.2, glideOutSeconds: 1.0 },
   /** Bildtexten står så högt över figurens fötter (ovanför huvudet). */
   captionHeightM: 2.1,

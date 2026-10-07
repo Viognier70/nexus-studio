@@ -11,6 +11,25 @@ import { GROUP_IDS } from './guestLooks';
 import { OSM_FRAME, streetSignGeometry } from './village/streetLooks';
 import { streetFigureMaterial, streetFloorRef } from './village/streetFigureLight';
 import { addProbeFigures, lampProbeRequested, type ProbeFigure } from './village/lampProbe';
+import { playerTruckPlacement } from '../content/villagePlaces';
+
+// ORDER 319a.2 (Anders 2026-10-07: "Inga föremål får hoppa fram … Tona in och ut i stället för att
+// byta på en gång.") — de samlade växte fram och krympte bort på stället, också mitt i bilden, och
+// drev genom vagnens kö. Nu går en samlad bara när den står utanför kamerans bild, en ny kommer bara
+// till en plats utanför bilden, och ingen står närmare spelarens vagn än GATHER_TRUCK_CLEAR_M (kön,
+// trädäcket och luckan).
+const GATHER_TRUCK_CLEAR_M = 10;
+const GATHER_FIGURE_TOP_M = 1.7;
+
+/** En förskjutning som hamnar för nära spelarens vagn skjuts ut till GATHER_TRUCK_CLEAR_M. */
+function clearOfTruck(cx: number, cz: number, ox: number, oz: number): [number, number] {
+  const truck = playerTruckPlacement();
+  const dx = cx + ox - truck.x, dz = cz + oz - truck.z, d = Math.hypot(dx, dz);
+  if (d >= GATHER_TRUCK_CLEAR_M) return [ox, oz];
+  if (d <= 1e-3) return [truck.x + GATHER_TRUCK_CLEAR_M - cx, truck.z - cz];
+  const k = GATHER_TRUCK_CLEAR_M / d;
+  return [truck.x + dx * k - cx, truck.z + dz * k - cz];
+}
 
 // Static-ish figures placed at named landmarks. They are the reason the
 // player's eye is drawn to Torget, Campus, Gästgivaregården etc. — not
@@ -138,6 +157,7 @@ export function LandmarkGatherers() {
   const gl = useThree((x) => x.gl);
   const camera = useThree((x) => x.camera);
   const scene = useThree((x) => x.scene);
+  const view = useMemo(() => ({ f: new THREE.Frustum(), m: new THREE.Matrix4(), p: new THREE.Vector3() }), []);
 
   const groups = useMemo(() => {
     const rng = createRng(0xa9b3c1);
@@ -154,7 +174,7 @@ export function LandmarkGatherers() {
       };
       const gatherers: Gatherer[] = [];
       for (let i = 0; i < point.count; i++) {
-        const [ox, oz] = randomOffset(rng, point.radius);
+        const [ox, oz] = clearOfTruck(point.centre[0], point.centre[1], ...randomOffset(rng, point.radius));
         gatherers.push({
           cx: point.centre[0],
           cz: point.centre[1],
@@ -165,8 +185,9 @@ export function LandmarkGatherers() {
           colour: rng.pick(point.palette),
           yaw: rng.range(0, Math.PI * 2),
           targetYaw: rng.range(0, Math.PI * 2),
-          // Stagger start times so they don't all arrive at once.
-          life: rng.range(0.3, 1),
+          // ORDER 319a.2 — de står redan där när scenen visas (förut växte de fram vid start);
+          // holdRemaining sprider när de går.
+          life: 1,
           lifeDir: 1,
           holdRemaining: rng.range(18, 45),
           seed: rng.next()
@@ -209,6 +230,9 @@ export function LandmarkGatherers() {
 
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05);
+    camera.updateMatrixWorld();
+    view.f.setFromProjectionMatrix(view.m.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
+    const inView = (x: number, z: number) => view.f.containsPoint(view.p.set(x, 0, z)) || view.f.containsPoint(view.p.set(x, GATHER_FIGURE_TOP_M, z));
     const camDist = actualRef.current.distance;
     const scale = readabilityScale(camDist, GATHERER_CURVE);
     const used = { student: 0, villager: 0, tourist: 0, gourmet: 0, business: 0 } as Record<GuestGroupId, number>;
@@ -227,7 +251,8 @@ export function LandmarkGatherers() {
           a.life = Math.min(1, a.life + dt * 0.9);
           if (a.life >= 1) {
             a.holdRemaining -= dt;
-            if (a.holdRemaining <= 0) a.lifeDir = -1;
+            // Går bara när ingen ser det.
+            if (a.holdRemaining <= 0 && !inView(a.cx + a.offX, a.cz + a.offZ)) a.lifeDir = -1;
           }
         } else {
           a.life = Math.max(0, a.life - dt * 0.7);
@@ -236,7 +261,9 @@ export function LandmarkGatherers() {
             // possibly a different palette pick.
             const s = deterministicRng(a.seed + performance.now() * 0.001);
             const p = groups[g].point;
-            const [ox, oz] = randomOffset(s, p.radius);
+            const [ox, oz] = clearOfTruck(a.cx, a.cz, ...randomOffset(s, p.radius));
+            // Kommer bara till en plats utanför bilden; annars väntar platsen tom.
+            if (inView(a.cx + ox, a.cz + oz)) continue;
             a.offX = ox;
             a.offZ = oz;
             a.targetOffX = ox;
@@ -259,8 +286,7 @@ export function LandmarkGatherers() {
         if (Math.random() < dt * 0.14) {
           const p = groups[g].point;
           const range = p.radius * 0.65;
-          a.targetOffX = a.offX + (Math.random() - 0.5) * range;
-          a.targetOffZ = a.offZ + (Math.random() - 0.5) * range;
+          [a.targetOffX, a.targetOffZ] = clearOfTruck(a.cx, a.cz, a.offX + (Math.random() - 0.5) * range, a.offZ + (Math.random() - 0.5) * range);
           a.targetYaw = Math.random() * Math.PI * 2;
         }
 

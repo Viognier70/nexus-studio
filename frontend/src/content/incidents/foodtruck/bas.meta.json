@@ -1,9 +1,12 @@
 {
  "schemaVersion": 1,
  "businessClass": "foodtruck",
+ "delivery": "bas",
  "incidents": [
   {
    "id": "ft01-rusningen",
+   "form": "triad",
+   "cue": "guestAtHatch",
    "track": "kok",
    "arc": "rush",
    "chainOnly": false,
@@ -12,6 +15,7 @@
    "reference": null,
    "steps": [
     {
+     "question": 7,
      "axis": "episteme",
      "options": [
       {
@@ -42,36 +46,7 @@
      }
     },
     {
-     "axis": "techne",
-     "options": [
-      {
-       "id": "a",
-       "quality": "wrong"
-      },
-      {
-       "id": "b",
-       "quality": "best"
-      },
-      {
-       "id": "c",
-       "quality": "ok"
-      },
-      {
-       "id": "d",
-       "quality": "wrong"
-      }
-     ],
-     "fail": {
-      "effects": {
-       "cash": -0.03,
-       "satisfaction": -0.05,
-       "stamina": -0.03,
-       "reputation": 0
-      },
-      "target": "room"
-     }
-    },
-    {
+     "question": 16,
      "axis": "phronesis",
      "options": [
       {
@@ -100,6 +75,37 @@
       },
       "target": "room"
      }
+    },
+    {
+     "question": 8,
+     "axis": "techne",
+     "options": [
+      {
+       "id": "a",
+       "quality": "wrong"
+      },
+      {
+       "id": "b",
+       "quality": "best"
+      },
+      {
+       "id": "c",
+       "quality": "ok"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.03,
+       "satisfaction": -0.05,
+       "stamina": -0.03,
+       "reputation": 0
+      },
+      "target": "room"
+     }
     }
    ],
    "success": {
@@ -119,15 +125,12 @@
      "reputation": -0.5
     },
     "target": "room"
-   },
-   "questions": [
-    7,
-    8,
-    16
-   ]
+   }
   },
   {
    "id": "ft02-drycken",
+   "form": "triad",
+   "cue": "guestAtHatch",
    "track": "kok",
    "arc": "opening",
    "chainOnly": false,
@@ -136,6 +139,7 @@
    "reference": null,
    "steps": [
     {
+     "question": 5,
      "axis": "episteme",
      "options": [
       {
@@ -166,36 +170,7 @@
      }
     },
     {
-     "axis": "techne",
-     "options": [
-      {
-       "id": "a",
-       "quality": "ok"
-      },
-      {
-       "id": "b",
-       "quality": "best"
-      },
-      {
-       "id": "c",
-       "quality": "wrong"
-      },
-      {
-       "id": "d",
-       "quality": "wrong"
-      }
-     ],
-     "fail": {
-      "effects": {
-       "cash": -0.03,
-       "satisfaction": -0.05,
-       "stamina": -0.03,
-       "reputation": 0
-      },
-      "target": "room"
-     }
-    },
-    {
+     "question": 18,
      "axis": "phronesis",
      "options": [
       {
@@ -224,6 +199,37 @@
       },
       "target": "room"
      }
+    },
+    {
+     "question": 13,
+     "axis": "techne",
+     "options": [
+      {
+       "id": "a",
+       "quality": "ok"
+      },
+      {
+       "id": "b",
+       "quality": "best"
+      },
+      {
+       "id": "c",
+       "quality": "wrong"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.03,
+       "satisfaction": -0.05,
+       "stamina": -0.03,
+       "reputation": 0
+      },
+      "target": "room"
+     }
     }
    ],
    "success": {
@@ -243,15 +249,12 @@
      "reputation": -0.5
     },
     "target": "room"
-   },
-   "questions": [
-    5,
-    13,
-    18
-   ]
+   }
   },
   {
    "id": "ft03-rullen",
+   "form": "triad",
+   "cue": "guestAtHatch",
    "track": "kok",
    "arc": "crisis",
    "chainOnly": false,
@@ -260,6 +263,7 @@
    "reference": null,
    "steps": [
     {
+     "question": 1,
      "axis": "episteme",
      "options": [
       {
@@ -290,36 +294,7 @@
      }
     },
     {
-     "axis": "techne",
-     "options": [
-      {
-       "id": "a",
-       "quality": "wrong"
-      },
-      {
-       "id": "b",
-       "quality": "best"
-      },
-      {
-       "id": "c",
-       "quality": "wrong"
-      },
-      {
-       "id": "d",
-       "quality": "ok"
-      }
-     ],
-     "fail": {
-      "effects": {
-       "cash": -0.03,
-       "satisfaction": -0.05,
-       "stamina": -0.03,
-       "reputation": 0
-      },
-      "target": "room"
-     }
-    },
-    {
+     "question": 19,
      "axis": "phronesis",
      "options": [
       {
@@ -348,6 +323,37 @@
       },
       "target": "room"
      }
+    },
+    {
+     "question": 12,
+     "axis": "techne",
+     "options": [
+      {
+       "id": "a",
+       "quality": "wrong"
+      },
+      {
+       "id": "b",
+       "quality": "best"
+      },
+      {
+       "id": "c",
+       "quality": "wrong"
+      },
+      {
+       "id": "d",
+       "quality": "ok"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.03,
+       "satisfaction": -0.05,
+       "stamina": -0.03,
+       "reputation": 0
+      },
+      "target": "room"
+     }
     }
    ],
    "success": {
@@ -367,15 +373,12 @@
      "reputation": -0.5
     },
     "target": "room"
-   },
-   "questions": [
-    1,
-    12,
-    19
-   ]
+   }
   },
   {
    "id": "ft04-leveransen",
+   "form": "triad",
+   "cue": "delivery",
    "track": "kok",
    "arc": "opening",
    "chainOnly": false,
@@ -384,6 +387,7 @@
    "reference": null,
    "steps": [
     {
+     "question": 6,
      "axis": "episteme",
      "options": [
       {
@@ -414,36 +418,7 @@
      }
     },
     {
-     "axis": "techne",
-     "options": [
-      {
-       "id": "a",
-       "quality": "wrong"
-      },
-      {
-       "id": "b",
-       "quality": "best"
-      },
-      {
-       "id": "c",
-       "quality": "wrong"
-      },
-      {
-       "id": "d",
-       "quality": "wrong"
-      }
-     ],
-     "fail": {
-      "effects": {
-       "cash": -0.03,
-       "satisfaction": -0.05,
-       "stamina": -0.03,
-       "reputation": 0
-      },
-      "target": "room"
-     }
-    },
-    {
+     "question": 17,
      "axis": "phronesis",
      "options": [
       {
@@ -472,78 +447,9 @@
       },
       "target": "room"
      }
-    }
-   ],
-   "success": {
-    "effects": {
-     "cash": 0,
-     "satisfaction": 0.06,
-     "stamina": 0,
-     "reputation": 1
-    },
-    "target": "room"
-   },
-   "staff": {
-    "effects": {
-     "cash": -0.05,
-     "satisfaction": -0.03,
-     "stamina": 0,
-     "reputation": -0.5
-    },
-    "target": "room"
-   },
-   "questions": [
-    6,
-    10,
-    17
-   ],
-   "legal": {
-    "legalReviewed": false,
-    "questions": [
-     10
-    ]
-   }
-  },
-  {
-   "id": "ft05-allergin",
-   "track": "kok",
-   "arc": "rush",
-   "chainOnly": false,
-   "needsTable": false,
-   "placeholder": false,
-   "reference": null,
-   "steps": [
-    {
-     "axis": "episteme",
-     "options": [
-      {
-       "id": "a",
-       "quality": "wrong"
-      },
-      {
-       "id": "b",
-       "quality": "wrong"
-      },
-      {
-       "id": "c",
-       "quality": "best"
-      },
-      {
-       "id": "d",
-       "quality": "wrong"
-      }
-     ],
-     "fail": {
-      "effects": {
-       "cash": 0,
-       "satisfaction": -0.03,
-       "stamina": 0,
-       "reputation": 0
-      },
-      "target": "room"
-     }
     },
     {
+     "question": 14,
      "axis": "techne",
      "options": [
       {
@@ -572,36 +478,6 @@
       },
       "target": "room"
      }
-    },
-    {
-     "axis": "phronesis",
-     "options": [
-      {
-       "id": "a",
-       "quality": "wrong"
-      },
-      {
-       "id": "b",
-       "quality": "best"
-      },
-      {
-       "id": "c",
-       "quality": "wrong"
-      },
-      {
-       "id": "d",
-       "quality": "wrong"
-      }
-     ],
-     "fail": {
-      "effects": {
-       "cash": -0.04,
-       "satisfaction": -0.04,
-       "stamina": 0,
-       "reputation": -0.5
-      },
-      "target": "room"
-     }
     }
    ],
    "success": {
@@ -621,22 +497,12 @@
      "reputation": -0.5
     },
     "target": "room"
-   },
-   "questions": [
-    4,
-    11,
-    15
-   ],
-   "legal": {
-    "legalReviewed": false,
-    "questions": [
-     4,
-     15
-    ]
    }
   },
   {
-   "id": "ft06-stangningen",
+   "id": "ft07-ursprunget",
+   "form": "triad",
+   "cue": "guestAtHatch",
    "track": "kok",
    "arc": "closing",
    "chainOnly": false,
@@ -645,6 +511,7 @@
    "reference": null,
    "steps": [
     {
+     "question": 2,
      "axis": "episteme",
      "options": [
       {
@@ -675,36 +542,7 @@
      }
     },
     {
-     "axis": "techne",
-     "options": [
-      {
-       "id": "a",
-       "quality": "wrong"
-      },
-      {
-       "id": "b",
-       "quality": "best"
-      },
-      {
-       "id": "c",
-       "quality": "wrong"
-      },
-      {
-       "id": "d",
-       "quality": "wrong"
-      }
-     ],
-     "fail": {
-      "effects": {
-       "cash": -0.03,
-       "satisfaction": -0.05,
-       "stamina": -0.03,
-       "reputation": 0
-      },
-      "target": "room"
-     }
-    },
-    {
+     "question": 21,
      "axis": "phronesis",
      "options": [
       {
@@ -733,79 +571,9 @@
       },
       "target": "room"
      }
-    }
-   ],
-   "success": {
-    "effects": {
-     "cash": 0,
-     "satisfaction": 0.06,
-     "stamina": 0,
-     "reputation": 1
-    },
-    "target": "room"
-   },
-   "staff": {
-    "effects": {
-     "cash": -0.05,
-     "satisfaction": -0.03,
-     "stamina": 0,
-     "reputation": -0.5
-    },
-    "target": "room"
-   },
-   "questions": [
-    2,
-    9,
-    20
-   ],
-   "legal": {
-    "legalReviewed": false,
-    "questions": [
-     9,
-     20
-    ]
-   }
-  },
-  {
-   "id": "ft07-ursprunget",
-   "track": "kok",
-   "arc": "opening",
-   "chainOnly": false,
-   "needsTable": false,
-   "placeholder": false,
-   "reference": null,
-   "steps": [
-    {
-     "axis": "episteme",
-     "options": [
-      {
-       "id": "a",
-       "quality": "wrong"
-      },
-      {
-       "id": "b",
-       "quality": "best"
-      },
-      {
-       "id": "c",
-       "quality": "wrong"
-      },
-      {
-       "id": "d",
-       "quality": "wrong"
-      }
-     ],
-     "fail": {
-      "effects": {
-       "cash": 0,
-       "satisfaction": -0.03,
-       "stamina": 0,
-       "reputation": 0
-      },
-      "target": "room"
-     }
     },
     {
+     "question": 11,
      "axis": "techne",
      "options": [
       {
@@ -834,8 +602,72 @@
       },
       "target": "room"
      }
+    }
+   ],
+   "success": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": 0.06,
+     "stamina": 0,
+     "reputation": 1
+    },
+    "target": "room"
+   },
+   "staff": {
+    "effects": {
+     "cash": -0.05,
+     "satisfaction": -0.03,
+     "stamina": 0,
+     "reputation": -0.5
+    },
+    "target": "room"
+   }
+  },
+  {
+   "id": "ft05-allergin",
+   "form": "triad",
+   "cue": "guestAtHatch",
+   "track": "kok",
+   "arc": "rush",
+   "chainOnly": false,
+   "needsTable": false,
+   "placeholder": false,
+   "reference": null,
+   "steps": [
+    {
+     "question": 4,
+     "axis": "episteme",
+     "options": [
+      {
+       "id": "a",
+       "quality": "wrong"
+      },
+      {
+       "id": "b",
+       "quality": "wrong"
+      },
+      {
+       "id": "c",
+       "quality": "best"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": 0,
+       "satisfaction": -0.03,
+       "stamina": 0,
+       "reputation": 0
+      },
+      "target": "room"
+     },
+     "legal": true
     },
     {
+     "question": 15,
      "axis": "phronesis",
      "options": [
       {
@@ -863,7 +695,40 @@
        "reputation": -0.5
       },
       "target": "room"
-     }
+     },
+     "legal": true
+    },
+    {
+     "question": 10,
+     "axis": "techne",
+     "options": [
+      {
+       "id": "a",
+       "quality": "wrong"
+      },
+      {
+       "id": "b",
+       "quality": "best"
+      },
+      {
+       "id": "c",
+       "quality": "wrong"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.03,
+       "satisfaction": -0.05,
+       "stamina": -0.03,
+       "reputation": 0
+      },
+      "target": "room"
+     },
+     "legal": true
     }
    ],
    "success": {
@@ -884,16 +749,138 @@
     },
     "target": "room"
    },
-   "questions": [
-    3,
-    14,
-    21
-   ],
    "legal": {
-    "legalReviewed": false,
-    "questions": [
-     3
-    ]
+    "legalReviewed": false
+   }
+  },
+  {
+   "id": "ft06-stangningen",
+   "form": "triad",
+   "cue": "guestAtHatch",
+   "track": "kok",
+   "arc": "closing",
+   "chainOnly": false,
+   "needsTable": false,
+   "placeholder": false,
+   "reference": null,
+   "steps": [
+    {
+     "question": 3,
+     "axis": "episteme",
+     "options": [
+      {
+       "id": "a",
+       "quality": "wrong"
+      },
+      {
+       "id": "b",
+       "quality": "best"
+      },
+      {
+       "id": "c",
+       "quality": "wrong"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": 0,
+       "satisfaction": -0.03,
+       "stamina": 0,
+       "reputation": 0
+      },
+      "target": "room"
+     },
+     "legal": true
+    },
+    {
+     "question": 20,
+     "axis": "phronesis",
+     "options": [
+      {
+       "id": "a",
+       "quality": "wrong"
+      },
+      {
+       "id": "b",
+       "quality": "best"
+      },
+      {
+       "id": "c",
+       "quality": "wrong"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.04,
+       "satisfaction": -0.04,
+       "stamina": 0,
+       "reputation": -0.5
+      },
+      "target": "room"
+     },
+     "legal": true
+    },
+    {
+     "question": 9,
+     "axis": "techne",
+     "options": [
+      {
+       "id": "a",
+       "quality": "wrong"
+      },
+      {
+       "id": "b",
+       "quality": "best"
+      },
+      {
+       "id": "c",
+       "quality": "wrong"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.03,
+       "satisfaction": -0.05,
+       "stamina": -0.03,
+       "reputation": 0
+      },
+      "target": "room"
+     },
+     "legal": true
+    }
+   ],
+   "success": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": 0.06,
+     "stamina": 0,
+     "reputation": 1
+    },
+    "target": "room"
+   },
+   "staff": {
+    "effects": {
+     "cash": -0.05,
+     "satisfaction": -0.03,
+     "stamina": 0,
+     "reputation": -0.5
+    },
+    "target": "room"
+   },
+   "legal": {
+    "legalReviewed": false
    }
   }
  ]

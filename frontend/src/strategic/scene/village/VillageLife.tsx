@@ -266,6 +266,9 @@ function planEvening(state: SimulationState): Planned[] {
 
 // ORDER 297 — figurernas förstoring på ett avstånd: nivåernas figureScale,
 // logaritmiskt mellan nivåerna (byns nivå räknas som 2, som i Designs frameAt).
+// ORDER 319a.2 — byns gående tonas in mellan de här avstånden (förut av och på vid 20 m).
+const FIGURES_NEAR_M: readonly [number, number] = [16, 26];
+
 function figureScaleAt(d: number): number {
   const L = LEVELS;
   const sc = (i: number) => L[i].figureScale || 2;
@@ -754,7 +757,10 @@ export function VillageLife() {
     // ORDER 297 — sätten att rita på nivåerna (Designs byKvall.js frameAt och
     // createGuests): figurerna i nivåns förstoring närmare än figuresUntil,
     // lyktorna längre ut (BLEND.lantern) och fläcken i kvarteret (BLEND.patch).
-    const scale = figureScaleAt(dist);
+    // ORDER 319a.2 — förut tändes och släcktes alla gående vid 20 m (krogens nivå); nu tonas de in
+    // över FIGURES_NEAR_M, så att de inte hoppar fram när kameran går ut från krogen.
+    const nearK = Math.max(0, Math.min(1, (dist - FIGURES_NEAR_M[0]) / (FIGURES_NEAR_M[1] - FIGURES_NEAR_M[0])));
+    const scale = figureScaleAt(dist) * nearK * nearK * (3 - 2 * nearK);
     const { figures, legs, heads, signs, markers, rings, cars, bus, heat, cores, patches } = meshes;
     let fi = 0;
     const si = { student: 0, villager: 0, tourist: 0, gourmet: 0, business: 0 } as Record<GuestGroupId, number>;
@@ -935,7 +941,7 @@ export function VillageLife() {
       if (heat.instanceColor) heat.instanceColor.needsUpdate = true;
     }
     heat.visible = false; // ORDER 297 — banden ritas inte (Designs lyktor bär flödet).
-    figures.visible = dist > 20;
+    figures.visible = dist > FIGURES_NEAR_M[0];
     legs.visible = heads.visible = figures.visible;
     for (const g of GROUP_IDS) signs[g].visible = figures.visible;
   }
