@@ -53,6 +53,7 @@ import {
   optionQuality,
   type Incident,
   type IncidentCondition,
+  type IncidentCue,
   type IncidentOngoingMeta,
   type IncidentOutcomeMeta,
   type IncidentStep,
@@ -102,6 +103,8 @@ export interface ActiveIncident {
   // ORDER 286a — raketen börjar i rummet: figurens klipp spelas i så här
   // många verkliga sekunder innan kortet öppnas och stegets klocka går.
   introLeft?: number;
+  // ORDER 319a.4 — förvarningen som spelas under introt (incidentBank IncidentCue).
+  cue?: IncidentCue;
   // ORDER 292 — vad som står på spel vid bordet när raketen öppnas.
   stake?: TableStake | null;
   // ORDER 305 — kvitt eller dubbelt (balance.ts DOUBLE_OR_NOTHING): potten
@@ -462,8 +465,26 @@ export function formatIncidentText(text: string, ctx: IncidentContext): string {
 
 // Kan händelsen komma just nu? Kvällens läge stämmer, och finns det ett
 // bord i berättelsen sitter en gäst där.
+/** ORDER 319a.4 — gästen som pekar mot luckan: den som varit längst i kön eller vid luckan och hunnit
+ * gå fram i bild (THEATRE.cueGuestSettledSeconds sedan ankomsten), annars den vid ståborden, annars
+ * (en lugn kväll) den som varit längst i kön, vid luckan eller på väg in. Den som hämtar eller betalar
+ * pekar inte: utan uteservering går den strax därifrån. Ingen gäst: ingen. */
+export function hatchGuest(state: SimulationState): SimulationState['guests'][number] | null {
+  const settled = (g: SimulationState['guests'][number]) => state.simTime - g.arrivalTime >= THEATRE.cueGuestSettledSeconds;
+  const atHatch = (g: SimulationState['guests'][number]) => g.state === 'waiting' || g.state === 'ordering';
+  const tiers = [
+    state.guests.filter((g) => atHatch(g) && settled(g)),
+    state.guests.filter((g) => g.state === 'eating' && settled(g)),
+    state.guests.filter((g) => atHatch(g) || g.state === 'arriving')
+  ];
+  const at = tiers.find((t) => t.length > 0) ?? [];
+  return at.length === 0 ? null : at.reduce((a, b) => (b.arrivalTime < a.arrivalTime ? b : a));
+}
+
 function eligibleNow(state: SimulationState, incident: Incident, context?: IncidentContext): boolean {
   if (!conditionHolds(state, incident.when)) return false;
+  // ORDER 319a.4 — gästen vid luckan behöver en gäst som står där.
+  if (incident.cue === 'guestAtHatch' && !hatchGuest(state)) return false;
   if (!incident.needsTable) return true;
   if (context) {
     const present = new Set(seatedGuests(state).map((g) => g.id));
@@ -601,12 +622,19 @@ function openIncident(
   const base = given ? { ...given, clock: fresh.clock } : fresh;
   // ORDER 286a — figuren och klippet som spelas först (theatreTriggers.ts).
   // Egna raketer (Back your knowledge) börjar direkt.
-  const clip = backed ? null : rocketClipFor(incident);
-  const figure = rocketFigure(draft, clip, base);
-  const context = { ...base, figure };
+  // ORDER 319a.4 — förvarningen: gästen först i kön går fram till luckan och pekar
+  // (askPointMenu), eller leveransbilen kommer; kortet väntar på den.
+  const cue = backed ? undefined : incident.cue;
+  const hatch = cue === 'guestAtHatch' ? hatchGuest(draft) : null;
+  const clip = backed ? null : hatch ? 'askPointMenu' : rocketClipFor(incident);
+  const figure = hatch ? { kind: 'guest' as const, guestId: hatch.id, clip: 'askPointMenu' as const } : rocketFigure(draft, clip, base);
+  const context = { ...base, figure, ...(hatch ? { guestIds: [hatch.id] } : {}) };
   // ORDER 293 — händelserna som teater: kortet väntar på manusets uppbyggnad.
   const eventAsk = backed ? undefined : THEATRE.eventAskSeconds[incident.id];
-  const introLeft = figure ? THEATRE.rocketIntroSeconds[figure.clip] : eventAsk ? eventAsk[0] : 0;
+  // En gäst som ännu är på väg till vagnen (en lugn kväll) hinner gå fram innan hen pekar: kortet
+  // väntar resten av THEATRE.cueGuestSettledSeconds (verkliga sekunder i normal fart).
+  const walkUp = hatch ? Math.max(0, THEATRE.cueGuestSettledSeconds - (draft.simTime - hatch.arrivalTime)) : 0;
+  const introLeft = figure ? THEATRE.rocketIntroSeconds[figure.clip] + walkUp : cue ? THEATRE.cueSeconds[cue] : eventAsk ? eventAsk[0] : 0;
   // ORDER 296 — födelsedagspaketet (butiken): sällskapet har bokat tårta och
   // bubbel i förväg, och köket vet i tid.
   if (incident.id === INCIDENTS.birthdayIncidentId && abilityActive(draft, 'birthday') && !draft.day.birthdayPackageSek) {
@@ -621,7 +649,7 @@ function openIncident(
     queuedContext,
     fired: [...inc.fired, incident.id],
     ongoing: null,
-    active: { id: incident.id, openedAt: draft.simTime, step: 0, secondsTotal, secondsLeft: secondsTotal, struck, chained, situation, context, backed, introLeft, stake: tableStake(draft, context.guestIds) }
+    active: { id: incident.id, openedAt: draft.simTime, step: 0, secondsTotal, secondsLeft: secondsTotal, struck, chained, situation, context, backed, introLeft, ...(cue ? { cue } : {}), stake: tableStake(draft, context.guestIds) }
   };
 }
 

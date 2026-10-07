@@ -276,6 +276,10 @@ Förebilden är *Two Point Hospital* och *Game Dev Tycoon*: att flytta till stö
 
 *Beslut 2026-10-07 (Vision Owner, kalibreringen i foodtrucken):* erbjudandet om vinbaren kräver minst sex klarade situationer i foodtrucken (halvt grepp räknas som en halv) och kommer tidigast efter tio kvällar i foodtrucken. Ryktet i foodtrucken återhämtar sig som i resten av spelet. Den som har hälften rätt når aldrig bistron och får aldrig stjärnan; att stanna i foodtrucken är godkänt, och målet att stänga i 30–50 % av säsongerna utgår. Att den som har 0,6 rätt når vinbaren i 14 av 40 säsonger och den med 0,75 får stjärnan i 2–3 av 40 godtas som brus.
 
+*Beslut 2026-10-07 (Vision Owner, liv vid foodtrucken):* ingen gäst får uppstå eller försvinna i bild; gästerna kommer gående från byns gator och går därifrån till en gata eller ett hus, och ingen skapas eller tas bort inom kamerans bild eller närmare än 40 m från vagnen. Föremål tonas in och ut i stället för att byta på en gång. En situation utlöses av något som syns, som en gäst som går fram till luckan och pekar, regn eller en leverans; kortet kommer inte ur tomma intet. Målet är 4–6 situationer per kväll.
+
+*Beslut 2026-10-07 (Vision Owner, foodtruckens frågor):* de 15 frågorna utan ⚖ (med fråga 21) grupperas i fem situationer i ordningen episteme → phronesis → techne, och ⚖-frågorna ligger i egna situationer som är dolda tills de är granskade. Ett ⚖-märke ska aldrig dölja frågor utan ⚖. Fler situationer i foodtrucken kommer från Claude som en egen leverans och läggs in utan ny kod.
+
 ## Servicen
 
 Servicen är slumpen, viktad av spelarens förberedelser. Det spelaren gjort på morgonen, och det hon kan, avgör hur ofta saker går rätt. Hon ser konsekvenserna i rummet, inte i siffertavlor.

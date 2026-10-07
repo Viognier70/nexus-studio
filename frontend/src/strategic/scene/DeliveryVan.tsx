@@ -20,16 +20,24 @@
 // ramp at the start and end of the trip so it doesn't pop.
 
 import { deliveryStop } from '../business/deliveryStop';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import { useSimState } from '../simulation/SimulationProvider';
+import { playerTruckPlacement } from '../content/villagePlaces';
+import { THEATRE } from '../../sim/balance';
+import { alongPath, pathLength, truckDeliveryPath } from './village/truckDelivery';
+
+// ORDER 319a.4 — leveransen till spelarens vagn (förvarningen 'delivery'): bilen kör ut i den här
+// farten när situationen är avgjord, i meter per verklig sekund.
+const TRUCK_VAN_OUT_MPS = 9;
 
 const VAN_LENGTH_M = 3.0;   // along OBB local X
 const VAN_WIDTH_M = 1.8;    // along OBB local Z
 const VAN_HEIGHT_M = 2.0;   // along Y
 const VAN_Y = VAN_HEIGHT_M / 2 + 0.05;
+const TRUCK_VAN_TOP_M = VAN_HEIGHT_M;
 const VAN_COLOUR = '#7a8f4a';   // sage / olive — evokes a produce truck
 const VAN_TRIM_COLOUR = '#3a3020';
 
@@ -80,6 +88,10 @@ export function DeliveryVan() {
   const groupRef = useRef<THREE.Group>(null);
   const bodyMatRef = useRef<THREE.MeshStandardMaterial>(null);
   const cabMatRef = useRef<THREE.MeshStandardMaterial>(null);
+  const { camera } = useThree();
+  // ORDER 319a.4 — bilens resa till vagnen: in under förvarningen, parkerad under situationen, ut efter.
+  const truckTrip = useRef<{ path: [number, number][]; length: number; s: number; phase: 'in' | 'parked' | 'out'; incidentId: string } | null>(null);
+  const view = useMemo(() => ({ f: new THREE.Frustum(), m: new THREE.Matrix4(), p: new THREE.Vector3() }), []);
 
   // Geometry is stable across renders; only position/opacity change per
   // frame. Group holds two boxes (body + cab) so the shape reads as a
@@ -92,9 +104,39 @@ export function DeliveryVan() {
     []
   );
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     if (!layout || !groupRef.current) return;
     const g = groupRef.current;
+    // ORDER 319a.4 — i foodtrucken kör bilen till vagnen när en situation börjar med leveransen; byns
+    // vanliga leveranser till krogens hus hör inte till vagnen.
+    if (sim.economy.businessClass === 'foodtruck') {
+      const a = sim.incidents?.active;
+      let trip = truckTrip.current;
+      if (!trip && a?.cue === 'delivery' && (a.introLeft ?? 0) > 0) {
+        camera.updateMatrixWorld();
+        view.f.setFromProjectionMatrix(view.m.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
+        const inView = (x: number, z: number) => [0, TRUCK_VAN_TOP_M].some((y) => view.f.containsPoint(view.p.set(x, y, z)));
+        const path = truckDeliveryPath(playerTruckPlacement(), inView);
+        trip = truckTrip.current = { path, length: pathLength(path), s: 0, phase: 'in', incidentId: a.id };
+      }
+      if (!trip) { g.visible = false; return; }
+      const here = a?.id === trip.incidentId;
+      if (trip.phase === 'in') {
+        trip.s = trip.length * (1 - Math.max(0, here ? a!.introLeft ?? 0 : 0) / THEATRE.cueSeconds.delivery);
+        if (!here || (a!.introLeft ?? 0) <= 0) trip.phase = 'parked';
+      }
+      if (trip.phase === 'parked' && !here) trip.phase = 'out';
+      if (trip.phase === 'out') trip.s -= TRUCK_VAN_OUT_MPS * Math.min(0.1, delta);
+      if (trip.s <= 0 && trip.phase === 'out') { truckTrip.current = null; g.visible = false; return; }
+      const p = alongPath(trip.path, trip.s);
+      const [dx, dz] = [Math.sin(p.heading), Math.cos(p.heading)];
+      g.visible = true;
+      g.position.set(p.x, VAN_Y, p.z);
+      // Hytten (lokala +x) framåt: in mot vagnen, ut därifrån.
+      g.rotation.y = trip.phase === 'out' ? Math.atan2(dz, -dx) : Math.atan2(-dz, dx);
+      for (const mat of [bodyMatRef.current, cabMatRef.current]) if (mat && mat.opacity !== 1) { mat.opacity = 1; mat.transparent = false; mat.needsUpdate = true; }
+      return;
+    }
     const d = sim.delivery;
     if (!d.active) {
       g.visible = false;

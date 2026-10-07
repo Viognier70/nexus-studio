@@ -24,6 +24,9 @@ tillsammans när spelet startar.
 - **⚖:** en fråga om regler, märkning eller temperaturer får `"legal": true` på steget. En situation
   med ⚖ består bara av ⚖-frågor och har `"legal": { "legalReviewed": false }`. Den är dold tills den
   är granskad och `legalReviewed` sätts till `true`. Ett ⚖-märke döljer aldrig frågor utan ⚖.
+- **Förvarningen:** varje situation har `"cue"`, det som syns innan kortet öppnas:
+  `"guestAtHatch"` (gästen först i kön går fram till luckan och pekar) eller `"delivery"`
+  (leveransbilen kommer). Situationen med `guestAtHatch` kommer bara när någon står vid luckan.
 - **Svaren:** 3–4 svar per steg, exakt ett `best` och minst ett `wrong`.
 - **Texten:** varje situation i meta har text på båda språken, och ingen text saknar meta.
 

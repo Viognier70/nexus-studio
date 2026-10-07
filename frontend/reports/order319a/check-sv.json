@@ -1,0 +1,64 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "checkSeconds": 120,
+  "minSpawnM": 40,
+  "errors": [],
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 900,
+      "level": "room",
+      "shots": [
+        "check-sv-1440x900-1.png",
+        "check-sv-1440x900-2.png",
+        "check-sv-1440x900-3.png"
+      ],
+      "frames": 7201,
+      "seen": 35,
+      "spawnInView": [],
+      "despawnInView": [],
+      "spawnNear": [],
+      "despawnNear": [],
+      "cues": [],
+      "maxFigures": 24,
+      "before": [
+        "gst-1",
+        "gst-2",
+        "gst-3",
+        "gst-4",
+        "gst-5",
+        "gst-6",
+        "gst-7",
+        "gst-8"
+      ],
+      "done": true
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "level": "room",
+      "shots": [
+        "check-sv-1280x720-1.png",
+        "check-sv-1280x720-2.png",
+        "check-sv-1280x720-3.png"
+      ],
+      "frames": 7201,
+      "seen": 16,
+      "spawnInView": [],
+      "despawnInView": [],
+      "spawnNear": [],
+      "despawnNear": [],
+      "cues": [],
+      "maxFigures": 9,
+      "before": [
+        "gst-1",
+        "gst-2",
+        "gst-3",
+        "gst-4"
+      ],
+      "done": true
+    }
+  ],
+  "ok": true
+}

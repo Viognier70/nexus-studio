@@ -4,22 +4,22 @@
   "weeks": 2,
   "evenings": 96,
   "all": {
-    "mean": 3.67,
+    "mean": 3.68,
     "histogram": {
       "0": 3,
       "1": 4,
       "2": 4,
       "3": 4,
-      "4": 77,
-      "5": 4
+      "4": 76,
+      "5": 5
     }
   },
   "whole": {
     "evenings": 80,
-    "mean": 4.05,
+    "mean": 4.06,
     "histogram": {
-      "4": 76,
-      "5": 4
+      "4": 75,
+      "5": 5
     }
   },
   "collapsed": {
@@ -643,7 +643,7 @@
       "seed": 7,
       "day": 2,
       "situations": 4,
-      "planned": 5,
+      "planned": 4,
       "collapsed": null,
       "endedAt": 1
     },
@@ -659,7 +659,7 @@
       "seed": 7,
       "day": 4,
       "situations": 4,
-      "planned": 6,
+      "planned": 4,
       "collapsed": null,
       "endedAt": 1
     },
@@ -667,29 +667,13 @@
       "seed": 7,
       "day": 5,
       "situations": 4,
-      "planned": 6,
-      "collapsed": null,
-      "endedAt": 1
-    },
-    {
-      "seed": 7,
-      "day": 6,
-      "situations": 4,
-      "planned": 5,
-      "collapsed": null,
-      "endedAt": 1
-    },
-    {
-      "seed": 7,
-      "day": 8,
-      "situations": 4,
       "planned": 4,
       "collapsed": null,
       "endedAt": 1
     },
     {
       "seed": 7,
-      "day": 9,
+      "day": 6,
       "situations": 5,
       "planned": 6,
       "collapsed": null,
@@ -697,9 +681,25 @@
     },
     {
       "seed": 7,
+      "day": 8,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 7,
+      "day": 9,
+      "situations": 5,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 7,
       "day": 10,
       "situations": 4,
-      "planned": 6,
+      "planned": 4,
       "collapsed": null,
       "endedAt": 1
     },
@@ -715,7 +715,7 @@
       "seed": 7,
       "day": 12,
       "situations": 4,
-      "planned": 5,
+      "planned": 4,
       "collapsed": null,
       "endedAt": 1
     },
@@ -723,7 +723,7 @@
       "seed": 7,
       "day": 13,
       "situations": 4,
-      "planned": 4,
+      "planned": 6,
       "collapsed": null,
       "endedAt": 1
     },

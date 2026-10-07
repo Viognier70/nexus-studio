@@ -20,6 +20,8 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 13,
           "minFontAt": "div.business-name-kicker: Grythyttan",
@@ -32,6 +34,8 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 13,
           "minFontAt": "div.business-name-kicker: Grythyttan",
@@ -44,6 +48,8 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 13,
           "minFontAt": "div.business-name-kicker: Grythyttan",
@@ -56,6 +62,8 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 13,
           "minFontAt": "div.business-name-kicker: Grythyttan",
@@ -68,6 +76,8 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 13,
           "minFontAt": "div.business-name-kicker: Grythyttan",
@@ -85,6 +95,8 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 13,
           "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
@@ -97,6 +109,8 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 13,
           "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
@@ -109,6 +123,8 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 13,
           "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
@@ -121,6 +137,8 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 13,
           "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
@@ -133,9 +151,86 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 13,
           "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
+          "clipped": []
+        }
+      ]
+    },
+    "oppningen": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.7,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 14.6,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 17.1,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 18.7,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 18.1,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
           "clipped": []
         }
       ]
@@ -151,12 +246,14 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.09,
-              "over": 511,
+              "over": 677,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 13.3,
           "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
@@ -170,12 +267,14 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.09,
-              "over": 541,
+              "over": 718,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 14.2,
           "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
@@ -189,12 +288,14 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.11,
-              "over": 478,
+              "over": 664,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 15,
           "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
@@ -208,12 +309,14 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.11,
-              "over": 465,
+              "over": 660,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 15.8,
           "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
@@ -227,12 +330,14 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.11,
-              "over": 485,
+              "over": 679,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 15.6,
           "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
@@ -251,12 +356,14 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.09,
-              "over": 511,
+              "over": 677,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 13.3,
           "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
@@ -270,12 +377,14 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.09,
-              "over": 541,
+              "over": 718,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 14.2,
           "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
@@ -289,12 +398,14 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.11,
-              "over": 478,
+              "over": 664,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 15,
           "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
@@ -308,12 +419,14 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.11,
-              "over": 465,
+              "over": 660,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 15.8,
           "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
@@ -327,12 +440,14 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.11,
-              "over": 485,
+              "over": 679,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 15.6,
           "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
@@ -351,12 +466,14 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.09,
-              "over": 511,
+              "over": 677,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 13.3,
           "minFontAt": "span.nx-label: Kassa",
@@ -370,12 +487,14 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.09,
-              "over": 541,
+              "over": 718,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 14.2,
           "minFontAt": "span.nx-label: Kassa",
@@ -389,12 +508,14 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.11,
-              "over": 478,
+              "over": 664,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 15,
           "minFontAt": "span.nx-label: Kassa",
@@ -408,12 +529,14 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.11,
-              "over": 465,
+              "over": 660,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 15.8,
           "minFontAt": "span.nx-label: Kassa",
@@ -427,12 +550,14 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.11,
-              "over": 485,
+              "over": 679,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 15.6,
           "minFontAt": "span.nx-label: Kassa",
@@ -451,15 +576,17 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.09,
-              "over": 511,
+              "over": 677,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
-          "minFontPx": 13.3,
-          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "minFontPx": 13,
+          "minFontAt": "legend-role-host: Hovmästare",
           "clipped": []
         },
         {
@@ -470,15 +597,17 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.09,
-              "over": 541,
+              "over": 718,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
-          "minFontPx": 14.2,
-          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "minFontPx": 13,
+          "minFontAt": "legend-role-host: Hovmästare",
           "clipped": []
         },
         {
@@ -489,15 +618,17 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.11,
-              "over": 478,
+              "over": 664,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
-          "minFontPx": 15,
-          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "minFontPx": 13,
+          "minFontAt": "legend-role-host: Hovmästare",
           "clipped": []
         },
         {
@@ -508,15 +639,17 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.11,
-              "over": 465,
+              "over": 660,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
-          "minFontPx": 15.8,
-          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "minFontPx": 13,
+          "minFontAt": "legend-role-host: Hovmästare",
           "clipped": []
         },
         {
@@ -527,15 +660,17 @@
             {
               "el": "morning-activities-scroll",
               "share": 0.11,
-              "over": 485,
+              "over": 679,
               "screen": false
             }
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
-          "minFontPx": 15.6,
-          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "minFontPx": 13,
+          "minFontAt": "legend-role-host: Hovmästare",
           "clipped": []
         }
       ]
@@ -563,9 +698,11 @@
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
-          "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontPx": 13.3,
+          "minFontAt": "div.nx-label: Byn i kväll",
           "clipped": []
         },
         {
@@ -588,9 +725,11 @@
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
-          "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontPx": 14.2,
+          "minFontAt": "div.nx-label: Byn i kväll",
           "clipped": []
         },
         {
@@ -613,9 +752,11 @@
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
-          "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontPx": 15,
+          "minFontAt": "div.nx-label: Byn i kväll",
           "clipped": []
         },
         {
@@ -638,9 +779,11 @@
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
-          "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontPx": 15.8,
+          "minFontAt": "div.nx-label: Byn i kväll",
           "clipped": []
         },
         {
@@ -663,9 +806,11 @@
           ],
           "shelfRows": 5,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
-          "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontPx": 15.6,
+          "minFontAt": "div.nx-label: Byn i kväll",
           "clipped": []
         }
       ]
@@ -681,21 +826,17 @@
             {
               "el": "div.nxs-buy-rows",
               "share": 0.19,
-              "over": 209,
-              "screen": false
-            },
-            {
-              "el": "buy-side",
-              "share": 0.2,
-              "over": 283,
+              "over": 238,
               "screen": false
             }
           ],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "div.nxs-row-sub: Inköp 14 kr · säljs för 95 kr",
           "clipped": []
         },
         {
@@ -706,21 +847,17 @@
             {
               "el": "div.nxs-buy-rows",
               "share": 0.19,
-              "over": 221,
-              "screen": false
-            },
-            {
-              "el": "buy-side",
-              "share": 0.2,
-              "over": 297,
+              "over": 234,
               "screen": false
             }
           ],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "div.nx-label: port",
           "clipped": []
         },
         {
@@ -731,21 +868,17 @@
             {
               "el": "div.nxs-buy-rows",
               "share": 0.2,
-              "over": 143,
-              "screen": false
-            },
-            {
-              "el": "buy-side",
-              "share": 0.21,
-              "over": 221,
+              "over": 142,
               "screen": false
             }
           ],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "div.nx-label: port",
           "clipped": []
         },
         {
@@ -756,21 +889,17 @@
             {
               "el": "div.nxs-buy-rows",
               "share": 0.21,
-              "over": 112,
-              "screen": false
-            },
-            {
-              "el": "buy-side",
-              "share": 0.21,
-              "over": 192,
+              "over": 103,
               "screen": false
             }
           ],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "div.nx-label: port",
           "clipped": []
         },
         {
@@ -781,21 +910,17 @@
             {
               "el": "div.nxs-buy-rows",
               "share": 0.2,
-              "over": 135,
-              "screen": false
-            },
-            {
-              "el": "buy-side",
-              "share": 0.21,
-              "over": 216,
+              "over": 127,
               "screen": false
             }
           ],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "div.nx-label: port",
           "clipped": []
         }
       ]
@@ -810,9 +935,11 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "kbd.nx-mode-cap: S",
           "clipped": []
         },
         {
@@ -822,9 +949,11 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "kbd.nx-mode-cap: S",
           "clipped": []
         },
         {
@@ -834,9 +963,11 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "kbd.nx-mode-cap: S",
           "clipped": []
         },
         {
@@ -846,9 +977,11 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "kbd.nx-mode-cap: S",
           "clipped": []
         },
         {
@@ -858,9 +991,11 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "kbd.nx-mode-cap: S",
           "clipped": []
         }
       ]
@@ -875,9 +1010,11 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "kbd.nx-mode-cap: S",
           "clipped": []
         },
         {
@@ -887,9 +1024,11 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "kbd.nx-mode-cap: S",
           "clipped": []
         },
         {
@@ -899,9 +1038,11 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "kbd.nx-mode-cap: S",
           "clipped": []
         },
         {
@@ -911,9 +1052,11 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "kbd.nx-mode-cap: S",
           "clipped": []
         },
         {
@@ -923,9 +1066,11 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "kbd.nx-mode-cap: S",
           "clipped": []
         }
       ]
@@ -940,9 +1085,11 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "span.nx-rival-chevron: ▾",
           "clipped": []
         },
         {
@@ -952,9 +1099,11 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "span.nx-rival-chevron: ▾",
           "clipped": []
         },
         {
@@ -964,9 +1113,11 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "span.nx-rival-chevron: ▾",
           "clipped": []
         },
         {
@@ -976,9 +1127,11 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "span.nx-rival-chevron: ▾",
           "clipped": []
         },
         {
@@ -988,9 +1141,311 @@
           "scrollers": [],
           "shelfRows": 0,
           "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
           "screenScroll": [],
           "minFontPx": 12,
-          "minFontAt": "div.nx-rival-measure: Placering efter kvällens gäste",
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        }
+      ]
+    },
+    "statuslaget-kortet": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        }
+      ]
+    },
+    "fokuslaget": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        }
+      ]
+    },
+    "raketen": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12.1,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12.8,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.1,
+          "minFontAt": "theatre-caption: En gäst går mot köket",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.1,
+          "minFontAt": "theatre-caption: En gäst går mot köket",
+          "clipped": []
+        }
+      ]
+    },
+    "raketen-byn-utfalld": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12.1,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12.8,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.1,
+          "minFontAt": "theatre-caption: En gäst går mot köket",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.1,
+          "minFontAt": "theatre-caption: En gäst går mot köket",
           "clipped": []
         }
       ]

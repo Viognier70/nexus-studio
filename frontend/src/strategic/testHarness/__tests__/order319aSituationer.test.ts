@@ -44,8 +44,6 @@ describe('ORDER 319a.3 — foodtruckens situationer per kväll', () => {
     const weeks = Number(process.env.SITUATION_WEEKS ?? 1);
     const ev = evenings(seeds, weeks);
     const whole = ev.filter((e) => !e.collapsed);
-    for (const e of whole) expect(e.situations).toBeGreaterThanOrEqual(SITUATIONS.minPerEvening);
-    for (const e of ev) expect(e.situations).toBeLessThanOrEqual(SITUATIONS.maxPerEvening);
     if (process.env.WRITE_REPORTS) {
       const hist = (xs: Evening[]) => xs.reduce<Record<number, number>>((h, e) => ({ ...h, [e.situations]: (h[e.situations] ?? 0) + 1 }), {});
       const mean = (xs: Evening[]) => +(xs.reduce((a, e) => a + e.situations, 0) / Math.max(1, xs.length)).toFixed(2);
@@ -64,5 +62,7 @@ describe('ORDER 319a.3 — foodtruckens situationer per kväll', () => {
         rows: ev
       }, null, 2) + '\n');
     }
+    for (const e of whole) expect(e.situations).toBeGreaterThanOrEqual(SITUATIONS.minPerEvening);
+    for (const e of ev) expect(e.situations).toBeLessThanOrEqual(SITUATIONS.maxPerEvening);
   }, 600000);
 });

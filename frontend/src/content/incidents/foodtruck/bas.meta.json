@@ -6,6 +6,7 @@
   {
    "id": "ft01-rusningen",
    "form": "triad",
+   "cue": "guestAtHatch",
    "track": "kok",
    "arc": "rush",
    "chainOnly": false,
@@ -129,6 +130,7 @@
   {
    "id": "ft02-drycken",
    "form": "triad",
+   "cue": "guestAtHatch",
    "track": "kok",
    "arc": "opening",
    "chainOnly": false,
@@ -252,6 +254,7 @@
   {
    "id": "ft03-rullen",
    "form": "triad",
+   "cue": "guestAtHatch",
    "track": "kok",
    "arc": "crisis",
    "chainOnly": false,
@@ -375,6 +378,7 @@
   {
    "id": "ft04-leveransen",
    "form": "triad",
+   "cue": "delivery",
    "track": "kok",
    "arc": "opening",
    "chainOnly": false,
@@ -498,6 +502,7 @@
   {
    "id": "ft07-ursprunget",
    "form": "triad",
+   "cue": "guestAtHatch",
    "track": "kok",
    "arc": "closing",
    "chainOnly": false,
@@ -621,6 +626,7 @@
   {
    "id": "ft05-allergin",
    "form": "triad",
+   "cue": "guestAtHatch",
    "track": "kok",
    "arc": "rush",
    "chainOnly": false,
@@ -750,6 +756,7 @@
   {
    "id": "ft06-stangningen",
    "form": "triad",
+   "cue": "guestAtHatch",
    "track": "kok",
    "arc": "closing",
    "chainOnly": false,

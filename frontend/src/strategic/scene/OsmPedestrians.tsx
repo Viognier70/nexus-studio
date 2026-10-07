@@ -196,6 +196,9 @@ function pickRole(rng: { next(): number }): WalkerRole {
   return 'resident';
 }
 
+// ORDER 319a.2 — den gåendes höjd vid prövningen mot kamerans bild.
+const WALKER_TOP_M = 1.7;
+
 export function OsmPedestrians() {
   const { actualRef } = useCamera();
   const gl = useThree((x) => x.gl);
@@ -294,6 +297,9 @@ export function OsmPedestrians() {
     [walkers]
   );
   const fadedColour = useMemo(() => new THREE.Color(0x000000), []);
+  // ORDER 319a.2 — kamerans bild: en gående byter väg bara när varken den gamla eller den nya
+  // platsen syns (förut försvann den mitt i bilden och växte fram på en ny plats).
+  const view = useMemo(() => ({ f: new THREE.Frustum(), m: new THREE.Matrix4(), p: new THREE.Vector3() }), []);
   // ORDER 302b — tecknen: ett InstancedMesh per grupp, en plats per gående i
   // gruppen, accentfärgen satt en gång.
   const signs = useMemo(() => {
@@ -339,6 +345,9 @@ export function OsmPedestrians() {
     const cyclistRead = readabilityScale(camDist, CYCLIST_CURVE);
     // ORDER 302c — mätningen under lyktorna (village/lampProbe.ts), bara på begäran.
     const probe: ProbeFigure[] | null = lampProbeRequested() ? [] : null;
+    camera.updateMatrixWorld();
+    view.f.setFromProjectionMatrix(view.m.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
+    const inView = (x: number, z: number) => view.f.containsPoint(view.p.set(x, 0, z)) || view.f.containsPoint(view.p.set(x, WALKER_TOP_M, z));
     if (walkerMesh.current) {
       for (let i = 0; i < walkers.length; i++) {
         const w = walkers[i];
@@ -365,11 +374,17 @@ export function OsmPedestrians() {
             w.t = -w.t;
             w.forward = 1;
           }
-          if (w.swap <= 0) {
+          const here = w.swap <= 0 ? samplePolyline(w.path.poly, w.t) : null;
+          if (w.swap <= 0 && here && !inView(here.x, here.z)) {
             const rng = createRng(Math.floor(performance.now() * 7 + i * 11));
-            w.path = weightedPick(paths, weights, rng.next());
+            const path = weightedPick(paths, weights, rng.next());
+            const t = rng.next();
+            const there = samplePolyline(path.poly, t);
+            // Den nya platsen syns: försök igen nästa bild.
+            if (inView(there.x, there.z)) continue;
+            w.path = path;
             w.forward = rng.chance(0.5) ? 1 : -1;
-            w.t = rng.next();
+            w.t = t;
             // A walker who has just arrived near a landmark stays longer
             // than one on a through-street; on a through-street they push
             // on sooner.
@@ -440,15 +455,22 @@ export function OsmPedestrians() {
         c.t = -c.t;
         c.forward = 1;
       }
-      if (c.swap <= 0) {
+      const cHere = c.swap <= 0 ? samplePolyline(c.path.poly, c.t) : null;
+      if (c.swap <= 0 && cHere && !inView(cHere.x, cHere.z)) {
         const pool = cyclePaths.length ? cyclePaths : paths;
         if (pool.length) {
           const rng = createRng(Math.floor(performance.now() * 5 + i * 17));
-          c.path = rng.pick(pool);
-          c.forward = rng.chance(0.5) ? 1 : -1;
-          c.t = rng.next();
-          c.swap = rng.range(50, 110);
-          c.entering = 0;
+          const path = rng.pick(pool);
+          const t = rng.next();
+          const there = samplePolyline(path.poly, t);
+          // ORDER 319a.2 — bara när varken den gamla eller den nya platsen syns.
+          if (!inView(there.x, there.z)) {
+            c.path = path;
+            c.forward = rng.chance(0.5) ? 1 : -1;
+            c.t = t;
+            c.swap = rng.range(50, 110);
+            c.entering = 0;
+          }
         }
       }
       if (c.entering < 1) {

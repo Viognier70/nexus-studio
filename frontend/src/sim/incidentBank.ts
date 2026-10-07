@@ -159,7 +159,14 @@ export interface IncidentMeta {
   // ORDER 306b/319a.3 — 'triad': stegen i ordningen analys → upplevelse → handling
   // (INCIDENTS.stepAxesTriad). Utan form gäller INCIDENTS.stepAxes.
   form?: 'triad';
+  // ORDER 319a.4 (Anders 2026-10-07) — "Kortet kommer inte ur tomma intet": det som syns innan
+  // kortet öppnas (THEATRE.cueSeconds). Krävs i foodtrucken.
+  cue?: IncidentCue;
 }
+
+/** ORDER 319a.4 — förvarningen: en gäst går fram till luckan och pekar, eller leveransen kommer. */
+export type IncidentCue = 'guestAtHatch' | 'delivery';
+export const INCIDENT_CUES: readonly IncidentCue[] = ['guestAtHatch', 'delivery'];
 
 export interface OutcomeText {
   outcome: string;
@@ -239,6 +246,8 @@ export function validateIncidentBank(meta: MetaFile, text: TextFile): string[] {
     const legalSteps = m.steps.filter((s) => s.legal).length;
     if (legalSteps > 0 && !m.legal) errors.push(`${m.id}: ⚖-frågor utan granskningsstatus (legal)`);
     if (m.legal && legalSteps !== m.steps.length) errors.push(`${m.id}: ⚖ döljer frågor utan ⚖`);
+    if (m.cue !== undefined && !INCIDENT_CUES.includes(m.cue)) errors.push(`${m.id}: okänd förvarning ${m.cue}`);
+    if (meta.businessClass === 'foodtruck' && !m.cue) errors.push(`${m.id}: saknar förvarning (cue)`);
     const t = text.texts[m.id];
     if (!t) { errors.push(`${m.id}: saknar text`); continue; }
     for (const x of m.situations ?? []) if (!t.situations?.[x.id]) errors.push(`${m.id}: läget ${x.id} saknar text`);

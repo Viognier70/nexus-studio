@@ -76,7 +76,10 @@ describe('ORDER 315b — foodtrucken', () => {
     const app = readFileSync(resolve(SRC, 'strategic/StrategicApp.tsx'), 'utf8');
     expect(app).not.toContain('data-testid="truck-room"');
     const crew = readFileSync(resolve(SRC, 'strategic/scene/village/PlayerTruckCrew.tsx'), 'utf8');
-    expect(crew).toMatch(/setMyBusinessOverride\(\{ focus, distance: CAMERA_M/);
+    // ORDER 319a.1 — kameran räknas i truckCamera.ts (samma tal i testet av gästerna).
+    expect(crew).toContain('setMyBusinessOverride(truckCameraState(at))');
+    const cam = readFileSync(resolve(SRC, 'strategic/scene/village/truckCamera.ts'), 'utf8');
+    expect(cam).toMatch(/distanceM: 12/);
     expect(crew).toContain("'truck.grill'");
     expect(crew).toContain("'truck.hatchServe'");
     expect(crew).toContain("'truck.wipeCounter'");

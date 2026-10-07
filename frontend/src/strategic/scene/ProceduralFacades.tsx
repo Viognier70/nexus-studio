@@ -46,6 +46,8 @@ import { villageLive } from './village/villageLive';
 // One LOD swap is enough for now; the far-distance form is a plain
 // tri-count-low massing.
 const LOD_NEAR_M = 70;
+// ORDER 319a.2 — halva bandet kring LOD_NEAR_M där husets nivå står kvar.
+const LOD_HYSTERESIS_M = 6;
 
 const ELIGIBLE_KINDS = new Set([
   'house',
@@ -247,8 +249,10 @@ export function ProceduralFacades() {
       const dx = b.centroid[0] - cx;
       const dz = b.centroid[1] - cz;
       const dist = Math.hypot(dx, dz);
-      const level: 'lod0' | 'lod1' = dist < LOD_NEAR_M ? 'lod0' : 'lod1';
       const prev = lodStateRef.current.get(b.building.id);
+      // ORDER 319a.2 — ett band kring LOD_NEAR_M där huset behåller sin nivå, så att detaljerna inte
+      // byts fram och tillbaka när kameran vrids (Q/E) med ett hus precis vid gränsen.
+      const level: 'lod0' | 'lod1' = dist < LOD_NEAR_M - LOD_HYSTERESIS_M ? 'lod0' : dist > LOD_NEAR_M + LOD_HYSTERESIS_M ? 'lod1' : prev ?? (dist < LOD_NEAR_M ? 'lod0' : 'lod1');
       if (prev === level) continue;
       lodStateRef.current.set(b.building.id, level);
       const groups = groupsRef.current.get(b.building.id);

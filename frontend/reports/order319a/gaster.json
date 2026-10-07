@@ -1,0 +1,11 @@
+{
+  "definition": "En kväll i foodtrucken (seed 2, startInFoodtruck, rätt svar), harnessens tick = 0,2 s i normal fart, matad till scene/village/truckGuestFlow.ts. inView = krogens kamera (truckCamera.ts via CameraController applyCameraState, 42°) i 16:9 och 4:3, fötter och huvud. lagShare = andelen tick då gästen som beställer i simuleringen ännu inte står vid luckan i bild. cueSettledShare = andelen av tick då gästen pekar (guestAtHatch, 0 < introLeft ≤ askPointMenu) då gästen som pekar är högst NEAR_M (1,5 m, ett steg i kön) från sin plats.",
+  "ticks": 3002,
+  "spawns": 51,
+  "despawns": 51,
+  "minDistanceM": 40,
+  "inViewEvents": 0,
+  "lagShare": 0.224,
+  "cueTicks": 38,
+  "cueSettledShare": 1
+}
