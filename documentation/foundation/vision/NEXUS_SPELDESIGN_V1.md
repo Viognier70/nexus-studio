@@ -460,6 +460,8 @@ Spelaren får öppna med för lite råvaror. Före öppning visas en prognos i o
 
 *Beslut 2026-09-29 (Vision Owner, Designs leverans kassan och kvällen):* sopbilen tar betalt per kilo, med en fast avgift för hämtningen. Kilona räknas i fraktioner: osåld mat, tallrikssvinn, glas och kartong. Svinnets värde är redan betalt vid inköpet och visas bara; bara miljöavgiften dras från kassan.
 
+*Beslut 2026-10-07 (Vision Owner, om hållbarheten):* färsk fisk håller 1 kväll, kyckling 2, fläsk 3, råa rotfrukter 7, soppa och tillagade rotfrukter 2–3, gräddessert 2, sorbet 14 och kantareller 2.
+
 *Beslut 2026-10-07 (Vision Owner, provspelet):* lagret syns: "I lager" står separat för varje vara, med hur många kvällar det räcker och när det går ut. "Inköp i dag" visar bara det som köps i dag. Färsk mat blir svinn efter sin hållbarhet. Oöppnade flaskor blir aldrig svinn, bara öppnade flaskor efter ett par dagar. Kvällens resultat visar vad som drog ned kvällen: svinn, fel svar och inköp.
 
 *Beslut 2026-09-28 (Vision Owner, andra provspelet): svinnet kostar.*
