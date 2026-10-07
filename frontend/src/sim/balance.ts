@@ -805,6 +805,38 @@ export const UPGRADE = {
   reputationFactor: 0.5
 } as const;
 
+// ORDER 315a — karriärstegen (Anders 2026-10-07, BESLUT del 2; förslaget
+// ORDER_315_FORSLAG.md). Stegen i ordning; i v1 spelbara foodtrucken,
+// vinbaren och bistron. Bistron byggs om från vinbaren i samma hus och spelas
+// i vinbarens klass (rummet och frågebanken) med egna faktorer på notan,
+// lönerna och priset. Stjärnan bara från bistron. Åsa förmedlar erbjudandet
+// när kraven är uppfyllda vid dagens slut; "Inte än" kostar inget och
+// erbjudandet står kvar. Kraven är utgångspunkten för kalibreringen.
+export const LADDER = {
+  section: 'Verksamhetsklasserna > Uppgradering',
+  order: ['foodtruck', 'kvarterskrog', 'vinbar', 'olhall', 'bistro', 'nattklubb', 'soigne', 'gastgiveri'] as const,
+  playable: ['foodtruck', 'vinbar', 'bistro'] as const,
+  steps: {
+    foodtruck: { businessClass: 'foodtruck' as BusinessClassId, building: null as string | null, starsPossible: false, billFactor: 1, wageFactor: 1, revenueFactor: 1 },
+    vinbar: { businessClass: 'vinbar' as BusinessClassId, building: 'w869907975' as string | null, starsPossible: false, billFactor: 1, wageFactor: 1, revenueFactor: 1 },
+    // Bistron: maten i centrum. Notan och lönerna högre än i vinbaren, och
+    // priset (insatsen och lånet) räknas på en större veckointäkt.
+    bistro: { businessClass: 'vinbar' as BusinessClassId, building: 'w869907975' as string | null, rebuildsFrom: 'vinbar', starsPossible: true, billFactor: 1.15, wageFactor: 1.08, revenueFactor: 1.25 }
+  },
+  // Kraven för steget: kassan vid dagens slut, byns rykte (0–1, 50 av 100 =
+  // 0,5) och medaljerna. Bistron: silver i Metodköket och brons i Stensöta.
+  requirements: {
+    vinbar: { cashSek: 30000, reputationAtLeast: 0.5, medalsRequired: [{ pavilion: 'stensota', level: 'brons' }] },
+    bistro: { cashSek: 60000, reputationAtLeast: 0.6, medalsRequired: [{ pavilion: 'metodkoket', level: 'silver' }, { pavilion: 'stensota', level: 'brons' }] }
+  } as Record<string, { cashSek: number; reputationAtLeast: number; medalsRequired: readonly { pavilion: string; level: MedalLevel }[] }>,
+  // Köpet: insatsen ur kassan är en andel av stegets veckogolv (som
+  // UPGRADE), resten lånas. Ryktet följer med oförändrat (BESLUT del 2, fråga 1).
+  depositShareOfWeekFloor: 0.25,
+  reputationFactorOnPurchase: 1,
+  // Harnessens spelartyp "försiktig" väntar en vecka med erbjudandet.
+  carefulWaitDays: 7
+} as const;
+
 // ORDER 271 (Vision Owner, FRAGOR §50): rutan utan verksamhet och pengar
 // (Design paket 6, X1) visas när spelaren saknar verksamhet och kassan är
 // under minsta insats: en fjärdedel av en veckas golv, som kontantinsatsen

@@ -208,6 +208,8 @@ import {
 import { decayMoodLift } from '../../sim/guestMood';
 // ORDER 316 — fikat efter stängning.
 import { answerFika, goHomeFika, planFika } from '../../sim/fika';
+// ORDER 315a — karriärstegen.
+import { declineOffer, ladderBillFactor, offerAtNight, takeOffer } from '../../sim/ladder';
 export {
   CAPITAL_MIN,
   CAPITAL_MAX,
@@ -343,6 +345,10 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       }
       return outcome.credits > 0 ? creditQuestion(draft, 'phronesis', null, outcome.credits) : draft;
     }
+    case 'LADDER_TAKE':
+      return takeOffer(state);
+    case 'LADDER_DECLINE':
+      return declineOffer(state);
     case 'FIKA_GO_HOME': {
       if (state.day.period !== 'evening') return state;
       const draft: SimulationState = { ...state };
@@ -1830,6 +1836,8 @@ function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inL
       // ORDER 307b — notan efter kvällens koncept (balance.ts CONCEPT.billFactor).
       const concept = draft.day.booking?.dayNumber === draft.day.dayNumber ? draft.day.booking?.concept : null;
       if (concept) rev *= CONCEPT.billFactor[concept];
+      // ORDER 315a — stegets nota (bistron högre än vinbaren).
+      rev *= ladderBillFactor(draft);
       // ORDER 303 B — en nöjd gäst vid bord räknas i byns placering.
       if (guestMoodValue(guest, draft.day.roomMoodLift ?? 0) >= MOOD_BALANCE.threshold.content) draft.day.contentTonight = (draft.day.contentTonight ?? 0) + 1;
     } else if (draft.menu.length > 0) {
@@ -2326,7 +2334,9 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // satsningarnas följd och veckoavräkningen, så att dagens resultat bara
       // räknar dagens egna pengar (förut räknades lönerna två gånger).
       const settled = !calendarFor(nextForDay.day.dayNumber).isServiceDay ? settleWeek(nextForDay) : nextForDay;
-      return { ...settled, day: { ...settled.day, cashAtDayStart: settled.cash } };
+      // ORDER 315a — kraven för nästa steg vid dagens slut: Åsas erbjudande.
+      const offered = offerAtNight(settled);
+      return { ...offered, day: { ...offered.day, cashAtDayStart: offered.cash } };
     }
   }
   return state;

@@ -32,7 +32,7 @@ import { TASTING } from '../../../sim/balance';
 import { conceptTonight } from '../../simulation/guestTypes';
 import { staffKnows } from '../../../sim/staffCondition';
 
-type PlayerId = 'mentorn' | 'klok' | 'per' | 'stjarna' | 'rimlig' | 'halva' | 'halvbra' | 'slarvig' | 'enkel' | 'bistro' | 'soigne' | 'ignorerar' | 'ignorerarUtbildad';
+type PlayerId = 'mentorn' | 'klok' | 'per' | 'stjarna' | 'rimlig' | 'halva' | 'halvbra' | 'slarvig' | 'enkel' | 'bistro' | 'soigne' | 'ignorerar' | 'ignorerarUtbildad' | 'forsiktig';
 // ORDER 314 — "ignorerar" svarar aldrig (personalen tar över); den
 // utbildade lär personalen vin, mat och service med morgonens satsningar
 // (balance.ts STAFF_CONDITION.trainingActivities) tills alla kan sitt område.
@@ -112,7 +112,9 @@ const PLANS: Record<PlayerId, (s: SimulationState) => MorningPlan> = {
   halvbra: () => ({ scenarioAnswer: 'worst', actions: hand }),
   slarvig: () => weakMorning(),
   ignorerar: () => ({ scenarioAnswer: 'ignore', actions: hand }),
-  ignorerarUtbildad: (s) => ({ scenarioAnswer: 'ignore', activities: [...untrained(s)], actions: hand })
+  ignorerarUtbildad: (s) => ({ scenarioAnswer: 'ignore', activities: [...untrained(s)], actions: hand }),
+  // ORDER 315a — "försiktig": som stjärnjägaren, men väntar en vecka med Åsas erbjudande.
+  forsiktig: (s) => ({ actions: (x) => [...wiseShop(), ...hand(x)], pins: 'wise', exams: nextStarExam(s), scenarioAnswer: 'skill', ladder: 'careful' })
 };
 
 // ORDER 298b — KARNAN_TASTING=1: spelaren köper "Provsmakning på torget" de
@@ -174,7 +176,11 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
       if (st.closedNow) break;
     }
   }
-  return { startCash, weeks: out, mornings, closedWeek: s.economy.risk?.closedWeek ?? null, renegotiated: !!s.economy.risk?.renegotiated, owned: s.shop?.owned ?? [], star: !!s.star?.held, starWeek, goldWeek, starWeeks, tastings };
+  // ORDER 315a — veckan då stegen nåddes (sim/ladder.ts reachedOnDay).
+  const reached = s.ladder?.reachedOnDay ?? {};
+  const weekOf = (d: number | undefined) => (d === undefined ? null : calendarFor(d).absoluteWeek);
+  const ladderWeeks = { vinbar: weekOf(reached.vinbar), bistro: weekOf(reached.bistro), step: s.ladder?.step ?? s.economy.businessClass };
+  return { ladderWeeks, startCash, weeks: out, mornings, closedWeek: s.economy.risk?.closedWeek ?? null, renegotiated: !!s.economy.risk?.renegotiated, owned: s.shop?.owned ?? [], star: !!s.star?.held, starWeek, goldWeek, starWeeks, tastings };
 }
 
 describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
@@ -185,7 +191,7 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
     // Prövning av tal i minnet: KARNAN_VARIANT='{"INCIDENTS":{"wrongCashShare":1}}'.
     const balance = await import('../../../sim/balance');
     for (const [k, v] of Object.entries(JSON.parse(process.env.KARNAN_VARIANT ?? '{}') as Record<string, Record<string, unknown>>)) Object.assign((balance as unknown as Record<string, Record<string, unknown>>)[k], v);
-    const all: PlayerId[] = ['mentorn', 'klok', 'per', 'stjarna', 'rimlig', 'halva', 'halvbra', 'slarvig', 'enkel', 'bistro', 'soigne', 'ignorerar', 'ignorerarUtbildad'];
+    const all: PlayerId[] = ['mentorn', 'klok', 'per', 'stjarna', 'rimlig', 'halva', 'halvbra', 'slarvig', 'enkel', 'bistro', 'soigne', 'ignorerar', 'ignorerarUtbildad', 'forsiktig'];
     // KARNAN_PLAYERS=halva,rimlig kör bara de spelarna (kalibreringen).
     const players = process.env.KARNAN_PLAYERS ? all.filter((p) => process.env.KARNAN_PLAYERS!.split(',').includes(p)) : all;
     const result: Record<string, unknown> = {};
@@ -216,6 +222,14 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
         targetHitShare: Math.round((runs.flatMap((r) => r.weeks).filter((w) => w.targetHit).length / Math.max(1, runs.flatMap((r) => r.weeks).length)) * 100) / 100,
         meanTastings: Math.round((runs.reduce((a, r) => a + r.tastings, 0) / runs.length) * 10) / 10,
         meanOwned: Math.round((runs.reduce((a, r) => a + r.owned.length, 0) / runs.length) * 10) / 10,
+        // ORDER 315a — stegen: hur många som nådde vinbaren och bistron, och veckorna.
+        ladder: {
+          reachedVinbar: runs.filter((r) => r.ladderWeeks.vinbar !== null).length,
+          reachedBistro: runs.filter((r) => r.ladderWeeks.bistro !== null).length,
+          vinbarWeeks: runs.map((r) => r.ladderWeeks.vinbar).filter((w): w is number => w !== null),
+          bistroWeeks: runs.map((r) => r.ladderWeeks.bistro).filter((w): w is number => w !== null),
+          finalSteps: runs.map((r) => r.ladderWeeks.step)
+        },
         stars: runs.filter((r) => r.star).length,
         starEarned: runs.filter((r) => r.starWeek !== null).length,
         starWeeks: runs.map((r) => r.starWeek).filter((w): w is number => w !== null),

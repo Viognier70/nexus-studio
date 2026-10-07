@@ -18,12 +18,13 @@ import { bankQuestionById } from '../knowledge/questionBank';
 import { calendarFor } from '../../sim/calendar';
 import { floorSek } from '../../sim/economy';
 import { mountRoomLikeScene } from './roomParity';
-import { WEEK } from '../../sim/balance';
+import { LADDER, WEEK } from '../../sim/balance';
 import { rankedScenarioChoice } from '../simulation/scenarios';
 import { incidentById } from '../../sim/incidentBank';
 import { packagesFor } from '../simulation/packages';
 import { rankedStepOption } from '../../sim/incidents';
 import { fikaTonight } from '../../sim/fika';
+import { ladderOf } from '../../sim/ladder';
 import { dilemmaById } from '../../content/fika/dilemmas';
 import type { PavilionKey, ScenarioChoice, SimAction, SimulationState } from '../types';
 
@@ -65,6 +66,10 @@ export interface MorningPlan {
   // ORDER 296c — hovmästarens nålar: 'wise' svarar klokt på varje nål (se
   // wisePinAnswer); utelämnat = Per väljer (det säkra) när tiden går ut.
   pins?: 'wise';
+  // ORDER 315a — Åsas erbjudande om nästa steg: 'take' tar det första
+  // morgonen det står (förvalt), 'careful' (spelartypen "försiktig") väntar
+  // LADDER.carefulWaitDays, 'never' stannar kvar.
+  ladder?: 'take' | 'careful' | 'never';
 }
 
 // ORDER 296c — det kloka svaret på en nål: sätt sällskapet om det finns
@@ -190,6 +195,14 @@ function answer(s: SimulationState, correctCount: number): SimulationState {
   return reducer(s, { type: 'CLOSE_VISIT' });
 }
 
+// ORDER 315a — Åsas erbjudande på morgonen (samma åtgärd som kortets knapp).
+export function answerLadder(s: SimulationState, how: 'take' | 'careful' | 'never'): SimulationState {
+  const offer = ladderOf(s)?.offer;
+  if (!offer || how === 'never' || s.day.period !== 'morning') return s;
+  if (how === 'careful' && s.day.dayNumber - offer.offeredOnDay < LADDER.carefulWaitDays) return s;
+  return reducer(s, { type: 'LADDER_TAKE' });
+}
+
 // ORDER 316 — fikat efter stängning: spelaren svarar på kvällens dilemma som
 // på situationerna (den bästa väl grundat, den sämsta svagt grundat). Den som
 // ignorerar svarar inte, och dilemmat räknas som Gå hem när kvällen tar slut.
@@ -204,6 +217,7 @@ export function answerFika(s: SimulationState, given: ScenarioAnswer): Simulatio
 }
 
 export function playMorning(s: SimulationState, plan: MorningPlan): SimulationState {
+  s = answerLadder(s, plan.ladder ?? 'take');
   for (const e of plan.exams ?? []) {
     s = reducer(s, { type: 'VISIT_PAVILION', pavilion: e.pavilion, mode: 'exam' });
     s = answer(s, e.correct);

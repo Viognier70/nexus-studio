@@ -490,6 +490,51 @@ export function serviceClock(lang: Lang, minutesSince18: number) {
 export const TABLE = {
   // ORDER 316 — fikat efter stängning (content/fikaStrings.ts).
   fika: FIKA_TEXT,
+  // ORDER 315a — karriärstegen: Åsas erbjudande om nästa steg (sim/ladder.ts).
+  // Åsa äger inte huset; hon förmedlar erbjudandet och har nycklarna.
+  ladder: {
+    title: {
+      sv: { foodtruck: 'Foodtrucken vid Torget', vinbar: 'Vinbaren vid Prästgatan', bistro: 'Bistron i samma hus' } as Record<string, string>,
+      en: { foodtruck: 'The food truck on the square', vinbar: 'The wine bar on Prästgatan', bistro: 'The bistro in the same house' } as Record<string, string>
+    },
+    line: {
+      sv: {
+        // Ordagrant ur ORDRAR_314-316_D7.md, ORDER 315 Flödet punkt 4.
+        vinbar: 'Grattis! Du har ett gott rykte i byn, och jag har hört att du fått in pengar. Nu kan du, helt frivilligt, ta över vinbaren.',
+        bistro: 'Du har det som krävs för en bistro. Ägaren låter dig bygga om huset, och banken lånar ut till ombyggnaden. Stjärnan delas bara ut till en bistro.'
+      } as Record<string, string>,
+      en: {
+        vinbar: 'Congratulations! You have a good name in the village, and I hear you have been taking money. Now, entirely of your own free will, you can take over the wine bar.',
+        bistro: 'You have what it takes for a bistro. The owner will let you rebuild the house, and the bank lends for the work. The star is only awarded to a bistro.'
+      } as Record<string, string>
+    },
+    price: {
+      sv: (deposit: string, loan: string) => `Insats ur kassan: ${deposit} kr · Lån: ${loan} kr`,
+      en: (deposit: string, loan: string) => `Deposit from the till: SEK ${deposit} · Loan: SEK ${loan}`
+    },
+    cashShort: {
+      sv: (deposit: string) => `Insatsen är ${deposit} kr, och kassan räcker inte än.`,
+      en: (deposit: string) => `The deposit is SEK ${deposit}, and the till does not cover it yet.`
+    },
+    take: { sv: 'Ta över', en: 'Take over' },
+    notYet: { sv: 'Inte än', en: 'Not yet' },
+    notYetNote: { sv: 'Erbjudandet står kvar. Det kostar inget att vänta.', en: 'The offer stands. Waiting costs nothing.' },
+    standing: { sv: (t: string) => `Åsas erbjudande står kvar: ${t}`, en: (t: string) => `Åsa’s offer still stands: ${t}` },
+    starInBistro: { sv: 'Stjärnan delas ut i bistron.', en: 'The star is awarded in the bistro.' },
+    yourWay: { sv: 'Din väg', en: 'Your way' },
+    steps: {
+      sv: { foodtruck: 'Foodtruck', kvarterskrog: 'Kvarterskrog', vinbar: 'Vinbar', olhall: 'Ölhall', bistro: 'Bistro', nattklubb: 'Nattklubb med matsal och dans', soigne: 'Soigné', gastgiveri: 'Gästgiveri med hotell' } as Record<string, string>,
+      en: { foodtruck: 'Food truck', kvarterskrog: 'Neighbourhood restaurant', vinbar: 'Wine bar', olhall: 'Beer hall', bistro: 'Bistro', nattklubb: 'Nightclub with dining and dancing', soigne: 'Soigné', gastgiveri: 'Inn with hotel' } as Record<string, string>
+    },
+    youAreHere: { sv: 'Du är här', en: 'You are here' },
+    comingLater: { sv: 'Kommer senare', en: 'Coming later' },
+    nextNeeds: { sv: (step: string) => `För ${step.toLowerCase()} behövs`, en: (step: string) => `For the ${step.toLowerCase()} you need` },
+    reqCash: { sv: (need: string, have: string) => `Kassan minst ${need} kr vid dagens slut (nu ${have} kr)`, en: (need: string, have: string) => `At least SEK ${need} in the till at the end of the day (now SEK ${have})` },
+    reqReputation: { sv: (need: string, have: string) => `Ryktet minst ${need} av 100 (nu ${have})`, en: (need: string, have: string) => `A reputation of at least ${need} out of 100 (now ${have})` },
+    reqMedals: { sv: (m: string) => `Medaljer: ${m}`, en: (m: string) => `Medals: ${m}` },
+    open: { sv: 'Din väg', en: 'Your way' },
+    close: { sv: 'Stäng', en: 'Close' }
+  },
   title: { sv: 'NEXUS', en: 'NEXUS' },
   subtitle: { sv: 'Grythyttan — The Origin', en: 'Grythyttan — The Origin' },
   busText: {

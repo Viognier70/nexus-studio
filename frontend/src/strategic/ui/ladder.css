@@ -1,0 +1,26 @@
+/* ORDER 315a — Åsas erbjudande (formen kommer från Designs D7). */
+.nx-ladder-backdrop {
+  position: fixed; inset: 0; z-index: 49; background: rgba(20, 13, 9, 0.55);
+  display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;
+}
+.nx-ladder-offer, .nx-ladder-backdrop .nx-dinvag {
+  background: #f3e9d6; color: #2a1c13; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+.nx-ladder-offer {
+  max-width: 620px; width: 100%; max-height: calc(100vh - 32px); overflow: auto; box-sizing: border-box;
+  padding: 24px 28px; border-radius: 22px;
+}
+.nx-ladder-offer .nx-dinvag { background: transparent; box-shadow: none; padding: 12px 0 0; border-top: 1px solid rgba(42, 28, 19, 0.16); border-radius: 0; }
+.nx-ladder-offer .nx-dinvag-steps { grid-template-columns: 1fr 1fr; column-gap: 16px; }
+.nx-ladder-standing { position: fixed; left: max(16px, 3.75vw); top: 104px; z-index: 48; max-width: calc(100% - 32px); }
+.nx-dinvag-open { position: fixed; right: max(16px, 3.75vw); top: 104px; z-index: 48; }
+@media (max-width: 900px) { .nx-ladder-standing { top: auto; bottom: 140px; } .nx-dinvag-open { top: auto; bottom: 190px; } }
+.nx-dinvag { padding: 20px 24px; border-radius: var(--nx-radius-card); margin-top: 16px; }
+.nx-dinvag-steps { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; }
+.nx-dinvag-steps li { display: flex; gap: 10px; align-items: baseline; padding: 4px 0; border-bottom: 1px solid rgba(42, 28, 19, 0.12); }
+.nx-dinvag-steps li[data-state='later'] { opacity: 0.55; }
+.nx-dinvag-steps li[data-state='here'] .nx-dinvag-name { font-weight: 800; }
+.nx-dinvag-tag { font-size: 0.85em; opacity: 0.7; }
+.nx-dinvag-req ul { margin: 6px 0 0; padding-left: 1.2em; }
+.nx-dinvag-req li[data-ok='true']::marker { content: '✓  '; }
+.nx-ladder-offer .nx-btn { white-space: nowrap; }
