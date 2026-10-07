@@ -1525,14 +1525,25 @@ export const WASTE = {
   // efter ett par dagar.") — hållbarheten i kvällar, inköpskvällen
   // medräknad: en portion köpt måndag med 2 kvällar säljs måndag och
   // tisdag och blir svinn efter tisdagens service. En rätt håller som sin
-  // huvudråvara (den som kostar mest i rätten). Valda tal (F66).
+  // huvudråvara (den som kostar mest i rätten), om den inte står i
+  // dishShelfEvenings. Fisk, kyckling, fläsk, råa rotfrukter (7) och
+  // kantareller beslutade av Anders 2026-10-07 (F66); övriga råvaror valda.
   shelfEvenings: {
     'lake-fish': 1, char: 1, 'leaf-veg': 1, herbs: 1,
     chicken: 2, mushrooms: 2,
     pork: 3, lamb: 3, game: 3, dairy: 3, berries: 3,
-    'root-veg': 4, brie: 5, munster: 5,
+    'root-veg': 7, brie: 5, munster: 5,
     eggs: 7, jamon: 7, vasterbotten: 14,
     lentils: 30, flour: 30
+  } as Record<string, number>,
+  // ORDER 318b (Anders 2026-10-07, beslut om F66): rätterna har sin egen
+  // hållbarhet, som går före huvudråvarans. Soppan och de tillagade
+  // rotfrukterna fick 2–3 kvällar: soppan 3, de rostade rotfrukterna med
+  // linser 2 (valt inom ramen).
+  dishShelfEvenings: {
+    'fish-plate': 1, 'chicken-plate': 2, 'pork-plate': 3,
+    'root-soup': 3, 'lentil-plate': 2,
+    'dairy-dessert': 2, 'lingon-sorbet': 14, 'chanterelle-toast': 2
   } as Record<string, number>,
   // Det som inte står i listan håller bara inköpskvällen.
   shelfEveningsDefault: 1,

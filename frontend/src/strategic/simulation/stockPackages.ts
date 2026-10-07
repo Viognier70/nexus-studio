@@ -58,8 +58,12 @@ function addPortions(portions: Record<string, number> | undefined, items: Record
 }
 
 // ORDER 318 — hållbarheten: en rätt håller som sin huvudråvara (den som
-// kostar mest i rätten), WASTE.shelfEvenings.
+// kostar mest i rätten), WASTE.shelfEvenings. ORDER 318b: eller sin egen,
+// WASTE.dishShelfEvenings.
 export function dishShelfEvenings(dishId: string): number {
+  // ORDER 318b — rättens egen hållbarhet (Anders beslut) går före.
+  const own = WASTE.dishShelfEvenings[dishId];
+  if (own !== undefined) return own;
   const dish = findDish(dishId);
   let main: string | null = null;
   let best = -1;

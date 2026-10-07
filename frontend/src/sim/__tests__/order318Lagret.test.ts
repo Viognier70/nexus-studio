@@ -28,6 +28,10 @@ describe('ORDER 318 — lagret per vara', () => {
     const s = reducer(morning(), { type: 'BUY_ITEMS', items: { 'chicken-plate': 5 } });
     const day = s.day.dayNumber;
     expect(dishShelfEvenings('chicken-plate')).toBe(WASTE.shelfEvenings.chicken);
+    // ORDER 318b — Anders beslut om F66.
+    expect(['fish-plate', 'chicken-plate', 'pork-plate', 'dairy-dessert', 'lingon-sorbet', 'chanterelle-toast'].map(dishShelfEvenings)).toEqual([1, 2, 3, 2, 14, 2]);
+    expect(WASTE.shelfEvenings['root-veg']).toBe(7);
+    expect([dishShelfEvenings('root-soup'), dishShelfEvenings('lentil-plate')].every((n) => n >= 2 && n <= 3)).toBe(true);
     expect(s.dishLots!['chicken-plate']).toEqual([{ portions: 5, bought: day, lastEvening: day + WASTE.shelfEvenings.chicken - 1 }]);
     const row = morningRows(s).dishes.find((r) => r.dishId === 'chicken-plate')!;
     expect(row.today).toBe(5);
