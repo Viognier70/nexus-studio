@@ -53,6 +53,8 @@ import {
 } from './wineBarRoom';
 import type { RoomLayout } from './wineBarRoom';
 import { ladderStep } from '../../sim/ladderStep';
+import { refitProgress } from '../../sim/ladder';
+import { setRefitPhase } from './wineBarRoom';
 import { WineBarFigures } from './WineBarFigures';
 import { calendarFor } from '../../sim/calendar';
 import { clockMinutes } from '../../sim/incidents';
@@ -103,6 +105,10 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
   const isWineBar = roomClass === 'vinbaren';
   // ORDER 315b del 2 — bistron byggs i vinbarens hus (Designs D7): samma rum, bistrons möblering.
   const roomLayout: RoomLayout = isWineBar && ladderStep(sim) === 'bistro' ? 'bistro' : 'winebar';
+  // ORDER 315b del 2 — ombyggnadens steg under de stängda dagarna (samma fördelning som morgonens ruta).
+  const refit = refitProgress(sim);
+  const REFIT_PHASES = 4;
+  const refitPhase = refit ? Math.min(REFIT_PHASES, Math.ceil((refit.day * REFIT_PHASES) / refit.of)) : 0;
   // ORDER 271 — kvällens stämning och vinväggens läge ur simuleringen.
   const mood = isWineBar ? wineBarMood(sim) : 'tidig';
   const wallLevel: WineWallLevel = sim.medals?.stensota === 'platina' ? 'platina' : 'bas';
@@ -251,6 +257,11 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
       cutRef.current = { yaw: NaN, x: NaN, z: NaN, d: NaN };
     };
   }, [isBrewpub, layout, roomClass, roomLayout]);
+
+  useEffect(() => {
+    const r = roomRef.current;
+    if (r && roomClass === 'vinbaren') setRefitPhase(r.raw as WineBarRoom, refitPhase);
+  }, [refitPhase, roomClass, roomLayout]);
 
   useEffect(() => {
     return () => {

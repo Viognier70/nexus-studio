@@ -1173,6 +1173,27 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
 
 // ---------- Lägen ----------
 
+/**
+ * ORDER 315b del 2 — ombyggnaden (Designs D7 bistroRefit.ts REFIT_PHASES) i bistrons rum:
+ * 1 Tömt (inga möbler, ingen bar), 2 Byggt (borden och baren står, ljusen släckta),
+ * 3 Dukat (ljusen på borden), 4 Tänt (pendlarna tända). 0 eller mer än 4: rummet som det är.
+ */
+export function setRefitPhase(room: WineBarRoom, phase: number): void {
+  if (room.layout !== 'bistro') return;
+  const done = phase <= 0 || phase > 4;
+  const furniture = room.parts.interior.getObjectByName('furniture');
+  const built = done || phase >= 2;
+  room.parts.bar.visible = built;
+  if (furniture) {
+    furniture.children.forEach(function (o) {
+      const isCandle = o.name.startsWith('candle_');
+      const isPendant = o.name.startsWith('bistroPendant');
+      const keep = /^(pavement|kerb|easel|menuBoard|coatRail|hostDesk)/.test(o.name);
+      o.visible = keep || (built && (!isCandle || done || phase >= 3) && (!isPendant || done || phase >= 4));
+    });
+  }
+}
+
 export function setWineWallLevel(room: WineBarRoom, level: WineWallLevel): void {
   room.wineWallLevel = level;
   // ORDER 315b del 2 — bistron har ingen vinvägg.
