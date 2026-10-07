@@ -27,6 +27,7 @@ vi.mock('../../../simulation/SimulationProvider', () => ({
 
 import { reducer } from '../../../simulation/reducer';
 import { answerAndWait } from '../../../../sim/__tests__/verdict';
+const goOn = (s: SimulationState): SimulationState => (s.incidents.active?.choosing ? reducer(s, { type: 'INCIDENT_GO' }) : s);
 import { makeNewGameState } from '../../../simulation/model';
 import { changeClass, minimumStakeSek } from '../../../../sim/economy';
 import { firstDayOfWeek } from '../../../../sim/calendar';
@@ -152,15 +153,22 @@ describe('ORDER 271 — raketkortet (R1–R3)', () => {
     const open = openNow(wineBarService(), 'vb09-getosten');
     sim.state = open;
     const { container, rerender } = render(<IncidentCard />);
-    const after = answerAndWait(open, 'a');
+    // ORDER 306b A1 — ett fel i steg 1 visas som fel, och situationen fortsätter till nästa steg.
+    const onward = answerAndWait(open, 'a');
+    sim.state = onward;
+    rerender(<IncidentCard />);
+    expect(byTestId(container, 'incident-card')!.getAttribute('data-mode')).toBe('wrong');
+    expect(byTestId(container, 'incident-step-episteme')!.getAttribute('data-state')).toBe('failed');
+    expect(byTestId(container, 'incident-step-techne')!.getAttribute('data-state')).toBe('next');
+    // Fel i sista steget: personalen tar över, och kortet stängs efter konsekvensögonblicket.
+    const after = answerAndWait(goOn(answerAndWait(goOn(answerAndWait(open, 'c')), 'b')), 'a');
     sim.state = after;
     rerender(<IncidentCard />);
     const card = byTestId(container, 'incident-card')!;
     expect(card.getAttribute('data-mode')).toBe('wrong');
     expect(byTestId(container, 'incident-option-a')!.getAttribute('data-look')).toBe('wrong');
-    expect(byTestId(container, 'incident-option-c')!.getAttribute('data-look')).toBe('correct');
-    expect(byTestId(container, 'incident-step-episteme')!.getAttribute('data-state')).toBe('failed');
-    expect(byTestId(container, 'incident-step-phronesis')!.getAttribute('data-state')).toBe('unreached');
+    expect(byTestId(container, 'incident-option-d')!.getAttribute('data-look')).toBe('correct');
+    expect(byTestId(container, 'incident-step-phronesis')!.getAttribute('data-state')).toBe('failed');
     const role = after.incidents.lastOutcome!.takeover!.role;
     const word = strings.service.incident.staffRoles[role];
     expect(byTestId(container, 'incident-band')!.textContent).toContain(strings.rocket.card.wrong(word));
@@ -188,7 +196,8 @@ describe('ORDER 271 — mätarna', () => {
     }
     expect(byTestId(container, 'meter-cash')).toBeNull();
     expect(byTestId(container, 'service-meters')!.getAttribute('data-emph')).toBe('false');
-    sim.state = answerAndWait(open, 'a');
+    // ORDER 306b A1 — mätarna växer när situationen slutar (här ett fel i sista steget).
+    sim.state = answerAndWait(goOn(answerAndWait(goOn(answerAndWait(open, 'c')), 'b')), 'a');
     rerender(<ServiceMeters />);
     expect(byTestId(container, 'service-meters')!.getAttribute('data-emph')).toBe('true');
     act(() => { vi.advanceTimersByTime(METER_EMPHASIS_MS + 10); });

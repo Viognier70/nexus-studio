@@ -3393,6 +3393,8 @@ export const TABLE = {
       },
       right: { sv: (next: string) => `Rätt · vidare till ${next}`, en: (next: string) => `Right · on to ${next}` },
       rightDone: { sv: 'Rätt · situationen klar', en: 'Right · situation complete' },
+      // ORDER 306b A1 — ett fel på vägen: situationen fortsätter till nästa steg.
+      wrongOn: { sv: (step: string) => `Fel · vidare till ${step}`, en: (step: string) => `Wrong · on to ${step}` },
       // ORDER 276 — raketerna styr gästflödet.
       guestsIn: {
         sv: (n: number) => (n === 1 ? 'En gäst till kommer in.' : `${n} ${pl(n, 'gäst', 'gäster')} till kommer in.`),

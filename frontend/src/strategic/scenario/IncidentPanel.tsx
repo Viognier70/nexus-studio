@@ -187,7 +187,8 @@ export function IncidentCard() {
         incident,
         context: active.context,
         situation: active.situation,
-        mode: revealing ? 'right' : 'ask',
+        // ORDER 306b A1 — ett fel på vägen visas som fel, och situationen fortsätter.
+        mode: revealing ? (active.revealed!.cleared ? 'right' : 'wrong') : 'ask',
         shown: revealing ? active.revealed!.step : active.step ?? 0,
         chosen: revealing ? active.revealed!.optionId : null,
         correct: revealing ? active.revealed!.correctId : null,
@@ -345,12 +346,14 @@ export function IncidentCard() {
   const extra = view.mode === 'ask' && medalSteps(sim.medals, step.pavilion) > 0 && total > INCIDENTS.stepSeconds[step.axis];
   const pavilionName = strings.knowledge.pavilions[step.pavilion];
 
+  // ORDER 306b A1 — felet gällde ett steg på vägen: situationen fortsätter.
+  const continuing = view.mode === 'wrong' && !!active && (active.revealLeft ?? 0) > 0;
   const boxFor = (i: number): StepBox => {
     switch (view!.mode) {
       case 'ask': return i < view!.shown ? 'cleared' : i === view!.shown ? 'current' : 'ahead';
       case 'right': return i <= view!.shown ? 'cleared' : i === view!.shown + 1 ? 'next' : 'ahead';
       case 'done': return 'cleared';
-      case 'wrong': return i < view!.shown ? 'cleared' : i === view!.shown ? 'failed' : 'unreached';
+      case 'wrong': return i < view!.shown ? 'cleared' : i === view!.shown ? 'failed' : continuing && i === view!.shown + 1 ? 'next' : continuing ? 'ahead' : 'unreached';
       case 'stopped': return i <= view!.shown ? 'cleared' : 'unreached';
     }
   };
@@ -391,7 +394,10 @@ export function IncidentCard() {
     // Designs band (2026-09-28): "Wrong · the {role} takes over" /
     // "Out of time · the {role} takes over"; rollen med sin artikel.
     const role = takeoverWord(incident, step, view.role);
-    band = { kind: 'wrong', label: view.chosen === null ? t.outOfTime(role) : t.wrong(role), text: view.outcomeText ?? '' };
+    const next = incident.steps[view.shown + 1];
+    band = continuing && next
+      ? { kind: 'wrong', label: t.wrongOn(s.stepName[next.axis]), text: f(step.text.fail.outcome) }
+      : { kind: 'wrong', label: view.chosen === null ? t.outOfTime(role) : t.wrong(role), text: view.outcomeText ?? '' };
   }
 
   // ORDER 292 — följden i kassan: svarets händelse vid bordet (rummets reaktion

@@ -967,6 +967,12 @@ export const INCIDENTS = {
   // (vad, 15 s), Techne (hur, 20 s), Phronesis (när och varför, 30 s)."
   // Nedräkningen går i verklig tid.
   stepAxes: ['episteme', 'techne', 'phronesis'] as readonly KnowledgeAxis[],
+  // ORDER 306b (Anders 2026-10-07) — situationerna i formen analys → upplevelse → handling
+  // (form 'triad'): episteme, phronesis, techne.
+  stepAxesTriad: ['episteme', 'phronesis', 'techne'] as readonly KnowledgeAxis[],
+  // ORDER 306b A3 — tiden per steg efter stegets plats: 20, 30 och 30 s (steg 3 var 20 s i
+  // vinbarens gamla ordning, där steg 3 var phronesis med 30 s).
+  stepSecondsByIndex: [20, 30, 30] as readonly number[],
   // Vision Owner 2026-09-29 (efter rapporterna om felen och kvällens
   // resultat): "episteme 20 sekunder, techne 20 sekunder och phronesis 30
   // sekunder. Omdömet ska ha mest tid." Byggs med ORDER 287a (registret).
@@ -1472,7 +1478,14 @@ export const DOUBLE_OR_NOTHING = {
   potHoldsCash: false,
   // Den som stannar: personalen tar resten med sitt utfall för stegen som
   // återstod (true), eller händelsen slutar där utan mer följd (false).
-  stopTakesStaffOutcome: false,
+  // ORDER 306b A2 — personalen gör resten med sin kompetens
+  // (SITUATIONS.staffSuccessTrained / Untrained): lyckas de gäller klarad gånger
+  // SITUATIONS.staffSuccessShare, annars personalens utfall.
+  stopTakesStaffOutcome: true,
+  // ORDER 306b A2 — potten efter ett rätt steg: growth × potten + potStep (1 → 3 → 7). Stegets
+  // tillskott bokförs på stegets axel (1 episteme, +2 phronesis, +4 techne). Ett ok-svar lämnar
+  // potten, ett fel nollar den, och halvt grepp i steg 3 ger potten gånger CONSEQUENCES.halfGrip.
+  potStep: 1,
   choiceSeconds: 8,
   // ORDER 305b (Anders 2026-10-05): en raket där spelaren stannar efter
   // steg 2 räknas som klarad i stjärnans andel; efter steg 1 räknas den inte.
@@ -1851,6 +1864,8 @@ export const ANSWER_EFFECTS = {
 // klarad raket höjer den; ordet klingar av under kvällen.
 export const CONSEQUENCES = {
   section: 'Servicen > Händelserna i servicen',
+  // ORDER 306b A2 — halvt grepp i steg 3: potten och klarads följder gånger den här andelen.
+  halfGrip: 0.5,
   graveSatisfactionAtMost: -0.2,
   mediumSatisfactionAtMost: -0.1,
   graveReputationAtMost: -2,

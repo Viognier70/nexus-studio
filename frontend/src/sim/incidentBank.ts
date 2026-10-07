@@ -107,6 +107,10 @@ export interface IncidentSituationalOption {
 export interface StepOptionMeta {
   id: string;
   quality: AnswerQuality;
+  // ORDER 306b — steg 3: ett ok-svar är halvt grepp mot analysen eller upplevelsen (A2, A8),
+  // och valet kan kosta kronor (A7).
+  grip?: 'analysis' | 'experience';
+  cost?: number;
   // Läge → annan kvalitet (händelsens `situations`).
   in?: Record<string, IncidentSituationalOption>;
   fail?: IncidentOutcomeMeta;
@@ -180,6 +184,11 @@ export interface StepText {
 export interface IncidentText {
   title: string;
   body: string;
+  // ORDER 306b A8 — återkopplingen och rummet vid halvt grepp, och personalens två utfall.
+  halfGrip?: { analysis?: string; experience?: string; outcomeAnalysis?: string; outcomeExperience?: string };
+  staffTexts?: { success?: string; fail?: string };
+  // ORDER 306b A6 — gästens två repliker i steg 2 (lottas).
+  guestLine?: { a: string; b: string };
   steps: StepText[];
   success: { outcome: string };
   staff: OutcomeText;
@@ -189,6 +198,8 @@ export interface IncidentText {
 
 // Ett steg med sin paviljong och sin text.
 export interface IncidentStep extends StepMeta {
+  // ORDER 306b A3 — stegets plats (0–2): tiden följer platsen, inte axeln.
+  index: number;
   pavilion: PavilionKey;
   track: YrkesSpar | null;
   text: StepText;
@@ -279,6 +290,7 @@ function build(meta: MetaFile, text: TextFile): Incident[] {
     const t = text.texts[m.id];
     const steps = m.steps.map((s, i): IncidentStep => ({
       ...s,
+      index: i,
       pavilion: stepPavilion(s.axis, m.track),
       track: s.axis === 'techne' ? m.track : null,
       text: t.steps[i]

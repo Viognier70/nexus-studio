@@ -112,6 +112,11 @@ export interface ActiveIncident {
   choiceLeft?: number;
   // ORDER 310b — låset och väntan: svaret är låst men inte avgjort.
   pending?: PendingAnswer | null;
+  // ORDER 306b A1 — stegen som blev fel (ledtråden blir "(oklart)"), och deras kassa.
+  unclear?: number[];
+  failedCashSek?: number;
+  // ORDER 306b A1 — de fel svaren på vägen (kvällens lärdom förklarar dem).
+  missed?: { step: number; optionId: string }[];
 }
 
 // ORDER 310b (Anders 2026-10-05, Designs kvitt eller dubbelt) — ett låst svar
@@ -179,6 +184,9 @@ export interface KvittEntry {
   incidentId: string;
   step: number;
   choice: KvittChoice;
+  // ORDER 306b — portfolions evidens: stegets kunskapsaxel (analys episteme, upplevelse
+  // phronesis, handling techne i formen triad).
+  axis?: KnowledgeAxis;
 }
 
 // En raket i kvällens logg. `step` är steget där raketen föll (null när
@@ -205,6 +213,10 @@ export interface IncidentRecord {
   pot?: { taken: boolean; credits: number; cashSek: number };
   // ORDER 314 — spelaren svarade inte och personalen klarade situationen.
   staffCleared?: boolean;
+  // ORDER 306b — halvt grepp i steg 3 och sidan som höll; stegen som blev fel på vägen (A1).
+  halfGrip?: 'analysis' | 'experience';
+  unclear?: number[];
+  missed?: { step: number; optionId: string }[];
 }
 
 // ORDER 271 — ett svar i stunden (Design paket 6, R2/R3): valt svar,
@@ -519,7 +531,9 @@ function chooseIncident(
 // Stegets tid: stegets nedräkning, och mer tid per medaljsteg i
 // paviljongen som hör till stegets axel.
 export function secondsFor(state: SimulationState, step: IncidentStep): number {
-  return INCIDENTS.stepSeconds[step.axis] + INCIDENTS.extraSecondsPerMedalStep * medalSteps(state.medals, step.pavilion);
+  // ORDER 306b A3 — 20, 30 och 30 s efter stegets plats (INCIDENTS.stepSecondsByIndex).
+  const base = INCIDENTS.stepSecondsByIndex[step.index] ?? INCIDENTS.stepSeconds[step.axis];
+  return base + INCIDENTS.extraSecondsPerMedalStep * medalSteps(state.medals, step.pavilion);
 }
 
 // Från silver i stegets paviljong stryks ett fel alternativ.
@@ -634,8 +648,8 @@ export function totalCredits(state: SimulationState): number {
 }
 
 // ORDER 305b — portfolion och kvällens räkning av valen i kvitt eller dubbelt.
-function recordKvitt(draft: SimulationState, incidentId: string, step: number, choice: KvittChoice): void {
-  draft.kvittLog = [...(draft.kvittLog ?? []), { at: draft.simTime, day: draft.day.dayNumber, incidentId, step, choice }];
+function recordKvitt(draft: SimulationState, incidentId: string, step: number, choice: KvittChoice, axis?: KnowledgeAxis): void {
+  draft.kvittLog = [...(draft.kvittLog ?? []), { at: draft.simTime, day: draft.day.dayNumber, incidentId, step, choice, ...(axis ? { axis } : {}) }];
   const t = { goRight: 0, goWrong: 0, stopRight: 0, ...(draft.incidents!.kvittTonight ?? {}) };
   t[choice]++;
   draft.incidents = { ...draft.incidents!, kvittTonight: t };
@@ -979,12 +993,17 @@ export function potCredits(pot: RocketPot | null | undefined): number {
   return pot ? Object.values(pot.credits).reduce((a, b) => a + (b ?? 0), 0) : 0;
 }
 // Ett rätt steg: potten gånger growth (när den finns) plus stegets vinst.
-function growPot(pot: RocketPot | null | undefined, axis: KnowledgeAxis, credit: number, cashSek: number, payerType: GuestType | null): RocketPot {
+// ORDER 306b A2 — potten är 1 → 3 → 7: totalen blir growth × totalen + potStep, och stegets
+// tillskott (den nya totalen minus den gamla) bokförs på stegets axel. Ett ok-svar lämnar
+// potten som den är; halvt grepp i steg 3 ger varje axel gånger CONSEQUENCES.halfGrip, uppåt.
+export function growPot(pot: RocketPot | null | undefined, axis: KnowledgeAxis, grip: 'full' | 'ok' | 'half', cashSek: number, payerType: GuestType | null): RocketPot {
   const g = DOUBLE_OR_NOTHING.growth;
-  const credits: Partial<Record<KnowledgeAxis, number>> = {};
-  for (const [a, n] of Object.entries(pot?.credits ?? {}) as [KnowledgeAxis, number][]) credits[a] = n * g;
-  credits[axis] = (credits[axis] ?? 0) + credit;
-  return { credits, cashSek: Math.round((pot?.cashSek ?? 0) * g + cashSek), payerType: pot?.payerType ?? payerType };
+  const credits: Partial<Record<KnowledgeAxis, number>> = { ...(pot?.credits ?? {}) };
+  const total = potCredits(pot);
+  if (grip === 'full') credits[axis] = (credits[axis] ?? 0) + (g * total + DOUBLE_OR_NOTHING.potStep - total);
+  if (grip === 'half') for (const a of Object.keys(credits) as KnowledgeAxis[]) credits[a] = Math.ceil((credits[a] ?? 0) * CONSEQUENCES.halfGrip);
+  const cash = grip === 'full' ? (pot?.cashSek ?? 0) * g + cashSek : grip === 'half' ? (pot?.cashSek ?? 0) * CONSEQUENCES.halfGrip : (pot?.cashSek ?? 0) + cashSek;
+  return { credits, cashSek: Math.round(cash), payerType: pot?.payerType ?? payerType };
 }
 // Potten tas: kronorna till kvällskassan, krediterna till reducern.
 function takePot(draft: SimulationState, pot: RocketPot): void {
@@ -1015,13 +1034,20 @@ export function stopIncident(draft: SimulationState): void {
   const repBefore = draft.reputation;
   const pot = active.pot ?? null;
   if (pot) takePot(draft, pot);
-  recordKvitt(draft, incident.id, active.step, 'stopRight');
+  recordKvitt(draft, incident.id, active.step, 'stopRight', incident.steps[active.step - 1]?.axis);
   const share = INCIDENTS.staffShareByFailedStep[active.step] ?? 1;
-  const staff = DOUBLE_OR_NOTHING.stopTakesStaffOutcome
-    ? applyOutcome(draft, incident, incident.staff, incident.text.staff, share, false)
-    : { cashSek: 0, ongoing: null };
+  // ORDER 306b A2 — personalen gör resten med sin kompetens (staffHandles): lyckas de gäller
+  // klarad gånger SITUATIONS.staffSuccessShare, annars personalens utfall för stegen som återstod.
+  const staffWins = DOUBLE_OR_NOTHING.stopTakesStaffOutcome && staffHandles(draft, incident);
+  const staffSuccessText = incident.text.staffTexts?.success ?? incident.text.success.outcome;
+  const staffFailText = incident.text.staffTexts?.fail ?? incident.text.staff.outcome;
+  const staff = !DOUBLE_OR_NOTHING.stopTakesStaffOutcome
+    ? { cashSek: 0, ongoing: null }
+    : staffWins
+      ? applyOutcome(draft, incident, incident.success, { outcome: staffSuccessText }, SITUATIONS.staffSuccessShare, false)
+      : applyOutcome(draft, incident, incident.staff, { ...incident.text.staff, outcome: staffFailText }, share, false);
   // ORDER 305b — utan personalens utfall säger texten att spelaren stannade.
-  const text = DOUBLE_OR_NOTHING.stopTakesStaffOutcome ? formatIncidentText(incident.text.staff.outcome, ctx) : strings.rocket.card.kvitt.stoppedText;
+  const text = DOUBLE_OR_NOTHING.stopTakesStaffOutcome ? formatIncidentText(staffWins ? staffSuccessText : staffFailText, ctx) : strings.rocket.card.kvitt.stoppedText;
   const after = meanSatisfaction(presentGuests(draft));
   draft.eventStream = [...draft.eventStream, {
     at: draft.simTime, text, category: 'ambient',
@@ -1118,7 +1144,14 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
     amount === 0 ? null : { axis: step.axis, track: step.track, amount };
 
   // ORDER 305b — ett svar efter att spelaren gått vidare i kvitt eller dubbelt.
-  if (DOUBLE_OR_NOTHING.enabled && stepIndex > 0) recordKvitt(draft, incident.id, stepIndex, option && quality !== 'wrong' ? 'goRight' : 'goWrong');
+  // ORDER 306b — portfolions evidens på stegets axel.
+  if (DOUBLE_OR_NOTHING.enabled && stepIndex > 0) recordKvitt(draft, incident.id, stepIndex, option && quality !== 'wrong' ? 'goRight' : 'goWrong', step.axis);
+  // ORDER 306b A7 — det valda alternativets kostnad (kr) dras från kassan direkt.
+  const cost = option?.cost ?? 0;
+  if (cost > 0) {
+    applyCashDelta(draft, -cost);
+    postLedger(draft, { category: 'scenario', amount: -cost, cause: strings.service.incident.ledger(incident.text.title), causeId: incident.id });
+  }
 
   // Klarat steg: nästa steg öppnas i samma sammanhang.
   if (option && quality !== 'wrong' && stepIndex < incident.steps.length - 1) {
@@ -1137,12 +1170,47 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
     const revealed: StepReveal = { step: stepIndex, optionId: option.id, correctId: correctOptionId(step, active.situation), cleared: true, guestsIn };
     const stepCredit = quality === 'best' ? INCIDENTS.bestAnswerCredit : 0;
     const earned = { credits: (active.earned?.credits ?? 0) + (kvitt ? 0 : stepCredit), guestsIn: (active.earned?.guestsIn ?? 0) + guestsIn };
-    const pot = kvitt ? growPot(active.pot, step.axis, stepCredit, held, payer) : null;
+    // ORDER 306b A2 — ett rätt steg växer potten, ett ok-svar lämnar den. Valet att stanna
+    // finns bara efter ett rätt steg (efter ett ok-svar eller med tom pott finns inget att säkra).
+    const pot = kvitt ? growPot(active.pot, step.axis, quality === 'best' ? 'full' : 'ok', held, payer) : null;
+    const choose = kvitt && quality === 'best' && potCredits(pot) > 0;
     draft.incidents = {
       ...draft.incidents!,
-      active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: eventRevealSeconds(active, stepIndex), earned, pot, choosing: kvitt, choiceLeft: kvitt ? DOUBLE_OR_NOTHING.choiceSeconds : 0 }
+      active: { ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: eventRevealSeconds(active, stepIndex), earned, pot, choosing: choose, choiceLeft: choose ? DOUBLE_OR_NOTHING.choiceSeconds : 0 }
     };
     return kvitt ? null : creditFor(stepCredit);
+  }
+
+  // ORDER 306b A1 — ett fel i steg 1 eller 2 avslutar inte situationen: stegets följd gäller,
+  // potten nollas, och nästa steg öppnas med ledtråden "(oklart)" (active.unclear). Spelaren
+  // handlar alltid i steg 3.
+  if (option && quality === 'wrong' && stepIndex < incident.steps.length - 1) {
+    const failMeta = option.fail ?? step.fail;
+    const failText = (option.fail && step.text.options[option.id].fail) || step.text.fail;
+    const failed = applyOutcome(draft, incident, failMeta, failText, 1, false);
+    answerConsequence(draft, active.context, false, 0, false, failSeverity(failMeta), false, incident.id);
+    draft.eventStream = [...draft.eventStream, {
+      at: draft.simTime, text: formatIncidentText(failText.outcome, active.context), category: 'ambient',
+      causeTag: null, causeChainId: null, sustainability: 'social', kind: 'v1_incident', scenarioId: incident.id
+    }];
+    const next = incident.steps[stepIndex + 1];
+    const rng = createRng(draft.rngState);
+    const struck = struckFor(draft, next, active.situation, () => rng.next());
+    draft.rngState = rng.state;
+    const secondsTotal = secondsFor(draft, next);
+    const revealed: StepReveal = { step: stepIndex, optionId: option.id, correctId: correctOptionId(step, active.situation), cleared: false, guestsIn: 0 };
+    draft.incidents = {
+      ...draft.incidents!,
+      active: {
+        ...active, step: stepIndex + 1, secondsTotal, secondsLeft: secondsTotal, struck, revealed, revealLeft: eventRevealSeconds(active, stepIndex),
+        pot: null, choosing: false, choiceLeft: 0, unclear: [...(active.unclear ?? []), stepIndex],
+        missed: [...(active.missed ?? []), { step: stepIndex, optionId: option.id }],
+        failedCashSek: (active.failedCashSek ?? 0) + failed.cashSek
+      },
+      ongoing: failed.ongoing ?? draft.incidents!.ongoing
+    };
+    const c = failMeta.effects.credit ?? 0;
+    return c === 0 ? null : creditFor(c);
   }
 
   const ctx = active.context;
@@ -1150,6 +1218,10 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
   const moraleBefore = draft.morale;
   const repBefore = draft.reputation;
   const cleared = option !== null && quality !== 'wrong';
+  // ORDER 306b A2 — halvt grepp i steg 3 (ett ok-svar i sista steget): klarads följder och
+  // potten gånger CONSEQUENCES.halfGrip, med återkopplingen för den sida som höll.
+  const half = cleared && quality === 'ok';
+  const halfSide = half ? (option?.grip === 'experience' ? 'experience' : 'analysis') : null;
   let cashSek: number;
   let ongoing: OngoingConsequence | null = null;
   let text: string;
@@ -1159,14 +1231,17 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
   const staffCleared = option === null && staffHandles(draft, incident);
   if (cleared) {
     // Hela raketen klarad: bästa utfall.
-    cashSek = applyOutcome(draft, incident, incident.success, incident.text.success, 1, true).cashSek;
-    text = formatIncidentText(incident.text.success.outcome, ctx);
+    const halfText = halfSide ? incident.text.halfGrip?.[halfSide === 'analysis' ? 'outcomeAnalysis' : 'outcomeExperience'] : undefined;
+    cashSek = applyOutcome(draft, incident, incident.success, halfText ? { outcome: halfText } : incident.text.success, half ? CONSEQUENCES.halfGrip : 1, !half).cashSek;
+    text = formatIncidentText(halfText ?? incident.text.success.outcome, ctx);
     credit = (quality === 'best' && !DOUBLE_OR_NOTHING.enabled ? INCIDENTS.bestAnswerCredit : 0) + (incident.success.effects.credit ?? 0);
   } else if (staffCleared) {
     // Personalen klarade det: en del av det bästa utfallet, och spelaren
     // tappar som förut en kredit för att inte ha svarat.
-    cashSek = applyOutcome(draft, incident, incident.success, incident.text.success, SITUATIONS.staffSuccessShare, false).cashSek;
-    text = formatIncidentText(incident.text.success.outcome, ctx);
+    // ORDER 306b A8 — personalens text när de lyckas.
+    const ok = incident.text.staffTexts?.success ?? incident.text.success.outcome;
+    cashSek = applyOutcome(draft, incident, incident.success, { outcome: ok }, SITUATIONS.staffSuccessShare, false).cashSek;
+    text = formatIncidentText(ok, ctx);
     credit = -INCIDENTS.timeoutCreditPenalty;
   } else {
     // Stegets konsekvens, och personalen tar över resten med sämre utfall.
@@ -1177,7 +1252,7 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
     const staff = applyOutcome(draft, incident, incident.staff, incident.text.staff, share, false);
     cashSek = failed.cashSek + staff.cashSek;
     ongoing = failed.ongoing ?? staff.ongoing;
-    text = `${formatIncidentText(failText.outcome, ctx)} ${formatIncidentText(incident.text.staff.outcome, ctx)}`;
+    text = `${formatIncidentText(failText.outcome, ctx)} ${formatIncidentText(incident.text.staffTexts?.fail ?? incident.text.staff.outcome, ctx)}`;
     credit = (failMeta.effects.credit ?? 0) - (option ? 0 : INCIDENTS.timeoutCreditPenalty);
   }
   const after = meanSatisfaction(presentGuests(draft));
@@ -1203,7 +1278,7 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
   const heldLast = answerConsequence(draft, ctx, cleared || staffCleared, guestsIn, chains.length > 0, severity, cleared, incident.id, hesitated, kvitt && cleared && DOUBLE_OR_NOTHING.potHoldsCash);
   let potRecord: IncidentRecord['pot'];
   if (kvitt && cleared) {
-    const pot = growPot(active.pot, step.axis, quality === 'best' ? INCIDENTS.bestAnswerCredit : 0, heldLast, payer);
+    const pot = growPot(active.pot, step.axis, half ? 'half' : 'full', heldLast, payer);
     takePot(draft, pot);
     potRecord = { taken: true, credits: potCredits(pot), cashSek: pot.cashSek };
     cashSek += pot.cashSek;
@@ -1217,7 +1292,10 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
     id: incident.id,
     step: cleared ? null : stepIndex,
     optionId: option?.id ?? null,
-    quality: cleared ? 'best' : option ? 'wrong' : 'staff',
+    quality: cleared ? (half ? 'ok' : 'best') : option ? 'wrong' : 'staff',
+    // ORDER 306b — halvt grepp och vilken sida som höll, och stegen som blev fel på vägen (A1).
+    ...(halfSide ? { halfGrip: halfSide } : {}),
+    ...(active.unclear?.length ? { unclear: active.unclear, missed: active.missed } : {}),
     // ORDER 314 — personalen tog över och klarade det (räknas inte som klarad av spelaren).
     ...(staffCleared ? { staffCleared: true } : {}),
     situation: active.situation,
@@ -1335,9 +1413,13 @@ export function lessonFor(state: SimulationState): LessonItem[] {
   const inc = incidentsOf(state);
   const items: LessonItem[] = [];
   for (const rec of inc.log) {
-    if (rec.quality !== 'wrong' && rec.quality !== 'staff') continue;
+    // ORDER 306b A1 — också ett fel på vägen i en situation som sedan klarades.
+    const failedAtEnd = rec.quality === 'wrong' || rec.quality === 'staff';
+    const missed = rec.missed?.[0] ?? null;
+    if (!failedAtEnd && !missed) continue;
+    const at = failedAtEnd ? { step: rec.step ?? 0, optionId: rec.optionId } : { step: missed!.step, optionId: missed!.optionId };
     const incident = incidentById(state.economy.businessClass, rec.id);
-    const step = incident?.steps[rec.step ?? 0];
+    const step = incident?.steps[at.step];
     if (!incident || !step) continue;
     const sit = rec.situation ?? null;
     const best = step.options.find((o) => optionQuality(o, sit) === 'best');
@@ -1347,14 +1429,14 @@ export function lessonFor(state: SimulationState): LessonItem[] {
       const t = step.text.options[id];
       return f((sit && t.explanationIn?.[sit]) || t.explanation);
     };
-    const chosen = rec.optionId ? step.text.options[rec.optionId] : null;
+    const chosen = at.optionId ? step.text.options[at.optionId] : null;
     items.push({
       incidentId: rec.id,
       title: f(incident.text.title),
       stepAxis: step.axis,
       question: f(step.text.question),
       chosen: chosen ? f(chosen.label) : null,
-      explanation: rec.optionId ? explain(rec.optionId) : f(incident.text.staff.outcome),
+      explanation: at.optionId ? explain(at.optionId) : f(incident.text.staff.outcome),
       better: f(step.text.options[best.id].label),
       betterExplanation: explain(best.id),
       reference: incident.reference
@@ -1369,7 +1451,10 @@ export function closeIncidents(draft: SimulationState): CreditChange | null {
   const inc = draft.incidents;
   if (!inc || !inc.enabled) return null;
   // ORDER 310b — ett låst svar som väntar avgörs när servicen stänger.
-  const credit = inc.active ? (inc.active.pending ? settlePendingAnswer(draft) : resolveIncident(draft, null)) : null;
+  let credit = inc.active ? (inc.active.pending ? settlePendingAnswer(draft) : resolveIncident(draft, null)) : null;
+  // ORDER 306b A1 — ett fel i steg 1 eller 2 låter situationen fortsätta; när servicen stänger
+  // beslutar personalen resten.
+  if (draft.incidents?.active) credit = resolveIncident(draft, null) ?? credit;
   const after = draft.incidents;
   draft.incidents = {
     ...after,
