@@ -43,6 +43,7 @@ import { ModeKeys } from './ui/StatusButton';
 import { StatusCard } from './ui/StatusCard';
 import { StatusLegend } from './ui/StatusLegend';
 import { MorningReviewCard } from './ui/MorningReviewLine';
+import { DinVagButton, LadderOfferCard } from './ui/LadderOfferCard';
 import { FocusMode } from './ui/FocusMode';
 import { KnowledgeFoundationLayer, openCredits } from './knowledge/ui/KnowledgeFoundation';
 import { PrepHint } from './ui/service/PrepHint';
@@ -377,6 +378,9 @@ function StrategicShell() {
       <MorningBuyScreen open={buyOpen} onClose={() => setBuyOpen(false)} />
       {/* ORDER 309 — Recensioner i morse som tidningens kort (Designs D5), före inköpen. */}
       {!buyOpen && <MorningReviewCard onOpenBuy={() => setBuyOpen(true)} />}
+      {/* ORDER 315a — Åsas erbjudande om nästa steg, efter recensionerna. */}
+      <LadderOfferCard hidden={buyOpen || bankOpen || houseOpen} />
+      <DinVagButton hidden={buyOpen || bankOpen || houseOpen} />
       <NoBusinessBox hidden={houseOpen || bankOpen} onOpenHouse={() => setHouseOpen(true)} onOpenBank={() => setBankOpen(true)} />
       <BankDialog open={bankOpen} onClose={() => setBankOpen(false)} />
       {/* ORDER 296 — krogen har stängt: säsongen är slut. */}

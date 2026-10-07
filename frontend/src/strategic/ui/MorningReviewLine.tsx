@@ -30,7 +30,7 @@ import { SIM_ROLE_TO_STAFF } from '../scene/wineBarDirector';
 import { ROLE_OF } from '../scene/staffMarks';
 import { t as tt, type StringKey } from '../../content/nexusStrings';
 import { useLanguage } from '../../content/language';
-import type { StaffRole } from '../types';
+import type { SimulationState, StaffRole } from '../types';
 import { packagesFor } from '../simulation/packages';
 import { SenderTag } from './SenderTag';
 
@@ -55,6 +55,13 @@ function setClosed(day: number | null): void {
   subs.forEach((f) => f());
 }
 const subscribe = (f: () => void) => { subs.add(f); return () => { subs.delete(f); }; };
+
+/** ORDER 315a — står morgonens recensioner öppna i dag (Åsas erbjudande väntar till efter)? */
+export function useReviewPending(sim: SimulationState): boolean {
+  const closed = useSyncExternalStore(subscribe, getClosed, getClosed);
+  const review = sim.day.period === 'morning' ? sim.day.morningReview ?? null : null;
+  return !!review && closed !== review.dayNumber;
+}
 
 /** Citatet för raden (stabilt för samma kväll och rad). */
 export function reviewQuote(e: ReviewEntry): string {

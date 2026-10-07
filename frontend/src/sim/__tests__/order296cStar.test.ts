@@ -18,9 +18,10 @@ function week(s: SimulationState, rep: number, fired: number, cleared: number): 
   return settleWeek({ ...s, reputation: rep, economy: { ...s.economy, weekEvenings: [ev] } });
 }
 
+// ORDER 315a — stjärnan delas bara ut i bistron (sim/ladderStep.ts starsPossible).
 function base(): SimulationState {
   const s = makeNewGameState(296);
-  return { ...s, cash: 100000, medals: { gastronomiskateatern: 'guld' }, economy: { ...s.economy, businessClass: 'vinbar', loan: { originalSek: ECONOMY.normalWeeklyRevenueSek.vinbar * 2, principalSek: ECONOMY.normalWeeklyRevenueSek.vinbar * 2, weeksLeft: 8 } }, day: { ...s.day, dayNumber: firstDayOfWeek(3) } };
+  return { ...s, ladder: { step: 'bistro', reachedOnDay: {}, offer: null }, cash: 100000, medals: { gastronomiskateatern: 'guld' }, economy: { ...s.economy, businessClass: 'vinbar', loan: { originalSek: ECONOMY.normalWeeklyRevenueSek.vinbar * 2, principalSek: ECONOMY.normalWeeklyRevenueSek.vinbar * 2, weeksLeft: 8 } }, day: { ...s.day, dayNumber: firstDayOfWeek(3) } };
 }
 
 describe('ORDER 296c — stjärnan', () => {

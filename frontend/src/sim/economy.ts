@@ -6,6 +6,7 @@
 // Kassa och krediter byter aldrig plats: här läses medaljer, aldrig
 // krediter, och inget i filen skriver krediter.
 
+import { ladderWageFactor, starsPossible } from './ladderStep';
 import { staffSnapshot } from './staffCondition';
 import {
   BUSINESS_CLASSES,
@@ -380,7 +381,8 @@ export function dailyWagesSek(state: SimulationState): number {
 export function wageFactor(state: SimulationState): number {
   const b = state.day.booking;
   const c = b && b.dayNumber === state.day.dayNumber ? b.concept : null;
-  return c ? CONCEPT.wageFactor[c] : 1;
+  // ORDER 315a — gånger stegets faktor (bistron högre än vinbaren).
+  return (c ? CONCEPT.wageFactor[c] : 1) * ladderWageFactor(state);
 }
 
 // ORDER 268 — det nedgraderingen räknar: kassan vid dagsavslut plus
@@ -685,7 +687,9 @@ export function settleWeek(state: SimulationState): SimulationState {
   const judgement = rockets.fired > 0 ? rockets.cleared / rockets.fired : 0;
   const starLevel = MEDAL_LEVELS.indexOf(state.medals[STAR.pavilion] as typeof MEDAL_LEVELS[number]) >= MEDAL_LEVELS.indexOf(STAR.medal)
     && state.reputation >= STAR.reputationAtLeast
-    && rockets.fired >= STAR.minRocketsInWeek && judgement >= STAR.judgementAtLeast;
+    && rockets.fired >= STAR.minRocketsInWeek && judgement >= STAR.judgementAtLeast
+    // ORDER 315a — stjärnan bara från bistron (BESLUT del 2).
+    && starsPossible(state);
   const prevStar = state.star ?? { held: false, weeksQualified: 0, earnedWeek: null, lostWeek: null };
   const weeksQualified = starLevel ? prevStar.weeksQualified + 1 : 0;
   const earnedNow = !prevStar.held && weeksQualified >= STAR.weeksToEarn;

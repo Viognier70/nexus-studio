@@ -1684,6 +1684,9 @@ export interface SimulationState {
   // Utrustning som krediterna har öppnat men kassan ännu inte köpt.
   equipmentOpened?: string[];
   reputationByTier?: Record<import('../sim/goods').Tier, number>;
+  // ORDER 315a — karriärstegen: steget, när stegen nåddes och Åsas erbjudande
+  // (sim/ladder.ts). Saknas i spel från före ordern (steget läses då ur klassen).
+  ladder?: import('../sim/ladderStep').LadderState;
   // ORDER 316 — fikat efter stängning: kvällens dilemma, portfolion (loggen
   // över svaren), lojaliteten per person i laget och tillsynens risk
   // (sim/fika.ts). Saknas i spel från före ordern.
@@ -2002,6 +2005,9 @@ export type SimAction =
   // ORDER 316 — fikat: spelarens svar på dilemmat, eller Gå hem.
   | { type: 'FIKA_ANSWER'; optionId: 'A' | 'B' | 'C' | 'D' }
   | { type: 'FIKA_GO_HOME' }
+  // ORDER 315a — Åsas erbjudande om nästa steg: Ta över eller Inte än.
+  | { type: 'LADDER_TAKE' }
+  | { type: 'LADDER_DECLINE' }
   // ORDER 283 — spelaren har läst introduktionen i Måltidens hus.
   | { type: 'SEE_HOUSE_INTRO' }
   // ORDER 077 §4 (M4) — morning menu composition. Freezes today's

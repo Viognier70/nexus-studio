@@ -1,0 +1,29 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "errors": [],
+  "ok": true,
+  "card": {
+    "to": "bistro",
+    "sender": "asa",
+    "line": "Du har det som krävs för en bistro. Ägaren låter dig bygga om huset, och banken lånar ut till ombyggnaden. Stjärnan delas bara ut till en bistro.",
+    "price": "Insats ur kassan: 12 000 kr · Lån: 105 225 kr",
+    "dinVagSteps": 8,
+    "comingLater": 5,
+    "take": "Ta över→",
+    "notYet": "Inte än"
+  },
+  "declined": {
+    "cardGone": true,
+    "standing": "Åsas erbjudande står kvar: Bistron i samma hus"
+  },
+  "dinVag": {
+    "shown": true,
+    "here": "vinbar"
+  },
+  "taken": {
+    "cardGone": true,
+    "standingGone": true,
+    "here": "bistro"
+  }
+}

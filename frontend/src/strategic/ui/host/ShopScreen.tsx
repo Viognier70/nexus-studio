@@ -15,6 +15,8 @@ import {
 import { t as tt, type StringKey } from '../../../content/nexusStrings';
 import { useLanguage, type Lang } from '../../../content/language';
 import { SHOP } from '../../../sim/balance';
+import { starsPossible } from '../../../sim/ladderStep';
+import { strings } from '../../../content/strings';
 import { ABILITY_LIST, SHOP_PAVILION, creditsOf, shopOf, slotCount, starReached, stoneState, type ShopPavilion } from '../../../sim/shop';
 import { useSimDispatch, useSimState } from '../../simulation/SimulationProvider';
 import { ROLE_COLOUR } from '../../scene/staffRing';
@@ -153,7 +155,10 @@ export function ShopScreen({ onDone }: { onDone: () => void }) {
                     );
                   })}
                   {star && (
-                    <div className="nx-shop-star" data-reached={starReached(sim)}><Star size={26} aria-hidden /><span>{s(lang, 'shop.star')}</span></div>
+                    <div className="nx-shop-star" data-reached={starReached(sim)}><Star size={26} aria-hidden /><span>{s(lang, 'shop.star')}</span>
+                      {/* ORDER 315a — stjärnan delas bara ut från bistron. */}
+                      {!starsPossible(sim) && <span className="nx-small" data-testid="shop-star-bistro">{strings.ladder.starInBistro}</span>}
+                    </div>
                   )}
                 </div>
               );

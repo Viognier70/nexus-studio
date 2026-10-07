@@ -1,0 +1,29 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "en",
+  "errors": [],
+  "ok": true,
+  "card": {
+    "to": "bistro",
+    "sender": "asa",
+    "line": "You have what it takes for a bistro. The owner will let you rebuild the house, and the bank lends for the work. The star is only awarded to a bistro.",
+    "price": "Deposit from the till: SEK 12,000 · Loan: SEK 105,225",
+    "dinVagSteps": 8,
+    "comingLater": 5,
+    "take": "Take over→",
+    "notYet": "Not yet"
+  },
+  "declined": {
+    "cardGone": true,
+    "standing": "Åsa’s offer still stands: The bistro in the same house"
+  },
+  "dinVag": {
+    "shown": true,
+    "here": "vinbar"
+  },
+  "taken": {
+    "cardGone": true,
+    "standingGone": true,
+    "here": "bistro"
+  }
+}
