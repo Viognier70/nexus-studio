@@ -206,6 +206,8 @@ import {
   SCENARIO_CAPITAL_DELTA
 } from './constants';
 import { decayMoodLift } from '../../sim/guestMood';
+// ORDER 316 — fikat efter stängning.
+import { answerFika, goHomeFika, planFika } from '../../sim/fika';
 export {
   CAPITAL_MIN,
   CAPITAL_MAX,
@@ -323,9 +325,28 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       // ORDER 288 — kvällen i byn (jämförelsen) efter kvällens resultat.
       // ORDER 296 — Designs ordning: kvällens resultat, lärdomen och
       // berättelsen, sedan byn i kväll och butiken (Till butiken, Till morgonen).
-      const allowed: Record<string, string[]> = { waste: ['transfer', 'result'], transfer: ['result'], result: ['lesson', 'story', 'compare', 'shop'], lesson: ['story', 'compare', 'shop'], story: ['lesson', 'compare', 'shop'], compare: ['shop'], shop: [] };
+      // ORDER 316 — fikat efter lärdomen och berättelsen, före byn och butiken.
+      const allowed: Record<string, string[]> = { waste: ['transfer', 'result'], transfer: ['result'], result: ['lesson', 'story', 'fika', 'compare', 'shop'], lesson: ['story', 'fika', 'compare', 'shop'], story: ['lesson', 'fika', 'compare', 'shop'], fika: ['compare', 'shop'], compare: ['shop'], shop: [] };
       if (!allowed[from]?.includes(action.to)) return state;
       return { ...state, day: { ...state.day, eveningStep: action.to } };
+    }
+    // ORDER 316 — fikat: svaret på dilemmat bokför trivseln och lojaliteten
+    // (sim/fika.ts), kostnaden ur kassan och krediterna i Phronesis.
+    case 'FIKA_ANSWER': {
+      if (state.day.period !== 'evening') return state;
+      const draft: SimulationState = { ...state, ledger: [...state.ledger] };
+      const outcome = answerFika(draft, action.optionId);
+      if (!outcome) return state;
+      if (outcome.costSek > 0) {
+        applyCashCost(draft, outcome.costSek);
+        postLedger(draft, { category: 'other', amount: -outcome.costSek, cause: strings.ledgerCause.fika });
+      }
+      return outcome.credits > 0 ? creditQuestion(draft, 'phronesis', null, outcome.credits) : draft;
+    }
+    case 'FIKA_GO_HOME': {
+      if (state.day.period !== 'evening') return state;
+      const draft: SimulationState = { ...state };
+      return goHomeFika(draft) ? draft : state;
     }
     case 'SET_SPEED':
       return { ...state, speed: action.speed };
@@ -2092,6 +2113,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       next.day = { ...next.day, tillAtClose: tillSek(state) };
       // ORDER 292 — dygnets kostnader dras vid stängningen, före överföringen.
       chargeDayEnd(next);
+      // ORDER 316 — kvällens dilemma till fikat efter stängning.
+      planFika(next);
       next.day = { ...next.day, transfer: eveningTransfer(next), eveningStep: next.lastWaste && next.lastWaste.dayNumber === next.day.dayNumber && next.lastWaste.fractions ? 'waste' : 'transfer' };
       next.economy = { ...next.economy, eveningResults: [...(next.economy.eveningResults ?? []), { dayNumber: day.dayNumber, resultSek: next.day.transfer!.resultSek }].slice(-EVENING_ECONOMY.forecastEvenings) };
       if (next.eveningAccount?.metrics) {
@@ -2188,6 +2211,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // stängde (settleWaste); en dag utan service avräknas här.
       const wasteDraft: SimulationState = { ...state, ledger: [...state.ledger] };
       settleWaste(wasteDraft);
+      // ORDER 316 — ett dilemma som står obesvarat när kvällen tar slut: Gå hem.
+      goHomeFika(wasteDraft);
       const nextForDay: SimulationState = {
         ...wasteDraft,
         guests: guestsAfterRollover,
@@ -2476,6 +2501,8 @@ function hireTeamMember(state: SimulationState, role: StaffRole): SimulationStat
   const member = makeTeamMember(role, state.day.dayNumber);
   return {
     ...state,
+    // ORDER 316 — fikat: beskedet om schemat.
+    teamChangedDay: state.day.dayNumber,
     team: {
       ...state.team,
       members: [...state.team.members, member]
@@ -2502,6 +2529,7 @@ function fireTeamMember(state: SimulationState, memberId: string): SimulationSta
   const buyout = remainingDays * member.dailyCost;
   const next: SimulationState = {
     ...state,
+    teamChangedDay: state.day.dayNumber,
     team: {
       ...state.team,
       members: state.team.members.filter((m) => m.id !== memberId),
@@ -2604,7 +2632,10 @@ function advanceTick(state: SimulationState): SimulationState {
   const tickSeconds = 0.2;
   draft.simTime += tickSeconds;
   // ORDER 303 E — personalens ork sjunker under kvällen med öppna dörrar.
-  if ((draft.day.period === 'dinner' || draft.day.period === 'lunch') && draft.day.doorsOpenAt !== null && draft.simTime >= draft.day.doorsOpenAt) drainStamina(draft, tickSeconds);
+  // ORDER 316 — rättat: doorsOpenAt nollas när dörrarna öppnat, så orken
+  // sjönk aldrig (personalen stod på 1,0 hela kvällen). doorsOpenedThisService
+  // är sant från dörrarna öppnar tills servicen stänger.
+  if ((draft.day.period === 'dinner' || draft.day.period === 'lunch') && draft.day.doorsOpenedThisService) drainStamina(draft, tickSeconds);
   draft.tick += 1;
 
   // Village cosmetics.

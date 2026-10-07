@@ -1,0 +1,68 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "evenings": [
+    {
+      "evening": 1,
+      "sequence": [
+        "S1",
+        "T1",
+        "R1",
+        "L1",
+        "K1",
+        "fika",
+        "J1",
+        "shop",
+        "morning"
+      ],
+      "fika": {
+        "dilemma": "fika-aldre",
+        "asker": "Sara, servitör, kommer fram med koppen.",
+        "question": "”Ett äldre par satt i en timme innan någon tog beställningen, för alla sprang förbi. Mannen sa att \"det här stället är inte för sådana som oss\". Det kändes inte bra.”",
+        "options": 3,
+        "goHome": true,
+        "answer": "A",
+        "grade": "Väl grundat",
+        "gradeAboveExplanation": true,
+        "effects": "Laget trivs bättre.Sara litar mer på dig.3 krediter i Phronesis.",
+        "wentHome": null,
+        "legalShown": false,
+        "lawTextOnPage": false
+      },
+      "order": "S1 → T1 → R1 → L1 → K1 → fika → J1 → shop → morning",
+      "fikaAfterStory": true
+    },
+    {
+      "evening": 2,
+      "sequence": [
+        "S1",
+        "T1",
+        "R1",
+        "L1",
+        "K1",
+        "fika",
+        "J1",
+        "shop",
+        "morning"
+      ],
+      "fika": {
+        "dilemma": "fika-diskaren",
+        "asker": "Mira, bartender, kommer fram med koppen.",
+        "question": "”Linnea, vår nya diskare, är långsam, och vi får vänta på glas hela kvällen. Jag vill inte gå till dig och klaga bakom hennes rygg, men det påverkar mig. Vad ska jag göra?”",
+        "options": 3,
+        "goHome": true,
+        "answer": "home",
+        "grade": null,
+        "gradeAboveExplanation": null,
+        "effects": null,
+        "wentHome": "Chefen hade inte tid i kväll.",
+        "legalShown": false,
+        "lawTextOnPage": false
+      },
+      "order": "S1 → T1 → R1 → L1 → K1 → fika → J1 → shop → morning",
+      "fikaAfterStory": true
+    }
+  ],
+  "errors": [],
+  "ok": true
+}

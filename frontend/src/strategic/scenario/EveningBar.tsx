@@ -35,6 +35,8 @@ import '../ui/service/service.css';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { CompareScreen, eveningVillage } from './CompareScreen';
 import { ShopScreen } from '../ui/host/ShopScreen';
+import { FikaScreen } from './FikaScreen';
+import { fikaTonight } from '../../sim/fika';
 
 function BookIcon() {
   return (
@@ -273,14 +275,17 @@ export function EveningBar() {
   const guard = useArrivalGuard(`${sim.day.dayNumber}:${step}`);
   if (sim.day.period !== 'evening' || sim.day.eveningEndRequested) return null;
   const afterResult = lesson !== null ? 'lesson' : 'story';
-  const go = (to: 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | 'shop') => dispatch({ type: 'EVENING_STEP', to });
+  const go = (to: 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | 'fika' | 'shop') => dispatch({ type: 'EVENING_STEP', to });
   // ORDER 290 — överföringen till företagskontot efter sopbilen.
   const hasTransfer = !!sim.day.transfer && sim.day.transfer.dayNumber === sim.day.dayNumber;
   const end = guard(() => dispatch({ type: 'END_EVENING' }));
   // ORDER 296 — efter berättelsen: byn i kväll (när byns rader finns) och
   // butiken, sist före morgonen.
   const hasCompare = eveningVillage(sim) !== null;
-  const afterStory = guard(() => go(hasCompare ? 'compare' : 'shop'));
+  // ORDER 316 — fikat efter berättelsen, när kvällen har ett dilemma.
+  const hasFika = fikaTonight(sim) !== null;
+  const afterFika = guard(() => go(hasCompare ? 'compare' : 'shop'));
+  const afterStory = hasFika ? guard(() => go('fika')) : afterFika;
   if (step === 'waste' && hasWaste) {
     return <WasteScreen sim={sim} onContinue={guard(() => go(hasTransfer ? 'transfer' : 'result'))} />;
   }
@@ -289,6 +294,9 @@ export function EveningBar() {
   }
   if (step === 'waste' || step === 'transfer' || step === 'result') {
     return <ResultScreen sim={sim} onContinue={guard(() => go(afterResult))} />;
+  }
+  if (step === 'fika' && hasFika) {
+    return <FikaScreen sim={sim} onContinue={afterFika} />;
   }
   // ORDER 288 — kvällen i byn (J1); ORDER 296 — efter berättelsen, före butiken.
   if (step === 'compare') {

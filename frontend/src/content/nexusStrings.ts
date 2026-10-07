@@ -44,6 +44,8 @@ import { EVERYDAY_STRINGS } from './design/everydayStrings';
 import { MOOD_STRINGS } from './design/moodStrings';
 // ORDER 297 — Designs leverans Byn i kvällsljus (andra omtaget), oförändrad.
 import { VILLAGE_EVENING_STRINGS } from './design/villageEveningStrings';
+// ORDER 316 — fikat efter stängning (dilemmana).
+import { FIKA_TEXT } from './fikaStrings';
 
 export type Lang = 'sv' | 'en';
 // ORDER 289 — singular eller plural efter antalet ("1 bottles" skulle vara
@@ -486,6 +488,8 @@ export function serviceClock(lang: Lang, minutesSince18: number) {
 // ───────────────────────────────────────────────────────────────────
 
 export const TABLE = {
+  // ORDER 316 — fikat efter stängning (content/fikaStrings.ts).
+  fika: FIKA_TEXT,
   title: { sv: 'NEXUS', en: 'NEXUS' },
   subtitle: { sv: 'Grythyttan — The Origin', en: 'Grythyttan — The Origin' },
   busText: {
@@ -1956,6 +1960,8 @@ export const TABLE = {
     wage: { sv: (r: string) => `Lön: ${r}`, en: (r: string) => `Wage: ${r}` },
     idleStaff: { sv: (d: number) => `Personal utanför servicen (dag ${d})`, en: (d: number) => `Staff cost outside service (day ${d})` },
     agency: { sv: (r: string) => `Bemanning: ${r} i kväll`, en: (r: string) => `Agency staff: ${r} tonight` },
+    // ORDER 316 — fikat: kostnaden för ett svar (varor som kastas, en extra hand).
+    fika: { sv: 'Fikat efter stängning: följden av beslutet', en: 'Coffee after closing: the decision’s cost' },
     severance: { sv: (r: string, d: number) => `Avgångsvederlag: ${r} (${d} ${d === 1 ? 'dag' : 'dagar'} kvar)`, en: (r: string, d: number) => `Severance pay: ${r} (${d} ${d === 1 ? 'day' : 'days'} left)` },
     revenue: {
       sv: (lunch: boolean, covers: number) => `Försäljning ${lunch ? 'lunch' : 'middag'}${covers > 0 ? ` (${covers} kuvert)` : ''}`,

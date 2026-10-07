@@ -22,6 +22,7 @@
 //
 // Talen står i `balance.ts` `INCIDENTS`; händelserna i händelsebanken.
 
+import { prefersInspection } from './fika';
 import type { ConsequenceSeverity, Guest, GuestType, KnowledgeAxis, RoomReaction, SimulationState, StaffRole, YrkesSpar } from '../strategic/types';
 import { applyAnswerMood } from './guestMood';
 import { spreadWord } from './streetWord';
@@ -472,6 +473,9 @@ function eligibleNow(state: SimulationState, incident: Incident, context?: Incid
 
 // Nästa händelse: en kedjad först, annars en ur bågens fas som inte
 // kommit i kväll och som kvällens läge tillåter.
+// ORDER 293 — tillsynens fyra varianter är en familj.
+const INSPECTION_FAMILY = 'event-inspection';
+
 function chooseIncident(
   state: SimulationState,
   phase: ArcPhase,
@@ -492,6 +496,12 @@ function chooseIncident(
   const free = bank.filter((i) =>
     !i.chainOnly && !inc.fired.includes(i.id) && !inc.blocked.includes(i.id) && !(i.family && firedFamilies.has(i.family)) &&
     (!i.weekdays || i.weekdays.includes(weekday)) && fitsMenu(i, menuIds) && eligibleNow(state, i));
+  // ORDER 316 — en genväg i fikat (kylen, golvet) gör att tillsynen kommer
+  // oftare de närmaste kvällarna (sim/fika.ts prefersInspection).
+  const inspection = free.filter((i) => i.family === INSPECTION_FAMILY);
+  if (inspection.length > 0 && prefersInspection(state, inc.log.length)) {
+    return { incident: pick(inspection, Math.min(1 - Number.EPSILON, Math.max(0, r))), chained: false };
+  }
   // ORDER 279 — gästerna frågar om kvällens meny: en raket om en rätt eller
   // dryck på menyn väljs med sannolikheten MENU_ROCKETS.share.
   const onMenu = free.filter((i) => i.requiresOnMenu);

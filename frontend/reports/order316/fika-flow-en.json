@@ -1,0 +1,68 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "en",
+  "evenings": [
+    {
+      "evening": 1,
+      "sequence": [
+        "S1",
+        "T1",
+        "R1",
+        "L1",
+        "K1",
+        "fika",
+        "J1",
+        "shop",
+        "morning"
+      ],
+      "fika": {
+        "dilemma": "fika-aldre",
+        "asker": "Sara, the waiter, comes over with a cup.",
+        "question": "“An older couple sat for an hour before anyone took their order, because everyone rushed past. The man said \"this place isn’t for people like us\". It didn’t feel good.”",
+        "options": 3,
+        "goHome": true,
+        "answer": "A",
+        "grade": "Well founded",
+        "gradeAboveExplanation": true,
+        "effects": "The team feels better.Sara trusts you more.3 credits in Phronesis.",
+        "wentHome": null,
+        "legalShown": false,
+        "lawTextOnPage": false
+      },
+      "order": "S1 → T1 → R1 → L1 → K1 → fika → J1 → shop → morning",
+      "fikaAfterStory": true
+    },
+    {
+      "evening": 2,
+      "sequence": [
+        "S1",
+        "T1",
+        "R1",
+        "L1",
+        "K1",
+        "fika",
+        "J1",
+        "shop",
+        "morning"
+      ],
+      "fika": {
+        "dilemma": "fika-diskaren",
+        "asker": "Mira, the bartender, comes over with a cup.",
+        "question": "“Linnea, our new dishwasher, is slow, and we wait for glasses all evening. I don’t want to come to you and complain behind her back, but it affects me. What should I do?”",
+        "options": 3,
+        "goHome": true,
+        "answer": "home",
+        "grade": null,
+        "gradeAboveExplanation": null,
+        "effects": null,
+        "wentHome": "The boss had no time tonight.",
+        "legalShown": false,
+        "lawTextOnPage": false
+      },
+      "order": "S1 → T1 → R1 → L1 → K1 → fika → J1 → shop → morning",
+      "fikaAfterStory": true
+    }
+  ],
+  "errors": [],
+  "ok": true
+}

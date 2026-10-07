@@ -1,0 +1,23 @@
+/* ORDER 316 — fikat efter stängning. Designsystemets enkla delar tills Design
+   ritar kortet. Nivån visas mjukt: ingen röd färg (BESLUT del 1, fråga 1). */
+.nx-fika-paper { max-width: calc(980 * var(--nx-u)); }
+.nx-fika-asker { font-size: calc(40 * var(--nx-u)); }
+.nx-fika-question { font-size: calc(30 * var(--nx-u)); line-height: 1.35; margin: 0 0 calc(28 * var(--nx-u)); font-style: italic; }
+.nx-fika-options { display: grid; gap: calc(12 * var(--nx-u)); margin-top: calc(12 * var(--nx-u)); }
+.nx-fika-option {
+  display: flex; gap: calc(16 * var(--nx-u)); align-items: flex-start; text-align: left;
+  padding: calc(16 * var(--nx-u)) calc(20 * var(--nx-u)); font: inherit; color: inherit; cursor: pointer;
+  background: transparent; border: max(1px, calc(1 * var(--nx-u))) solid var(--nx-rule); border-radius: var(--nx-radius-card);
+  min-height: 44px;
+}
+.nx-fika-option:hover, .nx-fika-option:focus-visible { border-color: var(--nx-accent); outline: none; }
+.nx-fika-letter { font-weight: 800; min-width: 1.4em; }
+.nx-fika-chosen { display: flex; gap: calc(16 * var(--nx-u)); margin: 0 0 calc(20 * var(--nx-u)); }
+.nx-fika-grade {
+  display: inline-block; margin-top: calc(8 * var(--nx-u)); padding: calc(4 * var(--nx-u)) calc(14 * var(--nx-u));
+  border-radius: 999px; border: max(1px, calc(1 * var(--nx-u))) solid var(--nx-rule); font-weight: 700; color: var(--nx-ink-2);
+}
+.nx-fika-grade[data-grade='well'] { border-color: var(--nx-accent); color: var(--nx-ink); }
+.nx-fika-explanation { margin-top: calc(16 * var(--nx-u)); font-size: calc(28 * var(--nx-u)); }
+.nx-fika-effects { margin: calc(20 * var(--nx-u)) 0 0; padding-left: 1.2em; }
+.nx-fika-before, .nx-fika-legal, .nx-fika-home { margin-top: calc(16 * var(--nx-u)); color: var(--nx-ink-2); }

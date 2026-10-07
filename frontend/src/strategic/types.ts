@@ -797,7 +797,7 @@ export interface DayState {
   // resultat, lärdomen, berättelsen. Sätts när servicen stänger; går bara
   // framåt (EVENING_STEP), så att en omritning eller ett dubbelklick inte
   // hoppar över kvällens resultat (provspel av 285).
-  eveningStep?: 'waste' | 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | 'shop' | null;
+  eveningStep?: 'waste' | 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | 'fika' | 'shop' | null;
   // ORDER 265 — dagens ankomster, mot marknadens tak (dailyGuestCap).
   arrivalsToday?: number;
   // ORDER 288 — turisterna från bussen (ingår i arrivalsToday men inte i
@@ -1684,6 +1684,12 @@ export interface SimulationState {
   // Utrustning som krediterna har öppnat men kassan ännu inte köpt.
   equipmentOpened?: string[];
   reputationByTier?: Record<import('../sim/goods').Tier, number>;
+  // ORDER 316 — fikat efter stängning: kvällens dilemma, portfolion (loggen
+  // över svaren), lojaliteten per person i laget och tillsynens risk
+  // (sim/fika.ts). Saknas i spel från före ordern.
+  fika?: import('../sim/fika').FikaState;
+  // ORDER 316 — dagen då laget senast ändrades (anställning eller uppsägning).
+  teamChangedDay?: number;
   // ORDER 296c — stjärnan (balance.ts STAR): hålls den, och veckorna i rad på nivån.
   star?: { held: boolean; weeksQualified: number; earnedWeek: number | null; lostWeek: number | null };
   // ORDER 288 — konkurrensen i byn: rivalerna (rykte och vem som styr dem).
@@ -1992,7 +1998,10 @@ export type SimAction =
   | { type: 'ANSWER_SALVAGE'; optionId: string }
   | { type: 'CLOSE_SALVAGE' }
   // ORDER 289 — nästa skärm i kvällens flöde.
-  | { type: 'EVENING_STEP'; to: 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | 'shop' }
+  | { type: 'EVENING_STEP'; to: 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | 'fika' | 'shop' }
+  // ORDER 316 — fikat: spelarens svar på dilemmat, eller Gå hem.
+  | { type: 'FIKA_ANSWER'; optionId: 'A' | 'B' | 'C' | 'D' }
+  | { type: 'FIKA_GO_HOME' }
   // ORDER 283 — spelaren har läst introduktionen i Måltidens hus.
   | { type: 'SEE_HOUSE_INTRO' }
   // ORDER 077 §4 (M4) — morning menu composition. Freezes today's
