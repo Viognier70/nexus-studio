@@ -153,6 +153,9 @@ export function stockValueSek(state: SimulationState, part: 'food' | 'drink'): n
 export function openShortfall(state: SimulationState): { covers: number; guests: number; short: boolean } {
   const expected = dailyGuestCap(state);
   const guests = Number.isFinite(expected) ? expected : 0;
+  // ORDER 315b — foodtrucken köper varorna efter hur många som kommer
+  // (FOODTRUCK.goodsShare av notan): inget lager att fråga om.
+  if (state.economy.businessClass === 'foodtruck') return { covers: guests, guests, short: false };
   let covers: number;
   if (usesPackages(state)) covers = coverage(state).covers;
   else {

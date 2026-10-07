@@ -185,82 +185,26 @@ export function BankDialog({ open, onClose }: Props) {
     </div>
   );
 
-  // B0a / B0b — första mötet med banken (introduktionen, F33): den största
-  // klassen banken lånar ut till nu är erbjudandet; andra möjliga står
-  // som alternativ.
+  // ORDER 315b — i introduktionen erbjuder Åsa foodtrucken (sim/ladder.ts
+  // introOffer); banken lånar ut först vid köpet av vinbaren.
   if (sim.introduction && current === null) {
-    const available = BUSINESS_CLASSES.list
-      .filter((c) => options.find((o) => o.id === c.id)?.status === 'available')
-      .sort((a, b) => b.sizeRank - a.sizeRank || a.buildOrder - b.buildOrder)
-      .map((c) => c.id);
-    const offered = available[0] ?? null;
-    const others = available.slice(1);
-    const vinbarMissing = offered !== 'vinbar' ? missingInWords('vinbar', sim.medals, requirementsFor(sim, 'vinbar')) : null;
-    const screenId = offered === 'vinbar' ? 'B0b' : 'B0a';
-    const verdict = offered ? sb.firstVerdict[offered] : e.bankNoLoan;
     return (
       <div className="nx nx-screen nxs-over" role="dialog" aria-modal="true" aria-label={e.bankHeading} data-testid="bank-dialog">
-        <div data-testid={`screen-${screenId}`}>
+        <div data-testid="screen-B0-truck">
           <Header label={sb.firstLabel(weekday)} heading={sb.firstHeading} />
         </div>
         <div className="nxs-bank-grid">
           <div>
-            {/* ORDER 289 — repliken efter vad spelaren faktiskt har gjort. */}
-            <Say who={sb.speaker}>{(sim.examsTaken ?? 0) === 0 ? sb.firstOpeningNoExam : Object.keys(sim.medals).length > 0 ? sb.firstOpening : sb.firstOpeningNoMedal}</Say>
-            <MedalsSeen held={sim.medals} onlyHeld />
-            <div className="nxs-mt-16">
-              <Say who={sb.speaker}>{verdict}</Say>
-            </div>
-            {offered && isIntroRentWeek(week) && (
-              <div className="nxs-mt-16" data-testid="bank-intro-rent">
-                <Say who={sb.speaker}>{introRentLine(offered, week)}</Say>
-              </div>
-            )}
-            {offered && (
-              <div className="nxs-mt-16" data-testid="bank-risk-terms">
-                <Say who={sb.speaker}>{riskTermsLine(offered)}</Say>
-              </div>
-            )}
+            <Say who={sb.speaker}>{strings.ladder.bankIntro}</Say>
           </div>
-          <div>
-            {diagnosis}
-            {offered && (
-              <div className="nxs-offer" data-testid={`class-${offered}`}>
-                <div className="nxs-row-between">
-                  <ClassTitle id={offered} />
-                  <span className="nx-label nx-accent-text">{sb.startLoan}</span>
-                </div>
-                <p className="nx-body nxs-mt-16">{classBlurb(offered)}</p>
-              </div>
-            )}
-            <p className="nx-small nx-muted nxs-mt-16" data-testid="bank-first-note">
-              {offered === 'vinbar' ? sb.firstNoteVinbar : vinbarMissing ? `${vinbarMissing} ${sb.firstNoteLater}` : null}
-            </p>
-          </div>
+          <div>{diagnosis}</div>
         </div>
         <footer className="nxs-foot">
           <NxButton kind="quiet" testId="close-bank" onClick={onClose}>{strings.knowledge.close}</NxButton>
-          <div className="nxs-foot-buttons">
-            {others.map((id) => (
-              <div key={id} className="nxs-btn-secondary-w" data-testid={`class-${id}`}>
-                <NxButton kind="secondary" testId={`choose-${id}`} onClick={() => choose(id)} arrow={false}>
-                  {strings.introduction.chooseFirst(strings.introduction.classesIndefinite[id])}
-                </NxButton>
-              </div>
-            ))}
-            {offered && canChange && (
-              <div className="nxs-btn-primary-w">
-                <NxButton testId={`choose-${offered}`} onClick={() => choose(offered)} autoFocus>
-                  {strings.introduction.chooseFirst(strings.introduction.classesIndefinite[offered])}
-                </NxButton>
-              </div>
-            )}
-          </div>
         </footer>
       </div>
     );
   }
-
   // B1 — samtal med banken: diagnos i ord, det som går att byta till och
   // det som saknas.
   const others = BUSINESS_CLASSES.list.filter((c) => c.id !== current);

@@ -1,0 +1,29 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "errors": [],
+  "ok": true,
+  "asa": {
+    "step": "bank",
+    "line": "Måndag · Campus · Vecka 2 av 8ÅIntendent Åsa · från CampusÅsaIntendent Åsa · från CampusDu har klarat inträdet.Det står en foodtruck ledig vid Torget. Den är din, om du vill.Nästa→Jag klarar mig — hoppa över guiden",
+    "offerHidden": true
+  },
+  "offer": {
+    "to": "foodtruck",
+    "line": "Du har klarat inträdet. Det står en foodtruck ledig vid Torget. Den är din, om du vill.",
+    "price": "Ingen insats och inget lån. Platsen vid Torget kostar en avgift i veckan."
+  },
+  "morning": {
+    "offerGone": true,
+    "startService": true,
+    "truckMenu": true,
+    "menuEditor": false
+  },
+  "room": {
+    "scene": true,
+    "guests": "4"
+  },
+  "street": {
+    "dollhouseGone": true
+  }
+}

@@ -328,3 +328,12 @@ export function runWeeks(opts: {
   }
   return { seed: opts.seed, days, final: s };
 }
+
+// ORDER 315b — säsongen från foodtrucken, som spelarens flöde: ett nytt spel,
+// introduktionen, inträdesprovet (brons i Stensöta) och Åsas erbjudande om
+// foodtrucken (LADDER_TAKE). Startkassan är spelets (RISK.startCashSek).
+export function startInFoodtruck(seed: number, dayNumber?: number): SimulationState {
+  let s = reducer(makeNewGameState(seed), { type: 'BEGIN_INTRODUCTION' });
+  s = { ...s, introduction: { practiced: true }, medals: { stensota: 'brons' }, ...(dayNumber !== undefined ? { day: { ...s.day, dayNumber } } : {}) };
+  return reducer(s, { type: 'LADDER_TAKE' });
+}

@@ -45,7 +45,10 @@ const NEAR_SIGN_Y_M = 6;
 const COMPACT_FROM_M = 450;
 const TRUCK_COLOURS: Record<string, { body: string; awning: [string, string] }> = {
   grillvagnen: { body: '#8a3f2c', awning: ['#e9c46a', '#8a3f2c'] },
-  tacovagnen: { body: '#2f6b5a', awning: ['#f0e2c4', '#2f6b5a'] }
+  tacovagnen: { body: '#2f6b5a', awning: ['#f0e2c4', '#2f6b5a'] },
+  // ORDER 315b — spelarens svenska grill: blå och gul, skild från de två andra
+  // (formen kommer från Designs D7).
+  [PLAYER_VENUE]: { body: '#2c4f86', awning: ['#f2c94c', '#2c4f86'] }
 };
 
 function glowTexture(): THREE.Texture {
@@ -83,6 +86,14 @@ function makeTruck(id: string): THREE.Group {
   for (let i = 0; i < 6; i++) {
     const st = add(new THREE.BoxGeometry(1.2, 0.06, 0.62), m(col.awning[i % 2]), 1.8, 2.6, -2.2 + i * 0.64);
     st.rotation.z = -0.25;
+  }
+  // ORDER 315b — spelarens vagn: ett tillfälligt serveringsområde med
+  // ståbord (bordshöjd för stående 1,1 m) vid luckans sida.
+  if (id === PLAYER_VENUE) {
+    for (const z of [-2.6, 0, 2.6]) {
+      add(new THREE.CylinderGeometry(0.06, 0.06, 1.1, 8), m('#3b2a1e'), 4.6, 0.55, z);
+      add(new THREE.CylinderGeometry(0.4, 0.4, 0.05, 16), m('#c9a46a'), 4.6, 1.12, z);
+    }
   }
   return g;
 }
@@ -145,8 +156,11 @@ export function VillageVenues() {
 
   // Vagnarna på kvällens plats.
   useEffect(() => {
+    // ORDER 315b — spelarens foodtruck (v.spot) står först på sin plats.
+    const onSpot = (o: typeof venues[number]) => o.kind === 'truck' || (o.kind === 'player' && !!o.spot);
+    for (const t of trucks.current.values()) t.visible = false;
     for (const v of venues) {
-      if (v.kind !== 'truck') continue;
+      if (!onSpot(v)) continue;
       let truck = trucks.current.get(v.id);
       if (!truck) {
         truck = makeTruck(v.id);
@@ -156,7 +170,7 @@ export function VillageVenues() {
       truck.visible = v.open && !!v.spot;
       if (!v.spot) continue;
       // Två vagnar på samma plats står efter varandra (villagePlaces.ts truckPlacement).
-      const same = venues.filter((o) => o.kind === 'truck' && o.spot === v.spot);
+      const same = venues.filter((o) => onSpot(o) && o.spot === v.spot).sort((a, b) => (a.kind === 'player' ? -1 : b.kind === 'player' ? 1 : 0));
       const at = truckPlacement(v.spot, same.findIndex((o) => o.id === v.id));
       truck.position.set(at.x, 0, at.z);
       truck.rotation.y = at.rotationY;
@@ -187,7 +201,8 @@ export function VillageVenues() {
     const step = Math.min(delta, 0.1) / LIGHTS.venue.rampS;
     for (const gl of glows.current) {
       const v = venues.find((x) => x.id === gl.id);
-      const t = venueLightTargets(sim, gl.id, !!v?.open);
+      // ORDER 315b — spelaren i foodtrucken: huset är inte spelarens, och vagnen har sin lucka.
+      const t = venueLightTargets(sim, gl.id, !!v?.open && !v?.spot);
       const k = (venueK.current[gl.id] = approach(venueK.current[gl.id] ?? 0, t.open, step));
       const n = gl.id === PLAYER_VENUE ? sim.seatedIds.length : inside[gl.id] ?? 0;
       const fill = Math.min(1, n / FULL_HOUSE_GUESTS);
@@ -197,7 +212,7 @@ export function VillageVenues() {
       gl.sprite.scale.setScalar((HALO_BASE_M + LIGHTS.venue.haloPerGuest * Math.sqrt(n)) * scale);
       (gl.lamp.material as THREE.MeshStandardMaterial).emissiveIntensity = 1.6 * k * night;
     }
-    const near = !!entrance && !!ourVenue && !!playerBusiness.name && dist <= LABELS_FROM_M && roofAt(dist) >= NEAR_SIGN_ROOF;
+    const near = !!entrance && !!ourVenue && !ourVenue.spot && !!playerBusiness.name && dist <= LABELS_FROM_M && roofAt(dist) >= NEAR_SIGN_ROOF;
     if (near !== nearRef.current) {
       nearRef.current = near;
       setNearSign(near);
@@ -220,7 +235,7 @@ export function VillageVenues() {
         const el = labelEls.current.get(v.id);
         const p = v.spot ? truckSpotPlace(v.spot).doorPoint : places[v.id]?.centre;
         if (!el || !p) return [];
-        proj.set(p[0], v.kind === 'truck' ? 6 : 14, p[1]).project(camera);
+        proj.set(p[0], v.spot ? 6 : 14, p[1]).project(camera);
         return [{ el, ours: v.id === PLAYER_VENUE, x: (proj.x * 0.5 + 0.5) * size.width, y: (-proj.y * 0.5 + 0.5) * size.height, w: el.offsetWidth, h: el.offsetHeight }];
       // ORDER 297 (Designs Byn i kvällsljus omtag §9: "en regel för när namn
       // krockar, till exempel att vår krog alltid ligger överst"): vår krogs
@@ -269,7 +284,7 @@ export function VillageVenues() {
         if (!p) return null;
         const guests = v.id === PLAYER_VENUE ? sim.day.arrivalsToday ?? 0 : live.arrived[v.id] ?? 0;
         return (
-          <group key={v.id} position={[p[0], v.kind === 'truck' ? 6 : 14, p[1]]}>
+          <group key={v.id} position={[p[0], v.spot ? 6 : 14, p[1]]}>
             <Html center zIndexRange={[12, 0]} style={{ pointerEvents: 'none' }}>
               <VenueLabel v={v} guests={guests} compact={compact} playerName={playerBusiness.name} playerStyle={playerStyle} innerRef={(el) => { if (el) labelEls.current.set(v.id, el); else labelEls.current.delete(v.id); }} />
             </Html>

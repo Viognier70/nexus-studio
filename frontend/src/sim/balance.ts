@@ -393,7 +393,9 @@ export const ECONOMY = {
   openQuestion: 'F8',
   normalWeeklyRevenueSek: {
     vinbar: 42090,        // kvarterskrogen — vinbaren spelas i dagens byggda rum tills etapp 5 (F20)
-    foodtruck: 60744,     // foodtrucken
+    // ORDER 315b — foodtrucken: omkring 40 000 kr i veckan (förslaget §2:
+    // 30 000–50 000 kr). Förut 60 744 kr.
+    foodtruck: 40000,     // foodtrucken
     restaurang: 42090,    // kvarterskrogen (platshållare till etapp 7)
     olkrog: 47044,        // ölkrogen
     gastgiveri: 42626,    // gästgiveriet
@@ -835,6 +837,23 @@ export const LADDER = {
   reputationFactorOnPurchase: 1,
   // Harnessens spelartyp "försiktig" väntar en vecka med erbjudandet.
   carefulWaitDays: 7
+} as const;
+
+// ORDER 315b — foodtrucken, svensk grill (Anders 2026-10-07, BESLUT del 2;
+// förslaget ORDER_315_FORSLAG.md §2). Spelaren står själv vid grillen
+// (kocken i laget kostar ingen lön), med en medhjälpare (lärlingens dagslön).
+// Notan per gäst är fast; varorna är en andel av notan; platsen och
+// tillståndet vid Torget kostar en avgift i veckan i stället för hyra.
+// Foodtrucken når förbipasserande: dagens tak på gäster gånger guestCapFactor.
+export const FOODTRUCK = {
+  section: 'Verksamhetsklasserna',
+  billSek: 95,
+  goodsShare: 0.35,
+  unpaidRoles: ['kock'] as readonly StaffRole[],
+  pitchFeeWeeklySek: 1500,
+  guestCapFactor: 7,
+  // Kön vid luckan per person i laget (strategic/business/businessClass.ts), som förut.
+  queuePerStaff: 3
 } as const;
 
 // ORDER 271 (Vision Owner, FRAGOR §50): rutan utan verksamhet och pengar

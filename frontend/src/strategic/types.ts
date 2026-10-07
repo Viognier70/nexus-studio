@@ -1550,7 +1550,8 @@ export interface SimulationState {
   // för version 1 > Introduktionen). Satt från att spelaren kliver av
   // bussen tills banken öppnat hennes första verksamhet; saknas annars.
   // Stegen härleds i sim/introduction.ts.
-  introduction?: { practiced: boolean } | null;
+  // ORDER 315b — truckDeclined: spelaren har svarat "Inte än" på foodtrucken.
+  introduction?: { practiced: boolean; truckDeclined?: boolean } | null;
   // ORDER 313 §2 — spelaren börjar från noll: satsningarna, butiken och
   // "Stå för ditt svar" är låsta tills första provet är klarat (en medalj).
   // Sätts när ett nytt spel börjar (sim/introduction.ts beginIntroduction);

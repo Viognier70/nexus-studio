@@ -53,7 +53,7 @@ describe('ORDER 265 — veckoharnessen', () => {
     expect(classes.indexOf('vinbar', firstFoodtruck)).toBeGreaterThan(firstFoodtruck);
     const downgrade = (settlements as { downgradedFrom: string | null }[]).find((x) => x.downgradedFrom);
     expect(downgrade).toMatchObject({ downgradedFrom: 'vinbar', downgradedTo: 'foodtruck' });
-  });
+  }, 180000); // ORDER 315b — foodtruckens veckor är tyngre (fler gäster); 35–38 s ensamt
 
   // Rapporten skrivs bara med WRITE_REPORTS=1, så att sviten inte ändrar
   // en committad rapport vid varje körning (ORDER 266).

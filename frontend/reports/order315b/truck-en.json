@@ -1,0 +1,29 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "en",
+  "errors": [],
+  "ok": true,
+  "asa": {
+    "step": "bank",
+    "line": "Monday · Campus · Week 2 of 8ÅIntendant Åsa · from CampusÅsaIntendant Åsa · from CampusYou have passed the entrance exam.There is a food truck free on the square. It is yours, if you want it.Next→I'll manage — skip the guide",
+    "offerHidden": true
+  },
+  "offer": {
+    "to": "foodtruck",
+    "line": "You have passed the entrance exam. There is a food truck free on the square. It is yours, if you want it.",
+    "price": "No deposit and no loan. The pitch on the square costs a weekly fee."
+  },
+  "morning": {
+    "offerGone": true,
+    "startService": true,
+    "truckMenu": true,
+    "menuEditor": false
+  },
+  "room": {
+    "scene": true,
+    "guests": "9"
+  },
+  "street": {
+    "dollhouseGone": true
+  }
+}

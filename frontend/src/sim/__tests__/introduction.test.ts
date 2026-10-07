@@ -7,7 +7,8 @@ import { reducer } from '../../strategic/simulation/reducer';
 import { makeNewGameState } from '../../strategic/simulation/model';
 import { bankQuestionById } from '../../strategic/knowledge/questionBank';
 import { introductionStep } from '../introduction';
-import { classOptions, startLoanSek, V1_CLASS_TO_ROOM } from '../economy';
+import { classOptions, V1_CLASS_TO_ROOM } from '../economy';
+import { currentOffer } from '../ladder';
 import { DAY, EXAM } from '../balance';
 import type { SimulationState } from '../../strategic/types';
 
@@ -50,22 +51,34 @@ describe('ORDER 267 — introduktionen', () => {
     expect(s.day.pavilionVisitsToday ?? []).toEqual([]);
   });
 
-  it('bankmötet: brons i Stensöta öppnar vinbaren, inte ölkrogen; startlån, rummet, ryktet orört', () => {
+  // ORDER 315b (Anders 2026-10-07, BESLUT del 2) — inträdesprovet: Åsa
+  // erbjuder foodtrucken vid Torget (ersätter bankens val av första verksamhet).
+  it('inträdet: Åsa erbjuder foodtrucken; Ta över ger foodtrucken utan lån, rummet, ryktet orört', () => {
     let s = newPlayer();
     s = visit(s, 'stensota', 'practice', 0);
     s = visit(s, 'stensota', 'exam', EXAM.questionsDrawn);
-    const status = Object.fromEntries(classOptions(s).map((o) => [o.id, o.status]));
-    expect(status.vinbar).toBe('available');
-    // ORDER 291 — ölkrogen är inte ett första val (och byggs i etapp 8).
-    expect(status.olkrog).toBe('notBuilt');
+    expect(introductionStep(s)).toBe('bank');
+    expect(currentOffer(s)).toMatchObject({ to: 'foodtruck', depositSek: 0, loanSek: 0, state: 'offered' });
+    // Bankens val av första verksamhet finns inte i introduktionen.
+    expect(reducer(s, { type: 'CHOOSE_CLASS', to: 'vinbar' })).toBe(s);
     const reputation = s.reputation;
-    s = reducer(s, { type: 'CHOOSE_CLASS', to: 'vinbar' });
-    expect(s.economy.businessClass).toBe('vinbar');
-    expect(s.economy.loan?.principalSek).toBe(startLoanSek('vinbar'));
-    expect(s.businessClass).toBe(V1_CLASS_TO_ROOM.vinbar);
+    s = reducer(s, { type: 'LADDER_TAKE' });
+    expect(s.economy.businessClass).toBe('foodtruck');
+    expect(s.economy.loan).toBeNull();
+    expect(s.businessClass).toBe(V1_CLASS_TO_ROOM.foodtruck);
+    expect(s.team.members.map((m) => m.role).sort()).toEqual(['kock', 'lärling']);
     expect(s.reputation).toBe(reputation);
+    expect(s.ladder).toMatchObject({ step: 'foodtruck', reachedOnDay: { foodtruck: s.day.dayNumber } });
     expect(s.introduction).toBeNull();
     expect(introductionStep(s)).toBeNull();
+  });
+
+  it('inträdet: Inte än står kvar, och erbjudandet kan tas senare', () => {
+    let s = visit(visit(newPlayer(), 'stensota', 'practice', 0), 'stensota', 'exam', EXAM.questionsDrawn);
+    s = reducer(s, { type: 'LADDER_DECLINE' });
+    expect(currentOffer(s)!.state).toBe('declined');
+    expect(s.economy.businessClass).toBeNull();
+    expect(reducer(s, { type: 'LADDER_TAKE' }).economy.businessClass).toBe('foodtruck');
   });
 
   // ORDER 291 (provspel av 4795192) — brons i Metodköket öppnade förut

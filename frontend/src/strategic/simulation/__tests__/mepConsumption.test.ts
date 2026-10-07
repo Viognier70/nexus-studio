@@ -17,14 +17,16 @@ import { makeInitialState } from '../model';
 import { capacityForBusiness } from '../../business/businessClass';
 import type { SimulationState } from '../../types';
 
+// ORDER 315b — avdragen gäller verksamheter med mise en place (foodtrucken har
+// ingen beredskap som kan saknas, mepConsumption.ts); fixturen är restaurangen.
 function foodtruckWithReadiness(readiness: Record<string, number>): SimulationState {
   const s = makeInitialState();
   return {
     ...s,
-    businessClass: 'foodtrucken',
+    businessClass: 'kvarterskrogen',
     policies: {
       ...s.policies,
-      capacity: capacityForBusiness('foodtrucken', s.policies.staffCount)
+      capacity: capacityForBusiness('kvarterskrogen', s.policies.staffCount)
     },
     day: { ...s.day, prepReadiness: readiness },
     cash: 240_000
@@ -170,5 +172,14 @@ describe('ORDER 117 §4 — mostMissingMepItem prioriterar allvarlighet', () => 
   it('inget under tröskel → null', () => {
     const readiness = { napkins: 0.5, garnish: 0.5, stations: 0.5, cutlery: 0.5, ice: 0.5 };
     expect(mostMissingMepItem(readiness)).toBeNull();
+  });
+});
+
+describe('ORDER 315b — foodtrucken har ingen mise en place som kan saknas', () => {
+  it('applyMissingMepHit ger inget avdrag i foodtrucken, också med tom beredskap', () => {
+    const s = { ...foodtruckWithReadiness({ napkins: 0, garnish: 0, stations: 0, cutlery: 0, ice: 0 }), businessClass: 'foodtrucken' as const };
+    const guest = { satisfaction: 0.7 };
+    expect(applyMissingMepHit(s, guest)).toBe(0);
+    expect(guest.satisfaction).toBe(0.7);
   });
 });

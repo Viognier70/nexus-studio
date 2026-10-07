@@ -444,3 +444,6 @@ body[data-room-grade='afterClose'] .gb-canvas-host::after {
 [data-panel-column] > * > [class^='gb-'], [data-panel-column] section, [data-panel-column] aside { border-radius: max(10px, calc(18 * var(--nx-u))); }
 
 @media (max-width: 640px) { [data-panel-column] { top: 150px !important; max-height: calc(100vh - 150px - 120px) !important; } }
+
+/* ORDER 315b — foodtruckens lucka och kö över 3D-scenen på krogens nivå. */
+.nx-truck-room { position: absolute; inset: 0; z-index: 5; }

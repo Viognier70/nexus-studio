@@ -36,5 +36,5 @@ describe('ORDER 267 — veckoharnessen', () => {
     if (process.env.WRITE_REPORTS === '1') mkdirSync(OUT, { recursive: true });
     if (process.env.WRITE_REPORTS === '1') writeFileSync(resolve(OUT, 'week-harness.json'), JSON.stringify({ reputationFloor: REPUTATION.floor / REPUTATION.scale, lowestReputation: lowest, scenarios: report }, null, 2) + '\n');
     expect(lowest).toBeGreaterThanOrEqual(REPUTATION.floor / REPUTATION.scale);
-  });
+  }, 180000); // ORDER 315b — foodtruckens veckor är tyngre (fler gäster); 35–38 s ensamt
 });

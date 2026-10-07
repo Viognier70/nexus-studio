@@ -499,11 +499,14 @@ export const TABLE = {
     },
     line: {
       sv: {
+        // ORDER 315b — ordagrant ur ORDRAR_314-316_D7.md, ORDER 315 Flödet punkt 2.
+        foodtruck: 'Du har klarat inträdet. Det står en foodtruck ledig vid Torget. Den är din, om du vill.',
         // Ordagrant ur ORDRAR_314-316_D7.md, ORDER 315 Flödet punkt 4.
         vinbar: 'Grattis! Du har ett gott rykte i byn, och jag har hört att du fått in pengar. Nu kan du, helt frivilligt, ta över vinbaren.',
         bistro: 'Du har det som krävs för en bistro. Ägaren låter dig bygga om huset, och banken lånar ut till ombyggnaden. Stjärnan delas bara ut till en bistro.'
       } as Record<string, string>,
       en: {
+        foodtruck: 'You have passed the entrance exam. There is a food truck free on the square. It is yours, if you want it.',
         vinbar: 'Congratulations! You have a good name in the village, and I hear you have been taking money. Now, entirely of your own free will, you can take over the wine bar.',
         bistro: 'You have what it takes for a bistro. The owner will let you rebuild the house, and the bank lends for the work. The star is only awarded to a bistro.'
       } as Record<string, string>
@@ -516,6 +519,16 @@ export const TABLE = {
       sv: (deposit: string) => `Insatsen är ${deposit} kr, och kassan räcker inte än.`,
       en: (deposit: string) => `The deposit is SEK ${deposit}, and the till does not cover it yet.`
     },
+    bankIntro: {
+      sv: 'Åsa har nycklarna till foodtrucken vid Torget, och den behöver inget lån. När du vill ta över vinbaren kan vi prata om lånet till köpet.',
+      en: 'Åsa has the keys to the food truck on the square, and it needs no loan. When you want to take over the wine bar, we can talk about a loan for the purchase.'
+    },
+    truckMenuLabel: { sv: 'Kvällens meny vid luckan', en: 'Tonight’s menu at the hatch' },
+    truckMenu: {
+      sv: 'Grillkorv med bröd, tunnbrödsrulle med räksallad och mos, och dryck. Varorna köps in efter hur kön går.',
+      en: 'Grilled sausage in a bun, a flatbread roll with prawn salad and mash, and drinks. The goods are bought in as the queue goes.'
+    },
+    truckPrice: { sv: 'Ingen insats och inget lån. Platsen vid Torget kostar en avgift i veckan.', en: 'No deposit and no loan. The pitch on the square costs a weekly fee.' },
     take: { sv: 'Ta över', en: 'Take over' },
     notYet: { sv: 'Inte än', en: 'Not yet' },
     notYetNote: { sv: 'Erbjudandet står kvar. Det kostar inget att vänta.', en: 'The offer stands. Waiting costs nothing.' },
@@ -778,20 +791,22 @@ export const TABLE = {
     // ORDER 313 §2 — det som är låst tills första provet är klarat, och
     // Åsas replik när det öppnas.
     lockedUntilExam: { sv: 'Öppnas när du klarat ditt första prov', en: 'Opens when you have passed your first exam' },
-    unlocked: { sv: 'Nu har du visat vad du kan. Banken lyssnar, och du kan börja satsa.', en: 'Now you have shown what you can do. The bank is listening, and you can start to invest.' },
+    // ORDER 315b — utan banken (Åsa erbjuder foodtrucken; banken lånar vid köpet av vinbaren).
+    unlocked: { sv: 'Nu har du visat vad du kan, och du kan börja satsa.', en: 'Now you have shown what you can do, and you can start to invest.' },
     steps: {
       practice: {
-        sv: 'Välkommen till Grythyttan. Jag kommer från Campus och följer dig i dag. Banken lånar inte ut något förrän den har sett vad du kan, så vi börjar med att öva. Öppna Måltidens hus och öva i Stensöta, där sommelierna håller till. Inget står på spel.',
-        en: "Welcome to Grythyttan. I'm from Campus and I'll be with you today. The bank won't lend you anything until it has seen what you can do, so we start by practising. Open the House of the Meal and practise in Stensöta, where the sommeliers are. Nothing is at stake."
+        sv: 'Välkommen till Grythyttan. Jag kommer från Campus och följer dig i dag. Ingen lämnar över en verksamhet förrän du har visat vad du kan, så vi börjar med att öva. Öppna Måltidens hus och öva i Stensöta, där sommelierna håller till. Inget står på spel.',
+        en: "Welcome to Grythyttan. I'm from Campus and I'll be with you today. No one will hand you a business until you have shown what you can do, so we start by practising. Open the House of the Meal and practise in Stensöta, where the sommeliers are. Nothing is at stake."
       },
       exam: {
-        sv: 'Bra. Nu provet i samma paviljong: åtta frågor, och sex rätt ger brons. Med brons i Stensöta kan banken låna ut till en vinbar. Går det inte, gör om det. I dag räknas besöken inte bland dagens val.',
-        en: "Good. Now the exam in the same pavilion: eight questions, and six right gives bronze. With bronze in Stensöta the bank can lend you enough for a wine bar. If it doesn't work, try again. Today the visits don't use up any of today's choices."
+        sv: 'Bra. Nu inträdesprovet i samma paviljong: åtta frågor, och sex rätt ger brons. Går det inte, gör om det. I dag räknas besöken inte bland dagens val.',
+        en: "Good. Now the entrance exam in the same pavilion: eight questions, and six right gives bronze. If it doesn't work, try again. Today the visits don't use up any of today's choices."
       },
       // ORDER 313 §2 — Åsas replik när första provet är klarat.
+      // ORDER 315b — foodtrucken (ORDRAR_314-316_D7.md, ORDER 315 Flödet punkt 2).
       bank: {
-        sv: 'Nu har du visat vad du kan. Banken lyssnar, och du kan börja satsa. Gå till Banken i morgonraden. Där får du höra vad du har visat och vad du kan låna till.',
-        en: "Now you have shown what you can do. The bank is listening, and you can start to invest. Go to the Bank in the morning row. There you'll hear what you have shown and what you can borrow for."
+        sv: 'Du har klarat inträdet. Det står en foodtruck ledig vid Torget. Den är din, om du vill.',
+        en: "You have passed the entrance exam. There is a food truck free on the square. It is yours, if you want it."
       }
     },
     farewell: {
