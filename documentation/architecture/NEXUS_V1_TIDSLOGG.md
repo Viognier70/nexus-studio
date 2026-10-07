@@ -1,5 +1,60 @@
 # Nexus v1 — tidslogg
 
+## Överlämning (2026-10-07, efter ORDER 312b, 313, 314, 316 och 315)
+
+**Var vi är.**
+- `main` är pushad, arbetsträdet är rent och ingen gren är öppen.
+- **312b:**
+  - vinbarens rum har husets mått (14,47 × 10,05 m), utan överhäng;
+  - leveransbilen stannar på Prästgatan;
+  - folk till fots går bara på gångvägar, trottoarer och kanten av gator utan trottoar.
+- **313:**
+  - mentorn heter Intendent Åsa;
+  - satsningarna och butiken är låsta tills första provet;
+  - meddelandena har avsändare;
+  - ny text i Tre sätt att kunna;
+  - laget, kurskortet och teckenförklaringen förklarar sig;
+  - servitörerna har arbetsplatser vid borden, och det står flaskor i baren;
+  - panelen Byn just nu.
+- **314:**
+  - Stå för ditt svar är borttagen;
+  - personalen tar över efter kompetens;
+  - takten är 4–6 situationer per kväll, 1× under situationen;
+  - kalibreringen håller alla tidigare mål (`ORDER_314_RAPPORT.md` §6);
+  - spelartypen "ignorerar" stänger 40 av 40 säsonger.
+- **316:** utkast till tolv dilemman (`documentation/blueprints/ORDER_316_UTKAST/DILEMMAN.md`). Inget är byggt.
+- **315:**
+  - förslag till karriärstegen (`ORDER_315_FORSLAG.md`) med 20 frågor för foodtrucken;
+  - byggt är bara nivåerna Enkel · Mellan · Exklusiv i spelartexten och konkurrenternas nivåer.
+- Bistrons halva: godtagen tills vidare. Kalibreringen görs om i 315.
+
+**Väntar på Anders.**
+1. **316:**
+   - granska de tolv dilemmana;
+   - de fyra frågorna sist i utkastet;
+   - vem som granskar de juridiskt märkta.
+2. **315:**
+   - godkänn eller ändra förslaget, särskilt kraven för vinbaren och bistron och ryktet vid köpet;
+   - granska de 20 frågorna;
+   - stjärnan blir vanligare med 314:s takt (98 % vid 0,85), mot målet om omkring 50 % med stegen.
+3. **314** (`ORDER_314_RAPPORT.md` §7):
+   - den kloka och mentorn tjänar ungefär hälften så mycket som förut;
+   - provsmakningen ger nästan inga fler sittande sällskap vid lågt rykte;
+   - kortet säger "Raket" eller "Situation".
+4. **312b:** gator utan trottoar, där folk går i körbanans kant. Godta, eller rita trottoarer.
+5. **Design:**
+   - Designs tillägg för vinbarens möblering (rummet är 14,47 × 10,05 m, och loungerna står i norra väggen tills dess);
+   - D6 (Åsa, avsändarna, teckenförklaringen, kurskortet, Byn just nu och det låsta);
+   - D7.
+6. Från förra överlämningen: Designs värde för gatans minsta kvällsljus, och ORDER 306:s raketutkast.
+
+**Ordningen framåt:**
+1. 316 byggs efter granskningen.
+2. 315a, 315b och 315c efter beslutet om förslaget.
+3. Designs leveranser kopplas in när de kommer.
+
+---
+
 ## Överlämning (2026-10-06, före omstart efter ORDER 312)
 
 **Var vi är.**
