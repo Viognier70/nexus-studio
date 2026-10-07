@@ -30,6 +30,10 @@ import crisesText from '../content/incidents/crises.text.en.json';
 // finnas på båda språken"). De svenska texterna är utkasten som skrevs
 // bredvid den engelska; metadata är densamma, så kvällen spelar likadant.
 import vinbarTextSv from '../content/incidents/vinbar.text.sv.draft.json';
+// ORDER 315c — foodtruckens situationer ur Anders godkända frågor (BESLUT 2026-10-07 del 3).
+import foodtruckMeta from '../content/incidents/foodtruck.meta.json';
+import foodtruckText from '../content/incidents/foodtruck.text.en.json';
+import foodtruckTextSv from '../content/incidents/foodtruck.text.sv.draft.json';
 import menuTextSv from '../content/incidents/menu.text.sv.draft.json';
 import { getLanguage } from '../content/language';
 
@@ -146,6 +150,11 @@ export interface IncidentMeta {
   // ORDER 293 — händelser i samma familj kommer högst en gång per kväll
   // (tillsynens fyra varianter är en tillsyn).
   family?: string;
+  // ORDER 315c — frågornas nummer i Anders frågebank (foodtrucken), och ⚖:
+  // en situation med en fråga om regler eller temperaturer visas inte förrän
+  // den är granskad (legalReviewed, som dilemmana i ORDER 316).
+  questions?: number[];
+  legal?: { legalReviewed: boolean; questions: number[] };
 }
 
 export interface OutcomeText {
@@ -278,13 +287,20 @@ function build(meta: MetaFile, text: TextFile): Incident[] {
   });
 }
 
+/** ORDER 315c — situationer med ogranskade ⚖-frågor är inte med i spelet. */
+export function legallyCleared(i: Pick<IncidentMeta, 'legal'>): boolean {
+  return !i.legal || i.legal.legalReviewed;
+}
+
 const BANKS: Partial<Record<BusinessClassId, Incident[]>> = {
+  foodtruck: build(foodtruckMeta as unknown as MetaFile, foodtruckText as unknown as TextFile).filter(legallyCleared),
   vinbar: [
     ...build(vinbarMeta as unknown as MetaFile, vinbarText as unknown as TextFile),
     ...build(menuMeta as unknown as MetaFile, menuText as unknown as TextFile)
   ]
 };
 const BANKS_SV: Partial<Record<BusinessClassId, Incident[]>> = {
+  foodtruck: build(foodtruckMeta as unknown as MetaFile, foodtruckTextSv as unknown as TextFile).filter(legallyCleared),
   vinbar: [
     ...build(vinbarMeta as unknown as MetaFile, vinbarTextSv as unknown as TextFile),
     ...build(menuMeta as unknown as MetaFile, menuTextSv as unknown as TextFile)
@@ -294,6 +310,8 @@ const BANKS_SV: Partial<Record<BusinessClassId, Incident[]>> = {
 // ORDER 283 — utkasten: validerade och byggda som banken, men inte med i
 // någon klass bank. En raket blir spelbar när den flyttas till klassens
 // bankfil utan status 'utkast'.
+/** ORDER 315c — alla sju foodtrucksituationer, också de som väntar på granskning (för testerna). */
+export const FOODTRUCK_ALL: Incident[] = build(foodtruckMeta as unknown as MetaFile, foodtruckTextSv as unknown as TextFile);
 export const CRISIS_DRAFTS: Incident[] = build(crisesMeta as unknown as MetaFile, crisesText as unknown as TextFile);
 export const CRISIS_DRAFT_FILES = { meta: crisesMeta as unknown as MetaFile, text: crisesText as unknown as TextFile };
 

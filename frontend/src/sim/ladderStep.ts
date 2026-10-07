@@ -31,6 +31,10 @@ export interface LadderState {
   offer: LadderOffer | null;
   // ORDER 315b del 2 — ombyggnaden: stängt från fromDay till och med untilDay.
   refit?: { fromDay: number; untilDay: number } | null;
+  // ORDER 315c — klarade situationer i foodtrucken (halvt grepp 0,5), krav för vinbaren.
+  truckSituations?: number;
+  // ORDER 315c — kvällar i foodtrucken (FOODTRUCK.offerMinEvenings).
+  truckEvenings?: number;
 }
 
 export function stepSpec(step: PlayableStep) {

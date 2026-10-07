@@ -10,7 +10,7 @@ import { cleanup, fireEvent, render } from '@testing-library/react';
 import { createElement } from 'react';
 import { reducer } from '../../strategic/simulation/reducer';
 import { makeNewGameState } from '../../strategic/simulation/model';
-import { LADDER, STAR } from '../balance';
+import { FOODTRUCK, LADDER, STAR } from '../balance';
 import { canTakeOffer, depositSek, ladderBillFactor, ladderOf, ladderStep, missingFor, offerAtNight, purchaseLoanSek, starsPossible } from '../ladder';
 import { changeClass, settleWeek, wageFactor } from '../economy';
 import { firstDayOfWeek } from '../calendar';
@@ -112,6 +112,9 @@ describe('ORDER 315a — Åsas erbjudande', () => {
     let s = changeClass({ ...base, cash: 100000 }, 'foodtruck', false);
     s = { ...s, medals: { stensota: 'brons' }, reputation: LADDER.requirements.vinbar.reputationAtLeast + 0.05, cash: 40000, day: { ...s.day, period: 'morning' } };
     expect(ladderStep(s)).toBe('foodtruck');
+    // ORDER 315c — utan klarade situationer i foodtrucken kommer inget erbjudande.
+    expect(offerAtNight(s).ladder?.offer ?? null).toBeNull();
+    s = { ...s, ladder: { step: 'foodtruck', reachedOnDay: {}, offer: null, truckSituations: FOODTRUCK.offerMinSituations, truckEvenings: FOODTRUCK.offerMinEvenings } };
     s = offerAtNight(s);
     expect(s.ladder!.offer!.to).toBe('vinbar');
     const t = reducer(s, { type: 'LADDER_TAKE' });

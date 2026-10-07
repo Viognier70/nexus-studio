@@ -274,6 +274,8 @@ Förebilden är *Two Point Hospital* och *Game Dev Tycoon*: att flytta till stö
 
 *Beslut 2026-10-07 (Vision Owner, kalibreringen):* den som har hälften rätt ska stänga i 30–50 % av säsongerna, med möjligheten att stanna i foodtrucken eller vinbaren. Stjärnan för den som har 0,75 rätt kalibreras mot 10–25 % av säsongerna.
 
+*Beslut 2026-10-07 (Vision Owner, kalibreringen i foodtrucken):* erbjudandet om vinbaren kräver minst sex klarade situationer i foodtrucken (halvt grepp räknas som en halv) och kommer tidigast efter tio kvällar i foodtrucken. Ryktet i foodtrucken återhämtar sig som i resten av spelet. Den som har hälften rätt når aldrig bistron och får aldrig stjärnan; att stanna i foodtrucken är godkänt, och målet att stänga i 30–50 % av säsongerna utgår. Att den som har 0,6 rätt når vinbaren i 14 av 40 säsonger och den med 0,75 får stjärnan i 2–3 av 40 godtas som brus.
+
 ## Servicen
 
 Servicen är slumpen, viktad av spelarens förberedelser. Det spelaren gjort på morgonen, och det hon kan, avgör hur ofta saker går rätt. Hon ser konsekvenserna i rummet, inte i siffertavlor.

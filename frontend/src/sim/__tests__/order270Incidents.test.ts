@@ -162,7 +162,8 @@ describe('ORDER 270 — kvällens båge', () => {
 
   it('en klass utan händelsebank behåller scenarierna', () => {
     let s = makeNewGameState(7);
-    s = changeClass({ ...s, day: { ...s.day, dayNumber: firstDayOfWeek(2) } }, 'foodtruck', false);
+    // ORDER 315c — foodtrucken har nu en bank (situationerna ur Anders frågor); ölkrogen har ingen.
+    s = changeClass({ ...s, day: { ...s.day, dayNumber: firstDayOfWeek(2) } }, 'olkrog', false);
     s = reducer(stocked(s), { type: 'START_SERVICE' });
     expect(s.incidents.enabled).toBe(false);
     expect(s.day.scenarioTriggerTimes.length).toBeGreaterThan(0);
