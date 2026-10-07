@@ -278,9 +278,10 @@ export const LOAN = {
 // nexus-leverans-2026-10-01-byn-och-gasterna (Byn och gasterna.html PREF,
 // choose; byTruckar.js SPOTS, TRUCKS, EVENINGS), talen omräknade till
 // spelets notor (GUESTS.walletSek) och valda (F63). sim/village.ts läser dem.
-// ORDER 313 §9 — Byn just nu: pilen jämför de senaste trendWindowMin
-// spelminuterna med lika många dessförinnan (sim/villageNow.ts).
-export const VILLAGE_NOW = { trendWindowMin: 10 } as const;
+// ORDER 313 §9 — Byn just nu: pilen jämför placeringen nu med placeringen för trendWindowMin
+// spelminuter sedan (ORDER 318: den senaste kvarten, Designs D6 VILLAGE_NOW).
+// sim/villageNow.ts läser den.
+export const VILLAGE_NOW = { trendWindowMin: 15 } as const;
 
 export const VILLAGE = {
   section: 'Ekonomin > Byn',
@@ -1518,7 +1519,26 @@ export const WASTE = {
   cardboardKg: 11,
   // Rådet efter kvällen: minst så här många osålda portioner, avrundat
   // nedåt till ett parti.
-  adviceMinPortions: 3
+  adviceMinPortions: 3,
+  // ORDER 318 (Anders 2026-10-07, provspelet: "färsk mat blir svinn efter sin
+  // hållbarhet. Oöppnade flaskor blir aldrig svinn, bara öppnade flaskor
+  // efter ett par dagar.") — hållbarheten i kvällar, inköpskvällen
+  // medräknad: en portion köpt måndag med 2 kvällar säljs måndag och
+  // tisdag och blir svinn efter tisdagens service. En rätt håller som sin
+  // huvudråvara (den som kostar mest i rätten). Valda tal (F66).
+  shelfEvenings: {
+    'lake-fish': 1, char: 1, 'leaf-veg': 1, herbs: 1,
+    chicken: 2, mushrooms: 2,
+    pork: 3, lamb: 3, game: 3, dairy: 3, berries: 3,
+    'root-veg': 4, brie: 5, munster: 5,
+    eggs: 7, jamon: 7, vasterbotten: 14,
+    lentils: 30, flour: 30
+  } as Record<string, number>,
+  // Det som inte står i listan håller bara inköpskvällen.
+  shelfEveningsDefault: 1,
+  // En öppnad flaska (vin, alkoholfritt) säljs öppningskvällen och två
+  // kvällar till; sedan blir glasen som är kvar i den svinn.
+  openBottleEvenings: 3
 } as const;
 
 // ORDER 280 — morgonens inköp i partier (Designs leverans kassan och

@@ -997,6 +997,9 @@ export interface DayState {
   portionsServed?: number;
   bottleGlassesPoured?: number;
   stockBoughtToday?: boolean;
+  // ORDER 318 — dagens inköp per vara: portioner per rätt, glas per dryck
+  // (morgonens Inköp i dag; det som står i lager sedan förut räknas inte).
+  boughtToday?: Record<string, number>;
   wasteSettled?: boolean;
   // ORDER 280 — lagret när dörrarna öppnade (rättens portioner, dryckens
   // glas) och den nivå varningen senast gällde (Designs L1).
@@ -1653,6 +1656,10 @@ export interface SimulationState {
   // råvaror inte tar slut för varandra (stockPackages.ts). Saknas fältet
   // räknas portionerna ur lagret som förut.
   dishPortions?: Record<string, number>;
+  // ORDER 318 — portionsbokens partier med inköpsdag och sista kväll, och
+  // dagen då den öppna flaskan av varje dryck öppnades (sim/shelfLife.ts).
+  dishLots?: import('../sim/shelfLife').DishLots;
+  openBottles?: import('../sim/shelfLife').OpenBottles;
   // ORDER 285 — gårdagens rester: osålda portioner av en rätt som lagts
   // undan i kylrummet. En fråga på morgonen om hur råvaran tas tillvara
   // avgör om de går att sälja i dag eller går till sopbilen (salvage.ts).
@@ -1720,6 +1727,8 @@ export interface SimulationState {
     advice?: { dishId: string; fewer: number; savesSek: number } | null;
     // ORDER 285 — portionerna som lagts undan till morgonens fråga.
     aside?: { dishId: string; portions: number } | null;
+    // ORDER 318 — glas i öppnade flaskor som blev svinn.
+    openGlasses?: number;
     // ORDER 289 — maten tog slut före stängning: när, hur många blev utan, och
     // hur många portioner mer rådet föreslår.
     shortage?: { clock: string | null; guests: number; more: number } | null;

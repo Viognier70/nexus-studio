@@ -279,6 +279,19 @@ export function BankDialog({ open, onClose }: Props) {
   );
 }
 
+// ORDER 318 (Anders 2026-10-07, provspelet: kassan nådde −5 409 kr i vecka 1)
+// — Bankens varning före stängningen, efter första och andra bokslutet under
+// noll i rad (RISK.closeAfterWeeksBelowZero). Null när ingen varning gäller.
+export function bankBelowZeroWarning(sim: SimulationState): string | null {
+  const below = sim.economy.risk?.belowZeroInRow ?? 0;
+  if (!sim.economy.businessClass || below <= 0 || sim.economy.risk?.closedWeek != null) return null;
+  const left = RISK.closeAfterWeeksBelowZero - below;
+  const lang = getLanguage();
+  if (left === 2) return tt(lang, 'risk.bank.twoLeft');
+  if (left === 1) return tt(lang, 'risk.bank.oneLeft');
+  return null;
+}
+
 // Söndagens avräkning i ord (tidningen kommer i etapp 5).
 export function settlementInWords(sim: SimulationState): string[] {
   const s = sim.economy.lastSettlement;
@@ -302,7 +315,10 @@ export function settlementInWords(sim: SimulationState): string[] {
   // ORDER 303 E — dricksen till personalen och veckans sociala hållbarhet.
   if (s.social) lines.push(e.settlement.social(sek(s.social.tipsSek), Math.round(s.social.stamina * 100), Math.round(s.social.wellbeing * 100)));
   const below = sim.economy.risk?.belowZeroInRow ?? 0;
-  if (below > 0 && !s.closedNow) lines.push(tt(lang, 'risk.settle.below', { weeks: below, max: RISK.closeAfterWeeksBelowZero }));
+  if (below > 0 && !s.closedNow) {
+    const warning = bankBelowZeroWarning(sim);
+    lines.push(warning ?? tt(lang, 'risk.settle.below', { weeks: below, max: RISK.closeAfterWeeksBelowZero }));
+  }
   if (s.downgradedFrom) {
     lines.push(
       s.downgradedTo

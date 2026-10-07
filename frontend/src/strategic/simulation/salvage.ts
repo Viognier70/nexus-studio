@@ -15,6 +15,7 @@
 // Frågornas text står i strängtabellen (strings.salvage.questions), svaren
 // som räknas som rätt här (spelartext och metadata separerade).
 
+import { addLot } from '../../sim/shelfLife';
 import type { SimulationState } from '../types';
 import { SALVAGE, WASTE } from '../../sim/balance';
 import { strings } from '../../content/strings';
@@ -101,6 +102,8 @@ export function answerSalvage(state: SimulationState, optionId: string): Simulat
   const draft: SimulationState = { ...state };
   if (optionId === SALVAGE_BEST[group]) {
     draft.dishPortions = { ...(state.dishPortions ?? {}), [sv.dishId]: (state.dishPortions?.[sv.dishId] ?? 0) + sv.portions };
+    // ORDER 318 — resterna säljs i kväll eller inte alls.
+    draft.dishLots = addLot(state.dishLots, sv.dishId, sv.portions, state.day.dayNumber, 1);
     ecological(draft, SALVAGE.ecologicalPerPortion * sv.portions);
     draft.salvage = { ...sv, resolved: 'right', optionId, feeSek: 0 };
     streamLine(draft, strings.salvage.right(sv.portions));

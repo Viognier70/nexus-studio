@@ -145,16 +145,19 @@ describe('ORDER 313 §5–§7', () => {
 describe('ORDER 313 §9 — Byn just nu', () => {
   it('flest först, pilen efter takten, spelaren markerad, och raden som sammanfattar', () => {
     const now = [{ id: 'torgkrogen', kind: 'restaurant' as const, guests: 20 }, { id: 'player', kind: 'player' as const, guests: 12 }, { id: 'sjoboden', kind: 'restaurant' as const, guests: 8 }];
-    const ago10 = [{ id: 'torgkrogen', kind: 'restaurant' as const, guests: 10 }, { id: 'player', kind: 'player' as const, guests: 9 }, { id: 'sjoboden', kind: 'restaurant' as const, guests: 8 }];
+    const ago10 = [{ id: 'torgkrogen', kind: 'restaurant' as const, guests: 9 }, { id: 'player', kind: 'player' as const, guests: 10 }, { id: 'sjoboden', kind: 'restaurant' as const, guests: 8 }];
     const ago20 = [{ id: 'torgkrogen', kind: 'restaurant' as const, guests: 4 }, { id: 'player', kind: 'player' as const, guests: 2 }, { id: 'sjoboden', kind: 'restaurant' as const, guests: 5 }];
-    const rows = villageNow(now, (m) => (m === 10 ? ago10 : m === 20 ? ago20 : null));
+    const rows = villageNow(now, (m) => (m === 15 ? ago10 : m === 30 ? ago20 : null));
     expect(rows.map((r) => r.id)).toEqual(['torgkrogen', 'player', 'sjoboden']);
-    expect(rows.map((r) => r.trend)).toEqual(['up', 'down', 'down']);
+    // ORDER 318 — pilen följer placeringen för en kvart sedan.
+    expect(rows.map((r) => r.trend)).toEqual(['up', 'down', 'flat']);
     expect(rows[1].player).toBe(true);
     const sum = villageNowSummary(rows);
     const v = pickLang(TABLE, 'sv').villageNow;
-    expect(`${v.leads('Torgkrogen')} ${v.youAre(sum.playerRank!)}`).toBe('Torgkrogen drar flest gäster i kväll. Du är tvåa.');
+    // ORDER 318 — sammanfattningen följer placeringen (nöjda gäster).
+    expect(sum).toEqual({ kind: 'behind', leader: 'torgkrogen', place: 2 });
+    expect(`${v.leads('Torgkrogen')} ${v.youAre(2)}`).toBe('Torgkrogen har flest nöjda gäster i kväll. Du är tvåa.');
     expect(villageNow(now, () => null).every((r) => r.trend === null)).toBe(true);
-    expect(read('strategic/ui/host/RivalBand.tsx')).toContain('<VillageNowPanel />');
+    expect(read('strategic/ui/host/RivalBand.tsx')).toContain('<VillageNowPanel now={now} />');
   });
 });

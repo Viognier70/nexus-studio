@@ -1,0 +1,311 @@
+{
+  "definition": "fore = reports/order315a/efter40 (svinnet efter WASTE.carryShare), efter = reports/order318/efter40 (svinnet efter hållbarheten, WASTE.shelfEvenings och openBottleEvenings). 40 frön per rad. closed = stängda säsonger, meanCashEnd = medelkassan vid säsongens slut (kr), reachedVinbar/reachedBistro = säsonger som nådde steget, starEarned = säsonger med stjärna.",
+  "rows": {
+    "koncept-bistro-0.85": {
+      "fore": {
+        "player": "bistro",
+        "closed": 0,
+        "meanCashEnd": 94522,
+        "reachedVinbar": 0,
+        "reachedBistro": 19,
+        "starEarned": 11
+      },
+      "efter": {
+        "player": "bistro",
+        "closed": 0,
+        "meanCashEnd": 99345,
+        "reachedVinbar": 0,
+        "reachedBistro": 23,
+        "starEarned": 18
+      }
+    },
+    "koncept-enkel-0.6": {
+      "fore": {
+        "player": "enkel",
+        "closed": 19,
+        "meanCashEnd": -771,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "enkel",
+        "closed": 21,
+        "meanCashEnd": -1190,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      }
+    },
+    "koncept-enkel-0.85": {
+      "fore": {
+        "player": "enkel",
+        "closed": 0,
+        "meanCashEnd": 59449,
+        "reachedVinbar": 0,
+        "reachedBistro": 29,
+        "starEarned": 25
+      },
+      "efter": {
+        "player": "enkel",
+        "closed": 0,
+        "meanCashEnd": 60174,
+        "reachedVinbar": 0,
+        "reachedBistro": 33,
+        "starEarned": 25
+      }
+    },
+    "koncept-soigne-0.6": {
+      "fore": {
+        "player": "soigne",
+        "closed": 40,
+        "meanCashEnd": -81593,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "soigne",
+        "closed": 40,
+        "meanCashEnd": -71869,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      }
+    },
+    "koncept-soigne-0.85": {
+      "fore": {
+        "player": "soigne",
+        "closed": 1,
+        "meanCashEnd": 134965,
+        "reachedVinbar": 0,
+        "reachedBistro": 34,
+        "starEarned": 32
+      },
+      "efter": {
+        "player": "soigne",
+        "closed": 1,
+        "meanCashEnd": 182714,
+        "reachedVinbar": 0,
+        "reachedBistro": 39,
+        "starEarned": 35
+      }
+    },
+    "stjarna-0.6": {
+      "fore": {
+        "player": "stjarna",
+        "closed": 34,
+        "meanCashEnd": -13739,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "stjarna",
+        "closed": 35,
+        "meanCashEnd": -15408,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      }
+    },
+    "stjarna-0.75": {
+      "fore": {
+        "player": "stjarna",
+        "closed": 0,
+        "meanCashEnd": 52488,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "stjarna",
+        "closed": 0,
+        "meanCashEnd": 53765,
+        "reachedVinbar": 0,
+        "reachedBistro": 2,
+        "starEarned": 1
+      }
+    },
+    "stjarna-0.85": {
+      "fore": {
+        "player": "stjarna",
+        "closed": 0,
+        "meanCashEnd": 94522,
+        "reachedVinbar": 0,
+        "reachedBistro": 19,
+        "starEarned": 11
+      },
+      "efter": {
+        "player": "stjarna",
+        "closed": 0,
+        "meanCashEnd": 99345,
+        "reachedVinbar": 0,
+        "reachedBistro": 23,
+        "starEarned": 18
+      }
+    },
+    "trappa-forsiktig": {
+      "fore": {
+        "player": "forsiktig",
+        "closed": 0,
+        "meanCashEnd": 92633,
+        "reachedVinbar": 0,
+        "reachedBistro": 17,
+        "starEarned": 10
+      },
+      "efter": {
+        "player": "forsiktig",
+        "closed": 0,
+        "meanCashEnd": 96208,
+        "reachedVinbar": 0,
+        "reachedBistro": 23,
+        "starEarned": 13
+      }
+    },
+    "trappa-halva": {
+      "fore": {
+        "player": "halva",
+        "closed": 29,
+        "meanCashEnd": -11360,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "halva",
+        "closed": 31,
+        "meanCashEnd": -10864,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      }
+    },
+    "trappa-halvbra": {
+      "fore": {
+        "player": "halvbra",
+        "closed": 40,
+        "meanCashEnd": -54509,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "halvbra",
+        "closed": 40,
+        "meanCashEnd": -56072,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      }
+    },
+    "trappa-ignorerar": {
+      "fore": {
+        "player": "ignorerar",
+        "closed": 40,
+        "meanCashEnd": -53661,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "ignorerar",
+        "closed": 40,
+        "meanCashEnd": -49855,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      }
+    },
+    "trappa-ignorerarUtbildad": {
+      "fore": {
+        "player": "ignorerarUtbildad",
+        "closed": 30,
+        "meanCashEnd": -6943,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "ignorerarUtbildad",
+        "closed": 23,
+        "meanCashEnd": -2859,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      }
+    },
+    "trappa-klok": {
+      "fore": {
+        "player": "klok",
+        "closed": 0,
+        "meanCashEnd": 65126,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "klok",
+        "closed": 0,
+        "meanCashEnd": 64159,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      }
+    },
+    "trappa-mentorn": {
+      "fore": {
+        "player": "mentorn",
+        "closed": 0,
+        "meanCashEnd": 46520,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "mentorn",
+        "closed": 0,
+        "meanCashEnd": 46960,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      }
+    },
+    "trappa-rimlig": {
+      "fore": {
+        "player": "rimlig",
+        "closed": 0,
+        "meanCashEnd": 35690,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "rimlig",
+        "closed": 0,
+        "meanCashEnd": 31595,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      }
+    },
+    "trappa-slarvig": {
+      "fore": {
+        "player": "slarvig",
+        "closed": 40,
+        "meanCashEnd": -69857,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "slarvig",
+        "closed": 40,
+        "meanCashEnd": -69503,
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "starEarned": 0
+      }
+    }
+  }
+}
