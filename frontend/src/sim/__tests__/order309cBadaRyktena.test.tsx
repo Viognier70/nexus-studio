@@ -78,14 +78,15 @@ describe('ORDER 309c — 2. kortet', () => {
   it('svenska: "Ryktet som bistro +3 · Krogens rykte +1"', () => {
     act(() => setLanguage('sv'));
     const el = cardText(bistro());
-    expect(el?.textContent).toBe('Ryktet som bistro +3 · Krogens rykte +1');
+    // ORDER 315 — nivåerna heter Enkel · Mellan · Exklusiv.
+    expect(el?.textContent).toBe('Ryktet i nivån Mellan +3 · Krogens rykte +1');
     expect(el?.getAttribute('data-concept-change')).toBe('3');
     expect(el?.getAttribute('data-restaurant-change')).toBe('1');
   });
 
   it('engelska: "Reputation as a bistro +3 · Your venue’s reputation +1"', () => {
     act(() => setLanguage('en'));
-    expect(cardText(bistro())?.textContent).toBe('Reputation as a bistro +3 · Your venue’s reputation +1');
+    expect(cardText(bistro())?.textContent).toBe('Reputation at the Mid-range level +3 · Your venue’s reputation +1');
   });
 
   it('klassen utan koncept: bara krogens rykte, med minustecken', () => {
@@ -102,6 +103,6 @@ describe('ORDER 309c — 2. kortet', () => {
     const sv = stringsFor('sv').foljder.review;
     const en = stringsFor('en').foljder.review;
     expect(sv.venueChange(0)).toBe('Krogens rykte ±0');
-    expect(en.classChange('Bistro', -4)).toBe('Reputation as a bistro −4');
+    expect(en.classChange('Mid-range', -4)).toBe('Reputation at the Mid-range level −4');
   });
 });

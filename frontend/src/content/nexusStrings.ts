@@ -3403,9 +3403,11 @@ export const TABLE = {
         humidor: { name: 'Humidor', note: 'The cigar and the terrace.' }
       } as Record<string, { name: string; note: string }>
     },
+    // ORDER 315 (Anders 2026-10-06) — konceptklasserna från 307 är nivåer inom
+    // varje verksamhet: Enkel · Mellan · Exklusiv (nycklarna i koden är kvar).
     tier: {
-      sv: { enkel: 'Enkel', bistro: 'Bistro', soigne: 'Soigné' } as Record<string, string>,
-      en: { enkel: 'Simple', bistro: 'Bistro', soigne: 'Soigné' } as Record<string, string>
+      sv: { enkel: 'Enkel', bistro: 'Mellan', soigne: 'Exklusiv' } as Record<string, string>,
+      en: { enkel: 'Simple', bistro: 'Mid-range', soigne: 'Exclusive' } as Record<string, string>
     },
     // Designs ordval (D5 foljderStrings.ts shop.*).
     classTitle: { sv: 'Krogens klass', en: 'Your venue’s class' },
@@ -3634,8 +3636,8 @@ export const TABLE = {
       classLine: { sv: (cls: string) => `Ryktet som ${cls.toLowerCase()}`, en: (cls: string) => `Reputation as a ${cls.toLowerCase()}` },
       // ORDER 309c — båda ändringarna under stapeln: konceptets och krogens.
       classChange: {
-        sv: (cls: string, n: number) => `Ryktet som ${cls.toLowerCase()} ${n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '±0'}`,
-        en: (cls: string, n: number) => `Reputation as a ${cls.toLowerCase()} ${n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '±0'}`
+        sv: (cls: string, n: number) => `Ryktet i nivån ${cls} ${n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '±0'}`,
+        en: (cls: string, n: number) => `Reputation at the ${cls} level ${n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '±0'}`
       },
       venueChange: {
         sv: (n: number) => `Krogens rykte ${n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '±0'}`,

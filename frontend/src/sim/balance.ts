@@ -322,14 +322,17 @@ export const VILLAGE = {
   // Krogarna. reputation är startryktet (0–1); stjärnorna följer ryktet.
   // seats och turns sätter hur många de kan ta en kväll; billSek är notan
   // per gäst. openDays: kvällarna de har öppet.
+  // ORDER 315 (Anders 2026-10-06) — level: konkurrentens nivå, Enkel · Mellan ·
+  // Exklusiv (nycklarna enkel, bistro, soigne som CONCEPT). Visas i Byn just nu;
+  // påverkar inte simuleringen än.
   rivals: [
-    { id: 'torgkrogen', kind: 'restaurant', reputation: 0.5, billSek: 210, seats: 44, turns: 1.6, taste: { student: 1, middle: 3, high: 1.5 }, openDays: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'] },
-    { id: 'pizzeria-grytan', kind: 'restaurant', reputation: 0.1, billSek: 120, seats: 34, turns: 2, taste: { student: 5, middle: 1, high: 0 }, openDays: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'] },
-    { id: 'sjoboden', kind: 'restaurant', reputation: 0.3, billSek: 250, seats: 30, turns: 1.4, taste: { student: 2, middle: 2.6, high: 1 }, openDays: ['wed', 'thu', 'fri', 'sat'] },
-    { id: 'hotellets-matsal', kind: 'restaurant', reputation: 0.75, billSek: 430, seats: 56, turns: 1.2, taste: { student: 0, middle: 0.6, high: 3 }, openDays: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'] },
-    { id: 'grillvagnen', kind: 'truck', reputation: 0.3, billSek: 95, seats: 0, turns: 0, taste: { student: 4, middle: 2, high: 0.2 }, openDays: ['tue', 'wed', 'thu', 'fri', 'sat'] },
-    { id: 'tacovagnen', kind: 'truck', reputation: 0.1, billSek: 85, seats: 0, turns: 0, taste: { student: 4.5, middle: 1.5, high: 0.1 }, openDays: ['wed', 'thu', 'fri', 'sat'] }
-  ] as ReadonlyArray<{ id: string; kind: 'restaurant' | 'truck'; reputation: number; billSek: number; seats: number; turns: number; taste: { student: number; middle: number; high: number }; openDays: readonly Weekday[] }>,
+    { id: 'torgkrogen', level: 'bistro', kind: 'restaurant', reputation: 0.5, billSek: 210, seats: 44, turns: 1.6, taste: { student: 1, middle: 3, high: 1.5 }, openDays: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'] },
+    { id: 'pizzeria-grytan', level: 'enkel', kind: 'restaurant', reputation: 0.1, billSek: 120, seats: 34, turns: 2, taste: { student: 5, middle: 1, high: 0 }, openDays: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'] },
+    { id: 'sjoboden', level: 'bistro', kind: 'restaurant', reputation: 0.3, billSek: 250, seats: 30, turns: 1.4, taste: { student: 2, middle: 2.6, high: 1 }, openDays: ['wed', 'thu', 'fri', 'sat'] },
+    { id: 'hotellets-matsal', level: 'soigne', kind: 'restaurant', reputation: 0.75, billSek: 430, seats: 56, turns: 1.2, taste: { student: 0, middle: 0.6, high: 3 }, openDays: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'] },
+    { id: 'grillvagnen', level: 'enkel', kind: 'truck', reputation: 0.3, billSek: 95, seats: 0, turns: 0, taste: { student: 4, middle: 2, high: 0.2 }, openDays: ['tue', 'wed', 'thu', 'fri', 'sat'] },
+    { id: 'tacovagnen', level: 'enkel', kind: 'truck', reputation: 0.1, billSek: 85, seats: 0, turns: 0, taste: { student: 4.5, middle: 1.5, high: 0.1 }, openDays: ['wed', 'thu', 'fri', 'sat'] }
+  ] as ReadonlyArray<{ id: string; level: 'enkel' | 'bistro' | 'soigne'; kind: 'restaurant' | 'truck'; reputation: number; billSek: number; seats: number; turns: number; taste: { student: number; middle: number; high: number }; openDays: readonly Weekday[] }>,
   // Vagnarna tar så här många gäster en kväll (de äter stående vid luckan).
   truckGuestsPerEvening: 40,
   // Paket 2:s tre platser (byTruckar.js SPOTS), och var vagnarna står varje

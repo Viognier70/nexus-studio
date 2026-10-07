@@ -7,6 +7,7 @@ import { useRef } from 'react';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { strings } from '../../../content/strings';
 import { clockMinutes } from '../../../sim/clock';
+import { VILLAGE } from '../../../sim/balance';
 import { villageLive, type VenueLive } from '../../../sim/villageLive';
 import { villageNow, villageNowSummary } from '../../../sim/villageNow';
 import { useSimState } from '../../simulation/SimulationProvider';
@@ -28,6 +29,8 @@ export function VillageNowPanel() {
   const sum = villageNowSummary(now);
   const v = strings.villageNow;
   const name = (id: string) => strings.village.venues[id] ?? id;
+  // ORDER 315 — konkurrentens nivå (balance.ts VILLAGE.rivals level).
+  const level = (id: string) => { const l = VILLAGE.rivals.find((x) => x.id === id)?.level; return l ? strings.shopTabs.tier[l] : null; };
   const line = sum.leader === null
     ? v.quiet
     : sum.playerLeads
@@ -39,7 +42,7 @@ export function VillageNowPanel() {
       <ol className="nx-village-now-list">
         {shown.map((r) => (
           <li key={r.id} data-player={r.player} data-testid={`village-now-${r.id}`} data-guests={r.guests} data-trend={r.trend ?? ''}>
-            <span className="nx-village-now-name">{r.player ? `${name(r.id)} · ${v.you}` : name(r.id)}</span>
+            <span className="nx-village-now-name">{r.player ? `${name(r.id)} · ${v.you}` : level(r.id) ? `${name(r.id)} · ${level(r.id)}` : name(r.id)}</span>
             <span className="nx-village-now-guests">{v.guests(r.guests)}</span>
             <span className="nx-village-now-trend" aria-label={r.trend === 'up' ? v.up : r.trend === 'down' ? v.down : undefined}>
               {r.trend === 'up' ? <ArrowUp size={14} aria-hidden /> : r.trend === 'down' ? <ArrowDown size={14} aria-hidden /> : null}
