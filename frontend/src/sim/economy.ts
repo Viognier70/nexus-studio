@@ -11,6 +11,7 @@ import { staffSnapshot } from './staffCondition';
 import {
   BUSINESS_CLASSES,
   EVENING_ECONOMY,
+  FOODTRUCK,
   DOWNGRADE,
   ECONOMY,
   NEW_START,
@@ -312,7 +313,9 @@ export function dailyGuestCap(state: SimulationState): number {
   // ORDER 296 — stamgästboken: stamgästerna kommer tillbaka oftare.
   const regulars = abilityActive(state, 'regulars') ? SHOP.effects.regularsArrivals : 0;
   // ORDER 292 — gårdagens svar: bokningar tack vare (eller avbokade), sim/nextDay.ts.
-  return Math.max(0, Math.floor(pool * playerShareTonight(state) * Math.max(0, 1 + buzz + dj + regulars)) + answerBookingsFor(state));
+  // ORDER 315b — foodtrucken når förbipasserande vid Torget (FOODTRUCK.guestCapFactor).
+  const truck = state.economy.businessClass === 'foodtruck' ? FOODTRUCK.guestCapFactor : 1;
+  return Math.max(0, Math.floor(pool * truck * playerShareTonight(state) * Math.max(0, 1 + buzz + dj + regulars)) + answerBookingsFor(state));
 }
 
 // Nedgraderingskedjan (speldesign > Nedgradering).
@@ -374,7 +377,14 @@ export function dayEndCash(state: SimulationState): number {
 export function dailyWagesSek(state: SimulationState): number {
   if (WAGES.onlyOnServiceDays && !calendarFor(state.day.dayNumber).isServiceDay) return 0;
   const f = wageFactor(state);
-  return state.team.members.filter((m) => !m.isAgency).reduce((sum, m) => sum + Math.round(m.dailyCost * f), 0);
+  return paidMembers(state).reduce((sum, m) => sum + Math.round(m.dailyCost * f), 0);
+}
+
+// ORDER 315b — de som får lön: laget utom inhyrda, och i foodtrucken utom
+// spelaren själv vid grillen (FOODTRUCK.unpaidRoles).
+export function paidMembers(state: SimulationState): SimulationState['team']['members'] {
+  const unpaid = state.economy.businessClass === 'foodtruck' ? FOODTRUCK.unpaidRoles : [];
+  return state.team.members.filter((m) => !m.isAgency && !unpaid.includes(m.role));
 }
 
 // ORDER 307b — personalens dagslön efter kvällens koncept (balance.ts CONCEPT.wageFactor).
@@ -650,6 +660,8 @@ export function isIntroRentWeek(week: number): boolean {
 
 export function weeklyRentSek(id: BusinessClassId | null, week?: number): number {
   if (!id) return 0;
+  // ORDER 315b — foodtrucken: platsen och tillståndet vid Torget, i stället för hyra.
+  if (id === 'foodtruck') return FOODTRUCK.pitchFeeWeeklySek;
   const share = week !== undefined && isIntroRentWeek(week) ? RENT.introShareOfNormalWeeklyRevenue : RENT.shareOfNormalWeeklyRevenue;
   return Math.round(share * ECONOMY.normalWeeklyRevenueSek[id]);
 }

@@ -275,5 +275,5 @@ describe('ORDER 131 §2 — load-svep per verksamhet (fixed-seed)', () => {
       const sum = c.histogram.reduce((a, b) => a + b, 0);
       expect(sum, `${c.business}/${c.service} histogram sum`).toBe(c.totalSamples);
     }
-  }, 300_000); // 5 min timeout — svep över 4×2×200 kan ta över default 5s
+  }, 600_000); // 10 min (ORDER 315b: foodtruckens fler gäster; 73 s ensamt, över 300 s i hela sviten)
 });

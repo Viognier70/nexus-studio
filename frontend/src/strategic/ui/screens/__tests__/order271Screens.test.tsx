@@ -62,26 +62,14 @@ function newPlayer(): SimulationState {
 }
 
 describe('ORDER 271 — första bankmötet (B0a, B0b)', () => {
-  it('brons i Kalastorget: B0a, food trucken är erbjudandet', () => {
-    const s = reducer(exam(newPlayer(), 'kalastorget', EXAM.questionsDrawn), { type: 'CLOSE_VISIT' });
-    const { getByTestId, queryByTestId } = render(withSim(s, <BankDialog open onClose={() => {}} />));
-    expect(getByTestId('screen-B0a')).toBeTruthy();
-    expect(getByTestId('choose-foodtruck')).toBeTruthy();
-    expect(queryByTestId('choose-vinbar')).toBeNull();
-  });
-
-  it('brons i Stensöta (F33): B0b, vinbaren är erbjudandet och food trucken ett alternativ', () => {
+  // ORDER 315b — i introduktionen erbjuder Åsa foodtrucken; banken pekar dit
+  // och erbjuder ingen första verksamhet (B0a och B0b finns inte längre).
+  it('introduktionen: banken pekar på Åsas foodtruck och har inget val', () => {
     const s = reducer(exam(newPlayer(), 'stensota', EXAM.questionsDrawn), { type: 'CLOSE_VISIT' });
-    const actions: SimAction[] = [];
-    const { getByTestId } = render(withSim(s, <BankDialog open onClose={() => {}} />, (a) => actions.push(a)));
-    expect(getByTestId('screen-B0b')).toBeTruthy();
-    expect(getByTestId('choose-foodtruck')).toBeTruthy();
-    // ORDER 294 — introduktionshyran står i bankmötet de första veckorna.
-    // ORDER 303c — ingen hyra de fyra första veckorna.
-    expect(getByTestId('bank-intro-rent').textContent).toMatch(/introduktionshyra|introductory rent|ingen hyra|no rent/);
-    expect(getByTestId('bank-intro-rent').textContent).toMatch(/four weeks|fyra första veckorna/);
-    fireEvent.click(getByTestId('choose-vinbar'));
-    expect(actions).toEqual([{ type: 'CHOOSE_CLASS', to: 'vinbar' }]);
+    const { getByTestId, queryByTestId } = render(withSim(s, <BankDialog open onClose={() => {}} />));
+    expect(getByTestId('screen-B0-truck')).toBeTruthy();
+    expect(queryByTestId('choose-vinbar')).toBeNull();
+    expect(queryByTestId('choose-foodtruck')).toBeNull();
   });
 
   it('med verksamhet: B1', () => {

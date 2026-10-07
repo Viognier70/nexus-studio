@@ -294,9 +294,15 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
                     <NxButton testId="open-buy" onClick={onOpenBuy}>{strings.morningBuy.open}</NxButton>
                   )}
                 </div>
+              ) : sim.economy.businessClass === 'foodtruck' ? (
+                // ORDER 315b — foodtruckens meny vid luckan; varorna köps efter kön.
+                <div className="nxs-dark-box nxs-mt-24" data-testid="truck-menu" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+                  <div className="nx-label" style={{ color: 'inherit' }}>{strings.ladder.truckMenuLabel}</div>
+                  <p className="nx-body">{strings.ladder.truckMenu}</p>
+                </div>
               ) : <MorningMenuPanel />}
               {/* ORDER 275 — i klasser med paket står prognosen i lagerpanelen. */}
-              {cal.isServiceDay && !packagesFor(sim.economy.businessClass) && (
+              {cal.isServiceDay && !packagesFor(sim.economy.businessClass) && sim.economy.businessClass !== 'foodtruck' && (
                 <div className="nxs-dark-box nxs-mt-24" data-testid="stock-forecast">
                   <NxIcon name="package" size={36} />
                   <p className="nx-body">{forecastText}</p>

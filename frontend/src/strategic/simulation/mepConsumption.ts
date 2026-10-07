@@ -23,6 +23,7 @@
 // Istället tar gästen en satisfaction-hit vid överlämningen skalad efter
 // vilken post som saknas.
 
+import { businessHasMiseEnPlace } from '../business/businessClass';
 import type { SimulationState } from '../types';
 import { MEP_EVENING } from '../../sim/balance';
 
@@ -61,6 +62,10 @@ export function applyMissingMepHit(
 ): number {
   const readiness = state.day.prepReadiness;
   if (!readiness) return 0;
+  // ORDER 315b — verksamheter utan mise en place (foodtrucken) har ingen
+  // beredskap som kan saknas: deras tomma beredskap gav varje gäst alla fem
+  // avdragen (−0,52) vid luckan.
+  if (!businessHasMiseEnPlace(state.businessClass)) return 0;
   let totalHit = 0;
   for (const [key, threshold] of Object.entries(MEP_HIT_THRESHOLD_MAP)) {
     const r = readiness[key] ?? 1;

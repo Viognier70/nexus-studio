@@ -4,12 +4,12 @@ import { buildMorningReview } from '../../sim/morningReview';
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
 import { EQUIPMENT_IDS, GOODS_SUPPLIER_IDS, reputationByTier, equipmentOpened, equipmentOwned, equipmentSpec, equipmentUnlocked, supplierOwned, supplierPrice, supplierUnlocked, type EquipmentId, type GoodsSupplierId } from '../../sim/goods';
-import { CONCEPT, CONSEQUENCES, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
+import { CONCEPT, CONSEQUENCES, FOODTRUCK, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, closeIncidents, countDown, isIncidentOpen, lockAnswer, maybeOpenIncident, planIncidents, resolveIncident, settlePendingAnswer, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction, firstExamPassed, investLocked } from '../../sim/introduction';
-import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek, isClosed } from '../../sim/economy';
+import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek, isClosed } from '../../sim/economy';
 import { answerVisit, closeVisit, nextVisitQuestion, scheduleSlotsLeft, startVisit } from '../knowledge/pavilionVisit';
 import { createRng } from '../util/rng';
 import type {
@@ -1455,7 +1455,9 @@ function chooseClass(state: SimulationState, to: BusinessClassId): SimulationSta
   const option = classOptions(state).find((o) => o.id === to);
   if (!option || option.status !== 'available') return state;
   // ORDER 267 — bankmötet i introduktionen öppnar den första verksamheten.
-  if (state.introduction) return openFirstBusiness(state, to);
+  // ORDER 315b — i introduktionen öppnas den första verksamheten bara genom
+  // Åsas erbjudande om foodtrucken (LADDER_TAKE, sim/ladder.ts openFoodtruck).
+  if (state.introduction) return state;
   return changeClass(state, to, false);
 }
 
@@ -1840,7 +1842,8 @@ function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inL
       rev *= ladderBillFactor(draft);
       // ORDER 303 B — en nöjd gäst vid bord räknas i byns placering.
       if (guestMoodValue(guest, draft.day.roomMoodLift ?? 0) >= MOOD_BALANCE.threshold.content) draft.day.contentTonight = (draft.day.contentTonight ?? 0) + 1;
-    } else if (draft.menu.length > 0) {
+    } else if (draft.menu.length > 0 && draft.economy.businessClass !== 'foodtruck') {
+      // ORDER 315b — foodtrucken har luckans meny (FOODTRUCK.billSek), inte vinbarens.
       const rng = createRng(draft.rngState);
       const targetRoll = rng.next();
       const substituteRoll = rng.next();
@@ -1859,7 +1862,21 @@ function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inL
       }
     } else {
       // ORDER 291 — food trucken och ölkrogen utan meny: samma plånbok.
-      rev = revenuePerGuest(draft.policies) * revenueMult * legacyBillFactor(guest);
+      // ORDER 315b — foodtruckens nota är fast (FOODTRUCK.billSek), och varorna
+      // en andel av den.
+      const truck = draft.economy.businessClass === 'foodtruck';
+      rev = (truck ? FOODTRUCK.billSek : revenuePerGuest(draft.policies)) * revenueMult * legacyBillFactor(guest);
+      if (truck) {
+        ingredientCostSek = rev * FOODTRUCK.goodsShare;
+        // ORDER 315b — kvällens gäster i foodtrucken är de som handlat vid
+        // luckan (som gästerna vid borden i vinbaren: byn, bandet och
+        // kvällens tal), och en nöjd gäst räknas i byns placering.
+        if (!guest.seatedTonight) {
+          guest.seatedTonight = true;
+          draft.day = { ...draft.day, seatedTonight: (draft.day.seatedTonight ?? 0) + 1 };
+        }
+        if (guestMoodValue(guest, draft.day.roomMoodLift ?? 0) >= MOOD_BALANCE.threshold.content) draft.day.contentTonight = (draft.day.contentTonight ?? 0) + 1;
+      }
     }
     // ORDER 269 — Stensöta höjer intäkten per gäst via dryck.
     rev *= drinkRevenueFactor(draft);

@@ -39,7 +39,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 describe('module graph smoke — imports resolve without throwing', () => {
   it(
     'imports StrategicApp module (pulls the full entry graph)',
-    { timeout: 30_000 },   // R3F + drei pull large chunks; cold transform takes several seconds
+    { timeout: 90_000 },   // R3F + drei pull large chunks; cold transform takes several seconds (ORDER 315b: 15 s ensamt, över 30 s i hela sviten)
     async () => {
       // Dynamic import so a module-init throw becomes a rejected
       // promise rather than killing the test file at load time.

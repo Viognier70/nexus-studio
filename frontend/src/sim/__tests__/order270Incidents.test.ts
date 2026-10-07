@@ -516,8 +516,11 @@ describe('ORDER 270 — den svaga spelaren står till slut utan verksamhet', () 
     });
     const classes = [...new Set(run.days.map((d) => d.businessClass))];
     expect(classes).toContain('foodtruck');
-    expect(noBusiness).not.toBeNull();
-    const nb = noBusiness!;
+    // ORDER 315b — foodtrucken bär sig nu för den svaga spelaren (avgiften i
+    // stället för hyran, notan och varorna efter förslaget), så den lämnas inte
+    // på fyra veckor. Rutan prövas då med foodtruckens tvingade nedgradering.
+    const nb = noBusiness ?? changeClass(run.final, null, true);
+    expect(nb.economy.businessClass).toBeNull();
     expect(isStrandedWithoutBusiness(nb)).toBe(nb.cash < minimumStakeSek(nb));
     const stranded: SimulationState = nb.cash < minimumStakeSek(nb) ? nb : { ...nb, cash: 0 };
     expect(isStrandedWithoutBusiness(stranded)).toBe(true);

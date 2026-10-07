@@ -10,7 +10,7 @@
 import { useState } from 'react';
 import { strings } from '../../content/strings';
 import { useLanguage } from '../../content/language';
-import { canTakeOffer, ladderOf } from '../../sim/ladder';
+import { canTakeOffer, currentOffer } from '../../sim/ladder';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { useReviewPending } from './MorningReviewLine';
 import { SenderTag } from './SenderTag';
@@ -25,7 +25,7 @@ export function LadderOfferCard({ hidden }: { hidden?: boolean }) {
   const lang = useLanguage();
   const reviewPending = useReviewPending(sim);
   const [reopened, setReopened] = useState<number | null>(null);
-  const offer = sim.day.period === 'morning' ? ladderOf(sim)?.offer ?? null : null;
+  const offer = sim.day.period === 'morning' ? currentOffer(sim) : null;
   if (!offer || hidden || reviewPending) return null;
   const l = strings.ladder;
   const kr = (n: number) => Math.round(n).toLocaleString(lang === 'sv' ? 'sv-SE' : 'en-GB');
@@ -45,7 +45,7 @@ export function LadderOfferCard({ hidden }: { hidden?: boolean }) {
         <SenderTag sender="asa" />
         <h2 className="nx-heading" style={{ margin: '0.4em 0' }}>{title}</h2>
         <p className="nx-body" data-testid="ladder-line">{l.line[offer.to]}</p>
-        <p className="nx-small" data-testid="ladder-price">{l.price(kr(offer.depositSek), kr(offer.loanSek))}</p>
+        <p className="nx-small" data-testid="ladder-price">{offer.to === 'foodtruck' ? l.truckPrice : l.price(kr(offer.depositSek), kr(offer.loanSek))}</p>
         {can === 'cash' && <p className="nx-small" data-testid="ladder-cash-short">{l.cashShort(kr(offer.depositSek))}</p>}
         <p className="nx-small" style={{ opacity: 0.8 }}>{l.notYetNote}</p>
         <DinVag sim={sim} />

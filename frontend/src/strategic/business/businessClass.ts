@@ -19,6 +19,7 @@
 // KnowledgeClass mappas till `'gästgiveriet'` här och läcker aldrig till
 // spelaren (grep-testet i ORDER 109 §5 DoD 6 fångar det).
 
+import { FOODTRUCK } from '../../sim/balance';
 import type { BankMeetingKlass, SimulationState } from '../types';
 import { TOTAL_SEATS } from './interiorLayout';
 
@@ -73,7 +74,8 @@ export const BUSINESS_CLASS_CONFIG: Record<BusinessClass, BusinessClassConfig> =
     hasSeats: false,
     hasMiseEnPlace: false,
     hasOvernight: false,
-    capacityFor: (staffCount) => Math.max(3, staffCount * 3)
+    // ORDER 315b — kön vid luckan: FOODTRUCK.queuePerStaff per person i laget (förut 3).
+    capacityFor: (staffCount) => Math.max(3, staffCount * FOODTRUCK.queuePerStaff)
   },
   gästgiveriet: {
     id: 'gästgiveriet',

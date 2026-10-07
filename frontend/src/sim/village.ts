@@ -179,6 +179,9 @@ export interface VenueTonight {
 }
 
 // Kvällens krogar: spelarens och rivalernas planer.
+// ORDER 315b — foodtruckens plats (ORDRAR_314-316_D7.md: "Det står en foodtruck ledig vid Torget").
+export const PLAYER_TRUCK_SPOT = 'torget' as const;
+
 export function venuesTonight(state: SimulationState, dayNumber = state.day.dayNumber): VenueTonight[] {
   const cal = calendarFor(dayNumber);
   const seed = state.seed ?? 0;
@@ -187,7 +190,9 @@ export function venuesTonight(state: SimulationState, dayNumber = state.day.dayN
   const rep = state.day.reputationAtDayStart ?? state.reputation;
   const player: VenueTonight = {
     id: PLAYER_VENUE, kind: 'player', control: null, open: cal.isServiceDay && !!state.economy?.businessClass,
-    billSek: playerBillSek(state), stars: starsFor(rep), reputation: rep, spot: null,
+    billSek: playerBillSek(state), stars: starsFor(rep), reputation: rep,
+    // ORDER 315b — spelarens foodtruck står vid Torget varje kväll.
+    spot: state.economy?.businessClass === 'foodtruck' ? PLAYER_TRUCK_SPOT : null,
     seats: BUSINESS_CLASSES.list.find((c) => c.id === state.economy?.businessClass)?.seats ?? 0
   };
   const rivals = village.rivals.flatMap((r): VenueTonight[] => {

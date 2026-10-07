@@ -71,7 +71,8 @@ describe('ORDER 313 §2 — spelaren börjar från noll', () => {
     expect(firstExamPassed(s)).toBe(true);
     expect(investLocked(s)).toBe(false);
     expect(s.unlockSaid).toBe(true);
-    expect(pickLang(TABLE, 'sv').introduction.steps.bank).toMatch(/^Nu har du visat vad du kan\. Banken lyssnar, och du kan börja satsa\./);
+    // ORDER 315b — i introduktionen erbjuder Åsa foodtrucken (bankens steg).
+    expect(pickLang(TABLE, 'sv').introduction.steps.bank).toBe('Du har klarat inträdet. Det står en foodtruck ledig vid Torget. Den är din, om du vill.');
   });
 
   it('efter introduktionen: Åsas replik visas en gång (SAY_UNLOCKED)', () => {

@@ -1,0 +1,136 @@
+{
+  "definition": "Foodtrucken från inträdet (weekHarness.ts startInFoodtruck), spelaren stannar kvar. guestsPerEvening: gäster som kom (playDay guests); billSek: kvällens intäkt per gäst; goodsShare: råvarornas rader i kassaboken (ingredient) mot intäkten; wagesPerEveningSek: lönerna (wage); byWeek: kassans förändring per vecka, veckans intäkt och platsens avgift (lastSettlement.rentSek).",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "weeks": 3,
+  "players": {
+    "basta": {
+      "guestsPerEvening": {
+        "mean": 30,
+        "min": 7,
+        "max": 95
+      },
+      "billSek": 106,
+      "revenuePerEveningSek": 3192,
+      "goodsShare": 0.4,
+      "wagesPerEveningSek": 1900,
+      "byWeek": [
+        {
+          "week": 1,
+          "meanResultSek": 11874,
+          "meanRevenueSek": 16613,
+          "rentSek": 1500,
+          "meanCashEnd": 26874
+        },
+        {
+          "week": 2,
+          "meanResultSek": 13584,
+          "meanRevenueSek": 19008,
+          "rentSek": 1500,
+          "meanCashEnd": 40458
+        },
+        {
+          "week": 3,
+          "meanResultSek": 15118,
+          "meanRevenueSek": 21826,
+          "rentSek": 1500,
+          "meanCashEnd": 55576
+        }
+      ],
+      "team": [
+        "kock",
+        "lärling"
+      ],
+      "loan": null,
+      "class": "foodtruck"
+    },
+    "halva": {
+      "guestsPerEvening": {
+        "mean": 27,
+        "min": 6,
+        "max": 63
+      },
+      "billSek": 106,
+      "revenuePerEveningSek": 2870,
+      "goodsShare": 0.41,
+      "wagesPerEveningSek": 1900,
+      "byWeek": [
+        {
+          "week": 1,
+          "meanResultSek": 7297,
+          "meanRevenueSek": 15596,
+          "rentSek": 1500,
+          "meanCashEnd": 22297
+        },
+        {
+          "week": 2,
+          "meanResultSek": 8168,
+          "meanRevenueSek": 16814,
+          "rentSek": 1500,
+          "meanCashEnd": 30466
+        },
+        {
+          "week": 3,
+          "meanResultSek": 9723,
+          "meanRevenueSek": 19255,
+          "rentSek": 1500,
+          "meanCashEnd": 40189
+        }
+      ],
+      "team": [
+        "kock",
+        "lärling"
+      ],
+      "loan": null,
+      "class": "foodtruck"
+    },
+    "alltid-fel": {
+      "guestsPerEvening": {
+        "mean": 26,
+        "min": 5,
+        "max": 71
+      },
+      "billSek": 105,
+      "revenuePerEveningSek": 2748,
+      "goodsShare": 0.41,
+      "wagesPerEveningSek": 1900,
+      "byWeek": [
+        {
+          "week": 1,
+          "meanResultSek": 3736,
+          "meanRevenueSek": 16088,
+          "rentSek": 1500,
+          "meanCashEnd": 18736
+        },
+        {
+          "week": 2,
+          "meanResultSek": 3239,
+          "meanRevenueSek": 16035,
+          "rentSek": 1500,
+          "meanCashEnd": 21975
+        },
+        {
+          "week": 3,
+          "meanResultSek": 4141,
+          "meanRevenueSek": 17344,
+          "rentSek": 1500,
+          "meanCashEnd": 26115
+        }
+      ],
+      "team": [
+        "kock",
+        "lärling"
+      ],
+      "loan": null,
+      "class": "foodtruck"
+    }
+  }
+}

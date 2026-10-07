@@ -650,6 +650,8 @@ export function FoodtruckScene({ widthPx, leftInset, rightInset }: FoodtruckScen
       }}
     >
       <svg
+        data-testid="foodtruck-scene"
+        data-guests={sim.guests.length}
         viewBox={`0 0 ${SCENE_VIEWBOX_W} ${SCENE_VIEWBOX_H}`}
         preserveAspectRatio="xMidYMid meet"
         style={{ width: widthPx, height: '100%', display: 'block' }}
