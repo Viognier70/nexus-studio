@@ -817,7 +817,11 @@ export const UPGRADE = {
 // erbjudandet står kvar. Kraven är utgångspunkten för kalibreringen.
 export const LADDER = {
   section: 'Verksamhetsklasserna > Uppgradering',
-  order: ['foodtruck', 'kvarterskrog', 'vinbar', 'olhall', 'bistro', 'nattklubb', 'soigne', 'gastgiveri'] as const,
+  // ORDER 315b del 2 — Designs D7 (careerPath.ts), godkänd av Anders 2026-10-07:
+  // food truck, vinbar, bistro, ölkrog, restaurang, nattklubb, gästgiveri,
+  // stjärnkrogen. Restaurangen är kvarterskrogen och stjärnkrogen soigné i
+  // klassernas nycklar.
+  order: ['foodtruck', 'vinbar', 'bistro', 'olhall', 'kvarterskrog', 'nattklubb', 'gastgiveri', 'soigne'] as const,
   playable: ['foodtruck', 'vinbar', 'bistro'] as const,
   steps: {
     foodtruck: { businessClass: 'foodtruck' as BusinessClassId, building: null as string | null, starsPossible: false, billFactor: 1, wageFactor: 1, revenueFactor: 1 },

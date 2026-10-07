@@ -31,7 +31,10 @@ const CAMPUS: Vec2 = [568.05, -85.84];
 const LAKE_SHORE: Vec2 = [376, 236];
 
 export const TRUCK_SPOT_POINTS: Record<TruckSpot, Vec2> = {
-  torget: [TORGET[0] - 6, TORGET[1] + 6],
+  // ORDER 315b del 2 — Designs tillägg till D7 (rivalTorget.ts TRUCK_SPOT_TORGET): på
+  // torgytans breda del, söder om spelarens vagn och väster om vinbarens hus.
+  // Förut [TORGET − 6, TORGET + 6], där kön stod på Prästgatan. Gäller alla kvällar.
+  torget: [21.25, -12.75],
   'maltidens-hus': [CAMPUS[0] - 22, CAMPUS[1] + 18],
   sjon: LAKE_SHORE
 };
@@ -79,12 +82,16 @@ export interface TruckPlacement { x: number; z: number; rotationY: number }
 // (meter) och rotation.y. Luckan (lokala +x) vetter mot gatan; vagn nummer
 // två står 7 m bakom (lokala −z). Testet order312PaVagen.test.ts prövar att
 // båda vagnarna på varje plats står på land, inte på en väg och inte i ett hus.
-//   - torget: på torgytan söder om Torget (w122157681), luckan mot norr;
+//   - torget: ORDER 315b del 2, Designs plats (rivalTorget.ts), luckan mot torget;
 //   - maltidens-hus: 4 m norr om den gamla platsen, där vagn nummer två inte
 //     står på gångvägen w983402520;
 //   - sjon: där den gamla regeln ställde den (den stod fritt).
 export const TRUCK_STANDS: Record<TruckSpot, TruckPlacement> = {
-  torget: { x: 1.2, z: -22.03, rotationY: Math.PI / 2 },
+  // ORDER 315b del 2 — rivalTorget.ts: mitten [21,25, −12,75], parallell med
+  // Prästgatan, luckan mot nordost (hatchFaces [0,539, −0,843]). Vår vagn har
+  // luckan i lokala +x, så rotation.y = atan2(0,843, 0,539) (Designs vagn har
+  // luckan i lokala +Z och yawForThree −3,7103; samma riktning).
+  torget: { x: 21.25, z: -12.75, rotationY: Math.atan2(0.843, 0.539) },
   'maltidens-hus': { x: 547, z: -60.87, rotationY: Math.PI },
   sjon: { x: 376.16, z: 230.32, rotationY: 1.485 }
 };
@@ -100,6 +107,20 @@ export function truckPlacement(spot: TruckSpot, k: number): TruckPlacement {
     z: s.z - Math.cos(s.rotationY) * k * 7,
     rotationY: s.rotationY
   };
+}
+
+// ORDER 315b del 2 — spelarens vagn har en egen plats på torget (Designs D7,
+// playerTruck.ts TRUCK_PITCH_TORGET, truckPlats.json): mitten [17,00, −21,90],
+// −6,29° i kartans ram, parallell med gatan Torget, luckan mot söder in mot
+// torgytan. Designs vagn har luckan i lokala +Z (rotation.y = −vinkeln); vår
+// vagn (VillageVenues makeTruck) har den i lokala +x, så rotation.y vrids ett
+// kvarts varv till. Rivalerna står på sin egen plats (TRUCK_STANDS.torget),
+// minst 2,55 m bort (rivalTorget.ts CHECKS.gapToPlayerTruckM).
+export const PLAYER_TRUCK_PITCH = { centre: [17.0, -21.9] as Vec2, angleDeg: -6.29 };
+
+export function playerTruckPlacement(): TruckPlacement {
+  const yawDesign = -PLAYER_TRUCK_PITCH.angleDeg * Math.PI / 180;
+  return { x: PLAYER_TRUCK_PITCH.centre[0], z: PLAYER_TRUCK_PITCH.centre[1], rotationY: yawDesign - Math.PI / 2 };
 }
 
 /** ORDER 312 — lyktan och skenet vid en krogs dörr (VillageVenues): 60 % mot dörrnoden från husets mitt. */

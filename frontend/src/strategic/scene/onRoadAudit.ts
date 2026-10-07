@@ -35,7 +35,7 @@ import { outbuildingFootprintAt, outbuildingPlacementFor } from '../procgen/parc
 import { computePlayerBusinessInterior, playerObb } from '../business/interiorLayout';
 import { deliveryStop } from '../business/deliveryStop';
 import { roomSizeFor } from './businessRoom';
-import { TRUCK_BODY, VENUE_BUILDINGS, truckPlacement, venueLampPoint, venuePlaces, villageSources } from '../content/villagePlaces';
+import { TRUCK_BODY, VENUE_BUILDINGS, playerTruckPlacement, truckPlacement, venueLampPoint, venuePlaces, villageSources } from '../content/villagePlaces';
 import { driveNetwork, routeBetween, routeLength, pointAlong } from '../content/villageNetwork';
 import { eligibleRoads, KIND_CONFIG, vehicleLaneOffset, type VehicleKind } from './OsmTraffic';
 import { polylineLength } from '../content/world';
@@ -402,8 +402,9 @@ export function truckStands(): TruckStand[] {
   return out;
 }
 
-function truckFootprint(spot: TruckSpot, k: number): { footprint: Vec2Tuple[]; centre: Vec2Tuple } {
-  const at = truckPlacement(spot, k);
+function truckFootprint(spot: TruckSpot | 'player', k: number): { footprint: Vec2Tuple[]; centre: Vec2Tuple } {
+  // ORDER 315b del 2 — spelarens vagn på sin egen plats (playerTruckPlacement).
+  const at = spot === 'player' ? playerTruckPlacement() : truckPlacement(spot, k);
   // Lådan: bredd TRUCK_BODY.width, längs lokala z från zMin till zMax.
   const len = TRUCK_BODY.zMax - TRUCK_BODY.zMin;
   return { footprint: boxFootprint(at.x, at.z, at.rotationY, TRUCK_BODY.width, len, (TRUCK_BODY.zMax + TRUCK_BODY.zMin) / 2), centre: pt([at.x, at.z]) };
@@ -428,6 +429,15 @@ export function auditTrucks(): Conflict[] {
       if (hit) out.push({ kind: 'truck-in-building', subject, at: centre, other: hit.id });
       if (footprint.some((p) => inAnyWater(p[0], p[1]))) out.push({ kind: 'truck-in-water', subject, at: centre });
     }
+  }
+  // ORDER 315b del 2 — spelarens vagn: inte på vägen, inte i ett hus, och inte
+  // i rivalernas vagnar på torget (båda står där samma kväll).
+  const mine = truckFootprint('player', 0);
+  for (const o of roadOverlapsForPolygon(mine.footprint)) if (o.depthM > ON_ROAD_TOLERANCE_M) out.push(overlapConflict('truck-on-road', 'spelarens vagn', o));
+  const inHouse = footprintsNear(mine.centre[0], mine.centre[1], 8).find((f) => polygonsOverlap(mine.footprint, f.poly));
+  if (inHouse) out.push({ kind: 'truck-in-building', subject: 'spelarens vagn', at: mine.centre, other: inHouse.id });
+  for (const k of [0, 1]) {
+    if (polygonsOverlap(mine.footprint, truckFootprint('torget', k).footprint)) out.push({ kind: 'truck-in-building', subject: 'spelarens vagn', at: mine.centre, other: `vagn@torget${k ? '#2' : ''}` });
   }
   return out;
 }

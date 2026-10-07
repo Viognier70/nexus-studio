@@ -20,7 +20,7 @@ import { useCamera } from '../../camera/CameraContext';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { skyState } from '../../../lib/lighting/skyState';
 import { PLAYER_VENUE, venuesTonight } from '../../../sim/village';
-import { truckPlacement, truckSpotPlace, venueLampPoint, venuePlaces } from '../../content/villagePlaces';
+import { playerTruckPlacement, truckPlacement, truckSpotPlace, venueLampPoint, venuePlaces } from '../../content/villagePlaces';
 import { readabilityScale } from '../../util/readability';
 import { subscribeVillageLive, villageLive } from './villageLive';
 import { VenueLabel } from '../../ui/VillageLabels';
@@ -156,7 +156,7 @@ export function VillageVenues() {
 
   // Vagnarna på kvällens plats.
   useEffect(() => {
-    // ORDER 315b — spelarens foodtruck (v.spot) står först på sin plats.
+    // ORDER 315b — spelarens foodtruck (v.spot); del 2: på sin egen plats.
     const onSpot = (o: typeof venues[number]) => o.kind === 'truck' || (o.kind === 'player' && !!o.spot);
     for (const t of trucks.current.values()) t.visible = false;
     for (const v of venues) {
@@ -170,8 +170,9 @@ export function VillageVenues() {
       truck.visible = v.open && !!v.spot;
       if (!v.spot) continue;
       // Två vagnar på samma plats står efter varandra (villagePlaces.ts truckPlacement).
-      const same = venues.filter((o) => onSpot(o) && o.spot === v.spot).sort((a, b) => (a.kind === 'player' ? -1 : b.kind === 'player' ? 1 : 0));
-      const at = truckPlacement(v.spot, same.findIndex((o) => o.id === v.id));
+      // ORDER 315b del 2 — spelarens vagn har en egen plats (playerTruckPlacement).
+      const same = venues.filter((o) => o.kind === 'truck' && o.spot === v.spot);
+      const at = v.kind === 'player' ? playerTruckPlacement() : truckPlacement(v.spot, same.findIndex((o) => o.id === v.id));
       truck.position.set(at.x, 0, at.z);
       truck.rotation.y = at.rotationY;
     }
