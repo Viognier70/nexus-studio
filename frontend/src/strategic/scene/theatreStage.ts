@@ -19,7 +19,7 @@ import { CLIPS, sampleClip, type ClipSample, type SeatKind, type TempoId } from 
 import { createProp, holdProp, placeProp, updateHeld, type PropHandle, type PropId } from './tableware';
 import { guestClipFor, sampleForFigure, staffClipFor, tempoFor } from './theatreClips';
 import type { FigureSample, LedgerEntry, StaffKey, WineBarDirector } from './wineBarDirector';
-import { SURFACE_HEIGHT } from './wineBarRoom';
+import { SURFACE_HEIGHT, WINE_BAR_PLAN } from './wineBarRoom';
 import { THEATRE } from '../../sim/balance';
 import { PROP_VISUAL_SCALE } from './staffRing';
 import type { CameraTarget } from '../types';
@@ -35,7 +35,13 @@ const TABLE_INSET = 0.45;
 // ORDER 313 §8 — flaskorna på bardisken (rummets lokala meter: barens östra
 // ände, x 1,8–2,2, på båda diskarna innanför gästernas sida) och karaffens
 // avstånd från bordets mitt.
-const BAR_BOTTLES: readonly Vec2[] = [[1.85, 1.5], [2.1, 1.5], [1.85, -1.5], [2.1, -1.5]];
+// ORDER 317 — ur rummets plan: östra änden av båda diskarna, mitt på disken.
+const BAR_COUNTER_N = WINE_BAR_PLAN.bar.z1 - WINE_BAR_PLAN.bar.depth / 2;
+const BAR_COUNTER_S = WINE_BAR_PLAN.bar.z0 + WINE_BAR_PLAN.bar.depth / 2;
+const BAR_BOTTLES: readonly Vec2[] = [
+  [WINE_BAR_PLAN.bar.x1 - 0.55, BAR_COUNTER_N], [WINE_BAR_PLAN.bar.x1 - 0.3, BAR_COUNTER_N],
+  [WINE_BAR_PLAN.bar.x1 - 0.55, BAR_COUNTER_S], [WINE_BAR_PLAN.bar.x1 - 0.3, BAR_COUNTER_S]
+];
 const TABLE_CARAFE_OFFSET = 0.32;
 const TABLE_SPREAD = 0.22;
 

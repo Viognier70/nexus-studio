@@ -52,7 +52,9 @@ const NOT_PLAYER_TEXT = [
   /^content\/nexusStrings\.ts$/,
   // ORDER 290 — Designs strängtabeller (sv och en sida vid sida), inslagna i
   // STRINGS i nexusStrings.ts.
-  /^content\/design\/[A-Za-z]+Strings\.ts$/,
+  /^content\/design\/[A-Za-z0-9]+Strings\.ts$/,
+  // ORDER 317 — Designs D6 del 2: ordningstalen sv och en sida vid sida, och anteckningar om avsändarna.
+  /^strategic\/ui\/d6Ui\.ts$/,
   // ORDER 316 — fikats dilemman (sv och en sida vid sida), inslagna i TABLE.
   /^content\/fikaStrings\.ts$/,
   // Designs tokens för rätt och fel (anteckningar om vad som ersätts, visas inte).

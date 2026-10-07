@@ -36,7 +36,7 @@ export const SERVICE_MODE_STRINGS = {
   "stream.pay": { sv: "{place} betalade {n}", en: "{place} paid {n}" },
   "stream.order": { sv: "{place} beställde {what}", en: "{place} ordered {what}" },
   "stream.low": { sv: "{what} börjar ta slut", en: "{what} is running low" },
-  "stream.rocket": { sv: "Raket: {what}", en: "Rocket: {what}" },
+  "stream.rocket": { sv: "Situation: {what}", en: "Situation: {what}" },
   "stream.rocket.birthday": { sv: "födelsedagen i loungen", en: "the birthday in the lounge" },
   "place.loungeA": { sv: "Lounge A", en: "Lounge A" },
   "place.bar3": { sv: "Barstol 3", en: "Bar stool 3" },

@@ -40,7 +40,8 @@ describe('ORDER 313 §1 — Intendent Åsa', () => {
       expect(json).not.toMatch(/Ingrid|Mentorn|The Mentor|the Mentor/);
     }
     expect(pickLang(TABLE, 'sv').introduction.mentor).toBe('Intendent Åsa');
-    expect(pickLang(TABLE, 'en').introduction.mentor).toBe('Intendant Åsa');
+    // ORDER 317 — Designs D6: på engelska Curator Åsa.
+    expect(pickLang(TABLE, 'en').introduction.mentor).toBe('Curator Åsa');
     expect(STRINGS['role.mentor'].sv).toBe('Intendent Åsa');
     expect(pickLang(TABLE, 'sv').prologue.mentor).toContain('Åsa');
   });
@@ -136,7 +137,7 @@ describe('ORDER 313 §5–§7', () => {
 
   it('§7 teckenförklaringen i statusläget och i Spelets regler', () => {
     expect(read('strategic/StrategicApp.tsx')).toContain('<StatusLegend />');
-    expect(read('strategic/ui/RulesPanel.tsx')).toContain('<StatusLegendBody />');
+    expect(read('strategic/ui/RulesPanel.tsx')).toContain('<StatusLegendBody withWhy />');
     expect(read('strategic/ui/StatusLegend.tsx')).toMatch(/ROLE_COLOUR[\s\S]*MOODS[\s\S]*WELLBEING_SYMBOL/);
   });
 });

@@ -1,8 +1,10 @@
-// ORDER 308 — Ingrid i dörren till Måltidens hus under öppningen (Designs
-// oppningManus MENTOR, prototypens placeMentor): en vanlig figur i olivgrönt,
-// 1,2 m ut från dörren, vänd mot gatan, i spelets figurrigg och klipp. Hon
-// tittar ut mot vägen en gång (glanceAt). Syns bara medan öppningen pågår,
-// från 30 s (som i prototypen), och ritas av byns scen.
+// ORDER 308 — mentorn i dörren till Måltidens hus under öppningen (Designs
+// oppningManus MENTOR, prototypens placeMentor), 1,2 m ut från dörren, vänd mot
+// gatan, i spelets figurrigg och klipp. Syns bara medan öppningen pågår, från
+// 30 s (som i prototypen), och ritas av byns scen.
+// ORDER 317 — Designs D6: Intendent Åsa i Ingrids ställe (asaFigure.ts, hatten
+// och klänningen). Hon tittar ut mot vägen vid glanceAt och hälsar mot vägen
+// med handen till brättet vid greetAt (asa.greet, lugnt).
 //
 // Under öppningen är vinbarens egna figurer dolda (oppningManus: "byns figurer
 // i rummet är dolda under nedstigningen, så att rummet är tomt redan då").
@@ -12,22 +14,23 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import type * as THREE from 'three';
-import { applyPose, createFigureRig } from '../scene/figureRig';
-import { sampleClip } from '../scene/figureClips';
+import { applyPose, createFigureRig, type FigureRig } from '../scene/figureRig';
+import { createAsa } from '../scene/asaFigure';
+import { CLIPS, sampleClip } from '../scene/figureClips';
 import { MENTOR } from './oppningManus';
 import { markOpeningSceneReady, openingStage } from './openingStage';
 import { mentorDoor } from './openingTimeline';
 
-/** Från vilken tid Ingrid står i dörren (prototypen: t > 30). */
+/** Från vilken tid Åsa står i dörren (prototypen: t > 30). */
 export const MENTOR_FROM_S = 30;
 
 export function OpeningMentor() {
   const rig = useMemo(() => {
-    const r = createFigureRig({ variant: 'staff', garmentColour: MENTOR.garment });
+    const r: FigureRig = createAsa({ createFigureRig });
     r.root.traverse((o) => { if ((o as { isMesh?: boolean }).isMesh) (o as { castShadow: boolean }).castShadow = true; });
     r.root.visible = false;
     r.root.name = 'opening-mentor';
-    // Kontrollskriptet (scripts/order308-check.mjs) läser Ingrids läge härifrån.
+    // Kontrollskriptet (scripts/order308-check.mjs) läser Åsas läge härifrån.
     if (typeof window !== 'undefined') (window as unknown as { __nxOpeningMentor?: unknown }).__nxOpeningMentor = r.root;
     return r;
   }, []);
@@ -56,8 +59,14 @@ export function OpeningMentor() {
     rig.root.position.set(D.x, 0, D.z);
     rig.root.rotation.y = D.yaw;
     rig.root.scale.setScalar(MENTOR.scale || 1);
+    // Hälsningen (asa.greet) spelas en gång från greetAt; annars står hon och tittar ut vid glanceAt.
+    const greetLen = CLIPS['asa.greet'].seconds.calm;
+    if (st.t >= MENTOR.greetAt && st.t < MENTOR.greetAt + greetLen) {
+      applyPose(rig, sampleClip('asa.greet', st.t - MENTOR.greetAt, 'calm', { yaw: MENTOR.greetYaw }).pose);
+      return;
+    }
     const glance = Math.max(0, Math.min(1, 1 - Math.abs(st.t - MENTOR.glanceAt) / 1.2));
-    const s = sampleClip(MENTOR.clip, st.t, 'calm', { yaw: -0.9 * glance });
+    const s = sampleClip(MENTOR.clip, st.t, 'calm', { yaw: MENTOR.greetYaw * glance });
     applyPose(rig, s.pose);
   });
 

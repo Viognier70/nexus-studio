@@ -37,8 +37,8 @@ import type { PropId, HandSide, Tilt, Surface } from './tableware';
 // #region types
 
 export type TempoId = 'calm' | 'normal' | 'stressed';
-export type Role = 'waiter' | 'bartender' | 'sommelier' | 'cook' | 'dishwasher' | 'guest' | 'staff' | 'host';
-export type ClipGroup = 'staff' | 'waiter' | 'bartender' | 'sommelier' | 'cook' | 'dishwasher' | 'guest' | 'rocket' | 'host';
+export type Role = 'waiter' | 'bartender' | 'sommelier' | 'cook' | 'dishwasher' | 'guest' | 'staff' | 'host' | 'mentor';
+export type ClipGroup = 'staff' | 'waiter' | 'bartender' | 'sommelier' | 'cook' | 'dishwasher' | 'guest' | 'rocket' | 'host' | 'mentor';
 /** Kroppens läge vid klippets start och slut. Två klipp kan följa på varandra bara om
  *  slutet på det ena är början på det andra. */
 export type Stance = 'stand' | 'seated' | 'walk' | 'hurt';
@@ -52,7 +52,9 @@ export type ClipEventType =
   | 'grab' | 'release' | 'give' | 'switch' | 'stack'
   | 'clink' | 'cork' | 'plated' | 'bell' | 'pay' | 'cut'
   // Leverans 3: tända ett ljus, släppa (ljuset som faller), visa upp något, kvävas (lågan under förklädet)
-  | 'light' | 'drop' | 'show' | 'smother';
+  | 'light' | 'drop' | 'show' | 'smother'
+  // ORDER 317 (D6, Åsas klipp): gesten syns, och repliken eller pratbubblan kan öppnas.
+  | 'signal';
 
 export interface ClipEvent {
   /** Var i klippet, 0..1. */
@@ -412,6 +414,64 @@ reg(def({
     const s = c.stress ?? 0;
     const scan = s > 0.5 ? 0.4 * Math.sin(u * TAU * 2) : 0.22 * Math.sin(u * TAU);
     return breathe(P(STAND, { torso: { roll: 0.025 * Math.sin(u * TAU) }, head: { yaw: scan + (c.yaw ?? 0) * 0.5 }, legL: { knee: 0.06 + 0.05 * Math.max(0, Math.sin(u * TAU)) }, legR: { knee: 0.06 + 0.05 * Math.max(0, -Math.sin(u * TAU)) } }), c.t ?? 0);
+  }
+}));
+
+// ORDER 317 — Designs D6 (nexus-leverans-2026-10-07-d6-asa/asaClips.ts), oförändrade:
+// Åsas tre klipp, hälsar, pekar och nickar gillande.
+reg(def({
+  id: 'asa.greet', group: 'mentor', roles: ['mentor'], loop: false, travel: false, handed: true, base: 2.4,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [{ u: 0.3, type: 'signal' }],
+  next: ['staff.idle', 'asa.point', 'asa.nodApprove'],
+  pose: function (u, c) {
+    const touch = P(STAND, { torso: { roll: -0.03 }, armR: A(1.72, 0.16, 2.2), armL: A(0.08, 0.04, 0.2) });
+    const bow = P(touch, { torso: { pitch: 0.12 }, head: { pitch: 0.26 } });
+    const p = keys(u, [
+      [0, STAND],
+      [0.26, touch],
+      [0.44, bow],
+      [0.6, bow],
+      [0.74, touch],
+      [0.94, STAND],
+      [1, STAND]
+    ]);
+    const toward = (c.yaw ?? 0) * win(u, 0.1, 0.9, 0.15);
+    return withYaw(p, toward * 0.3, toward * 0.7);
+  }
+}));
+
+reg(def({
+  id: 'asa.point', group: 'mentor', roles: ['mentor'], loop: false, travel: false, handed: true, base: 2.6,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [{ u: 0.4, type: 'signal' }],
+  next: ['staff.idle', 'asa.nodApprove', 'asa.greet'],
+  pose: function (u, c) {
+    // 0–0,3 vrider sig och lyfter armen, 0,3–0,72 stilla (förlängs med c.holdUntil), 0,72–1 tillbaka.
+    const k = win(u, 0.04, 0.96, 0.28), yaw = (c.yaw ?? 0) * k;
+    const p = P(STAND, {
+      torso: { pitch: 0.03 - 0.03 * k, roll: -0.04 * k }, head: { pitch: 0.04 - 0.06 * k },
+      armR: A(0.1 + 1.42 * k, 0.12 + 0.1 * k, 0.15 - 0.1 * k),
+      armL: A(0.1 + 0.12 * k, 0.05, 0.35 + 0.5 * k)
+    });
+    return withYaw(p, yaw * 0.55, yaw * 0.9);
+  },
+  tilt: function (u) { return { R: { pitch: 0.1 * win(u, 0.04, 0.96, 0.28) } }; } // pekfingret i armens linje
+}));
+
+reg(def({
+  id: 'asa.nodApprove', group: 'mentor', roles: ['mentor'], loop: false, travel: false, base: 2.2,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['staff.idle', 'asa.point', 'asa.greet'],
+  pose: function (u, c) {
+    const clasp = win(u, 0.02, 0.98, 0.18);
+    const nod = 0.24 * bell(u, 0.36, 0.07) + 0.24 * bell(u, 0.62, 0.07);
+    const back = 0.05 * win(u, 0.7, 0.98, 0.12);
+    const p = P(STAND, {
+      torso: { pitch: 0.03 - back }, head: { pitch: 0.04 + nod - back },
+      armR: A(0.08 + 0.34 * clasp, -0.02 - 0.06 * clasp, 0.2 + 0.95 * clasp),
+      armL: A(0.08 + 0.34 * clasp, -0.02 - 0.06 * clasp, 0.2 + 0.95 * clasp)
+    });
+    const toward = (c.yaw ?? 0) * clasp;
+    return withYaw(p, toward * 0.25, toward * 0.7);
   }
 }));
 

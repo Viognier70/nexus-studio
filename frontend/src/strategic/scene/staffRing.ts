@@ -1,18 +1,13 @@
 // staffRing.ts — ringen under personalen. Provspel 2026-09-30, beställning 2.
 // Ren beskrivning: mått i meter, färger som hex, tider i sekunder. Code bygger meshen.
 
+import { ROLE_RING as D6_ROLE_RING } from '../ui/d6Ui';
 export type StaffRole = 'host' | 'waiter' | 'sommelier' | 'bartender' | 'cook' | 'dishwasher' | 'dj';
 
 /** Rollens färg. Guld och ljuslåga (handling, raketen) och grönt och rött (rätt och fel) används inte här. */
-export const ROLE_COLOUR: Record<StaffRole, string> = {
-  host: '#f4e6cc',       // grädde
-  waiter: '#4fc3c8',     // turkos
-  sommelier: '#b98ae0',  // plommon
-  bartender: '#f2994a',  // bärnsten
-  cook: '#7fa8ff',       // blå
-  dishwasher: '#a9b3bb', // stål
-  dj: '#ee6fb5'          // magenta
-};
+// ORDER 317 — ur Designs D6 (d6Ui.ROLE_RING), samma tabell som staffStatus.ts och
+// teckenförklaringen: grädde, turkos, plommon, bärnsten, blå (kocken #7fa8ff), stål, magenta.
+export const ROLE_COLOUR: Record<StaffRole, string> = { ...D6_ROLE_RING };
 
 export const RING = {
   innerM: 0.42, outerM: 0.56,         // 0,14 m streck. 52 px bred och 6 px streck vid 24 m, 1440 × 900.

@@ -1,0 +1,41 @@
+// oppningStrings.js — öppningen före bussen, { sv, en }, brittisk engelska. Samma nycklar som openingStrings.ts.
+window.NEXUS_STR_OPEN = {
+  'opening.line1': { sv: 'En säsong. Åtta veckor.', en: 'One season. Eight weeks.' },
+  'opening.line2': { sv: 'Från midsommar till kräftskiva.', en: 'From midsummer to the crayfish party.' },
+
+  'opening.place': { sv: 'Grythyttan', en: 'Grythyttan' },
+  'opening.yours': { sv: 'Din vinbar', en: 'Your wine bar' },
+  'opening.empty': { sv: 'Än så länge är den tom.', en: 'For now, it is empty.' },
+  'opening.fill': { sv: 'Det du vet fyller den.', en: 'What you know fills it.' },
+  'opening.mentor': { sv: 'Intendent Åsa, din mentor', en: 'Curator Åsa, your mentor' },
+  'opening.goal': { sv: 'Målet är stjärnan.', en: 'The goal is the star.' },
+
+  'open.kicker': { sv: 'D2 · omtag 2026-10-04', en: 'D2 · retake 4 Oct 2026' },
+  'open.title': { sv: 'Öppningen', en: 'The opening' },
+  'open.play': { sv: 'Spela', en: 'Play' },
+  'open.pause': { sv: 'Pausa', en: 'Pause' },
+  'open.size': { sv: 'Skärmstorlek', en: 'Screen size' },
+  'open.record': { sv: 'Spela in WebM', en: 'Record WebM' },
+  'open.recording': { sv: 'Spelar in …', en: 'Recording …' },
+  'open.text': { sv: 'Texten', en: 'The text' },
+  'open.text.on': { sv: 'Visas', en: 'Shown' },
+  'open.text.off': { sv: 'Dold', en: 'Hidden' },
+  'open.next': { sv: 'Sedan: ankomstens scen 1, bussen, börjar i samma svärta.', en: 'Next: the arrival’s scene 1, the bus, starts from the same black.' },
+
+  'open.ch.fly': { sv: 'Flygturen över byn i skymningen', en: 'The flight over the village at dusk' },
+  'open.why.fly': { sv: 'Från sjön, lågt, till spelets nivå över hela byn. Gatlyktorna tänds en i taget. Platsen först, sedan säsongen.', en: 'From the lake, low, to the game’s level over the whole village. The street lamps come on one by one. The place first, then the season.' },
+  'open.ch.descend': { sv: 'Ned till vinbaren vid torget', en: 'Down to the wine bar by the square' },
+  'open.why.descend': { sv: 'Genom byns nivåer: kvarteret, gatan och krogen. En nål på taket: din vinbar. Taket lyfts mellan 40 och 26 m, som i spelet.', en: 'Through the village levels: the block, the street and the venue. A pin on the roof: your wine bar. The roof lifts between 40 and 26 m, as in the game.' },
+  'open.ch.empty': { sv: 'Den tomma vinbaren', en: 'The empty wine bar' },
+  'open.why.empty': { sv: 'Ingen människa, bara glasen på disken och ljusen på borden. Raden säger det: än så länge är den tom.', en: 'Nobody there, only the glasses on the bar and the candles on the tables. The line says it: for now, it is empty.' },
+  'open.ch.door': { sv: 'Glimt: Per hälsar i dörren', en: 'Glimpse: Per welcomes guests at the door' },
+  'open.why.door': { sv: 'Samma rum, en kväll senare. Hårda klipp, 3,3 s var, under raden: det du vet fyller den.', en: 'The same room, an evening later. Hard cuts, 3.3 s each, under the line: what you know fills it.' },
+  'open.ch.decant': { sv: 'Glimt: Elin dekanterar', en: 'Glimpse: Elin decants' },
+  'open.why.decant': { sv: 'Hantverket: flaskan högt, karaffen lågt, gästerna tittar.', en: 'The craft: bottle high, decanter low, the guests watching.' },
+  'open.ch.toast': { sv: 'Glimt: skålen i loungen', en: 'Glimpse: the toast in the lounge' },
+  'open.why.toast': { sv: 'Glasen möts över bordets mitt och någon skrattar. Det är det kvällen ska ge.', en: 'Glasses meet over the middle of the table and someone laughs. That is what the evening should give.' },
+  'open.ch.mentor': { sv: 'Åsa i dörren till Måltidens hus', en: 'Åsa in the doorway of Måltidens hus' },
+  'open.why.mentor': { sv: 'På 36–40 m, aldrig närmare, med en nål: Intendent Åsa, din mentor. Hatten med brett brätte läses på avståndet. Hon tittar ut mot vägen och hälsar med handen till brättet (asa.greet). Det är hon som tar emot vid liggaren i ankomstens scen 4.', en: 'At 36–40 m, never closer, with a pin: Curator Åsa, your mentor. The wide-brimmed hat reads at that distance. She looks out towards the road and greets with her hand to the brim (asa.greet). She is the one who welcomes you at the register in scene 4 of the arrival.' },
+  'open.ch.black': { sv: 'Upp mot infarten och svart', en: 'Up towards the village entrance, then black' },
+  'open.why.black': { sv: 'Kameran lyfter över byn under raden: målet är stjärnan. Svärtan är början på ankomstens scen 1.', en: 'The camera rises over the village under the line: the goal is the star. The black is the start of the arrival’s scene 1.' }
+};

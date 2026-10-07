@@ -44,6 +44,8 @@ import { EVERYDAY_STRINGS } from './design/everydayStrings';
 import { MOOD_STRINGS } from './design/moodStrings';
 // ORDER 297 — Designs leverans Byn i kvällsljus (andra omtaget), oförändrad.
 import { VILLAGE_EVENING_STRINGS } from './design/villageEveningStrings';
+// ORDER 317 — Designs D6 del 2 (avsändarna, teckenförklaringen, kurskortet, Byn just nu, det låsta), oförändrad.
+import { D6_STRINGS } from './design/d6Strings';
 // ORDER 316 — fikat efter stängning (dilemmana).
 import { FIKA_TEXT } from './fikaStrings';
 
@@ -56,7 +58,19 @@ const pl = (n: number | string, one: string, many: string): string =>
 type Entry = { sv: string; en: string };
 
 export const STRINGS = {
+  // ORDER 317 — D6 del 2 först: spelets befintliga nycklar går före (role.* står
+  // med stor bokstav i spelet; personalens avsändare läser rollen ur fika.roles).
+  ...D6_STRINGS,
+  // CLAUDE.md regel 7: Måltidens hus heter "the House of the Meal" på engelska.
+  'sender.house': { sv: 'Måltidens hus', en: 'The House of the Meal' },
+  'course.kicker': { sv: 'Kurs i Måltidens hus', en: 'Course at the House of the Meal' },
+  'start.practise': { sv: 'Öva i Måltidens hus', en: 'Practise at the House of the Meal' },
   // ── HUD ───────────────────────────────────────────────────────
+  // ORDER 317 — Designs D6 (nexus-leverans-2026-10-07-d6-asa/asaStrings.ts): pratbubblans namn,
+  // etikett och knapp. Replikerna står i introduction och mentor (Åsas repliker utan banken, ORDER 315b).
+  'asa.name': { sv: 'Intendent Åsa', en: 'Curator Åsa' },
+  'asa.from': { sv: 'Campus', en: 'Campus' },
+  'asa.next': { sv: 'Vidare', en: 'Continue' },
   'hud.day': { sv: '{weekday} · vecka {week} av 8', en: '{weekday} · week {week} of 8' },
   'hud.phase.service': { sv: 'Service', en: 'Service' },
   'hud.phase.morning': { sv: 'Morgon', en: 'Morning' },
@@ -95,10 +109,10 @@ export const STRINGS = {
   'role.cook': { sv: 'Kock', en: 'Cook' },
   'role.dish': { sv: 'Diskare', en: 'Kitchen porter' },
   // ORDER 313 §1 — mentorn heter Intendent Åsa.
-  'role.mentor': { sv: 'Intendent Åsa', en: 'Intendant Åsa' },
+  'role.mentor': { sv: 'Intendent Åsa', en: 'Curator Åsa' },
 
   // ── Rocket ───────────────────────────────────────────────────
-  'rocket.no': { sv: 'Raket {n} av {of}', en: 'Rocket {n} of {of}' },
+  'rocket.no': { sv: 'Situation {n} av {of}', en: 'Situation {n} of {of}' },
   'rocket.episteme': { sv: 'Episteme', en: 'Episteme' },
   'rocket.techne': { sv: 'Techne', en: 'Techne' },
   'rocket.phronesis': { sv: 'Phronesis', en: 'Phronesis' },
@@ -110,17 +124,17 @@ export const STRINGS = {
   'rocket.state.wrong': { sv: 'fel', en: 'wrong' },
   'rocket.state.locked': { sv: 'nås inte', en: 'locked' },
   'rocket.right': { sv: 'Rätt · vidare till {step}', en: 'Right · on to {step}' },
-  'rocket.rightDone': { sv: 'Rätt · raketen klar', en: 'Right · rocket complete' },
+  'rocket.rightDone': { sv: 'Rätt · situationen klar', en: 'Right · situation complete' },
   'rocket.wrong': { sv: 'Fel · {role} tar över', en: 'Wrong · the {role} takes over' },
   'rocket.timeout': { sv: 'Tiden gick ut · {role} tar över', en: 'Out of time · the {role} takes over' },
-  'rocket.foot': { sv: 'Rummet väntar inte. Går tiden ut räknas det som fel svar.', en: 'The room won’t wait. Running out of time counts as a wrong answer.' },
+  'rocket.foot': { sv: 'Rummet väntar inte. Går tiden ut tar personalen över.', en: 'The room won’t wait. If time runs out, the staff take over.' },
   'rocket.keys': { sv: 'Välj med 1–4', en: 'Choose with 1–4' },
 
   // ── Evening lesson ───────────────────────────────────────────
   'lesson.kicker': { sv: 'Stängt 23.00 · kvällens lärdom', en: 'Closed 23:00 · tonight’s lesson' },
   'lesson.wrong': { sv: 'Det som gick fel', en: 'What went wrong' },
   'lesson.also': { sv: 'Också', en: 'Also' },
-  'lesson.grid': { sv: 'Kvällens raketer', en: 'Tonight’s rockets' },
+  'lesson.grid': { sv: 'Kvällens situationer', en: 'Tonight’s situations' },
   'lesson.legend.done': { sv: 'klarat', en: 'passed' },
   'lesson.legend.wrong': { sv: 'fel, personalen tog över', en: 'wrong, staff took over' },
   'lesson.legend.locked': { sv: 'nåddes inte', en: 'not reached' },
@@ -234,7 +248,7 @@ export const STRINGS = {
   'star.earned.title': { sv: '{name} får en stjärna', en: '{name} earns a star' },
   'star.earned.body': { sv: 'Tre veckor i rad med högt rykte och gott omdöme i servicen. Stjärnan ger en tredje plats i facket.', en: 'Three weeks in a row of a high reputation and sound judgement in service. The star adds a third slot for tomorrow.' },
   'star.lost.title': { sv: '{name} förlorar stjärnan', en: '{name} loses its star' },
-  'star.lost.body': { sv: 'Nivån sjönk i veckan: ryktet {rep} av 100, och {judgement} % av raketerna klarades.', en: 'The level slipped this week: reputation {rep} out of 100, and {judgement}% of the rockets were cleared.' },
+  'star.lost.body': { sv: 'Nivån sjönk i veckan: ryktet {rep} av 100, och {judgement} % av situationerna klarades.', en: 'The level slipped this week: reputation {rep} out of 100, and {judgement}% of the situations were cleared.' },
   'star.kept': { sv: '{name} behåller sin stjärna en vecka till.', en: '{name} keeps its star for another week.' },
   'star.close': { sv: '{n} veckor till på samma nivå, och {name} får en stjärna.', en: '{n} more weeks at this level, and {name} earns a star.' },
   // ORDER 296 (punkt 1) — hovmästarens kaffe på huset i kassaboken.
@@ -787,7 +801,7 @@ export const TABLE = {
       withoutSigning: { sv: 'Fortsätt utan att skriva under', en: 'Continue without signing' },
       back: { sv: 'Tillbaka', en: 'Back' }
     },
-    mentor: { sv: 'Intendent Åsa', en: 'Intendant Åsa' },
+    mentor: { sv: 'Intendent Åsa', en: 'Curator Åsa' },
     // ORDER 313 §2 — det som är låst tills första provet är klarat, och
     // Åsas replik när det öppnas.
     lockedUntilExam: { sv: 'Öppnas när du klarat ditt första prov', en: 'Opens when you have passed your first exam' },
@@ -999,8 +1013,8 @@ export const TABLE = {
     eveningHeading: { sv: 'Kvällen', en: 'The evening' },
     intro: { sv: 'Det här gick fel i kväll, och varför.', en: 'This is what went wrong tonight, and why.' },
     none: {
-      sv: 'Inga fel beslut i kväll. Varje raket höll hela vägen.',
-      en: 'No wrong decisions tonight. Every rocket held all the way.'
+      sv: 'Inga fel beslut i kväll. Varje situation höll hela vägen.',
+      en: 'No wrong decisions tonight. Every situation held all the way.'
     },
     noIncidents: { sv: 'Kvällen hade inga händelser att lära av.', en: 'The evening had no incidents to learn from.' },
     // ORDER 270 — raketen föll på ett steg.
@@ -1053,7 +1067,7 @@ export const TABLE = {
   // Speldesignens text där den finns; övrigt är skärmarnas egna rader.
   screens: {
     mentor: {
-      label: { sv: 'Intendent Åsa · från Campus', en: 'Intendant Åsa · from Campus' },
+      label: { sv: 'Intendent Åsa · från Campus', en: 'Curator Åsa · from Campus' },
       campus: { sv: 'Campus', en: 'Campus' },
       stepOf: {
         sv: (n: number, total: number) => `Steg ${n} av ${total}`,
@@ -1791,7 +1805,7 @@ export const TABLE = {
     truckLine: { sv: (kg: string) => `${kg} till sopbilen`, en: (kg: string) => `${kg} to the bin lorry` },
     chance: { sv: 'I rummet', en: 'In the room' },
     guests: { sv: (n: number) => `${n} ${pl(n, 'gäst', 'gäster')} in`, en: (n: number) => `${n} ${pl(n, 'guest', 'guests')} in` },
-    none: { sv: 'Inga raketer eller händelser i kväll.', en: 'No rockets or events tonight.' },
+    none: { sv: 'Inga situationer eller händelser i kväll.', en: 'No situations or events tonight.' },
     waste: { sv: 'Svinn', en: 'Waste' },
     wasteNote: { sv: 'Till sopbilen efter stängning', en: 'To the bin lorry after closing' },
     won: { sv: 'Vann', en: 'Won' },
@@ -1812,8 +1826,8 @@ export const TABLE = {
       // ORDER 314 — Stå för ditt svar är borttagen; krediterna kommer ur situationerna.
       credits: { sv: 'Rätta svar i kvällens situationer', en: 'Right answers in tonight’s situations' },
       reputation: { sv: 'Nöjda gäster höjer, gäster som går sänker', en: 'Happy guests raise it, guests who leave lower it' },
-      knowledge: { sv: (r: number, n: number) => `${r} av ${n} steg rätt i kvällens raketer`, en: (r: number, n: number) => `${r} of ${n} ${pl(n, 'step', 'steps')} right in tonight's rockets` },
-      experience: { sv: (g: number, rk: number) => `${g} ${pl(g, 'gäst', 'gäster')} serverade, ${rk} ${pl(rk, 'raket', 'raketer')} tagna`, en: (g: number, rk: number) => `${g} ${pl(g, 'guest', 'guests')} served, ${rk} ${pl(rk, 'rocket', 'rockets')} handled` },
+      knowledge: { sv: (r: number, n: number) => `${r} av ${n} steg rätt i kvällens situationer`, en: (r: number, n: number) => `${r} of ${n} ${pl(n, 'step', 'steps')} right in tonight's situations` },
+      experience: { sv: (g: number, rk: number) => `${g} ${pl(g, 'gäst', 'gäster')} serverade, ${rk} ${pl(rk, 'situation', 'situationer')} tagna`, en: (g: number, rk: number) => `${g} ${pl(g, 'guest', 'guests')} served, ${rk} ${pl(rk, 'situation', 'situations')} handled` },
       social: { sv: 'Gästerna och laget: nöjdhet, köer och ork', en: 'The guests and the team: satisfaction, queues and stamina' },
       economic: { sv: (m: string) => `Marginal ${m} av kvällens intäkt`, en: (m: string) => `Margin ${m} of tonight's takings` },
       ecological: { sv: (kg: string) => `Råvarorna och svinnet: ${kg} till sopbilen`, en: (kg: string) => `Ingredients and waste: ${kg} to the bin lorry` }
@@ -2590,27 +2604,27 @@ export const TABLE = {
       en: 'Each right answer puts credits in the pot. Then you choose: stop and take the pot, or go on. Right on the next step doubles the pot; wrong loses it.'
     },
     introSource: {
-      sv: 'Krediterna har du tjänat på proven i Måltidens hus och på raketerna i servicen. De kan inte köpas och växlas aldrig mot kassan.',
-      en: 'You earned your credits in the House of the Meal exams and the service rockets. They can’t be bought and never convert to cash.'
+      sv: 'Krediterna har du tjänat på proven i Måltidens hus och på situationerna i servicen. De kan inte köpas och växlas aldrig mot kassan.',
+      en: 'You earned your credits in the House of the Meal exams and the service situations. They can’t be bought and never convert to cash.'
     },
-    start: { sv: 'Starta raketen', en: 'Launch the rocket' },
+    start: { sv: 'Starta situationen', en: 'Launch the situation' },
     // ORDER 300 §6 — raketknappen före öppning.
     opensAt: { sv: (hhmm: string) => `Öppnar ${hhmm}`, en: (hhmm: string) => `Opens ${hhmm}` },
     // ORDER 296c — det är satsningarna som är tre per kväll, inte raketerna.
     left: { sv: (n: number) => `${n} satsningar kvar i kväll`, en: (n: number) => `${n} bets left tonight` },
     none: { sv: 'Inga fler i kväll.', en: 'No more tonight.' },
-    track: { sv: 'Raketen', en: 'The rocket' },
+    track: { sv: 'Situationen', en: 'The situation' },
     trackSub: { sv: 'Varje rätt steg lyfter den', en: 'Each right step lifts it' },
     trackGoal: { sv: 'Mål', en: 'Goal' },
     why: {
-      busy: { sv: 'En raket pågår redan', en: 'A rocket is already under way' },
+      busy: { sv: 'En situation pågår redan', en: 'A situation is already under way' },
       maxed: { sv: 'Alla tre är använda i kväll', en: 'All three are used tonight' },
       noneFits: { sv: 'Ingen fråga passar kvällens meny just nu', en: "No question fits tonight's menu right now" },
       notOpen: { sv: 'Öppnar när dörrarna öppnar', en: 'Opens when the doors open' },
       // ORDER 292b — med klockslaget när dörrarna öppnar.
       notOpenAt: { sv: (hhmm: string) => `Öppnar ${hhmm}, när dörrarna öppnar`, en: (hhmm: string) => `Opens at ${hhmm}, when the doors open` },
       // ORDER 291 — verksamheter utan egna raketer ännu (food trucken).
-      noRockets: { sv: 'Den här verksamheten har inga raketer ännu', en: 'This business has no rockets yet' },
+      noRockets: { sv: 'Den här verksamheten har inga situationer ännu', en: 'This business has no situations yet' },
       // ORDER 313 §2 — låst tills första provet är klarat.
       locked: { sv: 'Öppnas när du klarat ditt första prov', en: 'Opens when you have passed your first exam' }
     },
@@ -3282,13 +3296,13 @@ export const TABLE = {
         secondsLeft: { sv: (n: number) => `${n} sekunder att välja`, en: (n: number) => `${n} seconds to choose` }
       },
       rocketOf: {
-        sv: (n: string, total: string) => `Raket ${n} av ${total}`,
-        en: (n: string, total: string) => `Rocket ${n} of ${total}`
+        sv: (n: string, total: string) => `Situation ${n} av ${total}`,
+        en: (n: string, total: string) => `Situation ${n} of ${total}`
       },
       // ORDER 296c — raketerna utlöses av rummet; kvällens antal är inte bestämt.
       rocketN: {
-        sv: (n: string) => `Raket ${n} i kväll`,
-        en: (n: string) => `Rocket ${n} tonight`
+        sv: (n: string) => `Situation ${n} i kväll`,
+        en: (n: string) => `Situation ${n} tonight`
       },
       // ORDER 289 — följdraketer och egna raketer står utanför räkningen.
       followUp: { sv: 'Följd', en: 'Follow-up' },
@@ -3313,7 +3327,7 @@ export const TABLE = {
         en: { episteme: 'What', techne: 'How', phronesis: 'When and why' } as Record<string, string>
       },
       right: { sv: (next: string) => `Rätt · vidare till ${next}`, en: (next: string) => `Right · on to ${next}` },
-      rightDone: { sv: 'Rätt · raketen klar', en: 'Right · rocket complete' },
+      rightDone: { sv: 'Rätt · situationen klar', en: 'Right · situation complete' },
       // ORDER 276 — raketerna styr gästflödet.
       guestsIn: {
         sv: (n: number) => (n === 1 ? 'En gäst till kommer in.' : `${n} ${pl(n, 'gäst', 'gäster')} till kommer in.`),
@@ -3323,8 +3337,8 @@ export const TABLE = {
       correctTag: { sv: 'Rätt', en: 'Right' },
       yourTag: { sv: 'Ditt svar', en: 'Your answer' },
       footer: {
-        sv: 'Rummet väntar inte. Går tiden ut räknas det som fel svar.',
-        en: 'The room won’t wait. Running out of time counts as a wrong answer.'
+        sv: 'Rummet väntar inte. Går tiden ut tar personalen över.',
+        en: 'The room won’t wait. If time runs out, the staff take over.'
       },
       secondsLeft: { sv: (sec: string) => `${sec} sekunder kvar`, en: (sec: string) => `${sec} seconds left` },
       takeover: { sv: (role: string) => `${role} tar över`, en: (role: string) => `${role} takes over` },
@@ -3370,8 +3384,8 @@ export const TABLE = {
         en: 'You did not answer in time, and the staff decided for themselves.'
       },
       right: { sv: (label: string) => `Rätt var: ${label}.`, en: (label: string) => `The right answer was: ${label}.` },
-      noneTitle: { sv: 'Varje raket höll', en: 'Every rocket held' },
-      gridRocket: { sv: 'Raket', en: 'Rocket' },
+      noneTitle: { sv: 'Varje situation höll', en: 'Every situation held' },
+      gridRocket: { sv: 'Situation', en: 'Situation' },
       legendCleared: { sv: '✓ klarat', en: '✓ passed' },
       legendFailed: { sv: '✗ fel, personalen tog över', en: '✗ wrong, staff took over' },
       legendUnreached: { sv: '— nåddes inte', en: '— not reached' },
@@ -3409,7 +3423,7 @@ export const TABLE = {
         sv: 'Orsak: inget svar i tid, och personalen fick besluta själv.',
         en: 'Cause: no answer in time, and the staff had to decide for themselves.'
       },
-      nothingWell: { sv: 'Ingen raket höll hela vägen i kväll.', en: 'No rocket held all the way tonight.' },
+      nothingWell: { sv: 'Ingen situation höll hela vägen i kväll.', en: 'No situation held all the way tonight.' },
       nothingWrong: { sv: 'Inget gick fel i kväll.', en: 'Nothing went wrong tonight.' },
       back: { sv: 'Tillbaka till lärdomen', en: 'Back to the lesson' }
     },
@@ -3458,14 +3472,14 @@ export const TABLE = {
         vinkyl: { name: 'Finare vinkyl', note: 'Vinet i rätt temperatur.' },
         flamberingsvagn: { name: 'Flamberingsvagn', note: 'Flambering vid bordet.' },
         ostvagn: { name: 'Ostvagn', note: 'Ostarna vid borden.' },
-        avecvagn: { name: 'Avecvagn', note: 'Avec efter maten: bordet stannar för avec när raketen klaras.' },
+        avecvagn: { name: 'Avecvagn', note: 'Avec efter maten: bordet stannar för avec när situationen klaras.' },
         humidor: { name: 'Humidor', note: 'Cigarren och uteserveringen.' }
       } as Record<string, { name: string; note: string }>,
       en: {
         vinkyl: { name: 'A finer wine fridge', note: 'Wine at the right temperature.' },
         flamberingsvagn: { name: 'Flambé trolley', note: 'Flambéing at the table.' },
         ostvagn: { name: 'Cheese trolley', note: 'The cheeses at the tables.' },
-        avecvagn: { name: 'Digestif trolley', note: 'A digestif after the meal: the table stays for one when the rocket is cleared.' },
+        avecvagn: { name: 'Digestif trolley', note: 'A digestif after the meal: the table stays for one when the situation is cleared.' },
         humidor: { name: 'Humidor', note: 'The cigar and the terrace.' }
       } as Record<string, { name: string; note: string }>
     },
@@ -3607,9 +3621,9 @@ export const TABLE = {
     starHeading: { sv: 'Stjärnan', en: 'The star' },
     star: {
       sv: (p: { medal: string; pavilion: string; reputation: number; judgementPct: number; minRockets: number; weeks: string }) =>
-        `Stjärnan kräver ${p.medal} i ${p.pavilion}, ett rykte på minst ${p.reputation} av 100 och att du klarar minst ${p.judgementPct} % av veckans raketer, av minst ${p.minRockets}. Gränserna ska hålla ${p.weeks} veckor i rad. En vecka under någon av dem, och stjärnan går förlorad.`,
+        `Stjärnan kräver ${p.medal} i ${p.pavilion}, ett rykte på minst ${p.reputation} av 100 och att du klarar minst ${p.judgementPct} % av veckans situationer, av minst ${p.minRockets}. Gränserna ska hålla ${p.weeks} veckor i rad. En vecka under någon av dem, och stjärnan går förlorad.`,
       en: (p: { medal: string; pavilion: string; reputation: number; judgementPct: number; minRockets: number; weeks: string }) =>
-        `The star needs ${p.medal} in ${p.pavilion}, a reputation of at least ${p.reputation} out of 100, and clearing at least ${p.judgementPct}% of the week's rockets, out of at least ${p.minRockets}. The thresholds must hold for ${p.weeks} weeks in a row. One week below any of them, and the star is lost.`
+        `The star needs ${p.medal} in ${p.pavilion}, a reputation of at least ${p.reputation} out of 100, and clearing at least ${p.judgementPct}% of the week's situations, out of at least ${p.minRockets}. The thresholds must hold for ${p.weeks} weeks in a row. One week below any of them, and the star is lost.`
     },
     numberWord: {
       sv: ['noll', 'en', 'två', 'tre', 'fyra', 'fem', 'sex', 'sju', 'åtta', 'nio', 'tio', 'elva', 'tolv'] as readonly string[],
@@ -3637,7 +3651,7 @@ export const TABLE = {
     yours: { sv: 'Vinbaren som kan bli din', en: 'The wine bar that could be yours' },
     empty: { sv: 'Än så länge är den tom.', en: 'For now, it is empty.' },
     fill: { sv: 'Det du vet fyller den.', en: 'What you know fills it.' },
-    mentor: { sv: 'Intendent Åsa, din mentor', en: 'Intendant Åsa, your mentor' },
+    mentor: { sv: 'Intendent Åsa, din mentor', en: 'Curator Åsa, your mentor' },
     goal: { sv: 'Målet är stjärnan.', en: 'The goal is the star.' },
     // Spelets egna: knappen och skärmläsarens namn på öppningen.
     skip: { sv: 'Hoppa över', en: 'Skip' },
@@ -3651,7 +3665,7 @@ export const TABLE = {
     focusButton: { sv: 'Fokus', en: 'Focus' },
     statusHint: { sv: 'Statusläge: stämningen vid alla bord, och personalens ork och trivsel. Klicka på en figur för kortet.', en: 'Status view: the mood at every table, and the staff’s energy and morale. Click a figure for its card.' },
     focusHint: { sv: 'Fokusläge: panelerna fälls till lister. Klockan, kassan och mätaren står kvar.', en: 'Focus view: the panels fold into strips. Clock, till and meter stay.' },
-    rocketStrip: { sv: 'Raketen', en: 'Rocket' },
+    rocketStrip: { sv: 'Situationen', en: 'Situation' },
     stamina: { sv: 'Ork', en: 'Energy' },
     staminaLevel: {
       sv: { fresh: 'Pigg', tired: 'Trött', spent: 'Slut' } as Record<string, string>,

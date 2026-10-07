@@ -1,0 +1,30 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "en",
+  "errors": [],
+  "ok": true,
+  "intro": {
+    "m1": true,
+    "portrait": true,
+    "name": "Monday · Campus · Week 2 of 8Curator ÅsaCampusCurator Åsa · from CampusWelcome to Grythyttan.I'm from Campus and I'll be with you today. No one will hand you a business until you have shown what you can do, so we start by practising. Open the House of the Meal and practise in Stensöta, where the sommeliers are. Nothing is at stake.Next→I'll manage — skip the guide",
+    "lockedRows": 8,
+    "lockIcons": 8
+  },
+  "bubble": {
+    "shown": true,
+    "portrait": true,
+    "name": "Curator Åsa",
+    "line": "Now you have shown what you can do, and you can start to invest."
+  },
+  "card": {
+    "count": "Situation 1 tonight",
+    "text": "the host · Table 8Situation 1 tonightTable 8: SEK 290 and one guest, who brings the village alongTwo colleagues from Campus at table 8 sends back a glass of Barolo: the wine is too warm. The bottle has stood on the bar all evening.Episteme×1Techne×2Phronesis×4EpistemeWhat · 20 s · nowTechneHow · 25 sPhronesisWhen and why · 35 sAt what temperature does a red wine taste best?191Room temperature, as in a warm bar2Around 16–18 degrees, cooler than the room3Fridge cold, like a white wine4Temperature does not affect the tasteThe room won’t wait. If time runs out, the staff take over.Choose with 1–4",
+    "timeoutLine": true,
+    "noRocket": true
+  },
+  "legend": {
+    "shown": true,
+    "cook": "#7fa8ff",
+    "groups": 4
+  }
+}

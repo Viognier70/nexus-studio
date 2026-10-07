@@ -8,7 +8,7 @@ export const THEATRE_STRINGS = {
   'theatre.title': { sv: 'Teaterns grund', en: 'The stagecraft' },
   'theatre.kicker': { sv: 'Leverans 2 · rummets kroppsspråk', en: 'Delivery 2 · the room’s body language' },
   'theatre.mode.service': { sv: 'Servering', en: 'Service' },
-  'theatre.mode.rockets': { sv: 'Raketer', en: 'Rockets' },
+  'theatre.mode.rockets': { sv: 'Situationer', en: 'Situations' },
   'theatre.mode.clips': { sv: 'Klipp', en: 'Clips' },
   'theatre.mode.props': { sv: 'Rekvisita', en: 'Props' },
   'theatre.mode.winebar': { sv: 'Vinbaren', en: 'Wine bar' },
@@ -58,7 +58,7 @@ export const THEATRE_STRINGS = {
   'group.cook': { sv: 'Kock', en: 'Cook' },
   'group.dishwasher': { sv: 'Diskare', en: 'Kitchen porter' },
   'group.guest': { sv: 'Gäster', en: 'Guests' },
-  'group.rocket': { sv: 'Till raketerna', en: 'For the rockets' },
+  'group.rocket': { sv: 'Till situationerna', en: 'For the situations' },
 
   'clip.staff.idle': { sv: 'Står och håller uppsikt', en: 'Stands and keeps watch' },
   'clip.staff.walk': { sv: 'Går', en: 'Walks' },

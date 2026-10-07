@@ -18,7 +18,7 @@ import { SEASON } from '../../sim/balance';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { NxButton } from './system/components';
 import { MENTOR_STEPS, useMentor } from './screens/mentor';
-import { Monogram } from './screens/Monogram';
+import { AsaBubble, AsaPortrait } from './AsaBubble';
 import './screens/screens.css';
 import { SenderTag } from './SenderTag';
 
@@ -38,37 +38,17 @@ export function MentorPanel() {
   if (!mentor.showScreen || mentor.step === null || mentor.line === null) return null;
 
   // ORDER 313 §2 — Åsa när satsningarna öppnas (efter första provet).
+  // ORDER 317 — i Designs pratbubbla (D6, AsaBubble).
   if (mentor.step === 'unlocked') {
-    return (
-      <div className="nx nxs-mentor-card" role="status" data-testid="mentor" data-step="unlocked">
-        <div className="nxs-row-between">
-          <SenderTag sender="asa" />
-          <div className="nx-label nx-accent-text">{s.mentor.label}</div>
-        </div>
-        <p className="nx-body nxs-mt-16 nx-speech">{mentor.line}</p>
-        <div className="nxs-mt-24 nxs-w-220">
-          <button type="button" className="nx-btn nxs-btn-ink" data-testid="mentor-close-unlocked" onClick={() => dispatch({ type: 'SAY_UNLOCKED' })}>
-            <span>{s.mentor.understood}</span>
-          </button>
-        </div>
-      </div>
-    );
+    return <AsaBubble step="unlocked" line={mentor.line} nextTestId="mentor-close-unlocked" onNext={() => dispatch({ type: 'SAY_UNLOCKED' })} />;
   }
 
   if (mentor.step === 'service') {
     return (
-      <div className="nx nxs-mentor-card" role="status" data-testid="mentor" data-step="service">
-        <div className="nxs-row-between">
-          <SenderTag sender="asa" />
-          <div className="nx-label nx-accent-text" data-testid="screen-M2">{s.mentor.label}</div>
-        </div>
-        <p className="nx-body nxs-mt-16 nx-speech">{mentor.line}</p>
-        <div className="nxs-mt-24 nxs-w-220">
-          <button type="button" className="nx-btn nxs-btn-ink" data-testid="mentor-close-service" onClick={mentor.closeService}>
-            <span>{s.mentor.understood}</span>
-          </button>
-        </div>
-      </div>
+      <>
+        <span hidden data-testid="screen-M2" />
+        <AsaBubble step="service" line={mentor.line} nextTestId="mentor-close-service" onNext={mentor.closeService} />
+      </>
     );
   }
 
@@ -80,7 +60,8 @@ export function MentorPanel() {
       <div className="nx-label nxs-on-dark" data-testid="screen-M1">
         {strings.calendar.weekdays[cal.weekday]} · {s.mentor.campus} · {strings.calendar.week(cal.week, SEASON.weeks)}
       </div>
-      <Monogram name={t.mentor} caption={s.mentor.label} className="nxs-mentor-portrait" testId="portrait-mentor" />
+      {/* ORDER 317 — Designs porträtt av Åsa (D6) i stället för monogrammet. */}
+      <div className="nxs-mentor-portrait nx-asa-m1" data-testid="portrait-mentor"><AsaPortrait /></div>
       <div className="nxs-mentor-dialog">
         <div className="nxs-row-between">
           <SenderTag sender="asa" />

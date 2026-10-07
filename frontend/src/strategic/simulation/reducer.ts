@@ -451,7 +451,9 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       // ORDER 313 §2 — i introduktionen säger Åsa i bankens steg att
       // satsningarna öppnas; repliken efteråt behövs då inte.
       const said = examDone && next.introduction && next.startLocked && firstExamPassed(next) ? { unlockSaid: true } : {};
-      return examDone ? { ...next, ...said, economy: recordExamWithoutBusiness(next.economy) } : next;
+      // ORDER 317 — D6 det låsta i början: dagen låset släppte (brickan "Öppet nu" den morgonen).
+      const unlocked = examDone && next.startLocked && !firstExamPassed(state) && firstExamPassed(next) ? { startUnlockedDay: next.day.dayNumber } : {};
+      return examDone ? { ...next, ...said, ...unlocked, economy: recordExamWithoutBusiness(next.economy) } : next;
     }
     case 'CLOSE_VISIT': {
       const closed = afterVisitClosed(state, closeVisit(state));

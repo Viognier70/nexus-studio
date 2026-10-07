@@ -95,6 +95,8 @@ import {
   GUEST_GARMENTS,
   STAFF_UNIFORMS,
   LIGHT_MOODS,
+  WINE_BAR_PLAN,
+  WINE_WALL,
   type MoodId,
   type WineBarRoom,
   type Vec2
@@ -183,7 +185,8 @@ function ringTaskFor(s: FigureSample, detail: string | null): string {
 const WEEKEND_DAYS: readonly string[] = ['fri', 'sat'];
 // ORDER 296 — DJ:ns plats bakom båset (Designs handelserManus.js, födelsedagen)
 // och när musiken börjar (satsningen: "Music from nine o'clock").
-const DJ_SPOT = { x: 6.15, z: -4.65, yaw: -Math.PI / 4, stand: 0.25 };
+// ORDER 317 — bakom båset ur rummets plan (DJ-hörnets mitt + 0,45 / − 0,45, som förut).
+const DJ_SPOT = { x: WINE_BAR_PLAN.dj.cx + 0.45, z: WINE_BAR_PLAN.dj.cz - 0.45, yaw: -Math.PI / 4, stand: WINE_BAR_PLAN.dj.platform };
 const DJ_MUSIC_FROM_MIN = 21 * 60;
 // Båsets kantljus när DJ:n spelar (rummets helgnivå, wineBarRoom).
 const DJ_GLOW_ON = 1.4;
@@ -211,8 +214,9 @@ export const WINE_BAR_GUEST_POOL = 36;
  */
 export const WINE_BAR_LIGHTS = {
   fill: { y: 3.1, distance: 16, intensity: 46 },
-  bar: { y: 2.3, distance: 6.5, intensity: 14, x: [-2.4, 0.8] as number[] },
-  tables: { y: 1.5, distance: 5.5, intensity: 7, z: [4.5, -4.2] as number[], x: [-0.2, -2.1] as number[] },
+  // ORDER 317 — över vinväggen (dess mittlinje) och över bordsbanden i husets möblering.
+  bar: { y: 2.3, distance: 6.5, intensity: 14, x: [WINE_WALL.bas.x0, WINE_WALL.bas.x1] as number[], z: WINE_BAR_PLAN.rackZ },
+  tables: { y: 1.5, distance: 5.5, intensity: 7, z: [WINE_BAR_PLAN.lanes.loungeInnerZ, WINE_BAR_PLAN.lanes.southZ - 0.6] as number[], x: [-0.3, -2.3] as number[] },
   offServiceShare: 0.35,
   /** ambientScale i 'tidig' — styrkorna ovan är satta mot den. */
   referenceScale: LIGHT_MOODS.tidig.ambientScale
@@ -640,7 +644,7 @@ export function WineBarFigures({ room, mood }: Props) {
     };
     const lights: Lights = {
       fill: point(LIGHT_MOODS.tidig.ambientColour, 0, L.fill.y, 0, L.fill.distance),
-      bar: L.bar.x.map((x) => point(LIGHT_MOODS.tidig.pendantColour, x, L.bar.y, 0, L.bar.distance)),
+      bar: L.bar.x.map((x) => point(LIGHT_MOODS.tidig.pendantColour, x, L.bar.y, L.bar.z, L.bar.distance)),
       tables: L.tables.z.map((z, i) => point(LIGHT_MOODS.tidig.candleColour, L.tables.x[i], L.tables.y, z, L.tables.distance))
     };
     const ring = createActionRing();

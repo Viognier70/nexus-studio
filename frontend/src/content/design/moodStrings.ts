@@ -52,7 +52,7 @@ export const MOOD_STRINGS: Record<string, { sv: string; en: string }> = {
   'mood.focusHint': { sv: 'Välj en gest för att gå nära.', en: 'Pick a gesture to move in close.' },
 
   'mood.ch.bday.ask': { sv: 'Frågan: sällskapet vill sjunga för Karin', en: 'The question: the party wants to sing for Karin' },
-  'mood.why.bday.ask': { sv: 'Raketens kamera på 13 m. Grannarna i lounge B äter, lounge A väntar på svaret.', en: 'The rocket camera at 13 m. The neighbours in lounge B are eating; lounge A waits for the answer.' },
+  'mood.why.bday.ask': { sv: 'Situationens kamera på 13 m. Grannarna i lounge B äter, lounge A väntar på svaret.', en: 'The situation camera at 13 m. The neighbours in lounge B are eating; lounge A waits for the answer.' },
   'mood.ch.drunk.ask': { sv: 'Frågan: gästen vill ha ett glas till', en: 'The question: the guest wants another glass' },
   'mood.why.drunk.ask': { sv: 'Södra vinkeln på 12 m, så att ansiktena vid baren och i lounge A syns när kameran går in.', en: 'The southern angle at 12 m, so the faces at the bar and in lounge A show when the camera moves in.' },
   'mood.ch.cq.right': { sv: 'Svaret låses: rätt', en: 'The answer locks: right' },
@@ -79,7 +79,7 @@ export const MOOD_STRINGS: Record<string, { sv: string; en: string }> = {
   'mood.why.cq.close': { sv: 'De sista 1,5 sekunderna, långsamt. Ansiktena blir större utan att huvudena förstoras.', en: 'The last 1.5 seconds, slowly. The faces get larger without enlarging the heads.' },
   'mood.ch.cq.back': { sv: 'Tillbaka till 24 m', en: 'Back to 24 m' },
   'mood.why.cq.back': { sv: 'Ansiktena slocknar på vägen ut. Symbolerna står kvar enligt sina regler.', en: 'The faces go out on the way back. The symbols stay according to their rules.' },
-  'mood.ch.face.far': { sv: 'Raketens avstånd, 11 m', en: 'Rocket distance, 11 m' },
+  'mood.ch.face.far': { sv: 'Situationens avstånd, 11 m', en: 'Situation distance, 11 m' },
   'mood.why.face.far': { sv: 'Inga ansikten. Huvudet är för litet för ögon och mun.', en: 'No faces. The head is too small for eyes and mouth.' },
   'mood.ch.face.in': { sv: 'Kameran går in till 6,5 m', en: 'The camera moves in to 6.5 m' },
   'mood.why.face.in': { sv: 'Ansiktena tonas in mellan 9 och 7 m.', en: 'The faces fade in between 9 and 7 m.' },

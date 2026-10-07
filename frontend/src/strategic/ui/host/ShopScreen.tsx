@@ -50,8 +50,6 @@ export function ShopScreen({ onDone }: { onDone: () => void }) {
   const sel = ABILITY_LIST.find((a) => a.id === selected)!;
   const selState = stoneState(sim, sel.id);
   const selSpec = SHOP.abilities[sel.id];
-  const selPav = SHOP_PAVILION[sel.pavilion];
-  const held = sim.medals[selPav] as MedalLevelId | undefined;
   const inSlot = shop.slot.includes(sel.id);
   const locked = investLocked(sim);
   // Vägen är guld fram till den sista grinden som är öppen.
@@ -62,6 +60,10 @@ export function ShopScreen({ onDone }: { onDone: () => void }) {
   }, [sim.medals]);
   const goldTo = lastOpen >= 0 ? DESIGN.road[lastOpen].x : 0.06;
 
+  // ORDER 317 — medaljen i löptext ("brons i Stensöta"), som D6 course.req.*.inline.
+  const medalInline = `${s(lang, MEDAL_KEY[selSpec.requires]).toLowerCase()} ${lang === 'sv' ? 'i' : 'in'} ${s(lang, PAV_KEY[sel.pavilion])}`;
+  const medalMet = selState !== 'locked';
+  const creditsMet = credits >= selSpec.price;
   const action = (() => {
     // ORDER 313 §2 — låst tills första provet är klarat.
     if (locked) return { label: s(lang, 'shop.lockedStart'), on: null, kind: 'locked' as const };
@@ -70,13 +72,14 @@ export function ShopScreen({ onDone }: { onDone: () => void }) {
       if (shop.slot.length >= slots) return { label: s(lang, 'shop.slot.full'), on: null, kind: 'muted' as const };
       return { label: s(lang, 'shop.toSlot'), on: () => dispatch({ type: 'SHOP_SLOT', id: sel.id, on: true }), kind: 'primary' as const };
     }
-    if (selState === 'locked') return { label: s(lang, 'shop.locked'), on: null, kind: 'locked' as const };
+    // ORDER 317 — Designs D6 kurskortet: medaljen före krediterna (den går inte att köpa sig förbi).
+    if (selState === 'locked') return { label: s(lang, 'course.needsMedal', { medal: medalInline }), on: null, kind: 'locked' as const };
     // ORDER 313 §6 — knappen säger hur många krediter som fattas.
     if (selState === 'short') {
       const missing = Math.max(1, selSpec.price - credits);
-      return { label: missing === 1 ? s(lang, 'shop.shortByOne') : s(lang, 'shop.shortBy', { n: missing }), on: null, kind: 'muted' as const };
+      return { label: missing === 1 ? s(lang, 'shop.shortByOne') : s(lang, 'course.short', { missing }), on: null, kind: 'muted' as const };
     }
-    return { label: s(lang, 'shop.buy', { price: s(lang, 'shop.price', { n: selSpec.price }) }), on: () => dispatch({ type: 'SHOP_BUY', id: sel.id }), kind: 'primary' as const };
+    return { label: sel.course ? s(lang, 'course.buy') : s(lang, 'shop.buy', { price: s(lang, 'shop.price', { n: selSpec.price }) }), on: () => dispatch({ type: 'SHOP_BUY', id: sel.id }), kind: 'primary' as const };
   })();
 
   return (
@@ -171,16 +174,18 @@ export function ShopScreen({ onDone }: { onDone: () => void }) {
             <h2 className="nx-heading" style={{ margin: 0 }}>{s(lang, `ab.${sel.id}.name`)}</h2>
             {/* ORDER 313 §6 — fyra rader i ordning: vad, ger, när, kräver och kostar. */}
             <ol className="nx-shop-card-rows" data-testid="shop-card-rows">
-              <li data-row="teaches"><span className="nx-label">{s(lang, 'shop.row.teaches')}</span><span>{s(lang, `ab.${sel.id}.teaches`)}</span></li>
-              <li data-row="gives"><span className="nx-label">{s(lang, 'shop.row.gives')}</span><span>{s(lang, `ab.${sel.id}.fx`)}</span></li>
-              <li data-row="when"><span className="nx-label">{s(lang, 'shop.row.when')}</span><span>{s(lang, 'shop.when')}</span></li>
+              <li data-row="teaches"><span className="nx-label">{s(lang, 'course.row.teaches')}</span><span>{s(lang, `ab.${sel.id}.teaches`)}</span></li>
+              <li data-row="gives"><span className="nx-label">{s(lang, 'course.row.gives')}</span><span>{s(lang, `ab.${sel.id}.fx`)}</span></li>
+              <li data-row="when"><span className="nx-label">{s(lang, 'course.row.when')}</span><span>{s(lang, 'shop.when')}</span></li>
               <li data-row="needs">
-                <span className="nx-label">{s(lang, 'shop.row.needs')}</span>
-                <span data-testid="shop-card-need" data-met={selState !== 'locked'}>
-                  {selState !== 'locked' ? '✓' : '✗'} {s(lang, 'shop.needs', { medal: s(lang, MEDAL_KEY[selSpec.requires]), pavilion: s(lang, PAV_KEY[sel.pavilion]) })}
-                  {' · '}{held ? s(lang, 'shop.have', { medal: s(lang, MEDAL_KEY[held]) }) : s(lang, 'shop.noMedal')}
+                <span className="nx-label">{s(lang, 'course.row.needs')}</span>
+                {/* ORDER 317 — D6: ✓ bläck med guld, ✗ streckad valnöt; inget grönt och inget rött. */}
+                <span data-testid="shop-card-need" data-met={medalMet}>
+                  <span className="nx-course-mark" data-met={medalMet} aria-hidden>{medalMet ? '✓' : '✗'}</span> {medalInline.charAt(0).toUpperCase() + medalInline.slice(1)} · {s(lang, medalMet ? 'course.req.met' : 'course.req.missing')}
                 </span>
-                <span data-testid="shop-card-cost">{s(lang, 'shop.cost', { price: selSpec.price, have: credits })}</span>
+                <span data-testid="shop-card-cost" data-met={creditsMet}>
+                  <span className="nx-course-mark" data-met={creditsMet} aria-hidden>{creditsMet ? '✓' : '✗'}</span> {s(lang, 'course.cost', { cost: selSpec.price, have: credits })}
+                </span>
               </li>
             </ol>
             {sel.course && <p className="nx-small" style={{ margin: 0 }}>{s(lang, 'shop.course')} · {s(lang, `shop.role.${sel.course}`)}</p>}

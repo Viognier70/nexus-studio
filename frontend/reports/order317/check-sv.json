@@ -1,0 +1,30 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "errors": [],
+  "ok": true,
+  "intro": {
+    "m1": true,
+    "portrait": true,
+    "name": "Måndag · Campus · Vecka 2 av 8Intendent ÅsaCampusIntendent Åsa · från CampusVälkommen till Grythyttan.Jag kommer från Campus och följer dig i dag. Ingen lämnar över en verksamhet förrän du har visat vad du kan, så vi börjar med att öva. Öppna Måltidens hus och öva i Stensöta, där sommelierna håller till. Inget står på spel.Nästa→Jag klarar mig — hoppa över guiden",
+    "lockedRows": 8,
+    "lockIcons": 8
+  },
+  "bubble": {
+    "shown": true,
+    "portrait": true,
+    "name": "Intendent Åsa",
+    "line": "Nu har du visat vad du kan, och du kan börja satsa."
+  },
+  "card": {
+    "count": "Situation 1 i kväll",
+    "text": "värden · Bord 7Situation 1 i kvällBord 7: 305 kr och en gästTvå kollegor från Campus vid bord 7 skickar tillbaka ett glas Barolo: vinet är för varmt. Flaskan har stått på bardisken hela kvällen.Episteme×1Techne×2Phronesis×4EpistemeVad · 20 s · pågårTechneHur · 25 sPhronesisNär och varför · 35 sVid vilken temperatur smakar ett rött vin bäst?191Rumstemperatur, som i en varm bar2Runt 16–18 grader, svalare än rummet3Kylskåpskallt, som ett vitt vin4Temperaturen påverkar inte smakenRummet väntar inte. Går tiden ut tar personalen över.Välj med 1–4",
+    "timeoutLine": true,
+    "noRocket": true
+  },
+  "legend": {
+    "shown": true,
+    "cook": "#7fa8ff",
+    "groups": 4
+  }
+}

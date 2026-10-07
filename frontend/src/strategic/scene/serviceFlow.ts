@@ -1,5 +1,5 @@
 // serviceFlow — kvällens koreografi i Vinbaren som händelser i tid.
-import { PLATE_SURFACE } from './wineBarRoom';
+import { PLATE_SURFACE, WINE_BAR_PLAN as P } from './wineBarRoom';
 // Nexus v1, efter provspel 2026-09-26: servicen är en följd av händelser.
 //
 // SD-004. Ligger ovanpå wineBarRoom.ts, figureActs.ts och serviceScore.ts
@@ -120,15 +120,19 @@ export function along(p: Vec2[], d: number): { x: number; z: number; facing: num
 
 // Personalens vägar. Baren är öppen mot väster; korridoren x −4,1 binder
 // ihop passet, barens öppning och gästernas norra och södra gångar.
-export const CORR_X = -4.1;
-const BAR_OPEN_X = -3.2;
-const NORTH_Z = 3.1;
-const SOUTH_Z = -3.25;
-export const PICKUP_BAR: Vec2 = [CORR_X, 0.2];
-export const POUR_SPOT: Vec2 = [-3.0, -0.62];
+// ORDER 317 — alla mått ur rummets plan (wineBarRoom.ts WINE_BAR_PLAN), så att
+// vägarna följer husets möblering. Baren står inte symmetriskt kring z 0.
+export const CORR_X = P.corrX;
+const BAR_OPEN_X = P.bar.x0 + 0.4;
+const NORTH_Z = P.lanes.northZ;
+const SOUTH_Z = P.lanes.southZ;
+export const PICKUP_BAR: Vec2 = [CORR_X, P.rackZ + 0.2];
+export const POUR_SPOT: Vec2 = [P.bar.x0 + 0.6, P.runwaySouthZ];
+/** Sommelierens flaska vid vinväggens östra ände, i norra stråket. */
+export const BOTTLE_PICKUP_AT: Vec2 = [P.wineWallEastX + 0.1, P.runwayNorthZ];
 
-function inBar(p: Vec2): boolean { return p[0] > -3.6 && p[0] < 2.4 && Math.abs(p[1]) < 1.2; }
-function laneFor(p: Vec2): number { return p[1] > 1.2 ? NORTH_Z : SOUTH_Z; }
+function inBar(p: Vec2): boolean { return p[0] > P.bar.x0 && p[0] < P.bar.x1 && p[1] > P.bar.z0 + P.bar.depth && p[1] < P.bar.z1 - P.bar.depth; }
+function laneFor(p: Vec2): number { return p[1] > P.bar.z1 - P.bar.depth ? NORTH_Z : SOUTH_Z; }
 
 /** Väg för personal mellan två punkter i rummets lokala XZ. */
 export function staffRoute(from: Vec2, to: Vec2): Vec2[] {
@@ -163,14 +167,14 @@ export function groupsFor(room: any): Group[] {
   });
   ['twoA', 'twoB', 'twoC'].forEach(function (id, i) {
     const a = s(id + '1'), b = s(id + '2');
-    g.push({ id: id, label: 'Bord ' + (i + 1), seats: [id + '1', id + '2'], serveAt: [(a.local[0] + b.local[0]) / 2, -3.6], serveFacing: Math.PI, kind: 'two', tableAt: [(a.local[0] + b.local[0]) / 2, PLATE_SURFACE.twoTableZ] });
+    g.push({ id: id, label: 'Bord ' + (i + 1), seats: [id + '1', id + '2'], serveAt: [(a.local[0] + b.local[0]) / 2, P.twoTopServeZ], serveFacing: Math.PI, kind: 'two', tableAt: [(a.local[0] + b.local[0]) / 2, PLATE_SURFACE.twoTableZ] });
   });
   [[1, 2], [3, 4], [5, 6], [7, 8]].forEach(function (pr, i) {
     const a = s('bar' + pr[0]), b = s('bar' + pr[1]);
-    const north = a.local[1] > 0;
+    const north = a.local[1] > P.rackZ;
     g.push({ id: 'barPair' + i, label: 'Bar ' + pr[0] + '–' + pr[1], seats: ['bar' + pr[0], 'bar' + pr[1]],
-             serveAt: [(a.local[0] + b.local[0]) / 2, north ? 0.62 : -0.62], serveFacing: north ? 0 : Math.PI, kind: 'bar',
-             tableAt: [(a.local[0] + b.local[0]) / 2, north ? PLATE_SURFACE.barGuestZ : -PLATE_SURFACE.barGuestZ] });
+             serveAt: [(a.local[0] + b.local[0]) / 2, north ? P.runwayNorthZ : P.runwaySouthZ], serveFacing: north ? 0 : Math.PI, kind: 'bar',
+             tableAt: [(a.local[0] + b.local[0]) / 2, north ? PLATE_SURFACE.barGuestZ : PLATE_SURFACE.barGuestZSouth] });
   });
   return g;
 }
@@ -248,10 +252,10 @@ export function createServiceFlow(room: any, opts?: { busy?: number; length?: nu
     t += dur;
     // Disken går till passet innan nästa uppgift.
     if (o?.carryBack) {
-      const toPass = staffRoute(target, [CORR_X, 2.7]);
+      const toPass = staffRoute(target, [CORR_X, P.pass.z]);
       const dp = pathLen(toPass) / WALK_STAFF;
       A.segments.push({ t0: t, t1: t + dp, kind: 'walk', path: toPass, pose: 'serveWalk', carrying: o.carryBack });
-      t += dp; s.pos = [CORR_X, 2.7];
+      t += dp; s.pos = [CORR_X, P.pass.z];
     } else s.pos = target;
     s.free = t;
     return { arrive: arrive, done: arrive + dur };
@@ -321,7 +325,7 @@ export function createServiceFlow(room: any, opts?: { busy?: number; length?: nu
               served = p.done;
               hold(r.done, p.arrive, 'talk', { targetYaw: 0.9 });
             } else if (g.kind === 'lounge') {
-              const p = assign('sommelier', r.done, g.serveAt, g.serveFacing, 'present', 5, { partyId: pid, carry: 'bottle', pickup: [1.3, 0.62], pickupHold: 1.5 });
+              const p = assign('sommelier', r.done, g.serveAt, g.serveFacing, 'present', 5, { partyId: pid, carry: 'bottle', pickup: BOTTLE_PICKUP_AT, pickupHold: 1.5 });
               served = p.done;
               hold(r.done, p.arrive, 'talk', { targetYaw: 0.9 });
               hold(p.arrive, p.done, 'waitCalm', { targetYaw: 0 });

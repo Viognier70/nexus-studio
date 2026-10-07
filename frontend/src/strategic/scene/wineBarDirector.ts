@@ -38,12 +38,14 @@ import {
   POUR_SPOT,
   WALK_GUEST,
   CORR_X,
+  BOTTLE_PICKUP_AT,
   pathLen,
   along,
   type Group,
   type Pose,
   type Vec2
 } from './serviceFlow';
+import { WINE_BAR_PLAN, doorPath } from './wineBarRoom';
 import { staffTempo, waitStateFor, WAIT_THRESHOLDS } from './figureActs';
 import { IDLE_RULE } from './serviceScore';
 import { QUEUE_MOOD } from '../../sim/balance';
@@ -242,15 +244,16 @@ const WELCOME_S = 3;
 const CARRY_WHILE_HOLDING: readonly DirectorPose[] = ['serve', 'setBread', 'serveAperitif'];
 const RITUAL_S = { bread: 2.2, water: 2.6, aperitif: 2.5, menus: 2.4, filler: 3.2, fillerGap: 4, door: 4 };
 const HOST_IN_M = 1;
-/** Passet: servitörens sida (serviceFlow CORR_X, z 2,7) och kockens sida. */
-export const PASS_FLOOR: Vec2 = [CORR_X, 2.7];
-const PASS_KITCHEN: Vec2 = [-5.05, 2.7];
+/** Passet: servitörens sida (serviceFlow CORR_X) och kockens sida. */
+// ORDER 317 — passet, köksdörren och flaskan ur rummets plan (WINE_BAR_PLAN).
+export const PASS_FLOOR: Vec2 = [CORR_X, WINE_BAR_PLAN.pass.z];
+const PASS_KITCHEN: Vec2 = [WINE_BAR_PLAN.pass.x0 - 0.05, WINE_BAR_PLAN.pass.z];
 /** Sommelierens flaska hämtas vid vinväggens östra ände (serviceFlow). */
-const BOTTLE_PICKUP: Vec2 = [1.3, 0.62];
+const BOTTLE_PICKUP: Vec2 = BOTTLE_PICKUP_AT;
 /** Gångcykeln: en cykel per 1,3 m (serviceFlow sampleActor). */
 const STRIDE_M = 1.3;
 /** Köksdörren: kocken går ut ur köket här (wineBarRoom.staffPathKitchenToBar). */
-const KITCHEN_DOOR: Vec2[] = [[-5.1, 2.7], [-5.1, 1.2], [CORR_X, 1.2]];
+const KITCHEN_DOOR: Vec2[] = [...WINE_BAR_PLAN.kitchenDoor, [CORR_X, WINE_BAR_PLAN.kitchenDoor[1][1]]];
 
 // #endregion
 
@@ -702,7 +705,9 @@ export class WineBarDirector {
     tr.queueIx = -1;
   }
 
-  private walkPath(path: Vec2[], t0: number, speed: number, pose: DirectorPose) {
+  private walkPath(given: Vec2[], t0: number, speed: number, pose: DirectorPose) {
+    // ORDER 317 — en väg mellan rummet och trottoaren går genom dörrens mitt (wineBarRoom.ts doorPath).
+    const path = doorPath(given, this.room.width);
     const len = pathLen(path);
     return { path, len, t0, dur: len / speed, pose };
   }
@@ -1348,7 +1353,7 @@ export class WineBarDirector {
   /** staffRoute, men kocken och diskaren går ut och in genom köksdörren. */
   private routeFor(a: ActorTrack, from: Vec2, to: Vec2): Vec2[] {
     if (a.role !== 'cook' && a.role !== 'dish') return staffRoute(from, to);
-    const inKitchen = (p: Vec2) => p[0] < CORR_X - 0.3 && p[1] > 1.2;
+    const inKitchen = (p: Vec2) => p[0] < CORR_X - 0.3 && p[1] > WINE_BAR_PLAN.kitchen.z0;
     if (inKitchen(from) && !inKitchen(to)) {
       return [from as Vec2].concat(KITCHEN_DOOR, staffRoute(KITCHEN_DOOR[2], to).slice(1));
     }

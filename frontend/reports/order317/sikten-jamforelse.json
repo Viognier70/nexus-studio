@@ -1,0 +1,147 @@
+{
+ "definition": "checkSightLines (wineBarRoom.ts) per vinväggsläge: bar = barstolar som ser alla hyllplan på sin sida; wall = platser som ser vinväggen; dj = platser som ser DJ:n; lounges/barTiers = hyllplan sedda/hyllplan på sin sida. main_15_6x11_8: wineBarRoom.ts i main (512acf36) i Designs ursprungliga rum; main_hus: samma i husets mått 14,47 × 10,05 m (som spelet visade efter 312b); nu: order-317 med husets möblering (wineBarHouse.ts). Kört med en tillfällig kopia av main-filen.",
+ "main_15_6x11_8": {
+  "bas": {
+   "bar": 0,
+   "wall": 20,
+   "dj": 20,
+   "lounges": [
+    "1/4",
+    "1/4",
+    "1/4",
+    "1/4",
+    "1/4",
+    "1/4"
+   ],
+   "barTiers": [
+    "3/4",
+    "3/4",
+    "3/4",
+    "3/4",
+    "3/4",
+    "3/4",
+    "3/4",
+    "3/4"
+   ]
+  },
+  "platina": {
+   "bar": 0,
+   "wall": 20,
+   "dj": 17,
+   "lounges": [
+    "3/6",
+    "3/6",
+    "3/6",
+    "3/6",
+    "3/6",
+    "3/6"
+   ],
+   "barTiers": [
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6"
+   ]
+  }
+ },
+ "main_hus": {
+  "bas": {
+   "bar": 0,
+   "wall": 14,
+   "dj": 14,
+   "lounges": [
+    "0/4",
+    "0/4",
+    "0/4",
+    "0/4",
+    "0/4",
+    "0/4"
+   ],
+   "barTiers": [
+    "3/4",
+    "3/4",
+    "3/4",
+    "3/4",
+    "3/4",
+    "3/4",
+    "3/4",
+    "3/4"
+   ]
+  },
+  "platina": {
+   "bar": 0,
+   "wall": 14,
+   "dj": 11,
+   "lounges": [
+    "0/6",
+    "0/6",
+    "0/6",
+    "0/6",
+    "0/6",
+    "0/6"
+   ],
+   "barTiers": [
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6"
+   ]
+  }
+ },
+ "nu": {
+  "bas": {
+   "bar": 0,
+   "wall": 20,
+   "dj": 20,
+   "lounges": [
+    "1/4",
+    "1/4",
+    "1/4",
+    "1/4",
+    "1/4",
+    "1/4"
+   ],
+   "barTiers": [
+    "3/4",
+    "3/4",
+    "3/4",
+    "3/4",
+    "3/4",
+    "3/4",
+    "3/4",
+    "3/4"
+   ]
+  },
+  "platina": {
+   "bar": 0,
+   "wall": 20,
+   "dj": 18,
+   "lounges": [
+    "3/6",
+    "3/6",
+    "3/6",
+    "3/6",
+    "3/6",
+    "3/6"
+   ],
+   "barTiers": [
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6"
+   ]
+  }
+ }
+}

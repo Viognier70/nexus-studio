@@ -1,6 +1,6 @@
 // ORDER 308 — typerna för Designs oppningManus.js (leveransen 2026-10-04,
 // öppningen, omtag), inkopierad oförändrad. Manuset är data: bilderna,
-// svärtan, texten, nålarna, kvällen, byns kamera, Ingrid och de två
+// svärtan, texten, nålarna, kvällen, byns kamera, Åsa (D6, ORDER 317) och de två
 // scenerna i vinbaren (emptyBar, glimpses). Spelas av OpeningSequence.tsx.
 
 import type { EventScript, ScriptView } from '../scene/events/handelserManus';
@@ -28,7 +28,8 @@ export const PINS: OpeningPin[];
 export const PIN_STYLE: { ring: string; ringPx: number; dotCqh: number; glow: string; labelCqh: number; label: string };
 export const EVENING: Array<{ t: number; e: number }>;
 export const VILLAGE_CAM: VillageCamKey[];
-export const MENTOR: { place: string; outM: number; along: number; scale: number; garment: string; clip: string; glanceAt: number };
+// ORDER 317 — D6: Intendent Åsa i Ingrids ställe (who, greetAt, greetYaw i stället för garment).
+export const MENTOR: { who: 'asa'; place: string; outM: number; along: number; scale: number; clip: string; glanceAt: number; greetAt: number; greetYaw: number };
 export function emptyBar(): OpeningScene;
 export const GLIMPSE_T0: number;
 export function glimpses(): OpeningScene;
