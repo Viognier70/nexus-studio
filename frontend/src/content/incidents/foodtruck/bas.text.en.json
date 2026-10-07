@@ -1,0 +1,594 @@
+{
+ "language": "en",
+ "status": "utkast",
+ "texts": {
+  "ft01-rusningen": {
+   "title": "The rush",
+   "body": "It is nearly seven, and the queue grows along the awning. The grill is full, and the first guest looks at the sausage in their hand.",
+   "steps": [
+    {
+     "question": "Why does a sausage split when it is grilled too hot?",
+     "options": {
+      "a": {
+       "label": "Because it is too old.",
+       "explanation": "Age does not split a sausage. The steam inside does."
+      },
+      "b": {
+       "label": "Because the water inside boils and the pressure bursts the casing before the middle is hot.",
+       "explanation": "Right. The water turns to steam, the pressure bursts the casing, and the juice runs out while the middle is still cold."
+      },
+      "c": {
+       "label": "Because the salt melts.",
+       "explanation": "Salt does not melt at grill heat. It is the water that boils."
+      },
+      "d": {
+       "label": "Because the grill is too dirty.",
+       "explanation": "A dirty grill gives a burnt taste but does not split the sausage."
+      }
+     },
+     "fail": {
+      "outcome": "A sausage splits on the grill, and the next in the queue has to wait."
+     }
+    },
+    {
+     "question": "The queue is long, and a guest says the sausage is cold inside. What do you do?",
+     "options": {
+      "a": {
+       "label": "Apologise and give a discount.",
+       "explanation": "The discount does not fix a cold sausage, and the next one may be the same."
+      },
+      "b": {
+       "label": "Swap it at once for one that is hot through, and check the grill’s heat and pace so it does not happen again.",
+       "explanation": "Right. The guest gets a hot sausage, and you fix the cause instead of hoping the queue can wait."
+      },
+      "c": {
+       "label": "Say it is meant to be like that.",
+       "explanation": "A sausage should be hot through. The guest leaves, and the reputation goes with them."
+      },
+      "d": {
+       "label": "Grill it another minute and hand back the same one.",
+       "explanation": "A minute rarely heats the middle, and the queue grows meanwhile."
+      }
+     },
+     "fail": {
+      "outcome": "The guest leaves with the cold sausage, and others in the queue see it."
+     }
+    },
+    {
+     "question": "How do you grill the sausages before the evening rush?",
+     "options": {
+      "a": {
+       "label": "On the highest heat, so it goes quickly.",
+       "explanation": "High heat splits the sausages before they are hot inside, and the queue waits for new ones."
+      },
+      "b": {
+       "label": "On medium heat, turning often, so they heat through without splitting.",
+       "explanation": "Right. Medium heat and frequent turning give sausages that are hot through and stay whole."
+      },
+      "c": {
+       "label": "In cold water first, then on high heat.",
+       "explanation": "The water takes time, and the high heat splits them anyway."
+      },
+      "d": {
+       "label": "On one side only.",
+       "explanation": "Then the sausage is burnt on one side and cold on the other."
+      }
+     },
+     "fail": {
+      "outcome": "The sausages split in the rush, and the queue grows impatient."
+     }
+    }
+   ],
+   "success": {
+    "outcome": "The sausages are hot through and whole, and the queue moves."
+   },
+   "staff": {
+    "outcome": "The helper lowers the heat and swaps the sausage, but the queue had time to grow."
+   }
+  },
+  "ft02-drycken": {
+   "title": "The drink with it",
+   "body": "A guest at the hatch wants something to drink with the sausage and asks what you recommend.",
+   "steps": [
+    {
+     "question": "Why does a bitter, sparkling drink suit a salty, fatty sausage?",
+     "options": {
+      "a": {
+       "label": "The bitterness makes the sausage sweeter.",
+       "explanation": "Bitterness does not make food sweeter. It is the interplay of salt, bitterness and fat that works."
+      },
+      "b": {
+       "label": "The salt softens the bitterness, and the bitterness and bubbles cut through the fat.",
+       "explanation": "Right. The salt in the sausage softens the bitterness, and bitterness and bubbles clear the fat between bites."
+      },
+      "c": {
+       "label": "The bubbles warm the sausage.",
+       "explanation": "The bubbles do not change the sausage’s temperature. They clear the fat from the mouth."
+      },
+      "d": {
+       "label": "They do not go together; sausage should be eaten with water.",
+       "explanation": "Water is fine, but a bitter, sparkling drink lifts the sausage through the salt and the fat."
+      }
+     },
+     "fail": {
+      "outcome": "The guest takes a sweet soda and leaves half the sausage."
+     }
+    },
+    {
+     "question": "It starts to rain, and the queue gets short. What do you do?",
+     "options": {
+      "a": {
+       "label": "Close for the evening.",
+       "explanation": "Rain often passes, and those who come go to another truck."
+      },
+      "b": {
+       "label": "Slow the grill to the queue’s pace, put out the shelter and offer something hot to drink.",
+       "explanation": "Right. You waste no sausages, the guests stay dry, and the evening can pick up again."
+      },
+      "c": {
+       "label": "Grill as usual; people will come.",
+       "explanation": "The sausages sit there and are thrown away at the end of the evening."
+      },
+      "d": {
+       "label": "Cut the price in half.",
+       "explanation": "Half price draws few in the rain and costs on everyone else."
+      }
+     },
+     "fail": {
+      "outcome": "The sausages sit in the rain and are thrown away."
+     }
+    },
+    {
+     "question": "Which drink do you suggest with a spicy grilled sausage to a guest who does not drink alcohol?",
+     "options": {
+      "a": {
+       "label": "Water; nothing else works.",
+       "explanation": "Water works, but there are alcohol-free drinks that suit the sausage better."
+      },
+      "b": {
+       "label": "An alcohol-free beer or a sparkling drink with some bitterness, such as tonic or bitter lemon.",
+       "explanation": "Right. The bitterness and bubbles do what they do in a beer: they meet the salt and cut through the fat."
+      },
+      "c": {
+       "label": "A sweet fruit soda.",
+       "explanation": "The sweetness clashes with the spices and makes the sausage feel heavier."
+      },
+      "d": {
+       "label": "Milk.",
+       "explanation": "Milk calms the heat but does nothing for the salt and the fat."
+      }
+     },
+     "fail": {
+      "outcome": "The guest gets a drink that does not suit and buys no more."
+     }
+    }
+   ],
+   "success": {
+    "outcome": "The guest takes a drink with the sausage and comes back for another."
+   },
+   "staff": {
+    "outcome": "The helper suggests a drink, and the evening moves on."
+   }
+  },
+  "ft03-rullen": {
+   "title": "The roll",
+   "body": "A group orders flatbread rolls, and one of them has had too much to drink.",
+   "steps": [
+    {
+     "question": "What holds a grilled sausage together, so that it does not fall apart on the grill?",
+     "options": {
+      "a": {
+       "label": "The flour in the mixture.",
+       "explanation": "Flour binds a little water, but it is not what holds the sausage together."
+      },
+      "b": {
+       "label": "The salt, which draws out the meat proteins so they bind fat and water.",
+       "explanation": "Right. Salt draws out the proteins in the meat, and they hold fat and water together as the sausage heats."
+      },
+      "c": {
+       "label": "The smoke.",
+       "explanation": "Smoke gives flavour and colour, but binds nothing."
+      },
+      "d": {
+       "label": "The casing.",
+       "explanation": "The casing holds the shape on the outside; the inside is held together by the proteins the salt draws out."
+      }
+     },
+     "fail": {
+      "outcome": "The roll falls apart in the guest’s hand."
+     }
+    },
+    {
+     "question": "A drunk guest becomes rude to your helper at the hatch. What do you do?",
+     "options": {
+      "a": {
+       "label": "Let the helper deal with it.",
+       "explanation": "The helper is left alone with it, and you are the one responsible for the hatch."
+      },
+      "b": {
+       "label": "Step in yourself, calmly, refuse further service if needed, and support the helper afterwards.",
+       "explanation": "Right. You protect the helper, set a calm limit and make sure it does not stay with the one who took the brunt."
+      },
+      "c": {
+       "label": "Give the guest a free sausage so he leaves.",
+       "explanation": "It teaches the guest that rudeness pays, and the helper gets no help."
+      },
+      "d": {
+       "label": "Call the police straight away.",
+       "explanation": "The police are needed if it turns to threats or violence. First you set a calm limit yourself."
+      }
+     },
+     "fail": {
+      "outcome": "The guest carries on, and the helper is left alone with it."
+     }
+    },
+    {
+     "question": "How do you make a flatbread roll that holds together when the guest eats it standing?",
+     "options": {
+      "a": {
+       "label": "Plenty of prawn salad on top.",
+       "explanation": "Prawn salad on top makes the roll soggy, and it falls apart."
+      },
+      "b": {
+       "label": "The mash first as a bed, then the sausage, prawn salad and onion, rolled tight with the edge underneath.",
+       "explanation": "Right. The mash holds the sausage, and a tight roll with the edge underneath holds in the hand."
+      },
+      "c": {
+       "label": "Rolls it loosely so it can be opened.",
+       "explanation": "A loose roll opens by itself while the guest eats."
+      },
+      "d": {
+       "label": "Cuts it in two.",
+       "explanation": "Cut in two, the filling runs out of both ends."
+      }
+     },
+     "fail": {
+      "outcome": "The roll spills, and the guest wants a new one."
+     }
+    }
+   ],
+   "success": {
+    "outcome": "The rolls hold, and the group moves on calmly."
+   },
+   "staff": {
+    "outcome": "The helper deals with the group, but is shaken."
+   }
+  },
+  "ft04-leveransen": {
+   "title": "The delivery",
+   "body": "The supplier has brought tonight’s sausages and offers a cheaper batch for next week.",
+   "steps": [
+    {
+     "question": "What is the casing of a grilled sausage usually made of?",
+     "options": {
+      "a": {
+       "label": "Plastic.",
+       "explanation": "Plastic casings exist, but on a sausage eaten with its skin it is gut or collagen."
+      },
+      "b": {
+       "label": "Natural casing from pig or sheep, or an edible collagen casing.",
+       "explanation": "Right. A grilling sausage has natural casing or an edible collagen casing."
+      },
+      "c": {
+       "label": "Paper.",
+       "explanation": "Paper does not hold on the grill."
+      },
+      "d": {
+       "label": "Starch.",
+       "explanation": "Starch may be in the mixture, not in the casing."
+      }
+     },
+     "fail": {
+      "outcome": "You accept the sausages without knowing what they are made of."
+     }
+    },
+    {
+     "question": "A supplier offers cheaper sausage with no information on where the meat comes from. What do you weigh?",
+     "options": {
+      "a": {
+       "label": "Only the price; the guests will not notice.",
+       "explanation": "Guests ask, and then you have no answer."
+      },
+      "b": {
+       "label": "The price against what you can tell the guest about origin and against your reputation, and you ask the supplier about origin and meat content.",
+       "explanation": "Right. You do the sums, but you ask first, so that you can stand behind what you sell."
+      },
+      "c": {
+       "label": "Switch at once, without asking.",
+       "explanation": "You do not know what you sell, and it shows when a guest asks."
+      },
+      "d": {
+       "label": "Keep the old one without doing the sums.",
+       "explanation": "It may be right, but you do not know why."
+      }
+     },
+     "fail": {
+      "outcome": "You have no answer when a guest asks about the sausage."
+     }
+    },
+    {
+     "question": "How many sausages do you have out before the seven o’clock rush?",
+     "options": {
+      "a": {
+       "label": "All you have.",
+       "explanation": "What does not sell in time stands too long."
+      },
+      "b": {
+       "label": "As many as the queue usually takes in the next half hour, topping up at an even pace.",
+       "explanation": "Right. The right amount out and even topping up give hot sausages without waste."
+      },
+      "c": {
+       "label": "One at a time.",
+       "explanation": "The queue waits for every sausage."
+      },
+      "d": {
+       "label": "None; everything is grilled when the guest orders.",
+       "explanation": "The waits get long when the queue arrives."
+      }
+     },
+     "fail": {
+      "outcome": "The sausages sit too long before the rush."
+     }
+    }
+   ],
+   "success": {
+    "outcome": "You know what you sell, and there is just enough ready when the queue comes."
+   },
+   "staff": {
+    "outcome": "The helper takes the delivery, but no one asks where it comes from."
+   }
+  },
+  "ft07-ursprunget": {
+   "title": "Where it comes from",
+   "body": "A guest reads the packet behind the hatch and starts asking about the sausage while you take payment.",
+   "steps": [
+    {
+     "question": "What does the meat content on a sausage packet mean?",
+     "options": {
+      "a": {
+       "label": "How much of the sausage is pork.",
+       "explanation": "The meat content does not say which animal the meat is from."
+      },
+      "b": {
+       "label": "What share of the sausage is meat, according to the recipe.",
+       "explanation": "Right. The meat content is the share of meat in the recipe."
+      },
+      "c": {
+       "label": "How much fat the sausage contains.",
+       "explanation": "The fat content is listed separately. The meat content is the share of meat."
+      },
+      "d": {
+       "label": "Where the meat comes from.",
+       "explanation": "The origin is listed separately. The meat content is the share of meat."
+      }
+     },
+     "fail": {
+      "outcome": "You cannot say what is in the sausage."
+     }
+    },
+    {
+     "question": "A guest asks if the sausage is Swedish. The packet says \"Made in Sweden\". What do you answer?",
+     "options": {
+      "a": {
+       "label": "Yes, it is Swedish.",
+       "explanation": "\"Made in Sweden\" says where the sausage was made, not where the meat comes from."
+      },
+      "b": {
+       "label": "That it is made in Sweden, but that this does not say where the meat comes from, and that you can find out.",
+       "explanation": "Right. It is the difference between where something is made and where the ingredient comes from."
+      },
+      "c": {
+       "label": "No, so it is foreign.",
+       "explanation": "You do not know that. The meat may well be Swedish."
+      },
+      "d": {
+       "label": "That it does not matter.",
+       "explanation": "It matters to the guest who asks."
+      }
+     },
+     "fail": {
+      "outcome": "The guest leaves without knowing what she bought."
+     }
+    },
+    {
+     "question": "You take payment and serve sausages at the same hatch. How do you work?",
+     "options": {
+      "a": {
+       "label": "Wipe your hands on the apron in between.",
+       "explanation": "The apron does not remove what comes with the money."
+      },
+      "b": {
+       "label": "Use tongs for the food and never touch it with the hand that handles money, or change gloves.",
+       "explanation": "Right. Money and food are kept apart, with the tongs or fresh gloves."
+      },
+      "c": {
+       "label": "Take payment first and serve afterwards, with the same gloves.",
+       "explanation": "The gloves carry what they have touched."
+      },
+      "d": {
+       "label": "Let the customer take the sausage themselves.",
+       "explanation": "Then more hands touch the food."
+      }
+     },
+     "fail": {
+      "outcome": "Money and food get mixed at the hatch."
+     }
+    }
+   ],
+   "success": {
+    "outcome": "The guest gets an honest answer and buys another sausage."
+   },
+   "staff": {
+    "outcome": "The helper answers as best they can."
+   }
+  },
+  "ft05-allergin": {
+   "title": "The allergy",
+   "body": "A guest at the hatch says she has an allergy, and at the same time the cool box shows too high a temperature.",
+   "steps": [
+    {
+     "question": "Which of the extras at the hatch contain one of the fourteen allergens that must be declared?",
+     "options": {
+      "a": {
+       "label": "Only the bread.",
+       "explanation": "The bread has gluten, but there are more."
+      },
+      "b": {
+       "label": "Only the prawn salad.",
+       "explanation": "The prawn salad has crustaceans and egg, but there are more."
+      },
+      "c": {
+       "label": "The mustard, the bread (gluten), the prawn salad (crustaceans and egg) and the mash (milk).",
+       "explanation": "Right. And the sausage itself can contain allergens, such as milk, mustard or celery, so read the packaging."
+      },
+      "d": {
+       "label": "None; sausage stands are exempt.",
+       "explanation": "No one is exempt. Anyone selling food must be able to answer."
+      }
+     },
+     "fail": {
+      "outcome": "The guest gets the wrong answer about the extras."
+     }
+    },
+    {
+     "question": "A guest asks if the sausage contains nuts. You are not sure. What do you do?",
+     "options": {
+      "a": {
+       "label": "Say no; it usually does not.",
+       "explanation": "A guess can be dangerous for someone with an allergy."
+      },
+      "b": {
+       "label": "Say you do not know for sure, show the ingredient list on the packaging or advise against it.",
+       "explanation": "Right. Honesty and the packaging, and better a no than a guess."
+      },
+      "c": {
+       "label": "Say yes to be safe.",
+       "explanation": "It is not true, and the guest gets no help choosing."
+      },
+      "d": {
+       "label": "Ask another guest.",
+       "explanation": "The other guest does not know either."
+      }
+     },
+     "fail": {
+      "outcome": "The guest gets a guess instead of an answer."
+     }
+    },
+    {
+     "question": "The cool box shows +11 °C in the middle of the evening. What do you do first?",
+     "options": {
+      "a": {
+       "label": "Carry on; it is only one evening.",
+       "explanation": "Food kept too warm can become unsafe to eat, even in one evening."
+      },
+      "b": {
+       "label": "Move the goods to cooling that holds (at most +8 °C for sausage, colder for the prawn salad), note the temperature and judge whether anything must be thrown away.",
+       "explanation": "Right. The cold first, then the note and the judgement of what has stood warm."
+      },
+      "c": {
+       "label": "Close the hatch for the evening.",
+       "explanation": "That does not save the goods. The cold has to come first."
+      },
+      "d": {
+       "label": "Put ice on top of the lid.",
+       "explanation": "Ice on the lid hardly cools what is inside the box."
+      }
+     },
+     "fail": {
+      "outcome": "The goods stay too warm for the rest of the evening."
+     }
+    }
+   ],
+   "success": {
+    "outcome": "The guest knows what she can eat, and the cooling holds."
+   },
+   "staff": {
+    "outcome": "The helper reads the packaging and moves the goods, but the guest has to wait."
+   }
+  },
+  "ft06-stangningen": {
+   "title": "Closing time",
+   "body": "The queue has gone, there are sausages left in the warmer, and a last guest reads the packet.",
+   "steps": [
+    {
+     "question": "What is required for a sausage to be labelled \"Meat from Sweden\"?",
+     "options": {
+      "a": {
+       "label": "That the sausage is made in Sweden.",
+       "explanation": "Where it is made says nothing about where the animals come from."
+      },
+      "b": {
+       "label": "That the meat comes from animals born, reared and slaughtered in Sweden.",
+       "explanation": "Right. The label is about the animals, not the factory."
+      },
+      "c": {
+       "label": "That the sausage is sold in Sweden.",
+       "explanation": "Where it is sold does not matter to the label."
+      },
+      "d": {
+       "label": "That the spices are Swedish.",
+       "explanation": "The label is about the meat."
+      }
+     },
+     "fail": {
+      "outcome": "The guest gets the wrong answer about the label."
+     }
+    },
+    {
+     "question": "The evening is over, and there are ten grilled sausages left. What do you do?",
+     "options": {
+      "a": {
+       "label": "Cool them in the warmer and sell them tomorrow.",
+       "explanation": "Food kept hot should not be sold again the next day."
+      },
+      "b": {
+       "label": "Throw away those that stood in the warmer, and plan fewer for the next evening by how the queue went.",
+       "explanation": "Right. What has stood hot is thrown away, and next evening you grill to the queue."
+      },
+      "c": {
+       "label": "Give them to the helper to take home without thinking about how they were kept.",
+       "explanation": "Eating it at home does not make the food safer."
+      },
+      "d": {
+       "label": "Put them back in the packet.",
+       "explanation": "A grilled sausage does not turn raw again."
+      }
+     },
+     "fail": {
+      "outcome": "What was left over is handled wrongly."
+     }
+    },
+    {
+     "question": "The sausages have been in the warmer since opening. What do you do?",
+     "options": {
+      "a": {
+       "label": "Sell them as long as they look fine.",
+       "explanation": "How they look does not tell you whether they have been kept hot enough."
+      },
+      "b": {
+       "label": "Check that they have been kept hot enough, at least +60 °C and for no more than a few hours, and throw away what has stood too long or too cool.",
+       "explanation": "Right. Temperature and time decide, not looks."
+      },
+      "c": {
+       "label": "Grill them once more.",
+       "explanation": "That does not rescue what has stood too cool for too long."
+      },
+      "d": {
+       "label": "Put them in the fridge and sell them tomorrow.",
+       "explanation": "Food that has been kept hot should not be chilled and sold again."
+      }
+     },
+     "fail": {
+      "outcome": "Sausage that has stood too long is sold on."
+     }
+    }
+   ],
+   "success": {
+    "outcome": "What stood hot is thrown away, and the next evening is planned by the queue."
+   },
+   "staff": {
+    "outcome": "The helper throws the leftovers away, but no one plans the next evening."
+   }
+  }
+ }
+}

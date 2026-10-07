@@ -967,6 +967,9 @@ export const INCIDENTS = {
   // (vad, 15 s), Techne (hur, 20 s), Phronesis (när och varför, 30 s)."
   // Nedräkningen går i verklig tid.
   stepAxes: ['episteme', 'techne', 'phronesis'] as readonly KnowledgeAxis[],
+  // ORDER 306b (Anders 2026-10-07) — situationerna i formen analys → upplevelse → handling
+  // (form 'triad'): episteme, phronesis, techne.
+  stepAxesTriad: ['episteme', 'phronesis', 'techne'] as readonly KnowledgeAxis[],
   // Vision Owner 2026-09-29 (efter rapporterna om felen och kvällens
   // resultat): "episteme 20 sekunder, techne 20 sekunder och phronesis 30
   // sekunder. Omdömet ska ha mest tid." Byggs med ORDER 287a (registret).

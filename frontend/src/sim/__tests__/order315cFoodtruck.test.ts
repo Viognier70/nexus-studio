@@ -3,36 +3,34 @@
 // situationer (halvt grepp 0,5) och minst FOODTRUCK.offerMinEvenings kvällar i foodtrucken.
 
 import { describe, expect, it } from 'vitest';
-import { FOODTRUCK_ALL, incidentBankFor, legallyCleared, validateIncidentBank } from '../incidentBank';
+import { FOODTRUCK_ALL, FOODTRUCK_FILES, incidentBankFor, legallyCleared, validateIncidentBank } from '../incidentBank';
 import { FOODTRUCK, LADDER } from '../balance';
 import { countTruckSituation, missingFor, offerAtClose, truckEvenings, truckSituations } from '../ladder';
 import { startInFoodtruck } from '../../strategic/testHarness/weekHarness';
-import meta from '../../content/incidents/foodtruck.meta.json';
-import textSv from '../../content/incidents/foodtruck.text.sv.draft.json';
-import textEn from '../../content/incidents/foodtruck.text.en.json';
 import type { SimulationState } from '../../strategic/types';
 
 describe('ORDER 315c — foodtruckens situationer', () => {
+  // ORDER 319a.3 (Anders 2026-10-07) — omgrupperade: fem situationer utan ⚖ och två med bara ⚖.
   it('sju situationer, tre steg vardera, ur Anders frågor; banken håller valideringen på båda språken', () => {
     expect(FOODTRUCK_ALL).toHaveLength(7);
-    expect(validateIncidentBank(meta as never, textSv as never)).toEqual([]);
-    expect(validateIncidentBank(meta as never, textEn as never)).toEqual([]);
-    expect(FOODTRUCK_ALL.map((i) => i.questions)).toEqual([[7, 8, 16], [5, 13, 18], [1, 12, 19], [6, 10, 17], [4, 11, 15], [2, 9, 20], [3, 14, 21]]);
+    expect(validateIncidentBank(FOODTRUCK_FILES.meta, FOODTRUCK_FILES.sv)).toEqual([]);
+    expect(validateIncidentBank(FOODTRUCK_FILES.meta, FOODTRUCK_FILES.en)).toEqual([]);
+    expect(FOODTRUCK_ALL.map((i) => i.steps.map((s) => s.question))).toEqual([[7, 16, 8], [5, 18, 13], [1, 19, 12], [6, 17, 14], [2, 21, 11], [4, 15, 10], [3, 20, 9]]);
   });
 
-  it('de med ⚖-frågor (3, 4, 9, 10, 15, 20) är dolda tills de är granskade; tre är spelbara', () => {
+  it('de med ⚖-frågor (3, 4, 9, 10, 15, 20) är dolda tills de är granskade; fem är spelbara', () => {
     const hidden = FOODTRUCK_ALL.filter((i) => !legallyCleared(i)).map((i) => i.id);
-    expect(hidden).toEqual(['ft04-leveransen', 'ft05-allergin', 'ft06-stangningen', 'ft07-ursprunget']);
-    expect(incidentBankFor('foodtruck').map((i) => i.id)).toEqual(['ft01-rusningen', 'ft02-drycken', 'ft03-rullen']);
-    const legal = FOODTRUCK_ALL.flatMap((i) => i.legal?.questions ?? []).sort((a, b) => a - b);
+    expect(hidden).toEqual(['ft05-allergin', 'ft06-stangningen']);
+    expect(incidentBankFor('foodtruck').map((i) => i.id)).toEqual(['ft01-rusningen', 'ft02-drycken', 'ft03-rullen', 'ft04-leveransen', 'ft07-ursprunget']);
+    const legal = FOODTRUCK_ALL.flatMap((i) => i.steps.filter((s) => s.legal).map((s) => s.question!)).sort((a, b) => a - b);
     expect(legal).toEqual([3, 4, 9, 10, 15, 20]);
   });
 
   it('Anders ändringar: fråga 4 nämner korvens egna allergener, fråga 9 tiden, och den nya fråga 21', () => {
     const step = (id: string, i: number) => FOODTRUCK_ALL.find((x) => x.id === id)!.steps[i].text;
     expect(step('ft05-allergin', 0).options.c.explanation).toMatch(/korven själv kan innehålla allergener/);
-    expect(step('ft06-stangningen', 1).options.b.label).toMatch(/inte längre än några timmar/);
-    expect(step('ft07-ursprunget', 2).question).toBe('En gäst frågar om korven är svensk. Förpackningen säger "Tillverkad i Sverige". Vad svarar du?');
+    expect(step('ft06-stangningen', 2).options.b.label).toMatch(/inte längre än några timmar/);
+    expect(step('ft07-ursprunget', 1).question).toBe('En gäst frågar om korven är svensk. Förpackningen säger "Tillverkad i Sverige". Vad svarar du?');
   });
 });
 

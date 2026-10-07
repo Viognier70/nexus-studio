@@ -1,0 +1,827 @@
+{
+  "definition": "Foodtruckens kvällar (startInFoodtruck, ladder never, rätt svar). situations = incidents.log.length när servicen slutar; collapsed = day.collapseAxis när kvällen föll ihop (strategic/simulation/collapse.ts); endedAt = andelen av fönstret doorsOpenAt–serviceEndsAt när servicen slutade.",
+  "seeds": 8,
+  "weeks": 2,
+  "evenings": 96,
+  "all": {
+    "mean": 3.67,
+    "histogram": {
+      "0": 3,
+      "1": 4,
+      "2": 4,
+      "3": 4,
+      "4": 77,
+      "5": 4
+    }
+  },
+  "whole": {
+    "evenings": 80,
+    "mean": 4.05,
+    "histogram": {
+      "4": 76,
+      "5": 4
+    }
+  },
+  "collapsed": {
+    "evenings": 16,
+    "mean": 1.75,
+    "histogram": {
+      "0": 3,
+      "1": 4,
+      "2": 4,
+      "3": 4,
+      "4": 1
+    },
+    "axes": {
+      "cultural": 16
+    },
+    "endedAt": [
+      0.33,
+      0.51,
+      0.72,
+      0.42,
+      0.39,
+      0.64,
+      0.59,
+      0.24,
+      0.67,
+      0.18,
+      0.93,
+      0.52,
+      0.17,
+      0.7,
+      0.55,
+      0.35
+    ]
+  },
+  "rows": [
+    {
+      "seed": 1,
+      "day": 1,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 1,
+      "day": 2,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 1,
+      "day": 3,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 1,
+      "day": 4,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 1,
+      "day": 5,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 1,
+      "day": 6,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 1,
+      "day": 8,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 1,
+      "day": 9,
+      "situations": 1,
+      "planned": 4,
+      "collapsed": "cultural",
+      "endedAt": 0.33
+    },
+    {
+      "seed": 1,
+      "day": 10,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 1,
+      "day": 11,
+      "situations": 2,
+      "planned": 6,
+      "collapsed": "cultural",
+      "endedAt": 0.51
+    },
+    {
+      "seed": 1,
+      "day": 12,
+      "situations": 5,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 1,
+      "day": 13,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 2,
+      "day": 1,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 2,
+      "day": 2,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 2,
+      "day": 3,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 2,
+      "day": 4,
+      "situations": 3,
+      "planned": 6,
+      "collapsed": "cultural",
+      "endedAt": 0.72
+    },
+    {
+      "seed": 2,
+      "day": 5,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 2,
+      "day": 6,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 2,
+      "day": 8,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 2,
+      "day": 9,
+      "situations": 1,
+      "planned": 6,
+      "collapsed": "cultural",
+      "endedAt": 0.42
+    },
+    {
+      "seed": 2,
+      "day": 10,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 2,
+      "day": 11,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 2,
+      "day": 12,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 2,
+      "day": 13,
+      "situations": 1,
+      "planned": 5,
+      "collapsed": "cultural",
+      "endedAt": 0.39
+    },
+    {
+      "seed": 3,
+      "day": 1,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 3,
+      "day": 2,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 3,
+      "day": 3,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 3,
+      "day": 4,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 3,
+      "day": 5,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 3,
+      "day": 6,
+      "situations": 3,
+      "planned": 5,
+      "collapsed": "cultural",
+      "endedAt": 0.64
+    },
+    {
+      "seed": 3,
+      "day": 8,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 3,
+      "day": 9,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 3,
+      "day": 10,
+      "situations": 2,
+      "planned": 4,
+      "collapsed": "cultural",
+      "endedAt": 0.59
+    },
+    {
+      "seed": 3,
+      "day": 11,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 3,
+      "day": 12,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 3,
+      "day": 13,
+      "situations": 5,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 4,
+      "day": 1,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 4,
+      "day": 2,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 4,
+      "day": 3,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 4,
+      "day": 4,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 4,
+      "day": 5,
+      "situations": 0,
+      "planned": 6,
+      "collapsed": "cultural",
+      "endedAt": 0.24
+    },
+    {
+      "seed": 4,
+      "day": 6,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 4,
+      "day": 8,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 4,
+      "day": 9,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 4,
+      "day": 10,
+      "situations": 3,
+      "planned": 5,
+      "collapsed": "cultural",
+      "endedAt": 0.67
+    },
+    {
+      "seed": 4,
+      "day": 11,
+      "situations": 0,
+      "planned": 6,
+      "collapsed": "cultural",
+      "endedAt": 0.18
+    },
+    {
+      "seed": 4,
+      "day": 12,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 4,
+      "day": 13,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 5,
+      "day": 1,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 5,
+      "day": 2,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 5,
+      "day": 3,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 5,
+      "day": 4,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 5,
+      "day": 5,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 5,
+      "day": 6,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": "cultural",
+      "endedAt": 0.93
+    },
+    {
+      "seed": 5,
+      "day": 8,
+      "situations": 2,
+      "planned": 4,
+      "collapsed": "cultural",
+      "endedAt": 0.52
+    },
+    {
+      "seed": 5,
+      "day": 9,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 5,
+      "day": 10,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 5,
+      "day": 11,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 5,
+      "day": 12,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 5,
+      "day": 13,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 6,
+      "day": 1,
+      "situations": 5,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 6,
+      "day": 2,
+      "situations": 0,
+      "planned": 4,
+      "collapsed": "cultural",
+      "endedAt": 0.17
+    },
+    {
+      "seed": 6,
+      "day": 3,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 6,
+      "day": 4,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 6,
+      "day": 5,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 6,
+      "day": 6,
+      "situations": 3,
+      "planned": 5,
+      "collapsed": "cultural",
+      "endedAt": 0.7
+    },
+    {
+      "seed": 6,
+      "day": 8,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 6,
+      "day": 9,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 6,
+      "day": 10,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 6,
+      "day": 11,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 6,
+      "day": 12,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 6,
+      "day": 13,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 7,
+      "day": 1,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 7,
+      "day": 2,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 7,
+      "day": 3,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 7,
+      "day": 4,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 7,
+      "day": 5,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 7,
+      "day": 6,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 7,
+      "day": 8,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 7,
+      "day": 9,
+      "situations": 5,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 7,
+      "day": 10,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 7,
+      "day": 11,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 7,
+      "day": 12,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 7,
+      "day": 13,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 8,
+      "day": 1,
+      "situations": 2,
+      "planned": 4,
+      "collapsed": "cultural",
+      "endedAt": 0.55
+    },
+    {
+      "seed": 8,
+      "day": 2,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 8,
+      "day": 3,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 8,
+      "day": 4,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 8,
+      "day": 5,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 8,
+      "day": 6,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 8,
+      "day": 8,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 8,
+      "day": 9,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 8,
+      "day": 10,
+      "situations": 1,
+      "planned": 6,
+      "collapsed": "cultural",
+      "endedAt": 0.35
+    },
+    {
+      "seed": 8,
+      "day": 11,
+      "situations": 4,
+      "planned": 5,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 8,
+      "day": 12,
+      "situations": 4,
+      "planned": 6,
+      "collapsed": null,
+      "endedAt": 1
+    },
+    {
+      "seed": 8,
+      "day": 13,
+      "situations": 4,
+      "planned": 4,
+      "collapsed": null,
+      "endedAt": 1
+    }
+  ]
+}
