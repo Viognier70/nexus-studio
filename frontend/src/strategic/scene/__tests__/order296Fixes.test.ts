@@ -23,7 +23,8 @@ describe('ORDER 296 — tallrikarna står där gästerna sitter', () => {
       expect(Math.abs(g.tableAt![1] - cz), g.id).toBeLessThan(Math.abs(g.serveAt[1] - cz));
       expect(Math.abs(g.tableAt![0] - cx), g.id).toBeLessThan(0.01);
     }
-    expect(PLATE_SURFACE.loungeTableZ).toBe(4.15);
+    // ORDER 317 — loungebordet i husets möblering (wineBarHouse.ts LAYOUT.lounge.tableZ).
+    expect(PLATE_SURFACE.loungeTableZ).toBe(3.3);
   });
 });
 

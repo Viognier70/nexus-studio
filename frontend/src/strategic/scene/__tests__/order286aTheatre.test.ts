@@ -14,8 +14,9 @@ describe('ORDER 286a — leveransens kontroller', () => {
   // koreografi (21 klipp, guest.wheelRoll m.fl.): 107 klipp. ORDER 299 —
   // Designs D1 (stämningen) lägger till åtta gester: 115. ORDER 309 — Designs
   // D5 lägger till sju (vagnarna, flamberingen, ostvagnen, tiredIdle, hesitate): 122.
-  it('122 klipp (till och med D5:s sju), och varje efterföljare finns och passar', () => {
-    expect(Object.keys(CLIPS)).toHaveLength(122);
+  // ORDER 317 — Designs D6 lägger till Åsas tre (asa.greet, asa.point, asa.nodApprove): 125.
+  it('125 klipp (till och med D6:s tre), och varje efterföljare finns och passar', () => {
+    expect(Object.keys(CLIPS)).toHaveLength(125);
     expect(validateClips()).toEqual([]);
   });
 
@@ -61,12 +62,15 @@ describe('ORDER 286a — vinbarens rum följer sittregeln (tillägget till lever
     }
   });
 
-  it('loungebordet står 0,95 m framför dynans mitt', () => {
+  // ORDER 317 — i husets möblering (wineBarHouse.ts) står bordet 0,985 m
+  // framför dynans mitt (bordet 0,45 m djupt, 0,40 m benrum): inom räckhåll,
+  // ±0,05 m från Vision Owners 0,95 m.
+  it('loungebordet står omkring 0,95 m framför dynans mitt', () => {
     const lounge = room.seats.find((s) => s.kind === 'lounge')!;
     const table = new THREE.Vector3();
     node(lounge.furnitureId).getWorldPosition(table);
     room.group.worldToLocal(table);
-    expect(Math.abs(lounge.local[1] - table.z)).toBeCloseTo(0.95, 3);
+    expect(Math.abs(Math.abs(lounge.local[1] - table.z) - 0.95)).toBeLessThanOrEqual(0.05);
   });
 
   it('barstolarna har en fotring där klippet sätter sulan', () => {

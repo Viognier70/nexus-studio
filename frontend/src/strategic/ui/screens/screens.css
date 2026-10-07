@@ -447,7 +447,31 @@
 .nxs-ways-list { margin: calc(12 * var(--nx-u)) 0; padding-left: 1.2em; display: grid; gap: 6px; }
 
 /* ORDER 313 §7 — teckenförklaringen (ui/StatusLegend.tsx). */
-.nx-status-legend { position: fixed; left: 16px; bottom: 96px; z-index: 30; max-width: 300px; padding: 12px 14px; }
+/* ORDER 317 — D6 LEGEND.status: nere till höger, ovanför lägesknapparna. */
+.nx-status-legend { position: fixed; right: max(16px, 3vh); bottom: 96px; z-index: 30; max-width: min(320px, calc(100vw - 32px)); max-height: calc(100vh - 220px); overflow: auto; padding: 12px 14px; }
 .nx-legend-list { list-style: none; margin: 4px 0 10px; padding: 0; display: grid; gap: 4px; font-size: 13px; }
 .nx-legend-list li { display: flex; align-items: center; gap: 6px; }
 .nx-legend-ring { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 3px solid; box-sizing: border-box; }
+
+/* ORDER 317 — avsändarna i Designs D6 del 2: märket, namnet och raden. */
+.nx-sender { display: inline-flex; align-items: center; gap: 8px; vertical-align: middle; }
+.nx-sender-badge { width: max(22px, 3vh); height: max(22px, 3vh); flex: 0 0 auto; }
+.nx-sender-portrait { width: max(22px, 3vh) !important; height: max(22px, 3vh) !important; box-shadow: 0 0 0 1.5px #e9c46a !important; }
+.nx-sender-name { font-weight: 800; letter-spacing: 0.02em; }
+.nx-sender-sub { font-size: 0.8em; opacity: 0.75; }
+.nx-sender-initial {
+  display: inline-flex; align-items: center; justify-content: center; width: max(22px, 3vh); height: max(22px, 3vh);
+  border-radius: 50%; border: 2px solid; background: #2a1c13; color: #f4e6cc;
+  font-family: var(--w-font-heading, 'Young Serif', serif); font-size: 0.8em;
+}
+/* ORDER 317 — teckenförklaringen i Designs D6 del 2. */
+.nx-legend-group { margin: 6px 0 10px; }
+.nx-legend-head { font-weight: 800; }
+.nx-legend-why { margin: 2px 0 6px; opacity: 0.85; }
+/* ORDER 317 — kurskortets märken (D6 COURSE_CARD): ✓ bläck med guld, ✗ streckad valnöt. */
+.nx-course-mark { display: inline-flex; align-items: center; justify-content: center; width: 1.35em; height: 1.35em; border-radius: 50%; font-weight: 800; }
+.nx-course-mark[data-met='true'] { background: #2a1c13; color: #f0cd82; }
+.nx-course-mark[data-met='false'] { border: 1.5px dashed #6b4a2e; color: #6b4a2e; }
+/* ORDER 317 — D6 det låsta i början: streckad kant, texten håller kontrasten (inte nedtonad). */
+.nxs-list-row[data-locked='true'] { border: 1.5px dashed #6b4a2e; color: #e9dcc4; opacity: 1; }
+.nxs-list-row[data-locked='true'] .nxs-row-sub { color: #cdb898; }

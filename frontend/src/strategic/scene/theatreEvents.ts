@@ -20,6 +20,7 @@
 
 import * as THREE from 'three';
 import { EVENTS } from './events/handelserManus';
+import { scriptFromOldRoom } from './oldRoomMap';
 import type { EventScript, ScriptView, Vec2 } from './events/handelserManus';
 import { EventTheatre, type TheatreSeat } from './eventTheatre';
 import type { ActiveIncident, IncidentRecord } from '../../sim/incidents';
@@ -44,7 +45,8 @@ export function isEventIncident(id: string | null | undefined): boolean {
 export function scriptFor(event: string, variant: string, weekend = true): EventScript {
   const ev = EVENTS.find((e) => e.id === event);
   if (!ev) throw new Error('okänd händelse ' + event);
-  const sc = ev.build(null, variant);
+  // ORDER 317 — manuset är skrivet i det gamla rummet; platserna översätts till husets möblering.
+  const sc = scriptFromOldRoom(ev.build(null, variant));
   if (!weekend && sc.actors.dj) {
     const { dj: _dj, ...actors } = sc.actors;
     return { ...sc, actors };

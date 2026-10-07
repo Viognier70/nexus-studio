@@ -20,7 +20,7 @@ import { strings } from '../../content/strings';
 import { scheduleSlotsUsed } from '../knowledge/pavilionVisit';
 import type { Activity } from '../simulation/activities';
 import { NxIcon, ACTIVITY_ICON } from '../ui/screens/icons';
-import { t as tt } from '../../content/nexusStrings';
+import { t as tt, type StringKey } from '../../content/nexusStrings';
 import { useLanguage } from '../../content/language';
 import { TASTING } from '../../sim/balance';
 import { reputationHoldsGuests, tastingPartiesFor } from '../simulation/arrivals';
@@ -44,6 +44,8 @@ export function MorningActivityPanel() {
   const atCap = used >= slots;
 
   const locked = investLocked(sim);
+  // ORDER 317 — D6: brickan "Öppet nu" den morgon låset släppte.
+  const openedNow = !locked && sim.startUnlockedDay === sim.day.dayNumber;
 
   const isWeeklyGated = (a: Activity): boolean => {
     if (a.availability !== 'weekly') return false;
@@ -66,6 +68,7 @@ export function MorningActivityPanel() {
             className="nxs-list-row"
             aria-pressed={picked}
             aria-disabled={disabled}
+            data-locked={locked || undefined}
             data-testid={`activity-${a.id}`}
             onClick={() => {
               if (disabled) return;
@@ -73,7 +76,8 @@ export function MorningActivityPanel() {
               else dispatch({ type: 'PICK_ACTIVITY', id: a.id });
             }}
           >
-            <NxIcon name={ACTIVITY_ICON[a.id] ?? 'users'} size={32} />
+            {/* ORDER 317 — D6: ett lås i stället för ikonen när det är låst. */}
+            <NxIcon name={locked ? 'lock' : ACTIVITY_ICON[a.id] ?? 'users'} size={32} />
             <span style={{ flex: 1 }}>
               <span className="nxs-row-title" style={{ display: 'block' }}>{activityName(a)}</span>
               <span className="nxs-row-sub" style={{ display: 'block' }}>
@@ -84,6 +88,7 @@ export function MorningActivityPanel() {
               {tasting && <span className="nxs-row-sub" style={{ display: 'block' }} data-testid="tasting-parties" data-parties={tastingPartiesFor(sim)}>{tt(lang, 'tasting.parties', { n: tastingPartiesFor(sim) })}</span>}
             </span>
             {picked && <span className="nx-label nx-accent-text nxs-tag">{strings.screens.morning.picked}</span>}
+            {openedNow && !picked && <span className="nx-label nx-accent-text nxs-tag" data-testid="activity-open-now">{tt(lang, 'start.new' as StringKey)}</span>}
           </button>
         );
         if (!tasting || !calm) return row;

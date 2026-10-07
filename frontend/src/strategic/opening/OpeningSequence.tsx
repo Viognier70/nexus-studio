@@ -27,6 +27,7 @@ import { useCamera } from '../camera/CameraContext';
 import { applyCameraState } from '../camera/CameraController';
 import type { CameraTarget } from '../types';
 import * as M from './oppningManus';
+import { scriptFromOldRoom } from '../scene/oldRoomMap';
 import { OpeningBarStage } from './openingBar';
 import { openingSceneReady, setOpeningStage } from './openingStage';
 import {
@@ -104,8 +105,9 @@ export function OpeningSequence({ onDone }: Props) {
     // Vinbarens två scener. Går de inte att bygga (ingen WebGL till) står svärtan i deras ställe.
     let emptyStage: OpeningBarStage | null = null;
     let glimpseStage: OpeningBarStage | null = null;
-    const emptyScript = M.emptyBar();
-    const glimpseScript = M.glimpses();
+    // ORDER 317 — manuset är skrivet i det gamla rummet; platserna översätts till husets möblering.
+    const emptyScript = scriptFromOldRoom(M.emptyBar());
+    const glimpseScript = scriptFromOldRoom(M.glimpses());
     try {
       if (emptyRef.current) emptyStage = new OpeningBarStage(emptyRef.current, emptyScript);
       if (glimpseRef.current) glimpseStage = new OpeningBarStage(glimpseRef.current, glimpseScript);

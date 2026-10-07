@@ -3,6 +3,7 @@
 // och ingen av rollernas färger (staffRing.ts): rollringen är ljus och i ton, orkringen är mörk och delad i tre.
 // Formen bär läget, inte färgen. Talen (gränserna, hur fort orken sjunker) sätter Code i balance.ts (STAFF_STATE).
 
+import { ROLE_RING as D6_ROLE_RING } from '../ui/d6Ui';
 export type StaminaId = 'fresh' | 'tired' | 'spent';
 export type WellbeingId = 'thriving' | 'okay' | 'low';
 export const STAMINA: StaminaId[] = ['fresh', 'tired', 'spent'];
@@ -28,7 +29,10 @@ export const ORK_RING = {
 };
 
 /** Rollringens färger från leverans 2026-09-30 (staffRing.ts), för att rita båda i prototypen. */
-export const ROLE_RING: Record<string, string> = { host: '#f4e6cc', waiter: '#4fc3c8', sommelier: '#b98ae0', bartender: '#f2994a', cook: '#ffffff', dishwasher: '#a9b3bb', dj: '#ee6fb5' };
+// ORDER 317 (Anders 2026-10-07, BESLUT del 4 punkt 8; Designs D6 d6Ui.ROLE_RING):
+// ringen under figuren gäller, kocken är #7fa8ff (förut #ffffff här). Samma tabell
+// som staffRing.ts ROLE_COLOUR och teckenförklaringen.
+export const ROLE_RING: Record<string, string> = { ...D6_ROLE_RING };
 export const ROLE_RING_M = { innerM: 0.42, outerM: 0.56 };
 
 type Project = (p: [number, number, number]) => [number, number];

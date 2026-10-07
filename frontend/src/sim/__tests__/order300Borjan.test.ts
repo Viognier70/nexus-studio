@@ -41,7 +41,8 @@ describe('ORDER 300 — början och layouten', () => {
     const s = beginIntroduction(makeNewGameState(1), { name: 'Anders', consent: true });
     expect(s.player).toEqual({ name: 'Anders', consent: true });
     expect(s.introduction).toEqual({ practiced: false });
-    expect(readFileSync(resolve(SRC, 'strategic/ui/MentorPanel.tsx'), 'utf8')).toMatch(/<Monogram /);
+    // ORDER 317 — Designs D6: Åsas porträtt (renderat ur modellen) i stället för monogrammet.
+    expect(readFileSync(resolve(SRC, 'strategic/ui/MentorPanel.tsx'), 'utf8')).toMatch(/<AsaPortrait /);
   });
 
   it('§5: regelkortet första morgonen, en gång, och talen ur balance.ts', () => {

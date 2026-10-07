@@ -1,0 +1,271 @@
+{
+  "guestRadius": 0.23,
+  "staffRadius": 0.2,
+  "room": [
+    14.47,
+    10.05
+  ],
+  "walls": 19,
+  "points": [],
+  "paths": [],
+  "evening": {
+    "samples": 58469,
+    "hits": 0,
+    "first": []
+  },
+  "scripts": [],
+  "sight": {
+    "bas": {
+      "seatsSeeingWineWall": 20,
+      "seatsSeeingDj": 20,
+      "perSeat": [
+        {
+          "seatId": "loungeA1",
+          "tiers": 1,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "loungeA2",
+          "tiers": 1,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "loungeA3",
+          "tiers": 1,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "loungeB1",
+          "tiers": 1,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "loungeB2",
+          "tiers": 1,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "loungeB3",
+          "tiers": 1,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "twoA1",
+          "tiers": 2,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "twoA2",
+          "tiers": 2,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "twoB1",
+          "tiers": 2,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "twoB2",
+          "tiers": 2,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "twoC1",
+          "tiers": 2,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "twoC2",
+          "tiers": 2,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "bar1",
+          "tiers": 3,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "bar2",
+          "tiers": 3,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "bar3",
+          "tiers": 3,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "bar4",
+          "tiers": 3,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "bar5",
+          "tiers": 3,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "bar6",
+          "tiers": 3,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "bar7",
+          "tiers": 3,
+          "of": 4,
+          "dj": true
+        },
+        {
+          "seatId": "bar8",
+          "tiers": 3,
+          "of": 4,
+          "dj": true
+        }
+      ]
+    },
+    "platina": {
+      "seatsSeeingWineWall": 20,
+      "seatsSeeingDj": 18,
+      "perSeat": [
+        {
+          "seatId": "loungeA1",
+          "tiers": 3,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "loungeA2",
+          "tiers": 3,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "loungeA3",
+          "tiers": 3,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "loungeB1",
+          "tiers": 3,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "loungeB2",
+          "tiers": 3,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "loungeB3",
+          "tiers": 3,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "twoA1",
+          "tiers": 4,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "twoA2",
+          "tiers": 4,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "twoB1",
+          "tiers": 4,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "twoB2",
+          "tiers": 4,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "twoC1",
+          "tiers": 4,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "twoC2",
+          "tiers": 4,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "bar1",
+          "tiers": 5,
+          "of": 6,
+          "dj": false
+        },
+        {
+          "seatId": "bar2",
+          "tiers": 5,
+          "of": 6,
+          "dj": false
+        },
+        {
+          "seatId": "bar3",
+          "tiers": 5,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "bar4",
+          "tiers": 5,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "bar5",
+          "tiers": 5,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "bar6",
+          "tiers": 5,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "bar7",
+          "tiers": 5,
+          "of": 6,
+          "dj": true
+        },
+        {
+          "seatId": "bar8",
+          "tiers": 5,
+          "of": 6,
+          "dj": true
+        }
+      ]
+    }
+  }
+}

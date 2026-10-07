@@ -1559,6 +1559,8 @@ export interface SimulationState {
   startLocked?: boolean;
   // ORDER 313 §2 — Åsas replik när låset släppts har visats.
   unlockSaid?: boolean;
+  // ORDER 317 — dagen låset släppte (Designs D6: brickan "Öppet nu" den morgonen).
+  startUnlockedDay?: number;
   // ORDER 300 §4 — spelaren skriver in sig efter startskärmen: namnet och
   // samtycket (Vision Owner 2026-09-30: "ankomsten frågar efter spelarens
   // namn och efter samtycke"). Saknas i spel som började före ORDER 300.

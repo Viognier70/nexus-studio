@@ -54,7 +54,8 @@ export function RulesPanel({ open, onClose }: { open: boolean; onClose: () => vo
             </ul>
             {/* ORDER 313 §7 — teckenförklaringen, samma som i statusläget. */}
             <h3 className="nx-label nxs-mt-24">{strings.legend.heading}</h3>
-            <StatusLegendBody />
+            {/* ORDER 317 — Designs D6: med en rad om varje grupp (legend.*.why). */}
+            <StatusLegendBody withWhy />
             <h3 className="nx-label nxs-mt-24">{r.starHeading}</h3>
             <p className="nx-small nxs-measure" data-testid="rules-star">
               {r.star({

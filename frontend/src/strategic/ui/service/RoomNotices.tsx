@@ -18,6 +18,11 @@ import { reactionPhrase } from './consequenceLine';
 import { strings } from '../../../content/strings';
 import type { RoomReaction, SimulationState } from '../../types';
 import './service.css';
+import { SenderTag, type StaffSender } from '../SenderTag';
+
+// ORDER 317 — lagets roller till personerna (strings.fika.people) och rollringen.
+const STAFF_SENDER: Record<string, StaffSender> = { värd: { person: 'host', ring: 'host' }, servitör: { person: 'server', ring: 'waiter' }, kock: { person: 'cook', ring: 'cook' } };
+// Lärlingen har inget namn i laget och får ingen avsändare.
 
 // sameEventSimS: React kan rendera ett svar två gånger med några tick
 // emellan när spelet går fort (uppdateringen läggs om på köade TICK), så att
@@ -25,7 +30,7 @@ import './service.css';
 // håll inom så här många simsekunder är samma händelse och ersätter den.
 export const NOTICE = { showMs: 3000, fadeMs: 400, max: 3, sameEventSimS: 1 } as const;
 
-interface Shown { key: number; reaction: RoomReaction; bornAt: number; takeover: string | null }
+interface Shown { key: number; reaction: RoomReaction; bornAt: number; takeover: string | null; by: StaffSender | null }
 
 function arrivedSince(sim: SimulationState, r: RoomReaction): number {
   const n = sim.guests.filter((g) => g.scenarioSource && g.arrivalTime >= r.at && g.arrivalTime <= sim.simTime).length;
@@ -50,10 +55,12 @@ export function RoomNotices() {
     const s = strings.service.incident;
     const role = t ? s.staffRoles[t.role] ?? s.staffFallback : '';
     const takeover = t ? strings.rocket.card.takeover(role ? role[0].toUpperCase() + role.slice(1) : role) : null;
+    // ORDER 317 (BESLUT del 4 punkt 7) — avsändaren är personens namn och roll.
+    const by = t ? STAFF_SENDER[t.role] ?? null : null;
     setShown((list) => {
       const same = list.findIndex((n) => n.reaction.table === latest.table && n.reaction.kind === latest.kind && Math.abs(n.reaction.at - latest.at) <= NOTICE.sameEventSimS);
-      if (same >= 0) return list.map((n, i) => (i === same ? { ...n, reaction: latest, takeover: takeover ?? n.takeover } : n));
-      return [...list, { key: latest.at, reaction: latest, bornAt: performance.now(), takeover }].slice(-NOTICE.max);
+      if (same >= 0) return list.map((n, i) => (i === same ? { ...n, reaction: latest, takeover: takeover ?? n.takeover, by: by ?? n.by } : n));
+      return [...list, { key: latest.at, reaction: latest, bornAt: performance.now(), takeover, by }].slice(-NOTICE.max);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latest]);
@@ -80,6 +87,7 @@ export function RoomNotices() {
         return (
           <div key={n.key} className="nx-room-reaction nx-room-notice" data-kind={r.kind} data-testid="room-notice" data-at={r.at} data-guests-in={inNow} data-fading={now - n.bornAt >= NOTICE.showMs}>
             {amount !== 0 && <strong>{amount > 0 ? `+${formatSek(amount)}` : formatSek(Math.abs(amount))}</strong>}
+            {n.by && <SenderTag sender="staff" staff={n.by} />}
             <span>{phrase}{n.takeover ? ` · ${n.takeover}` : ''}</span>
           </div>
         );
