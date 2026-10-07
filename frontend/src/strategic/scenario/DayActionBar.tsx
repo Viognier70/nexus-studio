@@ -50,6 +50,7 @@ import { useMentor } from '../ui/screens/mentor';
 import '../ui/screens/screens.css';
 import { useOpenGuard } from '../ui/OpenGuard';
 import { SenderTag } from '../ui/SenderTag';
+import { DinVagButton } from '../ui/LadderOfferCard';
 import { ladderStep } from '../../sim/ladderStep';
 import { refitProgress } from '../../sim/ladder';
 import { PATH_KEY } from '../ui/DinVag';
@@ -220,6 +221,8 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
         </div>
         <div className="nxs-head-side">
           {/* ORDER 300 §3 — Måltidens hus i rubrikraden, så att listan får höjden. */}
+          {/* ORDER 315b del 2 — Din väg i rubrikraden (Designs D7). */}
+          <DinVagButton />
           {period === 'morning' && (
             <NxButton kind="quiet" testId="open-house" onClick={onOpenHouse}>{strings.knowledge.houseButton}</NxButton>
           )}

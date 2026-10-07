@@ -270,6 +270,10 @@ Vid varje veckoavräkning kan spelaren byta till en klass vars krav hon uppfylle
 
 Förebilden är *Two Point Hospital* och *Game Dev Tycoon*: att flytta till större lokal är en milstolpe man arbetar mot och som känns i spelet, men den är också en risk.
 
+*Beslut 2026-10-07 (Vision Owner, om Designs D7):* ryktet följer med oförändrat när spelaren tar över nästa steg. Ombyggnaden från vinbar till bistro tar tre dagar, och erbjudandekortet säger det i förväg: "Bistron håller stängt 3 kvällar under ombyggnaden". Bistrons möblering i husets mått godkänns som den är byggd, och DJ-hörnet blir en musikhörna med skivspelare. Foodtrucken visas på krogens nivå i 3D, nära den egna vagnen, med luckan, grillen, kön, ståborden och vagnens klipp.
+
+*Beslut 2026-10-07 (Vision Owner, kalibreringen):* den som har hälften rätt ska stänga i 30–50 % av säsongerna, med möjligheten att stanna i foodtrucken eller vinbaren. Stjärnan för den som har 0,75 rätt kalibreras mot 10–25 % av säsongerna.
+
 ## Servicen
 
 Servicen är slumpen, viktad av spelarens förberedelser. Det spelaren gjort på morgonen, och det hon kan, avgör hur ofta saker går rätt. Hon ser konsekvenserna i rummet, inte i siffertavlor.

@@ -43,8 +43,8 @@ export function OwnerOfferScreen({ sim, onContinue }: { sim: SimulationState; on
   return (
     // Inte en helskärm: scenen vid dörren (OwnerAtDoor.tsx) syns, kortet står till höger (D7).
     <div className="nx nx-owner-overlay" data-testid="evening-bar" role="dialog" aria-label={S('asa.kicker')}>
-      <div className="nx-evening nx-owner-offer" data-testid="screen-owner-offer" data-to={offer?.to ?? ''} data-answer={answer ?? ''}>
-        <div className="nx-paper nx-owner-card" role="dialog" aria-label={S('asa.kicker')}>
+      <div className="nx-owner-offer" data-testid="screen-owner-offer" data-to={offer?.to ?? ''} data-answer={answer ?? ''}>
+        <div className="nx-owner-card" role="dialog" aria-label={S('asa.kicker')}>
           <NxLabel>{S('asa.kicker')}</NxLabel>
           <div className="nx-owner-who">
             <AsaPortrait className="nx-owner-portrait" />

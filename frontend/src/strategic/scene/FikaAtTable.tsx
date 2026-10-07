@@ -17,6 +17,7 @@ import { fikaTonight } from '../../sim/fika';
 import { dilemmaById, type FikaPerson } from '../../content/fika/dilemmas';
 
 const CAMERA_M = 8;
+const CAMERA_PITCH = 0.85;
 const SIP_OFFSETS_S = [0, 2.5, 4.0];
 const TEAM: FikaPerson[] = ['host', 'server', 'bartender', 'cook'];
 const UNIFORM: Record<FikaPerson, string> = {
@@ -29,7 +30,7 @@ const SEATS_BISTRO = [0, 1, 2, 3];
 
 export function FikaAtTable() {
   const sim = useSimState();
-  const { focusOn } = useCamera();
+  const { targetRef } = useCamera();
   const tonight = fikaTonight(sim);
   const asker = tonight ? dilemmaById(tonight.dilemmaId)?.asker ?? null : null;
   const active = sim.day.period === 'evening' && sim.day.eveningStep === 'fika' && !!tonight;
@@ -54,7 +55,8 @@ export function FikaAtTable() {
     const pts = idx.map((i) => room.seats[i]).filter(Boolean);
     if (pts.length === 0) return;
     const cx = pts.reduce((a, p) => a + p[0], 0) / pts.length, cz = pts.reduce((a, p) => a + p[1], 0) / pts.length;
-    focusOn({ x: cx, z: cz }, CAMERA_M);
+    // Bordet till vänster i bild, kortet till höger (D7: kameran på 8 m).
+    targetRef.current = { ...targetRef.current, focus: { x: cx, z: cz }, distance: CAMERA_M, pitch: CAMERA_PITCH };
   }, [active]); // eslint-disable-line react-hooks/exhaustive-deps
   useFrame((state) => {
     const room = businessRoomRef.current;

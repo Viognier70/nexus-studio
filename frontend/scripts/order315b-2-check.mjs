@@ -6,7 +6,8 @@
 //   3. Bistron: rummet med bistrons möblering (31 platser), morgonens rad med steget.
 //   4. En morgon under ombyggnaden: rutan med dagen och stegen, rummet tömt.
 //   5. Fikat efter stängning: kortet till höger och laget vid bordet.
-//   6. Foodtrucken på torget: spelarens släpvagn och rivalen på den nya platsen.
+//   6. Foodtrucken på torget: spelarens släpvagn och rivalen på den nya platsen; under servicen
+//      går Krogen (Z) nära vagnen i 3D (ORDER 315b del 3), utan den gamla 2D-scenen.
 // Utdata: reports/order315b-2/check-<lang>.json och check-<lang>-*.png.
 
 import { spawn } from 'node:child_process';
@@ -123,12 +124,19 @@ try {
     const { page, ctx } = await open(SAVES.bistro, 'bistro');
     await clearReview(page);
     report.bistro = { line: await page.textContent('.nxs-head .nx-label').catch(() => null) };
+    // Servicen i bistron: inköpen, dörrarna, och krogens nivå.
     await page.click('[data-testid=open-buy-foot]').catch(() => {});
-    await delay(400);
-    await page.click('[data-testid=buy-back]').catch(() => {});
-    await delay(300);
-    // Rummet: dölj morgonen (Dagens val åt sidan) och gå till krogen.
-    await page.click('[data-testid=morning-aside]').catch(() => {});
+    await page.waitForSelector('[data-testid=screen-M1]', { timeout: 10000 }).catch(() => {});
+    await page.click('[data-testid=buy-base]').catch(() => {});
+    await delay(600);
+    await page.click('[data-testid=open-doors]').catch(() => {});
+    await delay(500);
+    if (await has(page, '[data-testid=open-short-open]')) await page.click('[data-testid=open-short-open]');
+    await page.waitForSelector('[data-testid=mentor-close-service]', { timeout: 6000 }).then(() => page.click('[data-testid=mentor-close-service]')).catch(() => {});
+    await page.click('[data-testid=speed-toggle] button:nth-child(3)').catch(() => {});
+    await delay(20000);
+    for (let i = 0; i < 3; i++) { const opt = await page.$('[data-testid=incident-card][data-mode=ask] [data-testid^=incident-option-]'); if (opt) { await opt.click().catch(() => {}); await delay(800); } }
+    await page.mouse.click(700, 450).catch(() => {});
     await page.keyboard.press('z');
     await delay(4000);
     await shot(page, '3-bistron');
@@ -159,20 +167,42 @@ try {
     await shot(page, '5b-fikat-svar');
     await ctx.close();
   }
-  // 6. Foodtrucken på torget.
+  // 6. Foodtrucken på torget, och krogens nivå (Z) som 3D nära vagnen (ORDER 315b del 3).
   {
     const { page, ctx } = await open(SAVES.truck, 'truck');
     await clearReview(page);
     await page.keyboard.press('x');
     await delay(4000);
     await shot(page, '6-vagnen');
+    await page.click('[data-testid=start-service]').catch(() => {});
+    await delay(800);
+    if (await has(page, '[data-testid=open-short-open]')) await page.click('[data-testid=open-short-open]');
+    await page.waitForSelector('[data-testid=mentor-close-service]', { timeout: 6000 }).then(() => page.click('[data-testid=mentor-close-service]')).catch(() => {});
+    await page.click('[data-testid=speed-toggle] button:nth-child(3)').catch(() => {});
+    await delay(15000);
+    await page.mouse.click(700, 450).catch(() => {});
+    await page.keyboard.press('z');
+    await delay(4000);
+    report.truck = {
+      overlay2d: await has(page, '[data-testid=truck-room]'),
+      level: await page.evaluate(() => document.body.dataset.level ?? null),
+      crew: await page.evaluate(() => {
+        const c = window.__nxTruckCrew;
+        if (!c) return null;
+        const w = (o) => { const v = o.getWorldPosition(new o.position.constructor()); return [+v.x.toFixed(2), +v.y.toFixed(2), +v.z.toFixed(2)]; };
+        const shown = (o) => { let p = o; while (p) { if (!p.visible) return false; p = p.parent; } return true; };
+        return { grill: w(c.grill), hatch: w(c.hatch), visible: shown(c.grill) && shown(c.hatch), guests: c.g.children.filter((o) => o.visible).length - 2 };
+      })
+    };
+    await shot(page, '6b-vagnen-krogen');
     await ctx.close();
   }
   report.ok = report.dinVag.steps.length === 8 && report.dinVag.steps.some(([id, st]) => id === 'vinbar' && st === 'here') && report.dinVag.steps.some(([id, st]) => id === 'bistro' && st === 'next') && report.dinVag.req.length === 3
     && report.offer.shown && report.offer.rows.length === 4 && !!report.offer.reply
     && /Bistro/.test(report.bistro.line ?? '')
     && !!report.refit.box && !report.refit.start
-    && report.fika.overlay && report.fika.graded.length > 0 && report.errors.length === 0;
+    && report.fika.overlay && report.fika.graded.length > 0
+    && !report.truck.overlay2d && report.truck.level === 'room' && report.truck.crew?.visible === true && report.errors.length === 0;
 } catch (err) {
   report.error = String(err?.message ?? err);
   console.log('FEL', report.error);

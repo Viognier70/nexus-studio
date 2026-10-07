@@ -102,28 +102,42 @@ export function makePlayerTrailer(pips = 1): THREE.Group {
   const midLen = B.x1 - B.x0 - 2 * R;
   const bodyY0 = 0.5, bodyY1 = 2.6;
   const H = bodyY1 - bodyY0;
-  // Karossen: mittdelen och två runda gavlar (halva cylindrar, utsträckta till vagnens bredd).
-  add(new THREE.BoxGeometry(midLen, H, W), m(C.livery), 0, bodyY0 + H / 2, 0, 'trailerBody');
+  // Karossen som skal (ORDER 315b del 3): golvet, väggarna och de runda gavlarna, öppen upptill när
+  // taket kapas, så att besättningen syns. Framväggen har luckans öppning (sill 1,30 över marken).
+  const WALL = 0.06;
+  const shell = m(C.livery);
+  shell.side = THREE.DoubleSide;
+  add(new THREE.BoxGeometry(midLen + 2 * R * 0.95, 0.06, W - 0.04), m(C.interiorFloor), 0, bodyY0, 0, 'trailerFloor');
+  add(new THREE.BoxGeometry(midLen, H, WALL), shell, 0, bodyY0 + H / 2, B.z0 + WALL / 2, 'trailerWallBack');
+  const hx0 = L.hatch.x0, hx1 = L.hatch.x1, sill = L.hatch.sill, lintel = sill + 0.85;
+  add(new THREE.BoxGeometry(midLen, sill - bodyY0, WALL), shell, 0, bodyY0 + (sill - bodyY0) / 2, B.z1 - WALL / 2, 'trailerWallFrontLow');
+  add(new THREE.BoxGeometry(midLen, bodyY1 - lintel, WALL), shell, 0, lintel + (bodyY1 - lintel) / 2, B.z1 - WALL / 2, 'trailerWallFrontTop');
+  for (const [x0, x1] of [[-midLen / 2, hx0], [hx1, midLen / 2]]) {
+    if (x1 - x0 > 0.01) add(new THREE.BoxGeometry(x1 - x0, lintel - sill, WALL), shell, (x0 + x1) / 2, (sill + lintel) / 2, B.z1 - WALL / 2, 'trailerWallFrontSide');
+  }
   for (const side of [-1, 1]) {
-    const end = add(new THREE.CylinderGeometry(R, R, H, 20, 1, false, side > 0 ? 0 : Math.PI, Math.PI), m(C.livery), side * midLen / 2, bodyY0 + H / 2, 0, side > 0 ? 'trailerEndBack' : 'trailerEndFront');
+    const end = add(new THREE.CylinderGeometry(R, R, H, 20, 1, true, side > 0 ? 0 : Math.PI, Math.PI), shell, side * midLen / 2, bodyY0 + H / 2, 0, side > 0 ? 'trailerEndBack' : 'trailerEndFront');
     end.scale.set(1, 1, W / 2 / R);
   }
-  // Gräddranden runt karossen.
-  add(new THREE.BoxGeometry(midLen + 0.02, 0.14, W + 0.02), m(C.stripe), 0, 1.05, 0, 'trailerStripe');
-  // Taket.
+  // Gräddranden på karossens långsidor.
+  for (const z of [B.z0 - 0.005, B.z1 + 0.005]) add(new THREE.BoxGeometry(midLen, 0.14, 0.012), m(C.stripe), 0, 1.05 < sill ? 1.05 : sill - 0.15, z, 'trailerStripe');
+  // Taket (kapas när kameran är nära, PlayerTruckCrew.tsx).
   add(new THREE.BoxGeometry(midLen + 2 * R * 0.9, 0.08, W - 0.1), m(C.livery), 0, bodyY1 + 0.04, 0, 'trailerRoof');
-  // Luckan: öppningen i karossen och bänken innanför.
-  const hatchW = L.hatch.x1 - L.hatch.x0;
-  add(new THREE.BoxGeometry(hatchW, 0.85, 0.04), m('#1d1a17'), (L.hatch.x0 + L.hatch.x1) / 2, L.hatch.sill + 0.43, B.z1 + 0.01, 'trailerHatch');
-  add(new THREE.BoxGeometry(L.counter.x1 - L.counter.x0, 0.05, 0.3), m(C.counter), 0, L.hatch.sill, B.z1 + 0.12, 'trailerHatchShelf');
+  // Inne i vagnen: bänken vid luckan och grillen mot bakväggen (TRUCK_LAYOUT, höjder över golvet).
+  const CT = L.counter, GR = L.grill;
+  add(new THREE.BoxGeometry(CT.x1 - CT.x0, CT.top, CT.z1 - CT.z0), m(C.counter), (CT.x0 + CT.x1) / 2, bodyY0 + CT.top / 2, (CT.z0 + CT.z1) / 2, 'trailerCounter');
+  add(new THREE.BoxGeometry(GR.x1 - GR.x0, GR.top, GR.z1 - GR.z0), m(C.grill), (GR.x0 + GR.x1) / 2, bodyY0 + GR.top / 2, (GR.z0 + GR.z1) / 2, 'trailerGrill');
+  add(new THREE.BoxGeometry(L.counter.x1 - L.counter.x0, 0.05, 0.3), m(C.counter), 0, sill, B.z1 + 0.12, 'trailerHatchShelf');
   // Markisen: hel duk i grädde, bågad kant i karossens blå.
   const A = L.awning;
   const aw = add(new THREE.BoxGeometry(A.x1 - A.x0, 0.05, A.z1 - A.z0), m(C.awning), 0, A.height, (A.z0 + A.z1) / 2, 'trailerAwning');
   aw.rotation.x = 0.18;
+  // Bågkanten har karossens färg men ett eget material: markisen tonas när kameran är nära (PlayerTruckCrew).
+  const scallopMat = new THREE.MeshStandardMaterial({ color: C.scallop, roughness: 0.65 });
   const scallops = 8;
   for (let i = 0; i < scallops; i++) {
     const x = A.x0 + ((i + 0.5) * (A.x1 - A.x0)) / scallops;
-    const sc = add(new THREE.CylinderGeometry(0.17, 0.17, 0.03, 14, 1, false, 0, Math.PI), m(C.scallop), x, A.height - 0.12, A.z1 + 0.02, 'trailerScallop' + i);
+    const sc = add(new THREE.CylinderGeometry(0.17, 0.17, 0.03, 14, 1, false, 0, Math.PI), scallopMat, x, A.height - 0.12, A.z1 + 0.02, 'trailerScallop' + i);
     sc.rotation.x = Math.PI / 2;
     sc.rotation.z = Math.PI;
   }

@@ -1,0 +1,629 @@
+{
+ "about": "Spelarens vagn på Torget, i kartans koordinater (grythyttan-world.json, content/world.ts): meter, +x österut, +z söderut. Vagnens ram: +X längs vagnen mot bakgaveln, +Z ut från luckan. Mätt mot byKarta.js (utsnitt ur grythyttan-world.json, läst 2026-10-02).",
+ "pitch": {
+  "centre": [
+   17,
+   -21.9
+  ],
+  "angleDeg": -6.29,
+  "alignedWith": "w122157681 Torget, segmentet [1,20, −26,53] → [25,50, −29,21]",
+  "yawForThree": 0.11
+ },
+ "layout": {
+  "body": {
+   "x0": -2.3,
+   "x1": 2.3,
+   "z0": -1.15,
+   "z1": 1.15,
+   "endR": 1
+  },
+  "drawbar": {
+   "hitch": [
+    -3.4,
+    0
+   ],
+   "x1": -2.3
+  },
+  "hatch": {
+   "x0": -1.2,
+   "x1": 1.2
+  },
+  "awning": {
+   "x0": -1.5,
+   "x1": 1.5,
+   "z0": 1.15,
+   "z1": 1.85
+  },
+  "counter": {
+   "x0": -1.35,
+   "x1": 1.35,
+   "z0": 0.7,
+   "z1": 1
+  },
+  "grill": {
+   "x0": 0.85,
+   "x1": 1.95,
+   "z0": -0.95,
+   "z1": -0.35
+  },
+  "chimney": [
+   1.75,
+   -0.85
+  ],
+  "roofSign": {
+   "x0": -1.3,
+   "x1": 1.3,
+   "z0": -1.3,
+   "z1": -1.05
+  },
+  "stations": {
+   "grill": [
+    1.4,
+    -0.1
+   ],
+   "hatch": [
+    0,
+    0.45
+   ]
+  },
+  "pass": [
+   0.9,
+   0.85
+  ],
+  "queue": {
+   "order": [
+    -0.5,
+    2.15
+   ],
+   "collect": [
+    0.9,
+    2.15
+   ],
+   "line": [
+    [
+     -1.4,
+     2.3
+    ],
+    [
+     -2.3,
+     2.3
+    ],
+    [
+     -3.2,
+     2.3
+    ],
+    [
+     -4.1,
+     2.3
+    ],
+    [
+     -5,
+     2.3
+    ],
+    [
+     -5.9,
+     2.3
+    ]
+   ]
+  },
+  "aboard": [
+   -2.8,
+   1.5
+  ],
+  "area": {
+   "x0": 3,
+   "x1": 6.2,
+   "z0": 0.2,
+   "z1": 3.8
+  },
+  "tables": {
+   "A": [
+    3.9,
+    1.2
+   ],
+   "B": [
+    5.4,
+    1.2
+   ],
+   "C": [
+    4.65,
+    2.9
+   ]
+  },
+  "tableR": 0.34,
+  "bin": [
+   3.3,
+   3.5
+  ],
+  "posts": [
+   [
+    3,
+    0.2
+   ],
+   [
+    6.2,
+    0.2
+   ],
+   [
+    6.2,
+    3.8
+   ],
+   [
+    3,
+    3.8
+   ]
+  ]
+ },
+ "points": [
+  {
+   "point": "body.rear.serve",
+   "local": [
+    2.3,
+    1.15
+   ],
+   "world": [
+    19.41,
+    -21.01
+   ],
+   "roadMargin5m": 4.98,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 4.23,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 6.53,
+   "insideBuilding": null
+  },
+  {
+   "point": "body.rear.back",
+   "local": [
+    2.3,
+    -1.15
+   ],
+   "world": [
+    19.16,
+    -23.3
+   ],
+   "roadMargin5m": 2.68,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 1.93,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 6.55,
+   "insideBuilding": null
+  },
+  {
+   "point": "body.front.serve",
+   "local": [
+    -2.3,
+    1.15
+   ],
+   "world": [
+    14.84,
+    -20.5
+   ],
+   "roadMargin5m": 4.99,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 4.24,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 11.13,
+   "insideBuilding": null
+  },
+  {
+   "point": "body.front.back",
+   "local": [
+    -2.3,
+    -1.15
+   ],
+   "world": [
+    14.59,
+    -22.79
+   ],
+   "roadMargin5m": 2.69,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 1.94,
+   "nearestBuilding": "w869907973",
+   "buildingDist": 10.42,
+   "insideBuilding": null
+  },
+  {
+   "point": "drawbar.hitch",
+   "local": [
+    -3.4,
+    0
+   ],
+   "world": [
+    13.62,
+    -21.53
+   ],
+   "roadMargin5m": 3.83,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 3.08,
+   "nearestBuilding": "w869907973",
+   "buildingDist": 11.58,
+   "insideBuilding": null
+  },
+  {
+   "point": "awning.outer.front",
+   "local": [
+    -1.5,
+    1.85
+   ],
+   "world": [
+    15.71,
+    -19.9
+   ],
+   "roadMargin5m": 5.68,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 4.93,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 10.34,
+   "insideBuilding": null
+  },
+  {
+   "point": "awning.outer.rear",
+   "local": [
+    1.5,
+    1.85
+   ],
+   "world": [
+    18.69,
+    -20.23
+   ],
+   "roadMargin5m": 5.68,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 4.93,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 7.34,
+   "insideBuilding": null
+  },
+  {
+   "point": "station.grill",
+   "local": [
+    1.4,
+    -0.1
+   ],
+   "world": [
+    18.38,
+    -22.15
+   ],
+   "roadMargin5m": 3.74,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 2.99,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 7.42,
+   "insideBuilding": null
+  },
+  {
+   "point": "station.hatch",
+   "local": [
+    0,
+    0.45
+   ],
+   "world": [
+    17.05,
+    -21.45
+   ],
+   "roadMargin5m": 4.29,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 3.54,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 8.82,
+   "insideBuilding": null
+  },
+  {
+   "point": "queue.order",
+   "local": [
+    -0.5,
+    2.15
+   ],
+   "world": [
+    16.74,
+    -19.71
+   ],
+   "roadMargin5m": 5.98,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 5.23,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 9.34,
+   "insideBuilding": null
+  },
+  {
+   "point": "queue.collect",
+   "local": [
+    0.9,
+    2.15
+   ],
+   "world": [
+    18.13,
+    -19.86
+   ],
+   "roadMargin5m": 5.99,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 5.24,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 7.95,
+   "insideBuilding": null
+  },
+  {
+   "point": "queue.1",
+   "local": [
+    -1.4,
+    2.3
+   ],
+   "world": [
+    15.86,
+    -19.46
+   ],
+   "roadMargin5m": 6.01,
+   "nearestRoad": "w122157691",
+   "torgetMargin6_5m": 5.38,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 10.25,
+   "insideBuilding": null
+  },
+  {
+   "point": "queue.2",
+   "local": [
+    -2.3,
+    2.3
+   ],
+   "world": [
+    14.97,
+    -19.36
+   ],
+   "roadMargin5m": 5.45,
+   "nearestRoad": "w122157691",
+   "torgetMargin6_5m": 5.39,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 11.14,
+   "insideBuilding": null
+  },
+  {
+   "point": "queue.3",
+   "local": [
+    -3.2,
+    2.3
+   ],
+   "world": [
+    14.07,
+    -19.26
+   ],
+   "roadMargin5m": 4.88,
+   "nearestRoad": "w122157691",
+   "torgetMargin6_5m": 5.39,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 12.05,
+   "insideBuilding": null
+  },
+  {
+   "point": "queue.4",
+   "local": [
+    -4.1,
+    2.3
+   ],
+   "world": [
+    13.18,
+    -19.16
+   ],
+   "roadMargin5m": 4.32,
+   "nearestRoad": "w122157691",
+   "torgetMargin6_5m": 5.39,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 12.94,
+   "insideBuilding": null
+  },
+  {
+   "point": "queue.5",
+   "local": [
+    -5,
+    2.3
+   ],
+   "world": [
+    12.28,
+    -19.07
+   ],
+   "roadMargin5m": 3.76,
+   "nearestRoad": "w122157691",
+   "torgetMargin6_5m": 5.38,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 13.85,
+   "insideBuilding": null
+  },
+  {
+   "point": "queue.6",
+   "local": [
+    -5.9,
+    2.3
+   ],
+   "world": [
+    11.39,
+    -18.97
+   ],
+   "roadMargin5m": 3.19,
+   "nearestRoad": "w122157691",
+   "torgetMargin6_5m": 5.38,
+   "nearestBuilding": "vw-kyr-torget-lh",
+   "buildingDist": 13.39,
+   "insideBuilding": null
+  },
+  {
+   "point": "aboard",
+   "local": [
+    -2.8,
+    1.5
+   ],
+   "world": [
+    14.38,
+    -20.1
+   ],
+   "roadMargin5m": 5.34,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 4.59,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 11.64,
+   "insideBuilding": null
+  },
+  {
+   "point": "area.nw",
+   "local": [
+    3,
+    0.2
+   ],
+   "world": [
+    20,
+    -22.03
+   ],
+   "roadMargin5m": 4.03,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 3.28,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 5.82,
+   "insideBuilding": null
+  },
+  {
+   "point": "area.ne",
+   "local": [
+    6.2,
+    0.2
+   ],
+   "world": [
+    23.18,
+    -22.38
+   ],
+   "roadMargin5m": 4.03,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 3.28,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 2.63,
+   "insideBuilding": null
+  },
+  {
+   "point": "area.se",
+   "local": [
+    6.2,
+    3.8
+   ],
+   "world": [
+    23.58,
+    -18.8
+   ],
+   "roadMargin5m": 7.64,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 6.89,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 2.67,
+   "insideBuilding": null
+  },
+  {
+   "point": "area.sw",
+   "local": [
+    3,
+    3.8
+   ],
+   "world": [
+    20.4,
+    -18.45
+   ],
+   "roadMargin5m": 7.61,
+   "nearestRoad": "w122157691",
+   "torgetMargin6_5m": 6.89,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 5.86,
+   "insideBuilding": null
+  },
+  {
+   "point": "table.A",
+   "local": [
+    3.9,
+    1.2
+   ],
+   "world": [
+    21.01,
+    -21.13
+   ],
+   "roadMargin5m": 5.04,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 4.29,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 4.93,
+   "insideBuilding": null
+  },
+  {
+   "point": "table.B",
+   "local": [
+    5.4,
+    1.2
+   ],
+   "world": [
+    22.5,
+    -21.3
+   ],
+   "roadMargin5m": 5.03,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 4.28,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 3.43,
+   "insideBuilding": null
+  },
+  {
+   "point": "table.C",
+   "local": [
+    4.65,
+    2.9
+   ],
+   "world": [
+    21.94,
+    -19.53
+   ],
+   "roadMargin5m": 6.73,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 5.98,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 4.2,
+   "insideBuilding": null
+  },
+  {
+   "point": "bin",
+   "local": [
+    3.3,
+    3.5
+   ],
+   "world": [
+    20.66,
+    -18.78
+   ],
+   "roadMargin5m": 7.34,
+   "nearestRoad": "w122157681",
+   "torgetMargin6_5m": 6.59,
+   "nearestBuilding": "w869907975",
+   "buildingDist": 5.57,
+   "insideBuilding": null
+  }
+ ],
+ "checks": {
+  "allOffRoad5m": true,
+  "allOffRoad6_5m": true,
+  "noneInBuilding": true,
+  "minRoadMargin5m": 2.68,
+  "minTorgetMargin6_5m": 1.93,
+  "rivalTorgetSpot": {
+   "point": [
+    6.49,
+    -21.59
+   ],
+   "source": "byKvallPlats.js TRUCK_SPOT_POINTS.torget",
+   "gapToHitchM": 7.13,
+   "gapToQueueTailM": 5.56
+  },
+  "winebarQueue": {
+   "queueOut5": [
+    23.15,
+    -23.97
+   ],
+   "pavementWestCorner": [
+    21.41,
+    -25.01
+   ],
+   "minGapFromServingAreaM": 1.59
+  },
+  "winebarDoorToCollectM": 13.23
+ }
+}
