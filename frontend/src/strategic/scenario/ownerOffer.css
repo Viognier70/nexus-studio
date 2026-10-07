@@ -1,0 +1,15 @@
+/* ORDER 315b del 2 — Åsas erbjudande vid dörren (Designs D7, skärm 4). Kortet till höger. */
+.nx-owner-overlay { position: fixed; inset: 0; z-index: 60; pointer-events: none; background: linear-gradient(90deg, transparent 40%, rgba(20, 13, 9, 0.55)); }
+.nx-owner-overlay .nx-owner-card { pointer-events: auto; }
+.nx-owner-offer { position: absolute; inset: 0; display: flex; justify-content: flex-end; align-items: flex-start; padding: max(96px, 12vh) max(16px, 3.75vw) 120px; box-sizing: border-box; }
+.nx-owner-card { width: min(480px, 100%); max-height: 100%; overflow: auto; box-sizing: border-box; padding: 22px 26px; border-radius: 22px; background: #f3e9d6; color: #2a1c13; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5); }
+.nx-owner-card .nx-label { color: #9a6a2a; }
+.nx-owner-who { display: flex; align-items: center; gap: 14px; margin: 10px 0 6px; }
+.nx-owner-portrait { width: 64px; height: 64px; border-radius: 50%; flex: none; }
+.nx-owner-name { font-weight: 800; font-size: max(16px, 1.25rem); }
+.nx-owner-role { opacity: 0.75; }
+.nx-owner-line { font-family: var(--w-font-heading); font-size: max(16px, 1.15rem); line-height: 1.35; margin: 12px 0; }
+.nx-owner-step { font-weight: 700; margin-bottom: 10px; }
+.nx-owner-rows { margin: 6px 0 0; padding-left: 1.2em; display: grid; gap: 4px; }
+.nx-owner-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+.nx-owner-actions .nx-btn { width: auto; white-space: nowrap; }

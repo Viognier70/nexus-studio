@@ -60,12 +60,14 @@ export function LadderOfferCard({ hidden }: { hidden?: boolean }) {
 
 // ORDER 315a — "Din väg" på morgonen: hela stegen, var spelaren står och
 // kraven för nästa steg (formen kommer från D7).
+// ORDER 315b del 2 — knappen står i morgonens rubrikrad (DayActionBar), bredvid Måltidens hus:
+// den fasta knappen låg under morgonens skärm och gick inte att trycka på (flödeskontrollen).
 export function DinVagButton({ hidden }: { hidden?: boolean }) {
   const sim = useSimState();
   const [open, setOpen] = useState(false);
   if (hidden || sim.day.period !== 'morning' || !ladderStep(sim)) return null;
   const l = strings.ladder;
-  if (!open) return <button type="button" className="nx-btn nx-btn-quiet nx-dinvag-open" data-testid="din-vag-open" onClick={() => setOpen(true)}>{l.open}</button>;
+  if (!open) return <NxButton kind="quiet" testId="din-vag-open" onClick={() => setOpen(true)}>{l.open}</NxButton>;
   return (
     <div className="nx-ladder-backdrop" data-testid="din-vag-backdrop" onClick={() => setOpen(false)}>
       <div onClick={(e) => e.stopPropagation()} style={{ maxWidth: 560, width: 'calc(100% - 32px)' }}>

@@ -71,10 +71,14 @@ describe('ORDER 315b — foodtrucken', () => {
     expect(venues).toContain('!!v?.open && !v?.spot');
   });
 
-  it('krogens nivå: luckan och kön (dockskåpet) när spelaren har foodtrucken', () => {
+  // ORDER 315b del 3 (Anders 2026-10-07) — krogens nivå är 3D nära den egna vagnen, inte 2D-scenen.
+  it('krogens nivå: kameran går nära den egna vagnen i 3D, inte den gamla 2D-scenen', () => {
     const app = readFileSync(resolve(SRC, 'strategic/StrategicApp.tsx'), 'utf8');
-    expect(app).toMatch(/!harnessParams\.dollhouse && simForRocket\.businessClass === 'foodtrucken' && atLevel4/);
-    // 3D-scenen står kvar under luckan (kameran och nivåraden fungerar).
-    expect(app.indexOf('<StrategicScene')).toBeLessThan(app.indexOf('data-testid="truck-room"'));
+    expect(app).not.toContain('data-testid="truck-room"');
+    const crew = readFileSync(resolve(SRC, 'strategic/scene/village/PlayerTruckCrew.tsx'), 'utf8');
+    expect(crew).toMatch(/setMyBusinessOverride\(\{ focus, distance: CAMERA_M/);
+    expect(crew).toContain("'truck.grill'");
+    expect(crew).toContain("'truck.hatchServe'");
+    expect(crew).toContain("'truck.wipeCounter'");
   });
 });

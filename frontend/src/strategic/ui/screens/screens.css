@@ -475,3 +475,8 @@
 /* ORDER 317 — D6 det låsta i början: streckad kant, texten håller kontrasten (inte nedtonad). */
 .nxs-list-row[data-locked='true'] { border: 1.5px dashed #6b4a2e; color: #e9dcc4; opacity: 1; }
 .nxs-list-row[data-locked='true'] .nxs-row-sub { color: #cdb898; }
+/* ORDER 315b del 2 — brickan "Från i dag: {nivå}" den morgon nivån ändras (Designs D7 venueTier.ts). */
+.nxs-tier-changed { display: inline-block; margin-left: 10px; padding: 2px 10px; border-radius: 999px; background: var(--w-gold, #e8b93a); color: var(--w-ink, #2a1c13); font-weight: 700; font-size: max(12px, calc(14 * var(--nx-u))); vertical-align: middle; }
+.nxs-refit-phases { list-style: none; margin: 8px 0 0; padding: 0; display: flex; gap: 8px; flex-wrap: wrap; }
+.nxs-refit-phases li { padding: 2px 10px; border-radius: 999px; border: 1.5px dashed rgba(244, 230, 204, 0.5); font-size: max(12px, calc(14 * var(--nx-u))); }
+.nxs-refit-phases li[data-done='true'] { border-style: solid; border-color: var(--w-gold, #e8b93a); background: rgba(232, 185, 58, 0.18); }

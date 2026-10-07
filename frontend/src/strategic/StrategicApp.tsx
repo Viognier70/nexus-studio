@@ -43,7 +43,7 @@ import { ModeKeys } from './ui/StatusButton';
 import { StatusCard } from './ui/StatusCard';
 import { StatusLegend } from './ui/StatusLegend';
 import { MorningReviewCard } from './ui/MorningReviewLine';
-import { DinVagButton, LadderOfferCard } from './ui/LadderOfferCard';
+import { LadderOfferCard } from './ui/LadderOfferCard';
 import { useMentor } from './ui/screens/mentor';
 import { FocusMode } from './ui/FocusMode';
 import { KnowledgeFoundationLayer, openCredits } from './knowledge/ui/KnowledgeFoundation';
@@ -316,15 +316,8 @@ function StrategicShell() {
             showScaleRef={showScaleRef}
           />
         )}
-        {/* ORDER 315b — foodtrucken: luckan och kön (FoodtruckScene i
-            dockskåpet) över 3D-scenen på krogens nivå, tills Designs D7 ger
-            vagnens form. 3D-scenen står kvar under, så att kameran och
-            nivåraden tar spelaren ut till gatan och byn. */}
-        {!harnessParams.dollhouse && simForRocket.businessClass === 'foodtrucken' && atLevel4 && (
-          <div className="nx-truck-room" data-testid="truck-room">
-            <DollhouseFrame />
-          </div>
-        )}
+        {/* ORDER 315b del 3 (Anders 2026-10-07) — foodtrucken på krogens nivå är inte längre
+            den gamla 2D-scenen: kameran går nära den egna vagnen i 3D (scene/village/PlayerTruckCrew.tsx). */}
       </div>
       <ViewLabel />
       <VerifyBadge />
@@ -392,7 +385,6 @@ function StrategicShell() {
       {!buyOpen && <MorningReviewCard onOpenBuy={() => setBuyOpen(true)} />}
       {/* ORDER 315a — Åsas erbjudande om nästa steg, efter recensionerna. */}
       <LadderOfferCard hidden={buyOpen || bankOpen || houseOpen || mentorView.showScreen} />
-      <DinVagButton hidden={buyOpen || bankOpen || houseOpen} />
       <NoBusinessBox hidden={houseOpen || bankOpen} onOpenHouse={() => setHouseOpen(true)} onOpenBank={() => setBankOpen(true)} />
       <BankDialog open={bankOpen} onClose={() => setBankOpen(false)} />
       {/* ORDER 296 — krogen har stängt: säsongen är slut. */}

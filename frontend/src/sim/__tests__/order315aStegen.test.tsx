@@ -43,7 +43,8 @@ function readyForBistro(): SimulationState {
 
 describe('ORDER 315a — stegen', () => {
   it('stegen i ordning, spelbara foodtrucken, vinbaren och bistron; bistron i vinbarens hus', () => {
-    expect(LADDER.order).toEqual(['foodtruck', 'kvarterskrog', 'vinbar', 'olhall', 'bistro', 'nattklubb', 'soigne', 'gastgiveri']);
+    // ORDER 315b del 2 — Designs D7 (careerPath.ts), godkänd av Anders 2026-10-07.
+    expect(LADDER.order).toEqual(['foodtruck', 'vinbar', 'bistro', 'olhall', 'kvarterskrog', 'nattklubb', 'gastgiveri', 'soigne']);
     expect(LADDER.playable).toEqual(['foodtruck', 'vinbar', 'bistro']);
     expect(LADDER.steps.bistro.building).toBe(LADDER.steps.vinbar.building);
     expect(LADDER.steps.bistro.rebuildsFrom).toBe('vinbar');
@@ -99,7 +100,8 @@ describe('ORDER 315a — Åsas erbjudande', () => {
     expect(t.economy.businessClass).toBe('vinbar');
     expect(t.businessClass).toBe(s.businessClass);
     expect(t.reputation).toBe(s.reputation);
-    expect(t.ladder).toEqual({ step: 'bistro', reachedOnDay: { bistro: s.day.dayNumber }, offer: null });
+    // ORDER 315b del 2 — ombyggnaden: stängt LADDER.refitDays dagar från i dag (på morgonen).
+    expect(t.ladder).toEqual({ step: 'bistro', reachedOnDay: { bistro: s.day.dayNumber }, offer: null, refit: { fromDay: s.day.dayNumber, untilDay: s.day.dayNumber + LADDER.refitDays - 1 } });
     expect(starsPossible(t)).toBe(true);
     expect(ladderBillFactor(t)).toBe(LADDER.steps.bistro.billFactor);
     expect(wageFactor(t)).toBeCloseTo(LADDER.steps.bistro.wageFactor, 6);
@@ -176,7 +178,8 @@ describe('ORDER 315a — Din väg och Åsas repliker', () => {
     expect(view.container.querySelectorAll('[data-step]')).toHaveLength(8);
     expect(view.getByTestId('din-vag-vinbar').getAttribute('data-state')).toBe('here');
     expect(view.getByTestId('din-vag-foodtruck').getAttribute('data-state')).toBe('done');
-    expect(view.getByTestId('din-vag-bistro').getAttribute('data-state')).toBe('ahead');
+    // ORDER 315b del 2 — D7: nästa steg heter 'next'.
+    expect(view.getByTestId('din-vag-bistro').getAttribute('data-state')).toBe('next');
     for (const id of ['kvarterskrog', 'olhall', 'nattklubb', 'soigne', 'gastgiveri']) {
       expect(view.getByTestId(`din-vag-${id}`).getAttribute('data-state')).toBe('later');
       expect(view.getByTestId(`din-vag-${id}`).textContent).toContain(l.comingLater);

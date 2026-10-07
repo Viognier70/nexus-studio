@@ -50,6 +50,14 @@ import { useMentor } from '../ui/screens/mentor';
 import '../ui/screens/screens.css';
 import { useOpenGuard } from '../ui/OpenGuard';
 import { SenderTag } from '../ui/SenderTag';
+import { DinVagButton } from '../ui/LadderOfferCard';
+import { ladderStep } from '../../sim/ladderStep';
+import { refitProgress } from '../../sim/ladder';
+import { PATH_KEY } from '../ui/DinVag';
+import { conceptTonight } from '../simulation/guestTypes';
+import { t as tt, type StringKey } from '../../content/nexusStrings';
+import { useLanguage } from '../../content/language';
+import { useBusiness } from '../business/BusinessContext';
 
 interface Props {
   // ORDER 264 — öppnar Måltidens hus (paviljongerna).
@@ -73,6 +81,8 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
   const guard = useOpenGuard(onOpenBuy ?? null);
   const dispatch = useSimDispatch();
   const mentor = useMentor();
+  const lang = useLanguage();
+  const { business: bizState } = useBusiness();
   const [aside, setAside] = useState(false);
   // En ny morgon börjar med schemat framme.
   useEffect(() => setAside(false), [sim.day.dayNumber]);
@@ -93,6 +103,16 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
   const used = scheduleSlotsUsed(sim);
   const business = sim.economy.businessClass;
   const sunday = !cal.isServiceDay;
+  // ORDER 315b del 2 — morgonens rad och brickan "Från i dag" (D7 venueTier.ts).
+  const step = ladderStep(sim);
+  const stepName = step ? tt(lang, PATH_KEY[step] as StringKey) : null;
+  const tierNow = conceptTonight(sim);
+  const tierChanged = !!tierNow && sim.day.conceptYesterday !== undefined && sim.day.conceptYesterday !== null && sim.day.conceptYesterday !== tierNow;
+  const bizName = bizState.name ?? null;
+  const refit = refitProgress(sim);
+  // De fyra stegen (tömt, byggt, dukat, tänt) fördelade på de stängda dagarna.
+  const REFIT_PHASES = 4;
+  const refitPhase = refit ? Math.min(REFIT_PHASES, Math.ceil((refit.day * REFIT_PHASES) / refit.of)) : 0;
   const settlement = sunday ? settlementInWords(sim) : [];
   const showBank = business === null || sunday;
   // ORDER 266 — morgonens händelser (inspektion, banken, självläkning).
@@ -190,13 +210,19 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
           <NxLabel>
             <span className="nx-accent-text">
               {s.label(strings.calendar.weekdays[cal.weekday], cal.week, SEASON.weeks)}
-              {business && <> · {strings.economy.classes[business]}</>}
+              {/* ORDER 315b del 2 — Designs D7 (venueTier.ts morningLine): krogens namn, steget och nivån. */}
+              {business && bizName && <> · {bizName}</>}
+              {business && <> · {stepName ?? strings.economy.classes[business]}</>}
+              {business && tierNow && <> · {strings.shopTabs.tier[tierNow]}</>}
             </span>
           </NxLabel>
+          {tierChanged && <span className="nxs-tier-changed" data-testid="tier-changed" data-tier={tierNow ?? ''}>{tt(lang, 'tier.changed' as StringKey, { tier: strings.shopTabs.tier[tierNow!] })}</span>}
           <h1 className="nx-heading">{sunday ? s.sundayHeading : s.heading}</h1>
         </div>
         <div className="nxs-head-side">
           {/* ORDER 300 §3 — Måltidens hus i rubrikraden, så att listan får höjden. */}
+          {/* ORDER 315b del 2 — Din väg i rubrikraden (Designs D7). */}
+          <DinVagButton />
           {period === 'morning' && (
             <NxButton kind="quiet" testId="open-house" onClick={onOpenHouse}>{strings.knowledge.houseButton}</NxButton>
           )}
@@ -313,6 +339,19 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
             <div className="nxs-dark-box" data-testid="morning-bank-note">
               <NxIcon name="bank" size={36} />
               <div><SenderTag sender="bank" /><p className="nx-body">{shownInWords(sim.medals)}</p></div>
+            </div>
+          )}
+          {/* ORDER 315b del 2 — ombyggnaden (Designs D7 bistroRefit.ts REFIT_PHASES): stängt, och var bygget står. */}
+          {refit && (
+            <div className="nxs-dark-box nxs-mt-24" data-testid="refit-box" data-day={refit.day} data-of={refit.of} data-phase={refitPhase}>
+              <NxIcon name="package" size={36} />
+              <div>
+                <div className="nx-label">{tt(lang, 'refit.title' as StringKey)} · {tt(lang, 'refit.sub' as StringKey)}</div>
+                <p className="nx-body">{strings.ladder.refitDay(refit.day, refit.of)} {tt(lang, `refit.p${refitPhase}` as StringKey)}.</p>
+                <ol className="nxs-refit-phases">
+                  {[1, 2, 3, 4].map((k) => <li key={k} data-done={k <= refitPhase}>{tt(lang, `refit.p${k}` as StringKey)}</li>)}
+                </ol>
+              </div>
             </div>
           )}
           {/* ORDER 318 — Bankens varning före stängningen, varje morgon tills nästa bokslut. */}

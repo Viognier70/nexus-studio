@@ -209,7 +209,8 @@ import { decayMoodLift } from '../../sim/guestMood';
 // ORDER 316 — fikat efter stängning.
 import { answerFika, goHomeFika, planFika } from '../../sim/fika';
 // ORDER 315a — karriärstegen.
-import { declineOffer, ladderBillFactor, offerAtNight, takeOffer } from '../../sim/ladder';
+import { conceptTonight } from './guestTypes';
+import { declineOffer, ladderBillFactor, offerAtClose, offerAtNight, refitClosedToday, takeOffer } from '../../sim/ladder';
 export {
   CAPITAL_MIN,
   CAPITAL_MAX,
@@ -328,7 +329,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       // ORDER 296 — Designs ordning: kvällens resultat, lärdomen och
       // berättelsen, sedan byn i kväll och butiken (Till butiken, Till morgonen).
       // ORDER 316 — fikat efter lärdomen och berättelsen, före byn och butiken.
-      const allowed: Record<string, string[]> = { waste: ['transfer', 'result'], transfer: ['result'], result: ['lesson', 'story', 'fika', 'compare', 'shop'], lesson: ['story', 'fika', 'compare', 'shop'], story: ['lesson', 'fika', 'compare', 'shop'], fika: ['compare', 'shop'], compare: ['shop'], shop: [] };
+      // ORDER 315b del 2 — Åsas erbjudande vid dörren i fikats ställe (D7).
+      const allowed: Record<string, string[]> = { waste: ['transfer', 'result'], transfer: ['result'], result: ['lesson', 'story', 'fika', 'offer', 'compare', 'shop'], lesson: ['story', 'fika', 'offer', 'compare', 'shop'], story: ['lesson', 'fika', 'offer', 'compare', 'shop'], fika: ['compare', 'shop'], offer: ['compare', 'shop'], compare: ['shop'], shop: [] };
       if (!allowed[from]?.includes(action.to)) return state;
       return { ...state, day: { ...state.day, eveningStep: action.to } };
     }
@@ -412,7 +414,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     case 'OPEN_SERVICE':
       return openService(state, action.service, action.lengthMinutes);
     case 'START_SERVICE':
-      return startService(state);
+      // ORDER 315b del 2 — ingen service under ombyggnaden.
+      return refitClosedToday(state) ? state : startService(state);
     case 'CLOSE_DAY':
       return closeDay(state);
     case 'SET_RIVAL_CONTROL':
@@ -1433,7 +1436,8 @@ function buyEquipment(state: SimulationState, id: string): SimulationState {
 function closeDay(state: SimulationState): SimulationState {
   // ORDER 265 — en servicedag där spelaren stängt kvällen (skala ner,
   // ORDER 049 §5.3) avslutas också utan service; annars fastnar dagen.
-  const eveningClosed = state.scaleDown.closedDinner || state.economy.businessClass === null;
+  // ORDER 315b del 2 — under ombyggnaden är krogen stängd.
+  const eveningClosed = state.scaleDown.closedDinner || state.economy.businessClass === null || refitClosedToday(state);
   if (calendarFor(state.day.dayNumber).isServiceDay && !eveningClosed) return state;
   if (state.day.period !== 'morning' && state.day.period !== 'afternoon') return state;
   return {
@@ -2141,7 +2145,9 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       // ORDER 292 — dygnets kostnader dras vid stängningen, före överföringen.
       chargeDayEnd(next);
       // ORDER 316 — kvällens dilemma till fikat efter stängning.
-      planFika(next);
+      // ORDER 315b del 2 — Åsas erbjudande vid dörren; den kvällen inget fika (D7).
+      if (offerAtClose(next)) next.fika = next.fika ? { ...next.fika, tonight: null } : next.fika;
+      else planFika(next);
       next.day = { ...next.day, transfer: eveningTransfer(next), eveningStep: next.lastWaste && next.lastWaste.dayNumber === next.day.dayNumber && next.lastWaste.fractions ? 'waste' : 'transfer' };
       next.economy = { ...next.economy, eveningResults: [...(next.economy.eveningResults ?? []), { dayNumber: day.dayNumber, resultSek: next.day.transfer!.resultSek }].slice(-EVENING_ECONOMY.forecastEvenings) };
       if (next.eveningAccount?.metrics) {
@@ -2346,6 +2352,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       nextForDay.staff = staffNight(state, nextForDay);
       // ORDER 303 C — Recensioner i morse: gårdagens kväll och nattens ändring.
       nextForDay.day = { ...nextForDay.day, morningReview: buildMorningReview(state, nextForDay) };
+      // ORDER 315b del 2 — gårdagens nivå till morgonens bricka (D7).
+      nextForDay.day = { ...nextForDay.day, conceptYesterday: conceptTonight(state) };
       // ORDER 265 — v1-lånets ränta varje dygn, och veckoavräkningen när
       // söndagen (den stängda dagen) börjar.
       if (!charged) postDailyInterest(nextForDay);

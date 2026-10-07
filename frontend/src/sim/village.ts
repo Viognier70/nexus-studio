@@ -29,6 +29,7 @@
 // Allt läses ur fröet och dagen (hashKey), så att byn kan spelas om och
 // simuleringens slumpflöde inte flyttas.
 
+import { refitClosedToday } from './ladderStep';
 import { BUSINESS_CLASSES, CONSEQUENCES, MARKET, RUSH, VILLAGE, type Weekday } from './balance';
 import { calendarFor } from './calendar';
 import { hashKey, signedKey } from '../strategic/util/hash';
@@ -189,7 +190,8 @@ export function venuesTonight(state: SimulationState, dayNumber = state.day.dayN
   // Ryktet när dagen började: kvällens val står still under servicen.
   const rep = state.day.reputationAtDayStart ?? state.reputation;
   const player: VenueTonight = {
-    id: PLAYER_VENUE, kind: 'player', control: null, open: cal.isServiceDay && !!state.economy?.businessClass,
+    // ORDER 315b del 2 — stängt under ombyggnaden.
+    id: PLAYER_VENUE, kind: 'player', control: null, open: cal.isServiceDay && !!state.economy?.businessClass && !refitClosedToday({ ladder: state.ladder, day: { ...state.day, dayNumber } }),
     billSek: playerBillSek(state), stars: starsFor(rep), reputation: rep,
     // ORDER 315b — spelarens foodtruck står vid Torget varje kväll.
     spot: state.economy?.businessClass === 'foodtruck' ? PLAYER_TRUCK_SPOT : null,

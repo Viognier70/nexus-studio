@@ -46,6 +46,7 @@ import { MOOD_STRINGS } from './design/moodStrings';
 import { VILLAGE_EVENING_STRINGS } from './design/villageEveningStrings';
 // ORDER 317 — Designs D6 del 2 (avsändarna, teckenförklaringen, kurskortet, Byn just nu, det låsta), oförändrad.
 import { D6_STRINGS } from './design/d6Strings';
+import { DIN_VAG_STRINGS } from './design/dinVagStrings';
 // ORDER 316 — fikat efter stängning (dilemmana).
 import { FIKA_TEXT } from './fikaStrings';
 
@@ -61,6 +62,8 @@ export const STRINGS = {
   // ORDER 317 — D6 del 2 först: spelets befintliga nycklar går före (role.* står
   // med stor bokstav i spelet; personalens avsändare läser rollen ur fika.roles).
   ...D6_STRINGS,
+  // ORDER 315b del 2 — Designs D7 med tillägget (vagnen, Din väg, Åsas erbjudande, ombyggnaden, fikat, nivåerna).
+  ...DIN_VAG_STRINGS,
   // CLAUDE.md regel 7: Måltidens hus heter "the House of the Meal" på engelska.
   'sender.house': { sv: 'Måltidens hus', en: 'The House of the Meal' },
   'course.kicker': { sv: 'Kurs i Måltidens hus', en: 'Course at the House of the Meal' },
@@ -511,6 +514,8 @@ export const TABLE = {
   // ORDER 315a — karriärstegen: Åsas erbjudande om nästa steg (sim/ladder.ts).
   // Åsa äger inte huset; hon förmedlar erbjudandet och har nycklarna.
   ladder: {
+    // ORDER 315b del 2 — ombyggnadens dagar på morgonen.
+    refitDay: { sv: (day: number, of: number) => `Stängt för ombyggnad, dag ${day} av ${of}:`, en: (day: number, of: number) => `Closed for the refit, day ${day} of ${of}:` },
     title: {
       sv: { foodtruck: 'Foodtrucken vid Torget', vinbar: 'Vinbaren vid Prästgatan', bistro: 'Bistron i samma hus' } as Record<string, string>,
       en: { foodtruck: 'The food truck on the square', vinbar: 'The wine bar on Prästgatan', bistro: 'The bistro in the same house' } as Record<string, string>
@@ -3770,10 +3775,11 @@ export const TABLE = {
       kicker: { sv: 'Recensioner i morse', en: 'This morning’s reviews' },
       title: { sv: 'Vad byn säger om i går', en: 'What the village says about last night' },
       rep: { sv: 'Ryktet', en: 'Reputation' },
-      classLine: { sv: (cls: string) => `Ryktet som ${cls.toLowerCase()}`, en: (cls: string) => `Reputation as a ${cls.toLowerCase()}` },
+      // ORDER 315b del 2 — Designs D7 (review.fx.class): ordet nivå.
+      classLine: { sv: (cls: string) => `Ryktet på nivån ${cls}`, en: (cls: string) => `Reputation at the ${cls} level` },
       // ORDER 309c — båda ändringarna under stapeln: konceptets och krogens.
       classChange: {
-        sv: (cls: string, n: number) => `Ryktet i nivån ${cls} ${n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '±0'}`,
+        sv: (cls: string, n: number) => `Ryktet på nivån ${cls} ${n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '±0'}`,
         en: (cls: string, n: number) => `Reputation at the ${cls} level ${n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '±0'}`
       },
       venueChange: {

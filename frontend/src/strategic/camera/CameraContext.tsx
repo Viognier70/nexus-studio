@@ -40,6 +40,11 @@ export interface CameraApi {
 
 const CameraCtx = createContext<CameraApi | null>(null);
 
+// ORDER 315b del 3 — Krogen (Z), Esc och servicens kamera går till spelarens egen vagn när
+// verksamheten är foodtrucken (PlayerTruckCrew.tsx sätter målet), annars till krogens förval.
+let myBusinessOverride: CameraTarget | null = null;
+export function setMyBusinessOverride(target: CameraTarget | null): void { myBusinessOverride = target; }
+
 function cloneTarget(t: CameraTarget): CameraTarget {
   return {
     focus: { x: t.focus.x, z: t.focus.z },
@@ -187,7 +192,7 @@ export function CameraProvider({ children }: Props) {
   }, []);
 
   const jumpToPreset = useCallback((preset: keyof typeof PRESETS) => {
-    const p = PRESETS[preset];
+    const p = preset === 'myBusiness' && myBusinessOverride ? { target: myBusinessOverride } : PRESETS[preset];
     targetRef.current = clampTarget(cloneTarget(p.target));
   }, []);
 

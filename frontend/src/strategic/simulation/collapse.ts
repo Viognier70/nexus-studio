@@ -27,6 +27,7 @@
 // order document for the full expected-rate table.
 
 import { planFika } from '../../sim/fika';
+import { offerAtClose } from '../../sim/ladder';
 import { eveningTransfer, tillSek } from './eveningEconomy';
 import { EVENING_ECONOMY } from '../../sim/balance';
 import { settleSocialGuestAtClose } from './guestTypes';
@@ -306,7 +307,9 @@ export function fireCollapse(draft: SimulationState, closeBills?: (d: Simulation
   // ORDER 292 — dygnets kostnader dras vid stängningen, också när kvällen faller ihop.
   chargeDayEnd(draft);
   // ORDER 316 — kvällens dilemma till fikat, också när kvällen faller ihop.
-  planFika(draft);
+  // ORDER 315b del 2 — eller Åsas erbjudande vid dörren (D7), som vid stängningen.
+  if (offerAtClose(draft)) draft.fika = draft.fika ? { ...draft.fika, tonight: null } : draft.fika;
+  else planFika(draft);
   const truck = Boolean(draft.lastWaste && draft.lastWaste.dayNumber === draft.day.dayNumber && draft.lastWaste.fractions);
   draft.day = { ...draft.day, transfer: eveningTransfer(draft), eveningStep: truck ? 'waste' : 'transfer' };
   draft.economy = { ...draft.economy, eveningResults: [...(draft.economy.eveningResults ?? []), { dayNumber: draft.day.dayNumber, resultSek: draft.day.transfer!.resultSek }].slice(-EVENING_ECONOMY.forecastEvenings) };

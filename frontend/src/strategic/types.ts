@@ -797,7 +797,7 @@ export interface DayState {
   // resultat, lärdomen, berättelsen. Sätts när servicen stänger; går bara
   // framåt (EVENING_STEP), så att en omritning eller ett dubbelklick inte
   // hoppar över kvällens resultat (provspel av 285).
-  eveningStep?: 'waste' | 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | 'fika' | 'shop' | null;
+  eveningStep?: 'waste' | 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | 'fika' | 'offer' | 'shop' | null;
   // ORDER 265 — dagens ankomster, mot marknadens tak (dailyGuestCap).
   arrivalsToday?: number;
   // ORDER 288 — turisterna från bussen (ingår i arrivalsToday men inte i
@@ -1000,6 +1000,9 @@ export interface DayState {
   // ORDER 318 — dagens inköp per vara: portioner per rätt, glas per dryck
   // (morgonens Inköp i dag; det som står i lager sedan förut räknas inte).
   boughtToday?: Record<string, number>;
+  // ORDER 315b del 2 — gårdagens nivå (varukorgen), så att morgonen kan visa
+  // brickan "Från i dag: {nivå}" när nivån ändras (Designs D7 venueTier.ts).
+  conceptYesterday?: 'enkel' | 'bistro' | 'soigne' | null;
   wasteSettled?: boolean;
   // ORDER 280 — lagret när dörrarna öppnade (rättens portioner, dryckens
   // glas) och den nivå varningen senast gällde (Designs L1).
@@ -2013,7 +2016,7 @@ export type SimAction =
   | { type: 'ANSWER_SALVAGE'; optionId: string }
   | { type: 'CLOSE_SALVAGE' }
   // ORDER 289 — nästa skärm i kvällens flöde.
-  | { type: 'EVENING_STEP'; to: 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | 'fika' | 'shop' }
+  | { type: 'EVENING_STEP'; to: 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | 'fika' | 'offer' | 'shop' }
   // ORDER 316 — fikat: spelarens svar på dilemmat, eller Gå hem.
   | { type: 'FIKA_ANSWER'; optionId: 'A' | 'B' | 'C' | 'D' }
   | { type: 'FIKA_GO_HOME' }

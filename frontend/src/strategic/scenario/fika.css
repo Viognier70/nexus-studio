@@ -21,3 +21,34 @@
 .nx-fika-explanation { margin-top: calc(16 * var(--nx-u)); font-size: calc(28 * var(--nx-u)); }
 .nx-fika-effects { margin: calc(20 * var(--nx-u)) 0 0; padding-left: 1.2em; }
 .nx-fika-before, .nx-fika-legal, .nx-fika-home { margin-top: calc(16 * var(--nx-u)); color: var(--nx-ink-2); }
+
+/* ORDER 315b del 2 — Designs tillägg till D7 (dilemmaGrades.ts GRADE_STYLE, AFTER_ANSWER):
+   väl grundat grönt (#5cb86a, lyft), delvis grundat i papper (#f5ead5, kant #cdb898),
+   svagt grundat i mörk mässing (#1a120d, kant #b98a3c, skakar). Papperet efter 650 ms. */
+.nx-fika-graded { display: grid; gap: calc(10 * var(--nx-u)); margin-bottom: calc(18 * var(--nx-u)); }
+.nx-fika-graded-row { display: flex; gap: calc(16 * var(--nx-u)); padding: calc(12 * var(--nx-u)) calc(18 * var(--nx-u)); border-radius: var(--nx-radius-card); border: 1.5px solid var(--nx-rule); }
+.nx-fika-graded-label { display: block; font-size: 0.8em; font-weight: 700; opacity: 0.75; margin-top: 2px; }
+.nx-fika-graded-row[data-chosen='true'][data-grade='well'] { background: #5cb86a; color: #2a1c13; border-color: #5cb86a; animation: nx-fika-lift 480ms ease-out both; }
+.nx-fika-graded-row[data-chosen='true'][data-grade='partly'] { background: #f5ead5; color: #2a1c13; border-color: #cdb898; animation: nx-fika-rise 240ms ease-out both; }
+.nx-fika-graded-row[data-chosen='true'][data-grade='weakly'] { background: #1a120d; color: #f4e6cc; border: 2px solid #b98a3c; animation: nx-fika-shake 380ms ease-out both; }
+.nx-fika-graded-row[data-chosen='false'][data-grade='well'] { background: #f5ead5; border: 2px dashed #5cb86a; }
+.nx-fika-verdict, .nx-fika-explanation, .nx-fika-effects { animation: nx-fika-paper 300ms ease-out 650ms both; }
+.nx-fika-verdict { display: flex; align-items: baseline; gap: calc(14 * var(--nx-u)); flex-wrap: wrap; }
+.nx-fika-scale { color: var(--nx-ink-2); }
+.nx-fika-grade[data-grade='well'] { background: #5cb86a; border-color: #3f9a52; color: #2a1c13; }
+.nx-fika-grade[data-grade='partly'] { background: #f5ead5; border-color: #cdb898; color: #2a1c13; }
+.nx-fika-grade[data-grade='weakly'] { background: #1a120d; border-color: #b98a3c; color: #f4e6cc; }
+@keyframes nx-fika-lift { from { transform: translateY(6px); } to { transform: none; } }
+@keyframes nx-fika-rise { from { opacity: 0.6; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+@keyframes nx-fika-shake { 0%, 100% { transform: none; } 25% { transform: translateX(-4px); } 50% { transform: translateX(4px); } 75% { transform: translateX(-2px); } }
+@keyframes nx-fika-paper { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .nx-fika-graded-row, .nx-fika-verdict, .nx-fika-explanation, .nx-fika-effects { animation: none !important; }
+}
+
+/* ORDER 315b del 2 — Designs D7: fikat är en scen i rummet, kortet står till höger. */
+.nx-screen.nx-fika-overlay { left: auto; width: min(640px, 100%); background: linear-gradient(90deg, rgba(20, 13, 9, 0.35), var(--w-walnut-900) 18%); padding: calc(48 * var(--nx-u)) calc(32 * var(--nx-u)); }
+.nx-fika-overlay .nx-fika-paper { max-width: none; }
+.nx-fika-overlay .nx-fika-asker { font-size: calc(30 * var(--nx-u)); }
+.nx-fika-overlay .nx-fika-question { font-size: calc(24 * var(--nx-u)); }
+.nx-fika-overlay .nx-fika-explanation { font-size: calc(22 * var(--nx-u)); }

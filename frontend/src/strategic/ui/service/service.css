@@ -937,3 +937,14 @@ body:has(.nx-stake) .nx-room-notices { display: none; }
 .nx-result-drags { margin-top: calc(14 * var(--nx-u)); padding: calc(14 * var(--nx-u)) calc(20 * var(--nx-u)); }
 .nx-result-drags ul { list-style: none; margin: calc(6 * var(--nx-u)) 0; padding: 0; display: grid; gap: calc(4 * var(--nx-u)); font-size: max(13px, calc(17 * var(--nx-u))); }
 .nx-result-drags li::before { content: '▼ '; color: #f08a6a; font-size: .8em; }
+/* ORDER 315b del 2 — Designs D7 (venueTier.ts TIERS.sign): spelarens skylt efter nivån.
+   Enkel griffeltavla i träram med krita, Mellan emalj i grädde med mässingskant,
+   Exklusiv svart lack med förgylld dubbelkant (och lampan som ett sken ovanför). */
+.nx-venue-label.is-player[data-tier='enkel'] { background: #2b2a28; color: #f2ede2; border: 3px solid #8a6a4a; }
+.nx-venue-label.is-player[data-tier='bistro'] { background: #f3e6c8; color: #2a1c13; border: 2px solid #b98a3c; }
+.nx-venue-label.is-player[data-tier='bistro'] .nx-venue-name, .nx-venue-label.is-player[data-tier='soigne'] .nx-venue-name { font-family: var(--w-font-heading); }
+.nx-venue-label.is-player[data-tier='soigne'] { background: #100b08; color: #f0cd82; border: 3px double #d9b476; box-shadow: 0 -10px 18px -8px rgba(255, 213, 143, 0.75), 0 4px 14px rgba(0, 0, 0, 0.35); }
+.nx-venue-pips { display: inline-flex; gap: 4px; align-items: center; }
+.nx-venue-pip { width: 8px; height: 8px; border-radius: 50%; background: #e9dcc4; }
+.nx-venue-label[data-tier='bistro'] .nx-venue-pip { background: #b98a3c; }
+.nx-venue-label[data-tier='soigne'] .nx-venue-pip { background: #f0cd82; }

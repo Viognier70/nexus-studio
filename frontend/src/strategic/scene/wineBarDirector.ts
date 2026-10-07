@@ -39,6 +39,7 @@ import {
   WALK_GUEST,
   CORR_X,
   BOTTLE_PICKUP_AT,
+  setFlowLayout,
   pathLen,
   along,
   type Group,
@@ -248,8 +249,8 @@ const HOST_IN_M = 1;
 // ORDER 317 — passet, köksdörren och flaskan ur rummets plan (WINE_BAR_PLAN).
 export const PASS_FLOOR: Vec2 = [CORR_X, WINE_BAR_PLAN.pass.z];
 const PASS_KITCHEN: Vec2 = [WINE_BAR_PLAN.pass.x0 - 0.05, WINE_BAR_PLAN.pass.z];
-/** Sommelierens flaska hämtas vid vinväggens östra ände (serviceFlow). */
-const BOTTLE_PICKUP: Vec2 = BOTTLE_PICKUP_AT;
+// ORDER 315b del 2 — flaskans plats följer rummets möblering (serviceFlow.ts setFlowLayout);
+// BOTTLE_PICKUP_AT läses när uppgiften planeras, inte när modulen laddas.
 /** Gångcykeln: en cykel per 1,3 m (serviceFlow sampleActor). */
 const STRIDE_M = 1.3;
 /** Köksdörren: kocken går ut ur köket här (wineBarRoom.staffPathKitchenToBar). */
@@ -471,6 +472,8 @@ export class WineBarDirector {
   private readonly items: PropItem[] = [];
 
   constructor(room: DirectorRoom, opts: DirectorOptions) {
+    // ORDER 315b del 2 — personalens vägar och barens platser efter rummets möblering.
+    setFlowLayout((room as { layout?: 'winebar' | 'bistro' }).layout ?? 'winebar');
     this.room = room;
     this.opts = opts;
     room.seats.forEach((s) => this.seatByIndex.set(s.seatIndex, s));
@@ -880,7 +883,7 @@ export class WineBarDirector {
     if (g.kind === 'lounge') {
       p.visits.push(this.addTask({
         party: p, roles: ['sommelier'], target: g.serveAt, facing: g.serveFacing, pose: 'serveAperitif', dur: RITUAL_S.aperitif,
-        carry: 'glass', pickup: BOTTLE_PICKUP, pickupHold: 0.8, ready: t + 1.5
+        carry: 'glass', pickup: BOTTLE_PICKUP_AT, pickupHold: 0.8, ready: t + 1.5
       }));
     }
   }
@@ -920,7 +923,7 @@ export class WineBarDirector {
     } else if (g.kind === 'lounge') {
       p.visits.push(this.addTask({
         party: p, roles: ['sommelier'], target: g.serveAt, facing: g.serveFacing, pose: 'present', dur: 5,
-        carry: 'bottle', pickup: BOTTLE_PICKUP, pickupHold: 1.5, ready: t, onDone: served
+        carry: 'bottle', pickup: BOTTLE_PICKUP_AT, pickupHold: 1.5, ready: t, onDone: served
       }));
     } else {
       // Överlämningen: bartendern häller, servitören hämtar vid barens västra öppning.

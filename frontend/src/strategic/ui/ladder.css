@@ -11,16 +11,28 @@
   padding: 24px 28px; border-radius: 22px;
 }
 .nx-ladder-offer .nx-dinvag { background: transparent; box-shadow: none; padding: 12px 0 0; border-top: 1px solid rgba(42, 28, 19, 0.16); border-radius: 0; }
-.nx-ladder-offer .nx-dinvag-steps { grid-template-columns: 1fr 1fr; column-gap: 16px; }
-.nx-ladder-standing { position: fixed; left: max(16px, 3.75vw); top: 104px; z-index: 48; max-width: calc(100% - 32px); }
-.nx-dinvag-open { position: fixed; right: max(16px, 3.75vw); top: 104px; z-index: 48; }
-@media (max-width: 900px) { .nx-ladder-standing { top: auto; bottom: 140px; } .nx-dinvag-open { top: auto; bottom: 190px; } }
-.nx-dinvag { padding: 20px 24px; border-radius: var(--nx-radius-card); margin-top: 16px; }
-.nx-dinvag-steps { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; }
-.nx-dinvag-steps li { display: flex; gap: 10px; align-items: baseline; padding: 4px 0; border-bottom: 1px solid rgba(42, 28, 19, 0.12); }
-.nx-dinvag-steps li[data-state='later'] { opacity: 0.55; }
-.nx-dinvag-steps li[data-state='here'] .nx-dinvag-name { font-weight: 800; }
-.nx-dinvag-tag { font-size: 0.85em; opacity: 0.7; }
-.nx-dinvag-req ul { margin: 6px 0 0; padding-left: 1.2em; }
-.nx-dinvag-req li[data-ok='true']::marker { content: '✓  '; }
+.nx-ladder-offer /* ORDER 315b del 2 — Designs D7, Din väg: linan och kravkortet. Guld för klart,
+   papper med sken där spelaren står, guldkant för nästa, streckat för senare.
+   Kraven i guld och papper, aldrig rött eller grönt. */
+.nx-dinvag-sub { opacity: 0.75; margin-top: 2px; }
+.nx-dinvag-line { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; position: relative; }
+.nx-dinvag-line::before { content: ''; position: absolute; left: 6%; right: 6%; top: 13px; height: 2px; background: rgba(42, 28, 19, 0.2); }
+.nx-dinvag-line li { position: relative; display: grid; justify-items: center; text-align: center; gap: 4px; font-size: 13px; line-height: 1.2; }
+.nx-dinvag-dot { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: #f3e9d6; border: 2px solid rgba(42, 28, 19, 0.35); font-weight: 800; color: #2a1c13; z-index: 1; }
+.nx-dinvag-line li[data-state='done'] .nx-dinvag-dot { background: #e8b93a; border-color: #b98a3c; }
+.nx-dinvag-line li[data-state='here'] .nx-dinvag-dot { background: #fffaf0; border-color: #e8b93a; box-shadow: 0 0 0 4px rgba(232, 185, 58, 0.35), 0 0 16px rgba(255, 213, 143, 0.9); }
+.nx-dinvag-line li[data-state='next'] .nx-dinvag-dot { border: 3px solid #e8b93a; }
+.nx-dinvag-line li[data-state='later'] .nx-dinvag-dot { border-style: dashed; background: transparent; }
+.nx-dinvag-line li[data-state='later'] { opacity: 0.6; }
+.nx-dinvag-line li[data-state='here'] .nx-dinvag-name { font-weight: 800; }
+.nx-dinvag-tag { font-size: 12px; opacity: 0.75; }
+.nx-dinvag-req { margin-top: 16px; padding: 14px 16px; border: 2px solid #e8b93a; border-radius: 16px; background: #fbf4e6; }
+.nx-dinvag-row { display: grid; grid-template-columns: 6.5em 1fr auto; align-items: baseline; column-gap: 10px; row-gap: 4px; margin-top: 10px; }
+.nx-dinvag-row-label { font-weight: 800; }
+.nx-dinvag-brick { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; border: 1.5px solid #b98a3c; color: #2a1c13; background: #f3e9d6; white-space: nowrap; }
+.nx-dinvag-row[data-ok='true'] .nx-dinvag-brick { background: #e8b93a; border-color: #e8b93a; }
+.nx-dinvag-bar { grid-column: 1 / -1; height: 8px; border-radius: 999px; background: rgba(42, 28, 19, 0.12); overflow: hidden; }
+.nx-dinvag-bar > span { display: block; height: 100%; background: #e8b93a; border-radius: 999px; }
+.nx-dinvag-offer { margin: 12px 0 0; opacity: 0.85; }
+@media (max-width: 700px) { .nx-dinvag-line { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 14px; } .nx-dinvag-line::before { display: none; } }
 .nx-ladder-offer .nx-btn { white-space: nowrap; }

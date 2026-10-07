@@ -43,7 +43,9 @@ export type ClipGroup = 'staff' | 'waiter' | 'bartender' | 'sommelier' | 'cook' 
  *  slutet på det ena är början på det andra. */
 export type Stance = 'stand' | 'seated' | 'walk' | 'hurt';
 /** Platsen klippet kräver. 'chair' betyder en stol som följer sittregeln (SEAT_RULE). */
-export type Needs = 'floor' | 'chair' | 'stool' | 'lounge' | 'table' | 'bar' | 'pass' | 'station' | 'sink' | 'desk' | 'wheelchair';
+export type Needs = 'floor' | 'chair' | 'stool' | 'lounge' | 'table' | 'bar' | 'pass' | 'station' | 'sink' | 'desk' | 'wheelchair'
+  // ORDER 315b del 2 (D7): luckan, stå på vagngolvet med bänken framför.
+  | 'hatch';
 /** Sittplatsens sort. Vinbarens 'bar' är 'stool' och 'twotop' är 'chair' (seatKindFromRoom). */
 export type SeatKind = 'chair' | 'stool' | 'lounge';
 /** Stämningen ett klipp uttrycker (guestMood.ts). Leverans 2026-10-03. */
@@ -54,7 +56,9 @@ export type ClipEventType =
   // Leverans 3: tända ett ljus, släppa (ljuset som faller), visa upp något, kvävas (lågan under förklädet)
   | 'light' | 'drop' | 'show' | 'smother'
   // ORDER 317 (D6, Åsas klipp): gesten syns, och repliken eller pratbubblan kan öppnas.
-  | 'signal';
+  | 'signal'
+  // ORDER 315b del 2 (D7): det som ligger på grillen vänds.
+  | 'flip';
 
 export interface ClipEvent {
   /** Var i klippet, 0..1. */
@@ -63,6 +67,8 @@ export interface ClipEvent {
   hand?: HandSide;
   /** Varifrån (grab) eller vart (release). 'partner' = den andra figuren i samspelet. */
   at?: Surface | 'partner';
+  /** ORDER 315b del 2 (D7 fikaClips.ts): föremålet som tas, när det inte står i holds. */
+  prop?: PropId;
 }
 
 export interface Hands { L?: PropId | 'any'; R?: PropId | 'any' }
@@ -664,6 +670,59 @@ reg(def({
   }
 }));
 
+// ORDER 315b del 2 — Designs D7 (nexus-leverans-2026-10-06-din-vag/truckClips.ts), oförändrade:
+// grillaren och den vid luckan i spelarens vagn.
+
+reg(def({
+  id: 'truck.grill', group: 'cook', roles: ['cook'], loop: true, travel: false, base: 2.0,
+  from: 'stand', to: 'stand', needs: 'station', holds: { R: 'tongs' }, ends: { R: 'tongs' },
+  events: [{ u: 0.42, type: 'flip', hand: 'R', at: 'station' }],
+  next: ['truck.grill', 'cook.toPass', 'staff.idle'],
+  pose: function (u, c) {
+    // Armen ut över gallret, ett snabbt vrid med tången, tillbaka. Vänster hand vilar på gallrets kant.
+    const s = c.stress ?? 0;
+    const reach = win(u, 0.1, 0.62, 0.12), flip = win(u, 0.36, 0.5, 0.05);
+    return withYaw(P(STAND, {
+      torso: { pitch: 0.14 + 0.1 * reach + 0.06 * s }, head: { pitch: 0.42 + 0.1 * reach },
+      armR: A(0.6 + 0.55 * reach, 0.12 + 0.18 * flip, 1.1 - 0.6 * reach),
+      armL: A(0.55, 0.05, 1.0)
+    }), 0.12 * Math.sin(u * TAU) * (0.5 + s), 0);
+  }
+}));
+
+reg(def({
+  id: 'truck.hatchServe', group: 'waiter', roles: ['waiter', 'staff'], loop: false, travel: false, base: 2.6, handed: true,
+  from: 'stand', to: 'stand', needs: 'hatch', holds: {}, ends: {},
+  events: [{ u: 0.28, type: 'grab', hand: 'R', at: 'pass' }, { u: 0.6, type: 'give', hand: 'R', at: 'partner' }],
+  next: ['truck.wipeCounter', 'truck.hatchServe', 'staff.idle'],
+  pose: function (u) {
+    // Vrider sig mot bänken och tar brickan, vänder tillbaka och sträcker armen ut genom luckan,
+    // lutar sig fram över hyllan, släpper, rätar upp sig och nickar.
+    const yaw = keys(u, [[0, P(STAND, { torso: { yaw: 0 } })], [0.28, P(STAND, { torso: { yaw: 0.55 } })], [0.58, P(STAND, { torso: { yaw: 0.2 } })], [0.9, P(STAND, { torso: { yaw: 0 } })]]).torso?.yaw ?? 0;
+    const out = win(u, 0.34, 0.66, 0.1), lean = win(u, 0.38, 0.66, 0.08), nod = win(u, 0.72, 0.9, 0.06);
+    return withYaw(P(STAND, {
+      torso: { pitch: 0.06 + 0.12 * lean }, head: { pitch: 0.1 + 0.25 * nod },
+      armR: A(0.5 + 0.9 * out, 0.15 + 0.2 * out, 0.9 - 0.75 * out),
+      armL: A(0.35, 0.05, 1.0)
+    }), yaw, yaw * 0.6);
+  }
+}));
+
+reg(def({
+  id: 'truck.wipeCounter', group: 'waiter', roles: ['waiter', 'staff', 'cook'], loop: true, travel: false, base: 2.4,
+  from: 'stand', to: 'stand', needs: 'hatch', holds: { R: 'napkin' }, ends: { R: 'napkin' }, events: [],
+  next: ['truck.wipeCounter', 'truck.hatchServe', 'staff.idle'],
+  pose: function (u, c) {
+    // Tre cirklar per svep, svepet fram och tillbaka längs bänken. Bålen följer handen. Stressad: blicken upp mot kön.
+    const s = c.stress ?? 0, sweep = -Math.cos(TAU * u), w = 3 * TAU * u;
+    return withYaw(P(STAND, {
+      torso: { pitch: 0.2 }, head: { pitch: 0.35 - 0.3 * s * win(u, 0.4, 0.7, 0.08) },
+      armR: A(0.85 + 0.1 * Math.sin(w), 0.16 + 0.1 * Math.cos(w), 0.7),
+      armL: A(0.7, 0.08, 0.85)
+    }), 0.3 * sweep, 0.2 * sweep);
+  }
+}));
+
 // ===== sommeliern =====================================================
 
 reg(def({
@@ -1010,6 +1069,46 @@ reg(def({
       armR: A(0.78 + 1.6 * up, 0.1 + 0.08 * up + 0.1 * wv, 0.95 - 0.6 * up)
     }), (c.yaw ?? 0) * 0.25 * up, (c.yaw ?? 0) * 0.8 * up);
   }
+}));
+
+// ORDER 315b del 2 — Designs tillägg till D7 (fikaClips.ts), oförändrade: den som frågar räcker upp
+// handen (holdUntil tills kortet öppnas), de andra dricker ur koppen.
+
+reg(def({
+  id: 'gesture.raiseHand', group: 'guest', roles: ['guest', 'waiter', 'staff', 'cook', 'host', 'bartender', 'sommelier'], loop: false, travel: false, handed: true, base: 1.8,
+  from: 'seated', to: 'seated', needs: 'chair', holds: {}, ends: {}, events: [{ u: 0.4, type: 'signal' }],
+  next: ['guest.seatedIdle', 'fika.sipCup'],
+  pose: function (u, c) {
+    // 0–0,4 armen upp, 0,4–0,75 stilla (förlängs med c.holdUntil), 0,75–1 ned. c.seated = false ger samma klipp stående.
+    const b = base(c, true);
+    const up = win(u, 0.04, 0.96, 0.32);
+    return withYaw(P(b, {
+      torso: { pitch: 0.02 - 0.06 * up, roll: -0.05 * up }, head: { pitch: 0.04 - 0.12 * up },
+      armR: A(0.6 + 2.35 * up, 0.12 + 0.06 * up, 0.9 - 0.75 * up)
+    }), (c.yaw ?? 0) * 0.2 * up, (c.yaw ?? 0) * 0.7 * up);
+  },
+  tilt: function (u) { return { R: { pitch: 0.35 * win(u, 0.04, 0.96, 0.32) } }; } // handflatan framåt
+}));
+
+reg(def({
+  id: 'fika.sipCup', group: 'guest', roles: ['guest', 'waiter', 'staff', 'cook', 'host', 'bartender', 'sommelier'], loop: false, travel: false, handed: true, base: 3,
+  from: 'seated', to: 'seated', needs: 'table', holds: {}, ends: {},
+  events: [{ u: 0.12, type: 'grab', hand: 'R', at: 'table', prop: 'coffeeCup' }, { u: 0.88, type: 'release', hand: 'R', at: 'table' }],
+  next: ['guest.seatedIdle', 'fika.sipCup', 'gesture.raiseHand'],
+  pose: function (u, c) {
+    const b = base(c, true);
+    const cup = A(0.9, 0.1, 1.95), saucer = A(0.75, 0.06, 1.2);
+    return keys(u, [
+      [0, b],
+      [0.12, P(b, { armR: A(0.8, 0.1, 0.95) })],
+      [0.32, P(b, { torso: { pitch: 0.1 }, head: { pitch: 0.05 }, armR: cup, armL: saucer })],
+      [0.5, P(b, { torso: { pitch: 0.04 }, head: { pitch: -0.18 }, armR: A(0.8, 0.1, 2.15), armL: saucer })],
+      [0.66, P(b, { torso: { pitch: 0.08 }, head: { pitch: 0.02 }, armR: cup, armL: saucer })],
+      [0.88, P(b, { armR: A(0.8, 0.1, 0.95) })],
+      [1, b]
+    ]);
+  },
+  tilt: function (u) { return { R: { pitch: -0.5 * win(u, 0.4, 0.6, 0.06) } }; }
 }));
 
 reg(def({

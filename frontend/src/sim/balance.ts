@@ -817,7 +817,11 @@ export const UPGRADE = {
 // erbjudandet står kvar. Kraven är utgångspunkten för kalibreringen.
 export const LADDER = {
   section: 'Verksamhetsklasserna > Uppgradering',
-  order: ['foodtruck', 'kvarterskrog', 'vinbar', 'olhall', 'bistro', 'nattklubb', 'soigne', 'gastgiveri'] as const,
+  // ORDER 315b del 2 — Designs D7 (careerPath.ts), godkänd av Anders 2026-10-07:
+  // food truck, vinbar, bistro, ölkrog, restaurang, nattklubb, gästgiveri,
+  // stjärnkrogen. Restaurangen är kvarterskrogen och stjärnkrogen soigné i
+  // klassernas nycklar.
+  order: ['foodtruck', 'vinbar', 'bistro', 'olhall', 'kvarterskrog', 'nattklubb', 'gastgiveri', 'soigne'] as const,
   playable: ['foodtruck', 'vinbar', 'bistro'] as const,
   steps: {
     foodtruck: { businessClass: 'foodtruck' as BusinessClassId, building: null as string | null, starsPossible: false, billFactor: 1, wageFactor: 1, revenueFactor: 1 },
@@ -837,7 +841,11 @@ export const LADDER = {
   depositShareOfWeekFloor: 0.25,
   reputationFactorOnPurchase: 1,
   // Harnessens spelartyp "försiktig" väntar en vecka med erbjudandet.
-  carefulWaitDays: 7
+  carefulWaitDays: 7,
+  // ORDER 315b del 2 — Designs D7 (ownerOffer.ts, bistroRefit.ts): bistron är
+  // stängd så här många dagar medan vinbaren byggs om, från dagen efter "Ta
+  // över". Anders 2026-10-07: tre dagar, och erbjudandekortet säger det i förväg.
+  refitDays: 3
 } as const;
 
 // ORDER 315b — foodtrucken, svensk grill (Anders 2026-10-07, BESLUT del 2;

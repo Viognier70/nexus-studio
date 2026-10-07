@@ -20,7 +20,16 @@ import { useCamera } from '../../camera/CameraContext';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { skyState } from '../../../lib/lighting/skyState';
 import { PLAYER_VENUE, venuesTonight } from '../../../sim/village';
-import { truckPlacement, truckSpotPlace, venueLampPoint, venuePlaces } from '../../content/villagePlaces';
+import { makePlayerTrailer } from '../playerTruck';
+import { PlayerTruckCrew } from './PlayerTruckCrew';
+import { OwnerAtDoor } from './OwnerAtDoor';
+import { FikaAtTable } from '../FikaAtTable';
+const TIER_PIPS: Record<string, number> = { enkel: 1, bistro: 2, soigne: 3 };
+import { ladderStep } from '../../../sim/ladderStep';
+import { PATH_KEY } from '../../ui/DinVag';
+import { t as tt, type StringKey } from '../../../content/nexusStrings';
+import { useLanguage } from '../../../content/language';
+import { playerTruckPlacement, truckPlacement, truckSpotPlace, venueLampPoint, venuePlaces } from '../../content/villagePlaces';
 import { readabilityScale } from '../../util/readability';
 import { subscribeVillageLive, villageLive } from './villageLive';
 import { VenueLabel } from '../../ui/VillageLabels';
@@ -87,14 +96,7 @@ function makeTruck(id: string): THREE.Group {
     const st = add(new THREE.BoxGeometry(1.2, 0.06, 0.62), m(col.awning[i % 2]), 1.8, 2.6, -2.2 + i * 0.64);
     st.rotation.z = -0.25;
   }
-  // ORDER 315b — spelarens vagn: ett tillfälligt serveringsområde med
-  // ståbord (bordshöjd för stående 1,1 m) vid luckans sida.
-  if (id === PLAYER_VENUE) {
-    for (const z of [-2.6, 0, 2.6]) {
-      add(new THREE.CylinderGeometry(0.06, 0.06, 1.1, 8), m('#3b2a1e'), 4.6, 0.55, z);
-      add(new THREE.CylinderGeometry(0.4, 0.4, 0.05, 16), m('#c9a46a'), 4.6, 1.12, z);
-    }
-  }
+  // ORDER 315b del 2 — spelarens vagn är Designs släpvagn (makePlayerTrailer), med trädäcket.
   return g;
 }
 
@@ -104,7 +106,11 @@ export function VillageVenues() {
   const playerClass = sim.economy.businessClass;
   // ORDER 307 — klassen och kvällens koncept ur varukorgen: "Vinbar · Bistro".
   const playerConcept = conceptTonight(sim);
-  const playerStyle = playerClass ? (playerConcept ? `${strings.economy.classes[playerClass]} · ${strings.shopTabs.tier[playerConcept]}` : strings.economy.classes[playerClass]) : null;
+  // ORDER 315b del 2 — Designs D7 (venueTier.ts): skylten säger steget (Bistro är ett steg) och nivån.
+  const lang = useLanguage();
+  const step = ladderStep(sim);
+  const stepName = step ? tt(lang, PATH_KEY[step] as StringKey) : playerClass ? strings.economy.classes[playerClass] : null;
+  const playerStyle = stepName ? (playerConcept ? `${stepName} · ${strings.shopTabs.tier[playerConcept]}` : stepName) : null;
   const { actualRef } = useCamera();
   const venues = useMemo(() => venuesTonight(sim), [sim.day.dayNumber, sim.competition, sim.reputation, sim.economy?.businessClass]); // eslint-disable-line react-hooks/exhaustive-deps
   const places = useMemo(() => venuePlaces(), []);
@@ -156,22 +162,24 @@ export function VillageVenues() {
 
   // Vagnarna på kvällens plats.
   useEffect(() => {
-    // ORDER 315b — spelarens foodtruck (v.spot) står först på sin plats.
+    // ORDER 315b — spelarens foodtruck (v.spot); del 2: på sin egen plats.
     const onSpot = (o: typeof venues[number]) => o.kind === 'truck' || (o.kind === 'player' && !!o.spot);
     for (const t of trucks.current.values()) t.visible = false;
     for (const v of venues) {
       if (!onSpot(v)) continue;
       let truck = trucks.current.get(v.id);
       if (!truck) {
-        truck = makeTruck(v.id);
+        // ORDER 315b del 2 — spelarens egen släpvagn (Designs D7 playerTruck.ts).
+        truck = v.kind === 'player' ? makePlayerTrailer(TIER_PIPS[conceptTonight(sim) ?? 'enkel'] ?? 1) : makeTruck(v.id);
         trucks.current.set(v.id, truck);
         root.add(truck);
       }
       truck.visible = v.open && !!v.spot;
       if (!v.spot) continue;
       // Två vagnar på samma plats står efter varandra (villagePlaces.ts truckPlacement).
-      const same = venues.filter((o) => onSpot(o) && o.spot === v.spot).sort((a, b) => (a.kind === 'player' ? -1 : b.kind === 'player' ? 1 : 0));
-      const at = truckPlacement(v.spot, same.findIndex((o) => o.id === v.id));
+      // ORDER 315b del 2 — spelarens vagn har en egen plats (playerTruckPlacement).
+      const same = venues.filter((o) => o.kind === 'truck' && o.spot === v.spot);
+      const at = v.kind === 'player' ? playerTruckPlacement() : truckPlacement(v.spot, same.findIndex((o) => o.id === v.id));
       truck.position.set(at.x, 0, at.z);
       truck.rotation.y = at.rotationY;
     }
@@ -272,10 +280,16 @@ export function VillageVenues() {
   return (
     <>
       <primitive object={root} />
+      {/* ORDER 315b del 2 — besättningen i spelarens vagn (D7 truckClips.ts). */}
+      <PlayerTruckCrew />
+      {/* ORDER 315b del 2 — Åsa vid dörren med erbjudandet (D7 ownerOffer.ts). */}
+      <OwnerAtDoor />
+      {/* ORDER 315b del 2 — fikat vid bordet efter stängning (D7 afterHoursFika.ts). */}
+      <FikaAtTable />
       {nearSign && entrance && ourVenue && (
         <group position={[entrance[0], NEAR_SIGN_Y_M, entrance[1]]}>
           <Html center zIndexRange={[12, 0]} style={{ pointerEvents: 'none' }}>
-            <VenueLabel v={ourVenue} guests={sim.day.arrivalsToday ?? 0} compact={false} near playerName={playerBusiness.name} playerStyle={playerStyle} innerRef={() => {}} />
+            <VenueLabel v={ourVenue} guests={sim.day.arrivalsToday ?? 0} compact={false} near playerName={playerBusiness.name} playerStyle={playerStyle} playerTier={playerConcept} innerRef={() => {}} />
           </Html>
         </group>
       )}
@@ -286,7 +300,7 @@ export function VillageVenues() {
         return (
           <group key={v.id} position={[p[0], v.spot ? 6 : 14, p[1]]}>
             <Html center zIndexRange={[12, 0]} style={{ pointerEvents: 'none' }}>
-              <VenueLabel v={v} guests={guests} compact={compact} playerName={playerBusiness.name} playerStyle={playerStyle} innerRef={(el) => { if (el) labelEls.current.set(v.id, el); else labelEls.current.delete(v.id); }} />
+              <VenueLabel v={v} guests={guests} compact={compact} playerName={playerBusiness.name} playerStyle={playerStyle} playerTier={playerConcept} innerRef={(el) => { if (el) labelEls.current.set(v.id, el); else labelEls.current.delete(v.id); }} />
             </Html>
           </group>
         );

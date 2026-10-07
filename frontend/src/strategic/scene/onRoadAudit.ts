@@ -35,7 +35,7 @@ import { outbuildingFootprintAt, outbuildingPlacementFor } from '../procgen/parc
 import { computePlayerBusinessInterior, playerObb } from '../business/interiorLayout';
 import { deliveryStop } from '../business/deliveryStop';
 import { roomSizeFor } from './businessRoom';
-import { TRUCK_BODY, VENUE_BUILDINGS, truckPlacement, venueLampPoint, venuePlaces, villageSources } from '../content/villagePlaces';
+import { TRUCK_BODY, VENUE_BUILDINGS, playerTruckFootprints, truckPlacement, venueLampPoint, venuePlaces, villageSources } from '../content/villagePlaces';
 import { driveNetwork, routeBetween, routeLength, pointAlong } from '../content/villageNetwork';
 import { eligibleRoads, KIND_CONFIG, vehicleLaneOffset, type VehicleKind } from './OsmTraffic';
 import { polylineLength } from '../content/world';
@@ -427,6 +427,20 @@ export function auditTrucks(): Conflict[] {
       const hit = footprintsNear(centre[0], centre[1], 8).find((f) => polygonsOverlap(footprint, f.poly));
       if (hit) out.push({ kind: 'truck-in-building', subject, at: centre, other: hit.id });
       if (footprint.some((p) => inAnyWater(p[0], p[1]))) out.push({ kind: 'truck-in-water', subject, at: centre });
+    }
+  }
+  // ORDER 315b del 2 — spelarens släpvagn och trädäcket (playerTruckFootprints):
+  // inte på vägen, inte i ett hus, och inte i rivalernas vagnar på torget (båda
+  // står där samma kväll).
+  const mineFeet = playerTruckFootprints();
+  for (const [part, poly] of [['spelarens vagn', mineFeet.body], ['spelarens trädäck', mineFeet.deck]] as const) {
+    const footprint = poly.map((p) => pt(p));
+    const centre = pt([poly.reduce((a, p) => a + p[0], 0) / poly.length, poly.reduce((a, p) => a + p[1], 0) / poly.length]);
+    for (const o of roadOverlapsForPolygon(footprint)) if (o.depthM > ON_ROAD_TOLERANCE_M) out.push(overlapConflict('truck-on-road', part, o));
+    const inHouse = footprintsNear(centre[0], centre[1], 8).find((f) => polygonsOverlap(footprint, f.poly));
+    if (inHouse) out.push({ kind: 'truck-in-building', subject: part, at: centre, other: inHouse.id });
+    for (const k of [0, 1]) {
+      if (polygonsOverlap(footprint, truckFootprint('torget', k).footprint)) out.push({ kind: 'truck-in-building', subject: part, at: centre, other: `vagn@torget${k ? '#2' : ''}` });
     }
   }
   return out;

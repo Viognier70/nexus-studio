@@ -1,3 +1,4 @@
+import { PLAYER_TRUCK_PITCH } from '../content/villagePlaces';
 import { Instance, Instances } from '@react-three/drei';
 import { useMemo } from 'react';
 import { WORLD } from '../content/world';
@@ -127,6 +128,10 @@ function resolveSpecies(spec: TreeSpecies, h: number): Exclude<TreeSpecies, 'mix
   return spec;
 }
 
+// Vagnen och trädäcket (x −3,4 … 6,2 i vagnens ram) ryms i en cirkel om 5,5 m kring en punkt 1,4 m
+// öster om vagnens mitt; kronan är upp till 3 m bred. Vagnen står nästan längs x (−6,29°).
+const TRUCK_CLEAR = { dx: 1.4, dz: 1.0, radius: 8.5 };
+
 export function StreetTrees() {
   const trees = useMemo<StreetTreeInstance[]>(() => {
     const out: StreetTreeInstance[] = [];
@@ -176,6 +181,9 @@ export function StreetTrees() {
             const fx = tx + jx;
             const fz = tz + jz;
             if (nearAnyBuilding(fx, fz, null, 1.5)) continue;
+            // ORDER 315b del 3 — inget träd i spelarens vagn eller över trädäcket på torget
+            // (villagePlaces.ts PLAYER_TRUCK_PITCH): kronan skymde vagnen på krogens nivå.
+            if (Math.hypot(fx - PLAYER_TRUCK_PITCH.centre[0] - TRUCK_CLEAR.dx, fz - PLAYER_TRUCK_PITCH.centre[1] - TRUCK_CLEAR.dz) < TRUCK_CLEAR.radius) continue;
             out.push({
               x: fx,
               z: fz,

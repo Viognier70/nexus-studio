@@ -8,6 +8,8 @@ import { settleSocialGuest, stayFactor } from './guestTypes';
 import { INITIAL_CAPITAL_VALUE } from './model';
 import { INTERIOR } from '../content/layout';
 import { businessHasOvernight, businessHasSeats, capacityForBusiness } from '../business/businessClass';
+import { BISTRO_CAPACITY, BISTRO_SEAT_GROUPS, BISTRO_SEAT_PREFERENCE } from '../scene/bistroHouse';
+import { ladderStep } from '../../sim/ladderStep';
 import type { BusinessClass } from '../business/businessClass';
 import type { Guest, SimulationState, StaffMember, StaffRole, TaskAssignment, TaskType, Vec2 } from '../types';
 import { taskDurationTicks } from './economics';
@@ -133,7 +135,14 @@ export function isSeatedCapacity(state: SimulationState): number {
   // att businessClass='ölkrogen' vill ha 20 — findFreeSeat nådde aldrig
   // bar-stolarna på seatIndex 16-19. Att läsa direkt från businessClass
   // gör policies.capacity till en cache som aldrig behöver invalideras.
+  // ORDER 315b del 2 — bistron (Designs D7, bistroRoom.ts): 31 platser i samma hus.
+  if (bistroLayout(state)) return BISTRO_CAPACITY;
   return capacityForBusiness(state.businessClass, state.policies.staffCount);
+}
+
+/** ORDER 315b del 2 — rummet är bistron (karriärsteget, i vinbarens hus). */
+export function bistroLayout(state: Pick<SimulationState, 'ladder' | 'economy'>): boolean {
+  return ladderStep(state) === 'bistro';
 }
 
 export function seatSlot(state: SimulationState, index: number): Vec2 {
@@ -207,7 +216,8 @@ const SEATS_VINBAREN = [
   0, 1, 2, 3, 4, 5                 // lounger
 ];
 
-function seatsPreferenceFor(businessClass: BusinessClass): readonly number[] {
+function seatsPreferenceFor(businessClass: BusinessClass, state?: Pick<SimulationState, 'ladder' | 'economy'>): readonly number[] {
+  if (state && bistroLayout(state)) return BISTRO_SEAT_PREFERENCE;
   if (businessClass === 'ölkrogen') return SEATS_OLKROGEN;
   if (businessClass === 'vinbaren') return SEATS_VINBAREN;
   return SEATS_DEFAULT;
@@ -249,14 +259,15 @@ const SEAT_GROUPS_VINBAREN: readonly (readonly number[])[] = [
   [0, 1, 2], [3, 4, 5], [6, 7], [8, 9], [10, 11], [12, 13, 14, 15], [16, 17, 18, 19]
 ];
 
-function seatGroupsFor(businessClass: BusinessClass): readonly (readonly number[])[] {
+function seatGroupsFor(businessClass: BusinessClass, state?: Pick<SimulationState, 'ladder' | 'economy'>): readonly (readonly number[])[] {
+  if (state && bistroLayout(state)) return BISTRO_SEAT_GROUPS;
   if (businessClass === 'ölkrogen') return SEAT_GROUPS_OLKROGEN;
   if (businessClass === 'vinbaren') return SEAT_GROUPS_VINBAREN;
   return SEAT_GROUPS_KVARTERSKROGEN;
 }
 
-function groupOfSeat(businessClass: BusinessClass, seat: number): readonly number[] | null {
-  for (const g of seatGroupsFor(businessClass)) {
+function groupOfSeat(businessClass: BusinessClass, seat: number, state?: Pick<SimulationState, 'ladder' | 'economy'>): readonly number[] | null {
+  for (const g of seatGroupsFor(businessClass, state)) {
     if (g.includes(seat)) return g;
   }
   return null;
@@ -311,7 +322,7 @@ export function findFreeSeat(
       (g) => g.partyId === partyId && g.seatIndex !== null && g.seatIndex !== undefined
     );
     if (seatedPartyMember) {
-      const group = groupOfSeat(state.businessClass, seatedPartyMember.seatIndex as number);
+      const group = groupOfSeat(state.businessClass, seatedPartyMember.seatIndex as number, state);
       if (group) {
         // Först lediga i samma grupp
         for (const seat of group) {
@@ -323,10 +334,10 @@ export function findFreeSeat(
       // Första medlemmen från partiet — hitta grupp med tillräckligt
       // med lediga platser för hela partiet, iterera i class-preferens.
       const partySize = state.guests.find((g) => g.partyId === partyId)?.partySize ?? 2;
-      const groups = seatGroupsFor(state.businessClass);
+      const groups = seatGroupsFor(state.businessClass, state);
       // Sortera grupper i preferensordning: den grupp vars första seat
       // är först i seatsPreferenceFor kommer först.
-      const pref = seatsPreferenceFor(state.businessClass);
+      const pref = seatsPreferenceFor(state.businessClass, state);
       const groupRank = (g: readonly number[]): number => {
         let best = Infinity;
         for (const s of g) {
@@ -348,7 +359,7 @@ export function findFreeSeat(
   }
   // ORDER 186 fynd 3 — per-klass preferensordning. Ölkrogen fyller bar
   // först; övriga klasser använder SEATS_DEFAULT (restaurang-form).
-  for (const seat of seatsPreferenceFor(state.businessClass)) {
+  for (const seat of seatsPreferenceFor(state.businessClass, state)) {
     if (seat < cap && !seatTaken(state, seat)) return seat;
   }
   return null;
@@ -407,7 +418,7 @@ function seatChosenFirst(state: SimulationState): void {
 // hovmästarens Ge bord (vilka bord sällskapet får plats vid).
 export function seatGroupsFree(state: SimulationState): { seats: readonly number[]; free: number[] }[] {
   const cap = isSeatedCapacity(state);
-  return seatGroupsFor(state.businessClass).map((g) => ({ seats: g, free: g.filter((s) => s < cap && !seatTaken(state, s)) }));
+  return seatGroupsFor(state.businessClass, state).map((g) => ({ seats: g, free: g.filter((s) => s < cap && !seatTaken(state, s)) }));
 }
 
 // ORDER 296 — sätt en gäst ur kön på en ledig plats nu (hovmästarens nål vid dörren).

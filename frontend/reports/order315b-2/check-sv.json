@@ -1,0 +1,119 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "errors": [],
+  "ok": true,
+  "dinVag": {
+    "steps": [
+      [
+        "foodtruck",
+        "done"
+      ],
+      [
+        "vinbar",
+        "here"
+      ],
+      [
+        "bistro",
+        "next"
+      ],
+      [
+        "olhall",
+        "later"
+      ],
+      [
+        "kvarterskrog",
+        "later"
+      ],
+      [
+        "nattklubb",
+        "later"
+      ],
+      [
+        "gastgiveri",
+        "later"
+      ],
+      [
+        "soigne",
+        "later"
+      ]
+    ],
+    "req": [
+      [
+        "cash",
+        "true",
+        "Kassa120 000 kr av 60 000 krKlart"
+      ],
+      [
+        "rep",
+        "true",
+        "Rykte60 av 60Klart"
+      ],
+      [
+        "medal",
+        "false",
+        "Medaljsilver Metodköket, brons StensötaInte klart"
+      ]
+    ],
+    "line": "Måndag morgon · vecka 2 av 8 · Vinbaren vid torget · Vinbar · Mellan"
+  },
+  "offer": {
+    "shown": true,
+    "rows": [
+      "Bistron håller stängt 3 kvällar under ombyggnaden",
+      "Kontantinsats 15 000 kr, resten lånar du",
+      "Ryktet följer med, byn känner dig redan",
+      "Personalen och allt du kan följer med"
+    ],
+    "line": "”Jag har pratat med den som äger huset. Vinbaren har gått bra hela sommaren, och nu kan hela huset bli ditt. Vill du ta över och göra en bistro av det?”",
+    "reply": "”Då kommer jag i morgon med ritningarna och ägarens kontrakt.”"
+  },
+  "bistro": {
+    "line": "Måndag morgon · vecka 2 av 8 · Vinbaren vid torget · Bistro · Mellan"
+  },
+  "refit": {
+    "box": "Ombyggnaden · Från vinbar till bistroStängt för ombyggnad, dag 2 av 3: Dukat.TömtByggtDukatTänt",
+    "day": "2",
+    "start": false
+  },
+  "fika": {
+    "overlay": true,
+    "question": "”Kylen i kalla köket stod öppen i ungefär en timme i kväll, och termometern visade elva grader när jag stängde den. Det ligger lax och crème fraiche i den. Ska vi slänga allt, eller räcker det att använda det först i morgon?”",
+    "graded": [
+      [
+        "well",
+        "true"
+      ],
+      [
+        "weakly",
+        "false"
+      ],
+      [
+        "partly",
+        "false"
+      ],
+      [
+        "weakly",
+        "false"
+      ]
+    ]
+  },
+  "truck": {
+    "overlay2d": false,
+    "level": "room",
+    "crew": {
+      "grill": [
+        18.38,
+        0.5,
+        -22.15
+      ],
+      "hatch": [
+        17.05,
+        0.5,
+        -21.45
+      ],
+      "visible": true,
+      "guests": 2
+    }
+  }
+}
