@@ -18,12 +18,9 @@ import { panelOpen, setServiceAmounts, useServiceDrawer } from './serviceDrawer'
 import { useEffect, useRef } from 'react';
 import { strings } from '../../../content/strings';
 import { GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SERVICE_STREAM, SITTING } from '../../../sim/balance';
-import { beforeDoors, doorsOpenMinutes, formatClock as clockText } from '../../../sim/clock';
-import { canStartBack, whyNotBack } from '../../../sim/incidents';
-import { BACK } from '../../../sim/balance';
-import { useSimDispatch, useSimState } from '../../simulation/SimulationProvider';
+import { useSimState } from '../../simulation/SimulationProvider';
 import type { EventStreamEntry } from '../../types';
-import { NxButton, NxLabel } from '../system/components';
+import { NxLabel } from '../system/components';
 import { formatSek } from '../CashCounter';
 import { flyTo } from '../juice/fx';
 import { countTo, type Counter } from '../juice/juice';
@@ -89,9 +86,8 @@ function CountedSek({ value, testId }: { value: number; testId: string }) {
   return <span ref={ref} className="nx-num" data-testid={testId} data-value={Math.round(value)} />;
 }
 
-export function EventsPanel({ mode = 'both' }: { mode?: 'both' | 'feed' | 'back' } = {}) {
+export function EventsPanel({ mode = 'both' }: { mode?: 'both' | 'feed' } = {}) {
   const sim = useSimState();
-  const dispatch = useSimDispatch();
   const seen = useRef<EventStreamEntry | null>(null);
   const inService = sim.day.period === 'dinner' || sim.day.period === 'lunch';
   const entries = inService ? sim.eventStream.filter((e) => e.at >= sim.day.periodStartAt).slice(-ROWS).reverse() : [];
@@ -108,12 +104,10 @@ export function EventsPanel({ mode = 'both' }: { mode?: 'both' | 'feed' | 'back'
   const tabs = sim.guests.filter((g) => g.order && g.order.revenueSek > 0 && (g.state === 'dining' || g.state === 'serving'));
   const tabTables = new Set(tabs.map((g) => g.seatIndex === null ? g.id : Math.floor(g.seatIndex / INCIDENTS.seatsPerTable)));
   const tabSek = tabs.reduce((a, g) => a + (g.order?.revenueSek ?? 0), 0);
-  const backsLeft = BACK.maxPerEvening - (sim.incidents?.betsTonight ?? 0);
   // ORDER 290 — serviceläget: ihopfällt visas bara Back your knowledge.
   // ORDER 290 — Kvällen (fliken) visar strömmen; Back your knowledge står
   // kvar nere till höger när panelen är stängd.
   const open = mode === 'feed' || (mode === 'both' && panelOpen(drawer, 'stream'));
-  const showBack = mode !== 'feed';
   return (
     <section className="nx nx-panel nx-feed" data-testid={mode === "feed" ? "service-feed" : "event-stream"} data-open={open} data-mode={mode} aria-label={t.title}>
       {open && <header className="nx-feed-head">
@@ -132,25 +126,6 @@ export function EventsPanel({ mode = 'both' }: { mode?: 'both' | 'feed' | 'back'
         <div className="nx-feed-tonight-row"><span>{t.tonightPaid}</span><CountedSek value={paid} testId="tonight-paid" /></div>
         <div className="nx-feed-tonight-row" style={{ color: 'var(--nx-accent-700)' }}><span>{t.tonightTips}</span><CountedSek value={sim.day.tipsSek ?? 0} testId="tonight-tips" /></div>
         <div className="nx-feed-tonight-row"><span>{t.tonightTabs}</span><strong data-testid="tonight-tabs">{tabs.length > 0 ? t.tonightTabsValue(tabTables.size, formatSek(tabSek)) : t.tonightTabsNone}</strong></div>
-      </div>}
-      {showBack && <div className="nx-feed-back">
-        <div style={{ minWidth: 0 }}>
-          <div className="nx-label nx-accent-text">{strings.back.title}</div>
-          {/* ORDER 289 — när knappen är grå står skälet här, bredvid den. */}
-          {/* ORDER 300 §6 — före öppning står tiden på knappen; raden säger då hur många satsningar kvällen har. */}
-          <div className="nx-small nx-muted" data-testid="back-why" id="back-why">{whyNotBack(sim) === 'notOpen' && beforeDoors(sim) ? (backsLeft > 0 ? strings.back.left(backsLeft) : strings.back.none) : whyNotBack(sim) ? strings.back.why[whyNotBack(sim)!] : backsLeft > 0 ? strings.back.left(backsLeft) : strings.back.none}</div>
-          {/* ORDER 284 — introduktionen före kvällens första raket (flyttad från kortet). */}
-          {open && (sim.incidents?.betsTonight ?? 0) === 0 && (
-            <p className="nx-small" data-testid="incident-back-intro" style={{ margin: 'calc(6 * var(--nx-u)) 0 0' }}>
-              <strong>{strings.back.introTitle}</strong> {strings.back.introBody}
-            </p>
-          )}
-        </div>
-        {/* Provspel av 285: en grå knapp säger varför. */}
-        {/* ORDER 300 §6 (Anders 2026-10-04): tydligt avstängd (grå) före öppning, med texten "Öppnar 19.05", utan radbrytning. */}
-        <NxButton testId="back-start" disabled={!canStartBack(sim)} arrow={!(whyNotBack(sim) === 'notOpen' && beforeDoors(sim))} onClick={() => dispatch({ type: 'START_BACK' })}>
-          {whyNotBack(sim) === 'notOpen' && beforeDoors(sim) ? strings.back.opensAt(clockText(doorsOpenMinutes(sim))) : strings.back.start}
-        </NxButton>
       </div>}
     </section>
   );

@@ -91,9 +91,10 @@ function lift(g: Guest, delta: number): void {
  * de som såg det inom witnessRadiusM och, svagare, alla i rummet. Returnerar
  * de som såg det (för konsekvensögonblicket).
  */
-export function applyAnswerMood(draft: SimulationState, table: readonly Guest[], right: boolean): string[] {
+export function applyAnswerMood(draft: SimulationState, table: readonly Guest[], right: boolean, scale = 1): string[] {
   const r = MOOD_BALANCE.rocket;
-  const pick = (e: { right: number; wrong: number }) => (right ? e.right : e.wrong);
+  // ORDER 314 — scale: situationens andel (balance.ts SITUATIONS.effectShare).
+  const pick = (e: { right: number; wrong: number }) => (right ? e.right : e.wrong) * scale;
   const seen = witnessesOf(draft, table);
   const tableIds = new Set(table.map((g) => g.id));
   const seenIds = new Set(seen.map((g) => g.id));

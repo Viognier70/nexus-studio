@@ -14,6 +14,7 @@ import { rankedStepOption } from '../incidents';
 import { PLAYERS } from '../../strategic/testHarness/randomness';
 import type { SimulationState } from '../../strategic/types';
 import { answerAndWait } from './verdict';
+import { SITUATIONS } from '../balance';
 
 const TICK = { type: 'TICK', dt: 0.2 } as const;
 const CREDITS = 40;
@@ -87,10 +88,11 @@ describe('ORDER 279 — gästerna frågar om kvällens meny', () => {
     const ids = s.incidents.active!.context.guestIds;
     s = answer(s, 'best');
     const g = s.guests.find((x) => ids.includes(x.id));
-    if (g) expect(g.tipBonus).toBeCloseTo(MENU_ROCKETS.tipBonusPerClearedStep, 9);
+    // ORDER 314 — dricksen gånger situationens andel (SITUATIONS.effectShare).
+    if (g) expect(g.tipBonus).toBeCloseTo(MENU_ROCKETS.tipBonusPerClearedStep * SITUATIONS.effectShare, 9);
     s = finishRocket(s, 'best');
     const after = s.guests.find((x) => ids.includes(x.id));
-    if (after) expect(after.tipBonus).toBeCloseTo(3 * MENU_ROCKETS.tipBonusPerClearedStep + MENU_ROCKETS.tipBonusOnRocketCleared, 9);
+    if (after) expect(after.tipBonus).toBeCloseTo((3 * MENU_ROCKETS.tipBonusPerClearedStep + MENU_ROCKETS.tipBonusOnRocketCleared) * SITUATIONS.effectShare, 9);
   });
 });
 

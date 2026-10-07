@@ -840,6 +840,42 @@ export const TEAM_BY_CLASS = {
 // ORDER 270 — Vision Owners beslut 2026-09-26 efter provspelet: servicen
 // görs om till en följd av händelser, och action-knappen tas bort.
 // Händelserna står som data i `src/content/incidents/` (händelsebanken).
+// ORDER 314 (Anders 2026-10-06, beslut A) — allt sker i situationer:
+// "Spelaren väljer inte när hon vill prövas. Situationerna uppstår i rummet."
+// Inga egna raketer (Stå för ditt svar är borttagen); kvitt eller dubbelt
+// finns kvar inne i varje situation (DOUBLE_OR_NOTHING).
+export const SITUATIONS = {
+  section: 'Servicen > Händelserna i servicen',
+  // "4–6 situationer per kväll, aldrig två samtidigt, och minst 8
+  // spelminuter mellan dem." Kvällens antal dras i [min, max] per kväll
+  // (sim/incidents.ts planIncidents); kedjade följder räknas in.
+  minPerEvening: 4,
+  maxPerEvening: 6,
+  minGapGameMinutes: 8,
+  // De första minPerEvening kommer senast på jämnt fördelade tider i
+  // kvällens fönster (sim/incidents.ts maybeOpenIncident); resten upp till
+  // kvällens antal mognar ur rummets tryck.
+  // "Om spelaren inte svarar tar personalen över med sin egen kompetens,
+  // alltså kunskapsområdena från 303": personal utan utbildning inom
+  // området klarar det sällan (ungefär 0,4), med utbildning oftare. Klarar
+  // de det blir följden successShare av det bästa utfallet, utan krediter,
+  // utan potten och utan gästerna som ett rätt svar släpper in: "alltid
+  // sämre än vad en kunnig spelare åstadkommer". Klarar de det inte blir
+  // det som förut: stegets fel och personalens utfall.
+  staffSuccessUntrained: 0.4,
+  staffSuccessTrained: 0.65,
+  staffSuccessShare: 0.5,
+  // Situationens andel av sina följder: kassan (utfallen, bordets
+  // merbeställning och mindre nota, avec, dricksen), stämningen och
+  // nöjdheten, ryktet, orken och ordet på gatan. Med takten ovan får en
+  // vecka omkring 2,5 gånger fler situationer än före ordern
+  // (reports/order314/kalib/), och kvällens summa hålls ungefär där den var.
+  // Krediterna (potten 1 → 3 → 7) och gästerna som går skalas inte; en
+  // skala på krediterna ändrade kassan mindre än 3 % (reports/order314/kalib/). Kalibrerad mot tabellen i
+  // ORDER_314_RAPPORT.md.
+  effectShare: 0.45
+} as const;
+
 export const INCIDENTS = {
   section: 'Servicen > Händelserna i servicen',
   // ORDER 293 — gästen som vinglar (Designs manus 3); nekas han i kväll blir
@@ -1575,7 +1611,11 @@ export const CONCEPT = {
   // ORDER 311 (säsongens sista bokslut räknas) — kalibrerat igen (reports/order311/kalib/W1–Z2).
   // ORDER 311b (Anders 2026-10-06): bistrons personal tillbaka mot 1,0 (0,96), så att
   // den som har 0,85 rätt slutar på 90 000–100 000 kr (reports/order311b/kalib).
-  wageFactor: { enkel: 0.71, bistro: 0.96, soigne: 1.4 },
+  // ORDER 314 — med situationernas takt (4–6 per kväll) tjänar bistron och
+  // soigné mer: bistro 0,96 → 1,04 och soigné 1,4 → 2,1, så att bistro med
+  // 0,85 och soigné med 0,85 åter ligger i sina mål (reports/order314/kalib/,
+  // ORDER_314_RAPPORT.md).
+  wageFactor: { enkel: 0.71, bistro: 1.04, soigne: 2.1 },
   goodsCostFactor: { enkel: 0.81, bistro: 1, soigne: 1.8 },
   // Soigné 1,68: soigné med 0,85 tjänar minst 10 % mer än den kloka i bistron.
   billFactor: { enkel: 0.94, bistro: 1.005, soigne: 1.68 },
@@ -1583,7 +1623,9 @@ export const CONCEPT = {
   wrongFactor: { enkel: 0.75, bistro: 1, soigne: 1.5 },
   // ORDER 311 — rummets mindre beställningar efter fel svar (CONSEQUENCES.moodBillPerLift)
   // gånger detta efter kvällens koncept.
-  moodDownFactor: { enkel: 0.4, bistro: 1, soigne: 1.25 },
+  // ORDER 314 — enkel 0,4 → 0,15: med situationernas takt stängde enkel med
+  // 0,6 rätt nästan alla säsonger (målet 30–55 %, reports/order314/kalib/).
+  moodDownFactor: { enkel: 0.15, bistro: 1, soigne: 1.25 },
   // ORDER 307b — 0,05 (förut 0,1): konceptets rykte minns längre.
   reputationDriftPerDay: 0.05
 } as const;

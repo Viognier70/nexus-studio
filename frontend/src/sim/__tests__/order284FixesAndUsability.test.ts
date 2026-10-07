@@ -17,7 +17,7 @@ import { makeNewGameState } from '../../strategic/simulation/model';
 import { firstDayOfWeek } from '../calendar';
 import { DOUBLE_OR_NOTHING } from '../balance';
 import { incidentById } from '../incidentBank';
-import { canStartBack, rankedStepOption } from '../incidents';
+import { rankedStepOption } from '../incidents';
 import { answerAndWait } from './verdict';
 import { PLAYERS } from '../../strategic/testHarness/randomness';
 import { computePlatesRemaining, takeFromStock, wasteAtDayEnd } from '../../strategic/simulation/stockPackages';
@@ -74,20 +74,16 @@ describe('ORDER 284 — portionerna per rätt', () => {
   });
 });
 
-describe('ORDER 284 — klockan i Back your knowledge', () => {
+// ORDER 314 — Stå för ditt svar är borttagen; provet görs på en situation ur rummet.
+describe('ORDER 284 — klockan i situationen', () => {
   it('stegets klocka står medan spelaren väljer i kvitt eller dubbelt (ORDER 305b)', () => {
     let s = monday(5);
     s = { ...s, day: { ...s.day, dayNumber: s.day.dayNumber + 4 } };
     s = reducer(s, { type: 'BUY_PACKAGE', packageId: 'vinbar-base' });
     s = reducer(s, { type: 'START_SERVICE' });
-    for (let i = 0; i < 20000 && !canStartBack(s) && s.day.period === 'dinner'; i++) {
-      const a = s.incidents.active;
-      if (a) s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(incidentById('vinbar', a.id)!.steps[a.step], 'best', a.struck, a.situation) });
-      s = reducer(s, TICK);
-    }
-    s = reducer(s, { type: 'START_BACK' });
+    for (let i = 0; i < 20000 && !(s.incidents.active && (s.incidents.active.introLeft ?? 0) <= 0) && s.day.period === 'dinner'; i++) s = reducer(s, TICK);
     const a = s.incidents.active!;
-    expect(a.backed).toBe(true);
+    expect(a.step).toBe(0);
     // ORDER 305b — svaret låses inte längre (säkerheten är borttagen). I
     // stället står stegets klocka medan spelaren väljer i kvitt eller dubbelt.
     const step = incidentById('vinbar', a.id)!.steps[a.step];

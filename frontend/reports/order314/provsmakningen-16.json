@@ -1,0 +1,278 @@
+{
+ "without": 338,
+ "withTasting": 340,
+ "rows": [
+  {
+   "seed": 1,
+   "w": {
+    "seated": 21,
+    "parties": 13,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 21,
+    "parties": 11,
+    "tasting": 2,
+    "rockets": 4,
+    "guestsIn": 4
+   }
+  },
+  {
+   "seed": 2,
+   "w": {
+    "seated": 21,
+    "parties": 13,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 17,
+    "parties": 11,
+    "tasting": 2,
+    "rockets": 4,
+    "guestsIn": 4
+   }
+  },
+  {
+   "seed": 3,
+   "w": {
+    "seated": 25,
+    "parties": 13,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 24,
+    "parties": 12,
+    "tasting": 2,
+    "rockets": 4,
+    "guestsIn": 4
+   }
+  },
+  {
+   "seed": 4,
+   "w": {
+    "seated": 18,
+    "parties": 12,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 19,
+    "parties": 11,
+    "tasting": 2,
+    "rockets": 4,
+    "guestsIn": 4
+   }
+  },
+  {
+   "seed": 5,
+   "w": {
+    "seated": 21,
+    "parties": 13,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 19,
+    "parties": 11,
+    "tasting": 2,
+    "rockets": 4,
+    "guestsIn": 4
+   }
+  },
+  {
+   "seed": 6,
+   "w": {
+    "seated": 17,
+    "parties": 11,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 19,
+    "parties": 11,
+    "tasting": 2,
+    "rockets": 4,
+    "guestsIn": 4
+   }
+  },
+  {
+   "seed": 7,
+   "w": {
+    "seated": 23,
+    "parties": 13,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 21,
+    "parties": 11,
+    "tasting": 2,
+    "rockets": 4,
+    "guestsIn": 4
+   }
+  },
+  {
+   "seed": 8,
+   "w": {
+    "seated": 28,
+    "parties": 13,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 28,
+    "parties": 11,
+    "tasting": 2,
+    "rockets": 4,
+    "guestsIn": 4
+   }
+  },
+  {
+   "seed": 9,
+   "w": {
+    "seated": 18,
+    "parties": 10,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 20,
+    "parties": 10,
+    "tasting": 2,
+    "rockets": 4,
+    "guestsIn": 4
+   }
+  },
+  {
+   "seed": 10,
+   "w": {
+    "seated": 18,
+    "parties": 12,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 17,
+    "parties": 11,
+    "tasting": 2,
+    "rockets": 4,
+    "guestsIn": 4
+   }
+  },
+  {
+   "seed": 11,
+   "w": {
+    "seated": 19,
+    "parties": 13,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 21,
+    "parties": 11,
+    "tasting": 2,
+    "rockets": 4,
+    "guestsIn": 4
+   }
+  },
+  {
+   "seed": 12,
+   "w": {
+    "seated": 21,
+    "parties": 13,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 21,
+    "parties": 11,
+    "tasting": 2,
+    "rockets": 4,
+    "guestsIn": 4
+   }
+  },
+  {
+   "seed": 13,
+   "w": {
+    "seated": 26,
+    "parties": 13,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 26,
+    "parties": 11,
+    "tasting": 2,
+    "rockets": 4,
+    "guestsIn": 4
+   }
+  },
+  {
+   "seed": 14,
+   "w": {
+    "seated": 18,
+    "parties": 12,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 19,
+    "parties": 11,
+    "tasting": 2,
+    "rockets": 4,
+    "guestsIn": 4
+   }
+  },
+  {
+   "seed": 15,
+   "w": {
+    "seated": 21,
+    "parties": 13,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 27,
+    "parties": 11,
+    "tasting": 2,
+    "rockets": 5,
+    "guestsIn": 5
+   }
+  },
+  {
+   "seed": 16,
+   "w": {
+    "seated": 23,
+    "parties": 13,
+    "tasting": 0,
+    "rockets": 4,
+    "guestsIn": 4
+   },
+   "t": {
+    "seated": 21,
+    "parties": 11,
+    "tasting": 2,
+    "rockets": 4,
+    "guestsIn": 4
+   }
+  }
+ ]
+}

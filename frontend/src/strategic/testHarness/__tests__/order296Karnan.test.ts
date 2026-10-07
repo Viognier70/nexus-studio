@@ -30,8 +30,15 @@ import { hashKey } from '../../util/hash';
 import { reputationHoldsGuests } from '../../simulation/arrivals';
 import { TASTING } from '../../../sim/balance';
 import { conceptTonight } from '../../simulation/guestTypes';
+import { staffKnows } from '../../../sim/staffCondition';
 
-type PlayerId = 'mentorn' | 'klok' | 'per' | 'stjarna' | 'rimlig' | 'halva' | 'halvbra' | 'slarvig' | 'enkel' | 'bistro' | 'soigne';
+type PlayerId = 'mentorn' | 'klok' | 'per' | 'stjarna' | 'rimlig' | 'halva' | 'halvbra' | 'slarvig' | 'enkel' | 'bistro' | 'soigne' | 'ignorerar' | 'ignorerarUtbildad';
+// ORDER 314 — "ignorerar" svarar aldrig (personalen tar över); den
+// utbildade lär personalen vin, mat och service med morgonens satsningar
+// (balance.ts STAFF_CONDITION.trainingActivities) tills alla kan sitt område.
+const TRAINING = ['wine-tasting', 'guest-chef', 'train-service'] as const;
+const TRAINING_AREA: Record<(typeof TRAINING)[number], string> = { 'wine-tasting': 'vin', 'guest-chef': 'mat', 'train-service': 'service' };
+const untrained = (s: SimulationState) => TRAINING.filter((id) => !staffKnows(s, TRAINING_AREA[id])).slice(0, 2);
 // Den rimliga köper baspaketet bara när lagret inte räcker till bokningen
 // (fyller på); mentorn köper det varje morgon och svarar bäst; den halva
 // svarar rätt på varannan raket hela vägen; den halvbra svarar alltid fel;
@@ -103,7 +110,9 @@ const PLANS: Record<PlayerId, (s: SimulationState) => MorningPlan> = {
   // klarade nästan ingen raket).
   halva: () => ({ scenarioAnswer: 'halfRocket', actions: hand }),
   halvbra: () => ({ scenarioAnswer: 'worst', actions: hand }),
-  slarvig: () => weakMorning()
+  slarvig: () => weakMorning(),
+  ignorerar: () => ({ scenarioAnswer: 'ignore', actions: hand }),
+  ignorerarUtbildad: (s) => ({ scenarioAnswer: 'ignore', activities: [...untrained(s)], actions: hand })
 };
 
 // ORDER 298b — KARNAN_TASTING=1: spelaren köper "Provsmakning på torget" de
@@ -176,7 +185,7 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
     // Prövning av tal i minnet: KARNAN_VARIANT='{"INCIDENTS":{"wrongCashShare":1}}'.
     const balance = await import('../../../sim/balance');
     for (const [k, v] of Object.entries(JSON.parse(process.env.KARNAN_VARIANT ?? '{}') as Record<string, Record<string, unknown>>)) Object.assign((balance as unknown as Record<string, Record<string, unknown>>)[k], v);
-    const all: PlayerId[] = ['mentorn', 'klok', 'per', 'stjarna', 'rimlig', 'halva', 'halvbra', 'slarvig', 'enkel', 'bistro', 'soigne'];
+    const all: PlayerId[] = ['mentorn', 'klok', 'per', 'stjarna', 'rimlig', 'halva', 'halvbra', 'slarvig', 'enkel', 'bistro', 'soigne', 'ignorerar', 'ignorerarUtbildad'];
     // KARNAN_PLAYERS=halva,rimlig kör bara de spelarna (kalibreringen).
     const players = process.env.KARNAN_PLAYERS ? all.filter((p) => process.env.KARNAN_PLAYERS!.split(',').includes(p)) : all;
     const result: Record<string, unknown> = {};

@@ -18,9 +18,12 @@ export function consequenceElapsed(state: Pick<SimulationState, 'simTime' | 'day
   return t >= 0 && t < CONSEQUENCE.camera.backTo ? t : null;
 }
 
-/** Spelets hastighet just nu: normal (1×) under ögonblicket och återgången, annars spelarens. */
-export function effectiveSpeed(state: Pick<SimulationState, 'simTime' | 'day' | 'speed'>): number {
+/** Spelets hastighet just nu: normal (1×) under ögonblicket, återgången och en pågående situation, annars spelarens. */
+export function effectiveSpeed(state: Pick<SimulationState, 'simTime' | 'day' | 'speed'> & { incidents?: SimulationState['incidents'] }): number {
   if (consequenceElapsed(state) !== null && state.speed > 1) return 1;
+  // ORDER 314 (Anders 2026-10-06) — "Situationen pausar inte spelet men
+  // saktar in till 1×, som konsekvensögonblicket."
+  if (state.incidents?.active && state.day.period === 'dinner' && state.speed > 1) return 1;
   // ORDER 300 §6 — förberedelserna fram till dörröppningen går fortare.
   const prep = (state.day.period === 'dinner' || state.day.period === 'lunch') && state.day.doorsOpenAt !== null && state.simTime < state.day.doorsOpenAt;
   return prep && state.speed > 0 ? Math.max(state.speed, PREP_TIME.speedAtLeast) : state.speed;

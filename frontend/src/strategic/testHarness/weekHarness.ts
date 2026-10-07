@@ -22,7 +22,7 @@ import { WEEK } from '../../sim/balance';
 import { rankedScenarioChoice } from '../simulation/scenarios';
 import { incidentById } from '../../sim/incidentBank';
 import { packagesFor } from '../simulation/packages';
-import { canStartBack, rankedStepOption } from '../../sim/incidents';
+import { rankedStepOption } from '../../sim/incidents';
 import type { PavilionKey, ScenarioChoice, SimAction, SimulationState } from '../types';
 
 // Simuleringens tick är 0,2 s (5 Hz), samma som SimulationProvider.
@@ -85,10 +85,14 @@ function answerPinsWisely(s: SimulationState): SimulationState {
 // ORDER 296e — 'skill' svarar rätt på varje steg med sannolikheten
 // ROCKET_SKILL (förvalt 0,75, Vision Owner 2026-10-03), dragen ur fröet,
 // raketen och steget.
-export type ScenarioAnswer = 'best' | 'worst' | 'half' | 'halfRocket' | 'skill';
+// ORDER 314 — 'ignore' (spelartypen "ignorerar") svarar aldrig på en
+// situation: tiden går ut och personalen tar över med sin kompetens. På
+// scenariot vid dörren (som inte är en situation) svarar den sämst.
+export type ScenarioAnswer = 'best' | 'worst' | 'half' | 'halfRocket' | 'skill' | 'ignore';
 export const ROCKET_SKILL = Number(process.env.ROCKET_SKILL ?? 0.75);
 const KVITT_STOP_AFTER = Number(process.env.KVITT_STOP_AFTER ?? 0);
 function resolveAnswer(answer: ScenarioAnswer, key: number, seed = 0): 'best' | 'worst' {
+  if (answer === 'ignore') return 'worst';
   // Nyckeln börjar med det som skiljer (FNV sprider dåligt när bara slutet gör det).
   if (answer === 'skill') return hashKey(seed, `${Math.round(key * 1000)}|skill`) < ROCKET_SKILL ? 'best' : 'worst';
   return answer === 'half' || answer === 'halfRocket' ? (Math.round(key) % 2 === 0 ? 'best' : 'worst') : answer;
@@ -112,10 +116,9 @@ export interface DayRecord {
   events: string[];
 }
 
-export function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, answer: ScenarioAnswer = 'best', backs?: boolean, pins?: 'wise'): SimulationState {
+export function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, answer: ScenarioAnswer = 'best', _backs?: boolean, pins?: 'wise'): SimulationState {
   for (let i = 0; i < MAX_TICKS_PER_PHASE && !done(s); i++) {
     s = answerScenario(reducer(s, { type: 'TICK', dt: TICK_DT }), answer);
-    if (backs && canStartBack(s)) s = reducer(s, { type: 'START_BACK' });
     if (pins === 'wise' && (s.day.pins?.open.length ?? 0) > 0) s = answerPinsWisely(s);
   }
   return s;
@@ -139,6 +142,7 @@ export function answerScenario(s: SimulationState, given: ScenarioAnswer = 'best
   // nästa steg. ORDER 310b — svaret avgörs INCIDENTS.verdictSeconds
   // (verkliga sekunder) efter trycket; under väntan svarar harnessen inte.
   const active = s.incidents?.active;
+  if (active && given === 'ignore') return s;
   if (active) {
     const incident = incidentById(s.economy.businessClass, active.id);
     // ORDER 305 — kvitt eller dubbelt: KVITT_STOP_AFTER=n stannar och tar

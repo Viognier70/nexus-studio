@@ -13,7 +13,6 @@ import { reducer } from '../../strategic/simulation/reducer';
 import { makeNewGameState } from '../../strategic/simulation/model';
 import { bankQuestionById } from '../../strategic/knowledge/questionBank';
 import { firstExamPassed, investLocked } from '../introduction';
-import { whyNotBack } from '../incidents';
 import { STRINGS, TABLE, pickLang } from '../../content/nexusStrings';
 import { ABILITY_LIST } from '../shop';
 import { villageNow, villageNowSummary } from '../villageNow';
@@ -59,7 +58,6 @@ describe('ORDER 313 §2 — spelaren börjar från noll', () => {
     const act = ACTIVITY_CATALOGUE[0].id;
     expect(reducer(s, { type: 'PICK_ACTIVITY', id: act }).day.pickedActivityIds).not.toContain(act);
     expect(reducer(s, { type: 'SHOP_BUY', id: ABILITY_LIST[0].id })).toBe(s);
-    expect(whyNotBack(s)).toBe('locked');
   });
 
   it('klarat prov: låset släpper, och i introduktionen säger Åsa det i bankens steg', () => {
@@ -94,7 +92,6 @@ describe('ORDER 313 §2 — spelaren börjar från noll', () => {
     expect(pickLang(TABLE, 'sv').introduction.lockedUntilExam).toBe('Öppnas när du klarat ditt första prov');
     expect(read('strategic/business/MorningActivityPanel.tsx')).toContain('activity-locked');
     expect(read('strategic/ui/host/ShopScreen.tsx')).toContain('shop-locked');
-    expect(pickLang(TABLE, 'sv').back.why.locked).toBe('Öppnas när du klarat ditt första prov');
   });
 });
 

@@ -35,7 +35,8 @@ import { REPUTATION } from '../../../sim/balance';
 import type { SimulationState } from '../../types';
 
 const PLAYER = process.env.FOLJD_PLAYER ?? 'fel';
-const ANSWER: ScenarioAnswer = PLAYER === 'fel' ? 'worst' : PLAYER === 'halva' ? 'halfRocket' : 'skill';
+// ORDER 314 — FOLJD_PLAYER=ignorerar svarar aldrig (personalen tar över).
+const ANSWER: ScenarioAnswer = PLAYER === 'fel' ? 'worst' : PLAYER === 'halva' ? 'halfRocket' : PLAYER === 'ignorerar' ? 'ignore' : 'skill';
 const hand = (s: SimulationState) => (misePlan(s).backlogMin > 0 ? [{ type: 'HIRE_PREP_HAND' as const }] : []);
 const PLAN: MorningPlan = { actions: hand, scenarioAnswer: ANSWER };
 const P = REPUTATION.scale;

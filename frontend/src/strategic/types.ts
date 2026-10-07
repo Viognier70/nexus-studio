@@ -1986,7 +1986,6 @@ export type SimAction =
   // ORDER 280 — ångra ett inköp på morgonen: inköpspriset tillbaka.
   | { type: 'RETURN_ITEMS'; items: Record<string, number> }
   // ORDER 280 — Back your knowledge: spelaren startar själv en raket.
-  | { type: 'START_BACK' }
   // ORDER 293 — provspel: köa en raket till kvällens nästa plats (#playtest=1&rocket=…).
   | { type: 'QUEUE_INCIDENT'; incidentId: string }
   // ORDER 285 — gårdagens rester: svaret på frågan, och kortet stängt.
