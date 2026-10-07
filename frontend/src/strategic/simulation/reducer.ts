@@ -209,6 +209,7 @@ import { decayMoodLift } from '../../sim/guestMood';
 // ORDER 316 — fikat efter stängning.
 import { answerFika, goHomeFika, planFika } from '../../sim/fika';
 // ORDER 315a — karriärstegen.
+import { conceptTonight } from './guestTypes';
 import { declineOffer, ladderBillFactor, offerAtClose, offerAtNight, refitClosedToday, takeOffer } from '../../sim/ladder';
 export {
   CAPITAL_MIN,
@@ -2351,6 +2352,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       nextForDay.staff = staffNight(state, nextForDay);
       // ORDER 303 C — Recensioner i morse: gårdagens kväll och nattens ändring.
       nextForDay.day = { ...nextForDay.day, morningReview: buildMorningReview(state, nextForDay) };
+      // ORDER 315b del 2 — gårdagens nivå till morgonens bricka (D7).
+      nextForDay.day = { ...nextForDay.day, conceptYesterday: conceptTonight(state) };
       // ORDER 265 — v1-lånets ränta varje dygn, och veckoavräkningen när
       // söndagen (den stängda dagen) börjar.
       if (!charged) postDailyInterest(nextForDay);

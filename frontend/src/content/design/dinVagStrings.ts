@@ -2,7 +2,8 @@
 // 2026-10-07 (dinVagStrings.tillagg.ts) inslaget, och de fyra borttagna nycklarna (fika.right, fika.wrong,
 // fika.held, fika.two) borta. { sv, en }, brittisk engelska. Prototypens ram (ui.*, sc.*, dv.why.*, klipp-
 // och jämförelsereglagen) och exemplen (venue.truckName, venue.name, review.sample.q) är inte spelartext och
-// är utelämnade. asa.name står kvar som i D6 (Intendent Åsa).
+// är utelämnade, liksom fikats exempeldilemma (fika.q, fika.a*, fika.why.*; dilemmana är Codes, ORDER 316)
+// och prototypens förklaringar av ombyggnaden (refit.c.*). asa.name står kvar som i D6 (Intendent Åsa).
 // ORDER 315b del 2: asa.row.rep följer Anders beslut (BESLUT 2026-10-07 del 2, fråga 1: ryktet följer med
 // oförändrat), inte D7:s "Ryktet börjar om till hälften".
 export const DIN_VAG_STRINGS: Record<string, { sv: string; en: string }> = {
@@ -51,28 +52,7 @@ export const DIN_VAG_STRINGS: Record<string, { sv: string; en: string }> = {
   'refit.p3': { sv: 'Dukat', en: 'Laid' },
   'refit.p4': { sv: 'Tänt', en: 'Lit' },
   'refit.seats': { sv: '{n} platser', en: '{n} seats' },
-  'refit.c.tables': { sv: 'Borden', en: 'Tables' },
-  'refit.c.tables.v': { sv: 'Loungerna och DJ:n går ut, och rummet ryms i huset. Bänken längs norra väggen får fyra bord för två. Tre bord för fyra och fyra bord för två står i salen, och vid dörren blir det en väntplats.', en: 'The lounges and the DJ go, and the room fits inside the building. The banquette along the north wall gets four tables for two. Three tables for four and four tables for two stand in the dining room, and there is a waiting spot by the door.' },
-  'refit.c.kitchen': { sv: 'Köket', en: 'Kitchen' },
-  'refit.c.kitchen.v': { sv: 'Väggen mot köket öppnas till ett pass med värmelampor. Baren blir kortare med tre barstolar och flyttar söderut, så att passet syns från salen.', en: 'The kitchen wall opens into a pass with heat lamps. The bar gets shorter, with three stools, and moves south so the pass can be seen from the dining room.' },
-  'refit.c.laying': { sv: 'Dukningen', en: 'Laying' },
-  'refit.c.laying.v': { sv: 'Vitt linne under papper, tallrik, kniv och gaffel, vattenglas och en karaff på varje bord.', en: 'White linen under paper, a plate, knife and fork, water glasses and a carafe on every table.' },
-  'refit.c.light': { sv: 'Belysningen', en: 'Lighting' },
-  'refit.c.light.v': { sv: 'DJ:ns spotlights och ljusen på loungeborden blir en pendel över varje bord, lampetter längs bänken och vitt ljus i passet. Ljusare, lika varmt.', en: 'The DJ’s spotlights and the lounge candles become a pendant over every table, wall lights along the banquette and white light at the pass. Brighter, just as warm.' },
   'fika.kicker': { sv: 'Fikat efter stängning', en: 'Coffee after closing' },
-  'fika.asker': { sv: 'Sara', en: 'Sara' },
-  'fika.asker.role': { sv: 'Servitör', en: 'Waiter' },
-  'fika.q': { sv: 'Per har satt mig på fredag och lördag igen. Det blir tredje helgen i rad, och jag orkar inte. Vad gör vi?', en: 'Per has put me on Friday and Saturday again. That’s the third weekend running, and I can’t keep it up. What do we do?' },
-  'fika.a1': { sv: 'Jag sätter mig med Per i morgon, och vi lägger om schemat med dig.', en: 'I’ll sit down with Per tomorrow, and we’ll redo the rota with you.' },
-  'fika.a2': { sv: 'Ta ledigt på lördag, så tar jag själv ditt pass den kvällen.', en: 'Take Saturday off, and I’ll work your shift myself that night.' },
-  'fika.a3': { sv: 'Alla får dra lite extra nu. Det lugnar sig efter Grythyttedagarna.', en: 'Everyone has to pull a bit extra now. It eases off after Grythyttedagarna.' },
-  'fika.a4': { sv: 'Det är Per som gör schemat. Ta det med honom direkt i stället.', en: 'Per does the rota. Take it up with him directly instead.' },
-  'fika.why.a1': { sv: 'Sara sa som det var, och det är det svåra. Att lägga schemat tillsammans tar hennes ork på allvar utan att gå förbi Per, och det håller fler helger än den här.', en: 'Sara said how it is, and that’s the hard part. Redoing the rota together takes her tiredness seriously without going round Per, and it holds for more weekends than this one.' },
-  'fika.why.a2': { sv: 'Du tar hennes ork på allvar och visar det direkt. Det håller den här helgen. Nästa vecka behöver ni ändå lägga om schemat, annars står Sara där igen.', en: 'You take her tiredness seriously and show it straight away. It holds this weekend. Next week you’ll still need to redo the rota, or Sara will be back where she was.' },
-  'fika.why.a3': { sv: 'Det låter rimligt en tung vecka, men Sara har redan sagt att hon inte orkar. Den som säger det och inte blir hörd säger det inte igen. Att lägga om schemat med henne hade hållit.', en: 'It sounds fair in a busy week, but Sara has already said she can’t keep it up. Someone who says so and isn’t heard won’t say it again. Redoing the rota with her would have held.' },
-  'fika.why.a4': { sv: 'Per gör schemat, men laget är ditt ansvar, och Sara frågade dig. Att sätta dig med Per och henne hade tagit hennes ork på allvar.', en: 'Per does the rota, but the team is your responsibility, and Sara asked you. Sitting down with Per and her would have taken her tiredness seriously.' },
-  'fika.fx': { sv: 'Saras trivsel {delta}', en: 'Sara’s morale {delta}' },
-  'fika.night': { sv: 'Godnatt', en: 'Good night' },
   'tier.title': { sv: 'Nivån', en: 'The level' },
   'tier.sub': { sv: 'Varukorgen avgör nivån. Steget är verksamheten, nivån är priset och gästerna.', en: 'Your basket sets the level. The step is the business; the level is the prices and the guests.' },
   'tier.simple': { sv: 'Enkel', en: 'Simple' },

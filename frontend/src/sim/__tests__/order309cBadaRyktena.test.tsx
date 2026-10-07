@@ -79,7 +79,8 @@ describe('ORDER 309c — 2. kortet', () => {
     act(() => setLanguage('sv'));
     const el = cardText(bistro());
     // ORDER 315 — nivåerna heter Enkel · Mellan · Exklusiv.
-    expect(el?.textContent).toBe('Ryktet i nivån Mellan +3 · Krogens rykte +1');
+    // ORDER 315b del 2 — Designs D7 (review.fx.class): "på nivån".
+    expect(el?.textContent).toBe('Ryktet på nivån Mellan +3 · Krogens rykte +1');
     expect(el?.getAttribute('data-concept-change')).toBe('3');
     expect(el?.getAttribute('data-restaurant-change')).toBe('1');
   });

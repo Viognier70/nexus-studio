@@ -100,7 +100,8 @@ describe('ORDER 315a — Åsas erbjudande', () => {
     expect(t.economy.businessClass).toBe('vinbar');
     expect(t.businessClass).toBe(s.businessClass);
     expect(t.reputation).toBe(s.reputation);
-    expect(t.ladder).toEqual({ step: 'bistro', reachedOnDay: { bistro: s.day.dayNumber }, offer: null });
+    // ORDER 315b del 2 — ombyggnaden: stängt LADDER.refitDays dagar från i dag (på morgonen).
+    expect(t.ladder).toEqual({ step: 'bistro', reachedOnDay: { bistro: s.day.dayNumber }, offer: null, refit: { fromDay: s.day.dayNumber, untilDay: s.day.dayNumber + LADDER.refitDays - 1 } });
     expect(starsPossible(t)).toBe(true);
     expect(ladderBillFactor(t)).toBe(LADDER.steps.bistro.billFactor);
     expect(wageFactor(t)).toBeCloseTo(LADDER.steps.bistro.wageFactor, 6);

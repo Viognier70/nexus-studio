@@ -224,7 +224,8 @@ describe('ORDER 316 — kortet', () => {
       // (ingen klass eller stil med rött, fel eller fara; fika.css har inget rött).
       const marks = [...view.container.querySelectorAll('*')].map((el) => `${el.getAttribute('class') ?? ''} ${el.getAttribute('style') ?? ''} ${el.getAttribute('data-tone') ?? ''}`).join(' ');
       expect(marks).not.toMatch(/red|danger|wrong|error|bad/i);
-      expect(readFileSync(resolve(SRC, 'strategic/scenario/fika.css'), 'utf8')).not.toMatch(/red|#c[0-9a-f]{2}0{2}|--nx-(danger|bad|wrong)/i);
+      // ORDER 315b del 2 — ordet "red" som ord (prefers-reduced-motion är tillåtet).
+      expect(readFileSync(resolve(SRC, 'strategic/scenario/fika.css'), 'utf8')).not.toMatch(/\bred\b|#c[0-9a-f]{2}0{2}|--nx-(danger|bad|wrong)/i);
       // Kylen är ⚖ och ogranskad: lagtexten visas inte, resten gör det.
       expect(view.queryByTestId('fika-legal')).toBeNull();
       expect(view.container.textContent).not.toContain(f.dilemmas['fika-kylen'].legalNote!);

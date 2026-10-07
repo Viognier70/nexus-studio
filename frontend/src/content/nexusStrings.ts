@@ -514,6 +514,8 @@ export const TABLE = {
   // ORDER 315a — karriärstegen: Åsas erbjudande om nästa steg (sim/ladder.ts).
   // Åsa äger inte huset; hon förmedlar erbjudandet och har nycklarna.
   ladder: {
+    // ORDER 315b del 2 — ombyggnadens dagar på morgonen.
+    refitDay: { sv: (day: number, of: number) => `Stängt för ombyggnad, dag ${day} av ${of}:`, en: (day: number, of: number) => `Closed for the refit, day ${day} of ${of}:` },
     title: {
       sv: { foodtruck: 'Foodtrucken vid Torget', vinbar: 'Vinbaren vid Prästgatan', bistro: 'Bistron i samma hus' } as Record<string, string>,
       en: { foodtruck: 'The food truck on the square', vinbar: 'The wine bar on Prästgatan', bistro: 'The bistro in the same house' } as Record<string, string>

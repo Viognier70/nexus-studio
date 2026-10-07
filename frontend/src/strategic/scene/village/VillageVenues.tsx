@@ -20,6 +20,10 @@ import { useCamera } from '../../camera/CameraContext';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { skyState } from '../../../lib/lighting/skyState';
 import { PLAYER_VENUE, venuesTonight } from '../../../sim/village';
+import { ladderStep } from '../../../sim/ladderStep';
+import { PATH_KEY } from '../../ui/DinVag';
+import { t as tt, type StringKey } from '../../../content/nexusStrings';
+import { useLanguage } from '../../../content/language';
 import { playerTruckPlacement, truckPlacement, truckSpotPlace, venueLampPoint, venuePlaces } from '../../content/villagePlaces';
 import { readabilityScale } from '../../util/readability';
 import { subscribeVillageLive, villageLive } from './villageLive';
@@ -104,7 +108,11 @@ export function VillageVenues() {
   const playerClass = sim.economy.businessClass;
   // ORDER 307 — klassen och kvällens koncept ur varukorgen: "Vinbar · Bistro".
   const playerConcept = conceptTonight(sim);
-  const playerStyle = playerClass ? (playerConcept ? `${strings.economy.classes[playerClass]} · ${strings.shopTabs.tier[playerConcept]}` : strings.economy.classes[playerClass]) : null;
+  // ORDER 315b del 2 — Designs D7 (venueTier.ts): skylten säger steget (Bistro är ett steg) och nivån.
+  const lang = useLanguage();
+  const step = ladderStep(sim);
+  const stepName = step ? tt(lang, PATH_KEY[step] as StringKey) : playerClass ? strings.economy.classes[playerClass] : null;
+  const playerStyle = stepName ? (playerConcept ? `${stepName} · ${strings.shopTabs.tier[playerConcept]}` : stepName) : null;
   const { actualRef } = useCamera();
   const venues = useMemo(() => venuesTonight(sim), [sim.day.dayNumber, sim.competition, sim.reputation, sim.economy?.businessClass]); // eslint-disable-line react-hooks/exhaustive-deps
   const places = useMemo(() => venuePlaces(), []);
@@ -276,7 +284,7 @@ export function VillageVenues() {
       {nearSign && entrance && ourVenue && (
         <group position={[entrance[0], NEAR_SIGN_Y_M, entrance[1]]}>
           <Html center zIndexRange={[12, 0]} style={{ pointerEvents: 'none' }}>
-            <VenueLabel v={ourVenue} guests={sim.day.arrivalsToday ?? 0} compact={false} near playerName={playerBusiness.name} playerStyle={playerStyle} innerRef={() => {}} />
+            <VenueLabel v={ourVenue} guests={sim.day.arrivalsToday ?? 0} compact={false} near playerName={playerBusiness.name} playerStyle={playerStyle} playerTier={playerConcept} innerRef={() => {}} />
           </Html>
         </group>
       )}
@@ -287,7 +295,7 @@ export function VillageVenues() {
         return (
           <group key={v.id} position={[p[0], v.spot ? 6 : 14, p[1]]}>
             <Html center zIndexRange={[12, 0]} style={{ pointerEvents: 'none' }}>
-              <VenueLabel v={v} guests={guests} compact={compact} playerName={playerBusiness.name} playerStyle={playerStyle} innerRef={(el) => { if (el) labelEls.current.set(v.id, el); else labelEls.current.delete(v.id); }} />
+              <VenueLabel v={v} guests={guests} compact={compact} playerName={playerBusiness.name} playerStyle={playerStyle} playerTier={playerConcept} innerRef={(el) => { if (el) labelEls.current.set(v.id, el); else labelEls.current.delete(v.id); }} />
             </Html>
           </group>
         );

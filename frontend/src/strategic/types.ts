@@ -1000,6 +1000,9 @@ export interface DayState {
   // ORDER 318 — dagens inköp per vara: portioner per rätt, glas per dryck
   // (morgonens Inköp i dag; det som står i lager sedan förut räknas inte).
   boughtToday?: Record<string, number>;
+  // ORDER 315b del 2 — gårdagens nivå (varukorgen), så att morgonen kan visa
+  // brickan "Från i dag: {nivå}" när nivån ändras (Designs D7 venueTier.ts).
+  conceptYesterday?: 'enkel' | 'bistro' | 'soigne' | null;
   wasteSettled?: boolean;
   // ORDER 280 — lagret när dörrarna öppnade (rättens portioner, dryckens
   // glas) och den nivå varningen senast gällde (Designs L1).

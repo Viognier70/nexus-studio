@@ -21,6 +21,9 @@ import { useSimDispatch } from '../simulation/SimulationProvider';
 import '../ui/service/service.css';
 import './fika.css';
 
+// ORDER 315b del 2 — märkena ur Designs dilemmaGrades.ts GRADE_STYLE.
+const GRADE_MARK: Record<string, string> = { well: '✓', partly: '½', weakly: '○' };
+
 export function FikaScreen({ sim, onContinue }: { sim: SimulationState; onContinue: () => void }) {
   const dispatch = useSimDispatch();
   const lang = useLanguage();
@@ -70,11 +73,24 @@ export function FikaScreen({ sim, onContinue }: { sim: SimulationState; onContin
           )}
           {answered && tonight.answer !== 'home' && outcome && (
             <div data-testid="fika-outcome" data-grade={outcome.grade ?? ''}>
-              <p className="nx-fika-chosen">
-                <span className="nx-fika-letter" aria-hidden>{tonight.answer}</span>
-                <span>{text.options[tonight.answer as DilemmaOptionId]}</span>
-              </p>
-              {outcome.grade && <div className="nx-fika-grade" data-testid="fika-grade" data-grade={outcome.grade}>{f.grade[outcome.grade]}</div>}
+              {/* ORDER 315b del 2 — Designs tillägg till D7 (dilemmaGrades.ts): det valda svaret fylls med
+                  bedömningens färg och märke, de andra visar sin bedömning under texten, ett väl grundat svar
+                  som inte valdes får papper och streckad grön kant. Aldrig rött. */}
+              <div className="nx-fika-graded" role="list">
+                {dilemma.options.map((o) => (
+                  <div key={o.id} role="listitem" className="nx-fika-graded-row" data-testid={`fika-graded-${o.id}`} data-grade={o.grade} data-chosen={o.id === tonight.answer}>
+                    <span className="nx-fika-letter" aria-hidden>{o.id === tonight.answer ? GRADE_MARK[o.grade] : o.id}</span>
+                    <span>
+                      {text.options[o.id as DilemmaOptionId]}
+                      {o.id !== tonight.answer && <span className="nx-fika-graded-label">{f.grade[o.grade]}</span>}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="nx-fika-verdict" data-testid="fika-verdict">
+                {outcome.grade && <div className="nx-fika-grade" data-testid="fika-grade" data-grade={outcome.grade}>{f.grade[outcome.grade]}</div>}
+                <span className="nx-small nx-fika-scale">{tt(lang, 'fika.scale' as StringKey)}</span>
+              </div>
               <p className="nx-lesson-principle nx-fika-explanation" data-testid="fika-explanation">{text.explanation}</p>
               {showLegal && text.legalNote && (
                 <p className="nx-small nx-fika-legal" data-testid="fika-legal">{text.legalNote} ({dilemma.legal!.laws.map((l) => f.laws[l] ?? l).join(', ')})</p>
