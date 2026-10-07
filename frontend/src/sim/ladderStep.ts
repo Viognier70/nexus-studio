@@ -21,12 +21,16 @@ export interface LadderOffer {
   loanSek: number;
   state: 'offered' | 'declined';
   offeredOnDay: number;
+  // ORDER 315b del 2 — Designs D7: erbjudandet kom vid dörren efter stängning.
+  atDoor?: boolean;
 }
 
 export interface LadderState {
   step: PlayableStep;
   reachedOnDay: Partial<Record<PlayableStep, number>>;
   offer: LadderOffer | null;
+  // ORDER 315b del 2 — ombyggnaden: stängt från fromDay till och med untilDay.
+  refit?: { fromDay: number; untilDay: number } | null;
 }
 
 export function stepSpec(step: PlayableStep) {
@@ -67,4 +71,10 @@ export function ladderBillFactor(state: Pick<SimulationState, 'ladder' | 'econom
 export function ladderWageFactor(state: Pick<SimulationState, 'ladder' | 'economy'>): number {
   const step = ladderStep(state);
   return step ? stepSpec(step).wageFactor : 1;
+}
+
+/** ORDER 315b del 2 — är krogen stängd i dag för ombyggnaden? (sim/ladder.ts refitProgress) */
+export function refitClosedToday(state: Pick<SimulationState, 'ladder'> & { day: Pick<SimulationState['day'], 'dayNumber'> }): boolean {
+  const r = state.ladder?.refit;
+  return !!r && state.day.dayNumber >= r.fromDay && state.day.dayNumber <= r.untilDay;
 }

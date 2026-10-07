@@ -841,7 +841,11 @@ export const LADDER = {
   depositShareOfWeekFloor: 0.25,
   reputationFactorOnPurchase: 1,
   // Harnessens spelartyp "försiktig" väntar en vecka med erbjudandet.
-  carefulWaitDays: 7
+  carefulWaitDays: 7,
+  // ORDER 315b del 2 — Designs D7 (ownerOffer.ts, bistroRefit.ts): bistron är
+  // stängd så här många dagar medan vinbaren byggs om, från dagen efter "Ta
+  // över". Talet är D7:s platshållare (prototypen visar 3), valt, inte beslutat.
+  refitDays: 3
 } as const;
 
 // ORDER 315b — foodtrucken, svensk grill (Anders 2026-10-07, BESLUT del 2;

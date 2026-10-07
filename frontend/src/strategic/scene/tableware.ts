@@ -35,7 +35,9 @@ export type PropId =
   | 'hostDesk' | 'wheelchair' | 'vase' | 'broom' | 'dustpan'
   | 'councilId' | 'policeId' | 'licenceFolder' | 'apron' | 'lighter'
   // Vardagens koreografi (efter leverans 3): brödkorgen, karaffen att dekantera i, fördrinksglaset och backen
-  | 'breadBasket' | 'decanter' | 'flute' | 'crate';
+  | 'breadBasket' | 'decanter' | 'flute' | 'crate'
+  // ORDER 315b del 2 — Designs D7 (truckClips.ts): tången vid grillen, lådan genom luckan, koppen till fikat
+  | 'tongs' | 'foodBox' | 'coffeeCup';
 
 export type HandSide = 'L' | 'R';
 
@@ -150,7 +152,11 @@ export const CATALOGUE: Record<PropId, PropSpec> = {
   breadBasket: { id: 'breadBasket', size: [0.24, 0.086, 0.16], attach: [0, 0, -0.05], grip: 'flat', restsOn: ['table', 'tray', 'pass'], fill: 'food' },
   decanter:    { id: 'decanter', size: [0.20, 0.30, 0.20], attach: [0, 0.24, 0], grip: 'neck', restsOn: ['table', 'bar', 'tray'], fill: 'wine' },
   flute:       { id: 'flute', size: [0.064, 0.22, 0.064], attach: [0, 0.1, 0], grip: 'stem', restsOn: ['table', 'bar', 'tray'], fill: 'wine' },
-  crate:       { id: 'crate', size: [0.42, 0.33, 0.30], attach: [0, 0.2, 0], grip: 'twoHands', restsOn: ['floor', 'bar'] }
+  crate:       { id: 'crate', size: [0.42, 0.33, 0.30], attach: [0, 0.2, 0], grip: 'twoHands', restsOn: ['floor', 'bar'] },
+  // ORDER 315b del 2 — D7: tången i nypgrepp, lådan på handflatan, koppen i handtaget.
+  tongs:       { id: 'tongs', size: [0.03, 0.02, 0.28], attach: [0, 0.01, -0.1], grip: 'pinch', restsOn: ['station', 'pass'] },
+  foodBox:     { id: 'foodBox', size: [0.18, 0.06, 0.12], attach: [0, 0, -0.04], grip: 'flat', restsOn: ['pass', 'table', 'tray'], fill: 'food' },
+  coffeeCup:   { id: 'coffeeCup', size: [0.1, 0.075, 0.08], attach: [0.05, 0.04, 0], grip: 'handle', restsOn: ['table', 'tray'] }
 };
 
 // ---------- färgerna --------------------------------------------------
@@ -191,7 +197,9 @@ export const PROP_COLOURS = {
   card: '#f4f1ea', cardBand: '#2f6db5', wallet: '#1e2b4a', badge: '#d7a24c',
   licence: '#35506b', apron: '#efe4d0', lighter: '#2a2826',
   // Vardagens koreografi
-  basket: '#b98a52', bread: '#d9a066', aperitif: '#e9c46a', crate: '#7a5a3a'
+  basket: '#b98a52', bread: '#d9a066', aperitif: '#e9c46a', crate: '#7a5a3a',
+  // ORDER 315b del 2 — D7
+  kraft: '#c8a46e', coffee: '#4a2e1c'
 };
 
 // ---------- bygget ----------------------------------------------------
@@ -448,6 +456,23 @@ function buildInto(g: THREE.Group, id: PropId): THREE.Object3D | null {
       add(g, box(0.02, 0.2, 0.30), m, 0.2, 0.1, 0); add(g, box(0.02, 0.2, 0.30), m, -0.2, 0.1, 0);
       for (let i = 0; i < 6; i++) add(g, cyl(0.03, 0.12, 10), mat(C.bottle, { rough: 0.2, metal: 0.1 }), -0.13 + (i % 3) * 0.13, 0.27, i < 3 ? -0.065 : 0.065);
       return null;
+    }
+    case 'tongs': {
+      add(g, box(0.03, 0.02, 0.28), mat(C.steel, { metal: 0.85, rough: 0.3 }), 0, 0.01, 0);
+      return null;
+    }
+    case 'foodBox': {
+      add(g, box(0.18, 0.05, 0.12), mat(C.kraft, { rough: 0.9 }), 0, 0.025, 0);
+      const f = new THREE.Group(); f.name = 'fill';
+      add(f, box(0.14, 0.01, 0.08), mat(C.food, { rough: 0.8 }), 0, 0.055, 0);
+      g.add(f); return f;
+    }
+    case 'coffeeCup': {
+      add(g, cyl(0.04, 0.075, 16), mat(C.porcelain, { rough: 0.4 }), 0, 0.0375, 0);
+      add(g, box(0.02, 0.04, 0.012), mat(C.porcelain, { rough: 0.4 }), 0.05, 0.04, 0);
+      const f = new THREE.Group(); f.name = 'fill';
+      add(f, cyl(0.036, 0.004, 16), mat(C.coffee, { rough: 0.3 }), 0, 0.068, 0);
+      g.add(f); return f;
     }
     case 'lighter': {
       add(g, box(0.025, 0.025, 0.12), mat(C.lighter, { rough: 0.5 }), 0, 0.0125, -0.06);

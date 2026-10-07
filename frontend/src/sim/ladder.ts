@@ -3,7 +3,8 @@
 //
 // Spelaren går stegen foodtruck → vinbar → bistro. Kraven för nästa steg är
 // kassan vid dagens slut, byns rykte och medaljerna (balance.ts LADDER). När
-// de är uppfyllda kommer Åsas erbjudande på morgonen: "Ta över" eller "Inte
+// de är uppfyllda kommer Åsas erbjudande (ORDER 315b del 2: vid dörren efter
+// stängning, Designs D7; annars på morgonen): "Ta över" eller "Inte
 // än". "Inte än" kostar inget och erbjudandet står kvar; spelaren kan stanna
 // i foodtrucken hela säsongen. Åsa äger inte huset: hon förmedlar erbjudandet
 // och har nycklarna.
@@ -16,7 +17,7 @@
 import type { BusinessClassId } from './balance';
 import { FLOOR, LADDER, MEDAL_LEVELS, ECONOMY, LOAN, TEAM_BY_CLASS } from './balance';
 import { teamForClass } from '../strategic/simulation/team';
-import { ladderOf, nextStep, stepSpec, type LadderOffer, type LadderState, type PlayableStep, type StepRequirement } from './ladderStep';
+import { ladderOf, nextStep, refitClosedToday, stepSpec, type LadderOffer, type LadderState, type PlayableStep, type StepRequirement } from './ladderStep';
 export * from './ladderStep';
 import type { PavilionKey, SimulationState } from '../strategic/types';
 import { changeClass, floorPercent, openFirstBusiness } from './economy';
@@ -75,6 +76,34 @@ export function offerAtNight(state: SimulationState): SimulationState {
 }
 
 /**
+ * ORDER 315b del 2 — Designs D7 (ownerOffer.ts): Åsa kommer till dörren efter
+ * stängning den kväll kraven är klara, aldrig mitt i servicen. Muterar draft;
+ * sant när ett nytt erbjudande kom i kväll (då blir det inget fika, D7
+ * afterHoursFika.ts FIKA_RULES.notWith).
+ */
+export function offerAtClose(draft: SimulationState): boolean {
+  const before = ladderOf(draft)?.offer ?? null;
+  const after = offerAtNight(draft);
+  const offer = after.ladder?.offer ?? null;
+  if (!offer || offer === before) return false;
+  draft.ladder = { ...after.ladder!, offer: { ...offer, atDoor: true } };
+  return true;
+}
+
+/** Kom erbjudandet vid dörren i kväll? (kvällens steg 'offer') */
+export function offerAtDoorTonight(state: SimulationState): LadderOffer | null {
+  const offer = ladderOf(state)?.offer ?? null;
+  return offer && offer.atDoor && offer.offeredOnDay === state.day.dayNumber && state.day.period === 'evening' ? offer : null;
+}
+
+/** Ombyggnadens dag (1 …) och antalet dagar, eller null. */
+export function refitProgress(state: Pick<SimulationState, 'ladder' | 'day'>): { day: number; of: number } | null {
+  const r = state.ladder?.refit;
+  if (!r || !refitClosedToday(state)) return null;
+  return { day: state.day.dayNumber - r.fromDay + 1, of: r.untilDay - r.fromDay + 1 };
+}
+
+/**
  * ORDER 315b — inträdet: när spelaren klarat inträdesprovet i introduktionen
  * erbjuder Åsa foodtrucken vid Torget (ersätter bankens val av första
  * verksamhet). Ingen insats och inget lån.
@@ -101,11 +130,14 @@ export function openFoodtruck(state: SimulationState): SimulationState {
   };
 }
 
-/** Kan spelaren ta erbjudandet nu? Bara på morgonen, och insatsen ska finnas i kassan. */
+/**
+ * Kan spelaren ta erbjudandet nu? På morgonen, eller vid dörren den kväll
+ * erbjudandet kom (ORDER 315b del 2); insatsen ska finnas i kassan.
+ */
 export function canTakeOffer(state: SimulationState): 'ok' | 'none' | 'notMorning' | 'cash' {
   const offer = currentOffer(state);
   if (!offer) return 'none';
-  if (state.day.period !== 'morning') return 'notMorning';
+  if (state.day.period !== 'morning' && !offerAtDoorTonight(state)) return 'notMorning';
   if (state.cash < offer.depositSek) return 'cash';
   return 'ok';
 }
@@ -138,11 +170,19 @@ export function takeOffer(state: SimulationState): SimulationState {
         ? { ...loan, originalSek: loan.originalSek + offer.loanSek, principalSek: loan.principalSek + offer.loanSek }
         : { originalSek: offer.loanSek, principalSek: offer.loanSek, weeksLeft: LOAN.amortisationWeeks }
     };
-    next.day = { ...next.day, cashAtDayStart: (state.day.cashAtDayStart ?? state.cash) - offer.depositSek };
+    // Dagens resultat räknar inte insatsen (på kvällen är resultatet redan räknat).
+    if (state.day.period === 'morning') next.day = { ...next.day, cashAtDayStart: (state.day.cashAtDayStart ?? state.cash) - offer.depositSek };
   }
+  // ORDER 315b del 2 — ombyggnaden i samma hus: stängt LADDER.refitDays dagar
+  // från dagen efter (i kväll) eller från i dag (på morgonen).
+  const rebuild = fromClass === toSpec.businessClass && LADDER.refitDays > 0;
+  const fromDay = state.day.period === 'morning' ? state.day.dayNumber : state.day.dayNumber + 1;
   return {
     ...next,
-    ladder: { step: offer.to, reachedOnDay: { ...ladder.reachedOnDay, [offer.to]: state.day.dayNumber }, offer: null }
+    ladder: {
+      step: offer.to, reachedOnDay: { ...ladder.reachedOnDay, [offer.to]: state.day.dayNumber }, offer: null,
+      refit: rebuild ? { fromDay, untilDay: fromDay + LADDER.refitDays - 1 } : null
+    }
   };
 }
 

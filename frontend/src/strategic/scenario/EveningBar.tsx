@@ -37,6 +37,8 @@ import { CompareScreen, eveningVillage } from './CompareScreen';
 import { ShopScreen } from '../ui/host/ShopScreen';
 import { FikaScreen } from './FikaScreen';
 import { fikaTonight } from '../../sim/fika';
+import { offerAtDoorTonight } from '../../sim/ladder';
+import { OwnerOfferScreen } from './OwnerOfferScreen';
 
 function BookIcon() {
   return (
@@ -275,7 +277,7 @@ export function EveningBar() {
   const guard = useArrivalGuard(`${sim.day.dayNumber}:${step}`);
   if (sim.day.period !== 'evening' || sim.day.eveningEndRequested) return null;
   const afterResult = lesson !== null ? 'lesson' : 'story';
-  const go = (to: 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | 'fika' | 'shop') => dispatch({ type: 'EVENING_STEP', to });
+  const go = (to: 'transfer' | 'result' | 'compare' | 'lesson' | 'story' | 'fika' | 'offer' | 'shop') => dispatch({ type: 'EVENING_STEP', to });
   // ORDER 290 — överföringen till företagskontot efter sopbilen.
   const hasTransfer = !!sim.day.transfer && sim.day.transfer.dayNumber === sim.day.dayNumber;
   const end = guard(() => dispatch({ type: 'END_EVENING' }));
@@ -285,7 +287,9 @@ export function EveningBar() {
   // ORDER 316 — fikat efter berättelsen, när kvällen har ett dilemma.
   const hasFika = fikaTonight(sim) !== null;
   const afterFika = guard(() => go(hasCompare ? 'compare' : 'shop'));
-  const afterStory = hasFika ? guard(() => go('fika')) : afterFika;
+  // ORDER 315b del 2 — Åsas erbjudande vid dörren i fikats ställe (D7).
+  const hasOffer = offerAtDoorTonight(sim) !== null || step === 'offer';
+  const afterStory = hasOffer ? guard(() => go('offer')) : hasFika ? guard(() => go('fika')) : afterFika;
   if (step === 'waste' && hasWaste) {
     return <WasteScreen sim={sim} onContinue={guard(() => go(hasTransfer ? 'transfer' : 'result'))} />;
   }
@@ -294,6 +298,9 @@ export function EveningBar() {
   }
   if (step === 'waste' || step === 'transfer' || step === 'result') {
     return <ResultScreen sim={sim} onContinue={guard(() => go(afterResult))} />;
+  }
+  if (step === 'offer') {
+    return <OwnerOfferScreen sim={sim} onContinue={afterFika} />;
   }
   if (step === 'fika' && hasFika) {
     return <FikaScreen sim={sim} onContinue={afterFika} />;
