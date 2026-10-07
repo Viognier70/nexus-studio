@@ -112,15 +112,24 @@ export function truckPlacement(spot: TruckSpot, k: number): TruckPlacement {
 // ORDER 315b del 2 — spelarens vagn har en egen plats på torget (Designs D7,
 // playerTruck.ts TRUCK_PITCH_TORGET, truckPlats.json): mitten [17,00, −21,90],
 // −6,29° i kartans ram, parallell med gatan Torget, luckan mot söder in mot
-// torgytan. Designs vagn har luckan i lokala +Z (rotation.y = −vinkeln); vår
-// vagn (VillageVenues makeTruck) har den i lokala +x, så rotation.y vrids ett
-// kvarts varv till. Rivalerna står på sin egen plats (TRUCK_STANDS.torget),
-// minst 2,55 m bort (rivalTorget.ts CHECKS.gapToPlayerTruckM).
+// torgytan. Rivalerna står på sin egen plats (TRUCK_STANDS.torget), minst
+// 2,55 m bort (rivalTorget.ts CHECKS.gapToPlayerTruckM).
 export const PLAYER_TRUCK_PITCH = { centre: [17.0, -21.9] as Vec2, angleDeg: -6.29 };
 
+/** Spelarens släpvagn (scene/playerTruck.ts makePlayerTrailer): rotation.y = −vinkeln, som Designs regel. */
 export function playerTruckPlacement(): TruckPlacement {
-  const yawDesign = -PLAYER_TRUCK_PITCH.angleDeg * Math.PI / 180;
-  return { x: PLAYER_TRUCK_PITCH.centre[0], z: PLAYER_TRUCK_PITCH.centre[1], rotationY: yawDesign - Math.PI / 2 };
+  return { x: PLAYER_TRUCK_PITCH.centre[0], z: PLAYER_TRUCK_PITCH.centre[1], rotationY: -PLAYER_TRUCK_PITCH.angleDeg * Math.PI / 180 };
+}
+
+/** Vagnens och trädäckets fot i byns ram (scene/playerTruck.ts TRUCK_LAYOUT, vagnens ram +X längs, +Z ut från luckan). */
+export function playerTruckFootprints(): { body: Vec2[]; deck: Vec2[] } {
+  const at = playerTruckPlacement();
+  const c = Math.cos(at.rotationY), s = Math.sin(at.rotationY);
+  // three.js: lokal (x, z) roterad kring +Y med θ → (x cos θ + z sin θ, −x sin θ + z cos θ).
+  const w = (x: number, z: number): Vec2 => [at.x + x * c + z * s, at.z - x * s + z * c];
+  const rect = (x0: number, x1: number, z0: number, z1: number): Vec2[] => [w(x0, z0), w(x1, z0), w(x1, z1), w(x0, z1)];
+  // Karossen från dragstångens krok till bakgaveln, och markisen ut över luckan.
+  return { body: rect(-3.4, 2.3, -1.15, 1.85), deck: rect(3.0, 6.2, 0.2, 3.8) };
 }
 
 /** ORDER 312 — lyktan och skenet vid en krogs dörr (VillageVenues): 60 % mot dörrnoden från husets mitt. */

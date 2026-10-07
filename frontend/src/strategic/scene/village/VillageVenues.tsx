@@ -20,6 +20,11 @@ import { useCamera } from '../../camera/CameraContext';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { skyState } from '../../../lib/lighting/skyState';
 import { PLAYER_VENUE, venuesTonight } from '../../../sim/village';
+import { makePlayerTrailer } from '../playerTruck';
+import { PlayerTruckCrew } from './PlayerTruckCrew';
+import { OwnerAtDoor } from './OwnerAtDoor';
+import { FikaAtTable } from '../FikaAtTable';
+const TIER_PIPS: Record<string, number> = { enkel: 1, bistro: 2, soigne: 3 };
 import { ladderStep } from '../../../sim/ladderStep';
 import { PATH_KEY } from '../../ui/DinVag';
 import { t as tt, type StringKey } from '../../../content/nexusStrings';
@@ -91,14 +96,7 @@ function makeTruck(id: string): THREE.Group {
     const st = add(new THREE.BoxGeometry(1.2, 0.06, 0.62), m(col.awning[i % 2]), 1.8, 2.6, -2.2 + i * 0.64);
     st.rotation.z = -0.25;
   }
-  // ORDER 315b — spelarens vagn: ett tillfälligt serveringsområde med
-  // ståbord (bordshöjd för stående 1,1 m) vid luckans sida.
-  if (id === PLAYER_VENUE) {
-    for (const z of [-2.6, 0, 2.6]) {
-      add(new THREE.CylinderGeometry(0.06, 0.06, 1.1, 8), m('#3b2a1e'), 4.6, 0.55, z);
-      add(new THREE.CylinderGeometry(0.4, 0.4, 0.05, 16), m('#c9a46a'), 4.6, 1.12, z);
-    }
-  }
+  // ORDER 315b del 2 — spelarens vagn är Designs släpvagn (makePlayerTrailer), med trädäcket.
   return g;
 }
 
@@ -171,7 +169,8 @@ export function VillageVenues() {
       if (!onSpot(v)) continue;
       let truck = trucks.current.get(v.id);
       if (!truck) {
-        truck = makeTruck(v.id);
+        // ORDER 315b del 2 — spelarens egen släpvagn (Designs D7 playerTruck.ts).
+        truck = v.kind === 'player' ? makePlayerTrailer(TIER_PIPS[conceptTonight(sim) ?? 'enkel'] ?? 1) : makeTruck(v.id);
         trucks.current.set(v.id, truck);
         root.add(truck);
       }
@@ -281,6 +280,12 @@ export function VillageVenues() {
   return (
     <>
       <primitive object={root} />
+      {/* ORDER 315b del 2 — besättningen i spelarens vagn (D7 truckClips.ts). */}
+      <PlayerTruckCrew />
+      {/* ORDER 315b del 2 — Åsa vid dörren med erbjudandet (D7 ownerOffer.ts). */}
+      <OwnerAtDoor />
+      {/* ORDER 315b del 2 — fikat vid bordet efter stängning (D7 afterHoursFika.ts). */}
+      <FikaAtTable />
       {nearSign && entrance && ourVenue && (
         <group position={[entrance[0], NEAR_SIGN_Y_M, entrance[1]]}>
           <Html center zIndexRange={[12, 0]} style={{ pointerEvents: 'none' }}>

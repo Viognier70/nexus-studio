@@ -39,7 +39,8 @@ export function FikaScreen({ sim, onContinue }: { sim: SimulationState; onContin
   const showLegal = !!dilemma.legal && dilemma.legal.legalReviewed;
   const kr = (n: number) => Math.round(n).toLocaleString(lang === 'sv' ? 'sv-SE' : 'en-GB');
   return (
-    <NxScreen testId="evening-bar" label={f.label}>
+    // ORDER 315b del 2 — kortet till höger, så att laget vid bordet syns (Designs D7, FikaAtTable.tsx).
+    <NxScreen testId="evening-bar" label={f.label} className="nx-fika-overlay">
       <div className="nx-evening nx-fika" data-testid="screen-fika" data-dilemma={dilemma.id} data-answer={tonight.answer ?? ''}>
         <header className="nx-evening-head">
           <div>

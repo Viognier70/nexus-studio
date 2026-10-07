@@ -45,3 +45,10 @@
 @media (prefers-reduced-motion: reduce) {
   .nx-fika-graded-row, .nx-fika-verdict, .nx-fika-explanation, .nx-fika-effects { animation: none !important; }
 }
+
+/* ORDER 315b del 2 — Designs D7: fikat är en scen i rummet, kortet står till höger. */
+.nx-screen.nx-fika-overlay { left: auto; width: min(640px, 100%); background: linear-gradient(90deg, rgba(20, 13, 9, 0.35), var(--w-walnut-900) 18%); padding: calc(48 * var(--nx-u)) calc(32 * var(--nx-u)); }
+.nx-fika-overlay .nx-fika-paper { max-width: none; }
+.nx-fika-overlay .nx-fika-asker { font-size: calc(30 * var(--nx-u)); }
+.nx-fika-overlay .nx-fika-question { font-size: calc(24 * var(--nx-u)); }
+.nx-fika-overlay .nx-fika-explanation { font-size: calc(22 * var(--nx-u)); }

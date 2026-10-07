@@ -17,7 +17,7 @@ import { LADDER } from '../../sim/balance';
 import { canTakeOffer, offerAtDoorTonight } from '../../sim/ladder';
 import { PATH_KEY } from '../ui/DinVag';
 import type { SimulationState } from '../types';
-import { NxButton, NxLabel, NxScreen } from '../ui/system/components';
+import { NxButton, NxLabel } from '../ui/system/components';
 import { AsaPortrait } from '../ui/AsaBubble';
 import { useSimDispatch } from '../simulation/SimulationProvider';
 import '../ui/service/service.css';
@@ -41,7 +41,8 @@ export function OwnerOfferScreen({ sim, onContinue }: { sim: SimulationState; on
   const take = () => { dispatch({ type: 'LADDER_TAKE' }); setAnswer('take'); };
   const notYet = () => { dispatch({ type: 'LADDER_DECLINE' }); setAnswer('notyet'); };
   return (
-    <NxScreen testId="evening-bar" label={S('asa.kicker')}>
+    // Inte en helskärm: scenen vid dörren (OwnerAtDoor.tsx) syns, kortet står till höger (D7).
+    <div className="nx nx-owner-overlay" data-testid="evening-bar" role="dialog" aria-label={S('asa.kicker')}>
       <div className="nx-evening nx-owner-offer" data-testid="screen-owner-offer" data-to={offer?.to ?? ''} data-answer={answer ?? ''}>
         <div className="nx-paper nx-owner-card" role="dialog" aria-label={S('asa.kicker')}>
           <NxLabel>{S('asa.kicker')}</NxLabel>
@@ -75,6 +76,6 @@ export function OwnerOfferScreen({ sim, onContinue }: { sim: SimulationState; on
           )}
         </div>
       </div>
-    </NxScreen>
+    </div>
   );
 }

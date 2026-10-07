@@ -1,4 +1,6 @@
 /* ORDER 315b del 2 — Åsas erbjudande vid dörren (Designs D7, skärm 4). Kortet till höger. */
+.nx-owner-overlay { position: fixed; inset: 0; z-index: 60; pointer-events: none; background: linear-gradient(90deg, transparent 40%, rgba(20, 13, 9, 0.55)); }
+.nx-owner-overlay .nx-owner-card { pointer-events: auto; }
 .nx-owner-offer { display: flex; justify-content: flex-end; align-items: center; min-height: 100%; padding: max(16px, 3vh) max(16px, 3.75vw); box-sizing: border-box; }
 .nx-owner-card { width: min(520px, 100%); padding: 24px 28px; border-radius: 22px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5); }
 .nx-owner-who { display: flex; align-items: center; gap: 14px; margin: 10px 0 6px; }
