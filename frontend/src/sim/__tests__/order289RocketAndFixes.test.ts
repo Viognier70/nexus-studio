@@ -9,7 +9,8 @@ import { reducer } from '../../strategic/simulation/reducer';
 import { makeNewGameState } from '../../strategic/simulation/model';
 import { firstDayOfWeek } from '../calendar';
 import { incidentById } from '../incidentBank';
-import { canStartBack, rankedStepOption } from '../incidents';
+import { rankedStepOption } from '../incidents';
+import { SITUATIONS } from '../balance';
 import { answerAndWait } from './verdict';
 import { rocketCounter } from '../../strategic/ui/service/serviceView';
 import { PLAYERS } from '../../strategic/testHarness/randomness';
@@ -41,13 +42,11 @@ function best(s: SimulationState): string {
   return rankedStepOption(incidentById('vinbar', a.id)!.steps[a.step], 'best', a.struck, a.situation);
 }
 
+// ORDER 314 — Stå för ditt svar är borttagen: nästa situation ur rummet, vid första steget.
 function toBacked(s: SimulationState): SimulationState {
-  for (let i = 0; i < 20000 && !canStartBack(s) && s.day.period === 'dinner'; i++) {
-    if (s.incidents.active) s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: best(s) });
-    s = reducer(s, TICK);
-  }
-  expect(canStartBack(s)).toBe(true);
-  return reducer(s, { type: 'START_BACK' });
+  for (let i = 0; i < 20000 && !(s.incidents.active && s.incidents.active.step === 0 && (s.incidents.active.introLeft ?? 0) <= 0) && s.day.period === 'dinner'; i++) s = reducer(s, TICK);
+  expect(s.incidents.active).toBeTruthy();
+  return s;
 }
 
 // Väntar ut det visade svaret mellan stegen (revealLeft).
@@ -90,25 +89,19 @@ describe('ORDER 289 — en egen raket spelas till slut', () => {
 describe('ORDER 289 — raketräkningen', () => {
   // ORDER 296c — raketerna utlöses av rummet; räkningen är "raket n i kväll"
   // och växer bara med kvällens egna raketer (inte med egna eller följder).
-  it('räkningen växer bara med kvällens raketer, inte med egna raketer', () => {
+  // ORDER 314 — egna raketer finns inte längre; räkningen växer med kvällens situationer.
+  it('räkningen växer med kvällens situationer, högst kvällens antal', () => {
     let s = evening(5);
-    const totals = new Set<number>();
-    let prevN = 0;
-    let backs = 0;
+    let maxN = 0;
     for (let i = 0; i < 40000 && s.day.period === 'dinner'; i++) {
       if (s.incidents.active) {
-        const { n } = rocketCounter(s);
-        if (s.incidents.active.backed || s.incidents.active.chained) totals.add(n - prevN);
-        prevN = Math.max(prevN, n - (s.incidents.active.backed || s.incidents.active.chained ? 0 : 1));
-        if (s.incidents.active.backed) {
-          s = s.incidents.active.choosing ? reducer(s, { type: 'INCIDENT_GO' }) : reducer(s, { type: 'ANSWER_INCIDENT', optionId: best(s) });
-        } else s = s.incidents.active.choosing ? reducer(s, { type: 'INCIDENT_GO' }) : reducer(s, { type: 'ANSWER_INCIDENT', optionId: best(s) });
-      } else if (backs < 2 && canStartBack(s)) { s = reducer(s, { type: 'START_BACK' }); backs++; }
+        maxN = Math.max(maxN, rocketCounter(s).n);
+        s = s.incidents.active.choosing ? reducer(s, { type: 'INCIDENT_GO' }) : reducer(s, { type: 'ANSWER_INCIDENT', optionId: best(s) });
+      }
       s = reducer(s, TICK);
     }
-    expect(backs).toBeGreaterThan(0);
-    // En egen raket räknas inte: räkningen står där den stod.
-    for (const d of totals) expect(d).toBeLessThanOrEqual(0);
+    expect(maxN).toBeGreaterThan(0);
+    expect(maxN).toBeLessThanOrEqual(SITUATIONS.maxPerEvening);
   });
 });
 

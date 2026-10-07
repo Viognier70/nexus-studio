@@ -1,0 +1,28 @@
+{
+  "phase": "efter",
+  "viewport": "1440x900",
+  "save": "reports/order284/save-mandag-vinbaren.json (+3 dagar, torsdag)",
+  "errors": [],
+  "shots": [
+    {
+      "file": "efter-01-kvallen.png",
+      "target": [
+        31.6,
+        -16.7
+      ],
+      "kinds": [
+        "kvallen"
+      ],
+      "subjects": [
+        "vinbaren under kvällen: ingen Stå för ditt svar"
+      ],
+      "from": "efter",
+      "camFocus": [
+        31.6,
+        -16.7
+      ],
+      "camDistance": 81,
+      "focusErrorM": 0
+    }
+  ]
+}

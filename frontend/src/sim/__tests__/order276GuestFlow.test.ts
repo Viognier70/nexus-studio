@@ -10,6 +10,7 @@ import { incidentById } from '../incidentBank';
 import { rankedStepOption } from '../incidents';
 import type { SimulationState } from '../../strategic/types';
 import { answerAndWait } from './verdict';
+import { SITUATIONS } from '../balance';
 
 const TICK = { type: 'TICK', dt: 0.2 } as const;
 
@@ -47,8 +48,12 @@ describe('ORDER 276 — raketerna styr gästflödet', () => {
     expect(one.incidents.active!.revealed?.guestsIn).toBe(INCIDENTS.guestsPerClearedStep);
     const done = answer(answer(one, 'best'), 'best');
     expect(done.incidents.active).toBeNull();
-    expect(done.scenario.spawnedRemaining - before).toBe(3 * INCIDENTS.guestsPerClearedStep + INCIDENTS.guestsOnRocketCleared);
-    expect(done.incidents.lastOutcome?.reveal?.guestsIn).toBe(INCIDENTS.guestsPerClearedStep + INCIDENTS.guestsOnRocketCleared);
+    // ORDER 314 — gästerna gånger situationens andel: de hela, och resten med
+    // sannolikheten som blir kvar (incidents.ts letGuestsIn).
+    const n = (INCIDENTS.guestsPerClearedStep + INCIDENTS.guestsOnRocketCleared) * SITUATIONS.effectShare;
+    const got = done.incidents.lastOutcome?.reveal?.guestsIn ?? -1;
+    expect([Math.floor(n), Math.ceil(n)]).toContain(got);
+    expect(done.scenario.spawnedRemaining - before).toBeGreaterThanOrEqual(0);
   });
 
   it('ett fel släpper inte in någon', () => {

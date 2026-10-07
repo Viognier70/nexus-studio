@@ -12,6 +12,8 @@ import { villageNow, villageNowSummary } from '../../../sim/villageNow';
 import { useSimState } from '../../simulation/SimulationProvider';
 import './host.css';
 
+const VILLAGE_NOW_ROWS = 3;
+
 export function VillageNowPanel() {
   const sim = useSimState();
   const rows = villageLive(sim);
@@ -21,6 +23,8 @@ export function VillageNowPanel() {
   if (hist.current.day !== sim.day.dayNumber) hist.current = { day: sim.day.dayNumber, byMinute: new Map() };
   if (!hist.current.byMinute.has(minute)) hist.current.byMinute.set(minute, rows);
   const now = villageNow(rows, (ago) => hist.current.byMinute.get(minute - ago) ?? null);
+  // Kompakt: de VILLAGE_NOW_ROWS främsta, och spelarens krog om den inte är bland dem.
+  const shown = now.filter((r, i) => i < VILLAGE_NOW_ROWS || r.player);
   const sum = villageNowSummary(now);
   const v = strings.villageNow;
   const name = (id: string) => strings.village.venues[id] ?? id;
@@ -33,7 +37,7 @@ export function VillageNowPanel() {
     <section className="nx-village-now" aria-label={v.title} data-testid="village-now">
       <div className="nx-label">{v.title}</div>
       <ol className="nx-village-now-list">
-        {now.map((r) => (
+        {shown.map((r) => (
           <li key={r.id} data-player={r.player} data-testid={`village-now-${r.id}`} data-guests={r.guests} data-trend={r.trend ?? ''}>
             <span className="nx-village-now-name">{r.player ? `${name(r.id)} · ${v.you}` : name(r.id)}</span>
             <span className="nx-village-now-guests">{v.guests(r.guests)}</span>

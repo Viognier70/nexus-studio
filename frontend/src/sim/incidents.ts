@@ -27,7 +27,7 @@ import { applyAnswerMood } from './guestMood';
 import { spreadWord } from './streetWord';
 import { complaintStamina, hesitationWellbeing, incidentArea, staffEffect, staffKnows } from './staffCondition';
 import { createRng } from '../strategic/util/rng';
-import { investLocked } from './introduction';
+import { effectiveSpeed } from '../strategic/simulation/consequence';
 import { bumpMorale } from '../strategic/simulation/morale';
 import { applyCashDelta, applyCashRevenue, postLedger } from '../strategic/simulation/cashReading';
 import { takeFromStock } from '../strategic/simulation/stockPackages';
@@ -36,7 +36,7 @@ import { clampReputation } from '../strategic/simulation/reputation';
 import { strings } from '../content/strings';
 import { avecShareFor, conceptWrongFactor, moveConceptReputation } from './goods';
 import { rocketClipFor, rocketFigure, type RocketFigure } from './theatreTriggers';
-import { ANSWER_EFFECTS, CONSEQUENCES, DOUBLE_OR_NOTHING, GUEST_TYPES, STAFF_CONDITION, THEATRE, BACK, INCIDENTS, MENU_ROCKETS, REPUTATION, SERVICE_STREAM, SHOP } from './balance';
+import { ANSWER_EFFECTS, CONSEQUENCES, DOUBLE_OR_NOTHING, GUEST_TYPES, STAFF_CONDITION, THEATRE, INCIDENTS, SITUATIONS, GAME_MINUTES_PER_SIM_SECOND, MENU_ROCKETS, REPUTATION, SERVICE_STREAM, SHOP } from './balance';
 import { abilityActive } from './shop';
 import { calendarFor } from './calendar';
 import { clampScenarioCash, scenarioUnitSek } from './economy';
@@ -196,10 +196,13 @@ export interface IncidentRecord {
   // (samma tal som lastOutcome.deltas), krediterna och gästerna över alla steg.
   deltas?: { cashSek: number; reputation: number; credits: number; guestsIn: number };
   // ORDER 289 — planerad, följd eller egen (Back your knowledge).
+  // ORDER 314: 'backed' finns bara i loggar från före ordern.
   kind?: 'planned' | 'chained' | 'backed';
   // ORDER 305 — kvitt eller dubbelt: potten togs (stannade eller klarade
   // raketen) eller förlorades (fel efter att ha gått vidare).
   pot?: { taken: boolean; credits: number; cashSek: number };
+  // ORDER 314 — spelaren svarade inte och personalen klarade situationen.
+  staffCleared?: boolean;
 }
 
 // ORDER 271 — ett svar i stunden (Design paket 6, R2/R3): valt svar,
@@ -385,9 +388,13 @@ export function planIncidents(state: SimulationState, doorsOpenAt: number, servi
   };
   if (incidentBankFor(state.economy.businessClass).length === 0) return { ...state, incidents: reset };
   // ORDER 296c — ingen plan: raketerna mognar ur rummet (maybeOpenIncident).
+  // ORDER 314 — kvällens antal situationer, SITUATIONS.minPerEvening–maxPerEvening.
+  const rng = createRng(state.rngState);
+  const plannedCount = SITUATIONS.minPerEvening + Math.floor(rng.next() * (SITUATIONS.maxPerEvening - SITUATIONS.minPerEvening + 1));
   return {
     ...state,
-    incidents: { ...reset, enabled: true, slots: [], serviceEndsAt, doorsOpenAt }
+    rngState: rng.state,
+    incidents: { ...reset, enabled: true, slots: [], serviceEndsAt, doorsOpenAt, plannedCount: Math.min(SITUATIONS.maxPerEvening, plannedCount) }
   };
 }
 
@@ -511,11 +518,23 @@ function struckFor(state: SimulationState, step: IncidentStep, situation: string
   return wrong.length > 0 ? [pick(wrong, r()).id] : [];
 }
 
+// ORDER 314 — situationens andel av sina följder (balance.ts SITUATIONS.effectShare).
+const K = SITUATIONS.effectShare;
+
+/** ORDER 314 — pausen mellan två situationer i simsekunder (minGapGameMinutes). */
+export function situationGapSimSeconds(): number {
+  return SITUATIONS.minGapGameMinutes / GAME_MINUTES_PER_SIM_SECOND;
+}
+
 // ORDER 296c — en raket mognar ur rummet (anropas varje tick under servicen,
 // efter att dörrarna öppnat): inom kvällens fönster, efter pausen sedan
 // förra raketen, med en chans som växer med fullheten, och när bankens
 // villkor stämmer just nu. En kedjad raket går först. Inget tak per kväll.
 // Den förra följden slutar här.
+// ORDER 314 — takten: högst kvällens antal (plannedCount, 4–6), aldrig två
+// samtidigt, minst SITUATIONS.minGapGameMinutes mellan dem (från att förra
+// avgjordes). Upp till kvällens antal mognar de ur rummets tryck; de första
+// minPerEvening kommer senast på sina jämnt fördelade tider i fönstret.
 export function maybeOpenIncident(draft: SimulationState, dt: number): void {
   const inc = draft.incidents;
   if (!inc || !inc.enabled || inc.active) return;
@@ -524,19 +543,31 @@ export function maybeOpenIncident(draft: SimulationState, dt: number): void {
   const until = inc.serviceEndsAt ?? draft.simTime;
   const frac = (draft.simTime - from) / Math.max(1, until - from);
   if (frac < INCIDENTS.windowStart || frac > INCIDENTS.windowEnd) return;
+  const planned = inc.plannedCount ?? SITUATIONS.maxPerEvening;
+  // En köad följd (ett tidigare fel) får komma upp till maxPerEvening.
+  if (inc.log.length >= (inc.queued.length > 0 ? SITUATIONS.maxPerEvening : planned)) return;
   const lastAt = inc.log.length > 0 ? inc.log[inc.log.length - 1].at : -Infinity;
-  if (draft.simTime < lastAt + INCIDENTS.minGapSimSeconds) return;
+  if (draft.simTime < lastAt + situationGapSimSeconds()) return;
   const rng = createRng(draft.rngState);
   const r = () => rng.next();
   const p = roomPressure(draft);
   const chance = (INCIDENTS.triggerBasePerSimSecond + INCIDENTS.triggerFullPerSimSecond * p * p) * dt;
-  const hit = r() < chance;
-  if (!hit) {
+  // Golvet: den k:te av de första minPerEvening ska ha kommit vid (k + 1) /
+  // (minPerEvening + 1) av fönstret, jämnt fördelat över kvällen.
+  const k = inc.log.length;
+  const dueFrac = INCIDENTS.windowStart + ((k + 1) / (SITUATIONS.minPerEvening + 1)) * (INCIDENTS.windowEnd - INCIDENTS.windowStart);
+  const behind = k < SITUATIONS.minPerEvening && frac >= dueFrac;
+  // En köad följd kommer när dess tid är inne (INCIDENTS.chainDelaySimSeconds
+  // efter felet, inc.slots), inte bara när slumpen träffar.
+  const chainDue = inc.queued.length > 0 && inc.slots.some((sl) => sl.at <= draft.simTime);
+  const rolled = behind || r() < chance;
+  if (!rolled && !chainDue) {
     draft.rngState = rng.state;
     return;
   }
   const chosen = chooseIncident(draft, phaseAt(frac), r());
-  if (chosen) openIncident(draft, chosen.incident, chosen.chained, chosen.context, false, r);
+  // Följdens tid öppnar bara följden; annat väntar på rummet eller golvet.
+  if (chosen && (rolled || chosen.chained)) openIncident(draft, chosen.incident, chosen.chained, chosen.context, false, r);
   draft.rngState = rng.state;
 }
 
@@ -583,53 +614,9 @@ function openIncident(
   };
 }
 
-// ORDER 280 — Back your knowledge (Vision Owner 2026-09-29, Designs B1):
-// spelaren startar själv en raket när ingen annan står öppen, högst
-// BACK.maxPerEvening gånger per kväll. Ingen insats krävs för att starta
-// (gissar kostar inget); säkerheten väljs för varje steg.
-// Provspel av 285 — varför Back your knowledge inte går att starta just nu,
-// eller null när den går (samma villkor som canStartBack).
-export function whyNotBack(state: SimulationState): 'busy' | 'maxed' | 'noneFits' | 'notOpen' | 'noRockets' | 'locked' | null {
-  const inc = state.incidents;
-  // ORDER 313 §2 — låst tills första provet är klarat.
-  if (investLocked(state)) return 'locked';
-  // ORDER 291 — en verksamhet utan raketer säger det, inte att dörrarna är stängda.
-  if (incidentBankFor(state.economy.businessClass).length === 0) return 'noRockets';
-  if (!inc?.enabled || state.day.period !== 'dinner' || !state.day.doorsOpenedThisService) return 'notOpen';
-  if (inc.active) return 'busy';
-  if ((inc.betsTonight ?? 0) >= BACK.maxPerEvening) return 'maxed';
-  return backPool(state).length > 0 ? null : 'noneFits';
-}
-
-export function canStartBack(state: SimulationState): boolean {
-  const inc = state.incidents;
-  if (investLocked(state)) return false;
-  if (!inc?.enabled || inc.active || state.day.period !== 'dinner' || !state.day.doorsOpenedThisService) return false;
-  if ((inc.betsTonight ?? 0) >= BACK.maxPerEvening) return false;
-  return backPool(state).length > 0;
-}
-
-function backPool(state: SimulationState): Incident[] {
-  const inc = incidentsOf(state);
-  const menuIds = state.menu.map((m) => m.dishId);
-  const seated = seatedGuests(state).length > 0;
-  return incidentBankFor(state.economy.businessClass).filter((i) =>
-    !i.chainOnly && !inc.fired.includes(i.id) && fitsMenu(i, menuIds) && (!i.needsTable || seated));
-}
-
-export function startBack(draft: SimulationState): boolean {
-  if (!canStartBack(draft)) return false;
-  const rng = createRng(draft.rngState);
-  const r = () => rng.next();
-  const pool = backPool(draft);
-  // Helst en raket om kvällens meny.
-  const onMenu = pool.filter((i) => i.requiresOnMenu);
-  const inc = draft.incidents!;
-  openIncident(draft, pick(onMenu.length > 0 ? onMenu : pool, r()), false, undefined, true, r);
-  draft.incidents = { ...draft.incidents!, betsTonight: (inc.betsTonight ?? 0) + 1 };
-  draft.rngState = rng.state;
-  return true;
-}
+// ORDER 314 (Anders 2026-10-06) — "Inga frivilliga raketer": Stå för ditt
+// svar (ORDER 280, whyNotBack/canStartBack/startBack) är borttagen. All
+// kunskap prövas i situationer som uppstår i rummet (maybeOpenIncident).
 
 export function totalCredits(state: SimulationState): number {
   return state.knowledgeCredits.episteme + state.knowledgeCredits.techne + state.knowledgeCredits.phronesis;
@@ -647,7 +634,7 @@ function recordKvitt(draft: SimulationState, incidentId: string, step: number, c
 // andel av notan i dricks (läses i reducern vid betalningen).
 function raiseTips(draft: SimulationState, ctx: IncidentContext, share: number): void {
   if (share <= 0) return;
-  for (const g of draft.guests) if (ctx.guestIds.includes(g.id)) g.tipBonus = (g.tipBonus ?? 0) + share;
+  for (const g of draft.guests) if (ctx.guestIds.includes(g.id)) g.tipBonus = (g.tipBonus ?? 0) + share * K;
 }
 
 // ORDER 290 — svarens följd syns i rummet (Vision Owner 2026-09-30): rätt
@@ -705,11 +692,11 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
     const inStock = extra && (draft.day.platesRemaining[extra.dishId] ?? 0) > 0;
     if (extra && inStock && table.length > 0) {
       takeFromStock(draft, extra.dishId, draft.simTime);
-      amountSek = Math.round(extra.price);
+      amountSek = Math.round(extra.price * K);
       detail = 'glass';
     } else {
       const stake = tableStake(draft, ctx.guestIds);
-      amountSek = stake ? Math.round(stake.billSek * ANSWER_EFFECTS.rightBillShare) : 0;
+      amountSek = stake ? Math.round(stake.billSek * ANSWER_EFFECTS.rightBillShare * K) : 0;
     }
     if (holdCash) held = amountSek;
     else bookTableCash(draft, amountSek, table[0]?.guestType ?? null);
@@ -717,23 +704,23 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
     // Felet köade en följdraket vid samma bord: gästerna stannar (följden är
     // nästa raket), men bordet beställer mindre.
     const stake = tableStake(draft, ctx.guestIds);
-    amountSek = stake ? Math.round(stake.billSek * ANSWER_EFFECTS.wrongBillShare) : 0;
+    amountSek = stake ? Math.round(stake.billSek * ANSWER_EFFECTS.wrongBillShare * K) : 0;
     detail = 'less';
     for (const g of table) {
-      g.billBonus = (g.billBonus ?? 0) + ANSWER_EFFECTS.wrongBillShare;
-      g.satisfaction = Math.max(0, g.satisfaction + ANSWER_EFFECTS.wrongSatisfaction);
+      g.billBonus = (g.billBonus ?? 0) + ANSWER_EFFECTS.wrongBillShare * K;
+      g.satisfaction = Math.max(0, g.satisfaction + ANSWER_EFFECTS.wrongSatisfaction * K);
     }
   } else if (table.length > 0 && severity === 'medium') {
     // ORDER 303 D — medel: bordet beställer mindre (ingen flaska till, ingen
     // dessert) och klagar; personalen lägger tid på att lugna (orken sjunker).
     const c = CONSEQUENCES.wrong.medium;
     const stake = tableStake(draft, ctx.guestIds);
-    amountSek = stake ? Math.round(stake.billSek * c.billShare) : 0;
+    amountSek = stake ? Math.round(stake.billSek * c.billShare * K) : 0;
     detail = 'complaint';
     for (const g of table) {
-      g.billBonus = (g.billBonus ?? 0) + c.billShare;
-      g.tipBonus = (g.tipBonus ?? 0) + c.tipShare;
-      g.satisfaction = Math.max(0, g.satisfaction + c.satisfaction);
+      g.billBonus = (g.billBonus ?? 0) + c.billShare * K;
+      g.tipBonus = (g.tipBonus ?? 0) + c.tipShare * K;
+      g.satisfaction = Math.max(0, g.satisfaction + c.satisfaction * K);
     }
     bumpMorale(draft, c.staffMorale);
     complaintStamina(draft);
@@ -742,8 +729,8 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
     const c = CONSEQUENCES.wrong.mild;
     detail = 'tips';
     for (const g of table) {
-      g.tipBonus = (g.tipBonus ?? 0) + c.tipShare;
-      g.satisfaction = Math.max(0, g.satisfaction + c.satisfaction);
+      g.tipBonus = (g.tipBonus ?? 0) + c.tipShare * K;
+      g.satisfaction = Math.max(0, g.satisfaction + c.satisfaction * K);
     }
   } else if (table.length > 0) {
     // ORDER 303 D — grovt: gästen med den största notan går utan att betala.
@@ -758,7 +745,7 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
     sendAway(draft, goers, goers.length);
     left = goers.length;
     detail = 'leaves';
-    for (const g of table) if (!goers.includes(g)) g.satisfaction = Math.max(0, g.satisfaction + ANSWER_EFFECTS.wrongSatisfaction);
+    for (const g of table) if (!goers.includes(g)) g.satisfaction = Math.max(0, g.satisfaction + ANSWER_EFFECTS.wrongSatisfaction * K);
   } else if (severity === 'grave') {
     const queue = draft.guests.filter((g) => g.state === 'waiting' || g.state === 'arriving');
     left = Math.min(queue.length, ANSWER_EFFECTS.wrongGuestsLeave);
@@ -769,7 +756,7 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
     const stake = tableStake(draft, ctx.guestIds);
     // ORDER 303 E — trött eller otrivd personal ger mindre av ett rätt svar.
     // ORDER 307 — avec kommer med avecvagnen (sim/goods.ts avecShareFor).
-    const avec = stake ? Math.round(stake.billSek * (CONSEQUENCES.right.avecShare + avecShareFor(draft)) * staffEffect(draft)) : 0;
+    const avec = stake ? Math.round(stake.billSek * (CONSEQUENCES.right.avecShare + avecShareFor(draft)) * staffEffect(draft) * K) : 0;
     if (avec > 0) {
       applyCashRevenue(draft, avec);
       if (draft.day.period === 'dinner') draft.serviceRevenueToday = { ...draft.serviceRevenueToday, dinner: draft.serviceRevenueToday.dinner + avec / SERVICE_STREAM.sekPerKsek };
@@ -780,9 +767,9 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
   }
   // ORDER 303 C — ryktet per svar (poäng 0–100), recensionen i morgon och
   // ordet på gatan i kväll.
-  const repPoints = right
+  const repPoints = (right
     ? (CONSEQUENCES.right.stepReputation + (rocketCleared ? CONSEQUENCES.right.clearedReputation : 0)) * staffEffect(draft)
-    : CONSEQUENCES.wrong[severity].reputation;
+    : CONSEQUENCES.wrong[severity].reputation) * K;
   draft.reputation = clampReputation(draft.reputation + repPoints / REPUTATION.scale);
   // ORDER 307 — ryktet i kvällens koncept: ett fel gånger förlåtelsen hos
   // bordets gästtyp.
@@ -798,11 +785,11 @@ function answerConsequence(draft: SimulationState, ctx: IncidentContext, right: 
     // ORDER 309b — conceptReputation: konceptets poäng (Recensioner i morse).
     draft.day = { ...draft.day, answerReviews: [...(draft.day.answerReviews ?? []), { incidentId, right, severity: right ? null : severity, reputation: repPoints, table: ctx.table, guestType: table[0]?.guestType ?? null, conceptReputation: conceptPoints }] };
   }
-  if (!right) spreadWord(draft, CONSEQUENCES.street.perWrong);
-  else if (rocketCleared) spreadWord(draft, CONSEQUENCES.street.perCleared);
+  if (!right) spreadWord(draft, CONSEQUENCES.street.perWrong * K);
+  else if (rocketCleared) spreadWord(draft, CONSEQUENCES.street.perCleared * K);
   // ORDER 299b — svaret lyfter eller sänker stämningen vid bordet, hos dem som
   // såg det och i rummet (sim/guestMood.ts); nöjdheten och ekonomin rörs inte.
-  const witnessIds = applyAnswerMood(draft, table, right);
+  const witnessIds = applyAnswerMood(draft, table, right, K);
   const t = strings.answerEffects;
   const base = right
     ? (detail === 'avec' ? t.avec(ctx.table) : t.up(ctx.table, guestsIn))
@@ -875,7 +862,15 @@ export function takeoverActive(state: SimulationState): { role: StaffRole; membe
 
 // ORDER 276 — raketerna styr gästflödet: gäster släpps in i lokalen (samma
 // väg som ett utfall med `room.arrive`). Returnerar antalet.
-function letGuestsIn(draft: SimulationState, n: number): number {
+function letGuestsIn(draft: SimulationState, n0: number): number {
+  // ORDER 314 — situationens andel (K): de hela gästerna, och resten med
+  // sannolikheten som blir kvar (spelets rngState).
+  let n = Math.floor(n0 * K);
+  if (n0 * K - n > 0) {
+    const rng = createRng(draft.rngState);
+    if (rng.next() < n0 * K - n) n++;
+    draft.rngState = rng.state;
+  }
   if (n <= 0 || draft.day.period !== 'dinner') return 0;
   draft.scenario = { ...draft.scenario, spawnedRemaining: draft.scenario.spawnedRemaining + n, nextSpawnAt: draft.simTime };
   return n;
@@ -900,7 +895,8 @@ function applyOutcome(
   const e = outcome.effects;
 
   // Kassan: enheter av klassens normala veckointäkt, inom veckans ±20 %.
-  let cashSek = e.cash * share * scenarioUnitSek(draft);
+  // ORDER 314 — K: kassans del av en situation (fler situationer per kväll).
+  let cashSek = e.cash * share * scenarioUnitSek(draft) * K;
   if (cashSek > 0 && best) cashSek *= bestAnswerFactor(draft);
   // ORDER 296b — ett fel kostar hälften så mycket i kassan.
   // ORDER 307b (304: "Ju högre klass … hårdare följder av fel svar") — ett fel
@@ -917,7 +913,7 @@ function applyOutcome(
   // Gästerna: nöjdheten syns i rummet (gästernas färg).
   const targets = targetsFor(draft, outcome.target, ctx);
   if (e.satisfaction !== 0) {
-    for (const g of targets) g.satisfaction = Math.max(0, Math.min(1, g.satisfaction + e.satisfaction * share));
+    for (const g of targets) g.satisfaction = Math.max(0, Math.min(1, g.satisfaction + e.satisfaction * share * K));
   }
   const leave = Math.round((outcome.room?.leave ?? 0) * share);
   if (leave > 0) sendAway(draft, targets, leave);
@@ -927,8 +923,8 @@ function applyOutcome(
   }
 
   // Personalens ork är moralen, som personalens kompetens läser.
-  if (e.stamina !== 0) bumpMorale(draft, e.stamina * share);
-  if (e.reputation !== 0) draft.reputation = clampReputation(draft.reputation + (e.reputation * share) / REPUTATION.scale);
+  if (e.stamina !== 0) bumpMorale(draft, e.stamina * share * K);
+  if (e.reputation !== 0) draft.reputation = clampReputation(draft.reputation + (e.reputation * share * K) / REPUTATION.scale);
 
   // Kedjor. Den kedjade händelsen gäller samma bord.
   const inc = draft.incidents!;
@@ -1079,6 +1075,20 @@ export function settlePendingAnswer(draft: SimulationState): CreditChange | null
   return resolveIncident(draft, p.optionId);
 }
 
+/**
+ * ORDER 314 — klarar personalen situationen när spelaren inte svarar?
+ * Sannolikheten är SITUATIONS.staffSuccessTrained när någon i laget har
+ * situationens kunskapsområde (staffKnows, incidentArea), annars
+ * staffSuccessUntrained. Slumpen går genom spelets rngState.
+ */
+export function staffHandles(draft: SimulationState, incident: Incident): boolean {
+  const p = staffKnows(draft, incidentArea(incident.track)) ? SITUATIONS.staffSuccessTrained : SITUATIONS.staffSuccessUntrained;
+  const rng = createRng(draft.rngState);
+  const hit = rng.next() < p;
+  draft.rngState = rng.state;
+  return hit;
+}
+
 export function resolveIncident(draft: SimulationState, optionId: string | null): CreditChange | null {
   const inc = draft.incidents;
   const active = inc?.active;
@@ -1133,11 +1143,20 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
   let ongoing: OngoingConsequence | null = null;
   let text: string;
   let credit: number;
+  // ORDER 314 — spelaren svarade inte: personalen tar över med sin egen
+  // kompetens (kunskapsområdena från 303, sim/staffCondition.ts staffKnows).
+  const staffCleared = option === null && staffHandles(draft, incident);
   if (cleared) {
     // Hela raketen klarad: bästa utfall.
     cashSek = applyOutcome(draft, incident, incident.success, incident.text.success, 1, true).cashSek;
     text = formatIncidentText(incident.text.success.outcome, ctx);
     credit = (quality === 'best' && !DOUBLE_OR_NOTHING.enabled ? INCIDENTS.bestAnswerCredit : 0) + (incident.success.effects.credit ?? 0);
+  } else if (staffCleared) {
+    // Personalen klarade det: en del av det bästa utfallet, och spelaren
+    // tappar som förut en kredit för att inte ha svarat.
+    cashSek = applyOutcome(draft, incident, incident.success, incident.text.success, SITUATIONS.staffSuccessShare, false).cashSek;
+    text = formatIncidentText(incident.text.success.outcome, ctx);
+    credit = -INCIDENTS.timeoutCreditPenalty;
   } else {
     // Stegets konsekvens, och personalen tar över resten med sämre utfall.
     const failMeta = option?.fail ?? step.fail;
@@ -1160,17 +1179,17 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
   const guestsIn = cleared ? letGuestsIn(draft, INCIDENTS.guestsPerClearedStep + INCIDENTS.guestsOnRocketCleared) : 0;
   if (cleared) raiseTips(draft, ctx, MENU_ROCKETS.tipBonusPerClearedStep + MENU_ROCKETS.tipBonusOnRocketCleared);
   // ORDER 292 — ett fel som köar en följdraket vid samma bord låter gästerna sitta kvar.
-  const chains = cleared ? [] : [...((option?.fail ?? step.fail).triggers ?? []), ...(incident.staff.triggers ?? [])];
+  const chains = cleared || staffCleared ? [] : [...((option?.fail ?? step.fail).triggers ?? []), ...(incident.staff.triggers ?? [])];
   // ORDER 303 E — saknar personalen händelsens kunskapsområde tvekar de: ett
   // fel svar blir ett steg allvarligare, och trivseln sjunker.
-  const hesitated = !cleared && !staffKnows(draft, incidentArea(incident.track));
+  const hesitated = !cleared && !staffCleared && !staffKnows(draft, incidentArea(incident.track));
   if (hesitated) hesitationWellbeing(draft);
-  const severity = cleared ? 'grave' : hesitated ? worse(failSeverity(option?.fail ?? step.fail)) : failSeverity(option?.fail ?? step.fail);
+  const severity = cleared ? 'grave' : staffCleared ? 'mild' : hesitated ? worse(failSeverity(option?.fail ?? step.fail)) : failSeverity(option?.fail ?? step.fail);
   // ORDER 305 — kvitt eller dubbelt: en klarad raket tar potten (gånger
   // growth, med sista stegets vinst); ett fel eller tiden ute förlorar den.
   const kvitt = DOUBLE_OR_NOTHING.enabled;
   const payer = payerOf(draft, ctx);
-  const heldLast = answerConsequence(draft, ctx, cleared, guestsIn, chains.length > 0, severity, cleared, incident.id, hesitated, kvitt && cleared && DOUBLE_OR_NOTHING.potHoldsCash);
+  const heldLast = answerConsequence(draft, ctx, cleared || staffCleared, guestsIn, chains.length > 0, severity, cleared, incident.id, hesitated, kvitt && cleared && DOUBLE_OR_NOTHING.potHoldsCash);
   let potRecord: IncidentRecord['pot'];
   if (kvitt && cleared) {
     const pot = growPot(active.pot, step.axis, quality === 'best' ? INCIDENTS.bestAnswerCredit : 0, heldLast, payer);
@@ -1188,6 +1207,8 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
     step: cleared ? null : stepIndex,
     optionId: option?.id ?? null,
     quality: cleared ? 'best' : option ? 'wrong' : 'staff',
+    // ORDER 314 — personalen tog över och klarade det (räknas inte som klarad av spelaren).
+    ...(staffCleared ? { staffCleared: true } : {}),
     situation: active.situation,
     context: ctx,
     at: draft.simTime,
@@ -1253,7 +1274,8 @@ function eventRevealSeconds(active: ActiveIncident, stepIndex: number): number {
 export function countDown(draft: SimulationState, dt: number): 'expired' | 'verdict' | null {
   let inc = draft.incidents;
   if (!inc?.active) return null;
-  let real = dt / Math.max(1, draft.speed);
+  // ORDER 314 — under situationen går spelet i 1× (consequence.ts effectiveSpeed).
+  let real = dt / Math.max(1, effectiveSpeed(draft));
   // ORDER 310b — väntan på avgörandet räknas från trycket, i verklig tid.
   const p = inc.active.pending;
   let verdict = false;

@@ -1745,7 +1745,8 @@ export const TABLE = {
     },
     notes: {
       money: { sv: (rev: string, cost: string) => `Intäkter ${rev} minus inköp, löner och avgifter ${cost}`, en: (rev: string, cost: string) => `Takings ${rev} minus purchases, wages and fees ${cost}` },
-      credits: { sv: 'Rätta svar i raketerna, och Back your knowledge', en: 'Right answers in the rockets, and Back your knowledge' },
+      // ORDER 314 — Stå för ditt svar är borttagen; krediterna kommer ur situationerna.
+      credits: { sv: 'Rätta svar i kvällens situationer', en: 'Right answers in tonight’s situations' },
       reputation: { sv: 'Nöjda gäster höjer, gäster som går sänker', en: 'Happy guests raise it, guests who leave lower it' },
       knowledge: { sv: (r: number, n: number) => `${r} av ${n} steg rätt i kvällens raketer`, en: (r: number, n: number) => `${r} of ${n} ${pl(n, 'step', 'steps')} right in tonight's rockets` },
       experience: { sv: (g: number, rk: number) => `${g} ${pl(g, 'gäst', 'gäster')} serverade, ${rk} ${pl(rk, 'raket', 'raketer')} tagna`, en: (g: number, rk: number) => `${g} ${pl(g, 'guest', 'guests')} served, ${rk} ${pl(rk, 'rocket', 'rockets')} handled` },

@@ -234,9 +234,9 @@ describe('ORDER 270 — en raket', () => {
     let s = openNow(wineBarService(), 'vb09-getosten');
     s = goOn(ans(s, 'c'));
     s = { ...s, knowledgeCredits: { ...s.knowledgeCredits, techne: 3 }, knowledgeTracks: { ...s.knowledgeTracks, techne: { ...s.knowledgeTracks.techne, untagged: 3 } } };
-    // Farten 2: en tick är 0,1 s i verkligheten.
+    // ORDER 314: under situationen går spelet i 1×, så en tick är 0,2 s i verkligheten.
     // ORDER 271: först visas det förra svaret i revealSeconds.
-    const ticks = Math.ceil((s.incidents.active!.secondsTotal + (s.incidents.active!.revealLeft ?? 0)) / (0.2 / 2));
+    const ticks = Math.ceil((s.incidents.active!.secondsTotal + (s.incidents.active!.revealLeft ?? 0)) / 0.2);
     const before = tick(s, ticks - 2);
     expect(before.incidents.active?.step).toBe(1);
     const after = tick(before, 3);

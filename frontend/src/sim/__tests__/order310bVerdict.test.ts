@@ -12,7 +12,7 @@ import { makeNewGameState } from '../../strategic/simulation/model';
 import { firstDayOfWeek } from '../calendar';
 import { DOUBLE_OR_NOTHING, INCIDENTS } from '../balance';
 import { incidentById } from '../incidentBank';
-import { canStartBack, closeIncidents, pendingPhase, rankedStepOption } from '../incidents';
+import { closeIncidents, pendingPhase, rankedStepOption } from '../incidents';
 import type { SimulationState } from '../../strategic/types';
 import { stocked } from '../../strategic/testHarness/stocked';
 import { untilVerdict } from './verdict';
@@ -20,7 +20,9 @@ import { untilVerdict } from './verdict';
 const TICK = { type: 'TICK', dt: 0.2 } as const;
 // Farten 2: en tick är 0,1 s i verkligheten.
 const SPEED = 2;
-const REAL_PER_TICK = TICK.dt / SPEED;
+// ORDER 314 — under situationen går spelet i 1× (consequence.ts effectiveSpeed):
+// en tick är då TICK.dt verkliga sekunder, oavsett spelarens hastighet.
+const REAL_PER_TICK = TICK.dt;
 
 function tick(s: SimulationState, n: number): SimulationState {
   for (let i = 0; i < n; i++) s = reducer(s, TICK);
@@ -155,7 +157,8 @@ describe('ORDER 310b — låset och väntan i simuleringen', () => {
     let s = open;
     let ticks = 0;
     while (s.incidents.active?.id === ID && ticks < 2000) { s = reducer(s, TICK); ticks++; }
-    expect(ticks).toBe(Math.ceil(open.incidents.active!.secondsLeft / REAL_PER_TICK - 1e-9));
+    // ORDER 314 — ±1 tick: 0,2 s dras av hundra gånger i flyttal.
+    expect(Math.abs(ticks - Math.ceil(open.incidents.active!.secondsLeft / REAL_PER_TICK - 1e-9))).toBeLessThanOrEqual(1);
     expect(s.incidents.log.at(-1)).toMatchObject({ id: ID, step: 0, optionId: null, quality: 'staff' });
   });
 
@@ -168,26 +171,5 @@ describe('ORDER 310b — låset och väntan i simuleringen', () => {
     expect(draft.incidents.log.at(-1)).toMatchObject({ id: ID, optionId: 'a', quality: 'wrong' });
   });
 
-  it('en egen raket (Stå för ditt svar) väntar på samma sätt', () => {
-    let s = wineBarService();
-    for (let i = 0; i < 20000 && !canStartBack(s) && s.day.period === 'dinner'; i++) {
-      const a = s.incidents.active;
-      if (a && !a.pending) s = a.choosing ? reducer(s, { type: 'INCIDENT_GO' }) : reducer(s, { type: 'ANSWER_INCIDENT', optionId: best(s) });
-      s = reducer(s, TICK);
-    }
-    s = reducer(s, { type: 'START_BACK' });
-    const a = s.incidents.active!;
-    expect(a.backed).toBe(true);
-    const credits = s.knowledgeCredits;
-    s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: best(s) });
-    expect(pendingPhase(s.incidents.active)).toBe('lock');
-    const waiting = tick(s, ticksFor(INCIDENTS.verdictSeconds) - 2);
-    expect(waiting.incidents.active!.pending).toBeTruthy();
-    expect(waiting.incidents.active!.step).toBe(0);
-    expect(waiting.knowledgeCredits).toEqual(credits);
-    const after = untilVerdict(waiting);
-    expect(after.incidents.active!.backed).toBe(true);
-    expect(after.incidents.active!.choosing).toBe(true);
-    expect(after.incidents.active!.revealed).toMatchObject({ step: 0, cleared: true });
-  });
+  // ORDER 314 — Stå för ditt svar är borttagen; provet med en egen raket är borta.
 });

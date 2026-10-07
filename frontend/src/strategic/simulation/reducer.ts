@@ -6,7 +6,7 @@ import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../..
 import { EQUIPMENT_IDS, GOODS_SUPPLIER_IDS, reputationByTier, equipmentOpened, equipmentOwned, equipmentSpec, equipmentUnlocked, supplierOwned, supplierPrice, supplierUnlocked, type EquipmentId, type GoodsSupplierId } from '../../sim/goods';
 import { CONCEPT, CONSEQUENCES, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
-import { clockMinutes, formatClock, canStartBack, closeIncidents, countDown, isIncidentOpen, lockAnswer, maybeOpenIncident, planIncidents, resolveIncident, settlePendingAnswer, startBack, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
+import { clockMinutes, formatClock, closeIncidents, countDown, isIncidentOpen, lockAnswer, maybeOpenIncident, planIncidents, resolveIncident, settlePendingAnswer, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction, firstExamPassed, investLocked } from '../../sim/introduction';
 import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, openFirstBusiness, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek, isClosed } from '../../sim/economy';
@@ -289,12 +289,6 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       if (!inc || !inc.enabled || inc.queued.includes(action.incidentId)) return state;
       if (!incidentBankFor(state.economy.businessClass).some((i) => i.id === action.incidentId)) return state;
       return { ...state, incidents: { ...inc, queued: [action.incidentId, ...inc.queued] } };
-    }
-    case 'START_BACK': {
-      // ORDER 280 — Back your knowledge: spelaren startar själv en raket.
-      if (!canStartBack(state)) return state;
-      const draft: SimulationState = { ...state, guests: state.guests.map((g) => ({ ...g })) };
-      return startBack(draft) ? draft : state;
     }
     case 'ANSWER_INCIDENT': {
       if (!isIncidentOpen(state)) return state;
@@ -2686,10 +2680,18 @@ function advanceTick(state: SimulationState): SimulationState {
   // Scenario spawning.
   const scenarioGuest = scenarioSpawnStep(draft);
   if (scenarioGuest) {
-    draft.guests.push(scenarioGuest);
     draft.scenario.spawnedRemaining -= 1;
     draft.scenario.nextSpawnAt = draft.simTime + 2.2;
-    draft.scenario.visibleGuestIds.push(scenarioGuest.id);
+    // ORDER 314 — gästerna som en situation släpper in går också genom kön
+    // med taket (QUEUE_CAP): med 4–6 situationer per kväll stod annars fler
+    // sällskap i kön än taket (order296bBalans).
+    const parties = new Set(draft.guests.filter((g) => g.state === 'waiting' || g.state === 'arriving').map((g) => g.partyId ?? g.id));
+    if (parties.size < QUEUE_CAP.maxParties) {
+      draft.guests.push(scenarioGuest);
+      draft.scenario.visibleGuestIds.push(scenarioGuest.id);
+    } else {
+      draft.day = { ...draft.day, turnedAwayFull: (draft.day.turnedAwayFull ?? 0) + 1 };
+    }
   }
   // ORDER 287a — varje gäst som kom får sin typ ur kvällens bokningsbok, och
   // miljardären kommer på sin tid när han valt krogen.

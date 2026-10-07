@@ -137,7 +137,8 @@ describe('ORDER 310b — låset och väntan på kortet och i kolumnen', () => {
     const open = openNow(wineBarService(), ID);
     sim.state = open;
     const { rerender } = render(<IncidentCard />);
-    const waiting = tick(reducer(open, { type: 'ANSWER_INCIDENT', optionId: 'a' }), 20);
+    // ORDER 314 — under situationen går spelet i 1×: tio tickar är 2 s av väntans 3,8 s.
+    const waiting = tick(reducer(open, { type: 'ANSWER_INCIDENT', optionId: 'a' }), 10);
     sim.state = waiting;
     rerender(<IncidentCard />);
     expect(q('pyramid-moment')!.getAttribute('data-phase')).toBe('wait');

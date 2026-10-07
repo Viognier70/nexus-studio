@@ -48,7 +48,6 @@ import { KnowledgeFoundationLayer, openCredits } from './knowledge/ui/KnowledgeF
 import { PrepHint } from './ui/service/PrepHint';
 import { ControlsHint } from './ui/ControlsHint';
 import { DevPanel } from './ui/DevPanel';
-import { EventsPanel } from './ui/service/EventsPanel';
 import { primeStreamAudio } from './ui/streamArrivalCue';
 import { SpeedToggle } from './ui/SpeedToggle';
 import { TopRightMenu } from './ui/TopRightMenu';
@@ -363,7 +362,7 @@ function StrategicShell() {
       />
       <ScenarioOverlay />
       {/* ORDER 280 — händelserna i högerkanten (Designs H1), med Back your knowledge. */}
-      <EventsPanel mode="back" />
+      {/* ORDER 314 — Stå för ditt svar är borttagen (inga egna raketer). */}
       <DayActionBar
         onOpenHouse={() => setHouseOpen(true)}
         onOpenBank={() => setBankOpen(true)}
