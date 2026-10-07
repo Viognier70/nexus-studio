@@ -1,5 +1,6 @@
 // serviceFlow — kvällens koreografi i Vinbaren som händelser i tid.
 import { PLATE_SURFACE, WINE_BAR_PLAN as P } from './wineBarRoom';
+import { BISTRO, BISTRO_RUNWAY_X, bistroGroups, bistroRoute } from './bistroHouse';
 // Nexus v1, efter provspel 2026-09-26: servicen är en följd av händelser.
 //
 // SD-004. Ligger ovanpå wineBarRoom.ts, figureActs.ts och serviceScore.ts
@@ -126,16 +127,41 @@ export const CORR_X = P.corrX;
 const BAR_OPEN_X = P.bar.x0 + 0.4;
 const NORTH_Z = P.lanes.northZ;
 const SOUTH_Z = P.lanes.southZ;
-export const PICKUP_BAR: Vec2 = [CORR_X, P.rackZ + 0.2];
-export const POUR_SPOT: Vec2 = [P.bar.x0 + 0.6, P.runwaySouthZ];
+const WINEBAR_SPOTS = {
+  pickupBar: [CORR_X, P.rackZ + 0.2] as Vec2,
+  pourSpot: [P.bar.x0 + 0.6, P.runwaySouthZ] as Vec2,
+  bottlePickup: [P.wineWallEastX + 0.1, P.runwayNorthZ] as Vec2
+};
+// ORDER 315b del 2 — bistron (bistroHouse.ts): glaset hämtas vid barens norra ände, bartendern
+// häller i gången bakom baren, flaskan står på hyllan.
+const BISTRO_SPOTS = {
+  pickupBar: [(BISTRO.bar.x0 + BISTRO.bar.x1) / 2, BISTRO.bar.z1 + 0.45] as Vec2,
+  pourSpot: [BISTRO_RUNWAY_X, BISTRO.bar.z1 - 0.6] as Vec2,
+  bottlePickup: [BISTRO_RUNWAY_X, BISTRO.bar.z0 + 0.6] as Vec2
+};
+export let PICKUP_BAR: Vec2 = WINEBAR_SPOTS.pickupBar;
+export let POUR_SPOT: Vec2 = WINEBAR_SPOTS.pourSpot;
 /** Sommelierens flaska vid vinväggens östra ände, i norra stråket. */
-export const BOTTLE_PICKUP_AT: Vec2 = [P.wineWallEastX + 0.1, P.runwayNorthZ];
+export let BOTTLE_PICKUP_AT: Vec2 = WINEBAR_SPOTS.bottlePickup;
+
+// ORDER 315b del 2 — rummets möblering: vinbaren eller bistron. Regissören sätter den när
+// rummet monteras (wineBarDirector.ts); personalens vägar och barens platser följer den.
+let FLOW_LAYOUT: 'winebar' | 'bistro' = 'winebar';
+export function setFlowLayout(layout: 'winebar' | 'bistro'): void {
+  FLOW_LAYOUT = layout;
+  const spots = layout === 'bistro' ? BISTRO_SPOTS : WINEBAR_SPOTS;
+  PICKUP_BAR = spots.pickupBar;
+  POUR_SPOT = spots.pourSpot;
+  BOTTLE_PICKUP_AT = spots.bottlePickup;
+}
+export function flowLayout(): 'winebar' | 'bistro' { return FLOW_LAYOUT; }
 
 function inBar(p: Vec2): boolean { return p[0] > P.bar.x0 && p[0] < P.bar.x1 && p[1] > P.bar.z0 + P.bar.depth && p[1] < P.bar.z1 - P.bar.depth; }
 function laneFor(p: Vec2): number { return p[1] > P.bar.z1 - P.bar.depth ? NORTH_Z : SOUTH_Z; }
 
 /** Väg för personal mellan två punkter i rummets lokala XZ. */
 export function staffRoute(from: Vec2, to: Vec2): Vec2[] {
+  if (FLOW_LAYOUT === 'bistro') return bistroRoute(from, to);
   const p: Vec2[] = [from];
   if (inBar(from) && inBar(to)) {
     if (Math.sign(from[1]) !== Math.sign(to[1]) && Math.abs(from[1]) > 0.3) p.push([BAR_OPEN_X, from[1]], [BAR_OPEN_X, to[1]]);
@@ -159,6 +185,8 @@ export function staffRoute(from: Vec2, to: Vec2): Vec2[] {
 export interface Group { id: string; label: string; seats: string[]; serveAt: Vec2; serveFacing: number; kind: 'lounge' | 'two' | 'bar'; tableAt?: Vec2; }
 
 export function groupsFor(room: any): Group[] {
+  // ORDER 315b del 2 — bistron: ett sällskap per bord (bistroHouse.ts bistroGroups).
+  if (room.layout === 'bistro') return bistroGroups().map((g) => ({ ...g }));
   const s = (id: string) => room.seats.find((x: any) => x.id === id);
   const g: Group[] = [];
   [['loungeA', 'Lounge A'], ['loungeB', 'Lounge B']].forEach(function (L) {

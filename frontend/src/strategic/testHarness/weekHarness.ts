@@ -11,6 +11,7 @@
 //
 // En "spelare" är en plan: vad som görs på morgonen varje dag.
 
+import { ladderStep } from '../../sim/ladderStep';
 import { SALVAGE_BEST, SALVAGE_OPTIONS, salvageGroup } from '../simulation/salvage';
 import { reducer } from '../simulation/reducer';
 import { makeNewGameState } from '../simulation/model';
@@ -253,7 +254,7 @@ export function playMorning(s: SimulationState, plan: MorningPlan): SimulationSt
 export function playDay(s: SimulationState, plan: MorningPlan): { state: SimulationState; guests: number } {
   const day = s.day.dayNumber;
   s = playMorning(s, plan);
-  mountRoomLikeScene(s.businessClass);
+  mountRoomLikeScene(s.businessClass, ladderStep(s) === 'bistro' ? 'bistro' : 'winebar');
   const seen = new Set<string>();
   const opened = reducer(s, { type: 'START_SERVICE' });
   if (opened !== s) {

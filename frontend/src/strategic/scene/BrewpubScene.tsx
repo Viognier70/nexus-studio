@@ -51,6 +51,8 @@ import {
   type WineBarRoom,
   type WineWallLevel
 } from './wineBarRoom';
+import type { RoomLayout } from './wineBarRoom';
+import { ladderStep } from '../../sim/ladderStep';
 import { WineBarFigures } from './WineBarFigures';
 import { calendarFor } from '../../sim/calendar';
 import { clockMinutes } from '../../sim/incidents';
@@ -99,6 +101,8 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
   const { camera } = useThree();
   const reducedMotion = usePrefersReducedMotion();
   const isWineBar = roomClass === 'vinbaren';
+  // ORDER 315b del 2 — bistron byggs i vinbarens hus (Designs D7): samma rum, bistrons möblering.
+  const roomLayout: RoomLayout = isWineBar && ladderStep(sim) === 'bistro' ? 'bistro' : 'winebar';
   // ORDER 271 — kvällens stämning och vinväggens läge ur simuleringen.
   const mood = isWineBar ? wineBarMood(sim) : 'tidig';
   const wallLevel: WineWallLevel = sim.medals?.stensota === 'platina' ? 'platina' : 'bas';
@@ -115,7 +119,7 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
     // createRoom via businessRoom-kontraktet. Skickar in width/depth ur
     // interiorLayout så brewpubRoom bygger geometri i samma format
     // sim-lagret räknar i (OBB w869907975).
-    const room = createRoom(roomClass, roomSizeFor(roomClass, layout.width, layout.depth));
+    const room = createRoom(roomClass, { ...roomSizeFor(roomClass, layout.width, layout.depth), layout: roomLayout });
     room.group.position.set(layout.centre[0], 0, layout.centre[1]);
     room.group.rotation.y = -layout.worldAngle;
     grp.add(room.group);
@@ -246,7 +250,7 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
       appliedRef.current = { mood: null, wall: null };
       cutRef.current = { yaw: NaN, x: NaN, z: NaN, d: NaN };
     };
-  }, [isBrewpub, layout, roomClass]);
+  }, [isBrewpub, layout, roomClass, roomLayout]);
 
   useEffect(() => {
     return () => {

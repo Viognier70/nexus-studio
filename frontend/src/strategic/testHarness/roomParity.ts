@@ -28,18 +28,20 @@ import type { SimulationState } from '../types';
 // även i spelet).
 const CONTRACT_ROOMS: readonly SimulationState['businessClass'][] = ['kvarterskrogen', 'ölkrogen', 'vinbaren'];
 
-export function mountRoomLikeScene(businessClass: SimulationState['businessClass']): void {
-  if (businessRoomRef.current?.businessClass === businessClass) return;
+export function mountRoomLikeScene(businessClass: SimulationState['businessClass'], roomLayout: 'winebar' | 'bistro' = 'winebar'): void {
+  // ORDER 315b del 2 — bistron är vinbarens hus med bistrons möblering (31 platser).
+  if (businessRoomRef.current?.businessClass === businessClass && (businessRoomRef.current as { roomLayout?: string }).roomLayout === roomLayout) return;
   businessRoomRef.current = null;
   if (!CONTRACT_ROOMS.includes(businessClass)) return;
   const layout = computePlayerBusinessInterior(businessClass);
   if (!layout) return;
-  const room = createRoom(businessClass, { width: layout.width, depth: layout.depth });
+  const room = createRoom(businessClass, { width: layout.width, depth: layout.depth, layout: roomLayout });
   room.group.position.set(layout.centre[0], 0, layout.centre[1]);
   room.group.rotation.y = -layout.worldAngle;
   const world = resolveWorldPositions(room);
   businessRoomRef.current = {
     businessClass,
+    roomLayout,
     seats: world.seats as [number, number][],
     seatsLocal: room.seats.map((s: { local: [number, number] }) => s.local),
     seatKinds: room.seats.map((s: { kind?: string }) => s.kind ?? ''),

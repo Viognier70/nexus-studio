@@ -200,8 +200,8 @@ const AUDIT_EVERY_FRAMES = 15;
 // ORDER 292 — gästernas frisyrer och bonader (figureProps.ts), mest hår.
 const GUEST_TOPPINGS: readonly HeadToppingId[] = ['shortCut', 'ruffled', 'grayHair', 'shortCut', 'ruffled', 'workCap', 'shortCut', 'grayHair', 'ruffled', 'sunHat', 'shortCut', 'hoodRaised'];
 
-/** Så många gäster kan synas samtidigt: tjugo platser och en kö. */
-export const WINE_BAR_GUEST_POOL = 36;
+/** Så många gäster kan synas samtidigt: platserna och en kö (ORDER 315b del 2: bistrons 31). */
+export const WINE_BAR_GUEST_POOL = 48;
 
 /**
  * ORDER 271 — kvällsljuset i vinbaren (FLAGS.lighting: rummet skapar inga
@@ -577,8 +577,10 @@ export function WineBarFigures({ room, mood }: Props) {
         waitingSpot: room.waitingSpot,
         floorY: room.floorY,
         width: room.width,
-        depth: room.depth
-      },
+        depth: room.depth,
+        // ORDER 315b del 2 — bistrons möblering: personalens vägar och barens platser följer den.
+        layout: room.layout
+      } as ConstructorParameters<typeof WineBarDirector>[0],
       {
         walkPathToSeat: (id) => walkPathToSeat(room, id),
         exitPathFromSeat: (id) => exitPathFromSeat(room, id),
