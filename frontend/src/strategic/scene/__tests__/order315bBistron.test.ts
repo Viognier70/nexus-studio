@@ -25,7 +25,7 @@ const EPS = 0.005;
 const STEP_M = 0.05;
 const FIGURE_HEIGHT_M = 1.8;
 // Möblerna en gående figur inte får gå i: borden, stolarna, bänken, baren och hyllan.
-const FURNITURE = /^(bench\d|four\d|two\d)(Top|Leg|Base)$|^seat_.*(Seat|Back)$|^banquette(Seat|Back)$|^barCounterBistro$|^bistroShelf$|^hostDesk$/;
+const FURNITURE = /^(bench\d|four\d|two\d)(Top|Leg|Base)$|^seat_.*(Seat|Back)$|^banquette(Seat|Back)$|^barCounterBistro$|^bistroShelf$|^hostDesk$|^musicSideboard$/;
 
 function rects(room: WineBarRoom, pick: (o: THREE.Object3D) => boolean): Rect[] {
   room.group.updateWorldMatrix(true, true);
@@ -84,6 +84,9 @@ describe('ORDER 315b del 2 — bistron', () => {
     expect(room.seats.map((s) => s.seatIndex)).toEqual([...Array(31).keys()]);
     expect(room.layout).toBe('bistro');
     expect(furniture.some((f) => f.name === 'barCounterBistro')).toBe(true);
+    // Anders 2026-10-07: musikhörnan med skivspelaren i DJ-hörnets ställe.
+    expect(room.parts.turntable.name).toBe('musicTurntable');
+    expect(furniture.some((f) => f.name === 'musicSideboard')).toBe(true);
   });
 
   it('platserna, personalens platser och arbetsplatserna: inte i väggarna', () => {

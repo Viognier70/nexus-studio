@@ -844,7 +844,7 @@ export const LADDER = {
   carefulWaitDays: 7,
   // ORDER 315b del 2 — Designs D7 (ownerOffer.ts, bistroRefit.ts): bistron är
   // stängd så här många dagar medan vinbaren byggs om, från dagen efter "Ta
-  // över". Talet är D7:s platshållare (prototypen visar 3), valt, inte beslutat.
+  // över". Anders 2026-10-07: tre dagar, och erbjudandekortet säger det i förväg.
   refitDays: 3
 } as const;
 

@@ -35,7 +35,8 @@ export const DIN_VAG_STRINGS: Record<string, { sv: string; en: string }> = {
   'asa.role': { sv: 'Har nycklarna till huset vid torget', en: 'Holds the keys to the building on the square' },
   'asa.line': { sv: '”Jag har pratat med den som äger huset. Vinbaren har gått bra hela sommaren, och nu kan hela huset bli ditt. Vill du ta över och göra en bistro av det?”', en: '“I’ve spoken to the owner of the building. The wine bar has done well all summer, and now the whole building could be yours. Would you like to take it over and make it a bistro?”' },
   'asa.what': { sv: 'Det här betyder det', en: 'What it means' },
-  'asa.row.closed': { sv: 'Stängt i {days} dagar medan ni bygger om', en: 'Closed for {days} days while you rebuild' },
+  // ORDER 315b del 2 — Anders 2026-10-07: kortet säger i förväg hur länge bistron håller stängt.
+  'asa.row.closed': { sv: 'Bistron håller stängt {days} kvällar under ombyggnaden', en: 'The bistro stays closed for {days} evenings during the refit' },
   'asa.row.deposit': { sv: 'Kontantinsats {deposit}, resten lånar du', en: 'A deposit of {deposit}, the rest is a loan' },
   'asa.row.rep': { sv: 'Ryktet följer med, byn känner dig redan', en: 'Your reputation comes with you; the village already knows you' },
   'asa.row.keep': { sv: 'Personalen och allt du kan följer med', en: 'Your staff and everything you know come with you' },

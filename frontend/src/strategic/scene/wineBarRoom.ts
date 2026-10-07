@@ -861,7 +861,8 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
   const dj = new THREE.Group();
   dj.name = 'dj';
   interior.add(dj);
-  // ORDER 315b del 2 — bistron har ingen DJ (D7: DJ:n går ut); delarna finns men syns inte.
+  // ORDER 315b del 2 — bistron har ingen DJ (D7: DJ:n går ut). Anders 2026-10-07: hörnet blir en
+  // musikhörna med skivspelare (byggs nedan, efter möblerna); DJ-podiet syns inte.
   dj.visible = !bistro;
   const pY = Y + DJ.platform;
   rectBox(dj, M.djFront, DJ.x0, DJ.x1, DJ.z0, DJ.z1, Y, pY, 'djPlatform');
@@ -1068,6 +1069,21 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
       pendants.push({ id: 'pendant' + (k + 1), local: [t.at[0], py, t.at[1]] });
     });
   }
+  // ORDER 315b del 2 — bistrons musikhörna i sydöst (Anders 2026-10-07): en skänk mot södra väggen
+  // med skivspelaren och en rad skivor, öster om tvåorna (deras östra stol når x 5,77).
+  const MUSIC = { x0: 6.15, x1: 6.85, z0: -4.8, z1: -4.05 };
+  const musicPlatter = new THREE.Group();
+  if (bistro) {
+    rectBox(furniture, M.bar, MUSIC.x0, MUSIC.x1, MUSIC.z0, MUSIC.z1, Y, Y + 0.75, 'musicSideboard');
+    rectBox(furniture, M.barTop, MUSIC.x0 - 0.02, MUSIC.x1 + 0.02, MUSIC.z0 - 0.02, MUSIC.z1 + 0.02, Y + 0.75, Y + 0.78, 'musicSideboardTop');
+    for (let k = 0; k < 8; k++) rectBox(furniture, bottleMats[k % bottleMats.length], MUSIC.x0 + 0.06 + k * 0.07, MUSIC.x0 + 0.1 + k * 0.07, MUSIC.z0 + 0.08, MUSIC.z0 + 0.4, Y + 0.08, Y + 0.4, 'musicRecord' + k);
+    musicPlatter.name = 'musicTurntable';
+    musicPlatter.position.set((MUSIC.x0 + MUSIC.x1) / 2, Y + 0.8, (MUSIC.z0 + MUSIC.z1) / 2 + 0.1);
+    furniture.add(musicPlatter);
+    put(musicPlatter, box(0.42, 0.06, 0.34), M.dj, 0, 0, 0, 'musicTurntableBase');
+    put(musicPlatter, cyl(0.15, 0.02, 16), M.dj, -0.04, 0.04, 0, 'musicPlatter');
+    put(musicPlatter, box(0.03, 0.02, 0.2), M.brass, 0.14, 0.05, 0.02, 'musicTonearm');
+  }
   // Klädhängaren vid dörren — dit "på väg att gå" tittar.
   rectBox(furniture, M.brass, inX - 0.12, inX - 0.06, 1.1, 2.3, Y + 1.7, Y + 1.74, 'coatRail');
   rectBox(furniture, M.brass, inX - 0.12, inX - 0.06, 1.1, 1.14, Y, Y + 1.74, 'coatRailPostA');
@@ -1134,7 +1150,7 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
     // ände, DJ:ns plats (ingen DJ i bistron) i hörnet söder om dörren.
     if (bistro && st.id === 'bartender') return [BISTRO_RUNWAY_X, (BISTRO.bar.z0 + BISTRO.bar.z1) / 2];
     if (bistro && st.id === 'sommelier') return [(BISTRO.bar.x0 + BISTRO.bar.x1) / 2, BISTRO.bar.z1 + 0.5];
-    if (bistro && st.id === 'dj') return [6.5, -3.0];
+    if (bistro && st.id === 'dj') return [6.5, -3.4];
     if (st.id === 'bartender') return [st.local[0], RACK_Z - BARTENDER_FROM_RACK];
     if (st.id === 'sommelier') return [st.local[0], RACK_Z + LANE_FROM_RACK];
     return [st.local[0], st.local[1]];
@@ -1149,7 +1165,7 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
   });
 
   const parts: RoomParts = {
-    turntable: turntable, roof: roof, walls: walls, wallUpper: wallUpper, interior: interior, bar: bar,
+    turntable: bistro ? musicPlatter : turntable, roof: roof, walls: walls, wallUpper: wallUpper, interior: interior, bar: bar,
     wineWall: wineWall, shelfTargets: shelfTargets, djTarget: djTarget, flames: flames,
     weekendCandles: weekendCandles, djGlow: M.djGlow,
     glassAnchor: glassAnchor, passAnchor: passAnchor, bottleAnchor: bottleAnchor
@@ -1188,7 +1204,7 @@ export function setRefitPhase(room: WineBarRoom, phase: number): void {
     furniture.children.forEach(function (o) {
       const isCandle = o.name.startsWith('candle_');
       const isPendant = o.name.startsWith('bistroPendant');
-      const keep = /^(pavement|kerb|easel|menuBoard|coatRail|hostDesk)/.test(o.name);
+      const keep = /^(pavement|kerb|easel|menuBoard|coatRail|hostDesk|music)/.test(o.name);
       o.visible = keep || (built && (!isCandle || done || phase >= 3) && (!isPendant || done || phase >= 4));
     });
   }
