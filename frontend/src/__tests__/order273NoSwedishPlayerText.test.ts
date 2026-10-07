@@ -53,6 +53,8 @@ const NOT_PLAYER_TEXT = [
   // ORDER 290 — Designs strängtabeller (sv och en sida vid sida), inslagna i
   // STRINGS i nexusStrings.ts.
   /^content\/design\/[A-Za-z]+Strings\.ts$/,
+  // ORDER 316 — fikats dilemman (sv och en sida vid sida), inslagna i TABLE.
+  /^content\/fikaStrings\.ts$/,
   // Designs tokens för rätt och fel (anteckningar om vad som ersätts, visas inte).
   /^ui\/theme\/nexusTheme\.warm\.rattfel\.ts$/,
   /^strategic\/scene\/[A-Za-z.]+\.ts$/,

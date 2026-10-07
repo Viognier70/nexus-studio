@@ -1813,6 +1813,47 @@ export const STAFF_CONDITION = {
   areaByTrack: { sommellerie: 'vin', kok: 'mat' } as Record<string, string>
 } as const;
 
+// ORDER 316 — fikat efter stängning (Anders 2026-10-07, BESLUT del 1): ett
+// dilemma från en i personalen, högst ett per kväll, utlöst av något som hänt.
+// Talen är förslaget i utkastet, godtagna som utgångspunkt för kalibreringen.
+// En "poäng" trivsel är wellbeingPerPoint på skalan 0–1 (STAFF_CONDITION),
+// en poäng lojalitet loyaltyPerPoint. Den som frågade påverkas dubbelt.
+export const FIKA = {
+  section: 'Servicen > Personalen',
+  wellbeingPerPoint: 0.03,
+  loyaltyPerPoint: 0.05,
+  loyaltyStart: 0.6,
+  // Väl grundat, delvis grundat, svagt grundat.
+  wellbeing: { well: 2, partly: 1, weakly: -2 },
+  loyalty: { well: 1, partly: 0, weakly: -1 },
+  credits: { well: 3, partly: 1, weakly: 0 },
+  // "Gå hem": hela laget −1 i trivsel.
+  goHomeWellbeing: -1,
+  // Samma dilemma tidigast efter två veckor (BESLUT del 1, fråga 2).
+  repeatAfterDays: 14,
+  // Utlösarna (sim/fika.ts triggerHolds). Orken och trivseln satta efter vad
+  // spelet når vid stängning (reports/order316/utlosare.json): orken
+  // 0,92–1,0 och trivseln 0,75–0,99 i vinbaren. Trivseln under vilovärdet
+  // (STAFF_CONDITION.wellbeing.restingValue 0,75), så att ett vanligt lag inte räknas.
+  tipsAtLeastSek: 600,
+  lowWellbeingBelow: 0.7,
+  lowStaminaBelow: 0.94,
+  tiredTeamBelow: 0.95,
+  // Ekonomin i dilemmana (content/fika/dilemmas.ts economy).
+  economy: {
+    discardGoodsSek: 900,
+    discardSomeGoodsSek: 600,
+    extraHandSek: 500,
+    // Tillsynen kommer oftare de närmaste kvällarna: andelen av kvällens
+    // situationer som blir tillsynen när den kan komma.
+    inspectionEvenings: 3,
+    inspectionShare: 0.35,
+    // Risken att den som frågade säger upp sig eller blir sjuk: lojaliteten
+    // sjunker kraftigt (poäng utöver nivåns).
+    quitRiskLoyalty: -3
+  }
+} as const;
+
 // ORDER 287a — gästen med socialt kapital sprider ryktet (speldesign >
 // Servicen > Gästerna: "drar fler gäster om de behandlas väl"). Nöjd när
 // hen går: fler gäster de närmaste kvällarna (marknadens tak gånger

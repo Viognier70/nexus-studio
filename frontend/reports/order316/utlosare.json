@@ -1,0 +1,53 @@
+{
+  "definition": "Den bästa spelaren i vinbaren (brons i tre), fyra veckor per frö. evenings: kvällar med service; none: kvällar utan dilemma; counts: kvällens dilemma; elig: dilemman vars utlösare höll (sim/fika.ts eligibleDilemmas); staminaMin/staminaMean/wellbeingMin: personalens lägsta ork, lagets snittork och lägsta trivsel vid stängning, som [min, 10 %, median, max].",
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "weeks": 4,
+  "evenings": 72,
+  "none": 24,
+  "counts": {
+    "fika-aldre": 6,
+    "fika-dricksen": 6,
+    "fika-bordet": 6,
+    "fika-kylen": 6,
+    "fika-baren": 6,
+    "fika-golvet": 5,
+    "fika-allergin": 1,
+    "fika-gransen": 4,
+    "fika-diskaren": 4,
+    "fika-passen": 4
+  },
+  "elig": {
+    "fika-kylen": 19,
+    "fika-dricksen": 9,
+    "fika-gransen": 13,
+    "fika-aldre": 13,
+    "fika-diskaren": 7,
+    "fika-passen": 13,
+    "fika-golvet": 12,
+    "fika-bordet": 10,
+    "fika-baren": 10,
+    "fika-allergin": 1
+  },
+  "staminaMin": [
+    0.922,
+    0.937,
+    0.958,
+    1
+  ],
+  "staminaMean": [
+    0.922,
+    0.937,
+    0.958,
+    1
+  ],
+  "wellbeingMin": [
+    0.75,
+    0.867,
+    0.965,
+    0.985
+  ]
+}

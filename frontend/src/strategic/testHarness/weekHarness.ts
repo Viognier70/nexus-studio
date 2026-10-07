@@ -23,6 +23,8 @@ import { rankedScenarioChoice } from '../simulation/scenarios';
 import { incidentById } from '../../sim/incidentBank';
 import { packagesFor } from '../simulation/packages';
 import { rankedStepOption } from '../../sim/incidents';
+import { fikaTonight } from '../../sim/fika';
+import { dilemmaById } from '../../content/fika/dilemmas';
 import type { PavilionKey, ScenarioChoice, SimAction, SimulationState } from '../types';
 
 // Simuleringens tick är 0,2 s (5 Hz), samma som SimulationProvider.
@@ -188,6 +190,19 @@ function answer(s: SimulationState, correctCount: number): SimulationState {
   return reducer(s, { type: 'CLOSE_VISIT' });
 }
 
+// ORDER 316 — fikat efter stängning: spelaren svarar på kvällens dilemma som
+// på situationerna (den bästa väl grundat, den sämsta svagt grundat). Den som
+// ignorerar svarar inte, och dilemmat räknas som Gå hem när kvällen tar slut.
+export function answerFika(s: SimulationState, given: ScenarioAnswer): SimulationState {
+  const tonight = fikaTonight(s);
+  if (!tonight || tonight.answer !== null || given === 'ignore') return s;
+  const dilemma = dilemmaById(tonight.dilemmaId);
+  if (!dilemma) return s;
+  const want = resolveAnswer(given, s.day.dayNumber + 0.5, s.seed ?? 0) === 'best' ? 'well' : 'weakly';
+  const option = dilemma.options.find((o) => o.grade === want) ?? dilemma.options[0];
+  return reducer(s, { type: 'FIKA_ANSWER', optionId: option.id });
+}
+
 export function playMorning(s: SimulationState, plan: MorningPlan): SimulationState {
   for (const e of plan.exams ?? []) {
     s = reducer(s, { type: 'VISIT_PAVILION', pavilion: e.pavilion, mode: 'exam' });
@@ -236,6 +251,7 @@ export function playDay(s: SimulationState, plan: MorningPlan): { state: Simulat
     s = reducer(s, { type: 'CLOSE_DAY' });
   }
   if (s.day.period === 'evening') {
+    s = answerFika(s, plan.scenarioAnswer ?? 'best');
     s = reducer(s, { type: 'END_EVENING' });
   }
   s = tickUntil(s, (x) => x.day.dayNumber > day && (x.day.period === 'morning'));
