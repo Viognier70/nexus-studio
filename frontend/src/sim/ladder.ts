@@ -15,7 +15,7 @@
 // Stjärnan delas bara ut från bistron (LadderStep.starsPossible).
 
 import type { BusinessClassId } from './balance';
-import { FLOOR, LADDER, MEDAL_LEVELS, ECONOMY, LOAN, TEAM_BY_CLASS } from './balance';
+import { FLOOR, FOODTRUCK, LADDER, MEDAL_LEVELS, ECONOMY, LOAN, TEAM_BY_CLASS } from './balance';
 import { teamForClass } from '../strategic/simulation/team';
 import { ladderOf, nextStep, refitClosedToday, stepSpec, type LadderOffer, type LadderState, type PlayableStep, type StepRequirement } from './ladderStep';
 export * from './ladderStep';
@@ -29,13 +29,34 @@ export function requirementFor(step: PlayableStep): StepRequirement | null {
   return LADDER.requirements[step] ?? null;
 }
 
+/** ORDER 315c — klarade situationer i foodtrucken (halvt grepp räknas som FOODTRUCK.halfGripCounts). */
+export function truckSituations(state: Pick<SimulationState, 'ladder'>): number {
+  return state.ladder?.truckSituations ?? 0;
+}
+
+/** ORDER 315c — kvällar i foodtrucken (FOODTRUCK.offerMinEvenings). */
+export function truckEvenings(state: Pick<SimulationState, 'ladder'>): number {
+  return state.ladder?.truckEvenings ?? 0;
+}
+
+/** Bokför en avslutad situation i foodtrucken (sim/incidents.ts). Muterar draft. */
+export function countTruckSituation(draft: SimulationState, cleared: boolean, half: boolean): void {
+  if (draft.economy.businessClass !== 'foodtruck' || !cleared) return;
+  const ladder = ladderOf(draft);
+  if (!ladder) return;
+  draft.ladder = { ...ladder, truckSituations: (ladder.truckSituations ?? 0) + (half ? FOODTRUCK.halfGripCounts : 1) };
+}
+
 const rank = (level: string | undefined) => (level ? MEDAL_LEVELS.indexOf(level as (typeof MEDAL_LEVELS)[number]) + 1 : 0);
 
 /** Vilka krav som saknas för steget (tom lista: uppfyllda). */
-export function missingFor(state: SimulationState, step: PlayableStep): Array<'cash' | 'reputation' | 'medals'> {
+export function missingFor(state: SimulationState, step: PlayableStep): Array<'cash' | 'reputation' | 'medals' | 'situations' | 'evenings'> {
   const req = requirementFor(step);
   if (!req) return [];
-  const out: Array<'cash' | 'reputation' | 'medals'> = [];
+  const out: Array<'cash' | 'reputation' | 'medals' | 'situations' | 'evenings'> = [];
+  // ORDER 315c (Anders 2026-10-07) — vinbaren kräver klarade situationer i foodtrucken.
+  if (step === 'vinbar' && truckSituations(state) < FOODTRUCK.offerMinSituations) out.push('situations');
+  if (step === 'vinbar' && truckEvenings(state) < FOODTRUCK.offerMinEvenings) out.push('evenings');
   if (state.cash < req.cashSek) out.push('cash');
   if (state.reputation < req.reputationAtLeast) out.push('reputation');
   if (!req.medalsRequired.every((m) => rank(state.medals[m.pavilion as PavilionKey]) >= rank(m.level))) out.push('medals');
@@ -82,6 +103,11 @@ export function offerAtNight(state: SimulationState): SimulationState {
  * afterHoursFika.ts FIKA_RULES.notWith).
  */
 export function offerAtClose(draft: SimulationState): boolean {
+  // ORDER 315c — kvällen räknas innan kraven prövas (golvet i tid för vinbaren).
+  if (draft.economy.businessClass === 'foodtruck') {
+    const l = ladderOf(draft);
+    if (l) draft.ladder = { ...l, truckEvenings: (l.truckEvenings ?? 0) + 1 };
+  }
   const before = ladderOf(draft)?.offer ?? null;
   const after = offerAtNight(draft);
   const offer = after.ladder?.offer ?? null;

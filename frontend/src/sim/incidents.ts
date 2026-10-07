@@ -22,6 +22,7 @@
 //
 // Talen står i `balance.ts` `INCIDENTS`; händelserna i händelsebanken.
 
+import { countTruckSituation } from './ladder';
 import { prefersInspection } from './fika';
 import type { ConsequenceSeverity, Guest, GuestType, KnowledgeAxis, RoomReaction, SimulationState, StaffRole, YrkesSpar } from '../strategic/types';
 import { applyAnswerMood } from './guestMood';
@@ -1231,6 +1232,8 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
     },
     pot: potRecord
   };
+  // ORDER 315c — klarade situationer i foodtrucken; ett "ok" i sista steget räknas som halvt grepp.
+  countTruckSituation(draft, cleared, quality === 'ok');
   draft.incidents = {
     ...now,
     active: null,

@@ -5,13 +5,13 @@
 // på en lina. Klara steg i guld med en bock, där spelaren står på papper med
 // sken och "Du är här", nästa steg med guldkant, låsta steg streckade med
 // "Kommer senare". Kortet under linan visar nästa stegs tre krav, kassa,
-// rykte och medalj, med en stapel och brickan Klart eller Inte klart; inget
+// rykte och medalj (ORDER 315c: och för vinbaren de klarade situationerna i foodtrucken), med en stapel och brickan Klart eller Inte klart; inget
 // rött eller grönt, eftersom det inte är ett svar. Kraven läses ur
 // sim/ladder.ts (balance.ts LADDER), inte ur Designs platshållare.
 
 import { useLanguage } from '../../content/language';
-import { LADDER } from '../../sim/balance';
-import { ladderStep, missingFor, nextStep, requirementFor, type PlayableStep } from '../../sim/ladder';
+import { FOODTRUCK, LADDER } from '../../sim/balance';
+import { ladderStep, missingFor, nextStep, requirementFor, truckEvenings, truckSituations, type PlayableStep } from '../../sim/ladder';
 import { t as tt, type StringKey } from '../../content/nexusStrings';
 import { strings } from '../../content/strings';
 import type { SimulationState } from '../types';
@@ -56,7 +56,10 @@ export function DinVag({ sim }: { sim: SimulationState }) {
   const rows = req ? [
     { kind: 'cash', label: S('path.req.cash'), value: S('path.req.of', { have: kr(sim.cash), need: kr(req.cashSek) }), progress: req.cashSek > 0 ? sim.cash / req.cashSek : 1, met: !missing.includes('cash') },
     { kind: 'rep', label: S('path.req.rep'), value: S('path.req.of', { have: Math.round(sim.reputation * REP_SCALE), need: Math.round(req.reputationAtLeast * REP_SCALE) }), progress: req.reputationAtLeast > 0 ? sim.reputation / req.reputationAtLeast : 1, met: !missing.includes('reputation') },
-    { kind: 'medal', label: S('path.req.medal'), value: req.medalsRequired.map(medalName).join(', '), progress: medalShare(req.medalsRequired), met: !missing.includes('medals') }
+    { kind: 'medal', label: S('path.req.medal'), value: req.medalsRequired.map(medalName).join(', '), progress: medalShare(req.medalsRequired), met: !missing.includes('medals') },
+    // ORDER 315c (Anders 2026-10-07) — vinbaren kräver klarade situationer i foodtrucken.
+    ...(next === 'vinbar' ? [{ kind: 'evenings', label: S('path.req.evenings'), value: S('path.req.of', { have: Math.min(truckEvenings(sim), FOODTRUCK.offerMinEvenings), need: FOODTRUCK.offerMinEvenings }), progress: truckEvenings(sim) / FOODTRUCK.offerMinEvenings, met: !missing.includes('evenings') }] : []),
+    ...(next === 'vinbar' ? [{ kind: 'situations', label: S('path.req.situations'), value: S('path.req.of', { have: truckSituations(sim).toLocaleString(lang === 'sv' ? 'sv-SE' : 'en-GB'), need: FOODTRUCK.offerMinSituations }), progress: truckSituations(sim) / FOODTRUCK.offerMinSituations, met: !missing.includes('situations') }] : [])
   ] : [];
   return (
     <section className="nx-paper nx-dinvag" data-testid="din-vag" aria-label={S('path.title')}>

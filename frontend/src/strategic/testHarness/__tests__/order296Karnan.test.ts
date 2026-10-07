@@ -15,9 +15,11 @@
 //
 //   WRITE_REPORTS=1 KARNAN_SEEDS=20 [KARNAN_START=25000] [KARNAN_VARIANT='{"RISK":{...}}'] npx vitest run src/strategic/testHarness/__tests__/order296Karnan.test.ts
 
+import { rankedVillage } from '../../scenario/CompareScreen';
+import { PLAYER_VENUE } from '../../../sim/village';
 import { describe, expect, it } from 'vitest';
 import { makeNewGameState } from '../../simulation/model';
-import { playDay, playMorning, type MorningPlan } from '../weekHarness';
+import { playDay, playMorning, startInFoodtruck, type MorningPlan } from '../weekHarness';
 import { weakMorning } from '../scenarios';
 import { PLAYERS } from '../randomness';
 import { calendarFor, firstDayOfWeek } from '../../../sim/calendar';
@@ -77,6 +79,18 @@ function correctCount(s: SimulationState, p: number): number {
   for (let i = 0; i < EXAM.questionsDrawn; i++) if (hashKey(s.seed ?? 0, `${i * 7919 + s.day.dayNumber}|exam`) < p) n++;
   return n;
 }
+// ORDER 315c — vägen till bistron (balance.ts LADDER.requirements.bistro): silver i Metodköket
+// och brons i Stensöta. Den kloka och mentorn tar dem (Anders 2026-10-07: "nå bistron och vara
+// bland de tre bästa"), med kunskapen LADDER_SKILL.
+const BISTRO_PATH: { pavilion: PavilionKey; level: MedalLevelId }[] = [
+  { pavilion: 'stensota', level: 'brons' },
+  { pavilion: 'metodkoket', level: 'silver' }
+];
+const LADDER_SKILL = Number(process.env.LADDER_SKILL ?? 0.8);
+function nextBistroExam(s: SimulationState): MorningPlan['exams'] {
+  const next = BISTRO_PATH.find((p) => (RANK[s.medals[p.pavilion] ?? ''] ?? 0) < RANK[p.level]);
+  return next ? [{ pavilion: next.pavilion, correct: correctCount(s, LADDER_SKILL) }] : [];
+}
 function nextStarExam(s: SimulationState): MorningPlan['exams'] {
   const next = STAR_PATH.find((p) => (RANK[s.medals[p.pavilion] ?? ''] ?? 0) < RANK[p.level]);
   if (!next) return [];
@@ -94,11 +108,11 @@ const PLANS: Record<PlayerId, (s: SimulationState) => MorningPlan> = {
   // ORDER 307b — bistro: baspaketet (nivå 0,74) med ROCKET_SKILL rätt per steg.
   bistro: (s0) => ({ scenarioAnswer: 'skill', pins: 'wise', exams: nextStarExam(s0), actions: (s) => [...wiseShop(), ...hand(s)] }),
   soigne: (s0) => ({ stock: 'none', scenarioAnswer: 'skill', pins: 'wise', exams: nextStarExam(s0), actions: (s) => [...wiseShop(), { type: 'BUY_ITEMS', items: SOIGNE_BASKET }, ...hand(s)] }),
-  mentorn: () => ({ actions: hand }),
+  mentorn: (s0) => ({ actions: hand, exams: nextBistroExam(s0) }),
   // ORDER 296c (Vision Owner 2026-10-02): "en spelare som väljer klokt på
   // nålarna och i butiken, och en som låter Per välja allt". Båda har
   // mentorns morgon; Per-spelaren är densamma som mentorns.
-  klok: () => ({ actions: (s) => [...wiseShop(), ...hand(s)], pins: 'wise' }),
+  klok: (s0) => ({ actions: (s) => [...wiseShop(), ...hand(s)], pins: 'wise', exams: nextBistroExam(s0) }),
   per: () => ({ actions: hand }),
   // ORDER 296d (Vision Owner 2026-10-02): "en spelare som siktar på stjärnan:
   // tar paviljongerna mot guld i Teatern och väljer klokt." Som den kloka,
@@ -129,8 +143,15 @@ function withTasting(s: SimulationState, plan: MorningPlan): MorningPlan {
 interface Week { week: number; credits: number; resultSek: number; revenueSek: number; rentSek: number; wagesSek: number; cashEnd: number; targetSek: number; targetHit: boolean; renegotiatedNow: boolean; closedNow: boolean }
 interface Morning { week: number; weekday: string; needMin: number; capacityMin: number; backlogMin: number; hand: boolean; booked: number; rep: number; concept: string | null }
 
+// ORDER 315c — säsongen börjar som spelarens: i foodtrucken efter inträdesprovet (Åsas
+// erbjudande, startInFoodtruck), med baslinjens medaljer. KARNAN_START=vinbar ger den
+// tidigare starten i vinbaren.
+const START_IN = process.env.KARNAN_START ?? 'foodtruck';
+// Från den här veckan räknas platsen i byn (efter stegen i foodtrucken och vinbaren).
+const TOP_FROM_WEEK = 4;
+
 function season(seed: number, player: PlayerId, weeks: number, start: number | null) {
-  let s: SimulationState = makeNewGameState(seed);
+  let s: SimulationState = START_IN === 'foodtruck' ? startInFoodtruck(seed, firstDayOfWeek(1)) : makeNewGameState(seed);
   s = { ...s, ...(start !== null ? { cash: start } : {}), medals: { ...PLAYERS.baseline }, day: { ...s.day, dayNumber: firstDayOfWeek(1) } };
   const startCash = s.cash;
   const out: Week[] = [];
@@ -143,6 +164,9 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
   let goldWeek: number | null = null;
   let tastings = 0;
   const starWeeks: { week: number; held: boolean; reputation: number; judgement: number; stepShare: number; rockets: number }[] = [];
+  // ORDER 315c — spelarens plats i byn varje kväll (kvällens jämförelse: nöjda gäster, sedan intäkten;
+  // scenario/CompareScreen.tsx rankedVillage), från veckoavräkningens kvällar.
+  const villageRanks: { week: number; rank: number; of: number }[] = [];
   for (let d = 0; d < weeks * 7; d++) {
     const cal = calendarFor(s.day.dayNumber);
     const plan = withTasting(s, PLANS[player](s));
@@ -172,6 +196,12 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
       weekStartCash = s.cash;
       if (st.star?.earnedNow && starWeek === null) starWeek = st.week;
       if (goldWeek === null && s.medals.gastronomiskateatern === 'guld') goldWeek = st.week;
+      for (const ev of st.evenings ?? []) {
+        if (!ev.village || ev.village.length < 2) continue;
+        const ranked = rankedVillage(ev.village);
+        const at = ranked.findIndex((r) => r.id === PLAYER_VENUE);
+        if (at >= 0) villageRanks.push({ week: st.week, rank: at + 1, of: ranked.length });
+      }
       starWeeks.push({ week: st.week, held: !!st.star?.held, reputation: +(st.star?.reputation ?? 0).toFixed(3), judgement: +(st.star?.judgement ?? 0).toFixed(2), stepShare: +(st.star?.stepShare ?? 0).toFixed(2), rockets: st.star?.rockets ?? 0 });
       if (st.closedNow) break;
     }
@@ -180,7 +210,7 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
   const reached = s.ladder?.reachedOnDay ?? {};
   const weekOf = (d: number | undefined) => (d === undefined ? null : calendarFor(d).absoluteWeek);
   const ladderWeeks = { vinbar: weekOf(reached.vinbar), bistro: weekOf(reached.bistro), step: s.ladder?.step ?? s.economy.businessClass };
-  return { ladderWeeks, startCash, weeks: out, mornings, closedWeek: s.economy.risk?.closedWeek ?? null, renegotiated: !!s.economy.risk?.renegotiated, owned: s.shop?.owned ?? [], star: !!s.star?.held, starWeek, goldWeek, starWeeks, tastings };
+  return { villageRanks, ladderWeeks, startCash, weeks: out, mornings, closedWeek: s.economy.risk?.closedWeek ?? null, renegotiated: !!s.economy.risk?.renegotiated, owned: s.shop?.owned ?? [], star: !!s.star?.held, starWeek, goldWeek, starWeeks, tastings };
 }
 
 describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
@@ -230,6 +260,12 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
           bistroWeeks: runs.map((r) => r.ladderWeeks.bistro).filter((w): w is number => w !== null),
           finalSteps: runs.map((r) => r.ladderWeeks.step)
         },
+        // ORDER 315c — "bland de tre bästa": andelen kvällar från vecka TOP_FROM_WEEK där spelaren
+        // är bland de tre främsta i byn, och medelplatsen.
+        village: (() => {
+          const late = runs.flatMap((r) => r.villageRanks.filter((v) => v.week >= TOP_FROM_WEEK));
+          return { evenings: late.length, topThreeShare: late.length ? +(late.filter((v) => v.rank <= 3).length / late.length).toFixed(2) : null, meanRank: late.length ? +(late.reduce((a, v) => a + v.rank, 0) / late.length).toFixed(2) : null };
+        })(),
         stars: runs.filter((r) => r.star).length,
         starEarned: runs.filter((r) => r.starWeek !== null).length,
         starWeeks: runs.map((r) => r.starWeek).filter((w): w is number => w !== null),

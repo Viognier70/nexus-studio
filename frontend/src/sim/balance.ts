@@ -860,7 +860,18 @@ export const FOODTRUCK = {
   goodsShare: 0.35,
   unpaidRoles: ['kock'] as readonly StaffRole[],
   pitchFeeWeeklySek: 1500,
-  guestCapFactor: 7,
+  // ORDER 315c (Anders 2026-10-07) — erbjudandet om vinbaren kräver minst så här många klarade
+  // situationer i foodtrucken (halvt grepp räknas som 0,5; sim/ladder.ts truckSituations).
+  // 8 → 6 efter harness (Anders 2026-10-07).
+  offerMinSituations: 6,
+  // ORDER 315c (Anders 2026-10-07) — golvet i tid: erbjudandet om vinbaren kommer tidigast
+  // efter så här många kvällar i foodtrucken (sim/ladder.ts truckEvenings). Mål: 0,85 når
+  // vinbaren vecka 2–3.
+  offerMinEvenings: 10,
+  halfGripCounts: 0.5,
+  // ORDER 315c — 7 → 4,5: 0,85 tjänar omkring 11 000 kr i veckan (förslaget: 12 000) och ryktet
+  // håller sig när kön inte är längre än två hinner med (harness, reports/order315c/).
+  guestCapFactor: 4.5,
   // Kön vid luckan per person i laget (strategic/business/businessClass.ts), som förut.
   queuePerStaff: 3
 } as const;

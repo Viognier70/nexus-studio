@@ -64,6 +64,9 @@ export const STRINGS = {
   ...D6_STRINGS,
   // ORDER 315b del 2 — Designs D7 med tillägget (vagnen, Din väg, Åsas erbjudande, ombyggnaden, fikat, nivåerna).
   ...DIN_VAG_STRINGS,
+  // ORDER 315c — vinbarens krav på klarade situationer i foodtrucken (FOODTRUCK.offerMinSituations).
+  'path.req.situations': { sv: 'Situationer', en: 'Situations' },
+  'path.req.evenings': { sv: 'Kvällar i vagnen', en: 'Evenings at the truck' },
   // CLAUDE.md regel 7: Måltidens hus heter "the House of the Meal" på engelska.
   'sender.house': { sv: 'Måltidens hus', en: 'The House of the Meal' },
   'course.kicker': { sv: 'Kurs i Måltidens hus', en: 'Course at the House of the Meal' },
