@@ -286,7 +286,7 @@ Följden av fel i steg 2 tar varken kassa eller ork. Den har flyttats till felsv
 - **vb32:** orken (−0,05) ligger på stegets egen följd i steg 3, den som gäller när tiden går ut. vb32 har två hela grepp och inget felsvar i steg 3.
 - **Testet** `steg 2 tar varken kassa eller ork` prövar alla 24 situationer i formen analys → upplevelse → handling, i vinbaren och i foodtrucken.
 
-**Inte flyttat: situationerna i den gamla formen.** Där är steg 2 handlingen (techne), inte upplevelsen. 27 av vinbarens situationer i den gamla formen, menyns nio och kriserna drar kassa eller ork i steg 2, till exempel de krossade flaskorna i vb26 (−0,4). Regeln "steg 2 påverkar bara stämningen och ryktet" gäller steget om upplevelsen, och jag tolkade den så. Säg till om den också ska gälla handlingen i den gamla formen. Då flyttas följden till phronesis-steget, som där är steg 3.
+**Inte flyttat: situationerna i den gamla formen.** Där är steg 2 handlingen (techne), inte upplevelsen. 23 av vinbarens 29 situationer i den gamla formen, menyns nio och kriserna drar kassa eller ork i steg 2, till exempel de krossade flaskorna i vb26 (−0,4). Regeln "steg 2 påverkar bara stämningen och ryktet" gäller steget om upplevelsen, och jag tolkade den så. Säg till om den också ska gälla handlingen i den gamla formen. Då flyttas följden till phronesis-steget, som där är steg 3.
 
 ### Texten i spelet
 
