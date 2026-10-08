@@ -288,6 +288,8 @@ Förebilden är *Two Point Hospital* och *Game Dev Tycoon*: att flytta till stö
 
 *Beslut 2026-10-07 (Vision Owner, platsen och vädret vid vagnen):* vagnen har en uteservering med ståbord, en bänk, marschaller och en värmare. De som äter står vid borden, torkar sig med servetten och slänger den i sopkorgen innan de går; när det är mycket folk blir skräp kvar på borden, och medhjälparen städar när kön är kort, annars spelaren. Vädret är ett per kväll och syns på morgonen. Sol ger fler förbipasserande, regn färre och gästerna äter under markisen, blåsten tar servetterna och en sval kväll samlas gästerna kring värmaren och de nyfikna frågar om kylan. Medhjälparen tänder marschallerna och luckan står tom så länge, så medhjälparen väntar när kön är lång.
 
+*Beslut 2026-10-08 (Vision Owner, situationerna vid vagnen):* foodtrucken har sex situationer till i formen analys, upplevelse och handling: regnet, getingen, kortläsaren, korven som tar slut, hunden och Grillvagnen som sänker priset. Var och en utlöses av något som syns i bild innan kortet kommer. Samma situation kommer inte två kvällar i rad om det finns andra att välja. I hundens situation döljs bara lagtexten tills den är granskad. Talen i räkneuppgifterna står i balance.ts: halv special 35 kr, inköpet 12 kr och Grillvagnens nya pris 25 kr; korven tar slut när 12 finns kvar och 9 står i kön. Vegokorv, mild senap och kaffe står på skylten.
+
 ## Servicen
 
 Servicen är slumpen, viktad av spelarens förberedelser. Det spelaren gjort på morgonen, och det hon kan, avgör hur ofta saker går rätt. Hon ser konsekvenserna i rummet, inte i siffertavlor.

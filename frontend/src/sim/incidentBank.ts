@@ -103,6 +103,13 @@ export interface IncidentSituationalOption {
 export interface StepOptionMeta {
   id: string;
   quality: AnswerQuality;
+  // ORDER 306b — steg 3: ett ok-svar är halvt grepp mot analysen eller upplevelsen (A2, A8),
+  // och valet kan kosta kronor (A7).
+  grip?: 'analysis' | 'experience';
+  cost?: number;
+  // ORDER 320 — förklaringen till svaret är lagtext (⚖): den döljs tills situationen är granskad
+  // (IncidentMeta.legalText), men svaret och situationen visas.
+  legalText?: boolean;
   // Läge → annan kvalitet (händelsens `situations`).
   in?: Record<string, IncidentSituationalOption>;
   fail?: IncidentOutcomeMeta;
@@ -159,14 +166,21 @@ export interface IncidentMeta {
   // ORDER 306b/319a.3 — 'triad': stegen i ordningen analys → upplevelse → handling
   // (INCIDENTS.stepAxesTriad). Utan form gäller INCIDENTS.stepAxes.
   form?: 'triad';
+  // ORDER 320 (Anders 2026-10-08: "ft-hunden är ⚖, och bara dess lagtext döljs") — situationen visas, men
+  // förklaringarna märkta legalText döljs tills den är granskad.
+  legalText?: { legalReviewed: boolean };
   // ORDER 319a.4 (Anders 2026-10-07) — "Kortet kommer inte ur tomma intet": det som syns innan
   // kortet öppnas (THEATRE.cueSeconds). Krävs i foodtrucken.
   cue?: IncidentCue;
 }
 
 /** ORDER 319a.4 — förvarningen: en gäst går fram till luckan och pekar, eller leveransen kommer. */
-export type IncidentCue = 'guestAtHatch' | 'delivery';
-export const INCIDENT_CUES: readonly IncidentCue[] = ['guestAtHatch', 'delivery'];
+export type IncidentCue = 'guestAtHatch' | 'delivery'
+  // ORDER 320 — det som syns vid vagnen före de sex nya situationerna (sim/truckSituations.ts, TruckLife.tsx):
+  // regnet börjar, getingar vid såserna, kortläsaren piper, lådan med korv visas, en gäst med hund vid borden,
+  // och en ny skylt hos Grillvagnen.
+  | 'rainStarts' | 'wasps' | 'cardReader' | 'stockLow' | 'dog' | 'rivalSign';
+export const INCIDENT_CUES: readonly IncidentCue[] = ['guestAtHatch', 'delivery', 'rainStarts', 'wasps', 'cardReader', 'stockLow', 'dog', 'rivalSign'];
 
 export interface OutcomeText {
   outcome: string;
@@ -184,6 +198,8 @@ export interface StepOptionText {
 
 export interface StepText {
   question: string;
+  // ORDER 306b A5 / ORDER 320 — ledtråden efter steget: vad spelaren har förstått ("Analys: …").
+  clue?: string;
   options: Record<string, StepOptionText>;
   fail: OutcomeText;
 }
@@ -191,6 +207,11 @@ export interface StepText {
 export interface IncidentText {
   title: string;
   body: string;
+  // ORDER 306b A8 — återkopplingen och rummet vid halvt grepp, och personalens två utfall.
+  halfGrip?: { analysis?: string; experience?: string; outcomeAnalysis?: string; outcomeExperience?: string };
+  staffTexts?: { success?: string; fail?: string };
+  // ORDER 306b A6 — gästens två repliker i steg 2 (lottas).
+  guestLine?: { a: string; b: string };
   steps: StepText[];
   success: { outcome: string };
   staff: OutcomeText;
@@ -200,6 +221,8 @@ export interface IncidentText {
 
 // Ett steg med sin paviljong och sin text.
 export interface IncidentStep extends StepMeta {
+  // ORDER 306b A3 — stegets plats (0–2): tiden följer platsen, inte axeln.
+  index: number;
   pavilion: PavilionKey;
   track: YrkesSpar | null;
   text: StepText;
@@ -247,6 +270,10 @@ export function validateIncidentBank(meta: MetaFile, text: TextFile): string[] {
     if (legalSteps > 0 && !m.legal) errors.push(`${m.id}: ⚖-frågor utan granskningsstatus (legal)`);
     if (m.legal && legalSteps !== m.steps.length) errors.push(`${m.id}: ⚖ döljer frågor utan ⚖`);
     if (m.cue !== undefined && !INCIDENT_CUES.includes(m.cue)) errors.push(`${m.id}: okänd förvarning ${m.cue}`);
+    // ORDER 320 — en förklaring märkt som lagtext kräver granskningsstatus på situationen, och tvärtom.
+    const legalTexts = m.steps.reduce((n, s) => n + s.options.filter((o) => o.legalText).length, 0);
+    if (legalTexts > 0 && !m.legalText) errors.push(`${m.id}: lagtext utan granskningsstatus (legalText)`);
+    if (m.legalText && legalTexts === 0) errors.push(`${m.id}: granskningsstatus för lagtext utan lagtext`);
     if (meta.businessClass === 'foodtruck' && !m.cue) errors.push(`${m.id}: saknar förvarning (cue)`);
     const t = text.texts[m.id];
     if (!t) { errors.push(`${m.id}: saknar text`); continue; }
@@ -298,6 +325,7 @@ function build(meta: MetaFile, text: TextFile): Incident[] {
     const t = text.texts[m.id];
     const steps = m.steps.map((s, i): IncidentStep => ({
       ...s,
+      index: i,
       pavilion: stepPavilion(s.axis, m.track),
       track: s.axis === 'techne' ? m.track : null,
       text: t.steps[i]
@@ -307,6 +335,11 @@ function build(meta: MetaFile, text: TextFile): Incident[] {
 }
 
 /** ORDER 315c — situationer med ogranskade ⚖-frågor är inte med i spelet. */
+/** ORDER 320 — förklaringen till ett svar: lagtext (⚖) som inte är granskad visas inte. */
+export function optionExplanationHidden(incident: Pick<IncidentMeta, 'legalText'>, option: Pick<StepOptionMeta, 'legalText'> | undefined): boolean {
+  return !!option?.legalText && !(incident.legalText?.legalReviewed ?? false);
+}
+
 export function legallyCleared(i: Pick<IncidentMeta, 'legal'>): boolean {
   return !i.legal || i.legal.legalReviewed;
 }

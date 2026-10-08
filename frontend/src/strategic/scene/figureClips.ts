@@ -1041,6 +1041,228 @@ reg(def({
   }
 }));
 
+// ORDER 320 — Designs D10 (nexus-leverans-2026-10-08-d10-vid-vagnen/d10Clips.ts): klippen vid vagnen i de sex
+// situationerna. D10 ger längden och vad klippet gör; poserna är skrivna här med samma hjälpare. Getingarna
+// (wasp.fly) och hunden (dog.*) är inga figurer och ritas i TruckLife.tsx; fika.sipCup finns redan.
+
+reg(def({
+  id: 'truck.serveLidded', group: 'waiter', roles: ['waiter', 'staff'], loop: false, travel: false, base: 1.9, handed: true,
+  from: 'stand', to: 'stand', needs: 'hatch', holds: {}, ends: {}, events: [{ u: 0.36, type: 'switch' }, { u: 0.62, type: 'give', hand: 'R', at: 'partner' }],
+  next: ['truck.wipeCounter', 'truck.hatchServe', 'staff.idle'],
+  pose: function (u) {
+    // Som truck.hatchServe, men vänster hand fäller locket över tråget (u 0,2–0,4) innan det räcks ut.
+    const lid = win(u, 0.18, 0.42, 0.08), out = win(u, 0.44, 0.8, 0.1);
+    return P(STAND, { torso: { pitch: 0.08 + 0.1 * out }, head: { pitch: 0.2 }, armR: A(0.7 + 0.7 * out, 0.15, 1.1 - 0.8 * out), armL: A(0.6 + 0.5 * lid, 0.1, 1.3 - 0.4 * lid) });
+  }
+}));
+
+reg(def({
+  id: 'staff.liftTable', group: 'staff', roles: STAFF, loop: false, travel: false, base: 1.0,
+  from: 'stand', to: 'stand', needs: 'standTable', holds: {}, ends: {}, events: [{ u: 0.55, type: 'grab', at: 'table' }],
+  next: ['staff.carryTable'],
+  pose: function (u) {
+    // Böjer sig mot bordet och tar tag med båda händerna; lyfter vid u 0,55.
+    const bend = win(u, 0.05, 0.6, 0.15), lift = ramp(u, 0.55, 0.9);
+    return P(STAND, { hipDrop: 0.08 * bend, torso: { pitch: 0.35 * bend + 0.05 * lift }, armL: A(0.9 + 0.2 * lift, 0.25, 0.5), armR: A(0.9 + 0.2 * lift, 0.25, 0.5) });
+  }
+}));
+
+reg(def({
+  id: 'staff.carryTable', group: 'staff', roles: STAFF, loop: true, travel: true, base: 3.2,
+  from: 'walk', to: 'walk', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['staff.carryTable', 'staff.setTable'],
+  pose: function (u, c) {
+    // Bordet 0,48 m framför, korta steg: båda armarna fram och bålen lite bakåt.
+    const ph = c.phase ?? u;
+    return P(walking(STAND, ph, 0.6, 'none'), { torso: { pitch: -0.06 }, armL: A(1.1, 0.25, 0.45), armR: A(1.1, 0.25, 0.45) });
+  }
+}));
+
+reg(def({
+  id: 'staff.setTable', group: 'staff', roles: STAFF, loop: false, travel: false, base: 0.9,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [{ u: 0.6, type: 'release', at: 'floor' }],
+  next: ['staff.walk', 'staff.idle'],
+  pose: function (u) {
+    const down = win(u, 0, 0.75, 0.2);
+    return P(STAND, { hipDrop: 0.06 * down, torso: { pitch: 0.3 * down }, armL: A(1.1 - 0.3 * down, 0.25, 0.45), armR: A(1.1 - 0.3 * down, 0.25, 0.45) });
+  }
+}));
+
+reg(def({
+  id: 'guest.huddle', group: 'guest', roles: ['guest'], loop: true, travel: false, base: 2.6,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['guest.huddle', 'guest.queueCalm', 'guest.walk'],
+  pose: function (u) {
+    // Under markisen: armarna in mot kroppen, lätt framåtlutad, ett litet gung.
+    const sway = Math.sin(u * TAU);
+    return P(STAND, { lift: 0.02, torso: { pitch: 0.1, roll: 0.03 * sway }, head: { pitch: 0.15 }, armL: A(0.5, 0.02, 1.7), armR: A(0.5, 0.02, 1.7) });
+  }
+}));
+
+reg(def({
+  id: 'guest.freeze', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 0.7,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['guest.backAway'],
+  pose: function (u, c) {
+    // Armarna in mot kroppen, lutar bakåt, blicken på getingen (c.yaw).
+    const k = ramp(u, 0, 0.5);
+    return withYaw(P(STAND, { lift: 0.03 * k, torso: { pitch: -0.12 * k }, armL: A(0.6 * k, 0.05, 1.9 * k), armR: A(0.6 * k, 0.05, 1.9 * k) }), 0, (c.yaw ?? 0) * k);
+  }
+}));
+
+reg(def({
+  id: 'guest.backAway', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 1.9,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['guest.standBar', 'guest.queueCalm'],
+  pose: function (u, c) {
+    // Baklänges, blicken kvar på getingen.
+    return withYaw(P(walking(STAND, u * 2, 0.5, 'none'), { torso: { pitch: -0.1 }, armL: A(0.5, 0.05, 1.8), armR: A(0.5, 0.05, 1.8) }), 0, c.yaw ?? 0);
+  },
+  // 0,75 m bakåt (Designs dist).
+  root: function (u) { return [0, -0.75 * ramp(u, 0, 1), 0]; }
+}));
+
+reg(def({
+  id: 'staff.capSauces', group: 'staff', roles: STAFF, loop: false, travel: false, base: 2.4, handed: true,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [{ u: 0.2, type: 'release', at: 'shelf' }, { u: 0.53, type: 'release', at: 'shelf' }, { u: 0.86, type: 'release', at: 'shelf' }],
+  next: ['staff.walk', 'staff.idle'],
+  pose: function (u) {
+    // Ett lock var 0,8 s: handen ned över flaskan och tillbaka, tre gånger längs hyllan.
+    const tap = Math.max(win(u, 0.05, 0.3, 0.08), win(u, 0.38, 0.63, 0.08), win(u, 0.71, 0.96, 0.08));
+    return withYaw(P(STAND, { torso: { pitch: 0.18 + 0.1 * tap }, head: { pitch: 0.35 }, armR: A(0.9 + 0.2 * tap, 0.15, 0.7 - 0.2 * tap), armL: A(0.4, 0.05, 0.8) }), -0.25 + 0.5 * u, -0.2 + 0.4 * u);
+  }
+}));
+
+reg(def({
+  id: 'guest.tapCard', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 1.5, handed: true,
+  from: 'stand', to: 'stand', needs: 'hatch', holds: {}, ends: {}, events: [{ u: 0.5, type: 'pay' }],
+  next: ['guest.tryAgain', 'guest.queueCalm'],
+  pose: function (u) {
+    // Kortet fram mot läsaren och stilla medan den väntar.
+    const k = win(u, 0.1, 0.95, 0.2);
+    return P(STAND, { torso: { pitch: 0.12 * k }, head: { pitch: 0.3 * k }, armR: A(0.6 + 0.6 * k, 0.1, 0.9 - 0.4 * k) });
+  }
+}));
+
+reg(def({
+  id: 'guest.tryAgain', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 1.7, handed: true,
+  from: 'stand', to: 'stand', needs: 'hatch', holds: {}, ends: {}, events: [{ u: 0.3, type: 'pay' }, { u: 0.75, type: 'pay' }],
+  next: ['guest.checkWatchStand', 'guest.takePhone'],
+  pose: function (u) {
+    // Två försök till: kortet fram, tillbaka, fram.
+    const k = Math.max(win(u, 0.05, 0.42, 0.1), win(u, 0.52, 0.95, 0.1));
+    return P(STAND, { torso: { pitch: 0.1 * k }, head: { pitch: 0.3 }, armR: A(0.7 + 0.5 * k, 0.1, 0.9 - 0.4 * k) });
+  }
+}));
+
+reg(def({
+  id: 'staff.checkTerminal', group: 'staff', roles: STAFF, loop: false, travel: false, base: 2.0, handed: true,
+  from: 'stand', to: 'stand', needs: 'hatch', holds: {}, ends: {}, events: [],
+  next: ['staff.pointSwish', 'truck.wipeCounter'],
+  pose: function (u) {
+    // Lutar sig ut genom luckan och trycker på läsaren.
+    const lean = win(u, 0.05, 0.9, 0.2), press = win(u, 0.45, 0.7, 0.05);
+    return P(STAND, { torso: { pitch: 0.15 + 0.3 * lean }, head: { pitch: 0.4 * lean }, armR: A(0.7 + 0.6 * lean, 0.1, 0.6 - 0.2 * press), armL: A(0.4, 0.05, 0.9) });
+  }
+}));
+
+reg(def({
+  id: 'staff.pointSwish', group: 'staff', roles: STAFF, loop: false, travel: false, base: 1.3, handed: true,
+  from: 'stand', to: 'stand', needs: 'hatch', holds: {}, ends: {}, events: [{ u: 0.4, type: 'point' }],
+  next: ['truck.wipeCounter', 'staff.idle'],
+  pose: function (u) {
+    const k = win(u, 0.1, 0.9, 0.2);
+    return withYaw(P(STAND, { torso: { pitch: 0.1 * k }, armR: A(0.6 + 0.8 * k, 0.15 + 0.2 * k, 0.2) }), -0.3 * k, -0.4 * k);
+  }
+}));
+
+reg(def({
+  id: 'guest.takePhone', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 1.2, handed: true,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [{ u: 0.5, type: 'grab', hand: 'R' }],
+  next: ['guest.scanSwish'],
+  pose: function (u) {
+    // Handen ned till fickan och upp med telefonen framför bröstet.
+    const pocket = win(u, 0.05, 0.5, 0.1), up = ramp(u, 0.5, 1);
+    return P(STAND, { head: { pitch: 0.3 * up }, armR: A(0.1 + 0.8 * up, 0.15 - 0.05 * pocket, 0.3 + 1.2 * up) });
+  }
+}));
+
+reg(def({
+  id: 'guest.scanSwish', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 1.8, handed: true,
+  from: 'stand', to: 'stand', needs: 'hatch', holds: {}, ends: {}, events: [{ u: 0.4, type: 'pay' }],
+  next: ['guest.putAwayPhone'],
+  pose: function (u) {
+    // Telefonen över skylten, stilla (skärmen blir guld i scenen).
+    const out = win(u, 0.05, 0.95, 0.15);
+    return P(STAND, { torso: { pitch: 0.12 * out }, head: { pitch: 0.35 }, armR: A(0.9 + 0.4 * out, 0.1, 1.5 - 0.6 * out) });
+  }
+}));
+
+reg(def({
+  id: 'guest.putAwayPhone', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 0.8, handed: true,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [{ u: 0.7, type: 'release', hand: 'R' }],
+  next: ['guest.queueCalm', 'guest.walk'],
+  pose: function (u) {
+    const down = ramp(u, 0, 0.8);
+    return P(STAND, { armR: A(0.9 - 0.8 * down, 0.1 + 0.05 * down, 1.5 - 1.2 * down) });
+  }
+}));
+
+reg(def({
+  id: 'staff.takeFromBox', group: 'cook', roles: ['cook', 'staff'], loop: false, travel: false, base: 1.4, handed: true,
+  from: 'stand', to: 'stand', needs: 'station', holds: {}, ends: {}, events: [{ u: 0.4, type: 'grab', at: 'station' }],
+  next: ['truck.grill'],
+  pose: function (u) {
+    // Vrider sig mot lådan, böjer sig, tar en korv och vänder tillbaka mot grillen.
+    const turn = win(u, 0, 0.75, 0.2), dip = win(u, 0.25, 0.55, 0.1);
+    return withYaw(P(STAND, { torso: { pitch: 0.15 + 0.25 * dip }, head: { pitch: 0.4 }, armR: A(0.7 + 0.3 * dip, 0.1, 0.6) }), 0.6 * turn, 0.7 * turn);
+  }
+}));
+
+reg(def({
+  id: 'staff.switchTongs', group: 'cook', roles: ['cook', 'staff'], loop: false, travel: false, base: 0.8, handed: true,
+  from: 'stand', to: 'stand', needs: 'station', holds: {}, ends: {}, events: [{ u: 0.3, type: 'release', at: 'station' }, { u: 0.7, type: 'grab', at: 'station' }],
+  next: ['staff.turnVeg', 'truck.grill'],
+  pose: function (u) {
+    const down = Math.max(win(u, 0.1, 0.4, 0.08), win(u, 0.55, 0.85, 0.08));
+    return withYaw(P(STAND, { torso: { pitch: 0.2 }, head: { pitch: 0.4 }, armR: A(0.6 + 0.2 * down, 0.1, 0.8 - 0.3 * down) }), -0.3 * ramp(u, 0.4, 0.6), -0.3 * ramp(u, 0.4, 0.6));
+  }
+}));
+
+reg(def({
+  id: 'staff.turnVeg', group: 'cook', roles: ['cook', 'staff'], loop: false, travel: false, base: 2.8, handed: true,
+  from: 'stand', to: 'stand', needs: 'station', holds: {}, ends: {}, events: [{ u: 0.35, type: 'flip' }, { u: 0.7, type: 'flip' }],
+  next: ['staff.switchTongs', 'truck.grill'],
+  pose: function (u) {
+    // Vänder de två vegokorvarna med vegotången, till vänster om den vanliga delen.
+    const flip = Math.max(win(u, 0.2, 0.45, 0.06), win(u, 0.55, 0.8, 0.06));
+    return withYaw(P(STAND, { torso: { pitch: 0.22 }, head: { pitch: 0.45 }, armR: A(0.75 + 0.15 * flip, 0.12, 0.7 - 0.2 * flip) }), -0.3, -0.3);
+  }
+}));
+
+reg(def({
+  id: 'guest.toastCup', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 2.2, handed: true,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [{ u: 0.5, type: 'signal' }],
+  next: ['guest.standBar', 'guest.queueCalm'],
+  pose: function (u) {
+    // D10 omtaget: vänd mot Grillvagnens skylt, höger hand med koppen 0,5 m fram mot skylten, och tillbaka.
+    const k = win(u, 0.1, 0.9, 0.2);
+    return P(STAND, { torso: { pitch: 0.04 * k }, head: { pitch: -0.05 * k }, armR: A(0.6 + 0.9 * k, 0.12, 1.2 - 0.9 * k), armL: A(0.3, 0.05, 0.6) });
+  }
+}));
+
+reg(def({
+  id: 'guest.stepAside', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 1.0,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['guest.standBar', 'guest.queueCalm'],
+  pose: function (u, c) {
+    // Ett steg bort från hunden, blicken på hunden (c.yaw).
+    return withYaw(walking(STAND, u, 0.4, 'both'), 0, (c.yaw ?? 0) * win(u, 0, 1, 0.3));
+  },
+  // 0,5 m åt sidan (Designs dist).
+  root: function (u) { return [0.5 * ramp(u, 0, 1), 0, 0]; }
+}));
+
 // ===== sommeliern =====================================================
 
 reg(def({

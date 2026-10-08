@@ -193,7 +193,7 @@ try {
   report.ok = report.errors.length === 0 && v.every((x) =>
     x.level === 'room' && x.seen > 0 && x.spawnInView.length === 0 && x.despawnInView.length === 0 && x.spawnNear.length === 0 && x.despawnNear.length === 0 && x.minGapM >= 0.35
     && x.forecast?.weather === x.weather && x.litterBefore?.C > 0 && x.litterAfter?.C === 0 && x.clearedByPlayer === 1
-    && /Vegokorv|Veggie/.test(x.menu ?? '') && /mild/.test(x.menu ?? '')
+    && /Vegokorv|Veggie/.test(x.menu ?? '') && /mild/i.test(x.menu ?? '')
     && x.eating >= (x.weather === 'rain' ? 1 : 2) && x.raining === (x.weather === 'rain') && x.torchRound?.kind === 'torches' && x.torchesLit === true);
 } catch (err) {
   report.error = String(err?.message ?? err);

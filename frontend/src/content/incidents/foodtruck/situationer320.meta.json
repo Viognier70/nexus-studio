@@ -1,0 +1,747 @@
+{
+ "schemaVersion": 1,
+ "businessClass": "foodtruck",
+ "delivery": "situationer320",
+ "incidents": [
+  {
+   "id": "ft08-regnet",
+   "form": "triad",
+   "cue": "rainStarts",
+   "track": "kok",
+   "arc": "rush",
+   "chainOnly": false,
+   "needsTable": false,
+   "placeholder": false,
+   "reference": null,
+   "steps": [
+    {
+     "question": 22,
+     "axis": "episteme",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best"
+      },
+      {
+       "id": "b",
+       "quality": "wrong"
+      },
+      {
+       "id": "c",
+       "quality": "wrong"
+      },
+      {
+       "id": "d",
+       "quality": "ok"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": 0,
+       "satisfaction": -0.03,
+       "stamina": 0,
+       "reputation": 0
+      },
+      "target": "room"
+     }
+    },
+    {
+     "question": 23,
+     "axis": "phronesis",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best"
+      },
+      {
+       "id": "b",
+       "quality": "ok"
+      },
+      {
+       "id": "c",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.04,
+       "satisfaction": -0.04,
+       "stamina": 0,
+       "reputation": -0.5
+      },
+      "target": "room"
+     }
+    },
+    {
+     "question": 24,
+     "axis": "techne",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best",
+       "cost": 40
+      },
+      {
+       "id": "b",
+       "quality": "ok",
+       "grip": "analysis",
+       "cost": 40
+      },
+      {
+       "id": "c",
+       "quality": "ok",
+       "grip": "experience"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.03,
+       "satisfaction": -0.05,
+       "stamina": -0.03,
+       "reputation": 0
+      },
+      "target": "room"
+     }
+    }
+   ],
+   "success": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": 0.06,
+     "stamina": 0,
+     "reputation": 1
+    },
+    "target": "room"
+   },
+   "staff": {
+    "effects": {
+     "cash": -0.05,
+     "satisfaction": -0.03,
+     "stamina": 0,
+     "reputation": -0.5
+    },
+    "target": "room"
+   }
+  },
+  {
+   "id": "ft09-getingen",
+   "form": "triad",
+   "cue": "wasps",
+   "track": "kok",
+   "arc": "opening",
+   "chainOnly": false,
+   "needsTable": false,
+   "placeholder": false,
+   "reference": null,
+   "steps": [
+    {
+     "question": 25,
+     "axis": "episteme",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best"
+      },
+      {
+       "id": "b",
+       "quality": "wrong"
+      },
+      {
+       "id": "c",
+       "quality": "ok"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": 0,
+       "satisfaction": -0.03,
+       "stamina": 0,
+       "reputation": 0
+      },
+      "target": "room"
+     }
+    },
+    {
+     "question": 26,
+     "axis": "phronesis",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best"
+      },
+      {
+       "id": "b",
+       "quality": "ok"
+      },
+      {
+       "id": "c",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.04,
+       "satisfaction": -0.04,
+       "stamina": 0,
+       "reputation": -0.5
+      },
+      "target": "room"
+     }
+    },
+    {
+     "question": 27,
+     "axis": "techne",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best"
+      },
+      {
+       "id": "b",
+       "quality": "ok",
+       "grip": "analysis"
+      },
+      {
+       "id": "c",
+       "quality": "ok",
+       "grip": "experience"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.03,
+       "satisfaction": -0.05,
+       "stamina": -0.03,
+       "reputation": 0
+      },
+      "target": "room"
+     }
+    }
+   ],
+   "success": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": 0.06,
+     "stamina": 0,
+     "reputation": 1
+    },
+    "target": "room"
+   },
+   "staff": {
+    "effects": {
+     "cash": -0.05,
+     "satisfaction": -0.03,
+     "stamina": 0,
+     "reputation": -0.5
+    },
+    "target": "room"
+   }
+  },
+  {
+   "id": "ft10-kortet",
+   "form": "triad",
+   "cue": "cardReader",
+   "track": "kok",
+   "arc": "rush",
+   "chainOnly": false,
+   "needsTable": false,
+   "placeholder": false,
+   "reference": null,
+   "steps": [
+    {
+     "question": 28,
+     "axis": "episteme",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best"
+      },
+      {
+       "id": "b",
+       "quality": "wrong"
+      },
+      {
+       "id": "c",
+       "quality": "ok"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": 0,
+       "satisfaction": -0.03,
+       "stamina": 0,
+       "reputation": 0
+      },
+      "target": "room"
+     }
+    },
+    {
+     "question": 29,
+     "axis": "phronesis",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best"
+      },
+      {
+       "id": "b",
+       "quality": "wrong"
+      },
+      {
+       "id": "c",
+       "quality": "ok"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.04,
+       "satisfaction": -0.04,
+       "stamina": 0,
+       "reputation": -0.5
+      },
+      "target": "room"
+     }
+    },
+    {
+     "question": 30,
+     "axis": "techne",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best"
+      },
+      {
+       "id": "b",
+       "quality": "ok",
+       "grip": "analysis"
+      },
+      {
+       "id": "c",
+       "quality": "ok",
+       "grip": "experience",
+       "cost": 95
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.03,
+       "satisfaction": -0.05,
+       "stamina": -0.03,
+       "reputation": 0
+      },
+      "target": "room"
+     }
+    }
+   ],
+   "success": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": 0.06,
+     "stamina": 0,
+     "reputation": 1
+    },
+    "target": "room"
+   },
+   "staff": {
+    "effects": {
+     "cash": -0.05,
+     "satisfaction": -0.03,
+     "stamina": 0,
+     "reputation": -0.5
+    },
+    "target": "room"
+   }
+  },
+  {
+   "id": "ft11-slut",
+   "form": "triad",
+   "cue": "stockLow",
+   "track": "kok",
+   "arc": "crisis",
+   "chainOnly": false,
+   "needsTable": false,
+   "placeholder": false,
+   "reference": null,
+   "steps": [
+    {
+     "question": 31,
+     "axis": "episteme",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best"
+      },
+      {
+       "id": "b",
+       "quality": "wrong"
+      },
+      {
+       "id": "c",
+       "quality": "wrong"
+      },
+      {
+       "id": "d",
+       "quality": "ok"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": 0,
+       "satisfaction": -0.03,
+       "stamina": 0,
+       "reputation": 0
+      },
+      "target": "room"
+     }
+    },
+    {
+     "question": 32,
+     "axis": "phronesis",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best"
+      },
+      {
+       "id": "b",
+       "quality": "wrong"
+      },
+      {
+       "id": "c",
+       "quality": "ok"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.04,
+       "satisfaction": -0.04,
+       "stamina": 0,
+       "reputation": -0.5
+      },
+      "target": "room"
+     }
+    },
+    {
+     "question": 33,
+     "axis": "techne",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best"
+      },
+      {
+       "id": "b",
+       "quality": "ok",
+       "grip": "analysis"
+      },
+      {
+       "id": "c",
+       "quality": "ok",
+       "grip": "experience"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.03,
+       "satisfaction": -0.05,
+       "stamina": -0.03,
+       "reputation": 0
+      },
+      "target": "room"
+     }
+    }
+   ],
+   "success": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": 0.06,
+     "stamina": 0,
+     "reputation": 1
+    },
+    "target": "room"
+   },
+   "staff": {
+    "effects": {
+     "cash": -0.05,
+     "satisfaction": -0.03,
+     "stamina": 0,
+     "reputation": -0.5
+    },
+    "target": "room"
+   }
+  },
+  {
+   "id": "ft12-hunden",
+   "form": "triad",
+   "cue": "dog",
+   "track": "kok",
+   "arc": "opening",
+   "chainOnly": false,
+   "needsTable": false,
+   "placeholder": false,
+   "reference": null,
+   "steps": [
+    {
+     "question": 34,
+     "axis": "episteme",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best",
+       "legalText": true
+      },
+      {
+       "id": "b",
+       "quality": "wrong"
+      },
+      {
+       "id": "c",
+       "quality": "ok"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": 0,
+       "satisfaction": -0.03,
+       "stamina": 0,
+       "reputation": 0
+      },
+      "target": "room"
+     }
+    },
+    {
+     "question": 35,
+     "axis": "phronesis",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best"
+      },
+      {
+       "id": "b",
+       "quality": "wrong"
+      },
+      {
+       "id": "c",
+       "quality": "ok"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.04,
+       "satisfaction": -0.04,
+       "stamina": 0,
+       "reputation": -0.5
+      },
+      "target": "room"
+     }
+    },
+    {
+     "question": 36,
+     "axis": "techne",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best"
+      },
+      {
+       "id": "b",
+       "quality": "ok",
+       "grip": "analysis"
+      },
+      {
+       "id": "c",
+       "quality": "ok",
+       "grip": "experience"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.03,
+       "satisfaction": -0.05,
+       "stamina": -0.03,
+       "reputation": 0
+      },
+      "target": "room"
+     }
+    }
+   ],
+   "success": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": 0.06,
+     "stamina": 0,
+     "reputation": 1
+    },
+    "target": "room"
+   },
+   "staff": {
+    "effects": {
+     "cash": -0.05,
+     "satisfaction": -0.03,
+     "stamina": 0,
+     "reputation": -0.5
+    },
+    "target": "room"
+   },
+   "legalText": {
+    "legalReviewed": false
+   }
+  },
+  {
+   "id": "ft13-priset",
+   "form": "triad",
+   "cue": "rivalSign",
+   "track": "kok",
+   "arc": "closing",
+   "chainOnly": false,
+   "needsTable": false,
+   "placeholder": false,
+   "reference": null,
+   "steps": [
+    {
+     "question": 37,
+     "axis": "episteme",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best"
+      },
+      {
+       "id": "b",
+       "quality": "ok"
+      },
+      {
+       "id": "c",
+       "quality": "wrong"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": 0,
+       "satisfaction": -0.03,
+       "stamina": 0,
+       "reputation": 0
+      },
+      "target": "room"
+     }
+    },
+    {
+     "question": 38,
+     "axis": "phronesis",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best"
+      },
+      {
+       "id": "b",
+       "quality": "ok"
+      },
+      {
+       "id": "c",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.04,
+       "satisfaction": -0.04,
+       "stamina": 0,
+       "reputation": -0.5
+      },
+      "target": "room"
+     }
+    },
+    {
+     "question": 39,
+     "axis": "techne",
+     "options": [
+      {
+       "id": "a",
+       "quality": "best",
+       "cost": 20
+      },
+      {
+       "id": "b",
+       "quality": "ok",
+       "grip": "analysis"
+      },
+      {
+       "id": "c",
+       "quality": "ok",
+       "grip": "experience"
+      },
+      {
+       "id": "d",
+       "quality": "wrong"
+      }
+     ],
+     "fail": {
+      "effects": {
+       "cash": -0.03,
+       "satisfaction": -0.05,
+       "stamina": -0.03,
+       "reputation": 0
+      },
+      "target": "room"
+     }
+    }
+   ],
+   "success": {
+    "effects": {
+     "cash": 0,
+     "satisfaction": 0.06,
+     "stamina": 0,
+     "reputation": 1
+    },
+    "target": "room"
+   },
+   "staff": {
+    "effects": {
+     "cash": -0.05,
+     "satisfaction": -0.03,
+     "stamina": 0,
+     "reputation": -0.5
+    },
+    "target": "room"
+   }
+  }
+ ]
+}

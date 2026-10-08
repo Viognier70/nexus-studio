@@ -1,0 +1,246 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "errors": [],
+  "evenings": [
+    {
+      "name": "sol-torsdag",
+      "weather": "sun",
+      "situations": [
+        {
+          "id": "ft10-kortet",
+          "shots": [
+            "check-sv-sol-torsdag-ft10-kortet-1-forvarning.png",
+            "check-sv-sol-torsdag-ft10-kortet-2-kortet.png",
+            "check-sv-sol-torsdag-ft10-kortet-3-steg2.png",
+            "check-sv-sol-torsdag-ft10-kortet-4-utfallet.png"
+          ],
+          "order": [
+            [
+              "c",
+              "d",
+              "b",
+              "a"
+            ],
+            [
+              "a",
+              "b",
+              "c"
+            ],
+            [
+              "b",
+              "d",
+              "a",
+              "c"
+            ]
+          ],
+          "guestLine": "Den första i kön: “Har ni Swish? Jag har inga kontanter.”",
+          "clue": "Analys: Felet sitter troligen i uppkopplingen.",
+          "outcome": {
+            "phase": "done",
+            "at": 287.39999999999225,
+            "quality": "best",
+            "optionId": "a",
+            "halfGrip": null
+          },
+          "pins": [
+            "truck-pin-swish"
+          ]
+        }
+      ],
+      "sausagesLeft": 60
+    },
+    {
+      "name": "regn",
+      "weather": "rain",
+      "situations": [],
+      "sausagesLeft": 60
+    },
+    {
+      "name": "sol-fredag",
+      "weather": "sun",
+      "situations": [
+        {
+          "id": "ft12-hunden",
+          "shots": [
+            "check-sv-sol-fredag-ft12-hunden-1-forvarning.png",
+            "check-sv-sol-fredag-ft12-hunden-2-kortet.png",
+            "check-sv-sol-fredag-ft12-hunden-3-steg2.png",
+            "check-sv-sol-fredag-ft12-hunden-4-utfallet.png"
+          ],
+          "order": [
+            [
+              "b",
+              "c",
+              "a",
+              "d"
+            ],
+            [
+              "a",
+              "c",
+              "b"
+            ],
+            [
+              "d",
+              "b",
+              "a",
+              "c"
+            ]
+          ],
+          "guestLine": "Hundägaren: “Får han lite vatten? Det är så varmt.” Den andra gästen ser oroligt på hunden.",
+          "clue": "Analys: Hunden ska hållas borta från vagnen och maten.",
+          "outcome": {
+            "phase": "done",
+            "at": 388.1999999999865,
+            "quality": "best",
+            "optionId": "a",
+            "halfGrip": null
+          },
+          "pins": []
+        }
+      ],
+      "sausagesLeft": 60
+    },
+    {
+      "name": "blast",
+      "weather": "wind",
+      "situations": [],
+      "sausagesLeft": 60
+    },
+    {
+      "name": "regn-2",
+      "weather": "rain",
+      "situations": [
+        {
+          "id": "ft13-priset",
+          "shots": [
+            "check-sv-regn-2-ft13-priset-1-forvarning.png",
+            "check-sv-regn-2-ft13-priset-2-kortet.png",
+            "check-sv-regn-2-ft13-priset-3-steg2.png",
+            "check-sv-regn-2-ft13-priset-4-utfallet.png"
+          ],
+          "order": [
+            [
+              "b",
+              "a",
+              "d",
+              "c"
+            ],
+            [
+              "c",
+              "b",
+              "a"
+            ],
+            [
+              "b",
+              "c",
+              "d",
+              "a"
+            ]
+          ],
+          "guestLine": "Stamgästen: “Grillvagnen har billigare nu. Men jag gillar er, alltså.”",
+          "clue": "Analys: Ett lägre pris tar nästan halva marginalen.",
+          "outcome": {
+            "phase": "done",
+            "at": 387.79999999998654,
+            "quality": "best",
+            "optionId": "a",
+            "halfGrip": null
+          },
+          "pins": [
+            "truck-pin-rival"
+          ]
+        }
+      ],
+      "sausagesLeft": 60
+    },
+    {
+      "name": "sol-2",
+      "weather": "sun",
+      "situations": [],
+      "sausagesLeft": 60
+    },
+    {
+      "name": "sval",
+      "weather": "cool",
+      "situations": [],
+      "sausagesLeft": 60
+    },
+    {
+      "name": "sol-3",
+      "weather": "sun",
+      "situations": [],
+      "sausagesLeft": 60
+    },
+    {
+      "name": "regn-3",
+      "weather": "rain",
+      "situations": [],
+      "sausagesLeft": 60
+    },
+    {
+      "name": "sol-4",
+      "weather": "sun",
+      "situations": [],
+      "sausagesLeft": 60
+    },
+    {
+      "name": "sol-5",
+      "weather": "sun",
+      "situations": [
+        {
+          "id": "ft09-getingen",
+          "shots": [
+            "check-sv-sol-5-ft09-getingen-1-forvarning.png",
+            "check-sv-sol-5-ft09-getingen-2-kortet.png",
+            "check-sv-sol-5-ft09-getingen-3-steg2.png",
+            "check-sv-sol-5-ft09-getingen-4-utfallet.png"
+          ],
+          "order": [
+            [
+              "a",
+              "d",
+              "c",
+              "b"
+            ],
+            [
+              "c",
+              "b",
+              "a"
+            ],
+            [
+              "b",
+              "a",
+              "c",
+              "d"
+            ]
+          ],
+          "guestLine": "Gästen tar ett steg bakåt: “Jag har reagerat illa på getingstick förut.”",
+          "clue": "Analys: Getingarna söker sött.",
+          "outcome": {
+            "phase": "done",
+            "at": 387.79999999998654,
+            "quality": "best",
+            "optionId": "a",
+            "halfGrip": null
+          },
+          "pins": []
+        }
+      ],
+      "sausagesLeft": 60
+    },
+    {
+      "name": "regn-4",
+      "weather": "rain",
+      "situations": [],
+      "sausagesLeft": 60
+    }
+  ],
+  "ok": false,
+  "seen": [
+    "ft10-kortet",
+    "ft12-hunden",
+    "ft13-priset",
+    "ft09-getingen"
+  ]
+}

@@ -89,6 +89,14 @@
 .nx-hatch-line-sender { color: #6b4a2e; text-transform: uppercase; letter-spacing: .06em; font-size: 10px; font-weight: 700; }
 .nx-hatch-line-text { font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); font-size: 15px; line-height: 1.2; margin-top: 2px; width: max-content; max-width: 236px; }
 
+/* ORDER 320 — HUD-nålen vid ett föremål vid vagnen (D10 SITUATION_PINS): papper med mässingskant och spets nedåt. */
+.nx-truck-pin {
+  pointer-events: none; translate: 0 -100%; background: #f5ead5; border: 2px solid #b98a3c; border-radius: 10px;
+  padding: 5px 10px; color: #2a1c13; box-shadow: 0 4px 12px rgba(0, 0, 0, .3); white-space: nowrap; animation: nx-curious-in .2s ease-out;
+}
+.nx-truck-pin-who { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #6b4a2e; }
+.nx-truck-pin-text { font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); font-size: 15px; }
+
 /* ORDER 319c — menyn när pekaren är över skylten (D9 menuBoard): griffeltavla med krita. */
 .nx-truck-menu {
   pointer-events: none; translate: 0 -100%; background: #2b2a28; border: 3px solid #5e4b3a; border-radius: 6px;
@@ -97,9 +105,10 @@
 }
 .nx-truck-menu-title { font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); color: #e6bb34; font-size: 17px; margin-bottom: 4px; }
 .nx-truck-menu ul { list-style: none; margin: 0; padding: 0; font-size: 14px; line-height: 1.45; white-space: nowrap; }
-.nx-truck-menu-note { margin-top: 6px; font-size: 12px; color: #c9c0ad; }
+.nx-truck-menu-kicker { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: #c9c0ad; }
+.nx-truck-menu-new { margin-left: 8px; padding: 0 6px; border-radius: 999px; background: #e6bb34; color: #2b2a28; font-size: 10px; font-weight: 700; }
 
 @media (prefers-reduced-motion: reduce) {
-  .nx-truck-menu { animation: none !important; }
+  .nx-truck-menu, .nx-truck-pin { animation: none !important; }
   .nx-curious-card, .nx-curious-row, .nx-curious-paper, .nx-curious-bubble, .nx-hatch-line { animation: none !important; transition: none !important; }
 }

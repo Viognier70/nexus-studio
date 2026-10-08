@@ -978,17 +978,54 @@ export const TRUCK_SEATING = {
   clearSimSeconds: 8
 } as const;
 
-// ORDER 319c (Designs D9 menu.* med priserna {price}) — vagnens meny på skylten, kronor. Halv special 35 kr
-// står i ORDER_320_FOODTRUCK_SITUATIONER.md (ft-priset); de andra priserna är Codes förslag till Anders.
-// Notan per gäst är fortfarande FOODTRUCK.billSek; menyn är det spelaren läser.
+// ORDER 320 (Anders 2026-10-08, ORDER_320_FOODTRUCK_SITUATIONER.md) — när de sex nya situationerna vid
+// vagnen kan komma, efter det som syns i bild (sim/truckSituations.ts): regnet de första rainWindowE av
+// kvällens gång efter att det börjat; kortläsaren när minst cardAtHatch väntar eller beställer vid luckan
+// ("Sex står i kön"); korven som tar slut efter SAUSAGE. Getingarna en solig kväll och hunden när någon äter
+// vid ett ståbord; Grillvagnens skylt när Grillvagnen står på torget.
+export const TRUCK_SITUATIONS = {
+  section: 'Servicen > Händelserna i servicen',
+  rainWindowE: 0.12,
+  cardAtHatch: 6
+} as const;
+
+// ORDER 319c och ORDER 320 (Designs D9 och D10 truckMenu.ts, menu.* med priserna {price}) — vagnens meny på
+// skylten, kronor. Anders 2026-10-08: halv special 35 kr och inköpet för en halv special 12 kr
+// (goodsHalfSpecial), så som i räkneuppgiften i ft-priset (ORDER_320_FOODTRUCK_SITUATIONER.md); testet
+// order320Talen.test.ts fallerar om situationens tal och de här skiljer sig. Vegokorven, läsken och kaffet,
+// och de andra raderna, är Codes priser. Den milda senapen har inget pris. Notan per gäst är fortfarande
+// FOODTRUCK.billSek; menyn är det spelaren läser.
 export const TRUCK_MENU = {
   section: 'Verksamhetsklasserna',
   grilled: 30,
-  veggie: 30,
   halfSpecial: 35,
   wrap: 75,
   mash: 50,
-  drinks: 20
+  veg: 30,
+  soda: 20,
+  coffee: 20,
+  goodsHalfSpecial: 12
+} as const;
+
+// ORDER 320 (Anders 2026-10-08) — Grillvagnens nya pris på halv special (Designs D10 RIVAL.halfSpecial, ft-priset).
+export const RIVAL_PRICES = {
+  section: 'Verksamhetsklasserna',
+  halfSpecial: 25
+} as const;
+
+// ORDER 320 (Anders 2026-10-08: "Korven tar slut: situationen utlöses när 12 korvar finns kvar och 9 står i
+// kön. Lådan visar 'få kvar' från 12.") — korven vid vagnen en kväll (sim/truckLife.ts). Kvällen börjar med
+// perEvening korvar; varje gäst som betalar tar en, eller två (hel special) med andelen fullSpecialShare
+// ("ungefär var tredje brukar ta en hel special"). Lådan visar "få kvar" från lowAt, och ft-slut kan komma när
+// högst lowAt är kvar och minst queueAtLow står vid luckan. Lådan har boxPlaces platser (Designs D10 SAUSAGE_BOX).
+export const SAUSAGE = {
+  section: 'Servicen',
+  perEvening: 60,
+  lowAt: 12,
+  queueAtLow: 9,
+  fullSpecialShare: 1 / 3,
+  perFullSpecial: 2,
+  boxPlaces: 20
 } as const;
 
 // ORDER 319c (Designs D9-tillägg torchLighting.ts) — medhjälparen tänder marschallerna. Rundan börjar
@@ -1096,6 +1133,11 @@ export const INCIDENTS = {
   // ORDER 306b (Anders 2026-10-07) — situationerna i formen analys → upplevelse → handling
   // (form 'triad'): episteme, phronesis, techne.
   stepAxesTriad: ['episteme', 'phronesis', 'techne'] as readonly KnowledgeAxis[],
+  // ORDER 306b A3 — tiden per steg efter stegets plats: 20, 30 och 30 s (steg 3 var 20 s i
+  // vinbarens gamla ordning, där steg 3 var phronesis med 30 s).
+  stepSecondsByIndex: [20, 30, 30] as readonly number[],
+  // ORDER 306b A6 / ORDER 320 — andelen gånger gästens replik A lottas (annars B); aldrig samma två gånger i rad.
+  guestLineAShare: 0.5,
   // Vision Owner 2026-09-29 (efter rapporterna om felen och kvällens
   // resultat): "episteme 20 sekunder, techne 20 sekunder och phronesis 30
   // sekunder. Omdömet ska ha mest tid." Byggs med ORDER 287a (registret).
@@ -1541,7 +1583,7 @@ export const THEATRE = {
   } as Record<string, readonly number[]>,
   // ORDER 319a.4 (Anders 2026-10-07) — förvarningen före foodtruckens kort, i verkliga sekunder:
   // gästen vid luckan spelar askPointMenu (samma längd som klippet), leveransbilen hinner stanna.
-  cueSeconds: { guestAtHatch: 4, delivery: 6 } as Record<'guestAtHatch' | 'delivery', number>,
+  cueSeconds: { guestAtHatch: 4, delivery: 6, rainStarts: 4, wasps: 5, cardReader: 4, stockLow: 4, dog: 5, rivalSign: 5 } as Record<'guestAtHatch' | 'delivery' | 'rainStarts' | 'wasps' | 'cardReader' | 'stockLow' | 'dog' | 'rivalSign', number>,
   // Gästen som pekar har hunnit gå fram i bild: gästerna börjar minst 40 m bort fågelvägen
   // (scene/village/truckGuestFlow.ts TRUCK_GUESTS.minSpawnM), längs gångnätet upp till omkring 70 m,
   // och går 1,4 m/s, alltså inom 50 s i normal fart (reports/order319a/gaster.json cueSettledShare).
@@ -1612,7 +1654,14 @@ export const DOUBLE_OR_NOTHING = {
   potHoldsCash: false,
   // Den som stannar: personalen tar resten med sitt utfall för stegen som
   // återstod (true), eller händelsen slutar där utan mer följd (false).
-  stopTakesStaffOutcome: false,
+  // ORDER 306b A2 — personalen gör resten med sin kompetens
+  // (SITUATIONS.staffSuccessTrained / Untrained): lyckas de gäller klarad gånger
+  // SITUATIONS.staffSuccessShare, annars personalens utfall.
+  stopTakesStaffOutcome: true,
+  // ORDER 306b A2 — potten efter ett rätt steg: growth × potten + potStep (1 → 3 → 7). Stegets
+  // tillskott bokförs på stegets axel (1 episteme, +2 phronesis, +4 techne). Ett ok-svar lämnar
+  // potten, ett fel nollar den, och halvt grepp i steg 3 ger potten gånger CONSEQUENCES.halfGrip.
+  potStep: 1,
   choiceSeconds: 8,
   // ORDER 305b (Anders 2026-10-05): en raket där spelaren stannar efter
   // steg 2 räknas som klarad i stjärnans andel; efter steg 1 räknas den inte.
@@ -1991,6 +2040,8 @@ export const ANSWER_EFFECTS = {
 // klarad raket höjer den; ordet klingar av under kvällen.
 export const CONSEQUENCES = {
   section: 'Servicen > Händelserna i servicen',
+  // ORDER 306b A2 — halvt grepp i steg 3: potten och klarads följder gånger den här andelen.
+  halfGrip: 0.5,
   graveSatisfactionAtMost: -0.2,
   mediumSatisfactionAtMost: -0.1,
   graveReputationAtMost: -2,

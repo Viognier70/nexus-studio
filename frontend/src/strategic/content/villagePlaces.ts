@@ -14,7 +14,8 @@
 import { LANDMARK_BY_ID, WORLD_RAW_BUILDINGS } from './world';
 import { driveNetwork, nearestNode, walkNetwork } from './villageNetwork';
 import type { TruckSpot } from '../../sim/village';
-import { TRUCK_PROPS } from '../scene/truckProps';
+import { TRUCK_PROPS, WATER_BOWL_AT } from '../scene/truckProps';
+import { PAY_LEDGE, WATER_BOWL } from '../scene/truckPropsD10';
 
 type Vec2 = [number, number];
 
@@ -156,6 +157,9 @@ export function playerTruckPropShapes(): { name: string; poly: Vec2[] }[] {
   out.push({ name: 'bin', poly: circle(P.bin.at, P.bin.diameter / 2) });
   P.torch.at.forEach((c, i) => out.push({ name: 'torch ' + (i + 1), poly: circle(c, P.torch.holder.cup / 2) }));
   out.push({ name: 'shelf', poly: rect(P.shelf.x0, P.shelf.x1, P.shelf.z0, P.shelf.z1) });
+  // ORDER 320 — D10: betalhyllan under luckan och vattenskålen vid bord B.
+  out.push({ name: 'pay ledge', poly: rect(PAY_LEDGE.x0, PAY_LEDGE.x1, PAY_LEDGE.z0, PAY_LEDGE.z1) });
+  out.push({ name: 'water bowl', poly: circle(WATER_BOWL_AT, WATER_BOWL.r) });
   const B = P.menuBoard;
   out.push({ name: 'menu board', poly: rect(B.at[0] - B.footprint[0] / 2, B.at[0] + B.footprint[0] / 2, B.at[1] - B.footprint[1] / 2, B.at[1] + B.footprint[1] / 2) });
   return out;

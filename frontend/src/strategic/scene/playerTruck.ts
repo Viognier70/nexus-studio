@@ -6,7 +6,11 @@
 // (rotation.y = −vinkeln) i strategic/content/villagePlaces.ts playerTruckPlacement.
 
 import * as THREE from 'three';
-import { PROP_SCALE_HANDHELD, TRUCK_PROPS } from './truckProps';
+import { PROP_SCALE_HANDHELD, TRUCK_PROPS, WATER_BOWL_AT } from './truckProps';
+import { GRILL_REGULAR, GRILL_VEG, PAY_LEDGE, SAUCE_LID, SAUSAGE_BOX, SHELF_D10, SWISH_SIGN, TERMINAL, WATER_BOWL } from './truckPropsD10';
+
+/** ORDER 320 — den milda senapens flaska (Anders 2026-10-08, n18): ljusare gul än den skånska. */
+const MILD_MUSTARD = { colour: '#ead98a', cap: '#2c2a28' };
 
 export type Vec2 = [number, number];
 
@@ -32,9 +36,8 @@ export const TRUCK_LAYOUT = {
   awning: { x0: -1.5, x1: 1.5, z0: 1.15, z1: 1.85, height: 2.25 },
   counter: { x0: -1.35, x1: 1.35, z0: 0.7, z1: 1.0, top: 0.95 },
   grill: { x0: 0.85, x1: 1.95, z0: -0.95, z1: -0.35, top: 0.92, items: 3 },
-  // Anders 2026-10-08 (n04): vegokorven grillas på en egen del av grillen, med egen tång. Delen är
-  // grillens östra fjärdedel, avskild med en kant; varje del har sin tång (grön för vegokorven).
-  veggieGrill: { x0: 1.68, divider: 1.66, tongs: { meat: [1.2, -0.42] as Vec2, veggie: [1.82, -0.42] as Vec2 } },
+  // Anders 2026-10-08 (n04): vegokorven grillas på en egen del av grillen, med egen tång. Delen och
+  // tängerna står i Designs D10 (truckPropsD10.ts GRILL_VEG, GRILL_REGULAR): grillens västra del bakom en list.
   chimney: [1.75, -0.85] as Vec2,
   roofSign: { x0: -1.3, x1: 1.3, z0: -1.3, z1: -1.05, pips: 3 },
   stations: { grill: [1.4, -0.1] as Vec2, hatch: [0, 0.45] as Vec2 },
@@ -151,12 +154,18 @@ function buildServing(add: AddFn, m: MatFn): void {
   const S = P.shelf;
   add(new THREE.BoxGeometry(S.x1 - S.x0, 0.04, S.z1 - S.z0), m(S.colour), (S.x0 + S.x1) / 2, S.height - 0.02, (S.z0 + S.z1) / 2, 'shelf');
   add(new THREE.BoxGeometry(0.04, S.height - 0.04, 0.04), m('#7a756c'), (S.x0 + S.x1) / 2, (S.height - 0.04) / 2, S.z1 - 0.04, 'shelfLeg');
+  // ORDER 320 — tre såser på hyllan, på Designs D10:s platser (SHELF_D10): ketchup, senap och mild senap. Locket
+  // över varje flaska (SAUCE_LID) fälls ned när getingarna kommer (TruckLife.tsx).
   const Cd = P.condiments, bh = Cd.bottle.height * k, br = Cd.bottle.diameter * k / 2;
-  for (const [name, b] of [['Ketchup', Cd.ketchup], ['Mustard', Cd.mustard], ['MildMustard', Cd.mildMustard]] as const) {
-    add(new THREE.CylinderGeometry(br, br, bh, 10), m(b.colour), b.at[0], S.height + bh / 2, b.at[1], 'bottle' + name);
-    add(new THREE.CylinderGeometry(br * 0.45, br * 0.6, 0.04, 8), m(b.cap), b.at[0], S.height + bh + 0.02, b.at[1], 'bottleCap' + name);
+  for (const [name, b, at] of [['Ketchup', Cd.ketchup, SHELF_D10.ketchup], ['Mustard', Cd.mustard, SHELF_D10.mustard], ['MildMustard', MILD_MUSTARD, SHELF_D10.mildMustard]] as const) {
+    add(new THREE.CylinderGeometry(br, br, bh, 10), m(b.colour), at[0], S.height + bh / 2, at[1], 'bottle' + name);
+    add(new THREE.CylinderGeometry(br * 0.45, br * 0.6, 0.04, 8), m(b.cap), at[0], S.height + bh + 0.02, at[1], 'bottleCap' + name);
+    const lid = add(new THREE.CylinderGeometry(SAUCE_LID.r * k, SAUCE_LID.r * k, 0.012, 12), m(SAUCE_LID.colour), at[0], S.height + bh + 0.046, at[1], 'sauceLid' + name);
+    lid.visible = false;
   }
-  napkinHolder(add, m, S.napkins[0], S.height, S.napkins[1], 0, 'napkinHolderShelf');
+  napkinHolder(add, m, SHELF_D10.napkins[0], S.height, SHELF_D10.napkins[1], 0, 'napkinHolderShelf');
+  // ORDER 320 — vattenskålen vid bord B, längst bort från luckan (D10 WATER_BOWL), alla kvällar.
+  add(new THREE.CylinderGeometry(WATER_BOWL.r, WATER_BOWL.r * 0.85, 0.06, 16), m('#8a9aa5'), WATER_BOWL_AT[0], yAt(WATER_BOWL_AT[0], WATER_BOWL_AT[1]) + 0.03, WATER_BOWL_AT[1], 'waterBowl');
 }
 
 /** Servetthållaren på ståborden är vriden 0,3 rad (D9 standTable.holder). */
@@ -212,13 +221,31 @@ export function makePlayerTrailer(pips = 1): THREE.Group {
   const CT = L.counter, GR = L.grill;
   add(new THREE.BoxGeometry(CT.x1 - CT.x0, CT.top, CT.z1 - CT.z0), m(C.counter), (CT.x0 + CT.x1) / 2, bodyY0 + CT.top / 2, (CT.z0 + CT.z1) / 2, 'trailerCounter');
   add(new THREE.BoxGeometry(GR.x1 - GR.x0, GR.top, GR.z1 - GR.z0), m(C.grill), (GR.x0 + GR.x1) / 2, bodyY0 + GR.top / 2, (GR.z0 + GR.z1) / 2, 'trailerGrill');
-  // Vegokorvens egen del: en kant över grillen och en tång per del, liggande på grillens framkant.
-  const VG = L.veggieGrill, grillTop = bodyY0 + GR.top;
-  add(new THREE.BoxGeometry(0.02, 0.05, GR.z1 - GR.z0), m('#9a9894'), VG.divider, grillTop + 0.025, (GR.z0 + GR.z1) / 2, 'trailerGrillDivider');
-  for (const [k, [x, z], col] of [['Meat', VG.tongs.meat, '#9a9894'], ['Veggie', VG.tongs.veggie, '#4f7a3f']] as [string, Vec2, string][]) {
+  // ORDER 320 — Designs D10 (truckPropsD10.ts): vegodelen på grillens västra del bakom en list, med två
+  // vegokorvar och egen tång med mässingshandtag; den vanliga delen med tre korvar och sin tång; lådan med korv
+  // bredvid grillen (korvarna i den ritas av TruckLife.tsx efter simuleringen); betalhyllan under luckan med
+  // kortläsaren och Swish-skylten.
+  const grillTop = bodyY0 + GR.top;
+  const GV = GRILL_VEG, GZ = (GR.z0 + GR.z1) / 2;
+  add(new THREE.BoxGeometry(GV.divider.w, 0.05, GR.z1 - GR.z0), m('#9a9894'), GV.divider.x, grillTop + 0.025, GZ, 'trailerGrillDivider');
+  GV.items.forEach((x, i) => add(new THREE.BoxGeometry(0.05, 0.035, 0.24), m('#6f6a3e'), x, grillTop + 0.018, GZ, 'grillVeg' + i));
+  GRILL_REGULAR.items.forEach((x, i) => add(new THREE.BoxGeometry(0.05, 0.035, 0.24), m('#8c4526'), x, grillTop + 0.018, GZ, 'grillSausage' + i));
+  for (const [k, [x, z], col] of [['Meat', GRILL_REGULAR.tongsRest, '#9a9894'], ['Veggie', GV.tongsRest, GV.tongsColour]] as [string, number[], string][]) {
     const tongs = add(new THREE.BoxGeometry(0.03, 0.015, 0.26), m(col), x, grillTop + 0.01, z, 'trailerTongs' + k);
     tongs.rotation.y = 0.35;
   }
+  const SB = SAUSAGE_BOX;
+  add(new THREE.BoxGeometry(SB.x1 - SB.x0, 0.12, SB.z1 - SB.z0), m('#9ab0b8'), (SB.x0 + SB.x1) / 2, grillTop + 0.06, (SB.z0 + SB.z1) / 2, 'sausageBox');
+  const lidUp = add(new THREE.BoxGeometry(SB.x1 - SB.x0, 0.01, SB.z1 - SB.z0), m('#b9ccd2'), (SB.x0 + SB.x1) / 2, grillTop + 0.12 + (SB.z1 - SB.z0) / 2, SB.z0, 'sausageBoxLid');
+  lidUp.rotation.x = Math.PI / 2;
+  const PL = PAY_LEDGE;
+  add(new THREE.BoxGeometry(PL.x1 - PL.x0, 0.03, PL.z1 - PL.z0), m(C.counter), (PL.x0 + PL.x1) / 2, PL.height, (PL.z0 + PL.z1) / 2, 'payLedge');
+  const k15 = PROP_SCALE_HANDHELD;
+  add(new THREE.BoxGeometry(TERMINAL.size[0] * k15, TERMINAL.size[1] * k15, 0.04), m('#2a2826'), TERMINAL.p[0], PL.height + TERMINAL.size[1] * k15 / 2 + 0.015, TERMINAL.p[1], 'terminal');
+  const ring = add(new THREE.TorusGeometry(0.03, 0.006, 6, 16, Math.PI * 1.6), m('#b98a3c', 0.6), TERMINAL.p[0], PL.height + TERMINAL.size[1] * k15 * 0.7, TERMINAL.p[1] + 0.022, 'terminalRing');
+  ring.visible = false;
+  add(new THREE.BoxGeometry(SWISH_SIGN.size[0] * k15, SWISH_SIGN.size[1] * k15, 0.02), m('#efe1bf'), SWISH_SIGN.p[0], PL.height + SWISH_SIGN.size[1] * k15 / 2 + 0.015, SWISH_SIGN.p[1], 'swishSign');
+  add(new THREE.BoxGeometry(0.08, 0.08, 0.005), m('#2a2826'), SWISH_SIGN.p[0], PL.height + SWISH_SIGN.size[1] * k15 * 0.6, SWISH_SIGN.p[1] + 0.012, 'swishSignQr');
   add(new THREE.BoxGeometry(L.counter.x1 - L.counter.x0, 0.05, 0.3), m(C.counter), 0, sill, B.z1 + 0.12, 'trailerHatchShelf');
   // Markisen: hel duk i grädde, bågad kant i karossens blå.
   const A = L.awning;

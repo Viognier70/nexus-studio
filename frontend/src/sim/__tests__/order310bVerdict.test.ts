@@ -125,9 +125,9 @@ describe('ORDER 310b — låset och väntan i simuleringen', () => {
     expect(waiting.incidents.active?.id).toBe(ID);
     expect(waiting.incidents.lastOutcome).toEqual(open.incidents.lastOutcome);
     const after = untilVerdict(waiting);
-    expect(after.incidents.active).toBeNull();
-    expect(after.incidents.log.at(-1)).toMatchObject({ id: ID, step: 0, optionId: 'a', quality: 'wrong' });
-    expect(after.incidents.lastOutcome?.takeover).toBeTruthy();
+    // ORDER 306b A1 — felet i steg 1 avgörs vid avgörandet, och situationen fortsätter.
+    expect(after.incidents.active).toMatchObject({ id: ID, step: 1, unclear: [0] });
+    expect(after.eventStream.length).toBeGreaterThan(waiting.eventStream.length);
   });
 
   it('valet i kvitt eller dubbelt kommer efter avgörandet, och dess 8 s börjar efter visningen', () => {
@@ -168,7 +168,8 @@ describe('ORDER 310b — låset och väntan i simuleringen', () => {
     const draft: SimulationState = { ...s, guests: s.guests.map((g) => ({ ...g })), day: { ...s.day } };
     closeIncidents(draft);
     expect(draft.incidents.active).toBeNull();
-    expect(draft.incidents.log.at(-1)).toMatchObject({ id: ID, optionId: 'a', quality: 'wrong' });
+    // ORDER 306b A1 — felet i steg 1 fortsätter situationen, och personalen beslutar resten vid stängning.
+    expect(draft.incidents.log.at(-1)).toMatchObject({ id: ID, step: 1, quality: 'staff', missed: [{ step: 0, optionId: 'a' }] });
   });
 
   // ORDER 314 — Stå för ditt svar är borttagen; provet med en egen raket är borta.

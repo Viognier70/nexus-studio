@@ -21,6 +21,7 @@
 import { DECK_TOP_M, TRUCK_LAYOUT, onDeck } from '../playerTruck';
 import { CURIOUS_SPOTS, EAT_SPOTS, TRUCK_PROPS, WALKWAY, binPath, eatPath, leavePath } from '../truckProps';
 import { TRUCK_WEATHER } from '../truckWeather';
+import { QUEUE_TIGHT } from '../truckPropsD10';
 import { PersonalSpace, keepRightShare, rightOf, yieldFactor, KEEP_RIGHT, PERSONAL_SPACE, type MassKind } from '../personalSpace';
 import { nearestNode, routeBetween, walkNetwork } from '../../content/villageNetwork';
 import { villageSources } from '../../content/villagePlaces';
@@ -66,7 +67,7 @@ export interface Spot {
 export interface FlowGuest { id: string; state: GuestState; truckSpot?: string; truckLitter?: boolean }
 
 /** ORDER 319c — vädret vid vagnen just nu: regnet flyttar kön in under markisen (Designs truckWeather.ts rain.queue). */
-export interface FlowWeather { raining: boolean }
+export interface FlowWeather { raining: boolean; tight?: boolean }
 
 /** ORDER 319b — en nyfiken förbipasserande (sim/curious.ts). */
 export interface CuriousWalk {
@@ -212,7 +213,8 @@ export class TruckGuestFlow {
       return { x, z, yaw: yaw + f.rotationY, y, pose, index };
     };
     // ORDER 319c — i regnet står kön under markisen (Designs truckWeather.ts rain.queue); de fyra första står torrt.
-    const q = weather.raining ? TRUCK_WEATHER.rain.queue as { order: Vec2; collect: Vec2; line: Vec2[] } : TRUCK_LAYOUT.queue;
+    // ORDER 320 — efter regnets situation står kön tätt under markisen (Designs D10 QUEUE_TIGHT, 0,55 m isär).
+    const q = weather.raining && weather.tight ? QUEUE_TIGHT as unknown as { order: Vec2; collect: Vec2; line: Vec2[] } : weather.raining ? TRUCK_WEATHER.rain.queue as { order: Vec2; collect: Vec2; line: Vec2[] } : TRUCK_LAYOUT.queue;
     const ordering = guests.filter((g) => g.state === 'ordering');
     const collecting = guests.filter((g) => g.state === 'serving' || g.state === 'paying');
     // Den som beställer står vid luckan; fler än en (sällan) ställer sig först i kön.

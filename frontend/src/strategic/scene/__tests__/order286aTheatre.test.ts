@@ -16,8 +16,9 @@ describe('ORDER 286a — leveransens kontroller', () => {
   // D5 lägger till sju (vagnarna, flamberingen, ostvagnen, tiredIdle, hesitate): 122.
   // ORDER 317 — Designs D6 lägger till Åsas tre (asa.greet, asa.point, asa.nodApprove): 125.
   // ORDER 319c — D9:s nio klipp för de som äter och vädret, och tilläggets två med tändaren: 152.
-  it('152 klipp (till och med D6:s tre, D7:s fem och D9:s tjugo), och varje efterföljare finns och passar', () => {
-    expect(Object.keys(CLIPS)).toHaveLength(152);
+  // ORDER 320 — D10:s 20 klipp för människorna vid vagnen (med omtagets guest.toastCup): 172.
+  it('172 klipp (till och med D6:s tre, D7:s fem, D9:s tjugo och D10:s tjugo), och varje efterföljare finns och passar', () => {
+    expect(Object.keys(CLIPS)).toHaveLength(172);
     expect(validateClips()).toEqual([]);
   });
 

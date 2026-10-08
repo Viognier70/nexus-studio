@@ -1,0 +1,581 @@
+{
+ "language": "en",
+ "texts": {
+  "ft08-regnet": {
+   "title": "The rain",
+   "body": "It starts to rain. The guests at the standing tables hunch their shoulders, and two in the queue look up at the awning.",
+   "guestLine": {
+    "a": "“Can we stand under the awning? We've got nowhere to go.”",
+    "b": "“Ugh, it's pouring! Can we eat before we're soaked?”"
+   },
+   "steps": [
+    {
+     "question": "What does the rain do to food that has just been served?",
+     "clue": "Analysis: The food won't stand the rain for long.",
+     "options": {
+      "a": {
+       "label": "It cools faster and the bun gets soggy.",
+       "explanation": "Water carries heat away, and the bun soaks up moisture within minutes."
+      },
+      "b": {
+       "label": "Nothing, the sausage is hot.",
+       "explanation": "The sausage is hot at first, but the rain cools it and makes the bun soggy."
+      },
+      "c": {
+       "label": "It gets better, it cools just right.",
+       "explanation": "A lukewarm sausage in a soggy bun is not better."
+      },
+      "d": {
+       "label": "Only the bun is affected.",
+       "explanation": "The bun first, but the food also cools faster."
+      }
+     },
+     "fail": {
+      "outcome": "The food goes cold and soggy in the rain."
+     }
+    },
+    {
+     "question": "What are the guests looking for?",
+     "clue": "Experience: The guests want to stay, but dry.",
+     "options": {
+      "a": {
+       "label": "Shelter from the rain, and food that isn't ruined.",
+       "explanation": "They want to stand in the dry and eat in peace."
+      },
+      "b": {
+       "label": "To get the food faster.",
+       "explanation": "That helps, but they asked about shelter."
+      },
+      "c": {
+       "label": "To go home.",
+       "explanation": "They stayed and asked, so they want to stay."
+      }
+     },
+     "fail": {
+      "outcome": "The guests stand in the rain and nobody answers them."
+     }
+    },
+    {
+     "question": "What do you do?",
+     "options": {
+      "a": {
+       "label": "Roll the awning all the way out, move a table under it and serve in lidded trays.",
+       "explanation": "Shelter for the guests and lids for the food. It keeps both the warmth and the evening."
+      },
+      "b": {
+       "label": "Serve in lidded trays, but leave the tables out in the rain.",
+       "explanation": "The food holds up, but the guests eat standing in the rain."
+      },
+      "c": {
+       "label": "Let the guests stand under the awning and serve in buns as usual.",
+       "explanation": "The guests are dry, but the bun goes soggy before they've eaten."
+      },
+      "d": {
+       "label": "Close the hatch until the rain stops.",
+       "explanation": "The queue scatters, and the guests go to someone who is open."
+      }
+     },
+     "fail": {
+      "outcome": "The queue scatters in the rain."
+     }
+    }
+   ],
+   "halfGrip": {
+    "analysis": "The food held up, but the guests had to stand in the rain.",
+    "outcomeAnalysis": "Two guests eat fast with their shoulders hunched.",
+    "experience": "The guests stayed dry, but the bun went soggy.",
+    "outcomeExperience": "A guest throws half a sausage in the bin."
+   },
+   "success": {
+    "outcome": "The guests stand close under the awning and eat from trays. Someone laughs at the rain."
+   },
+   "staff": {
+    "outcome": "Nils keeps serving. The tables stay out in the rain."
+   },
+   "staffTexts": {
+    "success": "Nils rolls out the awning and moves a table.",
+    "fail": "Nils keeps serving. The tables stay out in the rain."
+   }
+  },
+  "ft09-getingen": {
+   "title": "The wasp",
+   "body": "It's late summer. Wasps are swarming around the ketchup bottle and an open can of soda on the standing table. A guest freezes.",
+   "guestLine": {
+    "a": "The guest says quietly: “I'm allergic to wasp stings.”",
+    "b": "The guest steps back: “I've reacted badly to wasp stings before.”"
+   },
+   "steps": [
+    {
+     "question": "What draws wasps late in the summer?",
+     "clue": "Analysis: The wasps are after something sweet.",
+     "options": {
+      "a": {
+       "label": "Sweet things, like soda, ketchup and jam.",
+       "explanation": "Late in the summer wasps look for sugar, and it's standing open on the table."
+      },
+      "b": {
+       "label": "The smoke from the grill.",
+       "explanation": "Smoke keeps them away rather than drawing them."
+      },
+      "c": {
+       "label": "Bright colours on clothes.",
+       "explanation": "It can play a part, but it's the sugar that draws them."
+      },
+      "d": {
+       "label": "Noise and movement.",
+       "explanation": "Movement can make them agitated, but doesn't draw them."
+      }
+     },
+     "fail": {
+      "outcome": "More wasps gather around the tables."
+     }
+    },
+    {
+     "question": "What is the guest looking for?",
+     "clue": "Experience: The guest is afraid, and has reason to be.",
+     "options": {
+      "a": {
+       "label": "To get away from the wasps, and for someone to take it seriously.",
+       "explanation": "Someone who is allergic is afraid for good reason."
+      },
+      "b": {
+       "label": "To get the food quickly and leave.",
+       "explanation": "Perhaps, but they said they are allergic."
+      },
+      "c": {
+       "label": "For the wasps to be chased away.",
+       "explanation": "Waving at wasps makes them agitated, and the risk of a sting goes up."
+      }
+     },
+     "fail": {
+      "outcome": "The guest stays where they are, afraid."
+     }
+    },
+    {
+     "question": "What do you do?",
+     "options": {
+      "a": {
+       "label": "Put lids on the sauces, give the guest a table further away and ask about their medicine.",
+       "explanation": "With no sugar out the wasps calm down, and the guest gets away from them. Someone who knows they are allergic often carries medicine, and it's good to know where it is."
+      },
+      "b": {
+       "label": "Put lids on the sauces and cans, but let the guest stay at the table.",
+       "explanation": "The wasps calm down, but the guest stays where they are."
+      },
+      "c": {
+       "label": "Move the guest, but leave the sauces and cans open.",
+       "explanation": "The guest gets away, but the wasps stay and follow the sweet things."
+      },
+      "d": {
+       "label": "Wave the wasp away with a napkin.",
+       "explanation": "Waving makes the wasp agitated, and the risk of a sting goes up."
+      }
+     },
+     "fail": {
+      "outcome": "The wasp gets agitated, and the guest backs away."
+     }
+    }
+   ],
+   "halfGrip": {
+    "analysis": "The wasps calmed down, but the guest had to stay and be afraid.",
+    "outcomeAnalysis": "The guest eats standing, stiff, and leaves early.",
+    "experience": "The guest got away, but the sauces draw more wasps.",
+    "outcomeExperience": "More wasps around the ketchup bottle."
+   },
+   "success": {
+    "outcome": "Lids on, and the guest eats in peace at the far table."
+   },
+   "staff": {
+    "outcome": "Nils waves a napkin. The guest backs away."
+   },
+   "staffTexts": {
+    "success": "Nils puts lids on the bottles and moves the guest.",
+    "fail": "Nils waves a napkin. The guest backs away."
+   }
+  },
+  "ft10-kortet": {
+   "title": "The card reader",
+   "body": "The card reader stops working in the middle of the rush. Six are in the queue, and the first is holding out a card.",
+   "guestLine": {
+    "a": "The first in the queue: “I've only got a card. Should I go?”",
+    "b": "The first in the queue: “Do you take Swish? I've no cash.”"
+   },
+   "steps": [
+    {
+     "question": "What is the most common fault with a card reader at a food truck?",
+     "clue": "Analysis: The fault is probably the connection.",
+     "options": {
+      "a": {
+       "label": "It loses its connection to the mobile network.",
+       "explanation": "Outdoors the connection is often weak. A restart or another network usually fixes it."
+      },
+      "b": {
+       "label": "The card is broken.",
+       "explanation": "That happens, but not for every card at once."
+      },
+      "c": {
+       "label": "The battery is flat.",
+       "explanation": "It could be, but you check the network first."
+      },
+      "d": {
+       "label": "It's overheated by the grill.",
+       "explanation": "That's rare. The connection is far more common."
+      }
+     },
+     "fail": {
+      "outcome": "The terminal beeps again, and nobody knows why."
+     }
+    },
+    {
+     "question": "What is the guest looking for?",
+     "clue": "Experience: The guest wants to buy, but can't pay.",
+     "options": {
+      "a": {
+       "label": "A way to pay, and not to have to leave.",
+       "explanation": "The guest wants to buy. Only the payment is in the way."
+      },
+      "b": {
+       "label": "To get the food for free.",
+       "explanation": "The guest didn't ask for that."
+      },
+      "c": {
+       "label": "To know how long it will take.",
+       "explanation": "That helps, but above all the guest wants to be able to pay."
+      }
+     },
+     "fail": {
+      "outcome": "The guest stands there with the card in hand."
+     }
+    },
+    {
+     "question": "What do you do?",
+     "options": {
+      "a": {
+       "label": "Offer Swish, restart the terminal and tell the queue what's happening.",
+       "explanation": "Another way to pay keeps the queue moving, and the restart usually fixes the fault."
+      },
+      "b": {
+       "label": "Restart the terminal and ask everyone to wait, without offering anything else.",
+       "explanation": "The restart is right, but the queue stands still and some leave."
+      },
+      "c": {
+       "label": "Let the guest pay next time, and serve them.",
+       "explanation": "Generous, but it doesn't fix the fault, and the next in the queue wants the same."
+      },
+      "d": {
+       "label": "Say it's cash only today.",
+       "explanation": "Most people have no cash, and the queue scatters."
+      }
+     },
+     "fail": {
+      "outcome": "The queue scatters."
+     }
+    }
+   ],
+   "halfGrip": {
+    "analysis": "The terminal came back, but the queue stood still meanwhile.",
+    "outcomeAnalysis": "Two guests at the back walk away.",
+    "experience": "The guest was pleased, but the fault remains, and the next one also wants to pay later.",
+    "outcomeExperience": "Three notes saying “paying tomorrow” on the counter."
+   },
+   "success": {
+    "outcome": "Swish pings, the queue moves, and the terminal is back up after a minute."
+   },
+   "staff": {
+    "outcome": "Nils asks everyone to wait. The queue gets shorter for the wrong reason."
+   },
+   "staffTexts": {
+    "success": "Nils restarts the terminal and says “Swish is fine!”",
+    "fail": "Nils asks everyone to wait. The queue gets shorter for the wrong reason."
+   }
+  },
+  "ft11-slut": {
+   "title": "The sausages run out",
+   "body": "Nils shows you the box: twelve sausages left. Nine people are in the queue, and about one in three usually takes a full special.",
+   "guestLine": {
+    "a": "A guest joins the end of the queue: “I came all the way from Hällefors for your sausages.”",
+    "b": "A guest joins the end of the queue: “My friend says you've got the best sausages in the village!”"
+   },
+   "steps": [
+    {
+     "question": "Will twelve sausages be enough for the queue?",
+     "clue": "Analysis: The sausages are just enough for the queue, no more.",
+     "options": {
+      "a": {
+       "label": "Just. Six take one sausage, three take two, that makes twelve.",
+       "explanation": "9 people, 3 of whom take two sausages: 6 + 6 = 12. It's just enough, but not for a single guest more."
+      },
+      "b": {
+       "label": "Yes, with plenty to spare.",
+       "explanation": "Three full specials take six sausages. There's nothing to spare."
+      },
+      "c": {
+       "label": "No, it takes eighteen.",
+       "explanation": "It would be eighteen if everyone took two."
+      },
+      "d": {
+       "label": "Roughly, it depends.",
+       "explanation": "It depends, but it can be worked out."
+      }
+     },
+     "fail": {
+      "outcome": "The sausages run out before the queue does."
+     }
+    },
+    {
+     "question": "What is the guest looking for?",
+     "clue": "Experience: The guest came for the sausages.",
+     "options": {
+      "a": {
+       "label": "To get what they came for, or an honest answer in time.",
+       "explanation": "Someone who has travelled far would rather know now than after queuing."
+      },
+      "b": {
+       "label": "To stand in the queue and hope.",
+       "explanation": "Nobody wants to queue for something that runs out."
+      },
+      "c": {
+       "label": "Any food at all.",
+       "explanation": "Perhaps, but they came for the sausages."
+      }
+     },
+     "fail": {
+      "outcome": "The guest stays in the queue without knowing."
+     }
+    },
+    {
+     "question": "What do you do?",
+     "options": {
+      "a": {
+       "label": "Tell the queue now, suggest veggie sausages at the back and order more for tomorrow.",
+       "explanation": "An honest answer in time, an alternative and a plan for the next evening."
+      },
+      "b": {
+       "label": "Stop selling full specials, without saying why.",
+       "explanation": "The sausages last longer, but the queue doesn't understand why."
+      },
+      "c": {
+       "label": "Promise everyone a sausage, and hope it's enough.",
+       "explanation": "The guests are happy, but the last one gets nothing after waiting."
+      },
+      "d": {
+       "label": "Say nothing, and sell until they run out.",
+       "explanation": "The one at the back has queued for nothing."
+      }
+     },
+     "fail": {
+      "outcome": "The one at the back has queued for nothing."
+     }
+    }
+   ],
+   "halfGrip": {
+    "analysis": "The sausages lasted longer, but the queue didn't understand why.",
+    "outcomeAnalysis": "A guest grumbles that a full special isn't available.",
+    "experience": "Everyone was promised a sausage, but the last one got nothing.",
+    "outcomeExperience": "The last guest leaves without food."
+   },
+   "success": {
+    "outcome": "Two at the back take veggie sausages. The one from Hällefors gets the last sausage."
+   },
+   "staff": {
+    "outcome": "Nils sells until the box is empty."
+   },
+   "staffTexts": {
+    "success": "Nils tells the queue and suggests veggie sausages.",
+    "fail": "Nils sells until the box is empty."
+   }
+  },
+  "ft12-hunden": {
+   "title": "The dog",
+   "body": "A guest with a dog stops at a standing table. The dog is panting in the heat, and another guest steps aside.",
+   "guestLine": {
+    "a": "The dog owner: “Could he have some water? It's so warm.” The other guest looks at the dog anxiously.",
+    "b": "The dog owner: “Have you got a bowl of water? He's walked a long way.” The other guest holds their sausage up high."
+   },
+   "steps": [
+    {
+     "question": "Where may the dog be?",
+     "clue": "Analysis: The dog must be kept away from the truck and the food.",
+     "options": {
+      "a": {
+       "label": "At the outdoor seating, but not in the truck where the food is handled.",
+       "explanation": "Animals must be kept away from where food is handled. Out among the guests is fine."
+      },
+      "b": {
+       "label": "Anywhere, it's outdoors.",
+       "explanation": "Not in the truck, where the food is made."
+      },
+      "c": {
+       "label": "Nowhere near the food at all.",
+       "explanation": "Careful, but out by the tables is fine."
+      },
+      "d": {
+       "label": "Only if it's tied up.",
+       "explanation": "That's good manners, but the rule is about where the food is handled."
+      }
+     },
+     "fail": {
+      "outcome": "The dog sniffs towards the hatch."
+     }
+    },
+    {
+     "question": "What does the evening need?",
+     "clue": "Experience: Two guests, two wishes.",
+     "options": {
+      "a": {
+       "label": "Water for the dog, and distance for the one who is anxious.",
+       "explanation": "Both guests have a wish, and both can be met."
+      },
+      "b": {
+       "label": "For the dog to leave.",
+       "explanation": "The dog may be here, and the owner is a guest."
+      },
+      "c": {
+       "label": "Water for the dog.",
+       "explanation": "That's part of it, but the other guest is anxious too."
+      }
+     },
+     "fail": {
+      "outcome": "The dog pants, and the other guest walks off."
+     }
+    },
+    {
+     "question": "What do you do?",
+     "options": {
+      "a": {
+       "label": "A water bowl by the table furthest from the hatch, and wash your hands afterwards.",
+       "explanation": "The dog gets water and distance, and the other guest is spared. You wash your hands before touching food again."
+      },
+      "b": {
+       "label": "Say the dog must stand furthest away, but give it no water.",
+       "explanation": "The rule is right, but the dog is hot and the owner feels unwelcome."
+      },
+      "c": {
+       "label": "Give the dog water where it stands, then serve straight away.",
+       "explanation": "Kind, but without washing your hands and with the dog close to the anxious guest."
+      },
+      "d": {
+       "label": "Give the dog a piece of sausage from the grill.",
+       "explanation": "The dog is happy, but it's not good for the dog, and you've touched the animal with the hand that handles the food."
+      }
+     },
+     "fail": {
+      "outcome": "The hands that touched the dog serve the next guest."
+     }
+    }
+   ],
+   "halfGrip": {
+    "analysis": "The rule was followed, but the dog got no water.",
+    "outcomeAnalysis": "The owner leaves with the dog before the food is eaten.",
+    "experience": "The dog got water, but the hands weren't washed before the food.",
+    "outcomeExperience": "The anxious guest watches the hands serving."
+   },
+   "success": {
+    "outcome": "The dog drinks by the furthest table. The other guest eats in peace."
+   },
+   "staff": {
+    "outcome": "Nils pats the dog and then serves the next guest."
+   },
+   "staffTexts": {
+    "success": "Nils puts out a bowl at the far end and washes his hands.",
+    "fail": "Nils pats the dog and then serves the next guest."
+   }
+  },
+  "ft13-priset": {
+   "title": "The grill truck cuts its price",
+   "body": "The grill truck has put up a new sign: “Half special 25 kr.” You charge 35 kr. A regular has seen it.",
+   "guestLine": {
+    "a": "The regular: “The grill truck's cheaper now. But I like you, mind.”",
+    "b": "The regular: “I saw the sign over there. Are you going to cut yours too?”"
+   },
+   "steps": [
+    {
+     "question": "A half special costs 12 kr in goods. What's left per sale if you also charge 25 kr?",
+     "clue": "Analysis: A lower price takes almost half the margin.",
+     "options": {
+      "a": {
+       "label": "13 kr instead of 23. You'd have to sell almost twice as many.",
+       "explanation": "25 − 12 = 13, against 35 − 12 = 23. To earn the same you need 23/13, about 1.8 times as many."
+      },
+      "b": {
+       "label": "10 kr less, hardly noticeable.",
+       "explanation": "It's 10 kr less, but almost half the margin."
+      },
+      "c": {
+       "label": "The same, if more people buy.",
+       "explanation": "Only if almost twice as many buy. The truck can't manage that."
+      },
+      "d": {
+       "label": "Nothing, you'd make a loss.",
+       "explanation": "13 kr is left, so no loss, but much less."
+      }
+     },
+     "fail": {
+      "outcome": "The margin shrinks without anyone doing the sums."
+     }
+    },
+    {
+     "question": "What is the regular looking for?",
+     "clue": "Experience: The regular wants to feel they chose right.",
+     "options": {
+      "a": {
+       "label": "To hear that they've chosen the right place.",
+       "explanation": "The guest already comes here and wants the choice to feel right."
+      },
+      "b": {
+       "label": "A lower price.",
+       "explanation": "Perhaps, but they said they like you."
+      },
+      "c": {
+       "label": "To hear something bad about the grill truck.",
+       "explanation": "They didn't ask for that, and it reflects badly on you too."
+      }
+     },
+     "fail": {
+      "outcome": "The regular looks over at the grill truck."
+     }
+    },
+    {
+     "question": "What do you do?",
+     "options": {
+      "a": {
+       "label": "Keep the price, talk about the meat content and treat the regular to a coffee.",
+       "explanation": "The price keeps the margin, and the reasons and a small gesture keep the regular."
+      },
+      "b": {
+       "label": "Keep the price, without saying anything more.",
+       "explanation": "The margin stays, but the regular wonders why they should pay more."
+      },
+      "c": {
+       "label": "Cut to 25 kr, so the regular stays.",
+       "explanation": "The guest stays, but the margin is almost halved for everyone."
+      },
+      "d": {
+       "label": "Put up a sign saying the grill truck's sausages are worse.",
+       "explanation": "It reflects badly on you too, and the village notices."
+      }
+     },
+     "fail": {
+      "outcome": "The village talks about the sign."
+     }
+    }
+   ],
+   "halfGrip": {
+    "analysis": "The margin held, but the regular got no reason to pay more.",
+    "outcomeAnalysis": "The regular glances at the grill truck on the way out.",
+    "experience": "The regular stayed, but each sausage now earns almost half as much.",
+    "outcomeExperience": "The till fills more slowly that evening."
+   },
+   "success": {
+    "outcome": "The regular raises the coffee cup towards the sign across the square."
+   },
+   "staff": {
+    "outcome": "Nils cuts the price without asking."
+   },
+   "staffTexts": {
+    "success": "Nils talks about the meat content and pours a coffee.",
+    "fail": "Nils cuts the price without asking."
+   }
+  }
+ }
+}

@@ -20,7 +20,7 @@
 // Slumpen ur fröet och dagen eller simtiden (hashKey), så att servicens slumpflöde inte flyttas.
 
 import type { Guest, SimulationState, WeatherConditions } from '../strategic/types';
-import { TORCH, TRUCK_SEATING, TRUCK_WEATHER } from './balance';
+import { SAUSAGE, TORCH, TRUCK_SEATING, TRUCK_WEATHER } from './balance';
 import { eveningProgress } from './clock';
 import { EAT_SPOTS } from '../strategic/scene/truckProps';
 import { hashKey } from '../strategic/util/hash';
@@ -57,6 +57,8 @@ export interface TruckDayState {
   litter: Record<TruckTable, number>;
   errand: TruckErrand | null;
   torchesLit: boolean;
+  /** ORDER 320 — korvarna kvar i kväll (SAUSAGE.perEvening från början). */
+  sausagesLeft?: number;
   tonight: TruckTonight;
 }
 
@@ -76,7 +78,7 @@ export function truckWeatherFor(seed: number, dayNumber: number): { weather: Tru
 
 export function truckOf(state: Pick<SimulationState, 'day' | 'seed'>): TruckDayState {
   if (state.day.truck) return state.day.truck;
-  return { ...truckWeatherFor(state.seed ?? 0, state.day.dayNumber), litter: { A: 0, B: 0, C: 0 }, errand: null, torchesLit: false, tonight: EMPTY_TONIGHT };
+  return { ...truckWeatherFor(state.seed ?? 0, state.day.dayNumber), litter: { A: 0, B: 0, C: 0 }, errand: null, torchesLit: false, sausagesLeft: SAUSAGE.perEvening, tonight: EMPTY_TONIGHT };
 }
 
 function isTruck(state: Pick<SimulationState, 'economy'>): boolean {
@@ -161,6 +163,16 @@ function write(draft: SimulationState, t: TruckDayState): void {
 
 function bump(t: TruckDayState, k: Exclude<keyof TruckTonight, 'torchStartE' | 'torchWaited'>, n = 1): TruckDayState {
   return { ...t, tonight: { ...t.tonight, [k]: t.tonight[k] + n } };
+}
+
+/** ORDER 320 — gästen som betalar tar en korv, eller två (hel special). Lådan tar inte slut under noll: då blir
+ *  det vegokorv. */
+export function useTruckSausages(draft: SimulationState, guest: Guest): void {
+  if (!isTruck(draft)) return;
+  const t = truckOf(draft);
+  const full = hashKey(draft.seed ?? 0, `${guest.id}|full special|at the truck`) < SAUSAGE.fullSpecialShare;
+  const left = t.sausagesLeft ?? SAUSAGE.perEvening;
+  write(draft, { ...t, sausagesLeft: Math.max(0, left - (full ? SAUSAGE.perFullSpecial : 1)) });
 }
 
 /** Gästen har betalat vid luckan: äter vid en ledig plats, eller tar maten med sig. Sant om gästen äter. */
