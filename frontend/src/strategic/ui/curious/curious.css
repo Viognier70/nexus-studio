@@ -25,6 +25,8 @@
   position: absolute; inset: 0; display: grid; place-items: center;
   font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); color: #ffd58f; font-size: max(14px, 2.2vh);
 }
+.nx-curious-speaker { color: #d7a24c; font-size: max(11px, 1.4vh); margin-top: 1.4vh; text-transform: uppercase; letter-spacing: .06em; }
+.nx-curious-speaker + .nx-curious-q { margin-top: .4vh; }
 .nx-curious-q {
   font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); font-weight: 400;
   font-size: max(16px, 2.5vh); line-height: 1.2; margin: 1.6vh 0 1.4vh; color: #f5ead5;

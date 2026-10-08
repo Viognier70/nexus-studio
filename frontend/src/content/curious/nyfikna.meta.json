@@ -1,0 +1,476 @@
+{
+ "schemaVersion": 1,
+ "delivery": "nyfikna-319",
+ "source": "documentation/blueprints/NYFIKNA_FRAGOR_319.md",
+ "questions": [
+  {
+   "id": "n01",
+   "trigger": "sign",
+   "axis": "episteme",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n02",
+   "trigger": "sign",
+   "axis": "episteme",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n03",
+   "trigger": "sign",
+   "axis": "episteme",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "wrong"
+    },
+    {
+     "id": "c",
+     "quality": "ok"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n04",
+   "trigger": "sign",
+   "axis": "techne",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n05",
+   "trigger": "sign",
+   "axis": "episteme",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "wrong"
+    },
+    {
+     "id": "c",
+     "quality": "ok"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n06",
+   "trigger": "sign",
+   "axis": "phronesis",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n07",
+   "trigger": "smell",
+   "axis": "episteme",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n08",
+   "trigger": "smell",
+   "axis": "episteme",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "wrong"
+    },
+    {
+     "id": "c",
+     "quality": "ok"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n09",
+   "trigger": "smell",
+   "axis": "episteme",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ],
+   "legal": {
+    "legalReviewed": false
+   }
+  },
+  {
+   "id": "n10",
+   "trigger": "smell",
+   "axis": "techne",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n11",
+   "trigger": "smell",
+   "axis": "phronesis",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n12",
+   "trigger": "smell",
+   "axis": "techne",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ],
+   "legal": {
+    "legalReviewed": false
+   }
+  },
+  {
+   "id": "n13",
+   "trigger": "cold",
+   "axis": "phronesis",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n14",
+   "trigger": "cold",
+   "axis": "techne",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n15",
+   "trigger": "cold",
+   "axis": "phronesis",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n16",
+   "trigger": "price",
+   "axis": "phronesis",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n17",
+   "trigger": "price",
+   "axis": "episteme",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n18",
+   "trigger": "child",
+   "axis": "phronesis",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  },
+  {
+   "id": "n19",
+   "trigger": "child",
+   "axis": "techne",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "wrong"
+    },
+    {
+     "id": "c",
+     "quality": "ok"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ],
+   "legal": {
+    "legalReviewed": false
+   }
+  },
+  {
+   "id": "n20",
+   "trigger": "child",
+   "axis": "phronesis",
+   "options": [
+    {
+     "id": "a",
+     "quality": "right"
+    },
+    {
+     "id": "b",
+     "quality": "ok"
+    },
+    {
+     "id": "c",
+     "quality": "wrong"
+    },
+    {
+     "id": "d",
+     "quality": "wrong"
+    }
+   ]
+  }
+ ]
+}

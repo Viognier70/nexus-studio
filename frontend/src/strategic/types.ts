@@ -407,6 +407,8 @@ export interface Guest {
   tipBonus?: number;
   // ORDER 319b — gästen ställde sig i kön efter ett samtal med en nyfiken (eller är vännen).
   fromCurious?: boolean;
+  // ORDER 319b del 2 — stamgästen som kommer tillbaka efter ett rätt svar en tidigare kväll.
+  curiousRegular?: boolean;
   // ORDER 290 — rätt och fel svar vid bordet: notan gånger 1 + billBonus.
   billBonus?: number;
   // ORDER 296 — hovmästarens vinbeslut: flaskan (sommeliern) eller husets vin (Per).
@@ -985,6 +987,8 @@ export interface DayState {
   // ORDER 319b — de nyfikna vid foodtruckens lucka (sim/curious.ts), och notorna från dem i kväll.
   curious?: import('../sim/curious').CuriousState;
   curiousRevenueSek?: number;
+  // ORDER 319b del 2 — varav stamgästerna som kom tillbaka.
+  curiousRegularRevenueSek?: number;
   helpZone?: { zone: 'bar' | 'floor' | 'lounge'; until: number } | null;
   // ORDER 296 — gästen med socialt kapital som gick missnöjd till en rival.
   socialWalkout?: { rivalId: string; at: number; nameIndex: number } | null;
@@ -1540,6 +1544,8 @@ export interface SimulationState {
   kvittLog?: import('../sim/incidents').KvittEntry[];
   // ORDER 319b — portfolion: varje svar till en nyfiken gäst vid foodtruckens lucka, hela säsongen.
   curiousLog?: import('../sim/curious').CuriousEntry[];
+  // ORDER 319b del 2 — de som fick ett rätt svar och kommer tillbaka en senare kväll (sim/curious.ts).
+  curiousRegulars?: import('../sim/curious').CuriousRegular[];
   // ORDER 105 — spårnedbrytning per axel. Läses av readSpar(); används
   // av R4 för att skilja verksamheter med identisk axel-profil (vinbar
   // vs restaurang) utan att växa vektorn ovan. Invariant: för varje axis,

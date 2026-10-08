@@ -10,16 +10,20 @@
 // en nyfiken (day.curiousRevenueSek, sim/curious.ts recordCuriousRevenue); kvällens intäkt är
 // serviceRevenueToday.dinner. Resten är de andra gästernas notor och situationernas merbeställningar.
 //
+// ORDER 319b del 2 (Anders 2026-10-08): vagnens kapacitet ökas inte. Kunskapen syns i stället i större
+// köp, stamgäster som kommer tillbaka en senare kväll och ryktet, så mätningen gäller en hel vecka.
+//
 //   WRITE_REPORTS=1 CURIOUS_SEEDS=6 npx vitest run src/strategic/testHarness/__tests__/order319bNyfikna.test.ts
 // skriver reports/order319b/nyfikna.json.
 
 import { describe, expect, it } from 'vitest';
-import { answerScenario, playMorning, startInFoodtruck } from '../weekHarness';
+import { playDay, startInFoodtruck } from '../weekHarness';
 import { reducer } from '../../simulation/reducer';
 import { calendarFor, firstDayOfWeek } from '../../../sim/calendar';
-import { WEEK } from '../../../sim/balance';
+import { REPUTATION, WEEK } from '../../../sim/balance';
+import { PLAYERS as MEDALS } from '../randomness';
 import { curiousOf, curiousTalkable } from '../../../sim/curious';
-import { incidentBankFor } from '../../../sim/incidentBank';
+import { curiousQuestion } from '../../../sim/curiousBank';
 import { hashKey } from '../../util/hash';
 import type { SimulationState } from '../../types';
 
@@ -27,31 +31,49 @@ type Player = 'kan' | 'gissar' | 'klickar inte';
 const PLAYERS: Player[] = ['kan', 'gissar', 'klickar inte'];
 /** Spelaren hinner se gästen och klicka (verkliga sekunder efter att gästen saktat in). */
 const REACTION_S = 3;
-const TICK_S = 0.2;
-const MAX_TICKS = 40000;
 
-interface Evening { seed: number; day: number; revenueSek: number; curiousSek: number; situationsSek: number; bills: number; collapsed: boolean; t: ReturnType<typeof curiousOf>['tonight'] }
+interface Evening { seed: number; day: number; revenueSek: number; curiousSek: number; regularSek: number; situationsSek: number; bills: number; collapsed: boolean; t: ReturnType<typeof curiousOf>['tonight'] }
+interface Week { seed: number; evenings: Evening[]; reputationStart: number; reputationEnd: number }
 
-function evening(seed: number, day: number, p: Player): Evening {
-  let s: SimulationState = reducer(playMorning(startInFoodtruck(seed, day), { scenarioAnswer: 'best', ladder: 'never' }), { type: 'START_SERVICE' });
-  // Kvällens intäkt läses medan servicen pågår: en kollaps för över den till kvällens räkning och nollar
-  // serviceRevenueToday (strategic/simulation/collapse.ts).
-  let revenue = 0;
-  for (let i = 0; i < MAX_TICKS && s.day.period === 'dinner'; i++) {
-    revenue = Math.max(revenue, s.serviceRevenueToday.dinner);
-    s = answerScenario(reducer(s, { type: 'TICK', dt: TICK_S }), 'best');
-    if (s.day.period === 'dinner') revenue = Math.max(revenue, s.serviceRevenueToday.dinner);
+/** Det spelaren gör varje tick med de nyfikna. */
+function talk(p: Player, seed: number) {
+  return (s: SimulationState): SimulationState => {
     const c = curiousOf(s).current;
     if (p !== 'klickar inte' && c && curiousTalkable(s) && c.real >= REACTION_S) s = reducer(s, { type: 'CURIOUS_OPEN' });
     const card = curiousOf(s).current?.card;
     if (card) {
-      const step = incidentBankFor('foodtruck').find((x) => x.id === card.incidentId)!.steps[card.step];
-      const pick = p === 'kan' ? step.options.find((o) => o.quality === 'best')! : step.options[Math.floor(hashKey(seed, `${day}|${card.question}|${curiousOf(s).current!.seq}`) * step.options.length)];
+      const opts = card.order.map((id) => curiousQuestion(card.questionId)!.options.find((o) => o.id === id)!);
+      const pick = p === 'kan' ? opts.find((o) => o.quality === 'right')! : opts[Math.floor(hashKey(seed, `${s.day.dayNumber}|${card.questionId}|${curiousOf(s).current!.seq}`) * opts.length)];
       s = reducer(s, { type: 'CURIOUS_ANSWER', optionId: pick.id });
     }
+    return s;
+  };
+}
+
+/** En vecka i foodtrucken (vecka 1), dag för dag som harnessens spelare (playDay), med de nyfikna. */
+function week(seed: number, p: Player): Week {
+  let s = startInFoodtruck(seed, firstDayOfWeek(1));
+  s = { ...s, medals: { ...MEDALS.baseline } };
+  const reputationStart = s.reputation;
+  const evenings: Evening[] = [];
+  const onTalk = talk(p, seed);
+  for (let d = 0; d < WEEK.daysPerWeek; d++) {
+    const day = s.day.dayNumber;
+    // Kvällens intäkt läses medan servicen pågår: en kollaps för över den till kvällens räkning och nollar
+    // serviceRevenueToday (strategic/simulation/collapse.ts).
+    let revenue = 0, last: SimulationState | null = null;
+    const onTick = (x: SimulationState) => {
+      x = onTalk(x);
+      if (x.day.period === 'dinner' && x.day.dayNumber === day) { revenue = Math.max(revenue, x.serviceRevenueToday.dinner); last = x; }
+      return x;
+    };
+    s = playDay(s, { scenarioAnswer: 'best', ladder: 'never', onTick }).state;
+    const e = last as SimulationState | null;
+    if (!e || !calendarFor(day).isServiceDay) continue;
+    const situationsSek = (e.incidents?.log ?? []).reduce((a, r) => a + Math.max(0, r.deltas?.cashSek ?? 0), 0);
+    evenings.push({ seed, day, revenueSek: Math.round(revenue * 1000), curiousSek: Math.round(e.day.curiousRevenueSek ?? 0), regularSek: Math.round(e.day.curiousRegularRevenueSek ?? 0), situationsSek: Math.round(situationsSek), bills: e.day.billsTonight ?? 0, collapsed: !!e.day.serviceCollapsed, t: curiousOf(e).tonight });
   }
-  const situationsSek = (s.incidents?.log ?? []).reduce((a, r) => a + Math.max(0, r.deltas?.cashSek ?? 0), 0);
-  return { seed, day, revenueSek: Math.round(revenue * 1000), bills: s.day.billsTonight ?? 0, collapsed: !!s.day.serviceCollapsed, curiousSek: Math.round(s.day.curiousRevenueSek ?? 0), situationsSek: Math.round(situationsSek), t: curiousOf(s).tonight };
+  return { seed, evenings, reputationStart, reputationEnd: s.reputation };
 }
 
 function sum(xs: Evening[], f: (e: Evening) => number): number { return xs.reduce((a, e) => a + f(e), 0); }
@@ -59,10 +81,9 @@ function sum(xs: Evening[], f: (e: Evening) => number): number { return xs.reduc
 describe('ORDER 319b.4 — vad de nyfikna lägger till i intäkt', () => {
   it('den som kan får fler gäster av de nyfikna än den som gissar, och den som inte klickar inga; de nyfikna är inte den största källan', async () => {
     const seeds = Number(process.env.CURIOUS_SEEDS ?? 1);
-    const days: number[] = [];
-    for (let d = firstDayOfWeek(1); d < firstDayOfWeek(1) + WEEK.daysPerWeek; d++) if (calendarFor(d).isServiceDay) days.push(d);
-    const runs: Record<Player, Evening[]> = { kan: [], gissar: [], 'klickar inte': [] };
-    for (let seed = 1; seed <= seeds; seed++) for (const d of days.slice(0, seeds > 1 ? days.length : 2)) for (const p of PLAYERS) runs[p].push(evening(seed, d, p));
+    const weeks: Record<Player, Week[]> = { kan: [], gissar: [], 'klickar inte': [] };
+    for (let seed = 1; seed <= seeds; seed++) for (const p of PLAYERS) weeks[p].push(week(seed, p));
+    const runs = Object.fromEntries(PLAYERS.map((p) => [p, weeks[p].flatMap((w) => w.evenings)])) as Record<Player, Evening[]>;
     const summary = Object.fromEntries(PLAYERS.map((p) => {
       const xs = runs[p], n = xs.length;
       const revenue = sum(xs, (e) => e.revenueSek), curious = sum(xs, (e) => e.curiousSek), situations = sum(xs, (e) => e.situationsSek);
@@ -75,8 +96,11 @@ describe('ORDER 319b.4 — vad de nyfikna lägger till i intäkt', () => {
         otherGuestsPerEveningSek: Math.round((revenue - curious - situations) / n),
         situationsPerEveningSek: Math.round(situations / n),
         billsPerEvening: +(sum(xs, (e) => e.bills) / n).toFixed(2),
+        regularsPerEveningSek: Math.round(sum(xs, (e) => e.regularSek) / n),
+        weekRevenueSek: Math.round(revenue / Math.max(1, weeks[p].length)),
+        reputationChangePerWeek: +(weeks[p].reduce((a, w) => a + (w.reputationEnd - w.reputationStart) * REPUTATION.scale, 0) / Math.max(1, weeks[p].length)).toFixed(2),
         collapsedEvenings: xs.filter((e) => e.collapsed).length,
-        perEvening: { passersBy: count('passersBy'), talked: count('talked'), right: count('right'), ok: count('ok'), wrong: count('wrong'), unanswered: count('unanswered'), joined: count('joined'), friends: count('friends'), queueFull: count('queueFull') }
+        perEvening: { passersBy: count('passersBy'), talked: count('talked'), right: count('right'), ok: count('ok'), wrong: count('wrong'), unanswered: count('unanswered'), joined: count('joined'), friends: count('friends'), queueFull: count('queueFull'), regulars: count('regulars') }
       }];
     })) as unknown as Record<Player, { curiousPerEveningSek: number; otherGuestsPerEveningSek: number; situationsPerEveningSek: number; revenuePerEveningSek: number; curiousShare: number }>;
     // Nettot kväll för kväll mot den som inte klickar (samma frö och dag), för kvällar där ingen av de två
@@ -91,9 +115,9 @@ describe('ORDER 319b.4 — vad de nyfikna lägger till i intäkt', () => {
       const dir = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports/order319b');
       mkdirSync(dir, { recursive: true });
       writeFileSync(resolve(dir, 'nyfikna.json'), JSON.stringify({
-        definition: 'Foodtruckens kvällar vecka 1 (startInFoodtruck, ladder never, situationerna rätt), samma frön för alla tre spelartyperna. kan: klickar efter 3 s och svarar rätt; gissar: klickar efter 3 s och väljer på måfå; klickar inte: låter dem gå. curiousPerEveningSek = day.curiousRevenueSek (notorna från gästerna som kom via en nyfiken); revenuePerEveningSek = serviceRevenueToday.dinner medan servicen pågår (en kollaps nollar den); collapsedEvenings = kvällar som föll ihop (day.serviceCollapsed); situationsPerEveningSek = summan av incidents.log deltas.cashSek; otherGuestsPerEveningSek = resten.',
+        definition: 'En vecka i foodtrucken per frö (vecka 1, startInFoodtruck, playDay, ladder never, situationerna rätt), samma frön för alla tre spelartyperna; kvällarna är servicedagarna. weekRevenueSek = veckans summa av kvällarnas intäkt; reputationChangePerWeek = ryktets ändring över veckan i poäng (REPUTATION.scale); regularsPerEveningSek = notorna från stamgästerna som kom tillbaka (day.curiousRegularRevenueSek). kan: klickar efter 3 s och svarar rätt; gissar: klickar efter 3 s och väljer på måfå; klickar inte: låter dem gå. curiousPerEveningSek = day.curiousRevenueSek (notorna från gästerna som kom via en nyfiken); revenuePerEveningSek = serviceRevenueToday.dinner medan servicen pågår (en kollaps nollar den); collapsedEvenings = kvällar som föll ihop (day.serviceCollapsed); situationsPerEveningSek = summan av incidents.log deltas.cashSek; otherGuestsPerEveningSek = resten.',
         pairedNetDefinition: 'Kvällens intäkt minus samma kväll (frö och dag) för den som inte klickar, bara kvällar där ingen av de två föll ihop. curiousPerEveningSek: notorna från gästerna via de nyfikna samma kvällar; skillnaden mot nettot är gästerna som de nyfikna tog platsen för i kön.',
-        seeds, reactionSeconds: REACTION_S, summary, pairedNet, evenings: runs
+        seeds, reactionSeconds: REACTION_S, summary, pairedNet, weeks: Object.fromEntries(PLAYERS.map((p) => [p, weeks[p].map((w) => ({ seed: w.seed, reputationStart: w.reputationStart, reputationEnd: w.reputationEnd }))])), evenings: runs
       }, null, 2) + '\n');
     }
     const k = summary.kan, g = summary.gissar, n = summary['klickar inte'];

@@ -65,7 +65,8 @@ const NOT_PLAYER_TEXT = [
   /^ui\/theme\/nexusTheme\.warm\.rattfel\.ts$/,
   /^strategic\/scene\/[A-Za-z.]+\.ts$/,
   /^strategic\/content\/(roadRoles|streetProfiles|grythyttan|layout)\.ts$/,
-  /^sim\/(balance|incidentBank)\.ts$/,
+  // ORDER 319b del 2 — de nyfiknas frågebank: valideringens meddelanden, som incidentBank.ts.
+  /^sim\/(balance|incidentBank|curiousBank)\.ts$/,
   /^strategic\/knowledge\/(questionBank|questionCoverage|questionTemplates|maltidbiblioteketBrons)\.ts$/,
   /^content\/knowledgeBank\.ts$/,
   /^strategic\/ui\/foodtruck\/(archetypes|guestFaces)\.ts$/

@@ -4,8 +4,8 @@
 //     nyfiken som ställer sig i kön behåller sin figur) mot spelets kamera (window.__nxTruckCamera):
 //     ingen dyker upp eller försvinner i bild eller närmare än 40 m från vagnen;
 //   - de nyfikna: bubblan över huvudet (curious-bubble), pekaren över den, klicket öppnar kortet
-//     (curious-card) med en fråga ur foodtruckens bank (frågan läses ur simuleringen, window.__nxCurious,
-//     och det rätta svaret ur bankens metadata på disk), rätt svar (gästen ställer sig i kön, repliken
+//     (curious-card) med en fråga i gästens röst (ORDER 319b del 2; frågan läses ur simuleringen,
+//     window.__nxCurious, och det rätta svaret ur de nyfiknas metadata på disk), rätt svar (gästen ställer sig i kön, repliken
 //     från luckan, hatch-line), fel svar (gästen går vidare) och en som ingen pratar med (går vidare
 //     efter fönstret);
 //   - det minsta avståndet mellan två gäster vid vagnen där spelet ritar dem.
@@ -29,9 +29,9 @@ const URL = `http://localhost:${PORT}`;
 const LANG = process.env.LANG_GAME ?? 'sv';
 // Samma gräns som scene/village/truckGuestFlow.ts TRUCK_GUESTS.minSpawnM (skriptet kan inte importera TS).
 const MIN_SPAWN_M = 40;
-// Foodtruckens frågor: bankens metadata (samma filer som sim/incidentBank.ts läser).
-const META = JSON.parse(readFileSync(resolve(FRONTEND, 'src/content/incidents/foodtruck/bas.meta.json'), 'utf8'));
-const optionsOf = (incidentId, step) => META.incidents.find((i) => i.id === incidentId)?.steps[step]?.options ?? [];
+// De nyfiknas frågor: bankens metadata (samma fil som sim/curiousBank.ts läser, ORDER 319b del 2).
+const META = JSON.parse(readFileSync(resolve(FRONTEND, 'src/content/curious/nyfikna.meta.json'), 'utf8'));
+const optionsOf = (questionId) => META.questions.find((q) => q.id === questionId)?.options ?? [];
 
 async function startPreview() {
   if (!process.env.SKIP_BUILD) {
@@ -154,15 +154,17 @@ async function run(width, height, encounters) {
     // window.__nxCurious skrivs i nästa bild efter att kortet öppnats.
     await page.waitForFunction(() => !!window.__nxCurious?.current?.card, null, { timeout: 5000 }).catch(() => {});
     const card = (await curious(page))?.current?.card ?? null;
-    e.card = card ? { incidentId: card.incidentId, step: card.step, question: card.question, moment: card.moment } : null;
+    e.card = card ? { questionId: card.questionId, moment: card.moment, order: card.order } : null;
+    e.sender = await page.$eval('[data-testid=curious-card] .nx-curious-q', (el) => el.textContent).catch(() => null);
     await shot(`${met.length + 1}-kortet`);
-    const opts = card ? optionsOf(card.incidentId, card.step) : [];
-    const pick = plan === 'right' ? opts.find((o) => o.quality === 'best') : opts.find((o) => o.quality === 'wrong');
+    const opts = card ? optionsOf(card.questionId) : [];
+    const pick = plan === 'right' ? opts.find((o) => o.quality === 'right') : opts.find((o) => o.quality === 'wrong');
     if (pick) await page.click(`[data-testid=curious-option-${pick.id}]`);
     await delay(900);
     await shot(`${met.length + 1}-svaret`);
     await delay(1000);
     e.hatchLine = !!(await page.$('[data-testid=hatch-line]'));
+    e.hatchSender = await page.$eval('[data-testid=hatch-line] .nx-hatch-line-sender', (el) => el.textContent).catch(() => null);
     await shot(`${met.length + 1}-scenen`);
     const after = await curious(page);
     e.outcome = after?.last?.seq === seq ? after.last.outcome : null;
@@ -186,7 +188,7 @@ try {
   report.ok = report.errors.length === 0
     && v.every((x) => x.level === 'room' && x.seen > 0 && x.spawnInView.length === 0 && x.despawnInView.length === 0 && x.spawnNear.length === 0 && x.despawnNear.length === 0 && x.minGapM >= 0.35)
     && enc.every((e) => e.bubble && (e.plan === 'none' || (e.card && e.hoverState === 'hover')))
-    && enc.filter((e) => e.plan === 'right').every((e) => e.outcome === 'join' && e.grade === 'right' && e.hatchLine)
+    && enc.filter((e) => e.plan === 'right').every((e) => e.outcome === 'join' && e.grade === 'right' && e.hatchLine && /Nils/.test(e.hatchSender ?? ''))
     && enc.filter((e) => e.plan === 'wrong').every((e) => e.outcome === 'walkOn' && e.grade === 'wrong')
     && enc.filter((e) => e.plan === 'none').every((e) => e.outcome === 'walkOn');
 } catch (err) {

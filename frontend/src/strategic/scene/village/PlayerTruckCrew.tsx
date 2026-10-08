@@ -38,7 +38,7 @@ import { setMyBusinessOverride, useCamera } from '../../camera/CameraContext';
 import { CURIOUS, STREET_QUEUE, THEATRE } from '../../../sim/balance';
 import { curiousPhase, curiousTalkable, type CuriousGuest } from '../../../sim/curious';
 import { CURIOUS_SPOTS, MENU_BOARD } from '../truckProps';
-import { TRUCK_GUESTS, TruckGuestFlow, toWorld, type TruckFrame, type TruckWalker } from './truckGuestFlow';
+import { TRUCK_GUESTS, TruckGuestFlow, childKey, toWorld, type TruckFrame, type TruckWalker } from './truckGuestFlow';
 import { truckCameraState } from './truckCamera';
 import { CuriousMarker, type CuriousMarkerState } from './CuriousMarker';
 
@@ -53,6 +53,9 @@ const AWNING_OPACITY = 0.5;
 const MAX_DT_S = 0.1;
 /** Gästen kliver upp på trädäcket det sista stycket fram till platsen. */
 const STEP_UP_M = 0.6;
+/** ORDER 319b del 2 — barnet bredvid en nyfiken: en gästfigur i 0,62 av en vuxens längd (omkring 1,05 m,
+ *  en femåring). */
+const CHILD_SCALE = 0.62;
 /** Figurens höjd vid prövningen mot kamerans bild: fötterna och huvudet. */
 const FIGURE_TOP_M = 1.7;
 
@@ -88,7 +91,7 @@ export function PlayerTruckCrew() {
     return { g, grill, hatch, guestsGroup };
   }, [at]);
   // En figur per gäst, med gästens kläder; figurerna återanvänds per klädindex.
-  const rigs = useRef({ live: new Map<string, FigureRig>(), free: new Map<number, FigureRig[]>() });
+  const rigs = useRef({ live: new Map<string, FigureRig>(), free: new Map<number, FigureRig[]>(), children: new Map<string, FigureRig>(), freeChildren: [] as FigureRig[] });
   const frustum = useMemo(() => ({ f: new THREE.Frustum(), m: new THREE.Matrix4(), p: new THREE.Vector3() }), []);
   const flow = useMemo(() => new TruckGuestFlow(at, (x, z) => {
     for (const y of [0, FIGURE_TOP_M]) if (frustum.f.containsPoint(frustum.p.set(x, y, z))) return true;
@@ -192,6 +195,8 @@ export function PlayerTruckCrew() {
         // ORDER 319b — den nyfikna ställde sig i kön: samma figur, nu gästen. Vid rätt svar vinkar medhjälparen.
         const r = R.live.get(e.from!);
         if (r) { R.live.delete(e.from!); R.live.set(e.id, r); r.root.userData.guestId = e.id; }
+        const ch = R.children.get(e.from!);
+        if (ch) { R.children.delete(e.from!); R.children.set(e.id, ch); ch.root.userData.guestId = childKey(e.id); }
         if (cq?.last?.guestId === e.id && cq.last.grade === 'right') {
           beckon.current = { at: t + CURIOUS.card.beckonAtSeconds, guestId: e.id, line: (cq.tonight.right - 1) % CURIOUS.hatchLines };
         }
@@ -205,7 +210,18 @@ export function PlayerTruckCrew() {
         r.root.visible = true;
         crew.guestsGroup.add(r.root);
         R.live.set(e.id, r);
+        // ORDER 319b del 2 — barnet bredvid en nyfiken som kommer med barn.
+        if (flow.walkers.get(e.id)?.child) {
+          const c = R.freeChildren.pop() ?? createFigureRig({ variant: 'guest', garmentColour: GUEST_GARMENTS[(look + 3) % GUEST_GARMENTS.length] });
+          c.root.scale.setScalar(CHILD_SCALE);
+          c.root.userData.guestId = childKey(e.id);
+          c.root.visible = true;
+          crew.guestsGroup.add(c.root);
+          R.children.set(e.id, c);
+        }
       } else {
+        const c = R.children.get(e.id);
+        if (c) { R.children.delete(e.id); c.root.visible = false; crew.guestsGroup.remove(c.root); R.freeChildren.push(c); }
         const r = R.live.get(e.id);
         if (!r) continue;
         R.live.delete(e.id);
@@ -227,6 +243,8 @@ export function PlayerTruckCrew() {
       const r = R.live.get(w.id);
       if (!r) continue;
       const p = flow.shown.get(w.id) ?? [w.x, w.z];
+      const child = R.children.get(w.id);
+      if (child) poseChild(child, w, flow.shown.get(childKey(w.id)) ?? p, t);
       // ORDER 319b — kroppsspråket i kön: en blick på klockan efter en stund (STREET_QUEUE).
       const inQueue = w.settled && w.spot?.pose === 'queue';
       const qs = queueSince.current;
@@ -271,6 +289,14 @@ function curiousSeqOf(o: THREE.Object3D | null): number | null {
     if (id) return id.startsWith('curious:') ? Number(id.slice('curious:'.length)) : null;
   }
   return null;
+}
+
+/** Barnet går när den vuxna går och står när hen står, vänt åt samma håll. */
+function poseChild(c: FigureRig, w: TruckWalker, p: [number, number], t: number): void {
+  c.root.position.set(p[0], 0, p[1]);
+  c.root.rotation.y = w.yaw;
+  const walking = !w.settled && w.holdS <= 0;
+  applyPose(c, walking ? poseWalk(w.walkedM / (TRUCK_GUESTS.strideM * CHILD_SCALE)) : sampleClip('guest.queueCalm', t + 1.3, 'calm').pose);
 }
 
 function wrap(a: number): number {

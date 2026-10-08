@@ -486,8 +486,15 @@ export const STRINGS = {
   ...VILLAGE_EVENING_STRINGS,
   // ORDER 319b — Designs D9 och tillägget (livet vid luckan), inslagna oförändrade.
   ...LUCKAN_STRINGS,
-  // ORDER 319b — medhjälparen vid foodtruckens lucka (line.sender, Designs exempel "Elin, medhjälpare").
-  'truck.assistant.name': { sv: 'Elin', en: 'Elin' }
+  // ORDER 319b — medhjälparen vid foodtruckens lucka (line.sender). Anders 2026-10-08: inte Elin, som
+  // finns i vinbarens personal.
+  'truck.assistant.name': { sv: 'Nils', en: 'Nils' },
+  // ORDER 319b del 2 — de nyfiknas egna frågor (NYFIKNA_FRAGOR_319.md): vad spelaren ser när gästen ser på
+  // priset eller kommer med barn, och vem som talar när det inte är gästen själv.
+  'curious.moment.price': { sv: 'Tittar på priserna på skylten.', en: 'Looking at the prices on the board.' },
+  'curious.moment.child': { sv: 'Kommer fram med ett barn i handen.', en: 'Coming over with a child by the hand.' },
+  'curious.speaker.parent': { sv: 'Föräldern', en: 'The parent' },
+  'curious.speaker.child': { sv: 'Barnet pekar på grillen', en: 'The child points at the grill' }
 } satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;

@@ -61,23 +61,25 @@ Prototypens felsökningsetikett är inte med.
 
 ## 319b.4: vad de nyfikna lägger till i intäkt
 
-`reports/order319b/nyfikna.json`: 6 frön, foodtruckens servicekvällar vecka 1, 36 kvällar per spelartyp. Situationerna svaras rätt för alla.
+### Första mätningen (före del 2)
 
-| Spelartyp | Notor från de nyfikna per kväll | Gäster via de nyfikna per kväll (varav vänner) | Kvällens intäkt | Kollapsade kvällar |
+Mätningen gällde en kväll åt gången. Den som kan fick 705 kr per kväll i notor från de nyfikna, men nettot mot den som inte klickar var bara omkring 250 kr. De nyfikna tog platser i kön från gäster som annars hade kommit, eftersom vagnen går nära sin gräns. Det ledde till Anders beslut i del 2 nedan.
+
+### Efter del 2
+
+`reports/order319b/nyfikna.json`: 6 frön, en hel vecka i foodtrucken per frö (vecka 1, `playDay`), 36 servicekvällar per spelartyp. Situationerna svaras rätt för alla.
+
+| Spelartyp | Veckans intäkt | Från de nyfikna per kväll | Varav stamgästerna | Ryktet över veckan |
 |---|---|---|---|---|
-| Kan (klickar och svarar rätt) | 705 kr (12 %) | 7,3 (1,9) | 5 824 kr | 5 |
-| Gissar (klickar och väljer på måfå) | 212 kr | 2,1 (0,6) | 5 776 kr | 4 |
-| Klickar inte | 0 kr | 0 | 5 752 kr | 3 |
+| Kan (klickar och svarar rätt) | 30 864 kr | 887 kr | 232 kr | +13,5 poäng |
+| Gissar (klickar och väljer på måfå) | 29 634 kr | 239 kr | 40 kr | +7,5 poäng |
+| Klickar inte | 29 437 kr | 0 kr | 0 kr | +6,1 poäng |
 
-**Skillnaden mellan den som kan och den som inte kan är tydlig, och de nyfikna är inte den största källan.** Hos den som kan ger de andra gästerna 5 119 kr per kväll.
-
-**Men nettot är litet.** Kvällarna jämfördes en och en mot samma kväll för den som inte klickar, bara kvällar där ingen av de två kollapsade (`pairedNet`):
-- Den som kan får 250 kr mer per kväll, och den som gissar 107 kr mer.
-- De nyfikna gav 712 kr samma kvällar, alltså tog de nyfikna plats i kön från gäster som annars hade kommit.
-- Vagnen går redan nära sin gräns: kön är full ibland och gäster vänder.
-- Fler gäster ger också mer belastning, och kollapserna på den kulturella axeln (319a) kom något oftare: 5 mot 3 kvällar. Urvalet är litet.
-
-Jag provade att låta de nyfikna bara stanna när kön är kort. Nettot blev ungefär detsamma, och antalet nyfikna halverades, så jag tog bort det igen.
+- **Skillnaden i veckan:**
+  - Den som kan får 1 427 kr mer än den som inte klickar och 1 230 kr mer än den som gissar.
+  - Ryktet stiger 7,4 poäng mer för den som kan än för den som inte klickar.
+- **Inte den största källan:** de andra gästerna ger den som kan 4 257 kr per kväll, mot 887 kr från de nyfikna.
+- **Inga kvällar kollapsade** i den här mätningen (`collapsedEvenings`). Kollapserna mäts med 40 säsonger i 319c, enligt Anders beslut.
 
 ## Trängseln (Anders 2026-10-08)
 
@@ -129,9 +131,68 @@ Beslutsraden från 2026-10-08 står i `NEXUS_SPELDESIGN_V1.md`.
 - **`scripts/order319a-check.mjs`:** ok. Figurerna följs nu per objekt, eftersom en nyfiken som ställer sig i kön byter id men inte figur.
 - **`scripts/order300-layout.mjs`:** alla lägen ok.
 
+---
+
+## Del 2 (Anders beslut 2026-10-08)
+
+### Vagnens kapacitet ökas inte
+
+Kunskapen syns i stället på tre sätt (`sim/curious.ts`, talen i `balance.ts CURIOUS`):
+
+1. **Varje köp blir större.** Den som fick ett rätt svar tar en dryck eller en hel special i stället för en halv: notan gånger 1 + `rightBillBonus` (0,35).
+2. **Gästen kommer tillbaka som stamgäst.** Efter ett rätt svar och ett köp händer det med `returnChance` (0,5).
+   - Stamgästen kommer någon av de `returnWithinServiceDays` (3) närmaste servicedagarna och köper lika mycket.
+   - Stamgästerna ligger i `state.curiousRegulars` till dess.
+3. **Ryktet stiger** med `reputationRight` poäng per rätt svar.
+   - Först satte jag 0,25, men då steg ryktet 10 poäng mer i veckan än för den som inte klickar. Det är lika mycket som tio klarade situationer, så nu är det 0,1.
+
+Mer kapacitet, som en andra grill, kan bli en satsning som spelaren köper. Den är inte byggd.
+
+### Frågorna i gästens egen röst
+
+Underlaget är `documentation/blueprints/NYFIKNA_FRAGOR_319.md`, Anders 20 frågor.
+
+- **Filerna:** frågorna ligger i `src/content/curious/`: `nyfikna.meta.json`, `nyfikna.text.sv.json` och `nyfikna.text.en.json`. Engelskan har jag översatt.
+- **Validering:** `sim/curiousBank.ts` validerar frågorna när spelet startar.
+- **Utlösaren** följer vad gästen gör i bild:
+  - läser skylten;
+  - luktar på röken;
+  - fryser (en sval kväll, med vädret i 319c);
+  - ser på priset, när en del av dem som läser skylten tittar på priserna (`priceShare`);
+  - kommer med barn (`childShare`). Barnet går bredvid i scenen och följer med till kön eller vidare, och kortet säger vem som talar (*Föräldern*, *Barnet pekar på grillen*).
+- **Svaren blandas** varje gång.
+- **Upprepning:** en fråga kommer inte två gånger samma kväll, och inte samma som förra kvällen så länge det finns andra. Finns ingen fråga kvar för det gästen gör tas en annan.
+- **⚖:** n09, n12 och n19 är dolda tills de är granskade. De andra 17 är med.
+- **Förklaringen** på kortet är frågans egen.
+- **Krediten** bokförs på frågans axel.
+
+**Mina synpunkter på frågorna** (inbyggda som de är):
+- **n04** "Har ni något utan kött?": det rätta svaret är vegokorven, men den finns inte på vagnens meny i Designs D9 (`menu.*`).
+- **n08** "Grillar ni på kol?": svar 3, "Det är en vanlig elgrill", är markerat ok men är fel i sak, eftersom vagnen grillar på gasol.
+- **n18** senapen till en femåring: det rätta svaret kallar skånsk senap söt och mild. Skånsk senap brukar vara söt men ganska stark.
+
+### Medhjälparens namn
+
+**Nils**, enligt Anders förslag, eftersom Elin finns i vinbarens personal (`truck.assistant.name`).
+
+### Prövningen av del 2
+
+- **`sim/__tests__/order319bCurious.test.ts`** (11 test):
+  - frågebanken, utlösarna och ⚖;
+  - fel i banken stoppas av valideringen;
+  - frågan följer vad gästen gör, och svaren är blandade;
+  - rätt svar ger ett större köp och ett högre rykte;
+  - stamgästen kommer en senare servicedag och köper lika mycket.
+- **`testHarness/__tests__/order319bNyfikna.test.ts`:** veckorna i tabellen ovan.
+- **`scripts/order319b-check.mjs`:** ok i båda storlekarna.
+  - Den första nyfikna kom med barn och fick fråga n18 med blandade svar.
+  - Repliken var från *Nils, medhjälpare*.
+  - 0 figurer dök upp eller försvann i bild eller närmare än 40 m.
+  - Det minsta avståndet mellan två figurer var 0,44 m.
+
 ## Kvar till Anders
 
-- **Nettot från de nyfikna är litet**, eftersom vagnen går nära sin gräns. Ska vagnen klara fler gäster (köns tak eller personalens takt), så att kunskapen ger mer i kassan?
-- **Kollapserna** (från 319a), som blir något fler med fler gäster.
-- **Vännen kommer gående från byn**, inte bredvid gästen.
-- **Frågan på kortet är en kunskapsfråga ur banken**, och raden om vad gästen gör står ovanför. Bankens frågor är inte skrivna som något en gäst säger, som *"Vad är det för korv?"*. Egna frågor till de nyfikna kräver en leverans från Claude.
+- **Kollapserna** mäts med 40 säsonger i 319c.
+- **Vännen** kommer gående från byn, inte bredvid gästen.
+- **⚖-frågorna** n09, n12 och n19 ska granskas.
+- **Mina synpunkter** på n04, n08 och n18 (ovan).
