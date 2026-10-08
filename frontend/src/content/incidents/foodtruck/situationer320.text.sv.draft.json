@@ -72,7 +72,7 @@
        "explanation": "Gästerna är torra, men brödet blir blött innan de hunnit äta."
       },
       "d": {
-       "label": "Stäng luckan tills regnet har slutat.",
+       "label": "Stäng luckan tills regnet har slutat och vänta inne i vagnen.",
        "explanation": "Kön skingras, och gästerna går till någon som är öppen."
       }
      },
@@ -156,7 +156,7 @@
      "question": "Vad gör du?",
      "options": {
       "a": {
-       "label": "Sätt lock på såserna, ge gästen ett bord längre bort och fråga efter medicinen.",
+       "label": "Lock på såserna, gästen till ett bord längre bort, fråga om medicinen.",
        "explanation": "Utan socker framme lugnar sig getingarna, och gästen kommer bort från dem. Den som vet att hen är allergisk har ofta medicin med sig, och det är bra att veta var den finns."
       },
       "b": {
@@ -164,11 +164,11 @@
        "explanation": "Getingarna lugnar sig, men gästen står kvar där de är."
       },
       "c": {
-       "label": "Flytta gästen, men låt såserna och burkarna stå öppna.",
+       "label": "Flytta gästen, men låt såserna och burkarna stå öppna på disken.",
        "explanation": "Gästen kommer bort, men getingarna blir kvar och följer efter det söta."
       },
       "d": {
-       "label": "Vifta bort getingen med en servett.",
+       "label": "Vifta bort getingen med en servett och servera vidare som vanligt.",
        "explanation": "Viftandet gör getingen orolig, och risken för stick ökar."
       }
      },
@@ -252,7 +252,7 @@
      "question": "Vad gör du?",
      "options": {
       "a": {
-       "label": "Erbjud Swish, starta om terminalen och säg till kön vad som händer.",
+       "label": "Erbjud Swish, starta om terminalen, säg till kön vad som händer.",
        "explanation": "Ett annat sätt att betala håller kön rörlig, och omstarten löser oftast felet."
       },
       "b": {
@@ -260,7 +260,7 @@
        "explanation": "Omstarten är rätt, men kön står still och några går."
       },
       "c": {
-       "label": "Låt gästen betala nästa gång, och servera.",
+       "label": "Låt gästen betala nästa gång, och servera korven direkt.",
        "explanation": "Generöst, men det löser inte felet, och nästa i kön vill ha samma sak."
       },
       "d": {
@@ -356,11 +356,11 @@
        "explanation": "Korven räcker längre, men kön förstår inte varför."
       },
       "c": {
-       "label": "Lova alla en korv, och hoppas att det räcker.",
+       "label": "Lova alla i kön en korv, och hoppas att det räcker.",
        "explanation": "Gästerna blir glada, men den sista får inget efter att ha väntat."
       },
       "d": {
-       "label": "Säg ingenting, och sälj tills det tar slut.",
+       "label": "Säg ingenting till kön, och fortsätt sälja tills korven tar slut.",
        "explanation": "Den som står sist har köat förgäves."
       }
      },
@@ -444,11 +444,11 @@
      "question": "Vad gör du?",
      "options": {
       "a": {
-       "label": "Vattenskål vid bordet längst bort från luckan, och tvätta händerna efteråt.",
+       "label": "Vattenskål vid bordet längst bort, och tvätta händerna efteråt.",
        "explanation": "Hunden får vatten och avstånd, och den andra gästen slipper den. Händerna tvättas innan du rör maten igen."
       },
       "b": {
-       "label": "Säg att hunden ska stå längst bort, men ge ingen vatten.",
+       "label": "Säg att hunden ska stå längst bort, men ge den inget vatten.",
        "explanation": "Regeln är rätt, men hunden är varm och ägaren känner sig ovälkommen."
       },
       "c": {
@@ -456,7 +456,7 @@
        "explanation": "Omtänksamt, men utan att tvätta händerna och med hunden nära den oroliga gästen."
       },
       "d": {
-       "label": "Ge hunden en korvbit från grillen.",
+       "label": "Ge hunden en korvbit från grillen, så att den håller sig lugn.",
        "explanation": "Hunden blir glad, men det är inte bra för hunden, och du har rört djuret med samma hand som maten."
       }
      },
@@ -544,11 +544,11 @@
        "explanation": "Priset håller marginalen, och skälen och en liten gest håller kvar stamgästen."
       },
       "b": {
-       "label": "Behåll priset, utan att säga något mer.",
+       "label": "Behåll priset som det är, utan att säga något mer.",
        "explanation": "Marginalen är kvar, men stamgästen undrar varför hen ska betala mer."
       },
       "c": {
-       "label": "Sänk till 25 kr, så att stamgästen stannar.",
+       "label": "Sänk till 25 kr, så att stamgästen stannar kvar.",
        "explanation": "Gästen stannar, men marginalen nästan halveras för alla."
       },
       "d": {

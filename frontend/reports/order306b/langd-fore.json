@@ -3,12 +3,12 @@
   "longestIsBest": {
     "sv": {
       "steps": 32,
-      "hits": 11,
+      "hits": 12,
       "randomExpectation": 9.4
     },
     "en": {
       "steps": 32,
-      "hits": 10,
+      "hits": 13,
       "randomExpectation": 9.4
     }
   },
@@ -27,8 +27,8 @@
   "step3Longest": {
     "situations": 23,
     "fullIsLongest": {
-      "sv": 6,
-      "en": 6
+      "sv": 22,
+      "en": 20
     },
     "rows": [
       {
@@ -36,7 +36,7 @@
         "id": "vb01-korken",
         "lang": "sv",
         "words": {
-          "a": 10,
+          "a": 11,
           "b": 11,
           "c": 11,
           "d": 10
@@ -44,14 +44,14 @@
         "full": [
           "a"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "vinbar",
         "id": "vb01-korken",
         "lang": "en",
         "words": {
-          "a": 11,
+          "a": 13,
           "b": 13,
           "c": 13,
           "d": 12
@@ -59,14 +59,14 @@
         "full": [
           "a"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "vinbar",
         "id": "vb02-rosen",
         "lang": "sv",
         "words": {
-          "a": 11,
+          "a": 13,
           "b": 13,
           "c": 11,
           "d": 13
@@ -74,14 +74,14 @@
         "full": [
           "a"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "vinbar",
         "id": "vb02-rosen",
         "lang": "en",
         "words": {
-          "a": 10,
+          "a": 12,
           "b": 13,
           "c": 10,
           "d": 11
@@ -96,30 +96,30 @@
         "id": "vb03-notallergi",
         "lang": "sv",
         "words": {
-          "a": 12,
+          "a": 13,
           "b": 12,
           "c": 12,
-          "d": 14
+          "d": 9
         },
         "full": [
           "a"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "vinbar",
         "id": "vb03-notallergi",
         "lang": "en",
         "words": {
-          "a": 12,
+          "a": 13,
           "b": 13,
           "c": 12,
-          "d": 14
+          "d": 9
         },
         "full": [
           "a"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "vinbar",
@@ -218,13 +218,13 @@
         "words": {
           "a": 13,
           "b": 14,
-          "c": 13,
+          "c": 14,
           "d": 12
         },
         "full": [
           "c"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "vinbar",
@@ -233,45 +233,45 @@
         "words": {
           "a": 13,
           "b": 12,
-          "c": 12,
+          "c": 14,
           "d": 12
         },
         "full": [
           "c"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "vinbar",
         "id": "vb18-kavajen",
         "lang": "sv",
         "words": {
-          "a": 12,
-          "b": 10,
-          "c": 11,
+          "a": 10,
+          "b": 12,
+          "c": 14,
           "d": 11
         },
         "full": [
           "b",
           "c"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "vinbar",
         "id": "vb18-kavajen",
         "lang": "en",
         "words": {
-          "a": 12,
-          "b": 11,
-          "c": 11,
+          "a": 10,
+          "b": 13,
+          "c": 14,
           "d": 11
         },
         "full": [
           "b",
           "c"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "vinbar",
@@ -279,14 +279,14 @@
         "lang": "sv",
         "words": {
           "a": 12,
-          "b": 11,
+          "b": 12,
           "c": 12,
           "d": 11
         },
         "full": [
           "b"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "vinbar",
@@ -294,14 +294,14 @@
         "lang": "en",
         "words": {
           "a": 13,
-          "b": 10,
+          "b": 15,
           "c": 13,
           "d": 13
         },
         "full": [
           "b"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "vinbar",
@@ -309,15 +309,15 @@
         "lang": "sv",
         "words": {
           "a": 11,
-          "b": 12,
-          "c": 12,
-          "d": 14
+          "b": 13,
+          "c": 13,
+          "d": 13
         },
         "full": [
           "b",
           "c"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "vinbar",
@@ -325,145 +325,145 @@
         "lang": "en",
         "words": {
           "a": 15,
-          "b": 13,
-          "c": 13,
+          "b": 14,
+          "c": 15,
           "d": 14
         },
         "full": [
           "b",
           "c"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
         "id": "ft01-rusningen",
         "lang": "sv",
         "words": {
-          "a": 11,
-          "b": 9,
-          "c": 13,
-          "d": 9
+          "a": 7,
+          "b": 13,
+          "c": 8,
+          "d": 4
         },
         "full": [
           "b"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
         "id": "ft01-rusningen",
         "lang": "en",
         "words": {
-          "a": 12,
-          "b": 8,
-          "c": 11,
-          "d": 9
+          "a": 8,
+          "b": 11,
+          "c": 8,
+          "d": 4
         },
         "full": [
           "b"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
         "id": "ft02-drycken",
         "lang": "sv",
         "words": {
-          "a": 8,
-          "b": 7,
-          "c": 9,
-          "d": 9
+          "a": 4,
+          "b": 15,
+          "c": 3,
+          "d": 1
         },
         "full": [
           "b"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
         "id": "ft02-drycken",
         "lang": "en",
         "words": {
-          "a": 8,
-          "b": 9,
-          "c": 11,
-          "d": 12
+          "a": 4,
+          "b": 16,
+          "c": 4,
+          "d": 1
         },
         "full": [
           "b"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
         "id": "ft03-rullen",
         "lang": "sv",
         "words": {
-          "a": 10,
-          "b": 11,
-          "c": 14,
-          "d": 11
+          "a": 3,
+          "b": 15,
+          "c": 8,
+          "d": 4
         },
         "full": [
           "b"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
         "id": "ft03-rullen",
         "lang": "en",
         "words": {
-          "a": 12,
-          "b": 11,
-          "c": 12,
-          "d": 9
+          "a": 6,
+          "b": 19,
+          "c": 8,
+          "d": 4
         },
         "full": [
           "b"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
         "id": "ft04-leveransen",
         "lang": "sv",
         "words": {
-          "a": 12,
-          "b": 11,
-          "c": 9,
+          "a": 3,
+          "b": 15,
+          "c": 3,
+          "d": 6
+        },
+        "full": [
+          "b"
+        ],
+        "fullIsLongest": true
+      },
+      {
+        "cls": "foodtruck",
+        "id": "ft04-leveransen",
+        "lang": "en",
+        "words": {
+          "a": 3,
+          "b": 18,
+          "c": 4,
           "d": 8
         },
         "full": [
           "b"
         ],
-        "fullIsLongest": false
-      },
-      {
-        "cls": "foodtruck",
-        "id": "ft04-leveransen",
-        "lang": "en",
-        "words": {
-          "a": 12,
-          "b": 10,
-          "c": 10,
-          "d": 9
-        },
-        "full": [
-          "b"
-        ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
         "id": "ft07-ursprunget",
         "lang": "sv",
         "words": {
-          "a": 9,
-          "b": 12,
+          "a": 5,
+          "b": 17,
           "c": 10,
-          "d": 9
+          "d": 5
         },
         "full": [
           "b"
@@ -475,10 +475,10 @@
         "id": "ft07-ursprunget",
         "lang": "en",
         "words": {
-          "a": 11,
-          "b": 14,
+          "a": 8,
+          "b": 18,
           "c": 10,
-          "d": 10
+          "d": 7
         },
         "full": [
           "b"
@@ -490,60 +490,60 @@
         "id": "ft05-allergin",
         "lang": "sv",
         "words": {
-          "a": 14,
-          "b": 13,
-          "c": 11,
-          "d": 11
+          "a": 6,
+          "b": 23,
+          "c": 4,
+          "d": 4
         },
         "full": [
           "b"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
         "id": "ft05-allergin",
         "lang": "en",
         "words": {
-          "a": 15,
-          "b": 14,
-          "c": 13,
-          "d": 13
+          "a": 7,
+          "b": 29,
+          "c": 6,
+          "d": 7
         },
         "full": [
           "b"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
         "id": "ft06-stangningen",
         "lang": "sv",
         "words": {
-          "a": 15,
-          "b": 13,
-          "c": 15,
-          "d": 13
+          "a": 8,
+          "b": 25,
+          "c": 6,
+          "d": 9
         },
         "full": [
           "b"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
         "id": "ft06-stangningen",
         "lang": "en",
         "words": {
-          "a": 14,
-          "b": 14,
-          "c": 12,
-          "d": 15
+          "a": 8,
+          "b": 31,
+          "c": 4,
+          "d": 9
         },
         "full": [
           "b"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
@@ -553,7 +553,7 @@
           "a": 15,
           "b": 12,
           "c": 11,
-          "d": 11
+          "d": 6
         },
         "full": [
           "a"
@@ -565,10 +565,10 @@
         "id": "ft08-regnet",
         "lang": "en",
         "words": {
-          "a": 14,
+          "a": 17,
           "b": 12,
           "c": 13,
-          "d": 12
+          "d": 7
         },
         "full": [
           "a"
@@ -580,45 +580,45 @@
         "id": "ft09-getingen",
         "lang": "sv",
         "words": {
-          "a": 12,
+          "a": 14,
           "b": 13,
-          "c": 11,
-          "d": 11
+          "c": 9,
+          "d": 6
         },
         "full": [
           "a"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
         "id": "ft09-getingen",
         "lang": "en",
         "words": {
-          "a": 14,
+          "a": 17,
           "b": 15,
-          "c": 13,
-          "d": 12
+          "c": 10,
+          "d": 7
         },
         "full": [
           "a"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
         "id": "ft10-kortet",
         "lang": "sv",
         "words": {
-          "a": 11,
+          "a": 12,
           "b": 12,
-          "c": 9,
+          "c": 7,
           "d": 9
         },
         "full": [
           "a"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
@@ -627,8 +627,8 @@
         "words": {
           "a": 11,
           "b": 12,
-          "c": 12,
-          "d": 9
+          "c": 9,
+          "d": 5
         },
         "full": [
           "a"
@@ -642,8 +642,8 @@
         "words": {
           "a": 15,
           "b": 10,
-          "c": 11,
-          "d": 11
+          "c": 9,
+          "d": 8
         },
         "full": [
           "a"
@@ -656,9 +656,9 @@
         "lang": "en",
         "words": {
           "a": 15,
-          "b": 11,
-          "c": 11,
-          "d": 11
+          "b": 7,
+          "c": 8,
+          "d": 8
         },
         "full": [
           "a"
@@ -670,30 +670,30 @@
         "id": "ft12-hunden",
         "lang": "sv",
         "words": {
-          "a": 9,
-          "b": 12,
+          "a": 11,
+          "b": 11,
           "c": 10,
-          "d": 12
+          "d": 6
         },
         "full": [
           "a"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
         "id": "ft12-hunden",
         "lang": "en",
         "words": {
-          "a": 12,
+          "a": 15,
           "b": 12,
           "c": 11,
-          "d": 14
+          "d": 10
         },
         "full": [
           "a"
         ],
-        "fullIsLongest": false
+        "fullIsLongest": true
       },
       {
         "cls": "foodtruck",
@@ -701,8 +701,8 @@
         "lang": "sv",
         "words": {
           "a": 11,
-          "b": 10,
-          "c": 9,
+          "b": 7,
+          "c": 8,
           "d": 10
         },
         "full": [
@@ -715,9 +715,9 @@
         "id": "ft13-priset",
         "lang": "en",
         "words": {
-          "a": 13,
-          "b": 10,
-          "c": 10,
+          "a": 15,
+          "b": 7,
+          "c": 8,
           "d": 11
         },
         "full": [
@@ -805,9 +805,9 @@
       {
         "id": "vb03-notallergi",
         "step": 3,
-        "maxWords": 14,
-        "minWords": 12,
-        "ratio": 1.17,
+        "maxWords": 13,
+        "minWords": 9,
+        "ratio": 1.44,
         "overWords": false,
         "overRatio": false
       },
@@ -940,9 +940,9 @@
       {
         "id": "vb18-kavajen",
         "step": 3,
-        "maxWords": 12,
+        "maxWords": 14,
         "minWords": 10,
-        "ratio": 1.2,
+        "ratio": 1.4,
         "overWords": false,
         "overRatio": false
       },
@@ -994,9 +994,9 @@
       {
         "id": "vb32-fodelsedagen",
         "step": 3,
-        "maxWords": 14,
+        "maxWords": 13,
         "minWords": 11,
-        "ratio": 1.27,
+        "ratio": 1.18,
         "overWords": false,
         "overRatio": false
       },
@@ -1045,8 +1045,8 @@
         "id": "vb01-korken",
         "step": 3,
         "maxWords": 13,
-        "minWords": 11,
-        "ratio": 1.18,
+        "minWords": 12,
+        "ratio": 1.08,
         "overWords": false,
         "overRatio": false
       },
@@ -1098,9 +1098,9 @@
       {
         "id": "vb03-notallergi",
         "step": 3,
-        "maxWords": 14,
-        "minWords": 12,
-        "ratio": 1.17,
+        "maxWords": 13,
+        "minWords": 9,
+        "ratio": 1.44,
         "overWords": false,
         "overRatio": false
       },
@@ -1206,9 +1206,9 @@
       {
         "id": "vb12-varmt-rott",
         "step": 3,
-        "maxWords": 13,
+        "maxWords": 14,
         "minWords": 12,
-        "ratio": 1.08,
+        "ratio": 1.17,
         "overWords": false,
         "overRatio": false
       },
@@ -1233,9 +1233,9 @@
       {
         "id": "vb18-kavajen",
         "step": 3,
-        "maxWords": 12,
-        "minWords": 11,
-        "ratio": 1.09,
+        "maxWords": 14,
+        "minWords": 10,
+        "ratio": 1.4,
         "overWords": false,
         "overRatio": false
       },
@@ -1260,9 +1260,9 @@
       {
         "id": "vb23-sott",
         "step": 3,
-        "maxWords": 13,
-        "minWords": 10,
-        "ratio": 1.3,
+        "maxWords": 15,
+        "minWords": 13,
+        "ratio": 1.15,
         "overWords": false,
         "overRatio": false
       },
@@ -1288,8 +1288,8 @@
         "id": "vb32-fodelsedagen",
         "step": 3,
         "maxWords": 15,
-        "minWords": 13,
-        "ratio": 1.15,
+        "minWords": 14,
+        "ratio": 1.07,
         "overWords": false,
         "overRatio": false
       },

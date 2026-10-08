@@ -58,19 +58,19 @@
      "question": "How do you grill the sausages before the evening rush?",
      "options": {
       "a": {
-       "label": "On the highest heat, so it goes quickly.",
+       "label": "On the highest heat, so it goes quickly and the queue moves.",
        "explanation": "High heat splits the sausages before they are hot inside, and the queue waits for new ones."
       },
       "b": {
-       "label": "On medium heat, turning often, so they heat through without splitting.",
+       "label": "Medium heat, turning often, so they don't split.",
        "explanation": "Right. Medium heat and frequent turning give sausages that are hot through and stay whole."
       },
       "c": {
-       "label": "In cold water first, then on high heat.",
+       "label": "In cold water first, then on high heat to finish them.",
        "explanation": "The water takes time, and the high heat splits them anyway."
       },
       "d": {
-       "label": "On one side only.",
+       "label": "On one side only, so they keep their juices.",
        "explanation": "Then the sausage is burnt on one side and cold on the other."
       }
      },
@@ -142,19 +142,19 @@
      "question": "Which drink do you suggest with a spicy grilled sausage to a guest who does not drink alcohol?",
      "options": {
       "a": {
-       "label": "Water; nothing else works.",
+       "label": "Water, because nothing else goes with spicy food.",
        "explanation": "Water works, but there are alcohol-free drinks that suit the sausage better."
       },
       "b": {
-       "label": "An alcohol-free beer or a sparkling drink with some bitterness, such as tonic or bitter lemon.",
+       "label": "Alcohol-free beer or something sparkling and bitter, like tonic.",
        "explanation": "Right. The bitterness and bubbles do what they do in a beer: they meet the salt and cut through the fat."
       },
       "c": {
-       "label": "A sweet fruit soda.",
+       "label": "A sweet fruit soda to cool down after the hot sausage.",
        "explanation": "The sweetness clashes with the spices and makes the sausage feel heavier."
       },
       "d": {
-       "label": "Milk.",
+       "label": "A glass of cold milk to calm the heat of the spices.",
        "explanation": "Milk calms the heat but does nothing for the salt and the fat."
       }
      },
@@ -226,19 +226,19 @@
      "question": "How do you make a flatbread roll that holds together when the guest eats it standing?",
      "options": {
       "a": {
-       "label": "Plenty of prawn salad on top.",
+       "label": "Plenty of prawn salad on top, so it's juicy all the way.",
        "explanation": "Prawn salad on top makes the roll soggy, and it falls apart."
       },
       "b": {
-       "label": "The mash first as a bed, then the sausage, prawn salad and onion, rolled tight with the edge underneath.",
+       "label": "Mash as a bed, then sausage, prawn salad, onion; rolled tight.",
        "explanation": "Right. The mash holds the sausage, and a tight roll with the edge underneath holds in the hand."
       },
       "c": {
-       "label": "Rolls it loosely so it can be opened.",
+       "label": "Rolls it loosely, so the guest can open it and see inside.",
        "explanation": "A loose roll opens by itself while the guest eats."
       },
       "d": {
-       "label": "Cuts it in two.",
+       "label": "Cuts it in two, so it's easier to hold.",
        "explanation": "Cut in two, the filling runs out of both ends."
       }
      },
@@ -310,19 +310,19 @@
      "question": "How many sausages do you have out before the seven o’clock rush?",
      "options": {
       "a": {
-       "label": "All you have.",
+       "label": "All you have, so nothing is missing when the big queue comes.",
        "explanation": "What does not sell in time stands too long."
       },
       "b": {
-       "label": "As many as the queue usually takes in the next half hour, topping up at an even pace.",
+       "label": "Enough for the next half hour's queue, topped up evenly.",
        "explanation": "Right. The right amount out and even topping up give hot sausages without waste."
       },
       "c": {
-       "label": "One at a time.",
+       "label": "One at a time, so every sausage is freshly grilled.",
        "explanation": "The queue waits for every sausage."
       },
       "d": {
-       "label": "None; everything is grilled when the guest orders.",
+       "label": "None; everything is grilled once the guest has ordered.",
        "explanation": "The waits get long when the queue arrives."
       }
      },
@@ -394,11 +394,11 @@
      "question": "You take payment and serve sausages at the same hatch. How do you work?",
      "options": {
       "a": {
-       "label": "Wipe your hands on the apron in between.",
+       "label": "Wipe your hands on the apron between each payment and sausage.",
        "explanation": "The apron does not remove what comes with the money."
       },
       "b": {
-       "label": "Use tongs for the food and never touch it with the hand that handles money, or change gloves.",
+       "label": "Use tongs for the food, never the hand that takes money, or change gloves.",
        "explanation": "Right. Money and food are kept apart, with the tongs or fresh gloves."
       },
       "c": {
@@ -406,7 +406,7 @@
        "explanation": "The gloves carry what they have touched."
       },
       "d": {
-       "label": "Let the customer take the sausage themselves.",
+       "label": "Let the customer take the sausage themselves, with a napkin.",
        "explanation": "Then more hands touch the food."
       }
      },
@@ -478,19 +478,19 @@
      "question": "The cool box shows +11 °C in the middle of the evening. What do you do first?",
      "options": {
       "a": {
-       "label": "Carry on; it is only one evening.",
+       "label": "Carry on as usual; it's only one evening and the box still cools a little.",
        "explanation": "Food kept too warm can become unsafe to eat, even in one evening."
       },
       "b": {
-       "label": "Move the goods to cooling that holds (at most +8 °C for sausage, colder for the prawn salad), note the temperature and judge whether anything must be thrown away.",
+       "label": "Move the goods to at most +8 °C, log it and judge the rest.",
        "explanation": "Right. The cold first, then the note and the judgement of what has stood warm."
       },
       "c": {
-       "label": "Close the hatch for the evening.",
+       "label": "Close the hatch for the evening and throw out everything in the box.",
        "explanation": "That does not save the goods. The cold has to come first."
       },
       "d": {
-       "label": "Put ice on top of the lid.",
+       "label": "Put ice on top of the lid and hope the temperature drops again.",
        "explanation": "Ice on the lid hardly cools what is inside the box."
       }
      },
@@ -562,19 +562,19 @@
      "question": "The sausages have been in the warmer since opening. What do you do?",
      "options": {
       "a": {
-       "label": "Sell them as long as they look fine.",
+       "label": "Sell them while they look fine and no guest has complained of the taste.",
        "explanation": "How they look does not tell you whether they have been kept hot enough."
       },
       "b": {
-       "label": "Check that they have been kept hot enough, at least +60 °C and for no more than a few hours, and throw away what has stood too long or too cool.",
+       "label": "Check: at least +60 °C, no more than a few hours, else bin them.",
        "explanation": "Right. Temperature and time decide, not looks."
       },
       "c": {
-       "label": "Grill them once more.",
+       "label": "Grill them once more, so they're hot again before they are sold.",
        "explanation": "That does not rescue what has stood too cool for too long."
       },
       "d": {
-       "label": "Put them in the fridge and sell them tomorrow.",
+       "label": "Put them in the fridge and sell them tomorrow as the first of the day.",
        "explanation": "Food that has been kept hot should not be chilled and sold again."
       }
      },

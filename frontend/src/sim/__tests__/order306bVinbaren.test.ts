@@ -58,6 +58,23 @@ describe('ORDER 306b — de elva situationerna', () => {
     }
   });
 
+  // Anders 2026-10-08 (306b.2): "sätt kassaeffekten till 0 i de sex situationerna och flytta beloppet till
+  // felsvaret i steg 3. Steg 2 påverkar bara stämningen och ryktet."
+  it('fel i steg 2 tar ingen kassa; beloppet ligger på felsvaret i steg 3', () => {
+    const moved: Record<string, number> = { 'vb01-korken': -0.15, 'vb02-rosen': -0.15, 'vb03-notallergi': -0.15, 'vb07-provningen': -0.15, 'vb09-getosten': -0.2, 'vb11-cremant': -0.1 };
+    for (const id of NEW) {
+      const inc = incidentById('vinbar', id)!;
+      expect(inc.steps[1].fail.effects.cash).toBe(0);
+      expect(inc.steps[1].options.every((o) => !o.fail || o.fail.effects.cash === 0)).toBe(true);
+    }
+    for (const [id, cash] of Object.entries(moved)) {
+      const st = incidentById('vinbar', id)!.steps[2];
+      const wrong = st.options.filter((o) => o.quality === 'wrong');
+      expect(wrong.length).toBeGreaterThan(0);
+      for (const o of wrong) expect(o.fail!.effects.cash).toBeLessThanOrEqual(cash);
+    }
+  });
+
   // A7 — kostnaderna, förslag: husvinet (m4Catalogue house-wine) 24 kr per glas, fem glas per flaska.
   it('kostnaderna följer husvinets inköp: flaskan, ett glas, ett smakprov och två glas', () => {
     const glass = INGREDIENTS.find((x) => x.id === 'house-wine')!.baseCostSek;

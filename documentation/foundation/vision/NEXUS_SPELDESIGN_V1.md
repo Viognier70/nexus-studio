@@ -128,6 +128,8 @@ Kunskap mäts på två sätt. **Medaljer** per paviljong visar vilken nivå spel
 
 *Beslut 2026-10-08 (Anders, situationerna i vinbaren):* elva av vinbarens situationer står i formen analys → upplevelse → handling, med gästens replik i upplevelsen, ledtrådarna och svaren i blandad ordning; Karaffen är ny. Ett fel på vägen avslutar inte situationen: stegets följd gäller, potten nollas och ledtråden blir oklar. Ett svar i handlingen kan kosta, och kostnaden syns som ett mynt på svaret innan spelaren väljer; räcker inte kassan syns svaret men går inte att välja. I Karaffen lägger spelaren handgreppen i ordning på korten. Raden bedöms på brister i tekniken och i omsorgen: bara brister i tekniken är halvt grepp där upplevelsen höll, bara brister i omsorgen halvt grepp där analysen höll, och båda sorterna är fel. Går tiden ut innan raden är full tar personalen över. Halvt grepp visas i papper och mässing och aldrig i rött. Karaffen och ljuset står på loungebordet medan situationen pågår, och den tomma flaskan ställs bredvid när den är avgjord.
 
+*Beslut 2026-10-08 (Anders, gissaren och felen i upplevelsen):* det hela greppet i handlingen ska inte gå att känna igen på att det är det längsta svaret; det är längst i högst hälften av situationerna, och den som alltid väljer det längsta svaret ska inte klara sig bättre än slumpen. Ett fel i upplevelsen påverkar bara stämningen och ryktet; det som felet kostar i kassan ligger på felsvaret i handlingen.
+
 ### Paviljongerna
 
 | Paviljong | Axel | Spår | Vem ställer frågan |

@@ -62,7 +62,7 @@
           "question": "What do you do?",
           "options": {
             "a": {
-              "label": "Say the bottle is corked, open a new one and change the glasses.",
+              "label": "Say it is corked, open a new bottle and change glasses.",
               "explanation": "A corked bottle is always replaced, and the glasses too, since the smell lingers. Cork taint is no shame. Saying so openly builds trust."
             },
             "b": {
@@ -163,7 +163,7 @@
           "question": "What do you do?",
           "options": {
             "a": {
-              "label": "Bottles in ice and water, say “ten minutes” and offer cold water.",
+              "label": "Bottles in ice water, say “ten minutes”, offer cold water.",
               "explanation": "Ice and water chill a bottle in ten to fifteen minutes, much faster than the fridge. The guests know why it takes time and have something cold in hand."
             },
             "b": {
@@ -176,7 +176,11 @@
             },
             "d": {
               "label": "Serve the warm rosé as it is and hope nobody notices.",
-              "explanation": "The guests notice at the first sip."
+              "explanation": "The guests notice at the first sip.",
+              "fail": {
+                "outcome": "The ice cubes clink. After a while the wine tastes of water.",
+                "ongoing": "The rosé glasses stand half full on the tables. The guests order nothing more."
+              }
             }
           },
           "fail": {
@@ -260,7 +264,7 @@
           "question": "What do you do?",
           "options": {
             "a": {
-              "label": "Ask the kitchen, answer straight, suggest a safe dish and mark the order.",
+              "label": "Ask the kitchen, answer plainly, suggest a safe dish, mark the order.",
               "explanation": "An allergy answer rests on the recipe and the kitchen. Once the order is marked, it is kept free of nuts all the way to the table."
             },
             "b": {
@@ -272,7 +276,7 @@
               "explanation": "The guest feels looked after, but nobody knows what is in the new dish."
             },
             "d": {
-              "label": "Say there are probably no nuts in the pesto.",
+              "label": "Say there are probably no nuts in the pesto, so it should be fine.",
               "explanation": "Guessing about allergens is the most dangerous mistake in service. The guest must get correct allergen information.",
               "fail": {
                 "outcome": "The bruschetta goes out with traces of pesto left on the bread."
@@ -824,7 +828,11 @@
             },
             "c": {
               "label": "Say red does not go with goat's cheese and serve the house white.",
-              "explanation": "That is not true, and the guest gets neither their wish nor a choice that suits the cheese."
+              "explanation": "That is not true, and the guest gets neither their wish nor a choice that suits the cheese.",
+              "fail": {
+                "outcome": "The guest tastes. The cheese and the wine pull in different directions.",
+                "ongoing": "The cheese stays on the plate. The guest drinks the wine on its own."
+              }
             },
             "d": {
               "label": "A light Sancerre rouge or Gamay, with soft tannins.",
@@ -1005,7 +1013,10 @@
             },
             "b": {
               "label": "Say that most people won't notice the difference anyway.",
-              "explanation": "It sounds as if the guest doesn't understand. It sells neither the wine nor trust."
+              "explanation": "It sounds as if the guest doesn't understand. It sells neither the wine nor trust.",
+              "fail": {
+                "outcome": "The cork pops and wine foams over the tablecloth."
+              }
             },
             "c": {
               "label": "Suggest the champagne by the bottle instead, to make it festive.",
@@ -1104,7 +1115,7 @@
               "explanation": "The guest feels heard, but the ice dilutes the wine."
             },
             "c": {
-              "label": "Agree, pour from a cool bottle and move the open bottles to the fridge.",
+              "label": "Agree, pour from a cool bottle, move open bottles to the fridge.",
               "explanation": "A cool wine fridge or a while in ice water saves it. The guest was right, and it should show."
             },
             "d": {
@@ -1598,16 +1609,16 @@
           "question": "What do you do?",
           "options": {
             "a": {
-              "label": "Apologise and rub the stain out with some warm water.",
+              "label": "Apologise and rub the stain out straight away with some warm water.",
               "explanation": "The care is right, but rubbing and heat press the colour in and set it."
             },
             "b": {
-              "label": "Apologise, give cold water to dab with and pay for the dry cleaning.",
+              "label": "Apologise, cold water to dab with, and pay the dry cleaning.",
               "explanation": "Cold water and dabbing lift the wine without setting the colour. The guest decides about their own jacket.",
               "success": "The guest dabs the stain and says thank you."
             },
             "c": {
-              "label": "Apologise, cold water to dab with, dry cleaning and tonight's wine on the house.",
+              "label": "Apologise, cold water, dry cleaning and tonight's wine on the house.",
               "explanation": "The same correct handling, and a gesture that turns the accident into a story of how the bar looked after its guest. It costs more, but the reputation grows more.",
               "success": "The guest laughs a little and raises a glass with the party. The next table has seen it all."
             },
@@ -2009,7 +2020,7 @@
               "explanation": "The sweetness makes the wine sour, and the guest who doesn't drink gets a glass they don't want."
             },
             "b": {
-              "label": "A little ruby port, and ask the one who doesn't drink what they would like.",
+              "label": "A little ruby port; ask the non-drinker what they'd like.",
               "explanation": "A young, fruity port stands up to the chocolate's sweetness and bitterness. Sweet reds like Banyuls or Maury work too. A suggestion of their own for the guest who doesn't drink shows that their choice counts."
             },
             "c": {
@@ -2749,12 +2760,12 @@
               "explanation": "The kitchen gets the right word, but the neighbours may sit for a long time, and then there is no song for Karin."
             },
             "b": {
-              "label": "Give the kitchen everything, one verse for Karin, and offer the neighbours a glass.",
+              "label": "Give the kitchen everything, one verse for Karin, a glass for the neighbours.",
               "explanation": "A short party and a gesture to the neighbours. It costs, but both tables remember the evening.",
               "success": "One verse for Karin. In lounge B the neighbours raise their glasses to her."
             },
             "c": {
-              "label": "Give the kitchen everything, one verse for Karin, and warn the neighbours with an apology.",
+              "label": "Give the kitchen everything, one verse for Karin, apologise to the neighbours first.",
               "explanation": "The neighbours know what's coming and feel seen. It is cheaper, but the gesture is smaller.",
               "success": "One verse for Karin. The neighbours smile and carry on their conversation."
             },
