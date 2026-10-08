@@ -50,6 +50,7 @@ import { DIN_VAG_STRINGS } from './design/dinVagStrings';
 // ORDER 316 — fikat efter stängning (dilemmana).
 import { FIKA_TEXT } from './fikaStrings';
 import { VAGNEN_STRINGS } from './vagnenStrings';
+import { D8_STRINGS } from './d8Strings';
 import { LUCKAN_STRINGS } from './luckanStrings';
 
 export type Lang = 'sv' | 'en';
@@ -498,6 +499,10 @@ export const STRINGS = {
   'curious.speaker.child': { sv: 'Barnet pekar på grillen', en: 'The child points at the grill' },
   // ORDER 320 — Designs D10: skyltens nya rader och HUD-nålarna vid vagnen.
   ...VAGNEN_STRINGS,
+  // ORDER 306b — Designs D8: ordningskorten, greppen, kostnaden och tiden ute.
+  ...D8_STRINGS,
+  'cost.aria': { sv: 'Kostar {cost}', en: 'Costs {cost}' },
+  'order.sequenceAria': { sv: 'Kort {n}: {card}', en: 'Card {n}: {card}' },
   // ORDER 320 / 306b A1 — ledtråden efter ett fel steg, och lagtext som väntar på granskning (⚖).
   'incident.unclear.analysis': { sv: 'Analys: (oklart)', en: 'Analysis: (unclear)' },
   'incident.unclear.experience': { sv: 'Upplevelse: (oklart)', en: 'Experience: (unclear)' },

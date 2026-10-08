@@ -48,7 +48,9 @@ import { bestAnswerFactor, medalSteps } from './knowledgeInService';
 import { businessRoomRef } from '../strategic/scene/interiorSharedState';
 import {
   fitsMenu,
+  gradeSequence,
   incidentBankFor,
+  ruleKey,
   incidentById,
   type AnswerQuality,
   type ArcPhase,
@@ -124,6 +126,8 @@ export interface ActiveIncident {
   line?: 'a' | 'b';
   // ORDER 306b A1 — de fel svaren på vägen (kvällens lärdom förklarar dem).
   missed?: { step: number; optionId: string }[];
+  // ORDER 306b A9 — ordningskorten (stegets form 'sequence'): raden som ligger just nu.
+  row?: string[];
 }
 
 // ORDER 310b (Anders 2026-10-05, Designs kvitt eller dubbelt) — ett låst svar
@@ -227,6 +231,8 @@ export interface IncidentRecord {
   halfGrip?: 'analysis' | 'experience';
   unclear?: number[];
   missed?: { step: number; optionId: string }[];
+  // ORDER 306b A9 — ordningskorten: raden som bedömdes och regeln som avgjorde (null vid helt grepp).
+  sequence?: { row: string[]; reason: string | null };
 }
 
 // ORDER 271 — ett svar i stunden (Design paket 6, R2/R3): valt svar,
@@ -1170,12 +1176,55 @@ export function lockAnswer(draft: SimulationState, optionId: string): boolean {
   if (!inc || !active || active.pending || active.choosing) return false;
   const incident = incidentById(draft.economy.businessClass, active.id);
   const step = incident?.steps[active.step ?? 0];
-  if (!step || !step.options.some((o) => o.id === optionId && !active.struck.includes(o.id))) return false;
+  const option = step?.options.find((o) => o.id === optionId && !active.struck.includes(o.id));
+  if (!step || !option) return false;
+  // ORDER 306b A7 / Designs D8 — kassan räcker inte: svaret syns men går inte att välja.
+  if (!canAfford(draft, option)) return false;
   draft.incidents = {
     ...inc,
     active: { ...active, pending: { optionId, lockLeft: INCIDENTS.lockSeconds, verdictLeft: INCIDENTS.verdictSeconds } }
   };
   return true;
+}
+
+// ORDER 306b A7 — kassan räcker till svarets kostnad.
+export function canAfford(state: Pick<SimulationState, 'cash'>, option: Pick<StepOptionMeta, 'cost'>): boolean {
+  return (option.cost ?? 0) <= state.cash;
+}
+
+// ORDER 306b A9 — ordningskorten: stegets ordning, om situationen står på ett sådant steg.
+function sequenceStep(draft: SimulationState) {
+  const active = draft.incidents?.active;
+  if (!active) return null;
+  const step = incidentById(draft.economy.businessClass, active.id)?.steps[active.step ?? 0];
+  return step?.form === 'sequence' && step.sequence ? step.sequence : null;
+}
+
+// ORDER 306b A9 — spelaren lägger och tar bort kort (Designs D8 orderCards.ts: korten fylls från plats 1).
+export function setIncidentRow(draft: SimulationState, row: readonly string[]): boolean {
+  const spec = sequenceStep(draft);
+  const active = draft.incidents?.active;
+  if (!spec || !active || active.pending || active.choosing) return false;
+  const ids = spec.cards.map((c) => c.id);
+  if (row.length > spec.slots || new Set(row).size !== row.length || row.some((id) => !ids.includes(id))) return false;
+  draft.incidents = { ...draft.incidents!, active: { ...active, row: [...row] } };
+  return true;
+}
+
+// ORDER 306b A9 — raden bedöms (gradeSequence) och låses som stegets svar med bedömningens id.
+// Låset kräver en full rad (Designs D8: "Lägg {n} kort till" tills raden är full).
+export function lockIncidentRow(draft: SimulationState): boolean {
+  const spec = sequenceStep(draft);
+  const row = draft.incidents?.active?.row ?? [];
+  if (!spec || row.length !== spec.slots) return false;
+  return lockAnswer(draft, gradeSequence(spec, row).grade);
+}
+
+// ORDER 306b A9 — tiden går ut: en full rad bedöms, färre kort och personalen tar över (null).
+export function timeoutAnswer(draft: SimulationState): string | null {
+  const spec = sequenceStep(draft);
+  const row = draft.incidents?.active?.row ?? [];
+  return spec && row.length === spec.slots ? gradeSequence(spec, row).grade : null;
 }
 
 // ORDER 310b — avgörandet: det låsta svaret avgörs (resolveIncident).
@@ -1308,7 +1357,9 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
   if (cleared) {
     // Hela raketen klarad: bästa utfall.
     const halfText = halfSide ? incident.text.halfGrip?.[halfSide === 'analysis' ? 'outcomeAnalysis' : 'outcomeExperience'] : undefined;
-    cashSek = applyOutcome(draft, incident, incident.success, halfText ? { outcome: halfText } : incident.text.success, half ? CONSEQUENCES.halfGrip : 1, !half).cashSek;
+    // ORDER 306b — två hela grepp (vb18, vb32): utfallet i rummet följer svaret.
+    const optionSuccess = option ? step.text.options[option.id]?.success : undefined;
+    cashSek = applyOutcome(draft, incident, incident.success, halfText ? { outcome: halfText } : optionSuccess ? { outcome: optionSuccess } : incident.text.success, half ? CONSEQUENCES.halfGrip : 1, !half).cashSek;
     text = formatIncidentText(halfText ?? incident.text.success.outcome, ctx);
     credit = (quality === 'best' && !DOUBLE_OR_NOTHING.enabled ? INCIDENTS.bestAnswerCredit : 0) + (incident.success.effects.credit ?? 0);
   } else if (staffCleared) {
@@ -1371,6 +1422,7 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
     quality: cleared ? (half ? 'ok' : 'best') : option ? 'wrong' : 'staff',
     // ORDER 306b — halvt grepp och vilken sida som höll, och stegen som blev fel på vägen (A1).
     ...(halfSide ? { halfGrip: halfSide } : {}),
+    ...(step.form === 'sequence' && step.sequence ? { sequence: { row: active.row ?? [], reason: ruleKey(gradeSequence(step.sequence, active.row ?? []).reason) } } : {}),
     ...(active.unclear?.length ? { unclear: active.unclear, missed: active.missed } : {}),
     // ORDER 314 — personalen tog över och klarade det (räknas inte som klarad av spelaren).
     ...(staffCleared ? { staffCleared: true } : {}),

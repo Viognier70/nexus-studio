@@ -58,6 +58,7 @@ const NOT_PLAYER_TEXT = [
   // ORDER 319b — Designs D9 och tillägget (livet vid luckan), sv och en sida vid sida, inslagna i STRINGS.
   /^content\/luckanStrings\.ts$/,
   /^content\/vagnenStrings\.ts$/,
+  /^content\/d8Strings\.ts$/,
   // ORDER 317 — Designs D6 del 2: ordningstalen sv och en sida vid sida, och anteckningar om avsändarna.
   /^strategic\/ui\/d6Ui\.ts$/,
   // ORDER 316 — fikats dilemman (sv och en sida vid sida), inslagna i TABLE.

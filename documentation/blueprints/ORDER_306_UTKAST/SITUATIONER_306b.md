@@ -503,11 +503,16 @@ Kort:
 - **e.** Låt karaffen stå en timme innan servering. *(fälla)*
 - **f.** Gör det vid baren, så går det snabbt. *(fälla)*
 
-Bedömning:
-- **[H]** a → b → c → d, utan e och f.
-- **[A]** b → c → d med f, eller utan a. Tekniken är rätt, men gästerna var inte med.
-- **[U]** a och e med, eller c saknas eller hamnar före b. Omtanken är rätt, men vinet får för mycket luft eller satsen följer med.
-- **[F]** varken b eller c, eller d först.
+Bedömning (förtydligad 2026-10-08). Raden granskas för två sorters brister:
+- **Brist i tekniken** (analysen): e är med, b saknas, c saknas, eller c ligger före b.
+- **Brist i omsorgen** (upplevelsen): f är med, a saknas, eller a ligger efter c.
+
+Utfallet:
+- **[F] fel:** d ligger först, eller både b och c saknas, eller raden har brister av båda sorterna.
+- **[U] halvt mot upplevelsen** ("upplevelsen höll"): bara brister i tekniken. Omtanken är rätt, men vinet får för mycket luft eller satsen följer med.
+- **[A] halvt mot analysen** ("analysen höll"): bara brister i omsorgen. Tekniken är rätt, men gästerna var inte med.
+- **[H] helt grepp:** inga brister och d sist. Ordningen mellan a och b spelar ingen roll, så b → a → c → d räknas också som helt grepp.
+- **Tiden går ut** med färre än fyra kort: personalen tar över (order 314).
 
 *Förklaring:* Ljuset visar när satsen kommer, och försiktig hällning skyddar ett skört vin. Att göra det vid bordet gör öppnandet till en del av minnet.
 

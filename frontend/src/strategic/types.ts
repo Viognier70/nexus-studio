@@ -1942,6 +1942,9 @@ export type SimAction =
   | { type: 'NEXT_VISIT_QUESTION' }
   | { type: 'CLOSE_VISIT' }
   | { type: 'ANSWER_INCIDENT'; optionId: string }
+  // ORDER 306b A9 — ordningskorten: raden som ligger, och låset (raden bedöms i motorn).
+  | { type: 'SET_INCIDENT_ROW'; row: string[] }
+  | { type: 'LOCK_INCIDENT_ROW' }
   // ORDER 305 — kvitt eller dubbelt efter ett rätt steg.
   | { type: 'INCIDENT_STOP' }
   // ORDER 307 — butikens flikar: en leverantör (krediter) och utrustning (kassan).

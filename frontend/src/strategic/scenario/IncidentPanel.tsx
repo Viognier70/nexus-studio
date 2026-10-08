@@ -46,6 +46,7 @@ import { strings } from '../../content/strings';
 import { ANSWER_EFFECTS, BACK, DOUBLE_OR_NOTHING, INCIDENTS } from '../../sim/balance';
 import { incidentById, optionExplanationHidden, type Incident, type IncidentStep } from '../../sim/incidentBank';
 import {
+  canAfford,
   formatIncidentText,
   optionOrder,
   pendingPhase,
@@ -66,6 +67,7 @@ import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { shake } from '../ui/juice/juice';
 import { fallFrom, flyTo } from '../ui/juice/fx';
 import type { StringKey } from '../../content/nexusStrings';
+import { OrderCards, type RowGrade } from '../ui/service/OrderCards';
 
 const EVENT_ROLE_KEY: Record<string, StringKey> = {
   'vb32-fodelsedagen': 'event.bday.role', 'vb33-vasen': 'event.vase.role', 'vb34-vinglar': 'event.drunk.role',
@@ -120,7 +122,8 @@ function useHeldOutcome(sim: SimulationState): Held | null {
 type Mode = 'ask' | 'right' | 'done' | 'wrong' | 'stopped';
 type StepBox = 'cleared' | 'current' | 'next' | 'ahead' | 'failed' | 'unreached';
 // ORDER 310b — 'locked': det låsta svaret medan det väntar på avgörandet.
-type OptionLook = 'open' | 'struck' | 'chosen' | 'dim' | 'correct' | 'wrong' | 'locked';
+// ORDER 306b — 'half': halvt grepp i steg 3 (Designs D8 gripLabels.ts, papper och mässing, aldrig rött).
+type OptionLook = 'open' | 'struck' | 'chosen' | 'dim' | 'correct' | 'wrong' | 'locked' | 'half';
 
 export function IncidentCard() {
   const sim = useSimState();
@@ -183,6 +186,9 @@ export function IncidentCard() {
     openedAt: number;
     line: 'a' | 'b' | null;
     unclear: number[];
+    // ORDER 306b — halvt grepp (sidan som höll), och ordningskortens rad och regeln som avgjorde.
+    half: 'analysis' | 'experience' | null;
+    seq: { row: string[]; reason: string | null } | null;
   } | null = null;
   if (active && cls) {
     const incident = incidentById(cls, active.id);
@@ -201,7 +207,8 @@ export function IncidentCard() {
         role: null,
         outcomeText: null,
         guestsIn: revealing ? active.revealed!.guestsIn ?? 0 : 0,
-        openedAt: active.openedAt, line: active.line ?? null, unclear: active.unclear ?? []
+        openedAt: active.openedAt, line: active.line ?? null, unclear: active.unclear ?? [],
+        half: null, seq: { row: active.row ?? [], reason: null }
       };
     }
   } else if (held && cls) {
@@ -222,7 +229,8 @@ export function IncidentCard() {
         role: held.outcome.takeover?.role ?? null,
         outcomeText: held.outcome.text,
         guestsIn: r?.guestsIn ?? 0,
-        openedAt: held.record.openedAt ?? held.record.at, line: held.record.line ?? null, unclear: held.record.unclear ?? []
+        openedAt: held.record.openedAt ?? held.record.at, line: held.record.line ?? null, unclear: held.record.unclear ?? [],
+        half: held.record.halfGrip ?? null, seq: held.record.sequence ?? null
       };
     }
   }
@@ -263,13 +271,15 @@ export function IncidentCard() {
       }
       e.preventDefault();
       e.stopImmediatePropagation();
+      // ORDER 306b A9 — ordningskorten väljs med musen; svaren 1–4 är bedömningar.
+      if (step.form === 'sequence') return;
       const o = options[i];
-      if (!o || (active?.struck ?? []).includes(o.id)) return;
+      if (!o || (active?.struck ?? []).includes(o.id) || !canAfford(sim, o)) return;
       dispatch({ type: 'ANSWER_INCIDENT', optionId: o.id });
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
-  }, [mode, step, options, active?.struck, active?.choosing, active?.pending, dispatch, backed]);
+  }, [mode, step, options, active?.struck, active?.choosing, active?.pending, dispatch, backed, sim.cash]);
 
   if (!view || !step) return null;
   // ORDER 286a — raketen börjar i rummet: kortet öppnas när figurens klipp
@@ -382,14 +392,22 @@ export function IncidentCard() {
     switch (view!.mode) {
       case 'ask': return lockedId ? (id === lockedId ? 'locked' : 'open') : view!.struck.includes(id) ? 'struck' : 'open';
       case 'right':
-      case 'done': return id === view!.chosen ? 'chosen' : 'dim';
+      case 'done': return id === view!.chosen ? (view!.half ? 'half' : 'chosen') : 'dim';
       case 'stopped': return 'dim';
       case 'wrong': return id === view!.correct ? 'correct' : id === view!.chosen ? 'wrong' : 'dim';
     }
   };
 
   // Bandet: svaret i stunden.
-  let band: { kind: 'right' | 'wrong'; label: string; text: string } | null = null;
+  // ORDER 306b — Designs D8: domen kan vara ett grepp (helt, halvt) eller tiden ute.
+  let band: { kind: 'right' | 'wrong'; label: string; text: string; verdict?: { kind: 'full' | 'half' | 'timeout'; label: string } } | null = null;
+  const seq = step.form === 'sequence' && step.sequence ? step.sequence : null;
+  const lastOfTriad = incident.form === 'triad' && view.shown === incident.steps.length - 1;
+  const why = (id: string | null) => {
+    if (!id || !step.text.options[id]) return '';
+    const hidden = optionExplanationHidden(incident, step.options.find((o) => o.id === id));
+    return hidden ? tt(lang, 'incident.legalPending') : f(step.text.options[id].explanation);
+  };
   if (view.mode === 'right') {
     const next = incident.steps[view.shown + 1];
     const chosenText = view.chosen ? step.text.options[view.chosen] : null;
@@ -399,6 +417,9 @@ export function IncidentCard() {
     band = { kind: 'right', label: t.right(next ? s.stepName[next.axis] : ''), text: `${view.guestsIn > 0 ? `${t.guestsIn(view.guestsIn)} ` : ''}${f(explanation)}` };
   } else if (view.mode === 'done') {
     band = { kind: 'right', label: t.rightDone, text: `${view.guestsIn > 0 ? `${t.guestsIn(view.guestsIn)} ` : ''}${view.outcomeText ?? ''}` };
+    // ORDER 306b A2 / Designs D8 — greppet i steg 3: etiketten och förklaringen före utfallet i rummet.
+    if (lastOfTriad && view.half) band = { ...band, text: `${why(view.chosen)} ${band.text}`.trim(), verdict: { kind: 'half', label: tt(lang, view.half === 'analysis' ? 'grip.half.analysis' : 'grip.half.experience') } };
+    else if (lastOfTriad) band = { ...band, text: seq ? `${why(view.chosen)} ${band.text}`.trim() : band.text, verdict: { kind: 'full', label: tt(lang, 'grip.full') } };
   } else if (view.mode === 'stopped') {
     band = { kind: 'right', label: t.kvitt.stoppedLabel, text: view.outcomeText ?? '' };
   } else if (view.mode === 'wrong') {
@@ -409,6 +430,11 @@ export function IncidentCard() {
     band = continuing && next
       ? { kind: 'wrong', label: t.wrongOn(s.stepName[next.axis]), text: f(step.text.fail.outcome) }
       : { kind: 'wrong', label: view.chosen === null ? t.outOfTime(role) : t.wrong(role), text: view.outcomeText ?? '' };
+    // ORDER 306b A9 — ordningskorten: förklaringen till raden, och tiden ute när personalen tog över.
+    if (seq && !continuing) {
+      if (view.chosen === null) band = { ...band, verdict: { kind: 'timeout', label: tt(lang, 'timeout.verdict', { name: capitalise(view.context.staff) }) } };
+      else band = { ...band, text: `${view.seq?.reason === 'first:d' ? tt(lang, 'why.wrong.serveFirst') : why(view.chosen)} ${band.text}`.trim() };
+    }
   }
 
   // ORDER 292 — följden i kassan: svarets händelse vid bordet (rummets reaktion
@@ -546,10 +572,26 @@ export function IncidentCard() {
           <p className="nx-small">{t.kvitt.timeout}</p>
         </div>
       )}
-      {!choosing && <div role="group" aria-label={f(step.text.question)}>
+      {!choosing && seq && (
+        <OrderCards
+          spec={seq}
+          cards={Object.fromEntries(Object.entries(step.text.cards ?? {}).map(([k, v]) => [k, f(v)]))}
+          row={view.seq?.row ?? []}
+          open={view.mode === 'ask' && !lockedId}
+          locked={!!lockedId}
+          grade={rowGrade(view)}
+          staffInitial={capitalise(view.context.staff).slice(0, 1)}
+          onRow={(row) => dispatch({ type: 'SET_INCIDENT_ROW', row })}
+          onLock={() => dispatch({ type: 'LOCK_INCIDENT_ROW' })}
+        />
+      )}
+      {!choosing && !seq && <div role="group" aria-label={f(step.text.question)}>
         {options.map((o, i) => {
           const look = lookFor(o.id);
           const struck = look === 'struck';
+          // ORDER 306b A7 / Designs D8 — kostnaden som ett mynt, och kassan som inte räcker.
+          const cost = o.cost ?? 0;
+          const short = view!.mode === 'ask' && cost > 0 && !canAfford(sim, o);
           return (
             <button
               key={o.id}
@@ -559,7 +601,8 @@ export function IncidentCard() {
               data-option-id={o.id}
               data-struck={view!.mode === 'ask' && struck}
               data-look={look}
-              disabled={view!.mode !== 'ask' || struck || !!lockedId}
+              data-short={short || undefined}
+              disabled={view!.mode !== 'ask' || struck || short || !!lockedId}
               aria-pressed={lockedId ? look === 'locked' : undefined}
               title={struck ? s.struck : undefined}
               aria-keyshortcuts={String(i + 1)}
@@ -568,11 +611,18 @@ export function IncidentCard() {
               <span className="nx-rocket-key" aria-hidden>{look === 'chosen' ? <Check size={16} /> : look === 'wrong' ? <X size={16} /> : i + 1}</span>
               <span className="nx-rocket-option-text">
                 <span>{f(step.text.options[o.id].label)}</span>
+                {short && <span className="nx-rocket-short" data-testid={`incident-short-${o.id}`}>{tt(lang, 'cost.short')}</span>}
                 {/* ORDER 290 — Designs domar: Rätt, Ditt svar, Det här hade hållit. */}
-                {(look === 'chosen' || look === 'correct' || look === 'wrong') && (
-                  <span className="nx-rocket-tag">{look === 'chosen' ? tt(lang, 'verdict.right') : look === 'correct' ? tt(lang, 'verdict.held') : t.yourTag}</span>
+                {(look === 'chosen' || look === 'correct' || look === 'wrong' || look === 'half') && (
+                  <span className="nx-rocket-tag">{look === 'chosen' ? tt(lang, 'verdict.right') : look === 'half' ? tt(lang, view!.half === 'analysis' ? 'grip.half.analysis' : 'grip.half.experience') : look === 'correct' ? tt(lang, 'verdict.held') : t.yourTag}</span>
                 )}
               </span>
+              {cost > 0 && (
+                <span className="nx-rocket-cost" data-testid={`incident-cost-${o.id}`} aria-label={tt(lang, 'cost.aria', { cost: formatSek(cost) })}>
+                  <span className="nx-coin" aria-hidden />
+                  <span>{formatSek(cost)}</span>
+                </span>
+              )}
             </button>
           );
         })}
@@ -588,7 +638,11 @@ export function IncidentCard() {
         <div ref={bandRef} className="nx-rocket-band" data-kind={band.kind} data-testid="incident-band" aria-live="polite">
           {/* ORDER 290 — domen är Rätt eller Inte den här gången, aldrig Fel;
               förklaringen är lika vänlig i båda fallen. */}
-          <span className="nx-verdict" data-kind={band.kind}>{band.kind === 'right' ? <Check size={16} aria-hidden /> : <X size={16} aria-hidden />}{band.kind === 'right' ? tt(lang, 'verdict.right') : tt(lang, 'verdict.wrong')}</span>
+          {band.verdict ? (
+            <span className="nx-verdict" data-kind={band.verdict.kind} data-testid="incident-grip">{band.verdict.kind === 'half' ? <HalfGripMark /> : band.verdict.kind === 'full' ? <Check size={16} aria-hidden /> : null}{band.verdict.label}</span>
+          ) : (
+            <span className="nx-verdict" data-kind={band.kind}>{band.kind === 'right' ? <Check size={16} aria-hidden /> : <X size={16} aria-hidden />}{band.kind === 'right' ? tt(lang, 'verdict.right') : tt(lang, 'verdict.wrong')}</span>
+          )}
           {/* ORDER 299 — raden som binder ihop svaret med gästens reaktion. */}
           {linkLine && <p className="nx-rocket-link" data-testid="consequence-line">{linkLine}</p>}
           <p className="nx-rocket-band-text">{band.text}</p>
@@ -603,6 +657,23 @@ export function IncidentCard() {
       )}
     </section>
   );
+}
+
+// ORDER 306b — Designs D8 HALF_GRIP_SYMBOL: en ring med vänstra halvan fylld i mässing.
+function HalfGripMark() {
+  return (
+    <svg className="nx-half-grip" viewBox="0 0 16 16" width={16} height={16} aria-hidden>
+      <circle cx="8" cy="8" r="6.5" fill="none" stroke="#6b4a2e" strokeWidth="1.4" />
+      <path d="M8 1.5a6.5 6.5 0 0 0 0 13z" fill="#b98a3c" />
+    </svg>
+  );
+}
+
+// ORDER 306b A9 — ordningskortens avgörande ur kortets läge (null medan steget frågar eller väntar).
+function rowGrade(view: { mode: Mode; chosen: string | null; half: 'analysis' | 'experience' | null }): RowGrade | null {
+  if (view.mode === 'done') return view.half ?? 'full';
+  if (view.mode === 'wrong') return view.chosen === null ? 'timeout' : 'wrong';
+  return null;
 }
 
 // ---------------------------------------------------------------------

@@ -106,9 +106,10 @@ describe('ORDER 271 — det gränssnittet läser (serviceView)', () => {
   });
 });
 
+// ORDER 306b — vb09 har den nya formen (episteme, phronesis, techne); kortet prövas med vb10 (bästa b, c, a).
 describe('ORDER 271 — raketkortet (R1–R3)', () => {
   it('R1: vem och var, stegrutorna, nedräkningen och tangenterna 1–4', () => {
-    const s = openNow(wineBarService(), 'vb09-getosten');
+    const s = openNow(wineBarService(), 'vb10-berusad');
     sim.state = s;
     const { container } = render(<IncidentCard />);
     const card = byTestId(container, 'incident-card')!;
@@ -123,18 +124,18 @@ describe('ORDER 271 — raketkortet (R1–R3)', () => {
     // ORDER 296c — "Raket n i kväll" (rummet utlöser raketerna; inget antal i förväg).
     expect(card.textContent).toContain(s.incidents.active!.chained ? strings.rocket.card.followUp : strings.rocket.card.rocketN(String(Math.max(1, n))));
     fireEvent.keyDown(window, { key: '3' });
-    const third = incidentById('vinbar', 'vb09-getosten')!.steps[0].options[2].id;
+    const third = incidentById('vinbar', 'vb10-berusad')!.steps[0].options[2].id;
     expect(sim.dispatch).toHaveBeenCalledWith({ type: 'ANSWER_INCIDENT', optionId: third });
   });
 
   it('R2: rätt svar visas i stunden, sedan öppnas nästa steg', () => {
-    const s = answerAndWait(openNow(wineBarService(), 'vb09-getosten'), 'c');
+    const s = answerAndWait(openNow(wineBarService(), 'vb10-berusad'), 'b');
     sim.state = s;
     const { container, rerender } = render(<IncidentCard />);
     const card = byTestId(container, 'incident-card')!;
     expect(card.getAttribute('data-mode')).toBe('right');
     expect(card.getAttribute('data-step')).toBe('0');
-    expect(byTestId(container, 'incident-option-c')!.getAttribute('data-look')).toBe('chosen');
+    expect(byTestId(container, 'incident-option-b')!.getAttribute('data-look')).toBe('chosen');
     expect(byTestId(container, 'incident-option-a')!.getAttribute('data-look')).toBe('dim');
     expect((byTestId(container, 'incident-option-a') as HTMLButtonElement).disabled).toBe(true);
     expect(byTestId(container, 'incident-step-techne')!.getAttribute('data-state')).toBe('next');
@@ -150,7 +151,7 @@ describe('ORDER 271 — raketkortet (R1–R3)', () => {
 
   it('R3: fel svar streckas, det rätta fylls, personalen tar över, och kortet stängs efter konsekvensögonblicket', () => {
     vi.useFakeTimers();
-    const open = openNow(wineBarService(), 'vb09-getosten');
+    const open = openNow(wineBarService(), 'vb10-berusad');
     sim.state = open;
     const { container, rerender } = render(<IncidentCard />);
     // ORDER 306b A1 — ett fel i steg 1 visas som fel, och situationen fortsätter till nästa steg.
@@ -161,13 +162,13 @@ describe('ORDER 271 — raketkortet (R1–R3)', () => {
     expect(byTestId(container, 'incident-step-episteme')!.getAttribute('data-state')).toBe('failed');
     expect(byTestId(container, 'incident-step-techne')!.getAttribute('data-state')).toBe('next');
     // Fel i sista steget: personalen tar över, och kortet stängs efter konsekvensögonblicket.
-    const after = answerAndWait(goOn(answerAndWait(goOn(answerAndWait(open, 'c')), 'b')), 'a');
+    const after = answerAndWait(goOn(answerAndWait(goOn(answerAndWait(open, 'b')), 'c')), 'b');
     sim.state = after;
     rerender(<IncidentCard />);
     const card = byTestId(container, 'incident-card')!;
     expect(card.getAttribute('data-mode')).toBe('wrong');
-    expect(byTestId(container, 'incident-option-a')!.getAttribute('data-look')).toBe('wrong');
-    expect(byTestId(container, 'incident-option-d')!.getAttribute('data-look')).toBe('correct');
+    expect(byTestId(container, 'incident-option-b')!.getAttribute('data-look')).toBe('wrong');
+    expect(byTestId(container, 'incident-option-a')!.getAttribute('data-look')).toBe('correct');
     expect(byTestId(container, 'incident-step-phronesis')!.getAttribute('data-state')).toBe('failed');
     const role = after.incidents.lastOutcome!.takeover!.role;
     const word = strings.service.incident.staffRoles[role];
@@ -187,7 +188,7 @@ describe('ORDER 271 — mätarna', () => {
   // ersätter den); Rummet har gästernas och personalens mätare.
   it('två mätare med tio steg, som växer efter ett svar och blir vanliga efter 3,2 s', () => {
     vi.useFakeTimers();
-    const open = openNow(wineBarService(), 'vb09-getosten');
+    const open = openNow(wineBarService(), 'vb10-berusad');
     sim.state = open;
     const { container, rerender } = render(<ServiceMeters />);
     for (const id of ['meter-satisfaction', 'meter-stamina']) {
@@ -197,7 +198,7 @@ describe('ORDER 271 — mätarna', () => {
     expect(byTestId(container, 'meter-cash')).toBeNull();
     expect(byTestId(container, 'service-meters')!.getAttribute('data-emph')).toBe('false');
     // ORDER 306b A1 — mätarna växer när situationen slutar (här ett fel i sista steget).
-    sim.state = answerAndWait(goOn(answerAndWait(goOn(answerAndWait(open, 'c')), 'b')), 'a');
+    sim.state = answerAndWait(goOn(answerAndWait(goOn(answerAndWait(open, 'b')), 'c')), 'b');
     rerender(<ServiceMeters />);
     expect(byTestId(container, 'service-meters')!.getAttribute('data-emph')).toBe('true');
     act(() => { vi.advanceTimersByTime(METER_EMPHASIS_MS + 10); });
@@ -245,7 +246,8 @@ describe('ORDER 271 — kvällens lärdom (L1) och kvällsberättelsen (K1)', ()
     expect(byTestId(container, 'evening-lesson')!.getAttribute('data-items')).toBe('2');
     // Rosen föll på techne (steg 1), getosten på phronesis: rosen är lärdomen.
     expect(byTestId(container, 'grid-vb02-rosen')!.getAttribute('data-lesson')).toBe('true');
-    expect(byTestId(container, 'lesson-step-vb02-rosen')!.getAttribute('data-step-axis')).toBe('techne');
+    // ORDER 306b — vb02 har den nya formen: steg 2 är phronesis.
+    expect(byTestId(container, 'lesson-step-vb02-rosen')!.getAttribute('data-step-axis')).toBe(incidentById('vinbar', 'vb02-rosen')!.steps[1].axis);
     const cells = [...byTestId(container, 'grid-vb02-rosen')!.querySelectorAll('.nx-cell')].map((c) => c.getAttribute('data-cell'));
     expect(cells).toEqual(['cleared', 'failed', 'unreached']);
     const item = s.incidents.lesson!.find((i) => i.incidentId === 'vb02-rosen')!;
