@@ -3,6 +3,8 @@
 // för greppen, Kassan räcker inte och tiden ute. Sommelierns namn (Elin i prototypen) är {name}, den
 // som arbetar i situationens roll (D8 (41)). Korten och förklaringarna står i situationens text (SITUATIONER_306b.md), så card.*, why.exp.*
 // och why.ana.* är inte med; inte heller prototypens ram (ui.*, sc.*, st.*, hud.*, p3.*, room.*, icons.*).
+// why.order visas inte för spelaren (Anders 2026-10-08, D8 (42)): den är föråldrad (b saknas = fel, Elin, 20 s),
+// medan 306b ger halvt grepp när b saknas och steg 3 har INCIDENTS.stepSecondsByIndex.
 
 export const D8_STRINGS = {
   'order.slots': { sv: 'Din ordning', en: 'Your order' },

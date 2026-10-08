@@ -8,7 +8,8 @@ import { makeNewGameState } from '../../strategic/simulation/model';
 import { stocked } from '../../strategic/testHarness/stocked';
 import { firstDayOfWeek } from '../calendar';
 import { gradeSequence, incidentBankFor, incidentById, ruleKey, type SequenceSpec } from '../incidentBank';
-import { canAfford, rankedStepOption } from '../incidents';
+import { canAfford, rankedStepOption, secondsFor } from '../incidents';
+import { INCIDENTS } from '../balance';
 import { INGREDIENTS, GLASSES_PER_BOTTLE } from '../../strategic/simulation/m4Catalogue';
 import { STRINGS } from '../../content/nexusStrings';
 import { D8_STRINGS } from '../../content/d8Strings';
@@ -105,13 +106,21 @@ describe('ORDER 306b A9 — ordningskorten i Karaffen (förtydligad 2026-10-08)'
     expect(gradeSequence(spec, ['f', 'b', 'e', 'd']).reason).toBe('both');
   });
 
+  // Anders 2026-10-08 (D8 (42)): "Följ 306b: b saknas ger halvt grepp".
+  it('b saknas är en brist i tekniken: halvt grepp, upplevelsen höll', () => {
+    expect(grade('aced')).toBe('experience');
+    expect(ruleKey(gradeSequence(spec, ['a', 'c', 'e', 'd']).reason)).toBe('has:e');
+    expect(spec.analysisFlaws).toContainEqual({ lacks: 'b' });
+    expect(spec.wrongIf).not.toContainEqual({ lacks: 'b' });
+  });
+
   // Designs D8 (41): d varken först eller sist är en brist i omsorgen.
   it('d i mitten är en brist i omsorgen: halvt grepp, analysen höll', () => {
     expect(grade('abdc')).toBe('analysis');
     expect(ruleKey(gradeSequence(spec, ['a', 'b', 'd', 'c']).reason)).toBe('notLast:d');
   });
 
-  // Anders 2026-10-08: "orderCards.ts har rättad bedömning som stämmer med SITUATIONER_306b.md, vb40 (prövad
+  // Anders 2026-10-08 (D8 (41) och (42)): "orderCards.ts har rättad bedömning som stämmer med SITUATIONER_306b.md, vb40 (prövad
   // mot alla 360 rader). Lägg till samma prövning som test i 306b."
   it('alla 360 rader med fyra kort ger samma bedömning som Designs gradeOrder()', () => {
     const letter: Record<D8Card, string> = { show: 'a', candle: 'b', pour: 'c', serve: 'd', hour: 'e', bar: 'f' };
@@ -119,7 +128,7 @@ describe('ORDER 306b A9 — ordningskorten i Karaffen (förtydligad 2026-10-08)'
     const rows: D8Card[][] = [];
     const build = (row: D8Card[]) => { if (row.length === spec.slots) { rows.push(row); return; } for (const c of cards) if (!row.includes(c)) build([...row, c]); };
     build([]);
-    expect(rows).toHaveLength(360);
+    expect(rows).toHaveLength(6 * 5 * 4 * 3);
     const differ = rows.filter((r) => gradeOrder(r, false).grade !== gradeSequence(spec, r.map((c) => letter[c])).grade).map((r) => r.map((c) => letter[c]).join(''));
     expect(differ).toEqual([]);
   });
@@ -159,7 +168,24 @@ describe('ORDER 306b A9 — ordningskorten i Karaffen (förtydligad 2026-10-08)'
   });
 });
 
+// Anders 2026-10-08 (D8 (42)): "steg 3 har 30 s (A3)".
+describe('ORDER 306b — tiden i Karaffens steg 3', () => {
+  it('ordningskorten har stegets tid efter platsen, som andra svar i steg 3', () => {
+    expect(INCIDENTS.stepSecondsByIndex[2]).toBe(30);
+    const s = openAt('vb40-karaffen', 2);
+    expect(s.incidents.active!.secondsTotal).toBe(secondsFor(s, vb40.steps[2]));
+    expect(secondsFor({ ...s, medals: {} }, vb40.steps[2])).toBe(INCIDENTS.stepSecondsByIndex[2]);
+  });
+});
+
 describe('ORDER 306b — Designs D8 i strängtabellen', () => {
+  // Anders 2026-10-08 (D8 (42)): "Personalen i texterna är {name}" och "Visa inte why.order för spelaren".
+  it('personalen är {name}, och why.order visas inte', () => {
+    for (const v of Object.values(D8_STRINGS)) expect(`${v.sv} ${v.en}`).not.toMatch(/Elin|\bhon\b|\bshe\b/);
+    expect(D8_STRINGS['timeout.verdict'].sv).toContain('{name}');
+    expect('why.order' in STRINGS).toBe(false);
+  });
+
   it('nycklarna står på svenska och engelska, och kortens text finns i båda språken', () => {
     for (const k of Object.keys(D8_STRINGS)) {
       const v = STRINGS[k as keyof typeof STRINGS] as { sv: string; en: string };

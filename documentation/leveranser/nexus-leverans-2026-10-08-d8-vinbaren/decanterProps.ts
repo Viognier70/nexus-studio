@@ -13,9 +13,9 @@ export const DECANTER_PROPS = {
 /** Tillstånden. Ljuset och karaffen står på bordet så länge situationen pågår; den tomma flaskan kommer när den är klarad. */
 export const DECANTER_STATES = {
   present: { clip: 'somm.presentBottle', note: 'Flaskan vågrätt i båda händerna med etiketten mot gästerna. Karaffen och det tända ljuset står redan på bordet.' },
-  decant:  { clip: 'somm.decant', note: 'Elin karafferar. Flaskan i höger hand, halsen över karaffens mun och ljuset under halsen. Vänster hand håller karaffen. En tunn stråle (#6e1624).' },
+  decant:  { clip: 'somm.decant', note: '{name} karafferar. Flaskan i höger hand, halsen över karaffens mun och ljuset under halsen. Vänster hand håller karaffen. En tunn stråle (#6e1624).' },
   cleared: { clip: 'somm.setEmptyBottle', note: 'Den tomma flaskan står till höger om ljuset med korken på ett fat. Glasen är fyllda. Karaffen och ljuset står kvar tills sällskapet går.' },
-  failed:  { note: 'Vid fel och halvt grepp spelas scenen klart som förut. Om personalen tar över (tiden ute) karafferar Elin rätt. Den tomma flaskan ställs ändå på bordet; vid fällan "Gör det vid baren" står karaffen och flaskan på baren i stället (bottleAnchor).' }
+  failed:  { note: 'Vid fel och halvt grepp spelas scenen klart som förut. Om personalen tar över (tiden ute) karafferar {name} rätt. Den tomma flaskan ställs ändå på bordet; vid fällan "Gör det vid baren" står karaffen och flaskan på baren i stället (bottleAnchor).' }
 };
 /** Nya föremål i tableware.ts. */
 export const NEW_TABLEWARE = {

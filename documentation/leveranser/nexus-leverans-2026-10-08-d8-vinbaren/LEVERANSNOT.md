@@ -45,9 +45,11 @@ Vid halvt grepp visas också den rätta raden, streckad i grönt. Varje utfall h
 
 ## Tiden ute: personalen tar över (order 314)
 
-Om tiden går ut med färre än fyra kort i raden, ligger spelarens kort kvar. Sommeliern Elin fyller de tomma platserna med de handgrepp som saknas, i svarets ordning. Hennes platser har ett E i stället för numret och kant i rollringens färg, #b98ae0.
+Om tiden går ut med färre än fyra kort i raden, ligger spelarens kort kvar. Den som arbetar den kvällen i situationens roll ({name}, ur personallistan) fyller de tomma platserna med de handgrepp som saknas, i svarets ordning. Platserna har initialen i {name} i stället för numret och kant i rollringens färg, för sommeliern #b98ae0.
 
-Det är den som arbetar den kvällen som tar över. I bilden är det Elin, och i 306b:s exempel Sara (beslut 2026-10-08). Etiketten är *Tiden ute: {name} tar över*, på papper med kanten i samma färg. Det blir varken rött eller grönt och inget grepp. I rummet karafferar Elin rätt. Vad det ger i krediter avgör order 314.
+Etiketten är *Tiden ute: {name} tar över*, på papper med kanten i samma färg. Det blir varken rött eller grönt och inget grepp. I rummet karafferar {name} rätt. Vad det ger i krediter avgör order 314. I bilden är det Elin, och i 306b:s exempel Sara (beslut 2026-10-08).
+
+**Personalens namn:** alla spelets texter som nämner personal använder `{name}`, alltså den som arbetar den kvällen i situationens roll (21 platshållare i `d8Strings.ts`). Ingen text har längre *hon* eller *she*. Prototypen fyller i Elin.
 
 ## Kostnaden och när kassan inte räcker
 
@@ -65,7 +67,7 @@ Exemplet är ett vanligt svar i steg 3 med kassan på 140 kr, eftersom Karaffen 
 | 06 | Halvt grepp mot upplevelsen: a, b, e, d. |
 | 07 | Halvt grepp mot analysen: a, b, c, f. |
 | 08 | Fel: d först. |
-| 09 | Tiden ute med två kort: Elin lägger c och d. |
+| 09 | Tiden ute med två kort: {name} (här Elin) lägger c och d. |
 | 10 | Kostnaden med mynt. |
 | 11 | Kassan räcker inte: två svar går inte att välja. |
 | 12–14 | Karaffen i rummet: flaskan visas, karafferingen över ljuset, och klarad med den tomma flaskan. |

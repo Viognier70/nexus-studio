@@ -2,7 +2,7 @@
 
 **Beställare:** Anders 2026-10-07 och 2026-10-08:
 - `documentation/blueprints/ORDER_306_UTKAST/SITUATIONER_306b.md`, Del A (reglerna A1–A11) och Del B (de elva situationerna). Bedömningen av Karaffen är förtydligad 2026-10-08 och ersätter den förra versionen av filen.
-- Designs D8 (omtaget), uppackad oförändrad i `documentation/leveranser/nexus-leverans-2026-10-08-d8-vinbaren/`. Det är `Restaurant guest animation (41).zip`, som ersätter (40) med `gradeOrder()` rättad och prövad mot SITUATIONER_306b.md för alla 360 rader.
+- Designs D8 (omtaget), uppackad oförändrad i `documentation/leveranser/nexus-leverans-2026-10-08-d8-vinbaren/`. Först (41), som ersatte (40) med `gradeOrder()` rättad och prövad mot SITUATIONER_306b.md för alla 360 rader. Nu `Restaurant guest animation (42).zip` (306b.1), där personalen i texterna är `{name}`.
 - "Byt konstanten RAKET.answerS till ett namn utan "raket"."
 
 **Ordningen:** 319c → 320 → 306b. Reglerna A1–A3 (fel avslutar inte, potten 1 → 3 → 7, stegets tid efter platsen) kom in i main med 320. Den här ordern gör resten.
@@ -122,3 +122,15 @@ Svag och ignorerar klarar aldrig ett steg och kommer därför aldrig till valet.
   - `src/strategic/ui/service/__tests__/order306bD8.test.tsx`: ordningskorten, etiketten för halvt grepp, myntet och Kassan räcker inte i kortet;
   - `src/strategic/testHarness/__tests__/order306bSpelartyper.test.ts`: gissaren och slumpen svarar; rapporterna med `SEEDS=10 DAYS=6 WRITE_REPORTS=1`.
 - **Inte prövat i spelarens flöde i webbläsaren:** ordningskorten, myntet och karaffen i rummet är prövade med testerna, men inte i en skärmdump ur spelet. En kontroll i spelet kan göras i en egen order om du vill.
+
+## 306b.1: D8 (42)
+
+Anders 2026-10-08: "D8 är klar: använd … (42).zip i stället för (40)."
+- **Leveransen** är uppackad oförändrad över den förra (diff mot zipen: inga skillnader).
+- **`gradeOrder()`** är oförändrad sedan (41). Kopian i testet är fortfarande ordagrann, och prövningen av alla 360 rader är grön.
+- **`{name}`:** personalen i D8:s texter är `{name}`, den som arbetar den kvällen. Spelet visar redan `timeout.verdict` med `{name}`. Testet prövar att ingen av spelets D8-strängar säger Elin, hon eller she. `decanterProps.ts` är kopierad på nytt (bara anteckningarna har ändrats till `{name}`).
+- **`why.order`** är föråldrad i (42): den säger att b saknas ger fel, nämner Elin och anger 20 s. Den står inte i spelets strängtabell och visas inte för spelaren, vilket testet prövar.
+- **Spelet följer 306b:**
+  - b saknas är en brist i tekniken och ger halvt grepp, upplevelsen höll (testet med a c e d);
+  - steg 3 har `INCIDENTS.stepSecondsByIndex[2]`, 30 s, plus medaljernas tid, som andra svar i steg 3 (testet `tiden i Karaffens steg 3`).
+

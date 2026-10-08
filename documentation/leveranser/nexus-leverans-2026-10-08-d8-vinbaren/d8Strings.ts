@@ -1,4 +1,5 @@
-// d8Strings.ts — D8, order 306b. { sv, en }, brittisk engelska. Slås in i STRINGS. ui.*, sc.*, st.* och why.order/cost/room/icons är prototypens ram. Inga speltal: {cost} och {n} kommer från balance.ts.
+// d8Strings.ts — D8, order 306b. { sv, en }, brittisk engelska. Slås in i STRINGS. ui.*, sc.*, st.* och why.order/cost/room/icons är prototypens ram.
+// Inga speltal: {cost} och {n} kommer från balance.ts. {name} är den i personalen som arbetar den kvällen i situationens roll (ur personallistan). Prototypen visar Elin.
 export const D8_STRINGS: Record<string, { sv: string; en: string }> = {
   'ui.title': { sv: 'D8 · Situationerna i vinbaren', en: 'D8 · Situations in the wine bar' },
   'ui.screens': { sv: 'Skärmar', en: 'Screens' },
@@ -14,7 +15,7 @@ export const D8_STRINGS: Record<string, { sv: string; en: string }> = {
   'st.empty': { sv: 'Tom rad', en: 'Empty row' }, 'st.two': { sv: 'Två lagda', en: 'Two placed' }, 'st.full': { sv: 'Fyra lagda', en: 'Four placed' }, 'st.locked': { sv: 'Låst', en: 'Locked' },
   'st.right': { sv: 'Helt grepp', en: 'Full grip' }, 'st.halfExp': { sv: 'Halvt: upplevelsen', en: 'Half: the experience' }, 'st.halfAna': { sv: 'Halvt: analysen', en: 'Half: the analysis' }, 'st.wrong': { sv: 'Fel', en: 'Wrong' }, 'st.timeout': { sv: 'Tiden ute', en: 'Time up' },
   'st.coin': { sv: 'Mynt', en: 'Coin' }, 'st.short': { sv: 'Kassan räcker inte', en: 'Not enough in the till' },
-  'st.present': { sv: 'Elin visar flaskan', en: 'Elin shows the bottle' }, 'st.decant': { sv: 'Över ljuset', en: 'Over the candle' }, 'st.cleared': { sv: 'Klarad', en: 'Cleared' }, 'st.wide': { sv: 'Klarad på 14 m', en: 'Cleared at 14 m' },
+  'st.present': { sv: '{name} visar flaskan', en: '{name} shows the bottle' }, 'st.decant': { sv: 'Över ljuset', en: 'Over the candle' }, 'st.cleared': { sv: 'Klarad', en: 'Cleared' }, 'st.wide': { sv: 'Klarad på 14 m', en: 'Cleared at 14 m' },
 
   // ----- HUD -----
   'hud.service': { sv: 'Servicen', en: 'Service' },
@@ -31,8 +32,8 @@ export const D8_STRINGS: Record<string, { sv: string; en: string }> = {
   'held': { sv: 'Det här hade hållit', en: 'This would have held' },
 
   // ----- 1. ordningskorten (steg 2, techne) -----
-  'order.moment': { sv: "Loungen har beställt en äldre Barolo, och Elin ska karaffera den vid bordet.", en: "The lounge has ordered an older Barolo, and Elin is to decant it at the table." },
-  'order.q': { sv: 'Lägg Elins fyra handgrepp i rätt ordning.', en: "Put Elin's four moves in the right order." },
+  'order.moment': { sv: "Loungen har beställt en äldre Barolo, och {name} ska karaffera den vid bordet.", en: "The lounge has ordered an older Barolo, and {name} is to decant it at the table." },
+  'order.q': { sv: "Lägg de fyra handgreppen i rätt ordning.", en: "Put the four moves in the right order." },
   'order.slots': { sv: 'Din ordning', en: 'Your order' },
   'order.cards': { sv: 'Handgreppen', en: 'The moves' },
   'order.hint': { sv: 'Klicka på ett kort för att lägga det på nästa plats. Klicka på en plats för att ta bort kortet.', en: 'Click a card to put it in the next place. Click a place to take the card away.' },
@@ -44,11 +45,11 @@ export const D8_STRINGS: Record<string, { sv: string; en: string }> = {
   'card.serve': { sv: 'Servera och ställ den tomma flaskan på bordet', en: 'Serve and stand the empty bottle on the table' },
   'card.hour': { sv: 'Låt karaffen stå en timme', en: 'Let the decanter stand for an hour' },
   'card.bar': { sv: 'Gör det vid baren', en: 'Do it at the bar' },
-  'order.why.right': { sv: 'Gästerna ser flaskan först. Ljuset under halsen visar satsen, så att Elin vet när hon ska sluta hälla, och den tomma flaskan på bordet visar vad de dricker.', en: 'The guests see the bottle first. The candle under the neck shows the sediment, so Elin knows when to stop pouring, and the empty bottle on the table shows what they are drinking.' },
+  'order.why.right': { sv: "Gästerna ser flaskan först. Ljuset under halsen visar satsen, så att {name} vet när det är dags att sluta hälla, och den tomma flaskan på bordet visar vad de dricker.", en: "The guests see the bottle first. The candle under the neck shows the sediment, so {name} knows when to stop pouring, and the empty bottle on the table shows what they are drinking." },
 
   // ----- 2–3. steg 3 (phronesis): halvt grepp och kostnaden -----
   'p3.moment': { sv: 'Karaffen står på bordet. Gästerna vill dricka nu, men vinet behöver en kvart till.', en: 'The decanter is on the table. The guests want to drink now, but the wine needs another quarter of an hour.' },
-  'p3.q': { sv: 'Vad gör Elin?', en: 'What does Elin do?' },
+  'p3.q': { sv: "Vad gör {name}?", en: "What does {name} do?" },
   'p3.a1': { sv: 'Häller upp direkt, eftersom gästerna vill ha vinet nu.', en: 'Pours straight away, since the guests want the wine now.' },
   'p3.a2': { sv: 'Låter vinet andas en kvart och berättar varför.', en: 'Lets the wine breathe a quarter of an hour and says why.' },
   'p3.a3': { sv: 'Låter vinet andas och bjuder på ett glas cava under tiden.', en: 'Lets the wine breathe and offers a glass of cava meanwhile.' },
@@ -62,7 +63,7 @@ export const D8_STRINGS: Record<string, { sv: string; en: string }> = {
   'grip.full': { sv: 'Helt grepp', en: 'Full grip' },
 
   // ----- 4. karaffen i rummet -----
-  'room.present': { sv: 'Elin visar flaskan vid loungen', en: 'Elin shows the bottle at the lounge' },
+  'room.present': { sv: "{name} visar flaskan vid loungen", en: "{name} shows the bottle at the lounge" },
   'room.decant': { sv: "Karafferingen över ljuset", en: "Decanting over the candle" },
   'room.cleared': { sv: 'Klarad: den tomma flaskan står bredvid', en: 'Cleared: the empty bottle stands beside it' },
   'room.wide': { sv: 'Klarad, på spelets avstånd', en: 'Cleared, at game distance' },
@@ -81,16 +82,16 @@ export const D8_STRINGS: Record<string, { sv: string; en: string }> = {
   'why.icons': { sv: 'De sex ikonerna i kortens storlek och förstorade. Fällorna har ingen egen färg.', en: 'The six icons at card size and enlarged. The traps have no colour of their own.' },
   'sit.kicker': { sv: "Situation · Karaffen", en: "Situation · The decanter" },
   'sit.kickerExample': { sv: "Situation · Exempel", en: "Situation · Example" },
-  'why.exp.hour': { sv: "Gästerna såg allt, och Elin gjorde det vackert vid bordet. Men en äldre Barolo är skör, och en timme i karaffen tar doften ifrån den.", en: "The guests saw everything, and Elin did it beautifully at the table. But an older Barolo is fragile, and an hour in the decanter takes its nose away." },
-  'why.exp.candle': { sv: "Gästerna såg allt vid bordet. Men Elin hällde innan ljuset var tänt, så hon såg inte satsen, och den följde med ner i karaffen.", en: "The guests saw everything at the table. But Elin poured before the candle was lit, so she could not see the sediment, and it went into the decanter." },
+  'why.exp.hour': { sv: "Gästerna såg allt, och {name} gjorde det vackert vid bordet. Men en äldre Barolo är skör, och en timme i karaffen tar doften ifrån den.", en: "The guests saw everything, and {name} did it beautifully at the table. But an older Barolo is fragile, and an hour in the decanter takes its nose away." },
+  'why.exp.candle': { sv: "Gästerna såg allt vid bordet. Men {name} hällde innan ljuset var tänt. Satsen syntes inte och följde med ner i karaffen.", en: "The guests saw everything at the table. But {name} poured before the candle was lit. The sediment could not be seen and went into the decanter." },
   'why.ana.bar': { sv: "Vinet blev rätt: ljuset visade satsen, och den stannade i flaskan. Men vid baren såg gästerna inget av det de betalar för.", en: "The wine came out right: the candle showed the sediment, and it stayed in the bottle. But at the bar the guests saw none of what they are paying for." },
   'why.ana.show': { sv: "Vinet blev rätt, men gästerna fick aldrig se flaskan innan den öppnades. Att visa den först är en del av kvällen.", en: "The wine came out right, but the guests never saw the bottle before it was opened. Showing it first is part of the evening." },
   'why.ana.order': { sv: "Vinet blev rätt, men ordningen vid bordet höll inte för gästerna. Flaskan visas först, och den tomma flaskan ställs fram sist.", en: "The wine came out right, but the order at the table did not hold for the guests. The bottle is shown first, and the empty bottle is set down last." },
-  'why.wrong.candle': { sv: "Utan ljuset under halsen ser Elin inte satsen. Då är det ingen karaffering, bara en omhällning.", en: "Without the candle under the neck, Elin cannot see the sediment. Then it is not decanting, just pouring from one vessel to another." },
+  'why.wrong.candle': { sv: "Utan ljuset under halsen ser {name} inte satsen. Då är det ingen karaffering, bara en omhällning.", en: "Without the candle under the neck, {name} cannot see the sediment. Then it is not decanting, just pouring from one vessel to another." },
   'why.wrong.serveFirst': { sv: "Att servera innan vinet är karafferat ger gästerna satsen i glaset. Flaskan visas först, och serveringen kommer sist.", en: "Serving before the wine is decanted puts the sediment in the glass. The bottle is shown first, and serving comes last." },
-  'why.wrong.both': { sv: "Varken vinet eller gästernas kväll höll den här gången. Flaskan visas vid bordet, ljuset tänds och Elin häller tills satsen når halsen.", en: "Neither the wine nor the guests’ evening held this time. The bottle is shown at the table, the candle is lit, and Elin pours until the sediment reaches the neck." },
+  'why.wrong.both': { sv: "Varken vinet eller gästernas kväll höll den här gången. Flaskan visas vid bordet, ljuset tänds och {name} häller tills satsen når halsen.", en: "Neither the wine nor the guests’ evening held this time. The bottle is shown at the table, the candle is lit, and {name} pours until the sediment reaches the neck." },
   'timeout.verdict': { sv: "Tiden ute: {name} tar över", en: "Time up: {name} takes over" },
   'timeout.lock': { sv: "Tiden ute", en: "Time up" },
-  'why.timeout': { sv: "Tiden gick ut. {name} tar över och karafferar som vanligt och lägger de handgrepp som saknas. Inget grepp den här gången, men vinet och kvällen håller.", en: "Time ran out. {name} takes over and decants as usual, adding the moves that were missing. No grip this time, but the wine and the evening hold." },
+  'why.timeout': { sv: "Tiden gick ut. {name} tar över, karafferar som vanligt och lägger de handgrepp som saknas. Inget grepp den här gången, men vinet och kvällen håller.", en: "Time ran out. {name} takes over, decants as usual and adds the moves that were missing. No grip this time, but the wine and the evening hold." },
   'cost.short': { sv: "Kassan räcker inte", en: "Not enough in the till" },
 };
