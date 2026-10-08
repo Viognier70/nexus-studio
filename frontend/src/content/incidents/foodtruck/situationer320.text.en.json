@@ -59,7 +59,7 @@
      "question": "What do you do?",
      "options": {
       "a": {
-       "label": "Roll the awning all the way out, move a table under it and serve in lidded trays.",
+       "label": "Roll the awning fully out, move a table under it, serve in lidded trays.",
        "explanation": "Shelter for the guests and lids for the food. It keeps both the warmth and the evening."
       },
       "b": {
@@ -71,7 +71,7 @@
        "explanation": "The guests are dry, but the bun goes soggy before they've eaten."
       },
       "d": {
-       "label": "Close the hatch until the rain stops.",
+       "label": "Close the hatch until the rain stops and wait inside the truck.",
        "explanation": "The queue scatters, and the guests go to someone who is open."
       }
      },
@@ -155,7 +155,7 @@
      "question": "What do you do?",
      "options": {
       "a": {
-       "label": "Put lids on the sauces, give the guest a table further away and ask about their medicine.",
+       "label": "Lids on the sauces, the guest to a table further off, ask about medicine.",
        "explanation": "With no sugar out the wasps calm down, and the guest gets away from them. Someone who knows they are allergic often carries medicine, and it's good to know where it is."
       },
       "b": {
@@ -163,11 +163,11 @@
        "explanation": "The wasps calm down, but the guest stays where they are."
       },
       "c": {
-       "label": "Move the guest, but leave the sauces and cans open.",
+       "label": "Move the guest, but leave the sauces and cans open on the counter.",
        "explanation": "The guest gets away, but the wasps stay and follow the sweet things."
       },
       "d": {
-       "label": "Wave the wasp away with a napkin.",
+       "label": "Wave the wasp away with a napkin and keep serving as usual.",
        "explanation": "Waving makes the wasp agitated, and the risk of a sting goes up."
       }
      },
@@ -259,11 +259,11 @@
        "explanation": "The restart is right, but the queue stands still and some leave."
       },
       "c": {
-       "label": "Let the guest pay next time, and serve them.",
+       "label": "Let the guest pay next time, and serve the sausage straight away.",
        "explanation": "Generous, but it doesn't fix the fault, and the next in the queue wants the same."
       },
       "d": {
-       "label": "Say it's cash only today.",
+       "label": "Tell the queue that only cash works today, sorry.",
        "explanation": "Most people have no cash, and the queue scatters."
       }
      },
@@ -351,15 +351,15 @@
        "explanation": "An honest answer in time, an alternative and a plan for the next evening."
       },
       "b": {
-       "label": "Stop selling full specials, without saying why.",
+       "label": "Stop selling full specials, without telling anyone in the queue why.",
        "explanation": "The sausages last longer, but the queue doesn't understand why."
       },
       "c": {
-       "label": "Promise everyone a sausage, and hope it's enough.",
+       "label": "Promise everyone in the queue a sausage, and hope it's enough.",
        "explanation": "The guests are happy, but the last one gets nothing after waiting."
       },
       "d": {
-       "label": "Say nothing, and sell until they run out.",
+       "label": "Say nothing to anyone, and keep selling until they run out.",
        "explanation": "The one at the back has queued for nothing."
       }
      },
@@ -443,7 +443,7 @@
      "question": "What do you do?",
      "options": {
       "a": {
-       "label": "A water bowl by the table furthest from the hatch, and wash your hands afterwards.",
+       "label": "A water bowl at the far table, and wash your hands afterwards.",
        "explanation": "The dog gets water and distance, and the other guest is spared. You wash your hands before touching food again."
       },
       "b": {
@@ -455,7 +455,7 @@
        "explanation": "Kind, but without washing your hands and with the dog close to the anxious guest."
       },
       "d": {
-       "label": "Give the dog a piece of sausage from the grill.",
+       "label": "Give the dog a piece of sausage from the grill to keep it calm.",
        "explanation": "The dog is happy, but it's not good for the dog, and you've touched the animal with the hand that handles the food."
       }
      },
@@ -539,15 +539,15 @@
      "question": "What do you do?",
      "options": {
       "a": {
-       "label": "Keep the price, talk about the meat content and treat the regular to a coffee.",
+       "label": "Keep the price, explain the meat content and give the regular a coffee.",
        "explanation": "The price keeps the margin, and the reasons and a small gesture keep the regular."
       },
       "b": {
-       "label": "Keep the price, without saying anything more.",
+       "label": "Keep the price as it is, without saying anything more.",
        "explanation": "The margin stays, but the regular wonders why they should pay more."
       },
       "c": {
-       "label": "Cut to 25 kr, so the regular stays.",
+       "label": "Cut to 25 kr, so the regular stays with you.",
        "explanation": "The guest stays, but the margin is almost halved for everyone."
       },
       "d": {

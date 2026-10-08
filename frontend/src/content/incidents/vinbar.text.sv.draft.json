@@ -62,7 +62,7 @@
           "question": "Vad gör du?",
           "options": {
             "a": {
-              "label": "Säg att flaskan är korkad, öppna en ny och byt glas.",
+              "label": "Säg att den är korkad, öppna en ny, byt glas.",
               "explanation": "En korkad flaska byts alltid, och glasen också, eftersom doften sitter kvar. Korkdefekt är ingen skam. Att säga det öppet bygger förtroende."
             },
             "b": {
@@ -163,7 +163,7 @@
           "question": "Vad gör du?",
           "options": {
             "a": {
-              "label": "Flaskorna i is och vatten, säg \"tio minuter\" och bjud på kallt vatten.",
+              "label": "Flaskorna i isvatten, säg “tio minuter” och bjud på kallt vatten.",
               "explanation": "Is och vatten kyler en flaska på tio–femton minuter, mycket fortare än kylen. Gästerna vet varför det dröjer och har något kallt i handen."
             },
             "b": {
@@ -176,7 +176,11 @@
             },
             "d": {
               "label": "Servera den varma roséen som den är och hoppas att ingen märker något.",
-              "explanation": "Gästerna märker det på första klunken."
+              "explanation": "Gästerna märker det på första klunken.",
+              "fail": {
+                "outcome": "Isbitarna klirrar. Efter en stund smakar vinet vatten.",
+                "ongoing": "Roséglasen står halvfulla på borden. Gästerna beställer inget mer."
+              }
             }
           },
           "fail": {
@@ -260,7 +264,7 @@
           "question": "Vad gör du?",
           "options": {
             "a": {
-              "label": "Kolla med köket, ge rakt besked, föreslå en säker rätt och märk ordern.",
+              "label": "Kolla med köket, ge rakt besked, föreslå en säker rätt, märk ordern.",
               "explanation": "Ett allergisvar bygger på receptet och köket. När ordern är märkt hålls den fri från nötter hela vägen till bordet."
             },
             "b": {
@@ -272,7 +276,7 @@
               "explanation": "Gästen känner sig omhändertagen, men ingen vet vad som finns i den nya rätten."
             },
             "d": {
-              "label": "Säg att det nog inte finns nötter i peston.",
+              "label": "Säg att det nog inte finns nötter i peston, så det borde gå bra.",
               "explanation": "Att gissa om allergener är det farligaste misstaget i en servering. Gästen ska få korrekt allergeninformation.",
               "fail": {
                 "outcome": "Bruschettan går ut med spår av pesto kvar på brödet."
@@ -824,7 +828,11 @@
             },
             "c": {
               "label": "Säg att rött inte går till getost och servera husets vita.",
-              "explanation": "Det stämmer inte, och gästen får varken önskan eller ett val som ser till osten."
+              "explanation": "Det stämmer inte, och gästen får varken önskan eller ett val som ser till osten.",
+              "fail": {
+                "outcome": "Gästen smakar. Osten och vinet drar åt var sitt håll.",
+                "ongoing": "Osten står kvar på tallriken. Gästen dricker vinet för sig."
+              }
             },
             "d": {
               "label": "En lätt Sancerre rouge eller gamay, med mjuka tanniner.",
@@ -1005,7 +1013,10 @@
             },
             "b": {
               "label": "Säg att de flesta ändå inte känner skillnad.",
-              "explanation": "Det låter som att gästen inte förstår. Det säljer varken vinet eller förtroendet."
+              "explanation": "Det låter som att gästen inte förstår. Det säljer varken vinet eller förtroendet.",
+              "fail": {
+                "outcome": "Korken smäller och vin skummar över bordsduken."
+              }
             },
             "c": {
               "label": "Föreslå champagnen på flaska i stället, så att kvällen blir festlig.",
@@ -1104,7 +1115,7 @@
               "explanation": "Gästen känner sig hörd, men isen späder vinet."
             },
             "c": {
-              "label": "Ge gästen rätt, häll ur en sval flaska och flytta de öppna till kylen.",
+              "label": "Ge gästen rätt, häll ur en sval flaska, flytta de öppna till kylen.",
               "explanation": "En sval vinkyl eller en stund i isvatten räddar det. Gästen hade rätt, och det ska märkas."
             },
             "d": {
@@ -1598,16 +1609,16 @@
           "question": "Vad gör du?",
           "options": {
             "a": {
-              "label": "Be om ursäkt och gnid bort fläcken med varmt vatten.",
+              "label": "Be om ursäkt och gnid bort fläcken med lite varmt vatten direkt.",
               "explanation": "Omtanken är rätt, men gnidning och värme pressar in och fäster färgen."
             },
             "b": {
-              "label": "Be om ursäkt, ge kallt vatten att badda med och betala kemtvätten.",
+              "label": "Be om ursäkt, kallt vatten att badda med, betala kemtvätten.",
               "explanation": "Kallt vatten och baddning tar upp vinet utan att fästa färgen. Gästen bestämmer själv över sin kavaj.",
               "success": "Gästen baddar fläcken och tackar."
             },
             "c": {
-              "label": "Be om ursäkt, kallt vatten att badda med, kemtvätt och kvällens vin på huset.",
+              "label": "Be om ursäkt, kallt vatten, kemtvätten och kvällens vin på huset.",
               "explanation": "Samma rätta hantering, och en gest som gör olyckan till en historia om hur krogen tog hand om sin gäst. Det kostar mer, men ryktet växer mer.",
               "success": "Gästen skrattar lite och skålar med sällskapet. Grannbordet har sett allt."
             },
@@ -2009,7 +2020,7 @@
               "explanation": "Sötman gör vinet surt, och gästen som inte dricker får ett glas hen inte vill ha."
             },
             "b": {
-              "label": "Lite ruby-portvin, och fråga den som inte dricker vad hen vill ha.",
+              "label": "Lite ruby-portvin, och fråga den som inte dricker vad hen vill.",
               "explanation": "En ung, fruktig portvin klarar chokladens sötma och beska. Söta röda som Banyuls eller Maury fungerar också. Ett eget förslag till gästen som inte dricker visar att hens val räknas."
             },
             "c": {
@@ -2749,17 +2760,17 @@
               "explanation": "Köket får rätt besked, men grannarna kan sitta länge, och då blir det ingen sång för Karin."
             },
             "b": {
-              "label": "Ge köket allt, en vers för Karin, och bjud grannarna på ett glas.",
+              "label": "Ge köket allt, en vers för Karin, bjud grannarna på ett glas.",
               "explanation": "En kort fest och en gest till grannarna. Det kostar, men båda borden minns kvällen.",
               "success": "En vers för Karin. I lounge B höjer grannarna sina glas mot henne."
             },
             "c": {
-              "label": "Ge köket allt, en vers för Karin, och förvarna grannarna med en ursäkt.",
+              "label": "Ge köket allt, en vers för Karin, förvarna grannarna med en ursäkt.",
               "explanation": "Grannarna vet vad som kommer och känner sig sedda. Det är billigare, men gesten är mindre.",
               "success": "En vers för Karin. Grannarna ler och fortsätter sitt samtal."
             },
             "d": {
-              "label": "En vers, något till grannarna, och tårtan ut utan att fråga om allergier.",
+              "label": "En vers, något till grannarna, och tårtan ut utan att fråga någon om allergier.",
               "explanation": "Båda borden får sitt, men ingen frågade om allergier."
             }
           },

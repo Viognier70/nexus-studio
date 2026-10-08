@@ -61,7 +61,7 @@
       "resultSek": -19670,
       "stoppedShare": 0,
       "credits": -9.2,
-      "incidentCashSek": -827,
+      "incidentCashSek": -893,
       "triad": {
         "fullGrip": 0,
         "halfGrip": 0.062,
@@ -78,7 +78,7 @@
       "resultSek": -19670,
       "stoppedShare": 0,
       "credits": -9.2,
-      "incidentCashSek": -827,
+      "incidentCashSek": -893,
       "triad": {
         "fullGrip": 0,
         "halfGrip": 0.062,
@@ -95,7 +95,7 @@
       "resultSek": -19670,
       "stoppedShare": 0,
       "credits": -9.2,
-      "incidentCashSek": -827,
+      "incidentCashSek": -893,
       "triad": {
         "fullGrip": 0,
         "halfGrip": 0.062,
@@ -109,61 +109,61 @@
       "player": "gissaren",
       "stopAfter": 0,
       "weeks": 10,
-      "resultSek": 9453,
+      "resultSek": 7979,
       "stoppedShare": 0,
-      "credits": 97.1,
-      "incidentCashSek": 1226,
+      "credits": 94.4,
+      "incidentCashSek": 1200,
       "triad": {
-        "fullGrip": 0.537,
-        "halfGrip": 0.263,
-        "wrongLastStep": 0.2,
+        "fullGrip": 0.292,
+        "halfGrip": 0.329,
+        "wrongLastStep": 0.379,
         "staff": 0,
         "stopped": 0,
-        "missedOnTheWay": 0.882
+        "missedOnTheWay": 0.885
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 1,
       "weeks": 10,
-      "resultSek": 6250,
-      "stoppedShare": 0.753,
-      "credits": 21.3,
-      "incidentCashSek": 428,
+      "resultSek": 6623,
+      "stoppedShare": 0.757,
+      "credits": 21,
+      "incidentCashSek": 415,
       "triad": {
-        "fullGrip": 0.271,
-        "halfGrip": 0.033,
+        "fullGrip": 0.213,
+        "halfGrip": 0.108,
         "wrongLastStep": 0,
         "staff": 0,
-        "stopped": 0.696,
-        "missedOnTheWay": 0.304
+        "stopped": 0.679,
+        "missedOnTheWay": 0.321
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 2,
       "weeks": 10,
-      "resultSek": 6143,
-      "stoppedShare": 0.695,
-      "credits": 43.1,
-      "incidentCashSek": 324,
+      "resultSek": 5297,
+      "stoppedShare": 0.697,
+      "credits": 42.5,
+      "incidentCashSek": 292,
       "triad": {
-        "fullGrip": 0.393,
-        "halfGrip": 0.031,
-        "wrongLastStep": 0,
+        "fullGrip": 0.13,
+        "halfGrip": 0.185,
+        "wrongLastStep": 0.226,
         "staff": 0,
-        "stopped": 0.576,
-        "missedOnTheWay": 0.424
+        "stopped": 0.46,
+        "missedOnTheWay": 0.54
       }
     },
     {
       "player": "slumpen",
       "stopAfter": 0,
       "weeks": 10,
-      "resultSek": -9914,
+      "resultSek": -9911,
       "stoppedShare": 0,
       "credits": 20.4,
-      "incidentCashSek": -203,
+      "incidentCashSek": -252,
       "triad": {
         "fullGrip": 0.378,
         "halfGrip": 0.428,
@@ -177,10 +177,10 @@
       "player": "slumpen",
       "stopAfter": 1,
       "weeks": 10,
-      "resultSek": -4584,
+      "resultSek": -4565,
       "stoppedShare": 0.487,
       "credits": 16.9,
-      "incidentCashSek": 338,
+      "incidentCashSek": 323,
       "triad": {
         "fullGrip": 0.166,
         "halfGrip": 0.207,
@@ -194,10 +194,10 @@
       "player": "slumpen",
       "stopAfter": 2,
       "weeks": 10,
-      "resultSek": -10013,
+      "resultSek": -9987,
       "stoppedShare": 0.324,
       "credits": 18.6,
-      "incidentCashSek": 25,
+      "incidentCashSek": 8,
       "triad": {
         "fullGrip": 0.231,
         "halfGrip": 0.311,
@@ -262,42 +262,42 @@
   "step2FailEffects": [
     {
       "id": "vb01-korken",
-      "cash": -0.15,
+      "cash": 0,
       "satisfaction": -0.08,
       "stamina": 0,
       "reputation": 0
     },
     {
       "id": "vb02-rosen",
-      "cash": -0.15,
+      "cash": 0,
       "satisfaction": -0.05,
       "stamina": 0,
       "reputation": 0
     },
     {
       "id": "vb03-notallergi",
-      "cash": -0.15,
+      "cash": 0,
       "satisfaction": -0.05,
       "stamina": 0,
       "reputation": 0
     },
     {
       "id": "vb07-provningen",
-      "cash": -0.15,
+      "cash": 0,
       "satisfaction": -0.05,
       "stamina": 0,
       "reputation": 0
     },
     {
       "id": "vb09-getosten",
-      "cash": -0.2,
+      "cash": 0,
       "satisfaction": -0.05,
       "stamina": 0,
       "reputation": 0
     },
     {
       "id": "vb11-cremant",
-      "cash": -0.1,
+      "cash": 0,
       "satisfaction": -0.05,
       "stamina": 0,
       "reputation": 0
@@ -987,7 +987,7 @@
           "missedOnTheWay": 0.333
         },
         "credits": -9,
-        "incidentCashSek": -1231
+        "incidentCashSek": -1307
       }
     },
     {
@@ -1008,7 +1008,7 @@
           "missedOnTheWay": 0.333
         },
         "credits": -9,
-        "incidentCashSek": -758
+        "incidentCashSek": -833
       }
     },
     {
@@ -1029,7 +1029,7 @@
           "missedOnTheWay": 0.667
         },
         "credits": -6,
-        "incidentCashSek": -1095
+        "incidentCashSek": -1228
       }
     },
     {
@@ -1050,7 +1050,7 @@
           "missedOnTheWay": 0.8
         },
         "credits": -8,
-        "incidentCashSek": -691
+        "incidentCashSek": -824
       }
     },
     {
@@ -1092,7 +1092,7 @@
           "missedOnTheWay": 0.5
         },
         "credits": -11,
-        "incidentCashSek": -884
+        "incidentCashSek": -960
       }
     },
     {
@@ -1155,7 +1155,7 @@
           "missedOnTheWay": 0.5
         },
         "credits": -12,
-        "incidentCashSek": -635
+        "incidentCashSek": -672
       }
     },
     {
@@ -1176,7 +1176,7 @@
           "missedOnTheWay": 1
         },
         "credits": -4,
-        "incidentCashSek": -871
+        "incidentCashSek": -1004
       }
     },
     {
@@ -1197,7 +1197,7 @@
           "missedOnTheWay": 0.333
         },
         "credits": -9,
-        "incidentCashSek": -1231
+        "incidentCashSek": -1307
       }
     },
     {
@@ -1218,7 +1218,7 @@
           "missedOnTheWay": 0.333
         },
         "credits": -9,
-        "incidentCashSek": -758
+        "incidentCashSek": -833
       }
     },
     {
@@ -1239,7 +1239,7 @@
           "missedOnTheWay": 0.667
         },
         "credits": -6,
-        "incidentCashSek": -1095
+        "incidentCashSek": -1228
       }
     },
     {
@@ -1260,7 +1260,7 @@
           "missedOnTheWay": 0.8
         },
         "credits": -8,
-        "incidentCashSek": -691
+        "incidentCashSek": -824
       }
     },
     {
@@ -1302,7 +1302,7 @@
           "missedOnTheWay": 0.5
         },
         "credits": -11,
-        "incidentCashSek": -884
+        "incidentCashSek": -960
       }
     },
     {
@@ -1365,7 +1365,7 @@
           "missedOnTheWay": 0.5
         },
         "credits": -12,
-        "incidentCashSek": -635
+        "incidentCashSek": -672
       }
     },
     {
@@ -1386,7 +1386,7 @@
           "missedOnTheWay": 1
         },
         "credits": -4,
-        "incidentCashSek": -871
+        "incidentCashSek": -1004
       }
     },
     {
@@ -1407,7 +1407,7 @@
           "missedOnTheWay": 0.333
         },
         "credits": -9,
-        "incidentCashSek": -1231
+        "incidentCashSek": -1307
       }
     },
     {
@@ -1428,7 +1428,7 @@
           "missedOnTheWay": 0.333
         },
         "credits": -9,
-        "incidentCashSek": -758
+        "incidentCashSek": -833
       }
     },
     {
@@ -1449,7 +1449,7 @@
           "missedOnTheWay": 0.667
         },
         "credits": -6,
-        "incidentCashSek": -1095
+        "incidentCashSek": -1228
       }
     },
     {
@@ -1470,7 +1470,7 @@
           "missedOnTheWay": 0.8
         },
         "credits": -8,
-        "incidentCashSek": -691
+        "incidentCashSek": -824
       }
     },
     {
@@ -1512,7 +1512,7 @@
           "missedOnTheWay": 0.5
         },
         "credits": -11,
-        "incidentCashSek": -884
+        "incidentCashSek": -960
       }
     },
     {
@@ -1575,7 +1575,7 @@
           "missedOnTheWay": 0.5
         },
         "credits": -12,
-        "incidentCashSek": -635
+        "incidentCashSek": -672
       }
     },
     {
@@ -1596,49 +1596,49 @@
           "missedOnTheWay": 1
         },
         "credits": -4,
-        "incidentCashSek": -871
+        "incidentCashSek": -1004
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 0,
       "seed": 1,
-      "resultSek": 8532,
+      "resultSek": 4476,
       "summary": {
         "situations": 24,
         "stopped": 0,
         "triad": {
-          "n": 4,
-          "fullGrip": 0.5,
-          "halfGrip": 0.5,
-          "wrongLastStep": 0,
-          "staff": 0,
-          "stopped": 0,
-          "missedOnTheWay": 1
-        },
-        "credits": 94,
-        "incidentCashSek": 895
-      }
-    },
-    {
-      "player": "gissaren",
-      "stopAfter": 0,
-      "seed": 2,
-      "resultSek": 12597,
-      "summary": {
-        "situations": 27,
-        "stopped": 0,
-        "triad": {
           "n": 5,
-          "fullGrip": 0.6,
-          "halfGrip": 0.2,
+          "fullGrip": 0.2,
+          "halfGrip": 0.6,
           "wrongLastStep": 0.2,
           "staff": 0,
           "stopped": 0,
-          "missedOnTheWay": 0.8
+          "missedOnTheWay": 1
         },
-        "credits": 103,
-        "incidentCashSek": 1975
+        "credits": 86,
+        "incidentCashSek": 1121
+      }
+    },
+    {
+      "player": "gissaren",
+      "stopAfter": 0,
+      "seed": 2,
+      "resultSek": 15591,
+      "summary": {
+        "situations": 26,
+        "stopped": 0,
+        "triad": {
+          "n": 3,
+          "fullGrip": 0.333,
+          "halfGrip": 0.333,
+          "wrongLastStep": 0.333,
+          "staff": 0,
+          "stopped": 0,
+          "missedOnTheWay": 1
+        },
+        "credits": 90,
+        "incidentCashSek": 1460
       }
     },
     {
@@ -1666,147 +1666,147 @@
       "player": "gissaren",
       "stopAfter": 0,
       "seed": 4,
-      "resultSek": 8434,
+      "resultSek": 8589,
       "summary": {
-        "situations": 28,
+        "situations": 27,
         "stopped": 0,
         "triad": {
-          "n": 7,
-          "fullGrip": 0.286,
-          "halfGrip": 0.429,
-          "wrongLastStep": 0.286,
+          "n": 6,
+          "fullGrip": 0,
+          "halfGrip": 0.5,
+          "wrongLastStep": 0.5,
           "staff": 0,
           "stopped": 0,
-          "missedOnTheWay": 0.857
+          "missedOnTheWay": 1
         },
-        "credits": 108,
-        "incidentCashSek": 371
+        "credits": 95,
+        "incidentCashSek": 537
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 0,
       "seed": 5,
-      "resultSek": 12302,
+      "resultSek": 12227,
       "summary": {
         "situations": 24,
         "stopped": 0,
         "triad": {
           "n": 5,
-          "fullGrip": 0.4,
-          "halfGrip": 0.4,
+          "fullGrip": 0.2,
+          "halfGrip": 0.6,
           "wrongLastStep": 0.2,
           "staff": 0,
           "stopped": 0,
           "missedOnTheWay": 1
         },
-        "credits": 89,
-        "incidentCashSek": 1280
+        "credits": 88,
+        "incidentCashSek": 1091
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 0,
       "seed": 6,
-      "resultSek": 5940,
+      "resultSek": 5549,
       "summary": {
-        "situations": 26,
+        "situations": 25,
         "stopped": 0,
         "triad": {
           "n": 5,
-          "fullGrip": 0.6,
+          "fullGrip": 0.2,
           "halfGrip": 0.2,
-          "wrongLastStep": 0.2,
+          "wrongLastStep": 0.6,
           "staff": 0,
           "stopped": 0,
-          "missedOnTheWay": 1
+          "missedOnTheWay": 0.8
         },
-        "credits": 82,
-        "incidentCashSek": 1351
+        "credits": 96,
+        "incidentCashSek": 748
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 0,
       "seed": 7,
-      "resultSek": 15848,
+      "resultSek": 10580,
       "summary": {
-        "situations": 27,
+        "situations": 25,
         "stopped": 0,
         "triad": {
           "n": 4,
-          "fullGrip": 0.75,
+          "fullGrip": 0.5,
           "halfGrip": 0,
-          "wrongLastStep": 0.25,
+          "wrongLastStep": 0.5,
           "staff": 0,
           "stopped": 0,
           "missedOnTheWay": 1
         },
-        "credits": 127,
-        "incidentCashSek": 2492
+        "credits": 103,
+        "incidentCashSek": 1932
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 0,
       "seed": 8,
-      "resultSek": 1431,
+      "resultSek": 6209,
       "summary": {
-        "situations": 26,
+        "situations": 25,
         "stopped": 0,
         "triad": {
-          "n": 5,
-          "fullGrip": 0.4,
-          "halfGrip": 0.4,
-          "wrongLastStep": 0.2,
+          "n": 4,
+          "fullGrip": 0.25,
+          "halfGrip": 0.25,
+          "wrongLastStep": 0.5,
           "staff": 0,
           "stopped": 0,
           "missedOnTheWay": 1
         },
-        "credits": 92,
-        "incidentCashSek": 507
+        "credits": 86,
+        "incidentCashSek": 1323
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 0,
       "seed": 9,
-      "resultSek": 14176,
+      "resultSek": 9110,
       "summary": {
-        "situations": 26,
+        "situations": 30,
         "stopped": 0,
         "triad": {
-          "n": 6,
-          "fullGrip": 0.5,
-          "halfGrip": 0.333,
-          "wrongLastStep": 0.167,
+          "n": 7,
+          "fullGrip": 0.571,
+          "halfGrip": 0.143,
+          "wrongLastStep": 0.286,
           "staff": 0,
           "stopped": 0,
-          "missedOnTheWay": 1
+          "missedOnTheWay": 0.714
         },
-        "credits": 106,
-        "incidentCashSek": 1713
+        "credits": 138,
+        "incidentCashSek": 2066
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 0,
       "seed": 10,
-      "resultSek": 5181,
+      "resultSek": -2632,
       "summary": {
-        "situations": 21,
+        "situations": 22,
         "stopped": 0,
         "triad": {
           "n": 6,
-          "fullGrip": 0.667,
-          "halfGrip": 0.167,
-          "wrongLastStep": 0.167,
+          "fullGrip": 0,
+          "halfGrip": 0.667,
+          "wrongLastStep": 0.333,
           "staff": 0,
           "stopped": 0,
-          "missedOnTheWay": 0.833
+          "missedOnTheWay": 1
         },
-        "credits": 66,
-        "incidentCashSek": 993
+        "credits": 58,
+        "incidentCashSek": 1042
       }
     },
     {
@@ -1834,20 +1834,20 @@
       "player": "gissaren",
       "stopAfter": 1,
       "seed": 2,
-      "resultSek": 7022,
+      "resultSek": 7193,
       "summary": {
         "situations": 25,
         "stopped": 0.68,
         "triad": {
           "n": 6,
-          "fullGrip": 0.667,
-          "halfGrip": 0,
+          "fullGrip": 0.5,
+          "halfGrip": 0.167,
           "wrongLastStep": 0,
           "staff": 0,
           "stopped": 0.333,
           "missedOnTheWay": 0.667
         },
-        "credits": 22,
+        "credits": 21,
         "incidentCashSek": 829
       }
     },
@@ -1855,7 +1855,7 @@
       "player": "gissaren",
       "stopAfter": 1,
       "seed": 3,
-      "resultSek": 4921,
+      "resultSek": 4977,
       "summary": {
         "situations": 25,
         "stopped": 0.88,
@@ -1876,7 +1876,7 @@
       "player": "gissaren",
       "stopAfter": 1,
       "seed": 4,
-      "resultSek": 6657,
+      "resultSek": 6714,
       "summary": {
         "situations": 25,
         "stopped": 0.72,
@@ -1918,7 +1918,7 @@
       "player": "gissaren",
       "stopAfter": 1,
       "seed": 6,
-      "resultSek": 9642,
+      "resultSek": 9755,
       "summary": {
         "situations": 27,
         "stopped": 0.704,
@@ -1939,28 +1939,28 @@
       "player": "gissaren",
       "stopAfter": 1,
       "seed": 7,
-      "resultSek": 6810,
+      "resultSek": 9532,
       "summary": {
         "situations": 24,
-        "stopped": 0.708,
+        "stopped": 0.75,
         "triad": {
           "n": 6,
-          "fullGrip": 0.167,
-          "halfGrip": 0,
+          "fullGrip": 0,
+          "halfGrip": 0.333,
           "wrongLastStep": 0,
           "staff": 0,
-          "stopped": 0.833,
-          "missedOnTheWay": 0.167
+          "stopped": 0.667,
+          "missedOnTheWay": 0.333
         },
-        "credits": 22,
-        "incidentCashSek": 535
+        "credits": 21,
+        "incidentCashSek": 82
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 1,
       "seed": 8,
-      "resultSek": 1829,
+      "resultSek": 1886,
       "summary": {
         "situations": 25,
         "stopped": 0.68,
@@ -1981,28 +1981,28 @@
       "player": "gissaren",
       "stopAfter": 1,
       "seed": 9,
-      "resultSek": 3714,
+      "resultSek": 4216,
       "summary": {
         "situations": 25,
         "stopped": 0.68,
         "triad": {
           "n": 4,
-          "fullGrip": 0.5,
-          "halfGrip": 0,
+          "fullGrip": 0.25,
+          "halfGrip": 0.25,
           "wrongLastStep": 0,
           "staff": 0,
           "stopped": 0.5,
           "missedOnTheWay": 0.5
         },
-        "credits": 19,
-        "incidentCashSek": 505
+        "credits": 18,
+        "incidentCashSek": 821
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 1,
       "seed": 10,
-      "resultSek": 1648,
+      "resultSek": 1705,
       "summary": {
         "situations": 23,
         "stopped": 0.783,
@@ -2023,28 +2023,28 @@
       "player": "gissaren",
       "stopAfter": 2,
       "seed": 1,
-      "resultSek": 8024,
+      "resultSek": 10582,
       "summary": {
-        "situations": 24,
-        "stopped": 0.667,
+        "situations": 25,
+        "stopped": 0.76,
         "triad": {
-          "n": 6,
-          "fullGrip": 0.5,
-          "halfGrip": 0.167,
-          "wrongLastStep": 0,
+          "n": 5,
+          "fullGrip": 0,
+          "halfGrip": 0.4,
+          "wrongLastStep": 0.2,
           "staff": 0,
-          "stopped": 0.333,
-          "missedOnTheWay": 0.667
+          "stopped": 0.4,
+          "missedOnTheWay": 0.6
         },
-        "credits": 44,
-        "incidentCashSek": 579
+        "credits": 50,
+        "incidentCashSek": 163
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 2,
       "seed": 2,
-      "resultSek": 10659,
+      "resultSek": 10773,
       "summary": {
         "situations": 26,
         "stopped": 0.769,
@@ -2065,146 +2065,146 @@
       "player": "gissaren",
       "stopAfter": 2,
       "seed": 3,
-      "resultSek": 9814,
+      "resultSek": 733,
       "summary": {
         "situations": 26,
-        "stopped": 0.769,
+        "stopped": 0.654,
         "triad": {
-          "n": 6,
-          "fullGrip": 0.333,
+          "n": 5,
+          "fullGrip": 0,
           "halfGrip": 0,
-          "wrongLastStep": 0,
+          "wrongLastStep": 0.4,
           "staff": 0,
-          "stopped": 0.667,
-          "missedOnTheWay": 0.333
+          "stopped": 0.6,
+          "missedOnTheWay": 0.4
         },
-        "credits": 53,
-        "incidentCashSek": -71
+        "credits": 42,
+        "incidentCashSek": -39
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 2,
       "seed": 4,
-      "resultSek": 1915,
+      "resultSek": 1003,
       "summary": {
         "situations": 26,
         "stopped": 0.654,
         "triad": {
           "n": 7,
-          "fullGrip": 0.429,
-          "halfGrip": 0.143,
-          "wrongLastStep": 0,
+          "fullGrip": 0.143,
+          "halfGrip": 0.286,
+          "wrongLastStep": 0.143,
           "staff": 0,
           "stopped": 0.429,
           "missedOnTheWay": 0.571
         },
-        "credits": 39,
-        "incidentCashSek": 491
+        "credits": 37,
+        "incidentCashSek": 504
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 2,
       "seed": 5,
-      "resultSek": 12005,
+      "resultSek": 7529,
       "summary": {
         "situations": 25,
         "stopped": 0.72,
         "triad": {
-          "n": 5,
-          "fullGrip": 0.6,
-          "halfGrip": 0,
-          "wrongLastStep": 0,
+          "n": 6,
+          "fullGrip": 0.167,
+          "halfGrip": 0.333,
+          "wrongLastStep": 0.167,
           "staff": 0,
-          "stopped": 0.4,
-          "missedOnTheWay": 0.6
+          "stopped": 0.333,
+          "missedOnTheWay": 0.667
         },
         "credits": 43,
-        "incidentCashSek": 814
+        "incidentCashSek": 331
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 2,
       "seed": 6,
-      "resultSek": 5228,
+      "resultSek": 5577,
       "summary": {
-        "situations": 25,
-        "stopped": 0.68,
+        "situations": 29,
+        "stopped": 0.759,
         "triad": {
-          "n": 5,
-          "fullGrip": 0.2,
+          "n": 4,
+          "fullGrip": 0,
           "halfGrip": 0,
-          "wrongLastStep": 0,
+          "wrongLastStep": 0.75,
           "staff": 0,
-          "stopped": 0.8,
-          "missedOnTheWay": 0.2
+          "stopped": 0.25,
+          "missedOnTheWay": 0.75
         },
-        "credits": 42,
-        "incidentCashSek": -79
+        "credits": 50,
+        "incidentCashSek": 76
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 2,
       "seed": 7,
-      "resultSek": 7926,
+      "resultSek": 7821,
       "summary": {
         "situations": 24,
         "stopped": 0.708,
         "triad": {
           "n": 7,
-          "fullGrip": 0.286,
-          "halfGrip": 0,
+          "fullGrip": 0,
+          "halfGrip": 0.286,
           "wrongLastStep": 0,
           "staff": 0,
           "stopped": 0.714,
           "missedOnTheWay": 0.286
         },
-        "credits": 37,
-        "incidentCashSek": 103
+        "credits": 35,
+        "incidentCashSek": 226
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 2,
       "seed": 8,
-      "resultSek": 2459,
+      "resultSek": 6230,
       "summary": {
-        "situations": 26,
-        "stopped": 0.654,
+        "situations": 27,
+        "stopped": 0.667,
         "triad": {
-          "n": 4,
-          "fullGrip": 0.25,
-          "halfGrip": 0,
-          "wrongLastStep": 0,
+          "n": 5,
+          "fullGrip": 0,
+          "halfGrip": 0.2,
+          "wrongLastStep": 0.6,
           "staff": 0,
-          "stopped": 0.75,
-          "missedOnTheWay": 0.25
+          "stopped": 0.2,
+          "missedOnTheWay": 0.8
         },
-        "credits": 44,
-        "incidentCashSek": -196
+        "credits": 43,
+        "incidentCashSek": -39
       }
     },
     {
       "player": "gissaren",
       "stopAfter": 2,
       "seed": 9,
-      "resultSek": 783,
+      "resultSek": 896,
       "summary": {
         "situations": 25,
         "stopped": 0.6,
         "triad": {
           "n": 7,
-          "fullGrip": 0.429,
-          "halfGrip": 0,
+          "fullGrip": 0.286,
+          "halfGrip": 0.143,
           "wrongLastStep": 0,
           "staff": 0,
           "stopped": 0.571,
           "missedOnTheWay": 0.429
         },
-        "credits": 40,
+        "credits": 39,
         "incidentCashSek": 417
       }
     },
@@ -2212,28 +2212,28 @@
       "player": "gissaren",
       "stopAfter": 2,
       "seed": 10,
-      "resultSek": 2620,
+      "resultSek": 1829,
       "summary": {
         "situations": 22,
-        "stopped": 0.727,
+        "stopped": 0.682,
         "triad": {
           "n": 5,
-          "fullGrip": 0.4,
-          "halfGrip": 0,
+          "fullGrip": 0.2,
+          "halfGrip": 0.2,
           "wrongLastStep": 0,
           "staff": 0,
           "stopped": 0.6,
           "missedOnTheWay": 0.4
         },
-        "credits": 38,
-        "incidentCashSek": 107
+        "credits": 35,
+        "incidentCashSek": 204
       }
     },
     {
       "player": "slumpen",
       "stopAfter": 0,
       "seed": 1,
-      "resultSek": -12227,
+      "resultSek": -12170,
       "summary": {
         "situations": 25,
         "stopped": 0,
@@ -2254,7 +2254,7 @@
       "player": "slumpen",
       "stopAfter": 0,
       "seed": 2,
-      "resultSek": -12417,
+      "resultSek": -12379,
       "summary": {
         "situations": 26,
         "stopped": 0,
@@ -2296,7 +2296,7 @@
       "player": "slumpen",
       "stopAfter": 0,
       "seed": 4,
-      "resultSek": -14194,
+      "resultSek": -14270,
       "summary": {
         "situations": 24,
         "stopped": 0,
@@ -2310,14 +2310,14 @@
           "missedOnTheWay": 0.833
         },
         "credits": 8,
-        "incidentCashSek": -646
+        "incidentCashSek": -797
       }
     },
     {
       "player": "slumpen",
       "stopAfter": 0,
       "seed": 5,
-      "resultSek": -12245,
+      "resultSek": -12302,
       "summary": {
         "situations": 25,
         "stopped": 0,
@@ -2331,7 +2331,7 @@
           "missedOnTheWay": 0.667
         },
         "credits": 10,
-        "incidentCashSek": -657
+        "incidentCashSek": -789
       }
     },
     {
@@ -2352,7 +2352,7 @@
           "missedOnTheWay": 0.429
         },
         "credits": 25,
-        "incidentCashSek": -144
+        "incidentCashSek": -238
       }
     },
     {
@@ -2380,7 +2380,7 @@
       "player": "slumpen",
       "stopAfter": 0,
       "seed": 8,
-      "resultSek": -8522,
+      "resultSek": -8427,
       "summary": {
         "situations": 26,
         "stopped": 0,
@@ -2401,7 +2401,7 @@
       "player": "slumpen",
       "stopAfter": 0,
       "seed": 9,
-      "resultSek": -9847,
+      "resultSek": -9923,
       "summary": {
         "situations": 28,
         "stopped": 0,
@@ -2415,14 +2415,14 @@
           "missedOnTheWay": 0.429
         },
         "credits": 28,
-        "incidentCashSek": -434
+        "incidentCashSek": -510
       }
     },
     {
       "player": "slumpen",
       "stopAfter": 0,
       "seed": 10,
-      "resultSek": -12712,
+      "resultSek": -12655,
       "summary": {
         "situations": 23,
         "stopped": 0,
@@ -2436,7 +2436,7 @@
           "missedOnTheWay": 0.833
         },
         "credits": 14,
-        "incidentCashSek": -98
+        "incidentCashSek": -136
       }
     },
     {
@@ -2457,7 +2457,7 @@
           "missedOnTheWay": 0.5
         },
         "credits": 13,
-        "incidentCashSek": 807
+        "incidentCashSek": 769
       }
     },
     {
@@ -2485,7 +2485,7 @@
       "player": "slumpen",
       "stopAfter": 1,
       "seed": 3,
-      "resultSek": 930,
+      "resultSek": 968,
       "summary": {
         "situations": 26,
         "stopped": 0.5,
@@ -2527,7 +2527,7 @@
       "player": "slumpen",
       "stopAfter": 1,
       "seed": 5,
-      "resultSek": 1932,
+      "resultSek": 1970,
       "summary": {
         "situations": 27,
         "stopped": 0.481,
@@ -2590,7 +2590,7 @@
       "player": "slumpen",
       "stopAfter": 1,
       "seed": 8,
-      "resultSek": -3583,
+      "resultSek": -3658,
       "summary": {
         "situations": 24,
         "stopped": 0.417,
@@ -2604,14 +2604,14 @@
           "missedOnTheWay": 0.667
         },
         "credits": 16,
-        "incidentCashSek": -126
+        "incidentCashSek": -202
       }
     },
     {
       "player": "slumpen",
       "stopAfter": 1,
       "seed": 9,
-      "resultSek": -4419,
+      "resultSek": -4305,
       "summary": {
         "situations": 27,
         "stopped": 0.556,
@@ -2632,7 +2632,7 @@
       "player": "slumpen",
       "stopAfter": 1,
       "seed": 10,
-      "resultSek": -11984,
+      "resultSek": -11908,
       "summary": {
         "situations": 21,
         "stopped": 0.429,
@@ -2646,7 +2646,7 @@
           "missedOnTheWay": 0.571
         },
         "credits": 12,
-        "incidentCashSek": 106
+        "incidentCashSek": 68
       }
     },
     {
@@ -2695,7 +2695,7 @@
       "player": "slumpen",
       "stopAfter": 2,
       "seed": 3,
-      "resultSek": -12132,
+      "resultSek": -12037,
       "summary": {
         "situations": 26,
         "stopped": 0.269,
@@ -2716,7 +2716,7 @@
       "player": "slumpen",
       "stopAfter": 2,
       "seed": 4,
-      "resultSek": -9834,
+      "resultSek": -9758,
       "summary": {
         "situations": 26,
         "stopped": 0.346,
@@ -2737,7 +2737,7 @@
       "player": "slumpen",
       "stopAfter": 2,
       "seed": 5,
-      "resultSek": -9661,
+      "resultSek": -9718,
       "summary": {
         "situations": 27,
         "stopped": 0.407,
@@ -2751,14 +2751,14 @@
           "missedOnTheWay": 0.5
         },
         "credits": 18,
-        "incidentCashSek": -167
+        "incidentCashSek": -224
       }
     },
     {
       "player": "slumpen",
       "stopAfter": 2,
       "seed": 6,
-      "resultSek": -7018,
+      "resultSek": -6961,
       "summary": {
         "situations": 25,
         "stopped": 0.24,
@@ -2800,7 +2800,7 @@
       "player": "slumpen",
       "stopAfter": 2,
       "seed": 8,
-      "resultSek": -4851,
+      "resultSek": -4813,
       "summary": {
         "situations": 24,
         "stopped": 0.292,
@@ -2814,14 +2814,14 @@
           "missedOnTheWay": 0.571
         },
         "credits": 21,
-        "incidentCashSek": -163
+        "incidentCashSek": -238
       }
     },
     {
       "player": "slumpen",
       "stopAfter": 2,
       "seed": 9,
-      "resultSek": -12715,
+      "resultSek": -12658,
       "summary": {
         "situations": 28,
         "stopped": 0.25,
@@ -2856,7 +2856,7 @@
           "missedOnTheWay": 0.5
         },
         "credits": 10,
-        "incidentCashSek": -390
+        "incidentCashSek": -428
       }
     },
     {

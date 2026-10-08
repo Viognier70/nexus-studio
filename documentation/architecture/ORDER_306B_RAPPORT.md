@@ -134,3 +134,102 @@ Anders 2026-10-08: "D8 är klar: använd … (42).zip i stället för (40)."
   - b saknas är en brist i tekniken och ger halvt grepp, upplevelsen höll (testet med a c e d);
   - steg 3 har `INCIDENTS.stepSecondsByIndex[2]`, 30 s, plus medaljernas tid, som andra svar i steg 3 (testet `tiden i Karaffens steg 3`).
 
+## 306b.2: Anders beslut om gissaren och fel i steg 2
+
+Anders 2026-10-08:
+1. "ta fram en lista över alla situationer (vinbaren och foodtrucken) där det hela greppet i steg 3 är det längsta svaret i ord … Claude skriver om texterna. Mål: det hela greppet är längst i högst hälften av situationerna, och gissaren klarar sig inte bättre än slumpen."
+2. "sätt kassaeffekten till 0 i de sex situationerna och flytta beloppet till felsvaret i steg 3."
+
+### Listan
+
+Talen står i `langd-fore.json` (innehållet före omskrivningen, samma skript) och `langd.json` (efter), fältet `step3Longest`.
+- **Urvalet:** alla 23 situationer i formen med vanliga svar i steg 3, tio i vinbaren och tretton i foodtrucken. Karaffen har ordningskort och är inte med. Foodtruckens ⚖-situationer ft05 och ft06 är med, fast de är dolda i spelet.
+- **Före:** det hela greppet var längst i 22 av 23 på svenska och 20 av 23 på engelska.
+- **Efter:** det hela greppet är längst i 6 av 23 på båda språken (vb07, vb11, ft07, ft08, ft11 och ft13). Slumpen hade gett ungefär en fjärdedel.
+- **Testet** `det hela greppet i steg 3 är det längsta svaret i högst hälften av situationerna` håller målet.
+
+Antalet ord per svar. \* är det hela greppet, och fetstil betyder att det hela greppet är längst (lika långt räknas).
+
+| Situation | Helt grepp | Före, sv (ord per svar) | Före, en | Efter, sv | Efter, en |
+|---|---|---|---|---|---|
+| vb01-korken | a | **a* 11 b 11 c 11 d 10** | **a* 13 b 13 c 13 d 12** | a* 10 b 11 c 11 d 10 | a* 11 b 13 c 13 d 12 |
+| vb02-rosen | a | **a* 13 b 13 c 11 d 13** | a* 12 b 13 c 10 d 11 | a* 11 b 13 c 11 d 13 | a* 10 b 13 c 10 d 11 |
+| vb03-notallergi | a | **a* 13 b 12 c 12 d 9** | **a* 13 b 13 c 12 d 9** | a* 12 b 12 c 12 d 14 | a* 12 b 13 c 12 d 14 |
+| vb07-provningen | c | **a 11 b 10 c* 12 d 12** | **a 13 b 10 c* 15 d 12** | **a 11 b 10 c* 12 d 12** | **a 13 b 10 c* 15 d 12** |
+| vb09-getosten | d | a 9 b 10 c 11 d* 9 | a 10 b 11 c 13 d* 9 | a 9 b 10 c 11 d* 9 | a 10 b 11 c 13 d* 9 |
+| vb11-cremant | a | **a* 11 b 8 c 11 d 10** | **a* 13 b 9 c 11 d 12** | **a* 11 b 8 c 11 d 10** | **a* 13 b 9 c 11 d 12** |
+| vb12-varmt-rott | c | **a 13 b 14 c* 14 d 12** | **a 13 b 12 c* 14 d 12** | a 13 b 14 c* 13 d 12 | a 13 b 12 c* 12 d 12 |
+| vb18-kavajen | b, c | **a 10 b* 12 c* 14 d 11** | **a 10 b* 13 c* 14 d 11** | a 12 b* 10 c* 11 d 11 | a 12 b* 11 c* 11 d 11 |
+| vb23-sott | b | **a 12 b* 12 c 12 d 11** | **a 13 b* 15 c 13 d 13** | a 12 b* 11 c 12 d 11 | a 13 b* 10 c 13 d 13 |
+| vb32-fodelsedagen | b, c | **a 11 b* 13 c* 13 d 13** | **a 15 b* 14 c* 15 d 14** | a 11 b* 12 c* 12 d 14 | a 15 b* 13 c* 13 d 14 |
+| ft01-rusningen | b | **a 7 b* 13 c 8 d 4** | **a 8 b* 11 c 8 d 4** | a 11 b* 9 c 13 d 9 | a 12 b* 8 c 11 d 9 |
+| ft02-drycken | b | **a 4 b* 15 c 3 d 1** | **a 4 b* 16 c 4 d 1** | a 8 b* 7 c 9 d 9 | a 8 b* 9 c 11 d 12 |
+| ft03-rullen | b | **a 3 b* 15 c 8 d 4** | **a 6 b* 19 c 8 d 4** | a 10 b* 11 c 14 d 11 | a 12 b* 11 c 12 d 9 |
+| ft04-leveransen | b | **a 3 b* 15 c 3 d 6** | **a 3 b* 18 c 4 d 8** | a 12 b* 11 c 9 d 8 | a 12 b* 10 c 10 d 9 |
+| ft07-ursprunget | b | **a 5 b* 17 c 10 d 5** | **a 8 b* 18 c 10 d 7** | **a 9 b* 12 c 10 d 9** | **a 11 b* 14 c 10 d 10** |
+| ft05-allergin | b | **a 6 b* 23 c 4 d 4** | **a 7 b* 29 c 6 d 7** | a 14 b* 13 c 11 d 11 | a 15 b* 14 c 13 d 13 |
+| ft06-stangningen | b | **a 8 b* 25 c 6 d 9** | **a 8 b* 31 c 4 d 9** | a 15 b* 13 c 15 d 13 | a 14 b* 14 c 12 d 15 |
+| ft08-regnet | a | **a* 15 b 12 c 11 d 6** | **a* 17 b 12 c 13 d 7** | **a* 15 b 12 c 11 d 11** | **a* 14 b 12 c 13 d 12** |
+| ft09-getingen | a | **a* 14 b 13 c 9 d 6** | **a* 17 b 15 c 10 d 7** | a* 12 b 13 c 11 d 11 | a* 14 b 15 c 13 d 12 |
+| ft10-kortet | a | **a* 12 b 12 c 7 d 9** | a* 11 b 12 c 9 d 5 | a* 11 b 12 c 9 d 9 | a* 11 b 12 c 12 d 9 |
+| ft11-slut | a | **a* 15 b 10 c 9 d 8** | **a* 15 b 7 c 8 d 8** | **a* 15 b 10 c 11 d 11** | **a* 15 b 11 c 11 d 11** |
+| ft12-hunden | a | **a* 11 b 11 c 10 d 6** | **a* 15 b 12 c 11 d 10** | a* 9 b 12 c 10 d 12 | a* 12 b 12 c 11 d 14 |
+| ft13-priset | a | **a* 11 b 7 c 8 d 10** | **a* 15 b 7 c 8 d 11** | **a* 11 b 10 c 9 d 10** | **a* 13 b 10 c 10 d 11** |
+
+### Omskrivningen
+
+- **Längden** ändrades, inte innehållet. Det hela greppet kortades, eller så fick ett annat svar en bisats.
+- **Anders tillägg står kvar:** fråga 9 (ft06) säger fortfarande "inte längre än några timmar". Testet i 315c prövar det.
+- **Talen står kvar:** ft05 (+8 °C), ft06 (+60 °C) och ft13 (25 kr).
+- **A4:** inget svar har fler än 15 ord i steg 3 (`langd.json` `over` är tom), och foodtruckens svar på ett eller två ord är borta.
+- **Svenskan i vinbaren skiljer sig nu från `SITUATIONER_306b.md`** i de omskrivna svaren. Texten i spelet (`vinbar.text.sv.draft.json`) gäller, och tabellen visar vilka svar som ändrats.
+
+### Gissaren efter omskrivningen
+
+`spelartyper.json`, samma körning som förut (tio frön, sex dagar):
+
+| Spelartyp | Stannar | Resultat (kr) | Stannade | Krediter | Elva: helt | Elva: halvt | Elva: fel i steg 3 | Elva: fel på vägen |
+|---|---|---|---|---|---|---|---|---|
+| rimlig | 0 | 16 417 | 0 | 186 | 1 | 0 | 0 | 0 |
+| rimlig | 1 | 14 963 | 1 | 26 | 0 | 0 | 0 | 0 |
+| rimlig | 2 | 14 563 | 1 | 77 | 0 | 0 | 0 | 0 |
+| gissaren | 0 | 7 979 | 0 | 94 | 0,292 | 0,329 | 0,379 | 0,885 |
+| gissaren | 1 | 6 623 | 0,757 | 21 | 0,213 | 0,108 | 0 | 0,321 |
+| gissaren | 2 | 5 297 | 0,697 | 42 | 0,13 | 0,185 | 0,226 | 0,54 |
+| slumpen | 0 | −9 911 | 0 | 20 | 0,378 | 0,428 | 0,194 | 0,729 |
+| slumpen | 1 | −4 565 | 0,487 | 17 | 0,166 | 0,207 | 0,143 | 0,445 |
+| slumpen | 2 | −9 987 | 0,324 | 19 | 0,231 | 0,311 | 0,101 | 0,52 |
+| svag | alla | −19 670 | 0 | -9 | 0 | 0,062 | 0,46 | 0,522 |
+| ignorerar | alla | 1 557 | 0 | -25 | 0 | 0 | 0 | 0 |
+
+- **I de elva situationerna** klarar sig gissaren sämre än slumpen: helt grepp 0,292 mot 0,378 när båda alltid går vidare. Förut var det 0,537 mot 0,378.
+- **Över veckan** tjänar gissaren ändå mer än slumpen (7 979 kr mot −9 911 kr). Orsaken är vinbarens 29 situationer i den gamla formen. Där är det längsta svaret det bästa i 53 av 87 steg på engelska och 55 på svenska, där slumpen ger 25,2 (`langd.json` `oldFormLongestIsBest`). De ingår inte i beslutet och är inte omskrivna.
+- **Förslag:** skriv om svaren i de 29 eller för dem till den nya formen. Säg till om jag ska göra det.
+
+### Fel i steg 2
+
+I vb01, vb02, vb03, vb07, vb09 och vb11 är kassan i stegets fel i steg 2 satt till 0. Beloppet ligger nu på felsvaret i steg 3, ovanpå det svarets egen följd:
+
+| Situation | Belopp | Felsvaret i steg 3 |
+|---|---|---|
+| vb01 | −0,15 | d (kedjan till vb30 står kvar) |
+| vb02 | −0,15 | d |
+| vb03 | −0,15 | d (kedjan till vb27 står kvar) |
+| vb07 | −0,15 | b (kedjan till vb17 står kvar) |
+| vb09 | −0,2 | c |
+| vb11 | −0,1 | b |
+
+- **Var beloppet ligger:** ett felsvar som saknade en egen följd har fått stegets följd som egen, med beloppet och samma text. Tiden ute i steg 3 ger därför samma följd som förut.
+- **Testet** `fel i steg 2 tar ingen kassa; beloppet ligger på felsvaret i steg 3` prövar det.
+- **Svag spelare:** veckans resultat är oförändrat (−19 670 kr), och kassan ur situationerna gick från −827 till −893 kr. Svag svarar fel också i steg 3 och betalar beloppet där.
+- **Kvar, inte i beslutet:**
+  - vb32 tar orken (−0,05) i steg 2;
+  - foodtruckens alla tretton tar kassan (−0,04) och ryktet i steg 2.
+  - Säg till om steg 2 ska vara utan kassa också där.
+
+### 319c och 320
+
+Båda är byggda och mergade till main, och main är pushad:
+- 319c: `51ddbabc` och mergen `995191e6`;
+- 320: `878b0483` och mergen `24f6485c`.
+
