@@ -193,6 +193,19 @@ Underlaget är `documentation/blueprints/NYFIKNA_FRAGOR_319.md`, Anders 20 fråg
 ## Kvar till Anders
 
 - **Kollapserna** mäts med 40 säsonger i 319c.
-- **Vännen** kommer gående från byn, inte bredvid gästen.
+- ~~Vännen kommer gående från byn~~: godkänt av Anders (del 3).
 - **⚖-frågorna** n09, n12 och n19 ska granskas.
-- **Mina synpunkter** på n04, n08 och n18 (ovan).
+- ~~Mina synpunkter på n04, n08 och n18~~: avgjorda i del 3.
+
+## Del 3: Anders beslut om frågorna (2026-10-08)
+
+1. **n04:** vegokorven står på vagnens meny (`ladder.truckMenu`) och skylt (`menu.veggie`). Den grillas på en egen del av grillen, avskild med en kant, med en egen grön tång (`TRUCK_LAYOUT.veggieGrill`, `trailerGrillDivider`, `trailerTongsVeggie`). Frågan står kvar.
+2. **n08:** svar 3 är nu "Nej, men korven är grillad på riktigt." (ok), på engelska "No, but the sausages are properly grilled."
+3. **n18:** det rätta svaret är "Ta den milda senapen, eller ketchup. Den skånska är ganska stark." med förklaringen "Skånsk senap är sötstark. Till ett barn passar mild senap eller ketchup bättre." Den milda senapen står på menyn (`menu.condiments`), och flaskan ställs på hyllan vid luckan med föremålen i 319c.
+4. **n15:** kaffet fanns på skylten (`menu.drinks`, "Läsk och kaffe") men inte i menytexten på morgonen, som sade "dryck". Nu står läsk och kaffe där.
+5. **Intäkten** godtas som den är. Ingen mer kalibrering.
+6. **Den andra grillen** väntar till efter 320.
+7. **Vännen** som kommer gående från byn är godkänd.
+
+`documentation/blueprints/NYFIKNA_FRAGOR_319.md` är Anders underlag och står oförändrad; spelets text är i `src/content/curious/`. Testet: fyra nya i `sim/__tests__/order319bCurious.test.ts` (15 test).
+
