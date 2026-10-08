@@ -952,3 +952,45 @@ body:has(.nx-stake) .nx-room-notices { display: none; }
 .nx-venue-pip { width: 8px; height: 8px; border-radius: 50%; background: #e9dcc4; }
 .nx-venue-label[data-tier='bistro'] .nx-venue-pip { background: #b98a3c; }
 .nx-venue-label[data-tier='soigne'] .nx-venue-pip { background: #f0cd82; }
+
+/* ORDER 306b — Designs D8 (gripLabels.ts): halvt grepp i papper och mässing, aldrig rött; helt grepp grönt; tiden ute i rollringens färg. */
+.nx-verdict[data-kind='full'] { background: #5cb86a; color: #2a1c13; }
+.nx-verdict[data-kind='half'] { background: #e3cfa6; border: 1px solid #b98a3c; color: #2a1c13; }
+.nx-verdict[data-kind='timeout'] { background: #efe1bf; border: 2px solid #b98ae0; color: #2a1c13; }
+.nx-half-grip { flex: none; }
+.nx-rocket-option[data-look='half'] { background: #fffaf0; color: #2a1c13; border: 2px solid #b98a3c; box-shadow: none; animation: nx-fade-in .26s ease-out both; }
+.nx-rocket-option[data-look='half'] .nx-rocket-key { background: transparent; color: #b98a3c; }
+
+/* ORDER 306b A7 — Designs D8 ANSWER_COST: myntet och beloppet längst till höger; kassan räcker inte. */
+.nx-rocket-cost { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; background: #efe1bf; color: #2a1c13; font-weight: 700; white-space: nowrap; }
+.nx-coin { width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #f3d98a, #c99a3e); border: 1px solid #8a6224; }
+.nx-rocket-option[data-short='true'] { border: 1px dashed rgba(138,98,36,.6); background: rgba(255,250,240,.55); cursor: not-allowed; }
+.nx-rocket-option[data-short='true'] .nx-rocket-key { background: #cdb898; }
+.nx-rocket-short { font-size: max(11px, calc(14 * var(--nx-u))); color: #6b4a2e; }
+
+/* ORDER 306b A9 — Designs D8 orderCards.ts: fyra platser, rutnätet 3 × 2, låset. */
+.nx-order { display: grid; gap: 8px; }
+.nx-order-label { font-size: max(11px, calc(14 * var(--nx-u))); font-weight: 700; color: var(--nx-ink-2, #6b4a2e); text-transform: uppercase; letter-spacing: .04em; }
+.nx-order-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 0; padding: 0; list-style: none; }
+.nx-order-slot, .nx-order-card { width: 100%; min-height: 72px; display: grid; justify-items: center; align-content: start; gap: 4px; padding: 6px; border-radius: 10px; border: 2px dashed #cdb898; background: rgba(255,250,240,.5); color: #2a1c13; font: inherit; text-align: center; }
+.nx-order-slot[data-filled='true'] { border-style: solid; border-color: #2a1c13; background: #fffaf0; cursor: pointer; }
+.nx-order-slot:disabled { cursor: default; }
+.nx-order-slot[data-staff='true'] { border-color: #b98ae0; }
+.nx-order-num { font-weight: 800; font-size: max(11px, calc(14 * var(--nx-u))); }
+.nx-order-text { font-size: max(11px, calc(13 * var(--nx-u))); line-height: 1.2; }
+.nx-order-deck { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.nx-order-card { border-style: solid; border-color: #2a1c13; background: #fffaf0; cursor: pointer; }
+.nx-order-card:hover:not(:disabled) { background: #fff6e3; }
+.nx-order-card[data-used='true'] { opacity: .35; }
+.nx-order-card:disabled { cursor: default; }
+.nx-order-slot:focus-visible, .nx-order-card:focus-visible, .nx-order-lock:focus-visible { outline: 3px solid var(--nx-accent); outline-offset: 2px; }
+.nx-order-hint { margin: 0; }
+.nx-order-lock { justify-self: stretch; min-height: 44px; border-radius: 10px; border: 0; background: #2a1c13; color: #f5ead5; font: inherit; font-weight: 800; cursor: pointer; }
+.nx-order-lock:disabled { background: #cdb898; color: #2a1c13; cursor: default; }
+.nx-order[data-grade='full'] .nx-order-row:not([data-answer]) .nx-order-slot { background: #5cb86a; border-color: #3f9a52; animation: nx-lift .48s ease-out .12s both; }
+.nx-order[data-grade='analysis'] .nx-order-row:not([data-answer]) .nx-order-slot,
+.nx-order[data-grade='experience'] .nx-order-row:not([data-answer]) .nx-order-slot { background: #fffaf0; border: 2px solid #b98a3c; animation: nx-fade-in .26s ease-out both; }
+.nx-order[data-grade='analysis'] .nx-order-num, .nx-order[data-grade='experience'] .nx-order-num { color: #b98a3c; }
+.nx-order[data-grade='wrong'] .nx-order-row:not([data-answer]) .nx-order-slot { background: #e0533f; border-color: #b8392a; animation: nx-shake-7 .38s ease-out .12s both; }
+.nx-order .nx-order-row[data-answer] .nx-order-slot { border: 3px dashed #5cb86a; background: #f5ead5; animation: nx-fade-in .2s ease-out .65s both; }
+@media (prefers-reduced-motion: reduce) { .nx-order-slot, .nx-rocket-option[data-look='half'] { animation: none !important; } }

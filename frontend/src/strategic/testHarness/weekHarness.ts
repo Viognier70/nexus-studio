@@ -23,7 +23,8 @@ import { LADDER, WEEK } from '../../sim/balance';
 import { rankedScenarioChoice } from '../simulation/scenarios';
 import { incidentById } from '../../sim/incidentBank';
 import { packagesFor } from '../simulation/packages';
-import { rankedStepOption } from '../../sim/incidents';
+import { canAfford, rankedStepOption } from '../../sim/incidents';
+import type { IncidentStep } from '../../sim/incidentBank';
 import { fikaTonight } from '../../sim/fika';
 import { ladderOf } from '../../sim/ladder';
 import { dilemmaById } from '../../content/fika/dilemmas';
@@ -98,11 +99,17 @@ function answerPinsWisely(s: SimulationState): SimulationState {
 // ORDER 314 — 'ignore' (spelartypen "ignorerar") svarar aldrig på en
 // situation: tiden går ut och personalen tar över med sin kompetens. På
 // scenariot vid dörren (som inte är en situation) svarar den sämst.
-export type ScenarioAnswer = 'best' | 'worst' | 'half' | 'halfRocket' | 'skill' | 'ignore';
+// ORDER 306b A10 — 'guess' (spelartypen "gissaren") väljer alltid det längsta alternativet, 'random'
+// ett alternativ på måfå (ur fröet, situationen och steget). I ordningskorten lägger båda fyra kort på
+// måfå. På scenariot vid dörren svarar de som 'half'.
+export type ScenarioAnswer = 'best' | 'worst' | 'half' | 'halfRocket' | 'skill' | 'ignore' | 'guess' | 'random';
 export const ROCKET_SKILL = Number(process.env.ROCKET_SKILL ?? 0.75);
-const KVITT_STOP_AFTER = Number(process.env.KVITT_STOP_AFTER ?? 0);
+let KVITT_STOP_AFTER = Number(process.env.KVITT_STOP_AFTER ?? 0);
+// ORDER 306b A10 — spelartypens val i kvitt eller dubbelt: stanna efter n klarade steg (0 = gå alltid vidare).
+export function setKvittStopAfter(n: number): void { KVITT_STOP_AFTER = n; }
 function resolveAnswer(answer: ScenarioAnswer, key: number, seed = 0): 'best' | 'worst' {
   if (answer === 'ignore') return 'worst';
+  if (answer === 'guess' || answer === 'random') return Math.round(key) % 2 === 0 ? 'best' : 'worst';
   // Nyckeln börjar med det som skiljer (FNV sprider dåligt när bara slutet gör det).
   if (answer === 'skill') return hashKey(seed, `${Math.round(key * 1000)}|skill`) < ROCKET_SKILL ? 'best' : 'worst';
   return answer === 'half' || answer === 'halfRocket' ? (Math.round(key) % 2 === 0 ? 'best' : 'worst') : answer;
@@ -147,6 +154,23 @@ export function rankedChoice(scenarioId: string | null, answer: 'best' | 'worst'
 // scenarier fyrades, och deras gäster och kassa uteblev. Mätt från
 // reports/order268/save-lordag-vecka1.json: lördagens intäkt 7 140 SEK
 // i harnessen mot 17 850 SEK + 8 000 SEK (scenario) i spelarens vy.
+// ORDER 306b A10 — gissaren och slumpen. Nyckeln är fröet, situationens öppningstid och steget.
+function blindAnswer(s: SimulationState, step: IncidentStep, given: 'guess' | 'random'): SimulationState {
+  const a = s.incidents!.active!;
+  const key = `${a.openedAt}|${a.step}|${given}`;
+  const draw = (k: string) => hashKey(s.seed ?? 0, `${key}|${k}`);
+  if (step.form === 'sequence' && step.sequence) {
+    const ids = step.sequence.cards.map((c) => c.id).sort((x, y) => draw(x) - draw(y));
+    return reducer(reducer(s, { type: 'SET_INCIDENT_ROW', row: ids.slice(0, step.sequence.slots) }), { type: 'LOCK_INCIDENT_ROW' });
+  }
+  const open = step.options.filter((o) => !a.struck.includes(o.id) && canAfford(s, o));
+  if (open.length === 0) return s;
+  const pick = given === 'guess'
+    ? [...open].sort((x, y) => step.text.options[y.id].label.length - step.text.options[x.id].label.length)[0]
+    : open[Math.min(open.length - 1, Math.floor(draw('pick') * open.length))];
+  return reducer(s, { type: 'ANSWER_INCIDENT', optionId: pick.id });
+}
+
 export function answerScenario(s: SimulationState, given: ScenarioAnswer = 'best'): SimulationState {
   // ORDER 270 — raketens aktuella steg besvaras direkt, som spelaren gör i
   // IncidentCard (samma åtgärd, ANSWER_INCIDENT). Nästa tick svarar på
@@ -163,6 +187,7 @@ export function answerScenario(s: SimulationState, given: ScenarioAnswer = 'best
     if (active.pending) return s;
     if (active.choosing) return reducer(s, { type: KVITT_STOP_AFTER > 0 && active.step >= KVITT_STOP_AFTER ? 'INCIDENT_STOP' : 'INCIDENT_GO' });
     const step = incident?.steps[active.step ?? 0];
+    if (step && (given === 'guess' || given === 'random')) return blindAnswer(s, step, given);
     if (step) {
       return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, resolveAnswer(given, given === 'halfRocket' ? active.openedAt : given === 'skill' ? active.openedAt + (active.step ?? 0) / 10 : active.openedAt + (active.step ?? 0), s.seed ?? 0), active.struck, active.situation) });
     }

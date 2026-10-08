@@ -1,0 +1,601 @@
+{
+  "definition": "A4: svarens längd i ord (mellanslag) i de elva situationerna. overWords: fler än 12 ord i steg 1–2 eller 15 i steg 3; overRatio: i steg 3 längsta / kortaste över 1,5. longestIsBest: steg (utom ordningskorten) där det längsta svaret i tecken är det bästa, mot slumpens väntevärde. sv: Anders text (vinbar.text.sv.draft.json); en: översättningen (vinbar.text.en.json).",
+  "longestIsBest": {
+    "sv": {
+      "steps": 32,
+      "hits": 12,
+      "randomExpectation": 9.4
+    },
+    "en": {
+      "steps": 32,
+      "hits": 13,
+      "randomExpectation": 9.4
+    }
+  },
+  "sv": {
+    "over": [],
+    "rows": [
+      {
+        "id": "vb01-korken",
+        "step": 1,
+        "maxWords": 4,
+        "minWords": 3,
+        "ratio": 1.33,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb01-korken",
+        "step": 2,
+        "maxWords": 8,
+        "minWords": 5,
+        "ratio": 1.6,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb01-korken",
+        "step": 3,
+        "maxWords": 11,
+        "minWords": 10,
+        "ratio": 1.1,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb02-rosen",
+        "step": 1,
+        "maxWords": 5,
+        "minWords": 2,
+        "ratio": 2.5,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb02-rosen",
+        "step": 2,
+        "maxWords": 7,
+        "minWords": 6,
+        "ratio": 1.17,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb02-rosen",
+        "step": 3,
+        "maxWords": 13,
+        "minWords": 11,
+        "ratio": 1.18,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb03-notallergi",
+        "step": 1,
+        "maxWords": 6,
+        "minWords": 4,
+        "ratio": 1.5,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb03-notallergi",
+        "step": 2,
+        "maxWords": 9,
+        "minWords": 3,
+        "ratio": 3,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb03-notallergi",
+        "step": 3,
+        "maxWords": 13,
+        "minWords": 9,
+        "ratio": 1.44,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb07-provningen",
+        "step": 1,
+        "maxWords": 6,
+        "minWords": 6,
+        "ratio": 1,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb07-provningen",
+        "step": 2,
+        "maxWords": 9,
+        "minWords": 4,
+        "ratio": 2.25,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb07-provningen",
+        "step": 3,
+        "maxWords": 12,
+        "minWords": 10,
+        "ratio": 1.2,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb09-getosten",
+        "step": 1,
+        "maxWords": 5,
+        "minWords": 3,
+        "ratio": 1.67,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb09-getosten",
+        "step": 2,
+        "maxWords": 9,
+        "minWords": 6,
+        "ratio": 1.5,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb09-getosten",
+        "step": 3,
+        "maxWords": 11,
+        "minWords": 9,
+        "ratio": 1.22,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb11-cremant",
+        "step": 1,
+        "maxWords": 8,
+        "minWords": 2,
+        "ratio": 4,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb11-cremant",
+        "step": 2,
+        "maxWords": 9,
+        "minWords": 5,
+        "ratio": 1.8,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb11-cremant",
+        "step": 3,
+        "maxWords": 11,
+        "minWords": 8,
+        "ratio": 1.38,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb12-varmt-rott",
+        "step": 1,
+        "maxWords": 9,
+        "minWords": 4,
+        "ratio": 2.25,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb12-varmt-rott",
+        "step": 2,
+        "maxWords": 9,
+        "minWords": 3,
+        "ratio": 3,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb12-varmt-rott",
+        "step": 3,
+        "maxWords": 14,
+        "minWords": 12,
+        "ratio": 1.17,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb18-kavajen",
+        "step": 1,
+        "maxWords": 5,
+        "minWords": 3,
+        "ratio": 1.67,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb18-kavajen",
+        "step": 2,
+        "maxWords": 12,
+        "minWords": 5,
+        "ratio": 2.4,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb18-kavajen",
+        "step": 3,
+        "maxWords": 14,
+        "minWords": 10,
+        "ratio": 1.4,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb23-sott",
+        "step": 1,
+        "maxWords": 5,
+        "minWords": 3,
+        "ratio": 1.67,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb23-sott",
+        "step": 2,
+        "maxWords": 10,
+        "minWords": 7,
+        "ratio": 1.43,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb23-sott",
+        "step": 3,
+        "maxWords": 12,
+        "minWords": 11,
+        "ratio": 1.09,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb32-fodelsedagen",
+        "step": 1,
+        "maxWords": 8,
+        "minWords": 6,
+        "ratio": 1.33,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb32-fodelsedagen",
+        "step": 2,
+        "maxWords": 9,
+        "minWords": 8,
+        "ratio": 1.13,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb32-fodelsedagen",
+        "step": 3,
+        "maxWords": 13,
+        "minWords": 11,
+        "ratio": 1.18,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb40-karaffen",
+        "step": 1,
+        "maxWords": 8,
+        "minWords": 6,
+        "ratio": 1.33,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb40-karaffen",
+        "step": 2,
+        "maxWords": 8,
+        "minWords": 4,
+        "ratio": 2,
+        "overWords": false,
+        "overRatio": false
+      }
+    ]
+  },
+  "en": {
+    "over": [],
+    "rows": [
+      {
+        "id": "vb01-korken",
+        "step": 1,
+        "maxWords": 5,
+        "minWords": 4,
+        "ratio": 1.25,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb01-korken",
+        "step": 2,
+        "maxWords": 7,
+        "minWords": 6,
+        "ratio": 1.17,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb01-korken",
+        "step": 3,
+        "maxWords": 13,
+        "minWords": 12,
+        "ratio": 1.08,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb02-rosen",
+        "step": 1,
+        "maxWords": 5,
+        "minWords": 2,
+        "ratio": 2.5,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb02-rosen",
+        "step": 2,
+        "maxWords": 7,
+        "minWords": 5,
+        "ratio": 1.4,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb02-rosen",
+        "step": 3,
+        "maxWords": 13,
+        "minWords": 10,
+        "ratio": 1.3,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb03-notallergi",
+        "step": 1,
+        "maxWords": 9,
+        "minWords": 4,
+        "ratio": 2.25,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb03-notallergi",
+        "step": 2,
+        "maxWords": 9,
+        "minWords": 4,
+        "ratio": 2.25,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb03-notallergi",
+        "step": 3,
+        "maxWords": 13,
+        "minWords": 9,
+        "ratio": 1.44,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb07-provningen",
+        "step": 1,
+        "maxWords": 8,
+        "minWords": 5,
+        "ratio": 1.6,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb07-provningen",
+        "step": 2,
+        "maxWords": 9,
+        "minWords": 4,
+        "ratio": 2.25,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb07-provningen",
+        "step": 3,
+        "maxWords": 15,
+        "minWords": 10,
+        "ratio": 1.5,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb09-getosten",
+        "step": 1,
+        "maxWords": 6,
+        "minWords": 3,
+        "ratio": 2,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb09-getosten",
+        "step": 2,
+        "maxWords": 10,
+        "minWords": 6,
+        "ratio": 1.67,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb09-getosten",
+        "step": 3,
+        "maxWords": 13,
+        "minWords": 9,
+        "ratio": 1.44,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb11-cremant",
+        "step": 1,
+        "maxWords": 9,
+        "minWords": 3,
+        "ratio": 3,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb11-cremant",
+        "step": 2,
+        "maxWords": 9,
+        "minWords": 5,
+        "ratio": 1.8,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb11-cremant",
+        "step": 3,
+        "maxWords": 13,
+        "minWords": 9,
+        "ratio": 1.44,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb12-varmt-rott",
+        "step": 1,
+        "maxWords": 10,
+        "minWords": 5,
+        "ratio": 2,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb12-varmt-rott",
+        "step": 2,
+        "maxWords": 9,
+        "minWords": 3,
+        "ratio": 3,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb12-varmt-rott",
+        "step": 3,
+        "maxWords": 14,
+        "minWords": 12,
+        "ratio": 1.17,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb18-kavajen",
+        "step": 1,
+        "maxWords": 7,
+        "minWords": 6,
+        "ratio": 1.17,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb18-kavajen",
+        "step": 2,
+        "maxWords": 11,
+        "minWords": 4,
+        "ratio": 2.75,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb18-kavajen",
+        "step": 3,
+        "maxWords": 14,
+        "minWords": 10,
+        "ratio": 1.4,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb23-sott",
+        "step": 1,
+        "maxWords": 6,
+        "minWords": 3,
+        "ratio": 2,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb23-sott",
+        "step": 2,
+        "maxWords": 12,
+        "minWords": 7,
+        "ratio": 1.71,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb23-sott",
+        "step": 3,
+        "maxWords": 15,
+        "minWords": 13,
+        "ratio": 1.15,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb32-fodelsedagen",
+        "step": 1,
+        "maxWords": 9,
+        "minWords": 6,
+        "ratio": 1.5,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb32-fodelsedagen",
+        "step": 2,
+        "maxWords": 12,
+        "minWords": 9,
+        "ratio": 1.33,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb32-fodelsedagen",
+        "step": 3,
+        "maxWords": 15,
+        "minWords": 14,
+        "ratio": 1.07,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb40-karaffen",
+        "step": 1,
+        "maxWords": 8,
+        "minWords": 7,
+        "ratio": 1.14,
+        "overWords": false,
+        "overRatio": false
+      },
+      {
+        "id": "vb40-karaffen",
+        "step": 2,
+        "maxWords": 11,
+        "minWords": 6,
+        "ratio": 1.83,
+        "overWords": false,
+        "overRatio": false
+      }
+    ]
+  }
+}

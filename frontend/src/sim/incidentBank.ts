@@ -124,6 +124,24 @@ export interface StepMeta {
   options: StepOptionMeta[];
   // Stegets konsekvens när svaret är fel eller uteblir.
   fail: IncidentOutcomeMeta;
+  // ORDER 306b A8/A9 — steg 3 som ordning (vb40, pilot): spelaren lägger korten, och raden bedöms till
+  // ett av stegets fyra svar (helt grepp, halvt mot analysen, halvt mot upplevelsen, fel; sim/sequence.ts).
+  form?: 'choice' | 'sequence';
+  sequence?: SequenceSpec;
+}
+
+/** ORDER 306b A9 — ett villkor på raden: kortet är med, saknas, saknas båda, ligger först, inte sist, eller
+ *  det första kortet ligger före det andra. */
+export type SequenceRule = { has: string } | { lacks: string } | { lacksAll: string[] } | { first: string } | { notLast: string } | { before: [string, string] };
+
+/** ORDER 306b A9 — korten, platserna och bedömningen (SITUATIONER_306b.md vb40, förtydligad 2026-10-08):
+ *  brister i tekniken (analysen) och i omsorgen (upplevelsen), och när raden är fel oavsett. */
+export interface SequenceSpec {
+  slots: number;
+  cards: { id: string; trap?: boolean }[];
+  analysisFlaws: SequenceRule[];
+  experienceFlaws: SequenceRule[];
+  wrongIf: SequenceRule[];
 }
 
 // ORDER 270 (Vision Owner 2026-09-27) — varje händelse är en raket med tre
@@ -191,6 +209,8 @@ export interface OutcomeText {
 export interface StepOptionText {
   label: string;
   explanation: string;
+  // ORDER 306b — klarad med just det här svaret (vb18 och vb32 har två hela grepp med olika utfall).
+  success?: string;
   // Förklaringen i ett visst läge.
   explanationIn?: Record<string, string>;
   fail?: OutcomeText;
@@ -198,6 +218,8 @@ export interface StepOptionText {
 
 export interface StepText {
   question: string;
+  // ORDER 306b A9 — korten i en ordningsfråga (vb40).
+  cards?: Record<string, string>;
   // ORDER 306b A5 / ORDER 320 — ledtråden efter steget: vad spelaren har förstått ("Analys: …").
   clue?: string;
   options: Record<string, StepOptionText>;
@@ -290,10 +312,16 @@ export function validateIncidentBank(meta: MetaFile, text: TextFile): string[] {
       for (const sit of [null, ...(m.situations ?? []).map((x) => x.id)]) {
         const qs = step.options.map((o) => optionQuality(o, sit));
         const w = sit ? ` (läget ${sit})` : '';
-        if (qs.filter((q) => q === 'best').length !== 1) errors.push(`${where}${w}: ett bästa svar krävs`);
-        if (!qs.includes('wrong')) errors.push(`${where}${w}: minst ett fel svar krävs`);
+        // ORDER 306b A4 — steg 3 i formen analys → upplevelse → handling har minst ett helt grepp (vb18 och vb32 två).
+        const bests = qs.filter((q) => q === 'best').length;
+        if (m.form === 'triad' && i === m.steps.length - 1 ? bests < 1 : bests !== 1) errors.push(`${where}${w}: ett bästa svar krävs`);
+        // ORDER 306b A4 — steg 3 i den nya formen är fritt mellan halvt grepp och fel (vb18 och vb32 har inget fel).
+        if (!(m.form === 'triad' && i === m.steps.length - 1) && !qs.includes('wrong')) errors.push(`${where}${w}: minst ett fel svar krävs`);
       }
       errors.push(...outcomeErrors(`${where}/fel`, step.fail, st.fail, out));
+      // ORDER 306b A9 — ordningen: korten har text, reglerna nämner bara korten, stegets svar är de fyra
+      // greppen, och den hela raden ger helt grepp.
+      if (step.form === 'sequence') errors.push(...sequenceErrors(where, step, st));
       for (const o of step.options) {
         for (const sit of Object.keys(o.in ?? {})) {
           if (!(m.situations ?? []).some((x) => x.id === sit)) errors.push(`${where}/${o.id}: okänt läge ${sit}`);
@@ -332,6 +360,51 @@ function build(meta: MetaFile, text: TextFile): Incident[] {
     }));
     return { ...m, steps, text: t };
   });
+}
+
+function sequenceErrors(where: string, step: StepMeta, st: StepText): string[] {
+  const errors: string[] = [];
+  const spec = step.sequence;
+  if (!spec) return [`${where}: ordning utan sequence`];
+  const ids = spec.cards.map((c) => c.id);
+  for (const id of ids) if (!st.cards?.[id]) errors.push(`${where}: kortet ${id} saknar text`);
+  const named = (r: SequenceRule): string[] => ('has' in r ? [r.has] : 'lacks' in r ? [r.lacks] : 'lacksAll' in r ? r.lacksAll : 'first' in r ? [r.first] : 'notLast' in r ? [r.notLast] : r.before);
+  for (const r of [...spec.analysisFlaws, ...spec.experienceFlaws, ...spec.wrongIf]) for (const id of named(r)) if (!ids.includes(id)) errors.push(`${where}: regeln nämner ${id}, som inte är ett kort`);
+  const want = ['full', 'analysis', 'experience', 'wrong'];
+  if (step.options.map((o) => o.id).join() !== want.join()) errors.push(`${where}: ordningens svar ska vara ${want.join(', ')}`);
+  const full = ids.filter((id) => !spec.cards.find((c) => c.id === id)?.trap).slice(0, spec.slots);
+  if (gradeSequence(spec, full).grade !== 'full') errors.push(`${where}: den hela raden ger inte helt grepp`);
+  return errors;
+}
+
+/** ORDER 306b A9 — bedömningen av en rad (SITUATIONER_306b.md vb40, förtydligad 2026-10-08): fel om ett villkor i
+ *  wrongIf stämmer eller båda sorternas brister finns; halvt mot upplevelsen ("upplevelsen höll") vid bara brister
+ *  i tekniken; halvt mot analysen vid bara brister i omsorgen; annars helt grepp. `reason` är regeln som avgjorde. */
+export type SequenceGrade = 'full' | 'analysis' | 'experience' | 'wrong';
+export function gradeSequence(spec: SequenceSpec, row: readonly string[]): { grade: SequenceGrade; reason: SequenceRule | 'both' | null } {
+  const at = (x: string) => row.indexOf(x), has = (x: string) => at(x) >= 0;
+  const holds = (r: SequenceRule): boolean => {
+    if ('has' in r) return has(r.has);
+    if ('lacks' in r) return !has(r.lacks);
+    if ('lacksAll' in r) return r.lacksAll.every((x) => !has(x));
+    if ('first' in r) return row[0] === r.first;
+    if ('notLast' in r) return has(r.notLast) && row[row.length - 1] !== r.notLast;
+    return has(r.before[0]) && has(r.before[1]) && at(r.before[0]) < at(r.before[1]);
+  };
+  const wrong = spec.wrongIf.find(holds);
+  if (wrong) return { grade: 'wrong', reason: wrong };
+  const tech = spec.analysisFlaws.find(holds), care = spec.experienceFlaws.find(holds);
+  if (tech && care) return { grade: 'wrong', reason: 'both' };
+  if (tech) return { grade: 'experience', reason: tech };
+  if (care) return { grade: 'analysis', reason: care };
+  return { grade: 'full', reason: null };
+}
+
+/** ORDER 306b A9 — regeln som en nyckel ("has:e", "before:c,b", "both"), för loggen och förklaringen. */
+export function ruleKey(r: SequenceRule | 'both' | null): string | null {
+  if (r === null || r === 'both') return r;
+  const [k, v] = Object.entries(r)[0] as [string, string | string[]];
+  return `${k}:${Array.isArray(v) ? v.join(',') : v}`;
 }
 
 /** ORDER 315c — situationer med ogranskade ⚖-frågor är inte med i spelet. */

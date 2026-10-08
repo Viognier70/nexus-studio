@@ -55,7 +55,8 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-const ID = 'vb09-getosten';
+// ORDER 306b — vb09 har den nya formen; den gamla ordningen prövas med vb10.
+const ID = 'vb10-berusad';
 const TICK = { type: 'TICK', dt: 0.2 } as const;
 function tick(s: SimulationState, n: number): SimulationState {
   for (let i = 0; i < n; i++) s = reducer(s, TICK);

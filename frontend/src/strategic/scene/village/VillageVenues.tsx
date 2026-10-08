@@ -24,6 +24,7 @@ import { makePlayerTrailer } from '../playerTruck';
 import { PlayerTruckCrew } from './PlayerTruckCrew';
 import { OwnerAtDoor } from './OwnerAtDoor';
 import { FikaAtTable } from '../FikaAtTable';
+import { DecanterAtLounge } from '../DecanterAtLounge';
 const TIER_PIPS: Record<string, number> = { enkel: 1, bistro: 2, soigne: 3 };
 import { ladderStep } from '../../../sim/ladderStep';
 import { PATH_KEY } from '../../ui/DinVag';
@@ -286,6 +287,8 @@ export function VillageVenues() {
       <OwnerAtDoor />
       {/* ORDER 315b del 2 — fikat vid bordet efter stängning (D7 afterHoursFika.ts). */}
       <FikaAtTable />
+      {/* ORDER 306b — karaffen på loungebord B i Karaffen (D8 decanterProps.ts). */}
+      <DecanterAtLounge />
       {nearSign && entrance && ourVenue && (
         <group position={[entrance[0], NEAR_SIGN_Y_M, entrance[1]]}>
           <Html center zIndexRange={[12, 0]} style={{ pointerEvents: 'none' }}>

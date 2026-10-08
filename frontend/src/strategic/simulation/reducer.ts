@@ -6,7 +6,7 @@ import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../..
 import { EQUIPMENT_IDS, GOODS_SUPPLIER_IDS, reputationByTier, equipmentOpened, equipmentOwned, equipmentSpec, equipmentUnlocked, supplierOwned, supplierPrice, supplierUnlocked, type EquipmentId, type GoodsSupplierId } from '../../sim/goods';
 import { CONCEPT, CONSEQUENCES, FOODTRUCK, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
-import { clockMinutes, formatClock, closeIncidents, countDown, isIncidentOpen, lockAnswer, maybeOpenIncident, planIncidents, resolveIncident, settlePendingAnswer, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
+import { clockMinutes, formatClock, closeIncidents, countDown, isIncidentOpen, lockAnswer, lockIncidentRow, maybeOpenIncident, planIncidents, resolveIncident, setIncidentRow, settlePendingAnswer, timeoutAnswer, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
 import { afterVisitClosed, beginIntroduction, firstExamPassed, investLocked } from '../../sim/introduction';
 import { isStrandedWithoutBusiness, canChangeClassToday, changeClass, classOptions, recordEvening, creditLineSek, dailyGuestCap, dayEnd, dayEndHeadroom, dailyWagesSek, recordExamWithoutBusiness, scenarioUnitSek, scenarioChoiceUnits, clampScenarioCash, postDailyInterest, settleWeek, isClosed } from '../../sim/economy';
@@ -287,7 +287,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
         stopIncident(draft);
         return draft;
       }
-      return applyCreditChange(draft, resolveIncident(draft, null));
+      // ORDER 306b A9 — ordningskorten: en full rad bedöms när tiden går ut.
+      return applyCreditChange(draft, resolveIncident(draft, timeoutAnswer(draft)));
     }
     case 'SEE_HOUSE_INTRO':
       return state.houseIntroSeen ? state : { ...state, houseIntroSeen: true };
@@ -306,6 +307,14 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       // okänt svar, och ett andra svar medan det första väntar, ändrar ingenting.
       const draft: SimulationState = { ...state };
       return lockAnswer(draft, action.optionId) ? draft : state;
+    }
+    // ORDER 306b A9 — ordningskorten: raden läggs i motorn, och låset bedömer den.
+    case 'SET_INCIDENT_ROW':
+    case 'LOCK_INCIDENT_ROW': {
+      if (!isIncidentOpen(state)) return state;
+      const draft: SimulationState = { ...state };
+      const ok = action.type === 'SET_INCIDENT_ROW' ? setIncidentRow(draft, action.row) : lockIncidentRow(draft);
+      return ok ? draft : state;
     }
     // ORDER 305 — kvitt eller dubbelt: stanna och ta potten, eller gå vidare.
     case 'INCIDENT_STOP':

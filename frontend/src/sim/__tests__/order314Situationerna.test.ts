@@ -102,7 +102,8 @@ describe('ORDER 314 §3 — personalen tar över med sin kompetens', () => {
     const credits = (s: SimulationState) => s.incidents.log.reduce((n, r) => n + (r.deltas?.credits ?? 0), 0);
     expect(credits(kunnig.s)).toBeGreaterThan(credits(ignorerar.s));
     expect(ignorerar.s.incidents.log.every((r) => r.quality === 'staff' && !r.pot?.taken)).toBe(true);
-    expect(ignorerar.s.incidents.log.some((r) => r.staffCleared)).toBe(true);
+    // ORDER 306b — personalen lyckas med sannolikheten i SITUATIONS; en kväll kan sakna lyckat övertag, så tre kvällar prövas.
+    expect([ignorerar, play(8, false), play(9, false)].some((x) => x.s.incidents.log.some((r) => r.staffCleared))).toBe(true);
   });
 });
 
