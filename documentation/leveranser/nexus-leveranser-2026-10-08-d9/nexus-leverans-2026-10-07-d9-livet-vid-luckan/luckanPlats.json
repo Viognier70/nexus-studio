@@ -1,0 +1,528 @@
+{
+ "generated": "2026-10-07",
+ "source": "grythyttan-world.json via byKarta.js / dinVagKarta.js",
+ "frame": {
+  "map": "meter, +x österut, +z söderut",
+  "truck": "vagnens ram som playerTruck.ts: +X mot bakgaveln, +Z ut från luckan (söderut)",
+  "centre": [
+   17,
+   -21.9
+  ],
+  "angleRad": -0.10984413977388698,
+  "angleDeg": -6.29,
+  "toMap": "world = centre + R(angle)·local"
+ },
+ "points": {
+  "table.A": {
+   "local": [
+    3.9,
+    1.2
+   ],
+   "world": [
+    21.01,
+    -21.13
+   ],
+   "roadEdge": 5.04,
+   "road": "w122157681 Torget",
+   "building": 4.93,
+   "buildingId": "w869907975",
+   "rival": 5.16
+  },
+  "table.B": {
+   "local": [
+    5.4,
+    1.2
+   ],
+   "world": [
+    22.5,
+    -21.3
+   ],
+   "roadEdge": 5.03,
+   "road": "w122157681 Torget",
+   "building": 3.43,
+   "buildingId": "w869907975",
+   "rival": 5.24
+  },
+  "table.C": {
+   "local": [
+    4.65,
+    2.9
+   ],
+   "world": [
+    21.94,
+    -19.53
+   ],
+   "roadEdge": 6.73,
+   "road": "w122157681 Torget",
+   "building": 4.2,
+   "buildingId": "w869907975",
+   "rival": 3.45
+  },
+  "bench.n": {
+   "local": [
+    5.75,
+    2.05
+   ],
+   "world": [
+    22.94,
+    -20.49
+   ],
+   "roadEdge": 5.89,
+   "road": "w122157681 Torget",
+   "building": 3.09,
+   "buildingId": "w869907975",
+   "rival": 4.49
+  },
+  "bench.s": {
+   "local": [
+    5.75,
+    3.45
+   ],
+   "world": [
+    23.09,
+    -19.1
+   ],
+   "roadEdge": 7.28,
+   "road": "w122157681 Torget",
+   "building": 3.12,
+   "buildingId": "w869907975",
+   "rival": 3.19
+  },
+  "heater": {
+   "local": [
+    3.55,
+    2.45
+   ],
+   "world": [
+    20.8,
+    -19.85
+   ],
+   "roadEdge": 6.29,
+   "road": "w122157681 Torget",
+   "building": 5.3,
+   "buildingId": "w869907975",
+   "rival": 3.98
+  },
+  "bin": {
+   "local": [
+    2.7,
+    3.2
+   ],
+   "world": [
+    20.03,
+    -19.02
+   ],
+   "roadEdge": 7.03,
+   "road": "w122157681 Torget",
+   "building": 6.16,
+   "buildingId": "w869907975",
+   "rival": 3.46
+  },
+  "bin.approach": {
+   "local": [
+    2.72,
+    2.72
+   ],
+   "world": [
+    20,
+    -19.49
+   ],
+   "roadEdge": 6.56,
+   "road": "w122157681 Torget",
+   "building": 6.13,
+   "buildingId": "w869907975",
+   "rival": 3.89
+  },
+  "torch.1": {
+   "local": [
+    -1.9,
+    3.05
+   ],
+   "world": [
+    15.45,
+    -18.66
+   ],
+   "roadEdge": 5.12,
+   "road": "w122157691 Prästgatan",
+   "building": 10.75,
+   "buildingId": "w869907975",
+   "rival": 4.22
+  },
+  "torch.2": {
+   "local": [
+    -4.7,
+    3.05
+   ],
+   "world": [
+    12.66,
+    -18.35
+   ],
+   "roadEdge": 3.35,
+   "road": "w122157691 Prästgatan",
+   "building": 13.56,
+   "buildingId": "w869907975",
+   "rival": 6.45
+  },
+  "torch.3": {
+   "local": [
+    2.45,
+    3.95
+   ],
+   "world": [
+    19.87,
+    -18.24
+   ],
+   "roadEdge": 7.14,
+   "road": "w122157691 Prästgatan",
+   "building": 6.42,
+   "buildingId": "w869907975",
+   "rival": 2.69
+  },
+  "torch.4": {
+   "local": [
+    4.6,
+    4.05
+   ],
+   "world": [
+    22.02,
+    -18.38
+   ],
+   "roadEdge": 7.88,
+   "road": "w122157681 Torget",
+   "building": 4.27,
+   "buildingId": "w869907975",
+   "rival": 2.3
+  },
+  "torch.5": {
+   "local": [
+    6.75,
+    4
+   ],
+   "world": [
+    24.15,
+    -18.66
+   ],
+   "roadEdge": 7.84,
+   "road": "w122157681 Torget",
+   "building": 2.12,
+   "buildingId": "w869907975",
+   "rival": 3.31
+  },
+  "torch.6": {
+   "local": [
+    6.6,
+    1
+   ],
+   "world": [
+    23.67,
+    -21.63
+   ],
+   "roadEdge": 4.83,
+   "road": "w122157681 Torget",
+   "building": 2.23,
+   "buildingId": "w869907975",
+   "rival": 5.77
+  },
+  "shelf.w": {
+   "local": [
+    1.55,
+    1.4
+   ],
+   "world": [
+    18.69,
+    -20.68
+   ],
+   "roadEdge": 5.23,
+   "road": "w122157681 Torget",
+   "building": 7.29,
+   "buildingId": "w869907975",
+   "rival": 4.82
+  },
+  "shelf.e": {
+   "local": [
+    2.2,
+    1.4
+   ],
+   "world": [
+    19.34,
+    -20.75
+   ],
+   "roadEdge": 5.23,
+   "road": "w122157681 Torget",
+   "building": 6.64,
+   "buildingId": "w869907975",
+   "rival": 4.94
+  },
+  "aBoard": {
+   "local": [
+    -2.2,
+    3.5
+   ],
+   "world": [
+    15.2,
+    -18.18
+   ],
+   "roadEdge": 4.58,
+   "road": "w122157691 Prästgatan",
+   "building": 11.06,
+   "buildingId": "w869907975",
+   "rival": 4.12
+  },
+  "readSpot": {
+   "local": [
+    -2.2,
+    4.15
+   ],
+   "world": [
+    15.27,
+    -17.53
+   ],
+   "roadEdge": 4.07,
+   "road": "w122157691 Prästgatan",
+   "building": 11.07,
+   "buildingId": "w869907975",
+   "rival": 3.73
+  },
+  "path.0": {
+   "local": [
+    -10.5,
+    4.75
+   ],
+   "world": [
+    7.08,
+    -16.03
+   ],
+   "roadEdge": -1.61,
+   "road": "w122157691 Prästgatan",
+   "building": 9.08,
+   "buildingId": "vw-kyr-torget-lh",
+   "rival": 10.47
+  },
+  "path.1": {
+   "local": [
+    2.5,
+    4.75
+   ],
+   "world": [
+    20.01,
+    -17.45
+   ],
+   "roadEdge": 6.55,
+   "road": "w122157691 Prästgatan",
+   "building": 6.37,
+   "buildingId": "w869907975",
+   "rival": 2.12
+  },
+  "path.2": {
+   "local": [
+    7.6,
+    4.6
+   ],
+   "world": [
+    25.06,
+    -18.16
+   ],
+   "roadEdge": 8.44,
+   "road": "w122157681 Torget",
+   "building": 1.27,
+   "buildingId": "w869907975",
+   "rival": 3.42
+  },
+  "path.3": {
+   "local": [
+    7.6,
+    -0.5
+   ],
+   "world": [
+    24.5,
+    -23.23
+   ],
+   "roadEdge": 3.33,
+   "road": "w122157681 Torget",
+   "building": 1.21,
+   "buildingId": "w869907975",
+   "rival": 7.55
+  },
+  "path.4": {
+   "local": [
+    7.2,
+    -3.6
+   ],
+   "world": [
+    23.76,
+    -26.27
+   ],
+   "roadEdge": 0.23,
+   "road": "w122157681 Torget",
+   "building": 3.54,
+   "buildingId": "w869907975",
+   "rival": 10.33
+  },
+  "awningRain.sw": {
+   "local": [
+    -2.3,
+    2.45
+   ],
+   "world": [
+    14.98,
+    -19.21
+   ],
+   "roadEdge": 5.33,
+   "road": "w122157691 Prästgatan",
+   "building": 11.15,
+   "buildingId": "w869907975",
+   "rival": 4.94
+  },
+  "awningRain.se": {
+   "local": [
+    2.3,
+    2.45
+   ],
+   "world": [
+    19.55,
+    -19.72
+   ],
+   "roadEdge": 6.28,
+   "road": "w122157681 Torget",
+   "building": 6.55,
+   "buildingId": "w869907975",
+   "rival": 3.97
+  },
+  "queueRain.last": {
+   "local": [
+    -5.65,
+    2.3
+   ],
+   "world": [
+    11.64,
+    -18.99
+   ],
+   "roadEdge": 3.34,
+   "road": "w122157691 Prästgatan",
+   "building": 13.64,
+   "buildingId": "vw-kyr-torget-lh",
+   "rival": 7.64
+  },
+  "shelfSpot.1": {
+   "local": [
+    1.72,
+    1.8
+   ],
+   "world": [
+    18.91,
+    -20.3
+   ],
+   "roadEdge": 5.63,
+   "road": "w122157681 Torget",
+   "building": 7.12,
+   "buildingId": "w869907975",
+   "rival": 4.45
+  },
+  "shelfSpot.2": {
+   "local": [
+    2.18,
+    1.8
+   ],
+   "world": [
+    19.36,
+    -20.35
+   ],
+   "roadEdge": 5.63,
+   "road": "w122157681 Torget",
+   "building": 6.66,
+   "buildingId": "w869907975",
+   "rival": 4.55
+  },
+  "heaterRing.E": {
+   "local": [
+    4.3,
+    2.5
+   ],
+   "world": [
+    21.55,
+    -19.89
+   ],
+   "roadEdge": 6.33,
+   "road": "w122157681 Torget",
+   "building": 4.55,
+   "buildingId": "w869907975",
+   "rival": 3.84
+  },
+  "heaterRing.NW": {
+   "local": [
+    2.95,
+    2
+   ],
+   "world": [
+    20.15,
+    -20.24
+   ],
+   "roadEdge": 5.83,
+   "road": "w122157681 Torget",
+   "building": 5.89,
+   "buildingId": "w869907975",
+   "rival": 4.58
+  },
+  "heaterRing.W": {
+   "local": [
+    2.85,
+    2.8
+   ],
+   "world": [
+    20.14,
+    -19.43
+   ],
+   "roadEdge": 6.63,
+   "road": "w122157681 Torget",
+   "building": 6,
+   "buildingId": "w869907975",
+   "rival": 3.87
+  },
+  "heaterRing.S": {
+   "local": [
+    3.75,
+    3.17
+   ],
+   "world": [
+    21.07,
+    -19.16
+   ],
+   "roadEdge": 7,
+   "road": "w122157681 Torget",
+   "building": 5.11,
+   "buildingId": "w869907975",
+   "rival": 3.24
+  }
+ },
+ "checks": {
+  "minRoadEdgeM": 0.23,
+  "minRoadEdgeAt": "path.4",
+  "insideBuilding": [],
+  "minToRivalM": 2.12,
+  "minToRivalAt": "path.1",
+  "pathMinToBuildingM": 1.21,
+  "pathMinToBuildingAt": [
+   7.6,
+   0.01
+  ],
+  "pathOnRoad": [
+   [
+    -10.5,
+    4.75
+   ],
+   [
+    -9.85,
+    4.75
+   ],
+   [
+    -9.2,
+    4.75
+   ],
+   [
+    -8.55,
+    4.75
+   ]
+  ],
+  "pathOnRoadNote": "Gångvägens västra ände går ut på Prästgatan (w122157691, gångfartsområde). Det är meningen: förbipasserande kommer från Prästgatan."
+ }
+}

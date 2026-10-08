@@ -83,6 +83,7 @@ import { tickDjRound } from '../../sim/satsningar';
 import { applyMiseAtDoors, hirePrepHand, tickPrepBacklog } from '../../sim/miseEnPlace';
 import { abilityUnlocked, creditsOf, setSlot, shopOf } from '../../sim/shop';
 import { answerPin, comp, moveHelp, seatPartyNow, tickPins, upsell } from '../../sim/hostPins';
+import { answerCurious, openCurious, recordCuriousRevenue, tickCurious } from '../../sim/curious';
 import { arrivalAttraction, maybeSpawnGuest, pacedArrivals, scenarioSpawnStep, walkAwayProbability } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
@@ -494,6 +495,18 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return makeNewGameState(state.seed, state.policies);
     case 'HIRE_PREP_HAND':
       return hirePrepHand(state);
+    // ORDER 319b — de nyfikna vid foodtruckens lucka.
+    case 'CURIOUS_OPEN': {
+      const draft: SimulationState = { ...state, day: { ...state.day } };
+      openCurious(draft, action.cold);
+      return draft.day.curious === state.day.curious ? state : draft;
+    }
+    case 'CURIOUS_ANSWER': {
+      const draft: SimulationState = { ...state, day: { ...state.day }, guests: [...state.guests] };
+      const credit = answerCurious(draft, action.optionId);
+      if (draft.day.curious === state.day.curious) return state;
+      return credit ? creditQuestion(draft, credit.axis, null, credit.amount) : draft;
+    }
     case 'HOST_PIN_ANSWER':
     case 'HOST_SEAT':
     case 'HOST_COMP':
@@ -1908,6 +1921,8 @@ function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inL
     applyCashRevenue(draft, rev);
     // ORDER 287a — kvällens intäkt per gästtyp.
     recordTypeRevenue(draft, guest, rev);
+    // ORDER 319b — notan från en gäst som kom via en nyfiken.
+    recordCuriousRevenue(draft, guest, rev);
     // ORDER 290 — notorna i kväll, och klockslaget när kvällskassan passerar insatsen.
     if (inDinner) {
       draft.day = { ...draft.day, billsTonight: (draft.day.billsTonight ?? 0) + 1 };
@@ -3034,6 +3049,8 @@ function advanceTick(state: SimulationState): SimulationState {
   tickPrepBacklog(draft, tickSeconds);
   // ORDER 296 — hovmästarens nålar.
   tickPins(draft, tickSeconds);
+  // ORDER 319b — de nyfikna vid foodtruckens lucka.
+  tickCurious(draft, tickSeconds);
   maybeOpenIncident(draft, tickSeconds);
   maybeChance(draft);
 

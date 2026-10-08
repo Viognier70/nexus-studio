@@ -39,6 +39,7 @@ import { withStreetFloorOnTree } from './village/streetFigureLight';
 import { applyStreetBlend, beyondDoorMat, dressAllGroups, disposeDressed, showGroup, stepStreetBlend, streetShare, HEAD_SIGNS, type DressedRig } from './guestLooks';
 import { GUEST_GROUPS } from './guestGroups';
 import { RoomEquipment } from './roomEquipment';
+import { PersonalSpace, type MassKind, type SpaceBody } from './personalSpace';
 import { hesitationElapsed } from './conditionClips';
 import { incidentById } from '../../sim/incidentBank';
 import { cardAnchor, openCard, setOpenCard, subscribeOpenCard } from '../ui/statusCardStore';
@@ -294,6 +295,67 @@ export function poseForSample(s: FigureSample, staff: boolean): FigurePose {
   }
 }
 
+/** ORDER 319b — rummets regissör (vinbaren och bistron), som scenen bygger den; testet för trängseln
+ *  (order319bTrangseln.test.ts) bygger den med samma funktion. */
+export function createRoomDirector(room: WineBarRoom): WineBarDirector {
+  // ORDER 293 — Designs köplatser (wineBarRoom queueSpots, vardagens
+  // koreografi §3): två på dörrmattan och fem på trottoaren, ett sällskap per
+  // plats och medlemmarna inom 0,6 m från punkten (fyra platser runt punkten).
+  const QUEUE_SPOT_SIZE = 4;
+  const queueSlots: Vec2[] = [];
+  const queueFacings: number[] = [];
+  const spots = [...(room.queueSpots ?? [])].sort((a, b) => a.order - b.order);
+  for (const q of spots) {
+    const f = q.facing;
+    // Sidled och bakåt i förhållande till riktningen (framåt är +sin/+cos).
+    const fx = Math.sin(f), fz = Math.cos(f), sx = Math.cos(f), sz = -Math.sin(f);
+    for (const [side, back] of [[-0.28, 0], [0.28, 0], [-0.28, -0.45], [0.28, -0.45]]) {
+      queueSlots.push([q.local[0] + sx * side + fx * back, q.local[1] + sz * side + fz * back]);
+      queueFacings.push(f);
+    }
+  }
+  if (queueSlots.length === 0) {
+    for (let i = 0; i < 10; i++) {
+      const row = Math.floor(i / 2);
+      queueSlots.push([room.waitingSpot[0] + 0.8 * row, (i % 2 === 0 ? -0.5 : 0.5)]);
+    }
+  }
+  return new WineBarDirector(
+    {
+      seats: room.seats,
+      staffStations: room.staffStations,
+      entrance: room.entrance,
+      waitingSpot: room.waitingSpot,
+      floorY: room.floorY,
+      width: room.width,
+      depth: room.depth,
+      // ORDER 315b del 2 — bistrons möblering: personalens vägar och barens platser följer den.
+      layout: room.layout
+    } as ConstructorParameters<typeof WineBarDirector>[0],
+    {
+      walkPathToSeat: (id) => walkPathToSeat(room, id),
+      exitPathFromSeat: (id) => exitPathFromSeat(room, id),
+      groups: groupsFor(room),
+      queueSlots,
+      queueFacings: queueFacings.length > 0 ? queueFacings : undefined,
+      queueSpotSize: queueFacings.length > 0 ? QUEUE_SPOT_SIZE : 1,
+      miseSpots: room.miseSpots,
+      spawn: [room.waitingSpot[0] + 6, 0],
+      poolSize: WINE_BAR_GUEST_POOL,
+      seatedHipY: SEATED_HIP_Y
+    }
+  );
+}
+
+/** ORDER 319b — massan i trängseln (personalSpace.ts PERSONAL_SPACE.mass): den som rör sig ger efter. */
+export function roomMass(smp: FigureSample, staff: boolean): MassKind {
+  const walking = /walk|Walk|arrive|leave/.test(smp.pose);
+  if (staff) return walking ? 'staffWalking' : 'staffStanding';
+  if (smp.seated) return 'eatingOrSeated';
+  if (walking) return 'walking';
+  return smp.pose === 'waitCalm' || smp.pose === 'waitImpatient' || smp.pose === 'waitLeaving' ? 'queued' : 'standingAct';
+}
+
 function applySample(rig: FigureRig, sample: FigureSample, staff: boolean, visibility: number, clip?: ClipSample | null): void {
   rig.root.visible = sample.visible;
   if (!sample.visible) return;
@@ -312,6 +374,8 @@ interface Lights { fill: THREE.PointLight; bar: THREE.PointLight[]; tables: THRE
 
 interface Cast {
   director: WineBarDirector;
+  /** ORDER 319b — trängseln: väja och knuffas isär (personalSpace.ts). */
+  space: PersonalSpace;
   group: THREE.Group;
   guestRigs: FigureRig[];
   guestIds: (string | null)[];
@@ -547,53 +611,7 @@ export function WineBarFigures({ room, mood }: Props) {
     if (!parent) return;
     parent.add(group);
 
-    // ORDER 293 — Designs köplatser (wineBarRoom queueSpots, vardagens
-    // koreografi §3): två på dörrmattan och fem på trottoaren, ett sällskap per
-    // plats och medlemmarna inom 0,6 m från punkten (fyra platser runt punkten).
-    const QUEUE_SPOT_SIZE = 4;
-    const queueSlots: Vec2[] = [];
-    const queueFacings: number[] = [];
-    const spots = [...(room.queueSpots ?? [])].sort((a, b) => a.order - b.order);
-    for (const q of spots) {
-      const f = q.facing;
-      // Sidled och bakåt i förhållande till riktningen (framåt är +sin/+cos).
-      const fx = Math.sin(f), fz = Math.cos(f), sx = Math.cos(f), sz = -Math.sin(f);
-      for (const [side, back] of [[-0.28, 0], [0.28, 0], [-0.28, -0.45], [0.28, -0.45]]) {
-        queueSlots.push([q.local[0] + sx * side + fx * back, q.local[1] + sz * side + fz * back]);
-        queueFacings.push(f);
-      }
-    }
-    if (queueSlots.length === 0) {
-      for (let i = 0; i < 10; i++) {
-        const row = Math.floor(i / 2);
-        queueSlots.push([room.waitingSpot[0] + 0.8 * row, (i % 2 === 0 ? -0.5 : 0.5)]);
-      }
-    }
-    const director = new WineBarDirector(
-      {
-        seats: room.seats,
-        staffStations: room.staffStations,
-        entrance: room.entrance,
-        waitingSpot: room.waitingSpot,
-        floorY: room.floorY,
-        width: room.width,
-        depth: room.depth,
-        // ORDER 315b del 2 — bistrons möblering: personalens vägar och barens platser följer den.
-        layout: room.layout
-      } as ConstructorParameters<typeof WineBarDirector>[0],
-      {
-        walkPathToSeat: (id) => walkPathToSeat(room, id),
-        exitPathFromSeat: (id) => exitPathFromSeat(room, id),
-        groups: groupsFor(room),
-        queueSlots,
-        queueFacings: queueFacings.length > 0 ? queueFacings : undefined,
-        queueSpotSize: queueFacings.length > 0 ? QUEUE_SPOT_SIZE : 1,
-        miseSpots: room.miseSpots,
-        spawn: [room.waitingSpot[0] + 6, 0],
-        poolSize: WINE_BAR_GUEST_POOL,
-        seatedHipY: SEATED_HIP_Y
-      }
-    );
+    const director = createRoomDirector(room);
     const guestRigs: FigureRig[] = [];
     const guestHandProps: { briefcase: PropHandle; camera: PropHandle }[] = [];
     const guestFaces: FaceHandle[] = [];
@@ -680,11 +698,13 @@ export function WineBarFigures({ room, mood }: Props) {
       guestFaces,
       staffFaces,
       moodGestures: new MoodGestures(WINE_BAR_GUEST_POOL),
+      space: new PersonalSpace(),
       scriptFaces: { key: null, answers: 0, lastAt: -Infinity, answer: null, faces: new WeakMap() },
       orkRings,
       dressed: guestDressed,
       toppings: guestToppings,
       doorMat: (() => {
+        const spots = [...(room.queueSpots ?? [])].sort((a, b) => a.order - b.order);
         const at: [number, number] = spots[0] ? [spots[0].local[0], spots[0].local[1]] : [room.entrance[0], room.entrance[1]];
         return { at, out: [room.waitingSpot[0] - at[0], room.waitingSpot[1] - at[1]] as [number, number] };
       })()
@@ -926,6 +946,42 @@ export function WineBarFigures({ room, mood }: Props) {
           rig.root.position.z += Math.cos(f) * clip.root[1] - Math.sin(f) * clip.root[0];
         }
         figureLocal = { x: rig.root.position.x, y: rig.root.position.y, z: rig.root.position.z };
+      }
+    }
+
+    // ORDER 319b — trängseln (personalSpace.ts, Anders 2026-10-08: "i vinbaren och bistron … med bara att
+    // väja och knuffas isär"): efter regissören och klippen, så att ingen går igenom någon. Ringen under
+    // personalen följer med.
+    {
+      const step = Math.min(delta, 0.1) * speed;
+      const bodies: SpaceBody[] = [];
+      const rigOf = new Map<string, { rig: FigureRig; staff: number | null }>();
+      for (let i = 0; i < cast.guestRigs.length; i++) {
+        const r = cast.guestRigs[i], smp = gs[i];
+        if (!r.root.visible || !smp?.visible) continue;
+        const key = smp.guestId ?? `g${i}`;
+        bodies.push({ key, x: r.root.position.x, z: r.root.position.z, kind: roomMass(smp, false), pinned: smp.seated, alpha: visibility });
+        rigOf.set(key, { rig: r, staff: null });
+      }
+      for (let i = 0; i < STAFF_KEYS.length; i++) {
+        const r = cast.staffRigs[i], smp = ss[i];
+        if (!r.root.visible || !smp?.visible) continue;
+        const key = `staff:${STAFF_KEYS[i]}`;
+        bodies.push({ key, x: r.root.position.x, z: r.root.position.z, kind: roomMass(smp, true), alpha: visibility });
+        rigOf.set(key, { rig: r, staff: i });
+      }
+      const shown = cast.space.step(bodies, step);
+      for (const b of bodies) {
+        const p = shown.get(b.key), o = rigOf.get(b.key);
+        if (!p || !o) continue;
+        const dx = p[0] - o.rig.root.position.x, dz = p[1] - o.rig.root.position.z;
+        if (dx === 0 && dz === 0) continue;
+        o.rig.root.position.x = p[0];
+        o.rig.root.position.z = p[1];
+        if (o.staff !== null) {
+          const m = cast.staffMarks[o.staff];
+          for (const x of [m.ring, m.xray, m.glow, ...m.arcs]) { x.position.x += dx; x.position.z += dz; }
+        }
       }
     }
 

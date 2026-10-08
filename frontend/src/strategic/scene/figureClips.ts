@@ -45,7 +45,9 @@ export type Stance = 'stand' | 'seated' | 'walk' | 'hurt';
 /** Platsen klippet kräver. 'chair' betyder en stol som följer sittregeln (SEAT_RULE). */
 export type Needs = 'floor' | 'chair' | 'stool' | 'lounge' | 'table' | 'bar' | 'pass' | 'station' | 'sink' | 'desk' | 'wheelchair'
   // ORDER 315b del 2 (D7): luckan, stå på vagngolvet med bänken framför.
-  | 'hatch';
+  | 'hatch'
+  // ORDER 319b (D9): stå framför menyskylten.
+  | 'sign';
 /** Sittplatsens sort. Vinbarens 'bar' är 'stool' och 'twotop' är 'chair' (seatKindFromRoom). */
 export type SeatKind = 'chair' | 'stool' | 'lounge';
 /** Stämningen ett klipp uttrycker (guestMood.ts). Leverans 2026-10-03. */
@@ -58,7 +60,9 @@ export type ClipEventType =
   // ORDER 317 (D6, Åsas klipp): gesten syns, och repliken eller pratbubblan kan öppnas.
   | 'signal'
   // ORDER 315b del 2 (D7): det som ligger på grillen vänds.
-  | 'flip';
+  | 'flip'
+  // ORDER 319b (D9 curiousClips.ts, tillaggClips.ts): de nyfikna och blicken på klockan.
+  | 'notice' | 'read' | 'sniff' | 'point' | 'decide' | 'queued' | 'glance';
 
 export interface ClipEvent {
   /** Var i klippet, 0..1. */
@@ -97,6 +101,12 @@ export interface ClipCtx {
   keep?: { L?: PoseArm; R?: PoseArm };
   /** Sätts av sampleClip. */
   stride?: number;
+  /** ORDER 319b (D9) — de nyfikna: huvudets vridning mot kön och mot gångvägen (radianer i figurens ram),
+   *  riktningen mot köns sista plats i figurens ram ([åt höger, framåt], enhetsvektor) och kylan. */
+  lookQueue?: number;
+  lookPath?: number;
+  toQueue?: [number, number];
+  cold?: boolean;
 }
 
 export interface ClipSpec {
@@ -720,6 +730,163 @@ reg(def({
       armR: A(0.85 + 0.1 * Math.sin(w), 0.16 + 0.1 * Math.cos(w), 0.7),
       armL: A(0.7, 0.08, 0.85)
     }), 0.3 * sweep, 0.2 * sweep);
+  }
+}));
+
+// ORDER 319b — Designs D9 (nexus-leveranser-2026-10-08-d9/…-livet-vid-luckan/curiousClips.ts) och
+// tillägget (…-d9-tillagg/tillaggClips.ts): de nyfikna vid luckan och kroppsspråket utanför. Oförändrade,
+// utom att roten är i figurens ram ([x åt höger, z framåt, vridning], som resten av filen) och att
+// tilläggets guest.hesitate ersätter D9:s. Tilläggets guest.checkWatch (stående) heter guest.checkWatchStand,
+// och guest.armsCrossed heter guest.armsCrossedStand, eftersom de namnen redan är stämningens klipp
+// (leverans 2026-10-03). Längderna per tempo
+// står i Designs filhuvuden.
+
+/** Armarna i kors: underarmarna över bröstet, händerna vid motsatt armbåge. Axlarna lite upp. */
+const ARMS_CROSSED = { lift: 0.02, armL: A(0.95, 0.55, 1.95), armR: A(0.95, 0.55, 1.95) };
+
+reg(def({
+  id: 'guest.slowDown', group: 'guest', roles: ['guest'], loop: false, travel: true, base: 1.4,
+  from: 'walk', to: 'walk', needs: 'floor', holds: {}, ends: {}, events: [{ u: 0.2, type: 'notice' }],
+  next: ['guest.walk', 'guest.readSign'],
+  pose: function (u, c) {
+    // Steget kortas från 0,95 till 0,55 och huvudet vrids mot vagnen (c.yaw = vinkeln till röken).
+    const ph = c.phase ?? u, stride = 0.95 - 0.4 * ramp(u, 0, 0.8);
+    const p = walking(STAND, ph, stride, 'both');
+    return withYaw(p, (c.yaw ?? 0) * 0.15 * ramp(u, 0.1, 0.6), (c.yaw ?? 0) * 0.8 * ramp(u, 0.05, 0.5));
+  }
+}));
+
+reg(def({
+  id: 'guest.readSign', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 2.6, handed: true,
+  from: 'stand', to: 'stand', needs: 'sign', holds: {}, ends: {}, events: [{ u: 0.5, type: 'read' }],
+  next: ['guest.smellPoint', 'guest.hesitate', 'guest.walkOn'],
+  pose: function (u) {
+    // Huvudet framåt och ned mot tavlan, blicken går rad för rad (två svep), handen till hakan mitt i.
+    const chin = win(u, 0.2, 0.85, 0.12);
+    return withYaw(P(STAND, {
+      torso: { pitch: 0.08 }, head: { pitch: 0.22 },
+      armR: A(0.6 + 1.4 * chin, 0.1, 0.4 + 1.9 * chin)
+    }), 0, 0.2 * Math.sin(u * TAU * 2));
+  }
+}));
+
+reg(def({
+  id: 'guest.smellPoint', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 2.2, handed: true,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {},
+  events: [{ u: 0.2, type: 'sniff' }, { u: 0.55, type: 'point' }],
+  next: ['guest.hesitate', 'guest.joinQueue', 'guest.walkOn', 'guest.checkWatchStand'],
+  pose: function (u, c) {
+    // 0–0,42 näsan upp: huvudet bakåt och bröstet lyfts i två små andetag. 0,45–0,92 armen rakt ut mot röken.
+    const sniff = win(u, 0.05, 0.42, 0.08), point = win(u, 0.45, 0.92, 0.1), breath = 0.04 * Math.sin(u * 46) * sniff;
+    return withYaw(P(STAND, {
+      torso: { pitch: -0.05 * sniff + breath }, head: { pitch: -0.32 * sniff },
+      armR: A(0.6 + 0.95 * point, 0.08, 0.6 - 0.5 * point)
+    }), 0, (c.yaw ?? 0) * 0.3 * point);
+  }
+}));
+
+reg(def({
+  id: 'guest.hesitate', group: 'guest', roles: ['guest'], loop: true, travel: false, base: 2.8, handed: true,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [{ u: 0.95, type: 'decide' }],
+  next: ['guest.joinQueue', 'guest.walkOn', 'guest.walk', 'guest.checkWatchStand', 'guest.shakeHead', 'guest.turnToHatch'],
+  pose: function (u, c) {
+    // Som i D9, och starkare: ett halvt steg mot kön och tillbaka (root), blicken mellan kön och gatan.
+    // Varmt: vänster hand vid hakan. Kallt (c.cold): armarna i kors i stället.
+    const shift = Math.sin(u * TAU), chin = c.cold ? 0 : win(u, 0.12, 0.92, 0.12);
+    const toward = 0.5 + 0.5 * Math.sin(u * TAU - Math.PI / 2);
+    const yawHead = (c.lookQueue ?? 0.6) * (1 - toward) + (c.lookPath ?? -0.6) * toward;
+    let p = P(STAND, { hipDrop: 0.03 * shift, torso: { pitch: 0.03, roll: 0.05 * shift }, armL: A(0.6 + 1.3 * chin, 0.1, 0.4 + 1.9 * chin) });
+    if (c.cold) p = P(p, ARMS_CROSSED);
+    return withYaw(p, 0.1 * yawHead, yawHead);
+  },
+  // 0,24 m mot köns sista plats (c.toQueue, enhetsvektor i figurens ram) och tillbaka, plus svajet i sidled.
+  root: function (u, c) { const s = 0.24 * win(u, 0.12, 0.55, 0.12), q = c.toQueue ?? [0, 1]; return [q[0] * s + 0.05 * Math.sin(u * TAU), q[1] * s, 0]; }
+}));
+
+reg(def({
+  id: 'guest.joinQueue', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 1.6,
+  from: 'walk', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [{ u: 1, type: 'queued' }],
+  next: ['guest.queueCalm', 'guest.queueImpatient'],
+  pose: function (u, c) {
+    // Två sista korta steg in på köplatsen, en blick tillbaka mot skylten, sedan händerna ihop framför sig.
+    const step = 1 - ramp(u, 0, 0.45), clasp = ramp(u, 0.5, 0.8);
+    let p = walking(STAND, u * 2, 0.45 * step, 'both');
+    p = P(p, { armL: A(0.35 + 0.35 * clasp, 0.25 * clasp, 0.4 + 0.9 * clasp), armR: A(0.35 + 0.35 * clasp, 0.25 * clasp, 0.4 + 0.9 * clasp) });
+    return withYaw(p, 0, (c.yaw ?? 0) * win(u, 0, 0.55, 0.15));
+  }
+}));
+
+reg(def({
+  id: 'guest.walkOn', group: 'guest', roles: ['guest'], loop: false, travel: true, base: 1.6,
+  from: 'stand', to: 'walk', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['guest.walk'],
+  pose: function (u, c) {
+    // Tar upp farten igen, en sista blick mot vagnen som släpps. Ingen axelryckning: det är inget misslyckande.
+    const ph = c.phase ?? u, p = walking(STAND, ph, 0.6 + 0.35 * ramp(u, 0, 0.7), 'both');
+    return withYaw(p, 0, (c.yaw ?? 0) * (1 - ramp(u, 0, 0.6)));
+  }
+}));
+
+reg(def({
+  id: 'truck.beckon', group: 'waiter', roles: ['waiter', 'staff', 'cook'], loop: false, travel: false, base: 1.8, handed: true,
+  from: 'stand', to: 'stand', needs: 'hatch', holds: {}, ends: {}, events: [{ u: 0.3, type: 'signal' }],
+  next: ['truck.wipeCounter', 'truck.hatchServe', 'staff.idle'],
+  pose: function (u, c) {
+    // Lutar sig ut över luckans hylla och vänder sig mot gästen (c.yaw), armen ut och handen vinkar in tre gånger.
+    const out = win(u, 0.04, 0.96, 0.14), wave = 0.35 * Math.sin(u * TAU * 3.5) * out;
+    return withYaw(P(STAND, {
+      torso: { pitch: 0.06 + 0.12 * out }, head: { pitch: 0.05 },
+      armR: A(0.5 + 1.0 * out, 0.15 + 0.1 * out, 0.9 - 0.5 * out + wave)
+    }), (c.yaw ?? 0) * 0.6 * out, (c.yaw ?? 0) * out);
+  }
+}));
+
+reg(def({
+  id: 'guest.checkWatchStand', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 1.6,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [{ u: 0.5, type: 'glance' }],
+  next: ['guest.hesitate', 'guest.queueCalm', 'guest.walkOn'],
+  pose: function (u, c) {
+    // Vänster underarm upp framför bröstet med handleden vriden uppåt, huvudet ned och vridet mot den. Kort.
+    const w = win(u, 0.05, 0.95, 0.2);
+    let p = P(STAND, { torso: { pitch: 0.04 + 0.04 * w }, head: { pitch: 0.1 + 0.35 * w }, armL: A(0.6 + 0.9 * w, 0.25 * w, 0.5 + 1.5 * w) });
+    if (c.cold) p = P(p, { armR: ARMS_CROSSED.armR });
+    return withYaw(p, 0, 0.35 * w);
+  },
+  tilt: function (u) { return { L: { roll: -1.2 * win(u, 0.05, 0.95, 0.2) } }; }
+}));
+
+reg(def({
+  id: 'guest.armsCrossedStand', group: 'guest', roles: ['guest', 'waiter', 'staff'], loop: true, travel: false, base: 2.4,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['guest.armsCrossedStand', 'guest.checkWatchStand', 'guest.queueCalm'],
+  pose: function (u) {
+    // Kallt: armarna i kors, axlarna upp, ett litet guppande från fot till fot.
+    const bob = Math.sin(u * TAU * 2);
+    return P(STAND, { ...ARMS_CROSSED, hipDrop: 0.015 * bob, torso: { pitch: 0.05, roll: 0.03 * bob }, head: { pitch: 0.12 } });
+  },
+  root: function (u) { return [0.012 * Math.sin(u * TAU * 2), 0, 0]; }
+}));
+
+reg(def({
+  id: 'guest.shakeHead', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 0.9,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['guest.walkOn'],
+  pose: function (u, c) {
+    // Huvudet åt sidorna två och en halv gånger, mjukt. Det är ett nej tack, inte ilska.
+    const k = win(u, 0.05, 0.95, 0.15);
+    const p = c.cold ? P(STAND, ARMS_CROSSED) : STAND;
+    return withYaw(p, 0, 0.42 * Math.sin(u * Math.PI * 5) * k);
+  }
+}));
+
+reg(def({
+  id: 'guest.turnToHatch', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 0.9,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['guest.walk'],
+  pose: function (u, c) {
+    // Vänder huvudet och bålen mot luckan när medhjälparen vinkar (c.yaw = vinkeln till luckan), rätar på sig.
+    const k = ramp(u, 0, 0.4);
+    return withYaw(P(STAND, { torso: { pitch: -0.02 * k } }), (c.yaw ?? 0) * 0.4 * k, (c.yaw ?? 0) * k);
   }
 }));
 

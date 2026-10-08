@@ -24,6 +24,8 @@ export function effectiveSpeed(state: Pick<SimulationState, 'simTime' | 'day' | 
   // ORDER 314 (Anders 2026-10-06) — "Situationen pausar inte spelet men
   // saktar in till 1×, som konsekvensögonblicket."
   if (state.incidents?.active && state.day.period === 'dinner' && state.speed > 1) return 1;
+  // ORDER 319b — också medan frågekortet till en nyfiken gäst är öppet.
+  if (state.day.curious?.current?.card && state.speed > 1) return 1;
   // ORDER 300 §6 — förberedelserna fram till dörröppningen går fortare.
   const prep = (state.day.period === 'dinner' || state.day.period === 'lunch') && state.day.doorsOpenAt !== null && state.simTime < state.day.doorsOpenAt;
   return prep && state.speed > 0 ? Math.max(state.speed, PREP_TIME.speedAtLeast) : state.speed;

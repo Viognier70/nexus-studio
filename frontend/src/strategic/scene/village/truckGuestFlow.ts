@@ -8,12 +8,24 @@
 // simuleringen) går figuren till ett hus eller en gata minst lika långt bort och försvinner där.
 // Flyttas gästen i kön går figuren dit; ingen figur byter plats på en gång.
 //
-// Ren logik utan three.js, så att testet (order319aGaster.test.ts) kör samma kod som
-// PlayerTruckCrew.tsx ritar.
+// ORDER 319b — de nyfikna (sim/curious.ts, Designs D9): en förbipasserande kommer gående längs
+// gångvägen söder om vagnen (truckProps.ts WALKWAY) från byn, utanför bild, saktar in vid skylten och
+// står vid den medan spelaren kan prata. Ställer gästen sig i kön blir figuren gästen i kön (samma
+// figur, gästens id); annars går den vidare åt samma håll och ut i byn. Trängseln (personalSpace.ts):
+// den som går väjer för den framför, håller till höger på gångvägen och vägarna, och ingen kommer
+// närmare en annan än PERSONAL_SPACE.radiusM (knuffas isär). `shown` är där figurerna ritas.
+//
+// Ren logik utan three.js, så att testerna (order319aGaster.test.ts, order319bTrangseln.test.ts) kör
+// samma kod som PlayerTruckCrew.tsx ritar.
 
 import { TRUCK_LAYOUT } from '../playerTruck';
+import { CURIOUS_SPOTS, WALKWAY } from '../truckProps';
+import { PersonalSpace, keepRightShare, rightOf, yieldFactor, KEEP_RIGHT, PERSONAL_SPACE, type MassKind } from '../personalSpace';
 import { nearestNode, routeBetween, walkNetwork } from '../../content/villageNetwork';
 import { villageSources } from '../../content/villagePlaces';
+import { CURIOUS } from '../../../sim/balance';
+import type { CuriousState } from '../../../sim/curious';
+import { CLIPS } from '../figureClips';
 import type { GuestState } from '../../types';
 
 type Vec2 = [number, number];
@@ -34,7 +46,11 @@ export const TRUCK_GUESTS = {
   approachWest: [-8, 2.3] as Vec2,
   approachEast: [7.5, 2.6] as Vec2,
   /** Sökstegen bakåt längs vägen in, när startpunkten väljs. */
-  searchStepM: 1
+  searchStepM: 1,
+  /** ORDER 319b — den nyfikna går fram till skylten så här fort (Designs guest.walk 0,7 m/s och
+   *  guest.slowDown från 1,25 m/s), och fortare eller saktare på vägen in så att hen saktar in i tid. */
+  curiousMinMps: 0.8,
+  curiousMaxMps: 2.2
 } as const;
 
 export interface TruckFrame { x: number; z: number; rotationY: number }
@@ -42,8 +58,26 @@ export type SpotPose = 'queue' | 'order' | 'collect' | 'eat';
 export interface Spot { x: number; z: number; yaw: number; y: number; pose: SpotPose; index: number }
 export interface FlowGuest { id: string; state: GuestState }
 
+/** ORDER 319b — en nyfiken förbipasserande (sim/curious.ts). */
+export interface CuriousWalk {
+  seq: number;
+  side: 'west' | 'east';
+  /** På väg in, vid skylten (sakta in, läsa, lukta, tveka) eller på väg vidare. */
+  stage: 'approach' | 'act' | 'walkOn';
+}
+
 export interface TruckWalker {
   id: string;
+  /** ORDER 319b — en nyfiken förbipasserande, eller gästen i kön som var det (seq). */
+  curious?: CuriousWalk;
+  fromCurious?: number;
+  /** Står still så här länge till (vänder sig mot luckan eller skakar på huvudet). */
+  holdS: number;
+  /** Där den här sträckan av vägen började (hålla till höger). */
+  segFrom: Vec2;
+  /** Flödets klocka när figuren stod på sin plats, och när utfallet för en nyfiken kom. */
+  settledAt: number;
+  outcomeAt: number;
   /** Klädernas index, ur gästens id. */
   look: number;
   x: number;
@@ -57,7 +91,13 @@ export interface TruckWalker {
   settled: boolean;
 }
 
-export interface FlowEvent { kind: 'spawn' | 'despawn'; id: string; x: number; z: number }
+export interface CuriousInput {
+  current: CuriousState['current'];
+  last: CuriousState['last'];
+}
+
+/** 'rename': den nyfikna ställde sig i kön, och figuren heter nu gästens id (`from` är det gamla). */
+export interface FlowEvent { kind: 'spawn' | 'despawn' | 'rename'; id: string; x: number; z: number; from?: string }
 
 const DECK_Y_M = 0.12;
 const LIVE: ReadonlySet<GuestState> = new Set(['arriving', 'waiting', 'ordering', 'serving', 'paying', 'eating']);
@@ -74,8 +114,28 @@ function hash(id: string): number {
   return h >>> 0;
 }
 
+/** Massan i trängseln för en figur vid vagnen (PERSONAL_SPACE.mass). */
+function massOf(w: TruckWalker): MassKind {
+  if (w.curious?.stage === 'act' || w.holdS > 0) return 'standingAct';
+  if (!w.settled) return 'walking';
+  if (w.spot?.pose === 'queue') return 'queued';
+  if (w.spot?.pose === 'eat') return 'eatingOrSeated';
+  return 'waitingOrCollecting';
+}
+
+const curiousKey = (seq: number) => `curious:${seq}`;
+
+/** Figuren ritas högst så här långt från sin väg (hålla till höger och knuffas isär): en ny figur börjar
+ *  så mycket längre bort än minSpawnM, så att den inte ritas närmare. */
+const DISPLAY_MARGIN_M = KEEP_RIGHT.offsetM + PERSONAL_SPACE.maxOffsetM;
+
 export class TruckGuestFlow {
   readonly walkers = new Map<string, TruckWalker>();
+  /** Där figurerna ritas: vägens punkt, till höger på gångvägen och isärknuffade (personalSpace.ts). */
+  readonly shown = new Map<string, [number, number]>();
+  /** Flödets klocka (summan av dt). */
+  clock = 0;
+  private readonly space = new PersonalSpace(false);
   private readonly frame: TruckFrame;
   private readonly sources: number[];
   private readonly inView: (x: number, z: number) => boolean;
@@ -93,6 +153,10 @@ export class TruckGuestFlow {
 
   private dist(x: number, z: number): number {
     return Math.hypot(x - this.frame.x, z - this.frame.z);
+  }
+
+  private w(lx: number, lz: number): Vec2 {
+    return toWorld(this.frame, lx, lz);
   }
 
   /** Platserna i kväll: beställningen, hämtplatsen, kön i ordning och ståborden (de som äter behåller sin). */
@@ -134,80 +198,237 @@ export class TruckGuestFlow {
     return out;
   }
 
-  /** Vägen in till platsen, från en punkt minst minSpawnM bort och utanför bilden. */
-  private arrivalPath(id: string, spot: Spot): Vec2[] {
-    const g = walkNetwork();
-    const ap = toWorld(this.frame, TRUCK_GUESTS.approachWest[0], TRUCK_GUESTS.approachWest[1]);
-    const src = this.sources.length > 0 ? this.sources[hash(id) % this.sources.length] : nearestNode(g, ap[0] + 80, ap[1]);
-    const route: Vec2[] = [...routeBetween(g, src, nearestNode(g, ap[0], ap[1])), ap, [spot.x, spot.z]];
-    // Bakåt från platsen: den närmaste punkten på vägen som ligger minst minSpawnM bort och utanför bilden.
-    // Finns ingen (hela vägen syns, som från byns höjd) kommer gästen ut ur huset där vägen börjar.
+  /** Bakåt från vägens slut: den närmaste punkten som ligger minst minSpawnM bort och utanför bilden.
+   *  Finns ingen (hela vägen syns, som från byns höjd) börjar figuren där vägen börjar. */
+  private fromOutOfView(route: Vec2[]): Vec2[] {
     for (let i = route.length - 1; i > 0; i--) {
       const [ax, az] = route[i - 1], [bx, bz] = route[i];
       const L = Math.hypot(bx - ax, bz - az);
       for (let s = L; s >= 0; s -= TRUCK_GUESTS.searchStepM) {
         const k = L > 0 ? s / L : 0;
         const x = ax + (bx - ax) * k, z = az + (bz - az) * k;
-        if (this.dist(x, z) >= TRUCK_GUESTS.minSpawnM && !this.inView(x, z)) return [[x, z], ...route.slice(i)];
+        if (this.dist(x, z) >= TRUCK_GUESTS.minSpawnM + DISPLAY_MARGIN_M && !this.inView(x, z)) return [[x, z], ...route.slice(i)];
       }
     }
     return route;
   }
 
+  private source(id: string, shift: number, near: Vec2): number {
+    const g = walkNetwork();
+    return this.sources.length > 0 ? this.sources[(hash(id) >>> shift) % this.sources.length] : nearestNode(g, near[0] + 80, near[1]);
+  }
+
+  /** Vägen in till platsen, från en punkt minst minSpawnM bort och utanför bilden. */
+  private arrivalPath(id: string, spot: Spot): Vec2[] {
+    const g = walkNetwork();
+    const ap = this.w(TRUCK_GUESTS.approachWest[0], TRUCK_GUESTS.approachWest[1]);
+    const route: Vec2[] = [...routeBetween(g, this.source(id, 0, ap), nearestNode(g, ap[0], ap[1])), ap, [spot.x, spot.z]];
+    return this.fromOutOfView(route);
+  }
+
   /** Vägen bort: till närmaste av vägarna ut och vidare till ett hus eller en gata minst sourceMinM bort. */
   private departurePath(w: TruckWalker): Vec2[] {
     const g = walkNetwork();
-    const west = toWorld(this.frame, TRUCK_GUESTS.approachWest[0], TRUCK_GUESTS.approachWest[1]);
-    const east = toWorld(this.frame, TRUCK_GUESTS.approachEast[0], TRUCK_GUESTS.approachEast[1]);
+    const west = this.w(TRUCK_GUESTS.approachWest[0], TRUCK_GUESTS.approachWest[1]);
+    const east = this.w(TRUCK_GUESTS.approachEast[0], TRUCK_GUESTS.approachEast[1]);
     const ap = Math.hypot(w.x - west[0], w.z - west[1]) <= Math.hypot(w.x - east[0], w.z - east[1]) ? west : east;
-    const dst = this.sources.length > 0 ? this.sources[(hash(w.id) >>> 7) % this.sources.length] : nearestNode(g, ap[0] - 80, ap[1]);
-    return [ap, ...routeBetween(g, nearestNode(g, ap[0], ap[1]), dst)];
+    return [ap, ...routeBetween(g, nearestNode(g, ap[0], ap[1]), this.source(w.id, 7, ap))];
   }
 
-  /** Ett steg: nya gäster börjar gå in, de som gått går ut, alla rör sig dt verkliga sekunder. */
-  update(guests: readonly FlowGuest[], waitingIds: readonly string[], dt: number): FlowEvent[] {
+  /** ORDER 319b — gångvägen i världen, i den riktning den nyfikna går (från väster: västra änden först). */
+  private walkway(fromWest: boolean): Vec2[] {
+    const pts = WALKWAY.map((p) => this.w(p[0], p[1]));
+    return fromWest ? pts : pts.reverse();
+  }
+
+  /** ORDER 319b — den nyfikna kommer från byn ut på gångvägen och går till platsen där hen saktar in. */
+  private curiousArrival(seq: number, side: 'west' | 'east'): Vec2[] {
+    const g = walkNetwork();
+    const way = this.walkway(side === 'west');
+    const trig = CURIOUS_SPOTS.trigger[side];
+    const id = curiousKey(seq);
+    // Längs gångvägen fram till punkten där hen saktar in: västra änden, eller östra änden och upp förbi däcket.
+    const along = side === 'west' ? [way[0]] : way.slice(0, way.length - 1);
+    const route: Vec2[] = [...routeBetween(g, this.source(id, 0, way[0]), nearestNode(g, way[0][0], way[0][1])), ...along, this.w(trig[0], trig[1])];
+    return this.fromOutOfView(route);
+  }
+
+  /** ORDER 319b — den nyfikna går vidare åt samma håll som hen kom, längs gångvägen och ut i byn. */
+  private curiousWalkOn(w: TruckWalker): Vec2[] {
+    const g = walkNetwork();
+    const goingEast = w.curious!.side === 'west';
+    const on = goingEast ? CURIOUS_SPOTS.walkOn.east : CURIOUS_SPOTS.walkOn.west;
+    // Gångvägens punkter bortom vändpunkten, åt det håll hen går (västra änden, eller österut förbi däcket).
+    const ahead = (goingEast ? WALKWAY.slice(1) : WALKWAY.slice(0, 1)).map((p) => this.w(p[0], p[1]));
+    const end = ahead[ahead.length - 1] ?? this.w(on[0], on[1]);
+    return [this.w(on[0], on[1]), ...ahead, ...routeBetween(g, nearestNode(g, end[0], end[1]), this.source(w.id, 7, end))];
+  }
+
+  /** Var den nyfikna står vid skylten, ur simuleringens tid sedan hen saktade in. */
+  private curiousTarget(side: 'west' | 'east', real: number): Vec2 {
+    const p = CURIOUS.phaseSeconds;
+    const k = Math.max(0, Math.min(1, real / (p.slowDown + p.toSign)));
+    const e = k * k * (3 - 2 * k);
+    const a = CURIOUS_SPOTS.trigger[side], b = CURIOUS_SPOTS.readSpot;
+    return this.w(a[0] + (b[0] - a[0]) * e, a[1] + (b[1] - a[1]) * e);
+  }
+
+  private newWalker(id: string, path: Vec2[], spot: Spot | null): TruckWalker {
+    const [x, z] = path[0];
+    return { id, look: hash(id) % this.looks, x, z, yaw: 0, path: path.slice(1), spot, leaving: false, walkedM: 0, settled: false, holdS: 0, segFrom: [x, z], settledAt: 0, outcomeAt: 0 };
+  }
+
+  private setPath(w: TruckWalker, path: Vec2[]): void {
+    w.path = path;
+    w.segFrom = [w.x, w.z];
+  }
+
+  /** ORDER 319b — de nyfikna: en ny figur på väg in, vid skylten, och utfallet (kön eller vidare). */
+  private curious(c: CuriousInput | null | undefined, guestIds: ReadonlySet<string>, spots: Map<string, Spot>, events: FlowEvent[]): void {
+    const cur = c?.current ?? null;
+    if (cur && !this.walkers.has(curiousKey(cur.seq))) {
+      const w = this.newWalker(curiousKey(cur.seq), this.curiousArrival(cur.seq, cur.side), null);
+      w.curious = { seq: cur.seq, side: cur.side, stage: 'approach' };
+      this.walkers.set(w.id, w);
+      events.push({ kind: 'spawn', id: w.id, x: w.x, z: w.z });
+    }
+    for (const w of [...this.walkers.values()]) {
+      const cw = w.curious;
+      if (!cw || cw.stage === 'walkOn') continue;
+      if (cur && cur.seq === cw.seq) {
+        if (cur.approachLeft <= 0 && cw.stage === 'approach' && w.path.length <= 1) cw.stage = 'act';
+        continue;
+      }
+      // Utfallet: ställer sig i kön (figuren blir gästen) eller går vidare.
+      const last = c?.last?.seq === cw.seq ? c.last : null;
+      w.outcomeAt = this.clock;
+      const turn = CLIPS['guest.turnToHatch'].seconds.normal, shake = CLIPS['guest.shakeHead'].seconds.normal;
+      if (last?.outcome === 'join' && last.guestId && guestIds.has(last.guestId) && !this.walkers.has(last.guestId)) {
+        this.walkers.delete(w.id);
+        events.push({ kind: 'rename', id: last.guestId, x: w.x, z: w.z, from: w.id });
+        const spot = spots.get(last.guestId) ?? null;
+        w.id = last.guestId;
+        w.curious = undefined;
+        w.fromCurious = cw.seq;
+        w.spot = spot;
+        w.settled = false;
+        w.holdS = turn;
+        if (spot) {
+          const v = CURIOUS_SPOTS.joinVia;
+          const c0 = Math.cos(this.frame.rotationY), s0 = Math.sin(this.frame.rotationY);
+          this.setPath(w, [[spot.x + v[0] * c0 + v[1] * s0, spot.z - v[0] * s0 + v[1] * c0], [spot.x, spot.z]]);
+        }
+        this.walkers.set(w.id, w);
+        continue;
+      }
+      if (last?.outcome === 'join' && !(last.guestId && guestIds.has(last.guestId))) continue;
+      cw.stage = 'walkOn';
+      w.leaving = true;
+      w.settled = false;
+      w.holdS = last?.grade === 'wrong' ? shake : 0;
+      this.setPath(w, this.curiousWalkOn(w));
+    }
+  }
+
+  /** Ett steg: nya gäster börjar gå in, de som gått går ut, alla rör sig dt sekunder (spelets fart). */
+  update(guests: readonly FlowGuest[], waitingIds: readonly string[], dt: number, curious?: CuriousInput | null): FlowEvent[] {
+    this.clock += dt;
     const events: FlowEvent[] = [];
     const live = guests.filter((g) => LIVE.has(g.state));
     const spots = this.spots(live, waitingIds);
+    this.curious(curious, new Set(live.map((g) => g.id)), spots, events);
     for (const g of live) {
       const spot = spots.get(g.id) ?? null;
       let w = this.walkers.get(g.id);
       if (!w) {
         if (!spot) continue;
-        const path = this.arrivalPath(g.id, spot);
-        const [x, z] = path[0];
-        w = { id: g.id, look: hash(g.id) % this.looks, x, z, yaw: 0, path: path.slice(1), spot, leaving: false, walkedM: 0, settled: false };
+        w = this.newWalker(g.id, this.arrivalPath(g.id, spot), spot);
         this.walkers.set(g.id, w);
-        events.push({ kind: 'spawn', id: g.id, x, z });
+        events.push({ kind: 'spawn', id: g.id, x: w.x, z: w.z });
         continue;
       }
       if (w.leaving) continue;
       const moved = !w.spot || !spot || Math.hypot(w.spot.x - spot.x, w.spot.z - spot.z) > 0.01;
       w.spot = spot;
       // En ny plats: går dit raka vägen när figuren redan är framme vid vagnen.
-      if (moved && spot && w.path.length <= 1) { w.path = [[spot.x, spot.z]]; w.settled = false; }
+      if (moved && spot && w.path.length <= 1) { this.setPath(w, [[spot.x, spot.z]]); w.settled = false; }
       else if (moved && spot && w.path.length > 1) w.path[w.path.length - 1] = [spot.x, spot.z];
     }
     const liveIds = new Set(live.map((g) => g.id));
     for (const w of this.walkers.values()) {
-      if (!w.leaving && !liveIds.has(w.id)) { w.leaving = true; w.spot = null; w.settled = false; w.path = this.departurePath(w); }
+      if (!w.leaving && !w.curious && !liveIds.has(w.id)) { w.leaving = true; w.spot = null; w.settled = false; this.setPath(w, this.departurePath(w)); }
     }
-    for (const w of [...this.walkers.values()]) {
+    // Riktningen och farten före steget (väja: den som går saktar in bakom eller framför någon).
+    const cur = curious?.current ?? null;
+    const view = [...this.walkers.values()].map((w) => {
+      const t = w.path[0];
+      const d = t ? Math.hypot(t[0] - w.x, t[1] - w.z) : 0;
+      const moving = !!t && d > 1e-6 && w.holdS <= 0;
+      return { w, x: w.x, z: w.z, dirX: moving ? (t![0] - w.x) / d : 0, dirZ: moving ? (t![1] - w.z) / d : 0, moving };
+    });
+    for (const v of view) {
+      const w = v.w;
       // Den som går försvinner där den senast stod (redan ritad där): på gatan när den är minst
       // minSpawnM bort och utanför bilden, annars vid huset där vägen slutar.
-      const gone = w.leaving && ((this.dist(w.x, w.z) >= TRUCK_GUESTS.minSpawnM && !this.inView(w.x, w.z)) || w.path.length === 0);
-      if (gone) { this.walkers.delete(w.id); events.push({ kind: 'despawn', id: w.id, x: w.x, z: w.z }); continue; }
-      const hurry = !w.leaving && (w.spot?.pose === 'order' || w.spot?.pose === 'collect');
-      let step = (hurry ? TRUCK_GUESTS.hurryMps : TRUCK_GUESTS.walkMps) * dt;
+      // Prövas där figuren senast ritades (trängseln flyttar den från vägen).
+      const [sx, sz] = this.shown.get(w.id) ?? [w.x, w.z];
+      const gone = w.leaving && w.holdS <= 0 && ((this.dist(sx, sz) >= TRUCK_GUESTS.minSpawnM && !this.inView(sx, sz)) || w.path.length === 0);
+      if (gone) { this.walkers.delete(w.id); events.push({ kind: 'despawn', id: w.id, x: sx, z: sz }); continue; }
+      if (w.holdS > 0) { w.holdS = Math.max(0, w.holdS - dt); continue; }
+      // Den nyfikna vid skylten följer simuleringens tid (sakta in och gå fram, sedan stå).
+      if (w.curious?.stage === 'act' && cur?.seq === w.curious.seq) {
+        const [tx, tz] = this.curiousTarget(w.curious.side, cur.real);
+        const d = Math.hypot(tx - w.x, tz - w.z);
+        const step = Math.min(d, TRUCK_GUESTS.hurryMps * dt);
+        if (d > 1e-6) { w.x += ((tx - w.x) / d) * step; w.z += ((tz - w.z) / d) * step; w.walkedM += step; if (step > 1e-4) w.yaw = Math.atan2(tx - w.x, tz - w.z); }
+        w.path = [];
+        w.settled = d < 0.02;
+        continue;
+      }
+      let mps: number = (!w.leaving && (w.spot?.pose === 'order' || w.spot?.pose === 'collect')) ? TRUCK_GUESTS.hurryMps : TRUCK_GUESTS.walkMps;
+      // På väg in: fram till platsen där hen saktar in när simuleringen säger det.
+      if (w.curious?.stage === 'approach' && cur?.seq === w.curious.seq) {
+        const left = w.path.reduce((a, p, i) => a + Math.hypot(p[0] - (i === 0 ? w.x : w.path[i - 1][0]), p[1] - (i === 0 ? w.z : w.path[i - 1][1])), 0);
+        mps = Math.max(TRUCK_GUESTS.curiousMinMps, Math.min(TRUCK_GUESTS.curiousMaxMps, left / Math.max(dt, cur.approachLeft)));
+      }
+      const f = v.moving ? yieldFactor(w.x, w.z, v.dirX, v.dirZ, view.filter((o) => o.w !== w)) : 1;
+      let step = mps * dt * f;
       while (step > 0 && w.path.length > 0) {
         const [tx, tz] = w.path[0];
         const d = Math.hypot(tx - w.x, tz - w.z);
         if (d > 1e-6) w.yaw = Math.atan2(tx - w.x, tz - w.z);
-        if (d <= step) { w.x = tx; w.z = tz; step -= d; w.walkedM += d; w.path.shift(); }
+        if (d <= step) { w.x = tx; w.z = tz; step -= d; w.walkedM += d; w.path.shift(); w.segFrom = [tx, tz]; }
         else { w.x += ((tx - w.x) / d) * step; w.z += ((tz - w.z) / d) * step; w.walkedM += step; step = 0; }
       }
-      if (!w.leaving && w.path.length === 0 && w.spot) { w.settled = true; w.yaw = w.spot.yaw; }
+      if (!w.leaving && w.path.length === 0 && w.spot) {
+        if (!w.settled) w.settledAt = this.clock;
+        w.settled = true;
+        w.yaw = w.spot.yaw;
+      }
     }
+    this.place(dt);
     return events;
+  }
+
+  /** Där figurerna ritas: till höger på vägen (KEEP_RIGHT) och isärknuffade (PersonalSpace). */
+  private place(dt: number): void {
+    const bodies = [...this.walkers.values()].map((w) => {
+      let x = w.x, z = w.z;
+      const t = w.path[0];
+      if (t && !w.settled && w.holdS <= 0) {
+        const toEnd = Math.hypot(t[0] - w.x, t[1] - w.z), fromStart = Math.hypot(w.x - w.segFrom[0], w.z - w.segFrom[1]);
+        const L = toEnd + fromStart;
+        if (L > 1e-6) {
+          // Till höger, tonat in efter sträckans början och ut före dess slut (sista sträckan till platsen också).
+          const [rx, rz] = rightOf((t[0] - w.segFrom[0]) / L, (t[1] - w.segFrom[1]) / L);
+          const k = KEEP_RIGHT.offsetM * keepRightShare(fromStart, toEnd);
+          x += rx * k; z += rz * k;
+        }
+      }
+      return { key: w.id, x, z, kind: massOf(w) };
+    });
+    const shown = this.space.step(bodies, dt);
+    this.shown.clear();
+    for (const [k, p] of shown) this.shown.set(k, p);
   }
 }

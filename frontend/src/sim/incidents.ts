@@ -571,6 +571,8 @@ export function maybeOpenIncident(draft: SimulationState, dt: number): void {
   const inc = draft.incidents;
   if (!inc || !inc.enabled || inc.active) return;
   if (draft.day.period !== 'dinner' || !draft.day.doorsOpenedThisService) return;
+  // ORDER 319b — situationen väntar tills frågekortet till en nyfiken gäst är stängt (ett kort i taget).
+  if (draft.day.curious?.current?.card) return;
   const from = inc.doorsOpenAt ?? draft.day.doorsOpenAt ?? draft.simTime;
   const until = inc.serviceEndsAt ?? draft.simTime;
   const frac = (draft.simTime - from) / Math.max(1, until - from);

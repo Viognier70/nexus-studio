@@ -1,0 +1,92 @@
+/* ORDER 319b — de nyfikna vid foodtruckens lucka: frågekortet (CuriousCard.tsx), bubblan över huvudet och
+ * repliken från luckan (scene/village/CuriousMarker.tsx). Måtten och färgerna ur Designs D9-tillägg
+ * curiousCard.ts (CURIOUS_CARD, CURIOUS_CARD_ANSWER, HATCH_LINE) och WARM_RIGHT_WRONG. Pixlarna är
+ * Designs vid 1440 × 900 och skalas med höjden (px / 900 · 100vh). */
+
+.nx-curious-card {
+  position: fixed; right: 2.56vh; top: 50%; transform: translateY(-50%);
+  width: min(54vh, calc(100vw - 32px)); box-sizing: border-box;
+  padding: 2.22vh 2.44vh; border-radius: 2.22vh;
+  background: linear-gradient(180deg, #2e2016 0%, #231811 100%);
+  border: 1px solid rgba(215, 162, 76, .38);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 220, 160, .1);
+  color: #f5ead5; z-index: 60; pointer-events: auto;
+  animation: nx-curious-in .2s ease-out;
+}
+@keyframes nx-curious-in { from { opacity: 0; } to { opacity: 1; } }
+.nx-curious-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1.22vh; }
+.nx-curious-kicker { color: #d7a24c; font-size: max(11px, 1.45vh); letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
+.nx-curious-moment { color: #e7d6b8; font-size: max(12px, 1.6vh); margin-top: .5vh; }
+.nx-curious-arc { position: relative; width: 6vh; height: 6vh; min-width: 40px; min-height: 40px; flex: none; }
+.nx-curious-arc svg { width: 100%; height: 100%; }
+.nx-curious-arc-track { fill: none; stroke: rgba(255, 213, 143, .22); stroke-width: 5.5; }
+.nx-curious-arc-fill { fill: none; stroke: #ffd58f; stroke-width: 5.5; transition: stroke-dasharray .2s linear; }
+.nx-curious-arc span {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); color: #ffd58f; font-size: max(14px, 2.2vh);
+}
+.nx-curious-q {
+  font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); font-weight: 400;
+  font-size: max(16px, 2.5vh); line-height: 1.2; margin: 1.6vh 0 1.4vh; color: #f5ead5;
+}
+.nx-curious-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.22vh; }
+.nx-curious-row {
+  width: 100%; min-height: 5.56vh; display: flex; align-items: center; gap: 1.2vh; text-align: left;
+  padding: .9vh 1.2vh; border-radius: 1.33vh; cursor: pointer;
+  background: #f5ead5; border: 1px solid rgba(215, 162, 76, .5); color: #2a1c13;
+  font: inherit; font-size: max(13px, 1.7vh); line-height: 1.25; position: relative;
+  transition: opacity .2s ease, background-color .2s ease, border-color .2s ease;
+}
+.nx-curious-row:disabled { cursor: default; }
+.nx-curious-row:not(:disabled):hover { border-color: #f0cd82; }
+.nx-curious-key {
+  flex: none; width: 3vh; height: 3vh; min-width: 22px; min-height: 22px; border-radius: 50%;
+  display: grid; place-items: center; background: #2a1c13; color: #f5ead5; font-weight: 700; font-size: max(11px, 1.45vh);
+}
+.nx-curious-text { flex: 1; }
+.nx-curious-row[data-look='right'] { background: #5cb86a; border-color: #3f9a52; animation: nx-curious-lift .48s ease-out; }
+.nx-curious-row[data-look='right'] .nx-curious-key { background: #3f9a52; }
+.nx-curious-row[data-look='ok'] { background: #f5ead5; border: 2px solid #b98a3c; animation: nx-curious-rise .26s ease-out; }
+.nx-curious-row[data-look='ok'] .nx-curious-key { background: #b98a3c; }
+.nx-curious-row[data-look='wrong'] { background: #e0533f; border-color: #b8392a; animation: nx-curious-shake .38s ease-out; }
+.nx-curious-row[data-look='wrong'] .nx-curious-key { background: #b8392a; }
+.nx-curious-row[data-look='held'] { border: 3px dashed #5cb86a; }
+.nx-curious-row[data-look='dim'] { opacity: .38; }
+.nx-curious-held { color: #2f7a3f; font-weight: 700; font-size: max(11px, 1.35vh); flex: none; }
+@keyframes nx-curious-lift { 0% { transform: translateY(0); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0); } }
+@keyframes nx-curious-rise { from { transform: translateY(1.5vh); opacity: .6; } to { transform: none; opacity: 1; } }
+@keyframes nx-curious-shake {
+  0%, 100% { transform: translateX(0); } 15% { transform: translateX(-7px); } 30% { transform: translateX(7px); }
+  45% { transform: translateX(-5px); } 60% { transform: translateX(5px); } 75% { transform: translateX(-2px); } 90% { transform: translateX(2px); }
+}
+.nx-curious-paper {
+  margin-top: 1.4vh; padding: 1.3vh 1.5vh; border-radius: 1.33vh; background: #f5ead5; color: #2a1c13;
+  font-size: max(13px, 1.65vh); line-height: 1.35; animation: nx-curious-paper .24s ease-out;
+}
+.nx-curious-paper p { margin: .6vh 0 0; }
+@keyframes nx-curious-paper { from { transform: translateY(2vh); opacity: 0; } to { transform: none; opacity: 1; } }
+.nx-curious-pill { display: inline-block; padding: .2vh 1vh; border-radius: 999px; font-weight: 700; font-size: max(11px, 1.35vh); color: #2a1c13; }
+.nx-curious-pill[data-grade='right'] { background: #5cb86a; }
+.nx-curious-pill[data-grade='ok'] { background: #e3cfa6; }
+.nx-curious-pill[data-grade='wrong'] { background: #e0533f; }
+
+/* Bubblan över huvudet (CURIOUS_MARKER). Html i scenen; själva bubblan tar emot pekaren. */
+.nx-curious-bubble {
+  pointer-events: auto; cursor: pointer; transform-origin: 50% 100%;
+  transition: transform .15s ease-out, opacity .3s ease;
+  filter: drop-shadow(0 2px 3px rgba(20, 12, 7, .35));
+  animation: nx-curious-in .3s ease-out;
+}
+
+/* Repliken från luckan (HATCH_LINE): papper med mässingskant, 72 % åt vänster om spetsen. */
+.nx-hatch-line {
+  pointer-events: none; transform-origin: 72% 100%; translate: -22% -100%;
+  background: #f5ead5; border: 2px solid #b98a3c; border-radius: 14px; padding: 8px 12px; max-width: 260px;
+  color: #2a1c13; box-shadow: 0 6px 18px rgba(0, 0, 0, .35); animation: nx-curious-in .25s ease-out; white-space: normal;
+}
+.nx-hatch-line-sender { color: #6b4a2e; text-transform: uppercase; letter-spacing: .06em; font-size: 10px; font-weight: 700; }
+.nx-hatch-line-text { font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); font-size: 15px; line-height: 1.2; margin-top: 2px; width: max-content; max-width: 236px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-curious-card, .nx-curious-row, .nx-curious-paper, .nx-curious-bubble, .nx-hatch-line { animation: none !important; transition: none !important; }
+}

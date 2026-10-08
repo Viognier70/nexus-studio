@@ -1,0 +1,60 @@
+{
+  "definition": "En kväll per frö och verksamhet i simuleringen (tick 0,2 s). minM: det minsta avståndet mellan två synliga figurers mittpunkter där scenen ritar dem (foodtrucken: truckGuestFlow.ts shown; rummen: regissörens punkter efter PersonalSpace som i WineBarFigures.tsx). rawMinM: samma utan trängseln (vägens punkter). below/rawBelow: antal par-tick under 0,35 m.",
+  "minM": 0.35,
+  "readings": [
+    {
+      "business": "foodtruck",
+      "ticks": 3001,
+      "pairs": 408129,
+      "rawMinM": 0,
+      "minM": 0.402,
+      "rawBelow": 1956,
+      "below": 0
+    },
+    {
+      "business": "foodtruck",
+      "ticks": 3001,
+      "pairs": 270790,
+      "rawMinM": 0,
+      "minM": 0.401,
+      "rawBelow": 2364,
+      "below": 0
+    },
+    {
+      "business": "vinbaren",
+      "ticks": 3001,
+      "pairs": 515498,
+      "rawMinM": 0,
+      "minM": 0.403,
+      "rawBelow": 1079,
+      "below": 0
+    },
+    {
+      "business": "bistron",
+      "ticks": 3001,
+      "pairs": 500670,
+      "rawMinM": 0,
+      "minM": 0.403,
+      "rawBelow": 1076,
+      "below": 0
+    },
+    {
+      "business": "vinbaren",
+      "ticks": 3001,
+      "pairs": 522612,
+      "rawMinM": 0,
+      "minM": 0.404,
+      "rawBelow": 898,
+      "below": 0
+    },
+    {
+      "business": "bistron",
+      "ticks": 3001,
+      "pairs": 545258,
+      "rawMinM": 0,
+      "minM": 0.401,
+      "rawBelow": 942,
+      "below": 0
+    }
+  ]
+}

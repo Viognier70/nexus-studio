@@ -1,0 +1,138 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "minSpawnM": 40,
+  "errors": [],
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 900,
+      "level": "room",
+      "shots": [
+        "check-sv-1440x900-1-bubblan.png",
+        "check-sv-1440x900-1-kortet.png",
+        "check-sv-1440x900-1-svaret.png",
+        "check-sv-1440x900-1-scenen.png",
+        "check-sv-1440x900-1-efter.png",
+        "check-sv-1440x900-2-bubblan.png",
+        "check-sv-1440x900-2-kortet.png",
+        "check-sv-1440x900-2-svaret.png",
+        "check-sv-1440x900-2-scenen.png",
+        "check-sv-1440x900-2-efter.png",
+        "check-sv-1440x900-3-ingen-pratar.png"
+      ],
+      "encounters": [
+        {
+          "plan": "right",
+          "seq": 1,
+          "bubble": true,
+          "hoverState": "hover",
+          "card": {
+            "incidentId": "ft01-rusningen",
+            "step": 0,
+            "question": 7,
+            "moment": "sign"
+          },
+          "hatchLine": true,
+          "outcome": "join",
+          "grade": "right"
+        },
+        {
+          "plan": "wrong",
+          "seq": 2,
+          "bubble": true,
+          "hoverState": "hover",
+          "card": {
+            "incidentId": "ft03-rullen",
+            "step": 2,
+            "question": 12,
+            "moment": "sign"
+          },
+          "hatchLine": false,
+          "outcome": "walkOn",
+          "grade": "wrong"
+        },
+        {
+          "plan": "none",
+          "seq": 3,
+          "bubble": true,
+          "outcome": "walkOn"
+        }
+      ],
+      "tonight": {
+        "passersBy": 3,
+        "talked": 2,
+        "right": 1,
+        "ok": 0,
+        "wrong": 1,
+        "unanswered": 1,
+        "joined": 1,
+        "friends": 1,
+        "queueFull": 0
+      },
+      "frames": 6591,
+      "seen": 29,
+      "spawnInView": [],
+      "despawnInView": [],
+      "spawnNear": [],
+      "despawnNear": [],
+      "minGapM": 0.43062556932751556,
+      "maxFigures": 23,
+      "curiousFigures": 2,
+      "stop": true,
+      "done": true
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "level": "room",
+      "shots": [
+        "check-sv-1280x720-1-bubblan.png",
+        "check-sv-1280x720-1-kortet.png",
+        "check-sv-1280x720-1-svaret.png",
+        "check-sv-1280x720-1-scenen.png",
+        "check-sv-1280x720-1-efter.png"
+      ],
+      "encounters": [
+        {
+          "plan": "right",
+          "seq": 1,
+          "bubble": true,
+          "hoverState": "hover",
+          "card": {
+            "incidentId": "ft01-rusningen",
+            "step": 0,
+            "question": 7,
+            "moment": "sign"
+          },
+          "hatchLine": true,
+          "outcome": "join",
+          "grade": "right"
+        }
+      ],
+      "tonight": {
+        "passersBy": 1,
+        "talked": 1,
+        "right": 1,
+        "ok": 0,
+        "wrong": 0,
+        "unanswered": 0,
+        "joined": 1,
+        "friends": 1,
+        "queueFull": 0
+      },
+      "frames": 1320,
+      "seen": 4,
+      "spawnInView": [],
+      "despawnInView": [],
+      "spawnNear": [],
+      "despawnNear": [],
+      "minGapM": 0.4745664081996911,
+      "maxFigures": 9,
+      "curiousFigures": 0,
+      "stop": true,
+      "done": true
+    }
+  ],
+  "ok": true
+}

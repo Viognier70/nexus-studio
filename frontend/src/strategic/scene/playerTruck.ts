@@ -41,7 +41,9 @@ export const TRUCK_LAYOUT = {
     collect: [0.9, 2.15] as Vec2,
     line: [[-1.4, 2.3], [-2.3, 2.3], [-3.2, 2.3], [-4.1, 2.3], [-5.0, 2.3], [-5.9, 2.3]] as Vec2[]
   },
-  aBoard: [-2.8, 1.5] as Vec2,
+  // ORDER 319b — Designs D9 (truckProps.ts menuBoard): skylten flyttad från [−2,8, 1,5] bakom kön till
+  // framför kön, vänd mot torget, så att den går att läsa från gångvägen (truckProps.ts MENU_BOARD).
+  aBoard: [-2.2, 3.5] as Vec2,
   /** Det tillfälliga serveringsområdet: pallar som trädäck, fyra planteringslådor med stolpar för ljusslingan. */
   servingArea: { x0: 3.0, x1: 6.2, z0: 0.2, z1: 3.8 },
   standTables: { A: [3.9, 1.2] as Vec2, B: [5.4, 1.2] as Vec2, C: [4.65, 2.9] as Vec2, radius: 0.34, height: 1.1 },
@@ -178,7 +180,15 @@ export function makePlayerTrailer(pips = 1): THREE.Group {
       add(new THREE.SphereGeometry(0.05, 6, 4), lights, a[0] + (b[0] - a[0]) * t, 2.7 - 0.25 * Math.sin(Math.PI * t), a[1] + (b[1] - a[1]) * t, 'stringLight');
     }
   }
-  // Tavlan vid kön.
-  add(new THREE.BoxGeometry(0.06, 0.9, 0.6), m('#2b2a28'), L.aBoard[0], 0.55, L.aBoard[1], 'trailerABoard');
+  // Tavlan vid kön: en gatupratare (D9 menuBoard, 0,60 × 0,95 m, fotavtryck 0,64 × 0,46 m), griffeltavla i
+  // träram, vänd mot söder. Två tavlor som lutar mot varandra; texten visas i HUD:en, inte i modellen.
+  const boardTilt = Math.atan2(0.46 / 2, 0.95);
+  for (const side of [1, -1]) {
+    const panel = add(new THREE.BoxGeometry(0.6, 0.95, 0.04), m('#5e4b3a'), L.aBoard[0], 0.95 / 2 * Math.cos(boardTilt), L.aBoard[1] + side * 0.46 / 4, side > 0 ? 'trailerABoard' : 'trailerABoardBack');
+    panel.rotation.x = -side * boardTilt;
+    const slate = add(new THREE.BoxGeometry(0.5, 0.8, 0.01), m('#2b2a28'), 0, 0, side * 0.025, side > 0 ? 'trailerABoardSlate' : 'trailerABoardSlateBack');
+    g.remove(slate);
+    panel.add(slate);
+  }
   return g;
 }

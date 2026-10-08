@@ -876,6 +876,55 @@ export const FOODTRUCK = {
   queuePerStaff: 3
 } as const;
 
+// ORDER 319b (Anders 2026-10-07 och 2026-10-08) — de nyfikna vid foodtruckens lucka (sim/curious.ts,
+// Designs D9 curiousMarker.ts och tilläggets curiousCard.ts). En förbipasserande blir nyfiken,
+// läser skylten, luktar och tvekar. Ett klick öppnar en fråga ur foodtruckens bank, och svaret avgör:
+// rätt ställer sig i kön (ibland med en vän), nästan tvekar och köper kanske, fel går vidare. Utan svar
+// går gästen vidare efter windowSeconds. Högst en nyfiken åt gången.
+export const CURIOUS = {
+  section: 'Servicen',
+  // Spelsekunder mellan två nyfikna (efter att den förra har gått eller ställt sig i kön), gånger
+  // 1 ± gapJitter ur simtiden. Spelsekunder, så att antalet per kväll inte beror på farten.
+  gapSimSeconds: 25,
+  gapJitter: 0.5,
+  // Andelen som kommer från väster på gångvägen (resten från öster).
+  westShare: 0.5,
+  // Spelsekunder från att figuren börjar gå (utanför bild, minst 40 m bort) tills den saktar in vid skylten.
+  approachSimSeconds: 30,
+  // Ingen ny nyfiken när servicen har mindre än så här kvar (spelsekunder).
+  minServiceLeftSimSeconds: 90,
+  // ORDER 319b.3: den som inte får något svar går vidare efter 20 s (verkliga sekunder från att gästen
+  // saktar in; står still medan kortet är öppet).
+  windowSeconds: 20,
+  // Designs tidslinje efter att gästen saktat in, verkliga sekunder i normalt tempo (curiousClips.ts,
+  // tillaggClips.ts): sakta in, gå 3,55 m till skylten i 0,7 m/s, läsa, lukta och peka, titta på
+  // klockan. Sedan tvekar gästen till windowSeconds. Kortets fråga följer vad gästen gör (CURIOUS_QUESTIONS.pick).
+  phaseSeconds: { slowDown: 1.4, toSign: 5.1, read: 2.6, smell: 2.2, watch: 1.6 },
+  // Kortet (curiousCard.ts): tidsbågen, och efter svaret när scenen svarar, när medhjälparen vinkar,
+  // när förklaringen kommer och när kortet stängs (sekunder från trycket). In- och uttoning.
+  card: { seconds: 8, sceneAtSeconds: 0.35, beckonAtSeconds: 0.7, paperAtSeconds: 0.65, closeAtSeconds: 4, fadeInSeconds: 0.2, fadeOutSeconds: 0.3 },
+  // Nästan: gästen tvekar, tittar på klockan och tvekar igen (2,8 + 1,6 + 2,2 s), och ställer sig sedan i
+  // kön med okJoinChance.
+  okHoldSeconds: 6.6,
+  okJoinChance: 0.5,
+  // Rätt: ibland kommer en vän med (ORDER 319b.2). Vännen kommer gående från byn.
+  friendChance: 0.3,
+  // Krediterna är små (ORDER 319b.2): en situations steg ger INCIDENTS.bestAnswerCredit.
+  creditRight: 0.25,
+  // Repliken från luckan (HATCH_LINE): fyra varianter i tur och ordning, så här länge.
+  hatchLineSeconds: 3.6,
+  hatchLines: 4
+} as const;
+
+// ORDER 319b (Designs D9-tillägg guestBodyLanguage.ts) — kroppsspråket i kön vid vagnen: en blick på
+// klockan efter patienceSeconds, sedan var watchEverySeconds, förskjutet per gäst.
+export const STREET_QUEUE = {
+  section: 'Servicen',
+  patienceSeconds: 7,
+  watchEverySeconds: 6,
+  offsetPerGuestSeconds: 1.5
+} as const;
+
 // ORDER 271 (Vision Owner, FRAGOR §50): rutan utan verksamhet och pengar
 // (Design paket 6, X1) visas när spelaren saknar verksamhet och kassan är
 // under minsta insats: en fjärdedel av en veckas golv, som kontantinsatsen

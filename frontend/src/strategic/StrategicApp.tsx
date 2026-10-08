@@ -23,6 +23,7 @@ import { ScenarioOverlay } from './scenario/ScenarioOverlay';
 import { DayActionBar } from './scenario/DayActionBar';
 import { EveningBar } from './scenario/EveningBar';
 import { IncidentCard } from './scenario/IncidentPanel';
+import { CuriousCard } from './ui/curious/CuriousCard';
 import { ClosedBox } from './economy/ClosedBox';
 import { RivalBand } from './ui/host/RivalBand';
 import { NoBusinessBox } from './economy/NoBusinessBox';
@@ -403,6 +404,8 @@ function StrategicShell() {
       {/* ORDER 290 — kameran till krogen när servicen och raketen börjar. */}
       <ServiceCamera />
       <IncidentCard />
+      {/* ORDER 319b — frågekortet vid en nyfiken gäst vid foodtruckens lucka. */}
+      <CuriousCard />
       {/* ORDER 299 — svarens händelser som notiser i rummets fria del. */}
       <RoomNotices />
       <RoomCameraBounds />
