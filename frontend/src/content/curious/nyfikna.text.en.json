@@ -77,7 +77,7 @@
    "options": {
     "a": "No, on gas. The smoke comes from the fat dripping down.",
     "b": "Yes, that's why it smells like that.",
-    "c": "It's an ordinary electric grill.",
+    "c": "No, but the sausages are properly grilled.",
     "d": "I don't know."
    },
    "why": "The truck grills on gas. The smoky smell comes from fat dripping onto the hot surface and vaporising. An honest answer beats letting the guest believe something else."
@@ -175,12 +175,12 @@
   "n18": {
    "q": "Is the mustard too strong for a five-year-old?",
    "options": {
-    "a": "The Skåne mustard is sweet and mild, otherwise ketchup works.",
+    "a": "Have the mild mustard, or ketchup. The Skåne one is quite strong.",
     "b": "Have ketchup, then you're safe.",
     "c": "Children should get used to strong food.",
     "d": "I don't know."
    },
-   "why": "The parent wants the child to enjoy the sausage. A mild option, and a safe fallback, answer the question.",
+   "why": "Skåne mustard is sweet and strong. For a child, mild mustard or ketchup suits better.",
    "speaker": "parent"
   },
   "n19": {

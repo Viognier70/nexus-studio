@@ -494,7 +494,10 @@ export const STRINGS = {
   'curious.moment.price': { sv: 'Tittar på priserna på skylten.', en: 'Looking at the prices on the board.' },
   'curious.moment.child': { sv: 'Kommer fram med ett barn i handen.', en: 'Coming over with a child by the hand.' },
   'curious.speaker.parent': { sv: 'Föräldern', en: 'The parent' },
-  'curious.speaker.child': { sv: 'Barnet pekar på grillen', en: 'The child points at the grill' }
+  'curious.speaker.child': { sv: 'Barnet pekar på grillen', en: 'The child points at the grill' },
+  // Anders 2026-10-08 (n04, n18): vegokorven och den milda senapen på vagnens meny och skylt (menu.*).
+  'menu.veggie': { sv: 'Vegokorv {price}', en: 'Veggie sausage {price}' },
+  'menu.condiments': { sv: 'Senap, skånsk och mild, och ketchup', en: 'Mustard, Scanian and mild, and ketchup' }
 } satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;
@@ -563,8 +566,8 @@ export const TABLE = {
     },
     truckMenuLabel: { sv: 'Kvällens meny vid luckan', en: 'Tonight’s menu at the hatch' },
     truckMenu: {
-      sv: 'Grillkorv med bröd, tunnbrödsrulle med räksallad och mos, och dryck. Varorna köps in efter hur kön går.',
-      en: 'Grilled sausage in a bun, a flatbread roll with prawn salad and mash, and drinks. The goods are bought in as the queue goes.'
+      sv: 'Grillkorv med bröd, vegokorv från en egen del av grillen, tunnbrödsrulle med räksallad och mos, senap (skånsk och mild) och ketchup, läsk och kaffe. Varorna köps in efter hur kön går.',
+      en: 'Grilled sausage in a bun, veggie sausage from its own part of the grill, a flatbread roll with prawn salad and mash, mustard (Scanian and mild) and ketchup, fizzy drinks and coffee. The goods are bought in as the queue goes.'
     },
     truckPrice: { sv: 'Ingen insats och inget lån. Platsen vid Torget kostar en avgift i veckan.', en: 'No deposit and no loan. The pitch on the square costs a weekly fee.' },
     take: { sv: 'Ta över', en: 'Take over' },

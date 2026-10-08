@@ -15,6 +15,8 @@ import { CURIOUS, REPUTATION } from '../balance';
 import { curiousMoment, curiousOf, curiousTalkable } from '../curious';
 import { CURIOUS_FILES, CURIOUS_QUESTIONS, CURIOUS_TRIGGERS, curiousQuestion, validateCuriousBank } from '../curiousBank';
 import type { SimulationState } from '../../strategic/types';
+import { TABLE, t as tt } from '../../content/nexusStrings';
+import { makePlayerTrailer } from '../../strategic/scene/playerTruck';
 
 const TICK = { type: 'TICK', dt: 0.2 } as const;
 
@@ -180,5 +182,38 @@ describe('ORDER 319b del 2 — de nyfiknas frågor (NYFIKNA_FRAGOR_319.md)', () 
     const errors = validateCuriousBank(meta, [sv]);
     expect(errors.some((e) => e.startsWith('n01'))).toBe(true);
     expect(errors.some((e) => e.startsWith('n02'))).toBe(true);
+  });
+});
+
+describe('Anders beslut 2026-10-08 om frågorna n04, n08, n15 och n18', () => {
+  const sv = (id: string) => CURIOUS_FILES.sv.texts[id];
+  const en = (id: string) => CURIOUS_FILES.en.texts[id];
+  const quality = (id: string, o: string) => curiousQuestion(id)!.options.find((x) => x.id === o)!.quality;
+
+  it('n04: vegokorven står på vagnens meny och skylt, och grillas på en egen del med egen tång', () => {
+    expect(tt('sv', 'menu.veggie')).toContain('Vegokorv');
+    expect(TABLE.ladder.truckMenu.sv).toContain('vegokorv');
+    const truck = makePlayerTrailer();
+    for (const name of ['trailerGrillDivider', 'trailerTongsMeat', 'trailerTongsVeggie']) expect(truck.getObjectByName(name)).toBeTruthy();
+    expect(sv('n04').q).toBe('Har ni något utan kött?');
+  });
+
+  it('n08: svar 3 är "grillad på riktigt" och nästan', () => {
+    expect(sv('n08').options.c).toBe('Nej, men korven är grillad på riktigt.');
+    expect(en('n08').options.c).toBe('No, but the sausages are properly grilled.');
+    expect(quality('n08', 'c')).toBe('ok');
+  });
+
+  it('n18: det rätta svaret är den milda senapen eller ketchup, och den milda senapen finns på vagnen', () => {
+    expect(sv('n18').options.a).toBe('Ta den milda senapen, eller ketchup. Den skånska är ganska stark.');
+    expect(sv('n18').why).toBe('Skånsk senap är sötstark. Till ett barn passar mild senap eller ketchup bättre.');
+    expect(quality('n18', 'a')).toBe('right');
+    expect(tt('sv', 'menu.condiments')).toContain('mild');
+    expect(TABLE.ladder.truckMenu.sv).toContain('mild');
+  });
+
+  it('n15: kaffet står på vagnens meny', () => {
+    expect(tt('sv', 'menu.drinks')).toContain('kaffe');
+    expect(TABLE.ladder.truckMenu.sv).toContain('kaffe');
   });
 });

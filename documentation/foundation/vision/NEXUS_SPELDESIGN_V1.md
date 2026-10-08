@@ -284,6 +284,8 @@ Förebilden är *Two Point Hospital* och *Game Dev Tycoon*: att flytta till stö
 
 *Beslut 2026-10-08 (Vision Owner, kunskapen vid luckan):* vagnens kapacitet ökas inte, eftersom det är verkligt att en foodtruck har en gräns. Kunskapen syns i stället i att köpet blir större, att gästen kommer tillbaka en senare kväll som stamgäst och att ryktet stiger. Mer kapacitet kan bli en satsning som spelaren köper, som en andra grill. De nyfikna har egna frågor i gästens röst, och frågan väljs efter vad gästen gör i bild: läser skylten, luktar på röken, fryser, ser på priset eller kommer med barn. Frågor om livsmedelssäkerhet är märkta ⚖ och dolda tills de är granskade. Medhjälparen vid luckan heter inte Elin, som finns i vinbaren.
 
+*Beslut 2026-10-08 (Vision Owner, vagnens meny):* vagnen har vegokorv, grillad på en egen del av grillen med egen tång, mild senap bredvid den skånska, ketchup och kaffe, på menyn och skylten. De nyfiknas svar ska stämma med vagnen: den grillar på gas, och skånsk senap är sötstark, så ett barn får den milda senapen eller ketchup. Den andra grillen som satsning väntar. Vännen till en gäst som svarat rätt kommer gående från byn.
+
 ## Servicen
 
 Servicen är slumpen, viktad av spelarens förberedelser. Det spelaren gjort på morgonen, och det hon kan, avgör hur ofta saker går rätt. Hon ser konsekvenserna i rummet, inte i siffertavlor.

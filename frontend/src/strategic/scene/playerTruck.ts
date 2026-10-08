@@ -31,6 +31,9 @@ export const TRUCK_LAYOUT = {
   awning: { x0: -1.5, x1: 1.5, z0: 1.15, z1: 1.85, height: 2.25 },
   counter: { x0: -1.35, x1: 1.35, z0: 0.7, z1: 1.0, top: 0.95 },
   grill: { x0: 0.85, x1: 1.95, z0: -0.95, z1: -0.35, top: 0.92, items: 3 },
+  // Anders 2026-10-08 (n04): vegokorven grillas på en egen del av grillen, med egen tång. Delen är
+  // grillens östra fjärdedel, avskild med en kant; varje del har sin tång (grön för vegokorven).
+  veggieGrill: { x0: 1.68, divider: 1.66, tongs: { meat: [1.2, -0.42] as Vec2, veggie: [1.82, -0.42] as Vec2 } },
   chimney: [1.75, -0.85] as Vec2,
   roofSign: { x0: -1.3, x1: 1.3, z0: -1.3, z1: -1.05, pips: 3 },
   stations: { grill: [1.4, -0.1] as Vec2, hatch: [0, 0.45] as Vec2 },
@@ -129,6 +132,13 @@ export function makePlayerTrailer(pips = 1): THREE.Group {
   const CT = L.counter, GR = L.grill;
   add(new THREE.BoxGeometry(CT.x1 - CT.x0, CT.top, CT.z1 - CT.z0), m(C.counter), (CT.x0 + CT.x1) / 2, bodyY0 + CT.top / 2, (CT.z0 + CT.z1) / 2, 'trailerCounter');
   add(new THREE.BoxGeometry(GR.x1 - GR.x0, GR.top, GR.z1 - GR.z0), m(C.grill), (GR.x0 + GR.x1) / 2, bodyY0 + GR.top / 2, (GR.z0 + GR.z1) / 2, 'trailerGrill');
+  // Vegokorvens egen del: en kant över grillen och en tång per del, liggande på grillens framkant.
+  const VG = L.veggieGrill, grillTop = bodyY0 + GR.top;
+  add(new THREE.BoxGeometry(0.02, 0.05, GR.z1 - GR.z0), m('#9a9894'), VG.divider, grillTop + 0.025, (GR.z0 + GR.z1) / 2, 'trailerGrillDivider');
+  for (const [k, [x, z], col] of [['Meat', VG.tongs.meat, '#9a9894'], ['Veggie', VG.tongs.veggie, '#4f7a3f']] as [string, Vec2, string][]) {
+    const tongs = add(new THREE.BoxGeometry(0.03, 0.015, 0.26), m(col), x, grillTop + 0.01, z, 'trailerTongs' + k);
+    tongs.rotation.y = 0.35;
+  }
   add(new THREE.BoxGeometry(L.counter.x1 - L.counter.x0, 0.05, 0.3), m(C.counter), 0, sill, B.z1 + 0.12, 'trailerHatchShelf');
   // Markisen: hel duk i grädde, bågad kant i karossens blå.
   const A = L.awning;

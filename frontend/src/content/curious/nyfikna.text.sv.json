@@ -77,7 +77,7 @@
    "options": {
     "a": "Nej, på gas. Röken kommer från fettet som droppar.",
     "b": "Ja, det är därför det luktar så.",
-    "c": "Det är en vanlig elgrill.",
+    "c": "Nej, men korven är grillad på riktigt.",
     "d": "Det vet jag inte."
    },
    "why": "Vagnen grillar på gas. Doften av rök kommer från fett som droppar ner på det heta och förångas. Att svara ärligt är bättre än att låta gästen tro något annat."
@@ -175,12 +175,12 @@
   "n18": {
    "q": "Är senapen stark för en femåring?",
    "options": {
-    "a": "Den skånska är söt och mild, annars passar ketchup.",
+    "a": "Ta den milda senapen, eller ketchup. Den skånska är ganska stark.",
     "b": "Ta ketchup, så är det säkert.",
     "c": "Barn ska vänja sig vid stark mat.",
     "d": "Det vet jag inte."
    },
-   "why": "Föräldern vill att barnet ska få en god korv. Ett milt alternativ, och ett säkert reservval, svarar på frågan.",
+   "why": "Skånsk senap är sötstark. Till ett barn passar mild senap eller ketchup bättre.",
    "speaker": "parent"
   },
   "n19": {
