@@ -30,6 +30,7 @@ import { setFlowLayout } from '../serviceFlow';
 import { createRoomDirector, roomMass } from '../WineBarFigures';
 import { PersonalSpace, type SpaceBody } from '../personalSpace';
 import type { SimulationState } from '../../types';
+import { truckOf, truckRaining, type TruckWeatherKind } from '../../../sim/truckLife';
 
 const MIN_M = 0.35;
 const TICK_S = 0.2;
@@ -51,7 +52,7 @@ function count(r: Reading, raw: ReadonlyArray<[number, number]>, shown: Readonly
   pairs(shown, (d) => { r.pairs++; r.minM = Math.min(r.minM, d); if (d < MIN_M) r.below++; });
 }
 
-function truckEvening(seed: number): Reading {
+function truckEvening(seed: number, weather?: TruckWeatherKind): Reading {
   const at = playerTruckPlacement();
   const cam = new THREE.PerspectiveCamera(42, 16 / 9, 2, 5000);
   applyCameraState(cam, truckCameraState(at));
@@ -59,8 +60,11 @@ function truckEvening(seed: number): Reading {
   const f = new THREE.Frustum().setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(cam.projectionMatrix, cam.matrixWorldInverse));
   const p = new THREE.Vector3();
   const flow = new TruckGuestFlow(at, (x, z) => [0, 1.7].some((y) => f.containsPoint(p.set(x, y, z))), 8);
-  const r = reading('foodtruck');
-  let s: SimulationState = reducer(playMorning(startInFoodtruck(seed, firstDayOfWeek(1)), { scenarioAnswer: 'best', ladder: 'never' }), { type: 'START_SERVICE' });
+  const r = reading(weather ? 'foodtruck:' + weather : 'foodtruck');
+  let m: SimulationState = playMorning(startInFoodtruck(seed, firstDayOfWeek(1)), { scenarioAnswer: 'best', ladder: 'never' });
+  // ORDER 319c — en kväll i ett bestämt väder (regnet från början), med kön under markisen och ätplatserna vid hyllan.
+  if (weather) m = { ...m, day: { ...m.day, truck: { ...truckOf(m), weather, rainFromE: weather === 'rain' ? 0 : null } } };
+  let s: SimulationState = reducer(m, { type: 'START_SERVICE' });
   for (let i = 0; i < MAX_TICKS && s.day.period === 'dinner'; i++) {
     s = answerScenario(reducer(s, { type: 'TICK', dt: TICK_S }), 'best');
     const c = curiousOf(s).current;
@@ -68,7 +72,7 @@ function truckEvening(seed: number): Reading {
     const card = curiousOf(s).current?.card;
     if (card) s = reducer(s, { type: 'CURIOUS_ANSWER', optionId: curiousQuestion(card.questionId)!.options.find((o) => o.quality === 'right')!.id });
     const cq = s.day.curious;
-    flow.update(s.guests, s.waitingIds, TICK_S, cq ? { current: cq.current, last: cq.last } : null);
+    flow.update(s.guests, s.waitingIds, TICK_S, cq ? { current: cq.current, last: cq.last } : null, { raining: truckRaining(s) });
     const raw = [...flow.walkers.values()].map((w) => [w.x, w.z] as [number, number]);
     count(r, raw, [...flow.shown.values()]);
   }
@@ -102,7 +106,9 @@ describe('ORDER 319b — trängseln: ingen gäst eller personal närmare en anna
   const out: Reading[] = [];
   it('foodtrucken, med de nyfikna', () => {
     for (const seed of [1, 2]) out.push(truckEvening(seed));
-    for (const r of out.filter((x) => x.business === 'foodtruck')) { expect(r.pairs).toBeGreaterThan(1000); expect(r.below).toBe(0); }
+    // ORDER 319c — och i regnet och en sval kväll (sim/truckLife.ts).
+    out.push(truckEvening(1, 'rain'), truckEvening(2, 'cool'));
+    for (const r of out.filter((x) => x.business.startsWith('foodtruck'))) { expect(r.pairs).toBeGreaterThan(1000); expect(r.below).toBe(0); }
   }, 300000);
   it('vinbaren och bistron', async () => {
     for (const seed of [3, 4]) { out.push(roomEvening('winebar', seed)); out.push(roomEvening('bistro', seed)); }
@@ -117,6 +123,6 @@ describe('ORDER 319b — trängseln: ingen gäst eller personal närmare en anna
         minM: MIN_M, readings: out.map((r) => ({ ...r, rawMinM: +r.rawMinM.toFixed(3), minM: +r.minM.toFixed(3) }))
       }, null, 2) + '\n');
     }
-    for (const r of out.filter((x) => x.business !== 'foodtruck')) { expect(r.pairs).toBeGreaterThan(1000); expect(r.below).toBe(0); }
+    for (const r of out.filter((x) => !x.business.startsWith('foodtruck'))) { expect(r.pairs).toBeGreaterThan(1000); expect(r.below).toBe(0); }
   }, 600000);
 });

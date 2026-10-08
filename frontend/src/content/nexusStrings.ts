@@ -497,7 +497,11 @@ export const STRINGS = {
   'curious.speaker.child': { sv: 'Barnet pekar på grillen', en: 'The child points at the grill' },
   // Anders 2026-10-08 (n04, n18): vegokorven och den milda senapen på vagnens meny och skylt (menu.*).
   'menu.veggie': { sv: 'Vegokorv {price}', en: 'Veggie sausage {price}' },
-  'menu.condiments': { sv: 'Senap, skånsk och mild, och ketchup', en: 'Mustard, Scanian and mild, and ketchup' }
+  'menu.condiments': { sv: 'Senap, skånsk och mild, och ketchup', en: 'Mustard, Scanian and mild, and ketchup' },
+  // ORDER 319c — priset på skylten (menu.* {price}) och kvällens väder vid vagnen på morgonen (weather.*).
+  'menu.price': { sv: '{n} kr', en: 'SEK {n}' },
+  'truck.forecast': { sv: 'Vädret i kväll vid vagnen: {weather}.', en: 'Tonight’s weather at the truck: {weather}.' },
+  'truck.forecastRain': { sv: 'Regnet kommer en bit in i kvällen.', en: 'The rain comes a while into the evening.' }
 } satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;

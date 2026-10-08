@@ -29,6 +29,7 @@ import { clampReputation } from '../strategic/simulation/reputation';
 import { calendarFor } from './calendar';
 import { effectiveSpeed } from '../strategic/simulation/consequence';
 import { hashKey } from '../strategic/util/hash';
+import { curiousGapFactor } from './truckLife';
 
 export type CuriousGrade = 'right' | 'ok' | 'wrong';
 /** Vad gästen gör när spelaren klickar: kortets rad om vad spelaren ser, och vilka frågor som kan komma
@@ -279,7 +280,8 @@ export function tickCurious(draft: SimulationState, dt: number): void {
   }
   c = { ...c, since: c.since + dt };
   const ends = draft.incidents?.serviceEndsAt ?? null;
-  const gap = CURIOUS.gapSimSeconds * (1 - CURIOUS.gapJitter + (CURIOUS.gapJitter + CURIOUS.gapJitter) * roll(draft, `gap${c.seq}`));
+  // ORDER 319c — vädret och skräpet på borden ändrar hur ofta någon blir nyfiken (sim/truckLife.ts).
+  const gap = CURIOUS.gapSimSeconds * curiousGapFactor(draft) * (1 - CURIOUS.gapJitter + (CURIOUS.gapJitter + CURIOUS.gapJitter) * roll(draft, `gap${c.seq}`));
   if (c.since < gap || (ends !== null && ends - draft.simTime < CURIOUS.minServiceLeftSimSeconds)) { write(draft, c); return; }
   const seq = c.seq + 1;
   const side = roll(draft, `side${seq}`) < CURIOUS.westShare ? 'west' : 'east';

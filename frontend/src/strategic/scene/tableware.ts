@@ -37,14 +37,19 @@ export type PropId =
   // Vardagens koreografi (efter leverans 3): brödkorgen, karaffen att dekantera i, fördrinksglaset och backen
   | 'breadBasket' | 'decanter' | 'flute' | 'crate'
   // ORDER 315b del 2 — Designs D7 (truckClips.ts): tången vid grillen, lådan genom luckan, koppen till fikat
-  | 'tongs' | 'foodBox' | 'coffeeCup';
+  | 'tongs' | 'foodBox' | 'coffeeCup'
+  // ORDER 319c — Designs D9 (eatingClips.ts, truckProps.ts): korven i bröd, tråget, papperstallriken, burken,
+  // pappmuggen, den använda servetten och paraplyet.
+  | 'hotdog' | 'paperTray' | 'paperPlate' | 'drinkCan' | 'paperCup' | 'napkinUsed' | 'umbrella';
 
 export type HandSide = 'L' | 'R';
 
 /** Handpunkterna. Varje föremål har ett grepp; greppet bestämmer var i handen det ligger. */
 export type GripId = 'flat' | 'palm' | 'stem' | 'tumbler' | 'body' | 'neck' | 'handle' | 'pinch' | 'book' | 'twoHands' | 'pole' | 'card' | 'push' | 'none';
 
-export type Surface = 'table' | 'bar' | 'pass' | 'station' | 'sink' | 'tray' | 'plate' | 'desk' | 'floor';
+export type Surface = 'table' | 'bar' | 'pass' | 'station' | 'sink' | 'tray' | 'plate' | 'desk' | 'floor'
+  // ORDER 319c — D9: servetthållaren, sopkorgen, hyllan vid luckan, värmaren, luften (servetten i blåsten) och marschallen.
+  | 'holder' | 'bin' | 'shelf' | 'heater' | 'air' | 'torch';
 
 export interface PropSpec {
   id: PropId;
@@ -156,7 +161,17 @@ export const CATALOGUE: Record<PropId, PropSpec> = {
   // ORDER 315b del 2 — D7: tången i nypgrepp, lådan på handflatan, koppen i handtaget.
   tongs:       { id: 'tongs', size: [0.03, 0.02, 0.28], attach: [0, 0.01, -0.1], grip: 'pinch', restsOn: ['station', 'pass'] },
   foodBox:     { id: 'foodBox', size: [0.18, 0.06, 0.12], attach: [0, 0, -0.04], grip: 'flat', restsOn: ['pass', 'table', 'tray'], fill: 'food' },
-  coffeeCup:   { id: 'coffeeCup', size: [0.1, 0.075, 0.08], attach: [0.05, 0.04, 0], grip: 'handle', restsOn: ['table', 'tray'] }
+  coffeeCup:   { id: 'coffeeCup', size: [0.1, 0.075, 0.08], attach: [0.05, 0.04, 0], grip: 'handle', restsOn: ['table', 'tray'] },
+  // ORDER 319c — Designs D9 (truckProps.ts hotdog, plate, drinks, napkinHolder; eatingClips.ts PropId), i 1,5 gånger
+  // verklig storlek (gameScale): korven i bröd hålls tvärs framför bröstet, tråget och papperstallriken står på
+  // bordet, burken och muggen hålls runt om, den använda servetten är en boll och paraplyet hålls i skaftet.
+  hotdog:      { id: 'hotdog', size: [0.3, 0.075, 0.09], attach: [0, 0.03, 0], grip: 'pinch', restsOn: ['table', 'tray'] },
+  paperTray:   { id: 'paperTray', size: [0.33, 0.03, 0.135], attach: [0, 0, 0], grip: 'flat', restsOn: ['table', 'shelf', 'bin'] },
+  paperPlate:  { id: 'paperPlate', size: [0.345, 0.045, 0.345], attach: [0, 0, -0.1], grip: 'flat', restsOn: ['table', 'shelf'], fill: 'food' },
+  drinkCan:    { id: 'drinkCan', size: [0.099, 0.1725, 0.099], attach: [0, 0.07, 0], grip: 'tumbler', restsOn: ['table', 'shelf'] },
+  paperCup:    { id: 'paperCup', size: [0.122, 0.15, 0.122], attach: [0, 0.06, 0], grip: 'tumbler', restsOn: ['table', 'shelf'] },
+  napkinUsed:  { id: 'napkinUsed', size: [0.075, 0.075, 0.075], attach: [0, 0.0375, 0], grip: 'pinch', restsOn: ['table', 'bin'] },
+  umbrella:    { id: 'umbrella', size: [1.04, 0.95, 1.04], attach: [0, 0.12, 0], grip: 'tumbler', restsOn: ['floor'] }
 };
 
 // ---------- färgerna --------------------------------------------------
@@ -199,7 +214,11 @@ export const PROP_COLOURS = {
   // Vardagens koreografi
   basket: '#b98a52', bread: '#d9a066', aperitif: '#e9c46a', crate: '#7a5a3a',
   // ORDER 315b del 2 — D7
-  kraft: '#c8a46e', coffee: '#4a2e1c'
+  kraft: '#c8a46e', coffee: '#4a2e1c',
+  // ORDER 319c — D9 (truckProps.ts): brödet, korven, senapen, tråget och tallriken, moset, burken med kanten, muggens
+  // hylsa och servetten.
+  bun: '#d6a45c', sausage: '#8c4526', mustard: '#e6bb34', paperTray: '#efe6d2', paperPlate: '#f4efe4', mash: '#eedca6',
+  can: '#3f6f8f', canRim: '#d4cfc5', cupSleeve: '#b98a3c', napkinWhite: '#f7f3ea'
 };
 
 // ---------- bygget ----------------------------------------------------
@@ -473,6 +492,47 @@ function buildInto(g: THREE.Group, id: PropId): THREE.Object3D | null {
       const f = new THREE.Group(); f.name = 'fill';
       add(f, cyl(0.036, 0.004, 16), mat(C.coffee, { rough: 0.3 }), 0, 0.068, 0);
       g.add(f); return f;
+    }
+    case 'hotdog': {
+      // Tvärs (längs x): brödet, korven som sticker ut i ändarna och ett streck senap ovanpå.
+      add(g, box(0.27, 0.05, 0.09), mat(C.bun, { rough: 0.8 }), 0, 0.025, 0);
+      add(g, box(0.3, 0.035, 0.04), mat(C.sausage, { rough: 0.5 }), 0, 0.0475, 0);
+      add(g, box(0.22, 0.01, 0.014), mat(C.mustard, { rough: 0.5 }), 0, 0.07, 0);
+      return null;
+    }
+    case 'paperTray': {
+      add(g, box(0.33, 0.006, 0.135), mat(C.paperTray, { rough: 0.9 }), 0, 0.003, 0);
+      for (const z of [-0.0645, 0.0645]) add(g, box(0.33, 0.03, 0.006), mat(C.paperTray, { rough: 0.9 }), 0, 0.015, z);
+      return null;
+    }
+    case 'paperPlate': {
+      add(g, cyl(0.1725, 0.012, 24), mat(C.paperPlate, { rough: 0.9 }), 0, 0.006, 0);
+      const f = new THREE.Group(); f.name = 'fill';
+      add(f, cyl(0.07, 0.033, 16), mat(C.mash, { rough: 0.9 }), -0.04, 0.0285, 0);
+      add(f, box(0.16, 0.03, 0.035), mat(C.sausage, { rough: 0.5 }), 0.06, 0.027, 0.03);
+      g.add(f); return f;
+    }
+    case 'drinkCan': {
+      add(g, cyl(0.0495, 0.16, 16), mat(C.can, { rough: 0.35, metal: 0.4 }), 0, 0.08, 0);
+      add(g, cyl(0.044, 0.0125, 16), mat(C.canRim, { rough: 0.3, metal: 0.7 }), 0, 0.16625, 0);
+      return null;
+    }
+    case 'paperCup': {
+      add(g, cyl(0.06, 0.15, 16), mat(C.paperPlate, { rough: 0.9 }), 0, 0.075, 0);
+      add(g, cyl(0.061, 0.05, 16), mat(C.cupSleeve, { rough: 0.9 }), 0, 0.07, 0);
+      return null;
+    }
+    case 'napkinUsed': {
+      add(g, box(0.075, 0.075, 0.075), mat(C.napkinWhite, { rough: 0.95 }), 0, 0.0375, 0);
+      return null;
+    }
+    case 'umbrella': {
+      // Skaftet och en åttadelad duk (Designs umbrellas, Ø 1,04 m). Färgen sätts av scenen.
+      add(g, cyl(0.012, 0.85, 8), mat(C.lighter, { rough: 0.5 }), 0, 0.425, 0);
+      const canopy = add(g, geo('umbrellaCanopy', function () { return new THREE.ConeGeometry(0.52, 0.22, 8, 1, true); }), mat(C.can, { rough: 0.7 }), 0, 0.84, 0);
+      canopy.name = 'canopy';
+      (canopy.material as THREE.Material).side = THREE.DoubleSide;
+      return null;
     }
     case 'lighter': {
       add(g, box(0.025, 0.025, 0.12), mat(C.lighter, { rough: 0.5 }), 0, 0.0125, -0.06);

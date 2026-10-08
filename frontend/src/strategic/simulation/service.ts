@@ -1,5 +1,5 @@
 import { slowFactor } from '../../sim/staffCondition';
-import { EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, MOOD_BALANCE, SHOP, SITTING } from '../../sim/balance';
+import { EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, MOOD_BALANCE, SHOP, SITTING, TRUCK_SEATING } from '../../sim/balance';
 import { abilityActive } from '../../sim/shop';
 import { helpTaskTime } from '../../sim/hostZones';
 import { clockMinutes as clockNowMinutes } from '../../sim/clock';
@@ -31,6 +31,7 @@ import {
 import { valueQuotaSatisfactionDelta } from './valueQuota';
 import { applyMissingMepHit, consumeMepForOneGuest } from './mepConsumption';
 import { spreadDeparture } from '../../sim/guestMood';
+import { finishTruckEating, startTruckEating, truckAssistantAway } from '../../sim/truckLife';
 
 const TICK_SECONDS = 0.2;
 
@@ -604,6 +605,13 @@ export function tickGuests(state: SimulationState) {
       // ORDER 115 §4.5 — foodtruck-uteplats. Om policies.hasUteplats
       // så går paying → eating (äter i bild) innan leaving. Utan
       // uteplats: direkt till leaving som förut.
+      // ORDER 319c — spelarens vagn: gästen äter vid en ledig plats på uteserveringen, eller tar maten
+      // med sig (sim/truckLife.ts).
+      if (state.economy?.businessClass === 'foodtruck' && startTruckEating(state, guest)) {
+        guest.state = 'eating';
+        guest.stateTime = now;
+        continue;
+      }
       if (state.businessClass === 'foodtrucken' && state.policies.hasUteplats === true) {
         guest.state = 'eating';
         guest.stateTime = now;
@@ -621,7 +629,9 @@ export function tickGuests(state: SimulationState) {
     // leaving. EATING_DURATION_SEC balanserad mot arrival-rate så
     // uteplats-slots inte överfylls under peak. 20 sim-sek matchar
     // grovt "äta en portion food-truck-mat" ute på bänken.
-    if (guest.state === 'eating' && now - guest.stateTime > EATING_DURATION_SEC) {
+    if (guest.state === 'eating' && now - guest.stateTime > (guest.truckSpot ? TRUCK_SEATING.eatSimSeconds : EATING_DURATION_SEC)) {
+      // ORDER 319c — vid spelarens vagn: skräpet på bordet när det är mycket folk.
+      finishTruckEating(state, guest);
       guest.state = 'leaving';
       guest.stateTime = now;
       moveGuest(guest, { x: 0, z: 8 });
@@ -1117,6 +1127,12 @@ function scheduleTasks(state: SimulationState) {
   }
 }
 
+/** ORDER 319c — gästen som pekar vid luckan medan situationens förvarning pågår. */
+function cueHolds(state: SimulationState, guestId: string | null | undefined): boolean {
+  const a = state.incidents?.active;
+  return !!guestId && a?.cue === 'guestAtHatch' && (a.introLeft ?? 0) > 0 && a.context.figure?.guestId === guestId;
+}
+
 export function tickStaff(state: SimulationState) {
   const now = state.simTime;
 
@@ -1125,6 +1141,13 @@ export function tickStaff(state: SimulationState) {
 
   for (const staff of state.staff) {
     stepEntityMotion(staff);
+    // ORDER 319c — medhjälparen vid vagnen är ute (marschallerna eller ett bord): luckan står tom, och
+    // beställningarna väntar (sim/truckLife.ts). Vid luckan tar värden emot och servitören tar beställningen
+    // (TASK_ROLE_ASSIGNMENT); i scenen är det en person. Grillaren (kocken) arbetar vidare.
+    if (staff.role !== 'kock' && truckAssistantAway(state)) {
+      setWorkloadFromQueue(staff);
+      continue;
+    }
 
     if (staff.taskType) {
       // ORDER 137 §2.2 / ORDER 213 — bg-task preemption. Efter ORDER 213
@@ -1152,7 +1175,9 @@ export function tickStaff(state: SimulationState) {
         if (staff.moveProgress >= 1) {
           staff.taskProgress += 1;
         }
-        if (staff.taskProgress >= staff.taskDuration) {
+        // ORDER 319c — gästen som pekar vid luckan under förvarningen (sim/incidents.ts guestAtHatch) står
+        // kvar tills kortet kommer: uppgiften för den gästen blir klar först efter förvarningen.
+        if (staff.taskProgress >= staff.taskDuration && !cueHolds(state, staff.targetGuestId)) {
           completeStaffTask(state, staff);
         }
         // ORDER 211 (C1) — härled workload ur kön (inkl. aktiv task).

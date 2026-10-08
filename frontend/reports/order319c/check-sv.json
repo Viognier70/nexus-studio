@@ -1,0 +1,364 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "minSpawnM": 40,
+  "errors": [],
+  "runs": [
+    {
+      "width": 1440,
+      "height": 900,
+      "weather": "sun",
+      "shots": [
+        "check-sv-1440x900-sun-skrapet.png",
+        "check-sv-1440x900-sun-menyn.png",
+        "check-sv-1440x900-sun-de-som-ater.png",
+        "check-sv-1440x900-sun-marschallerna-tands.png",
+        "check-sv-1440x900-sun-marschallerna-tanda.png"
+      ],
+      "forecast": {
+        "weather": "sun",
+        "text": "Vädret i kväll vid vagnen: Sol."
+      },
+      "litterBefore": {
+        "A": 2,
+        "B": 2,
+        "C": 2
+      },
+      "litterCursor": "pointer",
+      "litterAfter": {
+        "A": 2,
+        "B": 2,
+        "C": 0
+      },
+      "clearedByPlayer": 1,
+      "litterClicks": 1,
+      "speed": 1,
+      "menu": "Svensk grillGrillad korv 30 krVegokorv 30 krHalv special 35 krTunnbrödsrulle 75 krKorv med mos 50 krLäsk och kaffe 20 krSenap, skånsk och mild, och ketchup",
+      "eating": 2,
+      "raining": false,
+      "torchRound": {
+        "kind": "torches",
+        "left": 19.999999999999904,
+        "total": 42
+      },
+      "assistantAt": [
+        2.8,
+        4.47
+      ],
+      "torchesLit": true,
+      "tonight": {
+        "eaters": 34,
+        "takeaway": 0,
+        "littered": 3,
+        "clearedByAssistant": 5,
+        "clearedByPlayer": 1,
+        "torchStartE": 0.55,
+        "torchWaited": false,
+        "hatchEmptySimSeconds": 82.00000000000063
+      },
+      "frames": 10089,
+      "seen": 59,
+      "spawnInView": [],
+      "despawnInView": [],
+      "spawnNear": [],
+      "despawnNear": [],
+      "minGapM": 0.4013748109967948,
+      "maxFigures": 37,
+      "minPair": [
+        "gst-3",
+        "gst-5",
+        5.28,
+        -13.49,
+        386
+      ],
+      "stop": true,
+      "done": true,
+      "level": "room"
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "weather": "rain",
+      "shots": [
+        "check-sv-1440x900-rain-skrapet.png",
+        "check-sv-1440x900-rain-menyn.png",
+        "check-sv-1440x900-rain-de-som-ater.png",
+        "check-sv-1440x900-rain-marschallerna-tands.png",
+        "check-sv-1440x900-rain-marschallerna-tanda.png"
+      ],
+      "forecast": {
+        "weather": "rain",
+        "text": "Vädret i kväll vid vagnen: Regn. Regnet kommer en bit in i kvällen."
+      },
+      "litterBefore": {
+        "A": 2,
+        "B": 2,
+        "C": 2
+      },
+      "litterCursor": "pointer",
+      "litterAfter": {
+        "A": 2,
+        "B": 2,
+        "C": 0
+      },
+      "clearedByPlayer": 1,
+      "litterClicks": 1,
+      "speed": 1,
+      "menu": "Svensk grillGrillad korv 30 krVegokorv 30 krHalv special 35 krTunnbrödsrulle 75 krKorv med mos 50 krLäsk och kaffe 20 krSenap, skånsk och mild, och ketchup",
+      "eating": 1,
+      "raining": true,
+      "torchRound": {
+        "kind": "torches",
+        "left": 19.999999999999904,
+        "total": 42
+      },
+      "assistantAt": [
+        2.71,
+        4.46
+      ],
+      "torchesLit": true,
+      "tonight": {
+        "eaters": 26,
+        "takeaway": 11,
+        "littered": 0,
+        "clearedByAssistant": 2,
+        "clearedByPlayer": 1,
+        "torchStartE": 0.55,
+        "torchWaited": false,
+        "hatchEmptySimSeconds": 58.000000000000284
+      },
+      "frames": 11416,
+      "seen": 55,
+      "spawnInView": [],
+      "despawnInView": [],
+      "spawnNear": [],
+      "despawnNear": [],
+      "minGapM": 0.4028822950635741,
+      "maxFigures": 31,
+      "minPair": [
+        "gst-33",
+        "gst-50",
+        8.14,
+        -16.55,
+        9520
+      ],
+      "stop": true,
+      "done": true,
+      "level": "room"
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "weather": "wind",
+      "shots": [
+        "check-sv-1440x900-wind-skrapet.png",
+        "check-sv-1440x900-wind-menyn.png",
+        "check-sv-1440x900-wind-de-som-ater.png",
+        "check-sv-1440x900-wind-marschallerna-tands.png",
+        "check-sv-1440x900-wind-marschallerna-tanda.png"
+      ],
+      "forecast": {
+        "weather": "wind",
+        "text": "Vädret i kväll vid vagnen: Blåst."
+      },
+      "litterBefore": {
+        "A": 2,
+        "B": 2,
+        "C": 2
+      },
+      "litterCursor": "pointer",
+      "litterAfter": {
+        "A": 2,
+        "B": 2,
+        "C": 0
+      },
+      "clearedByPlayer": 1,
+      "litterClicks": 1,
+      "speed": 1,
+      "menu": "Svensk grillGrillad korv 30 krVegokorv 30 krHalv special 35 krTunnbrödsrulle 75 krKorv med mos 50 krLäsk och kaffe 20 krSenap, skånsk och mild, och ketchup",
+      "eating": 2,
+      "raining": false,
+      "torchRound": {
+        "kind": "torches",
+        "left": 19.999999999999904,
+        "total": 42
+      },
+      "assistantAt": [
+        2.79,
+        4.47
+      ],
+      "torchesLit": true,
+      "tonight": {
+        "eaters": 32,
+        "takeaway": 0,
+        "littered": 3,
+        "clearedByAssistant": 5,
+        "clearedByPlayer": 1,
+        "torchStartE": 0.55,
+        "torchWaited": false,
+        "hatchEmptySimSeconds": 82.00000000000063
+      },
+      "frames": 11224,
+      "seen": 50,
+      "spawnInView": [],
+      "despawnInView": [],
+      "spawnNear": [],
+      "despawnNear": [],
+      "minGapM": 0.42286195367193047,
+      "maxFigures": 30,
+      "minPair": [
+        "gst-2",
+        "gst-3",
+        15.43,
+        -5.78,
+        226
+      ],
+      "stop": true,
+      "done": true,
+      "level": "room"
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "weather": "cool",
+      "shots": [
+        "check-sv-1440x900-cool-skrapet.png",
+        "check-sv-1440x900-cool-menyn.png",
+        "check-sv-1440x900-cool-de-som-ater.png",
+        "check-sv-1440x900-cool-marschallerna-tands.png",
+        "check-sv-1440x900-cool-marschallerna-tanda.png"
+      ],
+      "forecast": {
+        "weather": "cool",
+        "text": "Vädret i kväll vid vagnen: Sval kväll."
+      },
+      "litterBefore": {
+        "A": 2,
+        "B": 2,
+        "C": 2
+      },
+      "litterCursor": "pointer",
+      "litterAfter": {
+        "A": 2,
+        "B": 2,
+        "C": 0
+      },
+      "clearedByPlayer": 1,
+      "litterClicks": 1,
+      "speed": 1,
+      "menu": "Svensk grillGrillad korv 30 krVegokorv 30 krHalv special 35 krTunnbrödsrulle 75 krKorv med mos 50 krLäsk och kaffe 20 krSenap, skånsk och mild, och ketchup",
+      "eating": 2,
+      "raining": false,
+      "torchRound": {
+        "kind": "torches",
+        "left": 19.999999999999904,
+        "total": 42
+      },
+      "assistantAt": [
+        2.95,
+        4.47
+      ],
+      "torchesLit": true,
+      "tonight": {
+        "eaters": 34,
+        "takeaway": 0,
+        "littered": 0,
+        "clearedByAssistant": 2,
+        "clearedByPlayer": 1,
+        "torchStartE": 0.55,
+        "torchWaited": false,
+        "hatchEmptySimSeconds": 58.000000000000284
+      },
+      "frames": 11327,
+      "seen": 55,
+      "spawnInView": [],
+      "despawnInView": [],
+      "spawnNear": [],
+      "despawnNear": [],
+      "minGapM": 0.40213838423369636,
+      "maxFigures": 33,
+      "minPair": [
+        "gst-3",
+        "gst-5",
+        20.23,
+        -20.08,
+        1041
+      ],
+      "stop": true,
+      "done": true,
+      "level": "room"
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "weather": "cool",
+      "shots": [
+        "check-sv-1280x720-cool-skrapet.png",
+        "check-sv-1280x720-cool-menyn.png",
+        "check-sv-1280x720-cool-de-som-ater.png",
+        "check-sv-1280x720-cool-marschallerna-tands.png",
+        "check-sv-1280x720-cool-marschallerna-tanda.png"
+      ],
+      "forecast": {
+        "weather": "cool",
+        "text": "Vädret i kväll vid vagnen: Sval kväll."
+      },
+      "litterBefore": {
+        "A": 2,
+        "B": 2,
+        "C": 2
+      },
+      "litterCursor": "pointer",
+      "litterAfter": {
+        "A": 2,
+        "B": 2,
+        "C": 0
+      },
+      "clearedByPlayer": 1,
+      "litterClicks": 1,
+      "speed": 1,
+      "menu": "Svensk grillGrillad korv 30 krVegokorv 30 krHalv special 35 krTunnbrödsrulle 75 krKorv med mos 50 krLäsk och kaffe 20 krSenap, skånsk och mild, och ketchup",
+      "eating": 2,
+      "raining": false,
+      "torchRound": {
+        "kind": "torches",
+        "left": 19.999999999999904,
+        "total": 42
+      },
+      "assistantAt": [
+        2.71,
+        4.46
+      ],
+      "torchesLit": true,
+      "tonight": {
+        "eaters": 37,
+        "takeaway": 0,
+        "littered": 0,
+        "clearedByAssistant": 2,
+        "clearedByPlayer": 1,
+        "torchStartE": 0.55,
+        "torchWaited": false,
+        "hatchEmptySimSeconds": 58.000000000000284
+      },
+      "frames": 11444,
+      "seen": 57,
+      "spawnInView": [],
+      "despawnInView": [],
+      "spawnNear": [],
+      "despawnNear": [],
+      "minGapM": 0.4023286639281914,
+      "maxFigures": 33,
+      "minPair": [
+        "gst-11",
+        "gst-13",
+        20.23,
+        -20.08,
+        1782
+      ],
+      "stop": true,
+      "done": true,
+      "level": "room"
+    }
+  ],
+  "ok": true
+}
