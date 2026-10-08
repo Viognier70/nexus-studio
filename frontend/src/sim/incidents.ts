@@ -474,7 +474,8 @@ export function hatchGuest(state: SimulationState): SimulationState['guests'][nu
   const atHatch = (g: SimulationState['guests'][number]) => g.state === 'waiting' || g.state === 'ordering';
   const tiers = [
     state.guests.filter((g) => atHatch(g) && settled(g)),
-    state.guests.filter((g) => g.state === 'eating' && settled(g)),
+    // ORDER 319c — den som äter står vid sin plats och äter klart först efter förvarningen.
+    state.guests.filter((g) => g.state === 'eating' && settled(g) && state.simTime - g.stateTime >= THEATRE.cueEaterWindowSimSeconds[0] && state.simTime - g.stateTime <= THEATRE.cueEaterWindowSimSeconds[1]),
     state.guests.filter((g) => atHatch(g) || g.state === 'arriving')
   ];
   const at = tiers.find((t) => t.length > 0) ?? [];

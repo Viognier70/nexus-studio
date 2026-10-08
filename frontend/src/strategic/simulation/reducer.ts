@@ -84,6 +84,7 @@ import { applyMiseAtDoors, hirePrepHand, tickPrepBacklog } from '../../sim/miseE
 import { abilityUnlocked, creditsOf, setSlot, shopOf } from '../../sim/shop';
 import { answerPin, comp, moveHelp, seatPartyNow, tickPins, upsell } from '../../sim/hostPins';
 import { answerCurious, openCurious, recordCuriousRevenue, tickCurious } from '../../sim/curious';
+import { clearTruckTable, tickTruck, truckVillageWeather, truckWeatherOf } from '../../sim/truckLife';
 import { arrivalAttraction, maybeSpawnGuest, pacedArrivals, scenarioSpawnStep, walkAwayProbability } from './arrivals';
 import { planScenariosForService, scheduleScenarioTriggerTimes } from './day';
 import { revenuePerGuest } from './economics';
@@ -498,7 +499,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     // ORDER 319b — de nyfikna vid foodtruckens lucka.
     case 'CURIOUS_OPEN': {
       const draft: SimulationState = { ...state, day: { ...state.day } };
-      openCurious(draft, action.cold);
+      // ORDER 319c — en sval kväll vid vagnen fryser gästen (frågorna om kylan).
+      openCurious(draft, action.cold ?? truckWeatherOf(draft) === 'cool');
       return draft.day.curious === state.day.curious ? state : draft;
     }
     case 'CURIOUS_ANSWER': {
@@ -506,6 +508,12 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       const credit = answerCurious(draft, action.optionId);
       if (draft.day.curious === state.day.curious) return state;
       return credit ? creditQuestion(draft, credit.axis, null, credit.amount) : draft;
+    }
+    // ORDER 319c — spelaren städar ett bord med skräp vid vagnen.
+    case 'TRUCK_CLEAR_TABLE': {
+      const draft: SimulationState = { ...state, day: { ...state.day } };
+      clearTruckTable(draft, action.table);
+      return draft.day.truck === state.day.truck ? state : draft;
     }
     case 'HOST_PIN_ANSWER':
     case 'HOST_SEAT':
@@ -1511,7 +1519,8 @@ function openService(
   // calculations (waiting count, scenario schedule) see a stable
   // weather record. World factors roll after weather; both feed
   // waitingAtOpening below.
-  const weather = generateWeather(rng);
+  // ORDER 319c — vid spelarens vagn stämmer byns väder med vagnens (sim/truckLife.ts).
+  const weather = truckVillageWeather(state, generateWeather(rng));
   const worldFactors = generateWorldFactors(rng);
   const scenariosPlanned = planScenariosForService(length, rng);
   // Opening runs first, then prep, then service. Scenario schedule
@@ -3053,6 +3062,8 @@ function advanceTick(state: SimulationState): SimulationState {
   tickPins(draft, tickSeconds);
   // ORDER 319b — de nyfikna vid foodtruckens lucka.
   tickCurious(draft, tickSeconds);
+  // ORDER 319c — livet vid vagnen: medhjälparens rundor med marschallerna och borden.
+  tickTruck(draft, tickSeconds);
   maybeOpenIncident(draft, tickSeconds);
   maybeChance(draft);
 

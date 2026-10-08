@@ -945,6 +945,63 @@ export const STREET_QUEUE = {
   offsetPerGuestSeconds: 1.5
 } as const;
 
+// ORDER 319c (ORDRAR_319_D9.md, Designs D9 truckWeather.ts) — vädret vid vagnen, ett per kväll
+// (sim/truckLife.ts). Byns väder slumpas när servicen öppnar och syns inte på morgonen, så vagnen har
+// en egen prognos per kväll ur säsongens frö och dagen, som syns på morgonen. Andelen kvällar per
+// väder (weights), gästflödet (footfall: gånger ankomsterna, arrivals.ts arrivalAttraction, i stället för
+// byns väder) och de nyfikna (curiousGap: gånger tiden mellan två nyfikna; lägre = fler). En regnkväll
+// börjar torr, och regnet börjar när kvällens gång e når ett värde mellan rainFromE[0] och rainFromE[1].
+// Byns väder vid vagnen samma kväll stämmer med vagnens (village: solen minst sunMinTempC och uppehåll,
+// regnet, blåsten minst windMinMS, den svala kvällen högst coolMaxTempC), så att texterna säger samma sak.
+export const TRUCK_WEATHER = {
+  section: 'Servicen',
+  weights: { sun: 0.35, rain: 0.2, wind: 0.2, cool: 0.25 },
+  footfall: { sun: 1.15, rain: 0.8, wind: 0.92, cool: 0.97 },
+  curiousGap: { sun: 0.8, rain: 1.5, wind: 1.1, cool: 1 },
+  rainFromE: [0.15, 0.5] as readonly [number, number],
+  village: { sunMinTempC: 16, windMinMS: 8, coolMaxTempC: 9 }
+} as const;
+
+// ORDER 319c (ORDRAR_319_D9.md punkt 1 och 3, Designs D9 EAT_FLOW) — de som äter vid vagnen. Gästen
+// som har fått maten äter vid en ledig plats (sim/truckLife.ts) i eatSimSeconds; utan ledig plats tar
+// gästen maten med sig. När det är mycket folk (crowdEaters som äter, eller crowdQueue i kön) lämnar
+// gästen med andelen share skräp och servetten på bordet. Medhjälparen städar ett bord i clearSimSeconds
+// när kön är högst clearQueueMax och ingen äter vid bordet; så länge står luckan tom. Ett bord med skräp används inte, och varje
+// sådant bord gör tiden mellan två nyfikna längre med curiousGapPerTable.
+export const TRUCK_SEATING = {
+  section: 'Servicen',
+  eatSimSeconds: 18,
+  // Andelen som äter korv med mos på tallrik vid ståborden (Designs TRUCK.menuMix); de andra korv i bröd.
+  plateShare: 0.3,
+  litter: { crowdEaters: 3, crowdQueue: 2, share: 0.3, curiousGapPerTable: 0.25 },
+  clearQueueMax: 0,
+  clearSimSeconds: 8
+} as const;
+
+// ORDER 319c (Designs D9 menu.* med priserna {price}) — vagnens meny på skylten, kronor. Halv special 35 kr
+// står i ORDER_320_FOODTRUCK_SITUATIONER.md (ft-priset); de andra priserna är Codes förslag till Anders.
+// Notan per gäst är fortfarande FOODTRUCK.billSek; menyn är det spelaren läser.
+export const TRUCK_MENU = {
+  section: 'Verksamhetsklasserna',
+  grilled: 30,
+  veggie: 30,
+  halfSpecial: 35,
+  wrap: 75,
+  mash: 50,
+  drinks: 20
+} as const;
+
+// ORDER 319c (Designs D9-tillägg torchLighting.ts) — medhjälparen tänder marschallerna. Rundan börjar
+// när kvällens gång passerar fromE och kön är kortare än queueMax, men senast vid latestE. Den tar
+// roundSimSeconds (Designs väg, 35,6 m i 1,3 m/s, och sex tändningar à 2,4 s); så länge står luckan tom.
+export const TORCH = {
+  section: 'Servicen',
+  fromE: 0.55,
+  queueMax: 4,
+  latestE: 0.8,
+  roundSimSeconds: 42
+} as const;
+
 // ORDER 271 (Vision Owner, FRAGOR §50): rutan utan verksamhet och pengar
 // (Design paket 6, X1) visas när spelaren saknar verksamhet och kassan är
 // under minsta insats: en fjärdedel av en veckas golv, som kontantinsatsen
@@ -1489,6 +1546,10 @@ export const THEATRE = {
   // (scene/village/truckGuestFlow.ts TRUCK_GUESTS.minSpawnM), längs gångnätet upp till omkring 70 m,
   // och går 1,4 m/s, alltså inom 50 s i normal fart (reports/order319a/gaster.json cueSettledShare).
   cueGuestSettledSeconds: 50,
+  // ORDER 319c — en gäst som äter vid vagnen pekar bara när hen står vid sin plats och inte går därifrån under
+  // förvarningen: mellan [0] och [1] spelsekunder in i måltiden (TRUCK_SEATING.eatSimSeconds 18; vägen till den
+  // bortersta platsen är omkring 6 m, 4 s; förvarningen 4 s).
+  cueEaterWindowSimSeconds: [6, 12] as readonly [number, number],
   camera: { distanceM: 12, glideInSeconds: 1.2, glideOutSeconds: 1.0 },
   /** Bildtexten står så högt över figurens fötter (ovanför huvudet). */
   captionHeightM: 2.1,

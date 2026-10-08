@@ -286,6 +286,8 @@ Förebilden är *Two Point Hospital* och *Game Dev Tycoon*: att flytta till stö
 
 *Beslut 2026-10-08 (Vision Owner, vagnens meny):* vagnen har vegokorv, grillad på en egen del av grillen med egen tång, mild senap bredvid den skånska, ketchup och kaffe, på menyn och skylten. De nyfiknas svar ska stämma med vagnen: den grillar på gas, och skånsk senap är sötstark, så ett barn får den milda senapen eller ketchup. Den andra grillen som satsning väntar. Vännen till en gäst som svarat rätt kommer gående från byn.
 
+*Beslut 2026-10-07 (Vision Owner, platsen och vädret vid vagnen):* vagnen har en uteservering med ståbord, en bänk, marschaller och en värmare. De som äter står vid borden, torkar sig med servetten och slänger den i sopkorgen innan de går; när det är mycket folk blir skräp kvar på borden, och medhjälparen städar när kön är kort, annars spelaren. Vädret är ett per kväll och syns på morgonen. Sol ger fler förbipasserande, regn färre och gästerna äter under markisen, blåsten tar servetterna och en sval kväll samlas gästerna kring värmaren och de nyfikna frågar om kylan. Medhjälparen tänder marschallerna och luckan står tom så länge, så medhjälparen väntar när kön är lång.
+
 ## Servicen
 
 Servicen är slumpen, viktad av spelarens förberedelser. Det spelaren gjort på morgonen, och det hon kan, avgör hur ofta saker går rätt. Hon ser konsekvenserna i rummet, inte i siffertavlor.

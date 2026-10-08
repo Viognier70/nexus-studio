@@ -6,6 +6,7 @@
 // (rotation.y = −vinkeln) i strategic/content/villagePlaces.ts playerTruckPlacement.
 
 import * as THREE from 'three';
+import { PROP_SCALE_HANDHELD, TRUCK_PROPS } from './truckProps';
 
 export type Vec2 = [number, number];
 
@@ -49,10 +50,8 @@ export const TRUCK_LAYOUT = {
   aBoard: [-2.2, 3.5] as Vec2,
   /** Det tillfälliga serveringsområdet: pallar som trädäck, fyra planteringslådor med stolpar för ljusslingan. */
   servingArea: { x0: 3.0, x1: 6.2, z0: 0.2, z1: 3.8 },
-  standTables: { A: [3.9, 1.2] as Vec2, B: [5.4, 1.2] as Vec2, C: [4.65, 2.9] as Vec2, radius: 0.34, height: 1.1 },
-  /** Ätplatser vid ståborden: väster, öster och söder om varje bord, 0,55 m ut. */
-  eatOffsets: [[-0.55, 0], [0.55, 0], [0, 0.55]] as Vec2[],
-  bin: [3.3, 3.5] as Vec2,
+  // ORDER 319c — ståborden, ätplatserna och sopkorgen står i Designs D9 (truckProps.ts TRUCK_PROPS och EAT_SPOTS):
+  // sopkorgen flyttad från [3,3, 3,5] (delvis i planteringslådan) till utanför däckets sydvästra hörn.
   lightPosts: [[3.0, 0.2], [6.2, 0.2], [6.2, 3.8], [3.0, 3.8]] as Vec2[]
 };
 
@@ -81,6 +80,87 @@ export const TRUCK_CREW = {
 
 /** Nivån visas med knappar på skylten (venueTier.ts). Vagnen börjar på Enkel. */
 export const TRUCK_DEFAULT_TIER = 'simple';
+
+type AddFn = (geo: THREE.BufferGeometry, mat: THREE.Material, x: number, y: number, z: number, name: string) => THREE.Mesh;
+type MatFn = (c: string, e?: number) => THREE.MeshStandardMaterial;
+
+/** Däckets ovansida (trädäcket är 0,12 m högt). */
+export const DECK_TOP_M = 0.12;
+
+/** Står punkten på trädäcket (då står föremålet på däckets ovansida)? */
+export function onDeck(x: number, z: number): boolean {
+  const SA = TRUCK_LAYOUT.servingArea;
+  return x >= SA.x0 && x <= SA.x1 && z >= SA.z0 && z <= SA.z1;
+}
+
+/** Servetthållaren (D9 napkinHolder 0,18 × 0,10 × 0,14 m, gånger 1,5): stålfot, två gavlar och servetterna. */
+function napkinHolder(add: AddFn, m: MatFn, x: number, y: number, z: number, yaw: number, name: string): void {
+  const k = PROP_SCALE_HANDHELD, H = TRUCK_PROPS.napkinHolder;
+  const [w, d, h] = [H.size[0] * k, H.size[1] * k, H.size[2] * k];
+  const c = Math.cos(yaw), s = Math.sin(yaw);
+  const at = (lx: number, lz: number): [number, number] => [x + lx * c + lz * s, z - lx * s + lz * c];
+  const parts: [number, number, number, number, number, number, string][] = [
+    [w, 0.012, d, 0, 0, 0.006, H.colour.steel],
+    [0.01, h, d, -w / 2 + 0.005, 0, h / 2, H.colour.steel],
+    [0.01, h, d, w / 2 - 0.005, 0, h / 2, H.colour.steel],
+    [w - 0.03, h * 0.8, d * 0.7, 0, 0, 0.012 + h * 0.4, H.colour.napkins]
+  ];
+  parts.forEach(([bw, bh, bd, lx, lz, ly, col], i) => {
+    const [px, pz] = at(lx, lz);
+    const o = add(new THREE.BoxGeometry(bw, bh, bd), m(col), px, y + ly, pz, i === 3 ? name + 'Napkins' : name);
+    o.rotation.y = yaw;
+  });
+}
+
+function buildServing(add: AddFn, m: MatFn): void {
+  const P = TRUCK_PROPS, k = PROP_SCALE_HANDHELD;
+  const yAt = (x: number, z: number) => (onDeck(x, z) ? DECK_TOP_M : 0);
+  // Ståborden: fot, pelare och skiva; servetthållaren i mitten, vriden 0,3 rad.
+  const T = P.standTable;
+  for (const [key, [x, z]] of Object.entries(T.at)) {
+    const y = yAt(x, z);
+    add(new THREE.CylinderGeometry(T.base.diameter / 2, T.base.diameter / 2, 0.03, 18), m(T.colour.base), x, y + 0.015, z, 'standTableBase' + key);
+    add(new THREE.CylinderGeometry(T.column / 2, T.column / 2, T.top.height - 0.05, 8), m(T.colour.base), x, y + (T.top.height - 0.05) / 2 + 0.03, z, 'standTableLeg' + key);
+    add(new THREE.CylinderGeometry(T.top.diameter / 2, T.top.diameter / 2, 0.04, 24), m(T.colour.top), x, y + T.top.height - 0.02, z, 'standTable' + key);
+    napkinHolder(add, m, x, y + T.top.height, z, TABLE_HOLDER_YAW, 'napkinHolder' + key);
+  }
+  // Bänken längs däckets östra kant, utan rygg.
+  const B = P.bench, by = yAt(B.centre[0], B.centre[1]);
+  add(new THREE.BoxGeometry(B.depth, 0.05, B.length), m(B.colour), B.centre[0], by + B.seatHeight - 0.025, B.centre[1], 'bench');
+  for (const dz of [-1, 1]) add(new THREE.BoxGeometry(B.depth * 0.8, B.seatHeight - 0.05, 0.06), m(B.legs), B.centre[0], by + (B.seatHeight - 0.05) / 2, B.centre[1] + dz * (B.length / 2 - 0.12), 'benchLeg');
+  // Terrassvärmaren: fot, pelare och huv; brännaren under huven lyser en sval kväll (TruckLife.tsx).
+  const Hh = P.heater, hy = yAt(Hh.at[0], Hh.at[1]);
+  add(new THREE.CylinderGeometry(Hh.base.diameter / 2, Hh.base.diameter / 2, 0.06, 18), m(Hh.colour.base), Hh.at[0], hy + 0.03, Hh.at[1], 'heaterBase');
+  add(new THREE.CylinderGeometry(0.035, 0.035, Hh.hood.height - 0.1, 8), m(Hh.colour.steel), Hh.at[0], hy + (Hh.hood.height - 0.1) / 2, Hh.at[1], 'heaterPole');
+  add(new THREE.ConeGeometry(Hh.hood.diameter / 2, 0.12, 20, 1, true), m(Hh.colour.steel), Hh.at[0], hy + Hh.hood.height - 0.06, Hh.at[1], 'heaterHood');
+  add(new THREE.CylinderGeometry(0.09, 0.09, 0.18, 12), m('#4a3a30'), Hh.at[0], hy + Hh.hood.height - 0.22, Hh.at[1], 'heaterBurner');
+  // Sopkorgen med luckan (BIN.flap) åt norr, där den som slänger står.
+  const Bn = P.bin;
+  add(new THREE.CylinderGeometry(Bn.diameter / 2, Bn.diameter / 2 * 0.92, Bn.height, 16), m(Bn.colour), Bn.at[0], Bn.height / 2, Bn.at[1], 'trailerBin');
+  const flap = add(new THREE.BoxGeometry(Bn.flap.width, 0.015, Bn.flap.depth), m('#2f2c28'), Bn.at[0], Bn.height + 0.008, Bn.at[1] - Bn.diameter / 2 + Bn.flap.depth / 2 + 0.02, 'trailerBinFlap');
+  flap.userData.closedY = flap.position.y;
+  // Marschallerna: hållaren, koppen och ljuset; lågan tänds av medhjälparen (TruckLife.tsx).
+  const To = P.torch;
+  To.at.forEach(([x, z], i) => {
+    const y = yAt(x, z);
+    add(new THREE.CylinderGeometry(0.015, 0.02, To.holder.height, 6), m(To.holder.colour), x, y + To.holder.height / 2, z, 'torchHolder' + i);
+    add(new THREE.CylinderGeometry(To.holder.cup / 2, To.holder.cup / 2 * 0.8, 0.05, 10), m(To.holder.colour), x, y + To.holder.height, z, 'torchCup' + i);
+    add(new THREE.CylinderGeometry(To.candle.diameter / 2, To.candle.diameter / 2, To.candle.height, 10), m(To.candle.colour), x, y + To.holder.height + 0.025 + To.candle.height / 2, z, 'torchCandle' + i);
+  });
+  // Hyllan på vagnens sida öster om luckan, med senap, mild senap, ketchup och servetter.
+  const S = P.shelf;
+  add(new THREE.BoxGeometry(S.x1 - S.x0, 0.04, S.z1 - S.z0), m(S.colour), (S.x0 + S.x1) / 2, S.height - 0.02, (S.z0 + S.z1) / 2, 'shelf');
+  add(new THREE.BoxGeometry(0.04, S.height - 0.04, 0.04), m('#7a756c'), (S.x0 + S.x1) / 2, (S.height - 0.04) / 2, S.z1 - 0.04, 'shelfLeg');
+  const Cd = P.condiments, bh = Cd.bottle.height * k, br = Cd.bottle.diameter * k / 2;
+  for (const [name, b] of [['Ketchup', Cd.ketchup], ['Mustard', Cd.mustard], ['MildMustard', Cd.mildMustard]] as const) {
+    add(new THREE.CylinderGeometry(br, br, bh, 10), m(b.colour), b.at[0], S.height + bh / 2, b.at[1], 'bottle' + name);
+    add(new THREE.CylinderGeometry(br * 0.45, br * 0.6, 0.04, 8), m(b.cap), b.at[0], S.height + bh + 0.02, b.at[1], 'bottleCap' + name);
+  }
+  napkinHolder(add, m, S.napkins[0], S.height, S.napkins[1], 0, 'napkinHolderShelf');
+}
+
+/** Servetthållaren på ståborden är vriden 0,3 rad (D9 standTable.holder). */
+const TABLE_HOLDER_YAW = 0.3;
 
 /** Vagnen, byggd i vagnens ram. `pips` är nivåns knappar på skylten (1–3, venueTier.ts). */
 export function makePlayerTrailer(pips = 1): THREE.Group {
@@ -173,11 +253,11 @@ export function makePlayerTrailer(pips = 1): THREE.Group {
   // Trädäcket med tre ståbord, papperskorgen, planteringslådorna och ljusslingan.
   const SA = L.servingArea;
   add(new THREE.BoxGeometry(SA.x1 - SA.x0, 0.12, SA.z1 - SA.z0), m(C.deck), (SA.x0 + SA.x1) / 2, 0.06, (SA.z0 + SA.z1) / 2, 'trailerDeck');
-  for (const [k, p] of Object.entries({ A: L.standTables.A, B: L.standTables.B, C: L.standTables.C })) {
-    add(new THREE.CylinderGeometry(0.05, 0.05, L.standTables.height, 8), m('#3b2a1e'), p[0], 0.12 + L.standTables.height / 2, p[1], 'standTableLeg' + k);
-    add(new THREE.CylinderGeometry(L.standTables.radius, L.standTables.radius, 0.04, 16), m('#c9a46a'), p[0], 0.12 + L.standTables.height, p[1], 'standTable' + k);
-  }
-  add(new THREE.CylinderGeometry(0.2, 0.18, 0.75, 12), m('#4a4640'), L.bin[0], 0.5, L.bin[1], 'trailerBin');
+  // ORDER 319c — uteserveringen ur Designs D9 (truckProps.ts TRUCK_PROPS): tre ståbord med servetthållare, bänken,
+  // terrassvärmaren, sopkorgen med luckan, sex marschaller och hyllan vid luckan med senap (skånsk och mild) och
+  // ketchup. Det som står på borden och hyllan är 1,5 gånger verklig storlek (PROP_SCALE_HANDHELD). Lågorna,
+  // värmarens sken, skräpet och vädret ritas av TruckLife.tsx.
+  buildServing(add, m);
   const lights = m('#ffd58f', 1.4);
   L.lightPosts.forEach(([x, z], i) => {
     add(new THREE.BoxGeometry(0.5, 0.35, 0.5), m(C.planter), x, 0.3, z, 'planter' + i);

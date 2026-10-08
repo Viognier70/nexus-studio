@@ -47,7 +47,9 @@ export type Needs = 'floor' | 'chair' | 'stool' | 'lounge' | 'table' | 'bar' | '
   // ORDER 315b del 2 (D7): luckan, stå på vagngolvet med bänken framför.
   | 'hatch'
   // ORDER 319b (D9): stå framför menyskylten.
-  | 'sign';
+  | 'sign'
+  // ORDER 319c (D9 eatingClips.ts, tillaggClips.ts): ståbordet, sopkorgen, värmaren och marschallen.
+  | 'standTable' | 'bin' | 'heater' | 'torch';
 /** Sittplatsens sort. Vinbarens 'bar' är 'stool' och 'twotop' är 'chair' (seatKindFromRoom). */
 export type SeatKind = 'chair' | 'stool' | 'lounge';
 /** Stämningen ett klipp uttrycker (guestMood.ts). Leverans 2026-10-03. */
@@ -62,7 +64,9 @@ export type ClipEventType =
   // ORDER 315b del 2 (D7): det som ligger på grillen vänds.
   | 'flip'
   // ORDER 319b (D9 curiousClips.ts, tillaggClips.ts): de nyfikna och blicken på klockan.
-  | 'notice' | 'read' | 'sniff' | 'point' | 'decide' | 'queued' | 'glance';
+  | 'notice' | 'read' | 'sniff' | 'point' | 'decide' | 'queued' | 'glance'
+  // ORDER 319c (D9 eatingClips.ts, tillaggClips.ts): tuggan, servetten, sopkorgen och tändaren.
+  | 'bite' | 'wipe' | 'toss' | 'spark' | 'ignite' | 'swap';
 
 export interface ClipEvent {
   /** Var i klippet, 0..1. */
@@ -887,6 +891,153 @@ reg(def({
     // Vänder huvudet och bålen mot luckan när medhjälparen vinkar (c.yaw = vinkeln till luckan), rätar på sig.
     const k = ramp(u, 0, 0.4);
     return withYaw(P(STAND, { torso: { pitch: -0.02 * k } }), (c.yaw ?? 0) * 0.4 * k, (c.yaw ?? 0) * k);
+  }
+}));
+
+// ORDER 319c — Designs D9 (…-livet-vid-luckan/eatingClips.ts): de som äter vid vagnen och vädrets klipp,
+// och tillägget (…-d9-tillagg/tillaggClips.ts): medhjälparen med tändaren och marschallerna. Oförändrade,
+// utom att korvens längd per tugga (Designs propScale) sätts av scenen (PlayerTruckCrew.tsx) och att
+// guest.shelter följs av köns guest.queueCalm (Designs queue.step finns inte i spelet).
+
+reg(def({
+  id: 'guest.eatBun', group: 'guest', roles: ['guest'], loop: true, travel: false, base: 3.2, handed: true,
+  from: 'stand', to: 'stand', needs: 'standTable', holds: { R: 'hotdog' }, ends: { R: 'hotdog' },
+  events: [{ u: 0.42, type: 'bite' }], next: ['guest.eatBun', 'guest.drink', 'guest.wipeNapkin', 'guest.warmHands'],
+  pose: function (u, c) {
+    // Korven upp till munnen och huvudet möter den (0,22–0,58), tuggar med huvudet lite ned. Vänster hand på bordskanten.
+    const bite = win(u, 0.22, 0.58, 0.1), chew = 0.04 * Math.sin(u * TAU * 4) * ramp(u, 0.5, 0.6) * (1 - ramp(u, 0.85, 1));
+    return P(base(c, false), {
+      torso: { pitch: 0.06 + 0.06 * bite }, head: { pitch: 0.12 + 0.12 * bite + chew },
+      armR: A(0.75 + 0.9 * bite, 0.12, 1.2 + 0.8 * bite), armL: A(0.75, 0.1, 0.9)
+    });
+  }
+}));
+
+reg(def({
+  id: 'guest.eatPlate', group: 'guest', roles: ['guest'], loop: true, travel: false, base: 3.4, handed: true,
+  from: 'stand', to: 'stand', needs: 'standTable', holds: { R: 'fork' }, ends: { R: 'fork' },
+  events: [{ u: 0.3, type: 'grab', hand: 'R', at: 'plate' }, { u: 0.48, type: 'bite' }],
+  next: ['guest.eatPlate', 'guest.drink', 'guest.wipeNapkin'],
+  pose: function (u, c) {
+    // Gaffeln ned i tallriken (0,1–0,3), upp till munnen (0,3–0,62). Vänster hand håller tallrikens kant.
+    const up = win(u, 0.3, 0.62, 0.1), down = win(u, 0.08, 0.3, 0.06);
+    return P(base(c, false), {
+      torso: { pitch: 0.1 + 0.05 * down }, head: { pitch: 0.25 - 0.08 * up },
+      armR: A(0.85 + 0.8 * up - 0.1 * down, 0.12, 1.0 + 1.0 * up), armL: A(0.85, 0.1, 0.8)
+    });
+  }
+}));
+
+reg(def({
+  id: 'guest.drink', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 2.4, handed: true,
+  from: 'stand', to: 'stand', needs: 'standTable', holds: {}, ends: {},
+  events: [{ u: 0.15, type: 'grab', hand: 'L', at: 'table', prop: 'drinkCan' }, { u: 0.88, type: 'release', hand: 'L', at: 'table' }],
+  next: ['guest.eatBun', 'guest.eatPlate', 'guest.wipeNapkin'],
+  pose: function (u, c) {
+    // Burken (eller muggen, c.prop) lyfts med vänster hand, en klunk med huvudet bakåt, ned igen.
+    const lift = win(u, 0.2, 0.85, 0.12), sip = win(u, 0.4, 0.7, 0.06);
+    return P(base(c, false), {
+      torso: { pitch: 0.04 - 0.04 * sip }, head: { pitch: 0.1 - 0.4 * sip },
+      armL: A(0.8 + 0.9 * lift, 0.1, 0.9 + 1.2 * lift)
+    });
+  }
+}));
+
+reg(def({
+  id: 'guest.wipeNapkin', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 2.6, handed: true,
+  from: 'stand', to: 'stand', needs: 'standTable', holds: {}, ends: { R: 'napkinUsed' },
+  events: [{ u: 0.12, type: 'grab', hand: 'R', at: 'holder', prop: 'napkin' }, { u: 0.35, type: 'wipe' }, { u: 0.6, type: 'swap', prop: 'napkinUsed' }],
+  next: ['guest.walk'],
+  pose: function (u, c) {
+    // Drar en servett ur hållaren (0–0,17), små cirklar vid munnen (0,17–0,58), torkar händerna mot varandra (0,58–1).
+    const reach = win(u, 0, 0.2, 0.07), mouth = win(u, 0.17, 0.6, 0.06), hands = ramp(u, 0.58, 0.66);
+    const w = u * 30;
+    return P(base(c, false), {
+      torso: { pitch: 0.08 + 0.1 * reach }, head: { pitch: 0.12 },
+      armR: A(0.8 + 0.4 * reach + 0.9 * mouth + 0.05 * Math.sin(w) * mouth, 0.12 + 0.04 * Math.cos(w) * mouth, 0.7 + 1.5 * mouth + 0.5 * hands),
+      armL: A(0.6 + 0.4 * hands, 0.1 + 0.15 * hands, 0.6 + 0.9 * hands)
+    });
+  }
+}));
+
+reg(def({
+  id: 'guest.binNapkin', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 1.4,
+  from: 'stand', to: 'stand', needs: 'bin', holds: { R: 'napkinUsed', L: 'paperTray' }, ends: {},
+  events: [{ u: 0.55, type: 'toss', hand: 'R', at: 'bin' }, { u: 0.56, type: 'release', hand: 'L', at: 'bin' }],
+  next: ['guest.leaveTable'],
+  pose: function (u) {
+    // Båda händerna fram över sopkorgens lucka och släpper. Luckan slår upp (truckProps.ts BIN.flap) vid 'toss'.
+    const k = win(u, 0.18, 0.75, 0.12);
+    return P(STAND, { torso: { pitch: 0.06 + 0.2 * k }, head: { pitch: 0.3 * k }, armR: A(0.6 + 0.9 * k, 0.1, 0.8 - 0.4 * k), armL: A(0.6 + 0.85 * k, 0.1, 0.8 - 0.4 * k) });
+  }
+}));
+
+reg(def({
+  id: 'guest.leaveTable', group: 'guest', roles: ['guest'], loop: false, travel: true, base: 1.2,
+  from: 'stand', to: 'walk', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['guest.walk'],
+  pose: function (u, c) {
+    // Vänder bort från sopkorgen och tar två korta steg. Blicken går ut mot torget.
+    const ph = c.phase ?? u;
+    return withYaw(walking(STAND, ph, 0.4 + 0.5 * ramp(u, 0.2, 1), 'both'), 0, 0.3 * (1 - ramp(u, 0, 0.8)));
+  }
+}));
+
+reg(def({
+  id: 'guest.warmHands', group: 'guest', roles: ['guest', 'waiter', 'staff', 'cook'], loop: true, travel: false, base: 2.4,
+  from: 'stand', to: 'stand', needs: 'heater', holds: {}, ends: {}, events: [],
+  next: ['guest.warmHands', 'guest.eatBun', 'guest.drink'],
+  pose: function (u) {
+    // Båda händerna fram mot värmaren med handflatorna ut, gnids mot varandra tre gånger, axlarna upp.
+    const rub = 0.12 * Math.sin(u * TAU * 3);
+    return P(STAND, { lift: 0.02, torso: { pitch: 0.06 }, head: { pitch: 0.08 }, armL: A(1.15, 0.12 + rub, 0.7), armR: A(1.15, 0.12 - rub, 0.7) });
+  },
+  tilt: function () { return { L: { pitch: -0.6 }, R: { pitch: -0.6 } }; }
+}));
+
+reg(def({
+  id: 'guest.shelter', group: 'guest', roles: ['guest'], loop: true, travel: false, base: 2.0,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [],
+  next: ['guest.shelter', 'guest.queueCalm', 'guest.walk'],
+  pose: function (u) {
+    // Under markisen i regn: axlarna upp, huvudet ned, ena handen håller ihop kragen. En blick upp mot markisens kant.
+    const look = win(u, 0.55, 0.8, 0.08);
+    return P(STAND, { lift: 0.03, torso: { pitch: 0.06 }, head: { pitch: 0.2 - 0.45 * look }, armR: A(0.9, 0.3, 2.2), armL: A(0.3, 0.05, 1.3) });
+  }
+}));
+
+reg(def({
+  id: 'guest.grabNapkin', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 0.9, handed: true,
+  from: 'stand', to: 'stand', needs: 'floor', holds: {}, ends: {}, events: [{ u: 0.4, type: 'grab', at: 'air' }],
+  next: ['guest.eatBun', 'guest.eatPlate', 'guest.drink', 'guest.wipeNapkin'],
+  pose: function (u, c) {
+    // Blåsten tar servetten: en snabb sträckning åt sidan efter den (c.yaw mot servetten), oftast för sent.
+    const k = win(u, 0.1, 0.85, 0.15);
+    return withYaw(P(base(c, false), { torso: { pitch: 0.08 * k }, armR: A(0.6 + 1.0 * k, 0.15 + 0.5 * k, 0.4) }), (c.yaw ?? 0.7) * 0.4 * k, (c.yaw ?? 0.7) * 0.9 * k);
+  }
+}));
+
+reg(def({
+  id: 'staff.walkLighter', group: 'staff', roles: STAFF, loop: true, travel: true, base: 1, handed: true,
+  from: 'walk', to: 'walk', needs: 'floor', holds: { R: 'lighter' }, ends: { R: 'lighter' }, events: [],
+  next: ['staff.walkLighter', 'staff.lightTorch', 'staff.walk'],
+  pose: function (u, c) {
+    // Raskt, tändaren nedåt längs benet.
+    const ph = c.phase ?? u;
+    return P(walking(STAND, ph, c.stride ?? 1.05, 'L'), { armR: A(0.15, 0.1, 0.35) });
+  }
+}));
+
+reg(def({
+  id: 'staff.lightTorch', group: 'staff', roles: STAFF, loop: false, travel: false, base: 2.4, handed: true,
+  from: 'stand', to: 'stand', needs: 'torch', holds: { R: 'lighter' }, ends: { R: 'lighter' },
+  events: [{ u: 0.4, type: 'spark', hand: 'R' }, { u: 0.55, type: 'ignite', at: 'torch' }],
+  next: ['staff.walkLighter'],
+  pose: function (u) {
+    // Böjer sig fram mot marschallen, armen ut med tändaren mot veken (0,12–0,88). Lågan på tändaren 0,4–0,72,
+    // och marschallen tänds vid 0,55 och tonar upp på 0,8 s (torchLighting.ts).
+    const k = win(u, 0.12, 0.88, 0.14);
+    return P(STAND, { torso: { pitch: 0.06 + 0.32 * k }, head: { pitch: 0.2 + 0.25 * k }, armR: A(0.6 + 0.75 * k, 0.1, 0.6 - 0.3 * k), armL: A(0.4, 0.08, 0.6) });
   }
 }));
 

@@ -1,0 +1,29 @@
+{
+  "definition": "Föremålen vid spelarens vagn (villagePlaces.ts playerTruckPropShapes, Designs D9 truckProps.ts) mot vägarna figurerna går (order319cPlatsen.test.ts routes), i vagnens ram. minRouteToPropM: kortaste avståndet från en väg till ett föremål den inte går till; clearM: kravet (halv figurbredd). rivalTwoGapM: den andra rivalvagnen på torget (truckPlacement torget 1) till spelarens föremål, däck och vägar. torchRound: rundans tid, gångfarten och när marschallerna tänds (torchRound.ts).",
+  "clearM": 0.2,
+  "minRouteToPropM": 0.22,
+  "routes": 49,
+  "props": 14,
+  "tight": [],
+  "overlaps": [],
+  "spotsNear": [
+    {
+      "spot": "heat0",
+      "prop": "stand table C",
+      "m": 0.19
+    }
+  ],
+  "rivalTwoGapM": 7.88,
+  "torchRound": {
+    "seconds": 42,
+    "speedMps": 1.29,
+    "igniteAt": [
+      8.1,
+      13.1,
+      20.8,
+      24.8,
+      28.9,
+      34.1
+    ]
+  }
+}

@@ -15,8 +15,9 @@ describe('ORDER 286a — leveransens kontroller', () => {
   // Designs D1 (stämningen) lägger till åtta gester: 115. ORDER 309 — Designs
   // D5 lägger till sju (vagnarna, flamberingen, ostvagnen, tiredIdle, hesitate): 122.
   // ORDER 317 — Designs D6 lägger till Åsas tre (asa.greet, asa.point, asa.nodApprove): 125.
-  it('141 klipp (till och med D6:s tre, D7:s fem och D9:s elva), och varje efterföljare finns och passar', () => {
-    expect(Object.keys(CLIPS)).toHaveLength(141);
+  // ORDER 319c — D9:s nio klipp för de som äter och vädret, och tilläggets två med tändaren: 152.
+  it('152 klipp (till och med D6:s tre, D7:s fem och D9:s tjugo), och varje efterföljare finns och passar', () => {
+    expect(Object.keys(CLIPS)).toHaveLength(152);
     expect(validateClips()).toEqual([]);
   });
 
@@ -27,9 +28,10 @@ describe('ORDER 286a — leveransens kontroller', () => {
   });
 
   // ORDER 293 — leverans 3 (tio föremål) och vardagens koreografi (fyra): 31.
-  it('rekvisitan: 34 föremål (D7: tången, lådan och koppen), mått inom 2 mm och undersidan på y = 0', () => {
+  // ORDER 319c — D9: korven, tråget, papperstallriken, burken, muggen, servetten och paraplyet: 41.
+  it('rekvisitan: 41 föremål (D7: tången, lådan och koppen; D9: maten vid vagnen), mått inom 2 mm och undersidan på y = 0', () => {
     const ids = Object.keys(CATALOGUE) as (keyof typeof CATALOGUE)[];
-    expect(ids).toHaveLength(34);
+    expect(ids).toHaveLength(41);
     for (const id of ids) expect(measureProp(createProp(id)).ok).toBe(true);
   });
 

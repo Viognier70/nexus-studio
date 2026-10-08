@@ -18,8 +18,9 @@
 // Ren logik utan three.js, så att testerna (order319aGaster.test.ts, order319bTrangseln.test.ts) kör
 // samma kod som PlayerTruckCrew.tsx ritar.
 
-import { TRUCK_LAYOUT } from '../playerTruck';
-import { CURIOUS_SPOTS, WALKWAY } from '../truckProps';
+import { DECK_TOP_M, TRUCK_LAYOUT, onDeck } from '../playerTruck';
+import { CURIOUS_SPOTS, EAT_SPOTS, TRUCK_PROPS, WALKWAY, binPath, eatPath, leavePath } from '../truckProps';
+import { TRUCK_WEATHER } from '../truckWeather';
 import { PersonalSpace, keepRightShare, rightOf, yieldFactor, KEEP_RIGHT, PERSONAL_SPACE, type MassKind } from '../personalSpace';
 import { nearestNode, routeBetween, walkNetwork } from '../../content/villageNetwork';
 import { villageSources } from '../../content/villagePlaces';
@@ -55,8 +56,17 @@ export const TRUCK_GUESTS = {
 
 export interface TruckFrame { x: number; z: number; rotationY: number }
 export type SpotPose = 'queue' | 'order' | 'collect' | 'eat';
-export interface Spot { x: number; z: number; yaw: number; y: number; pose: SpotPose; index: number }
-export interface FlowGuest { id: string; state: GuestState }
+export interface Spot {
+  x: number; z: number; yaw: number; y: number; pose: SpotPose; index: number;
+  /** ORDER 319c — ätplatsen (truckProps.ts EAT_SPOTS: 'A-W', 'bench0', 'heat1', 'shelf0'). Bänken: sittande. */
+  key?: string;
+  seated?: boolean;
+}
+/** ORDER 319c — gästens plats att äta på och skräpet, ur simuleringen (sim/truckLife.ts). */
+export interface FlowGuest { id: string; state: GuestState; truckSpot?: string; truckLitter?: boolean }
+
+/** ORDER 319c — vädret vid vagnen just nu: regnet flyttar kön in under markisen (Designs truckWeather.ts rain.queue). */
+export interface FlowWeather { raining: boolean }
 
 /** ORDER 319b — en nyfiken förbipasserande (sim/curious.ts). */
 export interface CuriousWalk {
@@ -91,6 +101,11 @@ export interface TruckWalker {
   walkedM: number;
   /** Står still på sin plats. */
   settled: boolean;
+  /** ORDER 319c — den som har ätit går till sopkorgen ('walk'), slänger servetten och går från bordet ('toss').
+   *  Den som lämnade skräpet på bordet går direkt. */
+  binning?: 'walk' | 'toss';
+  /** ORDER 319c — platsen där gästen åt (för vägen bort). */
+  ateAt?: string;
 }
 
 export interface CuriousInput {
@@ -98,10 +113,33 @@ export interface CuriousInput {
   last: CuriousState['last'];
 }
 
+/** ORDER 319c — en kropp utanför flödet (medhjälparen ute på sin runda), i byns ram. */
+export interface OtherBody { key: string; x: number; z: number }
+
 /** 'rename': den nyfikna ställde sig i kön, och figuren heter nu gästens id (`from` är det gamla). */
 export interface FlowEvent { kind: 'spawn' | 'despawn' | 'rename'; id: string; x: number; z: number; from?: string }
 
-const DECK_Y_M = 0.12;
+/** ORDER 319c — den som slänger servetten står vänd mot sopkorgen (Designs bin.approachFacing '+Z'). */
+const BIN_FACING = 0;
+
+/** ORDER 319c — en ätplats i vagnens ram och vart gästen tittar: mot bordets mitt, västerut på bänken, mot
+ *  värmaren eller mot vagnen vid hyllan. */
+export function eatSpot(key: string): { at: Vec2; yaw: number; seated: boolean } | null {
+  const P = TRUCK_PROPS;
+  const face = (from: Vec2, to: Vec2) => Math.atan2(to[0] - from[0], to[1] - from[1]);
+  const table = (EAT_SPOTS.table as Record<string, Vec2>)[key];
+  if (table) {
+    const t = P.standTable.at[key.split('-')[0] as 'A' | 'B' | 'C'];
+    return { at: table, yaw: face(table, t), seated: false };
+  }
+  const m = /^(bench|heat|shelf)(\d+)$/.exec(key);
+  if (!m) return null;
+  const i = Number(m[2]);
+  if (m[1] === 'bench') { const b = EAT_SPOTS.bench[i]; return b ? { at: b, yaw: -Math.PI / 2, seated: true } : null; }
+  if (m[1] === 'heat') { const h = EAT_SPOTS.heater[i]; return h ? { at: h, yaw: face(h, P.heater.at), seated: false } : null; }
+  const sh = EAT_SPOTS.shelf[i];
+  return sh ? { at: sh, yaw: Math.PI, seated: false } : null;
+}
 const LIVE: ReadonlySet<GuestState> = new Set(['arriving', 'waiting', 'ordering', 'serving', 'paying', 'eating']);
 
 /** Vagnens ram (+X längs vagnen, +Z ut från luckan) till byns; samma som gruppens rotation.y. */
@@ -166,14 +204,15 @@ export class TruckGuestFlow {
   }
 
   /** Platserna i kväll: beställningen, hämtplatsen, kön i ordning och ståborden (de som äter behåller sin). */
-  private spots(guests: readonly FlowGuest[], waitingIds: readonly string[]): Map<string, Spot> {
+  private spots(guests: readonly FlowGuest[], waitingIds: readonly string[], weather: FlowWeather): Map<string, Spot> {
     const f = this.frame;
     const out = new Map<string, Spot>();
     const at = (lx: number, lz: number, yaw: number, y: number, pose: SpotPose, index: number): Spot => {
       const [x, z] = toWorld(f, lx, lz);
       return { x, z, yaw: yaw + f.rotationY, y, pose, index };
     };
-    const q = TRUCK_LAYOUT.queue;
+    // ORDER 319c — i regnet står kön under markisen (Designs truckWeather.ts rain.queue); de fyra första står torrt.
+    const q = weather.raining ? TRUCK_WEATHER.rain.queue as { order: Vec2; collect: Vec2; line: Vec2[] } : TRUCK_LAYOUT.queue;
     const ordering = guests.filter((g) => g.state === 'ordering');
     const collecting = guests.filter((g) => g.state === 'serving' || g.state === 'paying');
     // Den som beställer står vid luckan; fler än en (sällan) ställer sig först i kön.
@@ -186,22 +225,33 @@ export class TruckGuestFlow {
     // De som kommer går mot köns slut.
     let tail = line.length;
     for (const g of guests) if (g.state === 'arriving') { const p = lineAt(tail++); out.set(g.id, at(p[0], p[1], Math.PI / 2, 0, 'queue', tail - 1)); }
-    // Ståborden: väster, öster och söder om varje bord; fler ställer sig en bit ut.
-    const eat = [TRUCK_LAYOUT.standTables.A, TRUCK_LAYOUT.standTables.B, TRUCK_LAYOUT.standTables.C]
-      .flatMap((t) => TRUCK_LAYOUT.eatOffsets.map((o) => [t[0] + o[0], t[1] + o[1], Math.atan2(-o[0], -o[1])] as [number, number, number]));
-    const taken = new Set<number>();
-    const eaters = guests.filter((g) => g.state === 'eating');
-    for (const g of eaters) { const s = this.walkers.get(g.id)?.spot; if (s?.pose === 'eat' && !taken.has(s.index)) { taken.add(s.index); out.set(g.id, s); } }
-    let extra = 0;
-    for (const g of eaters) {
-      if (out.has(g.id)) continue;
-      let i = 0;
-      while (taken.has(i)) i++;
-      taken.add(i);
-      const e = i < eat.length ? eat[i] : [6.8 + 0.6 * (extra % 3), 0.8 + 0.7 * Math.floor(extra++ / 3), -Math.PI / 2] as [number, number, number];
-      out.set(g.id, at(e[0], e[1], e[2], i < eat.length ? DECK_Y_M : 0, 'eat', i));
-    }
+    // ORDER 319c — de som äter står på sin plats ur simuleringen (Designs D9 EAT_SPOTS): vid ståborden, på
+    // bänken, runt värmaren eller vid hyllan på vagnens sida.
+    guests.filter((g) => g.state === 'eating' && g.truckSpot).forEach((g, i) => {
+      const e = eatSpot(g.truckSpot!);
+      if (!e) return;
+      const sp = at(e.at[0], e.at[1], e.yaw, onDeck(e.at[0], e.at[1]) ? DECK_TOP_M : 0, 'eat', i);
+      out.set(g.id, { ...sp, key: g.truckSpot, seated: e.seated });
+    });
     return out;
+  }
+
+  /** ORDER 319c — vägen till ätplatsen: upp på däcket vid ingången och runt borden (EAT_SPOTS.entry och via). Till
+   *  hyllan i regnet går gästen raka vägen. */
+  private eatRoute(key: string): Vec2[] {
+    const e = eatSpot(key);
+    if (!e) return [];
+    return eatPath(key, TRUCK_LAYOUT.queue.collect, e.at).slice(1, -1).map((p) => this.w(p[0], p[1]));
+  }
+
+  /** ORDER 319c — vägen bort från uteserveringen: ett steg från sopkorgen ut på gångvägen, åt väster eller öster
+   *  (EAT_SPOTS.leave), och vidare till ett hus eller en gata. */
+  private leaveRoute(w: TruckWalker): Vec2[] {
+    const g = walkNetwork();
+    const east = (hash(w.id) >>> 3) % 2 === 1;
+    const pts = leavePath(east).map((p) => this.w(p[0], p[1]));
+    const end = pts[pts.length - 1];
+    return [...pts, ...routeBetween(g, nearestNode(g, end[0], end[1]), this.source(w.id, 7, end))];
   }
 
   /** Bakåt från vägens slut: den närmaste punkten som ligger minst minSpawnM bort och utanför bilden.
@@ -338,11 +388,12 @@ export class TruckGuestFlow {
   }
 
   /** Ett steg: nya gäster börjar gå in, de som gått går ut, alla rör sig dt sekunder (spelets fart). */
-  update(guests: readonly FlowGuest[], waitingIds: readonly string[], dt: number, curious?: CuriousInput | null): FlowEvent[] {
+  update(guests: readonly FlowGuest[], waitingIds: readonly string[], dt: number, curious?: CuriousInput | null, weather: FlowWeather = { raining: false }, others: readonly OtherBody[] = []): FlowEvent[] {
     this.clock += dt;
     const events: FlowEvent[] = [];
     const live = guests.filter((g) => LIVE.has(g.state));
-    const spots = this.spots(live, waitingIds);
+    const byId = new Map(guests.map((g) => [g.id, g]));
+    const spots = this.spots(live, waitingIds, weather);
     this.curious(curious, new Set(live.map((g) => g.id)), spots, events);
     for (const g of live) {
       const spot = spots.get(g.id) ?? null;
@@ -356,14 +407,28 @@ export class TruckGuestFlow {
       }
       if (w.leaving) continue;
       const moved = !w.spot || !spot || Math.hypot(w.spot.x - spot.x, w.spot.z - spot.z) > 0.01;
+      const toEat = moved && spot?.pose === 'eat' && w.spot?.pose !== 'eat';
       w.spot = spot;
+      if (spot?.key) w.ateAt = spot.key;
+      // ORDER 319c — till ätplatsen: upp på däcket vid ingången och runt borden (Designs EAT_SPOTS.entry och via).
+      if (toEat && spot && w.path.length <= 1) { this.setPath(w, [...this.eatRoute(spot.key!), [spot.x, spot.z]]); w.settled = false; }
       // En ny plats: går dit raka vägen när figuren redan är framme vid vagnen.
-      if (moved && spot && w.path.length <= 1) { this.setPath(w, [[spot.x, spot.z]]); w.settled = false; }
+      else if (moved && spot && w.path.length <= 1) { this.setPath(w, [[spot.x, spot.z]]); w.settled = false; }
       else if (moved && spot && w.path.length > 1) w.path[w.path.length - 1] = [spot.x, spot.z];
     }
     const liveIds = new Set(live.map((g) => g.id));
     for (const w of this.walkers.values()) {
-      if (!w.leaving && !w.curious && !liveIds.has(w.id)) { w.leaving = true; w.spot = null; w.settled = false; this.setPath(w, this.departurePath(w)); }
+      if (w.leaving || w.curious || liveIds.has(w.id)) continue;
+      const ate = w.spot?.pose === 'eat';
+      w.leaving = true; w.spot = null; w.settled = false;
+      // ORDER 319c — den som har ätit går till sopkorgen med servetten (Designs EAT_FLOW), utom den som lämnade
+      // skräpet på bordet när det var mycket folk; den går från bordet direkt.
+      if (ate && !byId.get(w.id)?.truckLitter) {
+        w.binning = 'walk';
+        const e = w.ateAt ? eatSpot(w.ateAt) : null;
+        const path = e ? binPath(w.ateAt!, e.at).slice(1) : [EAT_SPOTS.toBin, TRUCK_PROPS.bin.approach];
+        this.setPath(w, path.map((p) => this.w(p[0], p[1])));
+      } else this.setPath(w, ate ? this.leaveRoute(w) : this.departurePath(w));
     }
     // Riktningen och farten före steget (väja: den som går saktar in bakom eller framför någon).
     const cur = curious?.current ?? null;
@@ -382,9 +447,20 @@ export class TruckGuestFlow {
       const [sx, sz] = this.shown.get(w.id) ?? [w.x, w.z];
       const [cx, cz] = w.child ? this.shown.get(childKey(w.id)) ?? [sx, sz] : [sx, sz];
       const away = this.dist(sx, sz) >= TRUCK_GUESTS.minSpawnM && !this.inView(sx, sz) && this.dist(cx, cz) >= TRUCK_GUESTS.minSpawnM && !this.inView(cx, cz);
-      const gone = w.leaving && w.holdS <= 0 && (away || w.path.length === 0);
+      // ORDER 319c — framme vid sopkorgen: slänger servetten och går från den (binNapkin och leaveTable).
+      if (w.binning === 'walk' && w.path.length === 0) {
+        w.binning = 'toss';
+        w.holdS = CLIPS['guest.binNapkin'].seconds.normal + CLIPS['guest.leaveTable'].seconds.normal;
+        w.outcomeAt = this.clock;
+        w.yaw = this.frame.rotationY + BIN_FACING;
+      }
+      const gone = w.leaving && w.holdS <= 0 && !w.binning && (away || w.path.length === 0);
       if (gone) { this.walkers.delete(w.id); events.push({ kind: 'despawn', id: w.id, x: sx, z: sz }); continue; }
-      if (w.holdS > 0) { w.holdS = Math.max(0, w.holdS - dt); continue; }
+      if (w.holdS > 0) {
+        w.holdS = Math.max(0, w.holdS - dt);
+        if (w.holdS <= 0 && w.binning === 'toss') { w.binning = undefined; this.setPath(w, this.leaveRoute(w)); }
+        continue;
+      }
       // Den nyfikna vid skylten följer simuleringens tid (sakta in och gå fram, sedan stå).
       if (w.curious?.stage === 'act' && cur?.seq === w.curious.seq) {
         const [tx, tz] = this.curiousTarget(w.curious.side, cur.real);
@@ -416,12 +492,12 @@ export class TruckGuestFlow {
         w.yaw = w.spot.yaw;
       }
     }
-    this.place(dt);
+    this.place(dt, others);
     return events;
   }
 
   /** Där figurerna ritas: till höger på vägen (KEEP_RIGHT) och isärknuffade (PersonalSpace). */
-  private place(dt: number): void {
+  private place(dt: number, others: readonly OtherBody[]): void {
     const bodies = [...this.walkers.values()].map((w) => {
       let x = w.x, z = w.z;
       const t = w.path[0];
@@ -444,6 +520,8 @@ export class TruckGuestFlow {
       const [rx, rz] = rightOf(Math.sin(w.yaw), Math.cos(w.yaw));
       bodies.push({ key: childKey(w.id), x: b.x - rx * CHILD_SIDE_M, z: b.z - rz * CHILD_SIDE_M, kind: b.kind });
     }
+    // ORDER 319c — medhjälparen ute på sin runda räknas i trängseln men flyttas inte av den.
+    for (const o of others) bodies.push({ key: o.key, x: o.x, z: o.z, kind: 'eatingOrSeated' });
     const shown = this.space.step(bodies, dt);
     this.shown.clear();
     for (const [k, p] of shown) this.shown.set(k, p);

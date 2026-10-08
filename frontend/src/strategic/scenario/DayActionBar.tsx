@@ -57,6 +57,7 @@ import { PATH_KEY } from '../ui/DinVag';
 import { conceptTonight } from '../simulation/guestTypes';
 import { t as tt, type StringKey } from '../../content/nexusStrings';
 import { useLanguage } from '../../content/language';
+import { truckOf } from '../../sim/truckLife';
 import { useBusiness } from '../business/BusinessContext';
 
 interface Props {
@@ -325,6 +326,13 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
                 <div className="nxs-dark-box nxs-mt-24" data-testid="truck-menu" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
                   <div className="nx-label" style={{ color: 'inherit' }}>{strings.ladder.truckMenuLabel}</div>
                   <p className="nx-body">{strings.ladder.truckMenu}</p>
+                  {/* ORDER 319c — kvällens väder vid vagnen, synligt på morgonen (sim/truckLife.ts). */}
+                  {cal.isServiceDay && (
+                    <p className="nx-body" data-testid="truck-forecast" data-weather={truckOf(sim).weather}>
+                      {tt(lang, 'truck.forecast', { weather: tt(lang, `weather.${truckOf(sim).weather}` as StringKey) })}
+                      {truckOf(sim).weather === 'rain' ? ` ${tt(lang, 'truck.forecastRain')}` : ''}
+                    </p>
+                  )}
                 </div>
               ) : <MorningMenuPanel />}
               {/* ORDER 275 — i klasser med paket står prognosen i lagerpanelen. */}

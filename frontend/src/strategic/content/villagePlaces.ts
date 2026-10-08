@@ -14,6 +14,7 @@
 import { LANDMARK_BY_ID, WORLD_RAW_BUILDINGS } from './world';
 import { driveNetwork, nearestNode, walkNetwork } from './villageNetwork';
 import type { TruckSpot } from '../../sim/village';
+import { TRUCK_PROPS } from '../scene/truckProps';
 
 type Vec2 = [number, number];
 
@@ -96,15 +97,24 @@ export const TRUCK_STANDS: Record<TruckSpot, TruckPlacement> = {
   sjon: { x: 376.16, z: 230.32, rotationY: 1.485 }
 };
 
+/** Den andra vagnen på samma plats står 7 m efter den första ([längs vagnen, i sidled mot luckan], meter).
+ *  ORDER 319c: på torget stod den då i spelarens kö, vid skylten och marschallen vid kön (layoutkontrollen,
+ *  onRoadAudit.ts auditTrucks). Där står den i stället 7 m åt andra hållet och 2 m bakåt: åt det hållet utan
+ *  steget bakåt står den i vinbarens hus. Avståndet till spelarens föremål, däck och vägar: reports/order319c/
+ *  platsen.json rivalTwoGapM (scene/__tests__/order319cPlatsen.test.ts). */
+const SECOND_TRUCK_DEFAULT_M: [number, number] = [7, 0];
+const SECOND_TRUCK_OFFSET_M: Partial<Record<TruckSpot, [number, number]>> = { torget: [-7, -2] };
+
 /**
  * Var vagnen står på kvällens plats (VillageVenues ritar den här). `k` är
  * vagnens nummer bland vagnarna på samma plats (de står efter varandra).
  */
 export function truckPlacement(spot: TruckSpot, k: number): TruckPlacement {
   const s = TRUCK_STANDS[spot];
+  const [along, side] = SECOND_TRUCK_OFFSET_M[spot] ?? SECOND_TRUCK_DEFAULT_M;
   return {
-    x: s.x - Math.sin(s.rotationY) * k * 7,
-    z: s.z - Math.cos(s.rotationY) * k * 7,
+    x: s.x - Math.sin(s.rotationY) * k * along + Math.cos(s.rotationY) * k * side,
+    z: s.z - Math.cos(s.rotationY) * k * along - Math.sin(s.rotationY) * k * side,
     rotationY: s.rotationY
   };
 }
@@ -130,6 +140,32 @@ export function playerTruckFootprints(): { body: Vec2[]; deck: Vec2[] } {
   const rect = (x0: number, x1: number, z0: number, z1: number): Vec2[] => [w(x0, z0), w(x1, z0), w(x1, z1), w(x0, z1)];
   // Karossen från dragstångens krok till bakgaveln, och markisen ut över luckan.
   return { body: rect(-3.4, 2.3, -1.15, 1.85), deck: rect(3.0, 6.2, 0.2, 3.8) };
+}
+
+/** ORDER 319c — föremålen på uteserveringen och vid luckan (Designs D9 truckProps.ts TRUCK_PROPS), deras fot i
+ *  vagnens ram: ståborden, bänken, värmaren, sopkorgen, marschallerna, hyllan och skylten. Runda föremål som
+ *  åttahörningar. Layoutkontrollen (onRoadAudit.ts) och gångvägarnas test läser samma lista. */
+export function playerTruckPropShapes(): { name: string; poly: Vec2[] }[] {
+  const P = TRUCK_PROPS;
+  const circle = (c: readonly number[], r: number): Vec2[] => Array.from({ length: 8 }, (_, i) => [c[0] + r * Math.cos((i * Math.PI) / 4), c[1] + r * Math.sin((i * Math.PI) / 4)] as Vec2);
+  const rect = (x0: number, x1: number, z0: number, z1: number): Vec2[] => [[x0, z0], [x1, z0], [x1, z1], [x0, z1]];
+  const out: { name: string; poly: Vec2[] }[] = [];
+  for (const [k, c] of Object.entries(P.standTable.at)) out.push({ name: 'stand table ' + k, poly: circle(c, P.standTable.top.diameter / 2) });
+  out.push({ name: 'bench', poly: rect(P.bench.centre[0] - P.bench.depth / 2, P.bench.centre[0] + P.bench.depth / 2, P.bench.centre[1] - P.bench.length / 2, P.bench.centre[1] + P.bench.length / 2) });
+  out.push({ name: 'heater', poly: circle(P.heater.at, P.heater.base.diameter / 2) });
+  out.push({ name: 'bin', poly: circle(P.bin.at, P.bin.diameter / 2) });
+  P.torch.at.forEach((c, i) => out.push({ name: 'torch ' + (i + 1), poly: circle(c, P.torch.holder.cup / 2) }));
+  out.push({ name: 'shelf', poly: rect(P.shelf.x0, P.shelf.x1, P.shelf.z0, P.shelf.z1) });
+  const B = P.menuBoard;
+  out.push({ name: 'menu board', poly: rect(B.at[0] - B.footprint[0] / 2, B.at[0] + B.footprint[0] / 2, B.at[1] - B.footprint[1] / 2, B.at[1] + B.footprint[1] / 2) });
+  return out;
+}
+
+/** ORDER 319c — föremålens fot i byns ram. */
+export function playerTruckPropFootprints(): { name: string; poly: Vec2[] }[] {
+  const at = playerTruckPlacement();
+  const c = Math.cos(at.rotationY), s = Math.sin(at.rotationY);
+  return playerTruckPropShapes().map((p) => ({ name: p.name, poly: p.poly.map(([x, z]) => [at.x + x * c + z * s, at.z - x * s + z * c] as Vec2) }));
 }
 
 /** ORDER 312 — lyktan och skenet vid en krogs dörr (VillageVenues): 60 % mot dörrnoden från husets mitt. */

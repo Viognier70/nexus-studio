@@ -17,6 +17,7 @@ import { calendarFor } from '../../sim/calendar';
 import { dailyGuestCap } from '../../sim/economy';
 import { waveShareTonight } from './rush';
 import { poolArrivals } from '../../sim/village';
+import { truckFootfall } from '../../sim/truckLife';
 
 // ORDER 111 §3 — food truck-specifika viktningar.
 //
@@ -141,7 +142,9 @@ export function arrivalAttraction(state: SimulationState): number {
   //     tävlar med befintliga restauranger.
   const isFoodtruck = state.businessClass === 'foodtrucken';
   const weatherBase = weatherArrivalMultiplier(state.day.weather);
-  const weatherMult = isFoodtruck ? foodtruckWeatherAmplify(weatherBase) : weatherBase;
+  // ORDER 319c — spelarens vagn: kvällens väder vid vagnen (prognosen på morgonen, sim/truckLife.ts) ger
+  // gästflödet direkt (TRUCK_WEATHER.footfall), i stället för byns väder förstärkt.
+  const weatherMult = state.economy?.businessClass === 'foodtruck' ? truckFootfall(state) : isFoodtruck ? foodtruckWeatherAmplify(weatherBase) : weatherBase;
   const competitionMult = isFoodtruck ? FOODTRUCK_COMPETITION_MULTIPLIER : 1;
   // ORDER 117 §3.1 — värdekvotens fördröjda multiplikator på ankomster.
   // Läser state.effectiveValueQuota (asymmetriskt smoothad vid service-

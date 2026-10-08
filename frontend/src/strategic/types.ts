@@ -409,6 +409,10 @@ export interface Guest {
   fromCurious?: boolean;
   // ORDER 319b del 2 — stamgästen som kommer tillbaka efter ett rätt svar en tidigare kväll.
   curiousRegular?: boolean;
+  // ORDER 319c — platsen där gästen äter vid vagnen (sim/truckLife.ts, nyckel i truckProps.ts EAT_SPOTS),
+  // och om gästen lämnade skräp på bordet när det var mycket folk.
+  truckSpot?: string;
+  truckLitter?: boolean;
   // ORDER 290 — rätt och fel svar vid bordet: notan gånger 1 + billBonus.
   billBonus?: number;
   // ORDER 296 — hovmästarens vinbeslut: flaskan (sommeliern) eller husets vin (Per).
@@ -989,6 +993,8 @@ export interface DayState {
   curiousRevenueSek?: number;
   // ORDER 319b del 2 — varav stamgästerna som kom tillbaka.
   curiousRegularRevenueSek?: number;
+  // ORDER 319c — livet vid vagnen i kväll: vädret, skräpet på borden och medhjälparens rundor (sim/truckLife.ts).
+  truck?: import('../sim/truckLife').TruckDayState;
   helpZone?: { zone: 'bar' | 'floor' | 'lounge'; until: number } | null;
   // ORDER 296 — gästen med socialt kapital som gick missnöjd till en rival.
   socialWalkout?: { rivalId: string; at: number; nameIndex: number } | null;
@@ -1974,6 +1980,8 @@ export type SimAction =
   // ORDER 319b — de nyfikna vid foodtruckens lucka (sim/curious.ts): klicket öppnar kortet, svaret avgör.
   | { type: 'CURIOUS_OPEN'; cold?: boolean }
   | { type: 'CURIOUS_ANSWER'; optionId: string }
+  // ORDER 319c — spelaren städar ett bord med skräp vid vagnen (sim/truckLife.ts).
+  | { type: 'TRUCK_CLEAR_TABLE'; table: string }
   | { type: 'HOST_SEAT'; key: string; seats?: readonly number[] }
   | { type: 'HOST_COMP'; key: string; what: 'glass' | 'coffee' }
   | { type: 'HOST_UPSELL'; key: string; what: 'dessert' | 'wine' }
