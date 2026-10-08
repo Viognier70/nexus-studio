@@ -61,7 +61,7 @@
               "explanation": "A fresh, light white wine suits light food. Its acidity lifts fish and vegetables without drowning them."
             },
             "c": {
-              "label": "The game, the richest plate we have",
+              "label": "The game, the richest and heaviest plate we have tonight",
               "explanation": "Deer wants a wine with more body, such as a red. A light white disappears next to it."
             }
           },
@@ -95,7 +95,7 @@
               "explanation": "Rioja's red wines are made mainly from Tempranillo, not Pinot Noir."
             },
             "c": {
-              "label": "The Douro, in Portugal",
+              "label": "The Douro, in northern Portugal",
               "explanation": "The Douro is the home of port, made from grapes such as Touriga Nacional."
             }
           },
@@ -128,7 +128,7 @@
           "question": "Which dish on tonight's menu goes with it?",
           "options": {
             "a": {
-              "label": "Nothing: a good red is drunk without food",
+              "label": "Nothing: a good red is best drunk entirely without food",
               "explanation": "Pinot Noir is one of the most food-friendly reds. Saying no loses a sale and a good pairing."
             },
             "b": {
@@ -166,7 +166,7 @@
               "explanation": "Pike-perch (zander) is a freshwater fish of the perch family, with firm white flesh. Hjälmaren, a lake south of Grythyttan, is known for it."
             },
             "b": {
-              "label": "A saltwater fish from the North Sea",
+              "label": "A saltwater fish caught in the North Sea and frozen on board the boat",
               "explanation": "Pike-perch lives in lakes and slow rivers, and in the brackish water of the Baltic, not the salty North Sea."
             },
             "c": {
@@ -186,7 +186,7 @@
               "explanation": "Far too hard and long: the fish falls apart and turns dry and stringy."
             },
             "b": {
-              "label": "Poached in the morning and reheated to order",
+              "label": "Poached early in the morning and then reheated when it is ordered",
               "explanation": "Reheated fish loses its texture and can be a food-safety risk if it has stood warm."
             },
             "c": {
@@ -207,11 +207,11 @@
               "explanation": "A fish allergy usually covers freshwater fish too. It is not true, and it is dangerous."
             },
             "b": {
-              "label": "Ask the kitchen, and tell the guest honestly what can and cannot be promised",
+              "label": "Ask the kitchen and honestly say what can be promised",
               "explanation": "With allergies, honesty comes first. The kitchen knows about shared pans and oil. A promise you cannot keep is a risk to the guest."
             },
             "c": {
-              "label": "Say it will be fine without asking",
+              "label": "Say it will be fine, without first asking the kitchen about the fish",
               "explanation": "An unchecked promise about an allergy can make a guest seriously ill."
             }
           },
@@ -241,7 +241,7 @@
               "explanation": "Chanterelles grow wild in Swedish forests, in moss near birch and spruce. The season runs from July into autumn, and they are not cultivated."
             },
             "b": {
-              "label": "Cultivated button mushrooms",
+              "label": "Cultivated button mushrooms from a mushroom farm nearby",
               "explanation": "Button mushrooms are grown indoors. Chanterelles are picked wild in the forest."
             },
             "c": {
@@ -261,7 +261,7 @@
               "explanation": "Soaked chanterelles boil in their own water instead of frying, and the flavour goes flat."
             },
             "b": {
-              "label": "Not at all, the forest soil gives flavour",
+              "label": "Not at all, the forest soil left on them gives more flavour",
               "explanation": "Soil and needles grate between the teeth. The flavour is in the mushroom, not the dirt."
             },
             "c": {
@@ -316,7 +316,7 @@
               "explanation": "The dish is lentils, root vegetables and herbs. Lentils are legumes and a good source of protein, so the plate is filling without meat or dairy."
             },
             "b": {
-              "label": "No, lentils are a dairy product",
+              "label": "No, lentils count as a dairy product and contain milk protein",
               "explanation": "Lentils are legumes, seeds of a plant. They have nothing to do with dairy."
             },
             "c": {
@@ -332,7 +332,7 @@
           "question": "How are the lentils cooked?",
           "options": {
             "a": {
-              "label": "Soaked overnight and boiled hard for two hours",
+              "label": "Soaked overnight, then boiled hard for two whole hours in salted water",
               "explanation": "That turns lentils to mush. It is how some dried beans are treated, not lentils."
             },
             "b": {
@@ -353,11 +353,11 @@
           "question": "The vegan guest asks for a dessert. What do you suggest?",
           "options": {
             "a": {
-              "label": "Say there is nothing and bring the bill",
+              "label": "Say there is nothing vegan at all and bring the bill straight away",
               "explanation": "It loses a sale and the guest leaves feeling unwelcome, when there was an option."
             },
             "b": {
-              "label": "Check the list: the sorbet is only berries, the cream dessert is not vegan",
+              "label": "Check the list: sorbet is just berries; the cream dessert isn't vegan",
               "explanation": "The lingonberry sorbet has no cream or egg. The cream dessert has both. Knowing the list saves the guest a question."
             },
             "c": {
@@ -387,7 +387,7 @@
           "question": "What are lingonberries?",
           "options": {
             "a": {
-              "label": "A wild Nordic berry of the heather family, tart and red",
+              "label": "A wild Nordic heather-family berry, tart and red",
               "explanation": "Lingonberries grow wild in Nordic forests, on a low evergreen shrub of the heather family. They are red and tart."
             },
             "b": {
@@ -395,7 +395,7 @@
               "explanation": "Lingonberries are small, wild and tart. Strawberries are another plant."
             },
             "c": {
-              "label": "A citrus fruit from Spain",
+              "label": "A citrus fruit imported from Spain in winter, sweet and yellow",
               "explanation": "They are a Nordic forest berry, not a citrus fruit."
             }
           },
@@ -411,7 +411,7 @@
               "explanation": "Many are frozen, but the reason they keep even raw is the benzoic acid."
             },
             "b": {
-              "label": "They contain a lot of sugar",
+              "label": "They contain so much sugar that no bacteria can grow in them",
               "explanation": "Lingonberries are tart, with little sugar. It is the acid that keeps them."
             },
             "c": {
@@ -428,11 +428,11 @@
           "question": "The guest does not drink alcohol. What should they have with the meal?",
           "options": {
             "a": {
-              "label": "A small glass of wine, it is almost nothing",
+              "label": "Just a small glass of wine, it is almost nothing for an adult",
               "explanation": "A guest who does not drink alcohol means none. Pushing it is disrespectful."
             },
             "b": {
-              "label": "The alcohol-free lingonberry sparkling: tart and fresh, it works like a wine with food",
+              "label": "The alcohol-free lingonberry sparkling: tart and fresh, like a wine with food",
               "explanation": "Acidity is what makes a drink work with food. A tart, sparkling lingonberry drink does the job of a wine without alcohol."
             },
             "c": {
@@ -482,7 +482,7 @@
           "question": "How do you bring out the sweetness of the root vegetables?",
           "options": {
             "a": {
-              "label": "Boil them for a long time in plenty of water",
+              "label": "Boil them for a long time in plenty of water until completely soft",
               "explanation": "Long boiling leaches flavour into the water and gives no browning."
             },
             "b": {
@@ -557,7 +557,7 @@
           "question": "How do you open the bottle at the table?",
           "options": {
             "a": {
-              "label": "Open it at the bar and pour everyone straight away",
+              "label": "Open it at the bar and pour for the whole table straight away, to save time",
               "explanation": "The guest never sees the bottle or tastes it first. A faulty bottle ends up in every glass."
             },
             "b": {
@@ -565,7 +565,7 @@
               "explanation": "A still wine is opened quietly. A bang belongs to nothing on this list."
             },
             "c": {
-              "label": "Show the label, cut the capsule below the lip, draw the cork quietly and let the host taste first",
+              "label": "Show the label, cut below the lip, draw the cork quietly, host tastes first",
               "explanation": "The guest sees they got what they ordered, the wine does not touch the capsule, and the host checks the wine before everyone is poured."
             }
           },
@@ -586,7 +586,7 @@
               "explanation": "On our list a bottle costs less than five single glasses. For a table of four it is better value and a nicer moment."
             },
             "c": {
-              "label": "Four glasses of four different wines, always",
+              "label": "Four glasses of four different wines, always, so everyone at the table gets to try something",
               "explanation": "It can be fun, but the table asked for value, and it costs them more."
             }
           },
@@ -620,7 +620,7 @@
               "explanation": "Not tonight's beer. Getting the origin wrong undermines the local story."
             },
             "c": {
-              "label": "Brewed in our own kitchen",
+              "label": "Brewed in our own kitchen, in small batches every week in season",
               "explanation": "The wine bar does not brew. The ale house has its own brewery; we buy from Nora."
             }
           },
@@ -636,7 +636,7 @@
               "explanation": "The glass fills with foam, the beer goes flat and the guest waits."
             },
             "b": {
-              "label": "Into a warm glass straight from the dishwasher",
+              "label": "Into a warm glass straight from the dishwasher, so the beer is not too cold",
               "explanation": "A warm glass makes the beer foam over and warm up."
             },
             "c": {
@@ -661,7 +661,7 @@
               "explanation": "Pork with roasted roots suits the malt in a beer as well as a fresh wine. Give the guest a real choice."
             },
             "c": {
-              "label": "Beer never goes with food in a wine bar",
+              "label": "Beer never goes with food in a wine bar; wine is what the guests came for",
               "explanation": "Beer is an excellent food drink, and it is on our list for a reason."
             }
           },

@@ -28,7 +28,7 @@
               "explanation": "The smell comes from the compound TCA. The fault is in that particular bottle, not in the wine as such."
             },
             "d": {
-              "label": "A young, closed wine",
+              "label": "A young, closed wine that needs air",
               "explanation": "A young wine can say little, but it does not smell of cellar. The smell is a fault, not an age."
             }
           },
@@ -49,7 +49,7 @@
               "explanation": "The guest wants the wine they chose, and to know what is happening."
             },
             "c": {
-              "label": "Something nice to start with, anything",
+              "label": "Something nice to start with, anything at all really",
               "explanation": "The guest wants to get going, but chose that very wine."
             }
           },
@@ -326,7 +326,7 @@
               "explanation": "A deposit protects against no-shows. It is not what makes a booking valid. The confirmation is enough."
             },
             "d": {
-              "label": "Valid only if the guest calls on the same day",
+              "label": "Valid only if the guest calls to confirm the table on the same day",
               "explanation": "Some restaurants ask guests to confirm again, but without such a rule the confirmation stands as it is."
             }
           },
@@ -346,7 +346,7 @@
               "explanation": "Both think they were first, and now they are competing in front of each other. The answer is in the system."
             },
             "c": {
-              "label": "Give the table to whoever reached the door first",
+              "label": "Give the table to whoever reached the door first, as that is the only fair way",
               "explanation": "That says nothing about who booked first. Whoever booked early but arrived a minute later feels unfairly treated."
             },
             "d": {
@@ -366,11 +366,11 @@
               "explanation": "More covers bring more to the till tonight, but the guest who booked first feels cheated and tells others about it."
             },
             "b": {
-              "label": "Ask both to wait while you phone around and sort out the mistake",
+              "label": "Ask both parties to wait while you phone around and sort out the mistake",
               "explanation": "Getting to the bottom of it can wait until after the evening. The guests at the door need a decision now, and an entrance full of waiting guests is seen by the whole room."
             },
             "c": {
-              "label": "Give the table to whoever booked first, and offer the others the bar and a glass on the house",
+              "label": "The table to whoever booked first; the others get the bar and a glass",
               "explanation": "The book decides, and whoever has to wait should get something for the trouble. A glass on the house costs little and turns a mistake into a good story."
             }
           },
@@ -403,7 +403,7 @@
               "explanation": "We speak louder the more noise there is around us. This is called the Lombard effect. That is why the noise level in a room rises faster than the music is turned up."
             },
             "b": {
-              "label": "Get used to it and hear each other better",
+              "label": "Get used to it and hear each other better after a while",
               "explanation": "The ear does not adjust so that speech becomes clearer. Instead, the guests get tired and talk less."
             },
             "c": {
@@ -461,7 +461,7 @@
               }
             },
             "c": {
-              "label": "Let the music play",
+              "label": "Let the music play as it is, most guests like a lively room",
               "explanation": "The music is part of the concept, but in a half-empty room early in the evening it disturbs more than it carries.",
               "explanationIn": {
                 "sent": "Late in the evening the music carries the room, but the couple at the table still need a solution."
@@ -489,11 +489,11 @@
           "question": "What do nine degrees in the fridge mean for cheese and charcuterie?",
           "options": {
             "a": {
-              "label": "Within the margin, the fridge will recover",
+              "label": "Within the margin, the fridge will recover on its own again in a little while",
               "explanation": "A fridge that is above the limit rarely gets better on its own. Without action and records, the restaurant has no defence if the food goes bad."
             },
             "b": {
-              "label": "The food is spoiled and must be thrown away",
+              "label": "The food is spoiled and must all be thrown away at once",
               "explanation": "Safe, but needlessly expensive. Food that has been at 9 degrees for a short time can be moved and assessed."
             },
             "c": {
@@ -514,7 +514,7 @@
               "explanation": "The food safety check must show how it really was. A doctored number is worse than a deviation, and the food stays in the warmth."
             },
             "b": {
-              "label": "Measure inside one item, move the food to the other fridge, record the deviation and the action",
+              "label": "Measure inside an item, move it to the other fridge, log deviation and action",
               "explanation": "A measurement inside the food shows how warm it has become. A deviation must be recorded with the time and the action taken; that is what an inspector asks for first."
             },
             "c": {
@@ -522,7 +522,7 @@
               "explanation": "The food is saved, but without a note there is nothing to show that the deviation was found and dealt with."
             },
             "d": {
-              "label": "Turn the thermostat to the coldest setting and leave the food where it is",
+              "label": "Turn the thermostat to the coldest setting and leave all the food where it is",
               "explanation": "If the fridge is broken, the thermostat will not help, and the food gets warmer while you wait. First the food is moved, then the fridge is checked for faults."
             }
           },
@@ -678,7 +678,7 @@
           "question": "What does a cover mean in restaurant language?",
           "options": {
             "a": {
-              "label": "A table for two",
+              "label": "A table for two, laid for the evening",
               "explanation": "A table for two is called a two-top. A cover is a single place, so a two-top has two covers."
             },
             "b": {
@@ -702,7 +702,7 @@
           "question": "How do you find out where five guests can fit?",
           "options": {
             "a": {
-              "label": "Check the table plan for which tables are free and which will pay soon",
+              "label": "Check the table plan for tables that are free or paying soon",
               "explanation": "The table plan shows both free tables and which parties are on coffee or the bill. Then you know what you can promise, and when."
             },
             "b": {
@@ -806,7 +806,7 @@
               "explanation": "The guest said red and should be taken at their word."
             },
             "c": {
-              "label": "To be convinced that white suits best",
+              "label": "To be convinced that a white wine suits the cheese best",
               "explanation": "The guest did not ask for a lesson."
             }
           },
@@ -882,7 +882,7 @@
               "explanation": "The Alcohol Act forbids serving anyone who is visibly intoxicated. The alcohol licence is at stake, and that applies to every glass."
             },
             "c": {
-              "label": "Regulars may be served at the staff's discretion",
+              "label": "Regulars may be served at the staff's own judgement of the situation",
               "explanation": "Regular or not, the same law applies. Serving a visibly intoxicated guest can cost the alcohol licence."
             }
           },
@@ -899,7 +899,7 @@
               "explanation": "A no in front of an audience makes the guest embarrassed and angry. It turns into a fight about not losing face."
             },
             "b": {
-              "label": "Say the bottle has run out and hope the guest gives up",
+              "label": "Say the bottle has run out at the bar and hope the guest gives up",
               "explanation": "Then the guest asks for a different bottle. The no has to be about serving, not about a particular bottle."
             },
             "c": {
@@ -916,11 +916,11 @@
           "question": "The guest protests and refuses to give up. What do you do now?",
           "options": {
             "a": {
-              "label": "Stand firm in a calm voice, get help from a colleague and offer to call a taxi",
+              "label": "Stand firm calmly, get a colleague's help and offer to call a taxi",
               "explanation": "A no that holds and help getting home show care. Two people calm the situation better than one, and the guest gets home safely."
             },
             "b": {
-              "label": "Serve one last glass so the room calms down",
+              "label": "Serve one last glass so the whole room calms down and the guest goes home happy",
               "explanation": "One last glass is still serving a visibly intoxicated guest. It buys a few minutes and then makes things worse.",
               "fail": {
                 "outcome": "The guest gets the glass and immediately wants another.",
@@ -928,7 +928,7 @@
               }
             },
             "c": {
-              "label": "Ask the guest to leave straight away, without offering help getting home",
+              "label": "Ask the guest to leave straight away, without offering any help getting home",
               "explanation": "The decision is right, but a drunk guest alone out on the street is also your responsibility. A taxi would have made it better."
             },
             "d": {
@@ -991,7 +991,7 @@
               "explanation": "The guest wants a treat. It is about the feeling of a fine choice."
             },
             "b": {
-              "label": "Champagne, to be on the safe side",
+              "label": "Champagne, just to be on the safe side for the evening",
               "explanation": "It might suit, but the guest asked about a glass."
             },
             "c": {
@@ -1086,7 +1086,7 @@
           "question": "What is the guest looking for?",
           "options": {
             "a": {
-              "label": "An explanation of the room-temperature rule",
+              "label": "An explanation of the old rule about room temperature for red wine",
               "explanation": "It is the wine that should be corrected, not the guest."
             },
             "b": {
@@ -1177,7 +1177,7 @@
           "question": "How do you plan the booking and the test run with the kitchen?",
           "options": {
             "a": {
-              "label": "Take the booking and run the new menu tonight",
+              "label": "Take the booking and run the new menu already tonight",
               "explanation": "Changing the menu in the middle of service stresses the kitchen and causes mistakes on the order tickets. The booking is valuable, but tonight's guests pay the price.",
               "explanationIn": {
                 "lugnt": "On a quiet evening the kitchen has time to do a test run without the guests noticing. The delegation gets to taste tonight, and the booking goes ahead."
@@ -1218,11 +1218,11 @@
               "explanation": "It keeps the door open, but the delegation has to wait for an answer and may book somewhere else in the meantime."
             },
             "c": {
-              "label": "Ask them to call back tomorrow when it is quieter",
+              "label": "Ask them to call back tomorrow morning when it is quieter in the kitchen",
               "explanation": "A party that wants to book the whole place will happily call the next place on the list instead."
             },
             "d": {
-              "label": "Confirm the date, number of guests and allergies, and give a time for the tasting",
+              "label": "Confirm the date, numbers, allergies and a time for the tasting",
               "explanation": "A clear answer with the details right makes the booking secure. The kitchen needs to know about the allergies already for the test run."
             }
           },
@@ -1283,7 +1283,7 @@
               "explanation": "The toaster is full of crumbs with gluten. The gluten-free bread is no longer gluten-free."
             },
             "c": {
-              "label": "Wash your hands, use a clean board and knife and a separate basket, carry it out on its own",
+              "label": "Wash hands, clean board and knife, own basket, carry it out separately",
               "explanation": "Clean hands, clean utensils and a separate basket keep the crumbs away. Carrying it out on its own means it does not get mixed up on the way."
             }
           },
@@ -1295,7 +1295,7 @@
           "question": "Who do you tell about the coeliac disease first?",
           "options": {
             "a": {
-              "label": "The kitchen, before the next dish is cooked, so that every plate for the guest is gluten-free",
+              "label": "The kitchen, before the next dish is cooked, so all of it is gluten-free",
               "explanation": "Gluten can be in sauces, fried food and croutons. The kitchen needs to know before they cook, not afterwards."
             },
             "b": {
@@ -1303,7 +1303,7 @@
               "explanation": "The guest has already said. Now it is the restaurant's responsibility that it reaches the kitchen."
             },
             "c": {
-              "label": "The rest of the party, so nobody offers the guest bread",
+              "label": "The rest of the party, so none of them happens to offer the guest bread",
               "explanation": "It does no harm, but the guest already knows what they cannot eat. The one who needs to know is the kitchen."
             },
             "d": {
@@ -1351,11 +1351,11 @@
           "question": "What does the kitchen do with the tartare tonight?",
           "options": {
             "a": {
-              "label": "Use the fish, the kitchen is careful with everything else",
+              "label": "Use the fish anyway, the kitchen is careful with everything else and it is cold now",
               "explanation": "Raw fish with a broken cold chain and no traceability is a risk the restaurant takes on the guest's behalf. Traceability is a requirement, not a wish."
             },
             "b": {
-              "label": "Take the tartare off tonight without replacing it",
+              "label": "Take the tartare off tonight without replacing it with anything else",
               "explanation": "Safe, but the menu gets thinner, and the guests who came for the tartare are disappointed."
             },
             "c": {
@@ -1380,7 +1380,7 @@
               "explanation": "Honest, but the details can make the guest worried about the rest of the food. It is enough to say the fish was not up to standard."
             },
             "c": {
-              "label": "Just say it has run out and move on",
+              "label": "Just say it has run out for tonight and move on to the next table without explaining",
               "explanation": "The guest is disappointed and gets nothing instead. You miss the chance to show why the decision was good."
             },
             "d": {
@@ -1432,7 +1432,7 @@
               "explanation": "A regular wants to be recognised. The name and a quick greeting show that before anything else is said."
             },
             "b": {
-              "label": "Check the booking list first and then greet them",
+              "label": "Check the booking list first, just to be sure, and then greet them",
               "explanation": "The guest stands waiting while you look down. The greeting should come first, the list afterwards."
             },
             "c": {
@@ -1456,11 +1456,11 @@
               "explanation": "The regular is happy, but the couple who booked do not get what they booked. It only moves the problem."
             },
             "b": {
-              "label": "Explain that it is booked, offer the best free table and a glass while the guest chooses",
+              "label": "Explain it is booked, offer the best free table and a glass",
               "explanation": "A regular wants to feel seen, not to jump the queue. Honesty and a gesture do more than a table that really belongs to someone else."
             },
             "c": {
-              "label": "Say the table is taken, nothing more",
+              "label": "Say the table is taken tonight, without explaining more or offering anything else",
               "explanation": "A regular who feels turned away does not come back. The same no with a gesture would have kept the guest."
             }
           },
@@ -1485,7 +1485,7 @@
           "question": "Why does a wine glass have a rounded bowl that narrows towards the top?",
           "options": {
             "a": {
-              "label": "So the wine stays cold for longer",
+              "label": "So the wine stays cold for longer in the glass through the evening",
               "explanation": "It is the foot and the stem that protect the wine from the warmth of your hand. The shape of the bowl is about the aroma."
             },
             "b": {
@@ -1505,15 +1505,15 @@
           "question": "How do you get clean wine glasses while the dishwasher is running?",
           "options": {
             "a": {
-              "label": "Serve the wine in water glasses",
+              "label": "Serve the wine in water glasses from the kitchen, nobody notices in the dim light and it is faster",
               "explanation": "Wine in water glasses says the wine bar cannot handle its own evening. It saves time but costs reputation, and the aroma is lost."
             },
             "b": {
-              "label": "Collect empty glasses from the tables, wash by hand, rinse and polish, take simple orders first",
+              "label": "Collect empty glasses, wash and polish by hand, take simple orders first",
               "explanation": "In a rush it is all about flow. The empty glasses on the tables are the evening's stock. Hand washing, rinsing and a clean cloth give spotless glasses, and simple orders first keep the queue moving."
             },
             "c": {
-              "label": "Stop new orders for ten minutes",
+              "label": "Stop all new orders for ten minutes until there are clean glasses again",
               "explanation": "It gives the staff some breathing room, but the guests wait, and the evening's takings are lost."
             }
           },
@@ -1687,11 +1687,11 @@
               }
             },
             "b": {
-              "label": "Push the kitchen to do the simplest dishes first, whatever the order",
+              "label": "Push the kitchen to do the simplest dishes first, whatever order they came in",
               "explanation": "Breaking the order creates confusion, wrong dishes and a tired kitchen. Those who have waited longest wait even longer."
             },
             "c": {
-              "label": "Tell the tables how long they will wait, offer bread, cook in the order the tickets came in",
+              "label": "Say how long it will take, offer bread, cook in ticket order",
               "explanation": "Guests can handle a wait when they know how long it is. Bread buys time, and the order of the tickets makes the wait fair.",
               "explanationIn": {
                 "sent": "Late in the evening the kitchen cannot catch up with the whole menu before it closes. Bread and a clear word help, but the rail does not get any shorter."
@@ -1763,7 +1763,7 @@
           "question": "How do you correct the bill at the table?",
           "options": {
             "a": {
-              "label": "Go through the lines with the guest, remove the bottles in the till and print a new bill",
+              "label": "Go through the lines with the guest, correct the till, print a new bill",
               "explanation": "The guest sees the mistake being found and corrected. A new bill from the till means the till and the payment match."
             },
             "b": {
@@ -1771,7 +1771,7 @@
               "explanation": "A handwritten slip is not a receipt, and the till still shows the wrong total."
             },
             "c": {
-              "label": "Take the amount off on the card terminal without changing the till",
+              "label": "Take the amount off on the card terminal, without changing anything in the till itself",
               "explanation": "Then the till and the payment do not match, and the guest's receipt still shows the mistake."
             }
           },
@@ -1791,7 +1791,7 @@
               "explanation": "A mistake on the bill is corrected straight away and without argument. What matters is that the guest does not leave feeling cheated."
             },
             "c": {
-              "label": "Say the bill is correct according to the till",
+              "label": "Say the bill is correct according to the till and cannot be changed",
               "explanation": "The till can be wrong. A guest who is not listened to leaves, and tells people about it."
             }
           },
@@ -1836,11 +1836,11 @@
           "question": "How do you deal with the wound and the workstation?",
           "options": {
             "a": {
-              "label": "A plaster and carry on as usual",
+              "label": "A plaster and carry on as usual, it is only a small cut and the evening is full",
               "explanation": "A nasty wound near food is a hygiene risk and a health and safety problem. It can cost more than one person for one evening."
             },
             "b": {
-              "label": "A plaster and a glove, switch tasks, wipe down and sanitise the surface",
+              "label": "A plaster and a glove, switch tasks, wipe and sanitise the surface",
               "explanation": "A wound near food must be covered with a plaster and a glove. The injured person should not handle open food, and the surface must be sanitised."
             },
             "c": {
@@ -1897,7 +1897,7 @@
               "explanation": "The designation of origin shows that the wine comes from a specific area and follows its rules, for example on grapes and growing."
             },
             "b": {
-              "label": "That the wine is organically grown",
+              "label": "That the wine is organically grown and certified by an inspector",
               "explanation": "Organic growing has its own labels. The designation of origin is about place and rules."
             },
             "c": {
@@ -1917,11 +1917,11 @@
               "explanation": "It is correct, but the guest can read for themselves. A good answer explains what the label means."
             },
             "b": {
-              "label": "Guess rather than say you do not know",
+              "label": "Guess rather than admit you do not know, since that sounds far more knowledgeable",
               "explanation": "A wrong guess is obvious straight away to someone who knows. It is better to find out the answer."
             },
             "c": {
-              "label": "Show the bottle, name the area, grape and producer, and fetch answers you do not know",
+              "label": "Show the bottle, name area, grape and producer, fetch what you don't know",
               "explanation": "The bottle and a knowledgeable answer make the origin concrete. Fetching the answer instead of guessing shows that the house takes its wine seriously."
             }
           },
@@ -1995,7 +1995,7 @@
           "question": "What is the table looking for?",
           "options": {
             "a": {
-              "label": "Something festive for those who drink wine",
+              "label": "Something festive for those who drink wine, nothing for the other",
               "explanation": "That is part of it, but one at the table needs something too."
             },
             "b": {
@@ -2096,7 +2096,7 @@
               "explanation": "Words help, but the guest needs to taste for themselves. It is the comparison that shows the place."
             },
             "d": {
-              "label": "Pour two small glasses of the same grape from two different places, side by side",
+              "label": "Pour the same grape from two different places, side by side",
               "explanation": "The same grape in both glasses means the difference comes from the place. Then the guest tastes what terroir means."
             }
           },
@@ -2108,11 +2108,11 @@
           "question": "The guest wants to know more, but two new guests come up to the bar. What do you do now?",
           "options": {
             "a": {
-              "label": "Let the guest compare the glasses in peace, welcome the new guests and come back afterwards",
+              "label": "Let the guest compare in peace, welcome the newcomers, then come back",
               "explanation": "The guest has something to do while you greet the new arrivals. Nobody is left standing, and the conversation can continue."
             },
             "b": {
-              "label": "Stay and finish the conversation, the new guests can wait",
+              "label": "Stay and finish the conversation with the guest, the new guests can wait a while",
               "explanation": "One happy guest is not worth two who wait without being noticed. A quick welcome takes a few seconds."
             },
             "c": {
@@ -2160,11 +2160,11 @@
           "question": "How do you serve three glasses when the bar is already being cleaned?",
           "options": {
             "a": {
-              "label": "Open a new bottle so the wine is fresh",
+              "label": "Open a new bottle so the wine is as fresh as it can be for them",
               "explanation": "It works, but then yet another opened bottle is left when you close. Better to pour from one that is already open."
             },
             "b": {
-              "label": "Pour from an already opened bottle into clean glasses at the end of the bar",
+              "label": "Pour from an opened bottle into clean glasses at the end of the bar",
               "explanation": "An opened bottle needs to be sold soon anyway. A clean end of the bar lets the cleaning carry on around the guests."
             },
             "c": {
@@ -2244,7 +2244,7 @@
           "question": "How do you deal with the bottles before you go home?",
           "options": {
             "a": {
-              "label": "Pour away what is left",
+              "label": "Pour away what is left, opened bottles will not keep until tomorrow anyway",
               "explanation": "A half-full wine often keeps for a couple of days if it is stored properly. Pouring it away is pouring away the evening's margin."
             },
             "b": {
@@ -2252,7 +2252,7 @@
               "explanation": "The cork helps a little, but the warmth and the oxygen mean the wine loses fruit by tomorrow already."
             },
             "c": {
-              "label": "Vacuum-seal them all, put them somewhere cool and write the date on the labels",
+              "label": "Vacuum-seal them all, keep them cool and date the labels",
               "explanation": "Oxygen spoils the wine day by day. Vacuum, cold and a date mean the wine can be sold by the glass for a couple of days and you know what is fresh."
             }
           },
@@ -2268,7 +2268,7 @@
               "explanation": "The date tells you how old the bottle is, the taste tells you whether it can be sold. Oldest first means nothing is left standing."
             },
             "b": {
-              "label": "Sell by the glass without tasting, the date is enough",
+              "label": "Sell by the glass without tasting, the date on the label is always enough to go on",
               "explanation": "A wine may have faded more than expected. The guest who gets a tired glass notices before you do."
             },
             "c": {
@@ -2328,7 +2328,7 @@
               }
             },
             "c": {
-              "label": "Take the guest to the staff room so they can have some privacy",
+              "label": "Take the guest to the staff room so they can rest in private for a while",
               "explanation": "Moving the guest takes time and means nobody sees if they get worse. Call 112 and stay where the guest is."
             },
             "d": {
@@ -2345,7 +2345,7 @@
           "question": "The ambulance crew have taken over. What do you do now?",
           "options": {
             "a": {
-              "label": "Keep serving and take it up with the kitchen after closing",
+              "label": "Keep serving as usual and take it up calmly with the kitchen after closing time",
               "explanation": "Then the same dish could go out again tonight. The kitchen needs to know now what happened."
             },
             "b": {
@@ -2353,7 +2353,7 @@
               "explanation": "Until you know what happened, it is a guess. Calm the room briefly, but get the facts from the kitchen first."
             },
             "c": {
-              "label": "Keep what was left of the dish, ask the kitchen what was in it and write down what happened",
+              "label": "Keep the leftovers, ask the kitchen what was in it, write down what happened",
               "explanation": "What is left on the plate and the kitchen's answer show where the mistake was. A written account is needed when the guest or others ask."
             },
             "d": {
@@ -2381,7 +2381,7 @@
           "question": "What decides whether cheese and charcuterie from a fridge that has stopped can be used?",
           "options": {
             "a": {
-              "label": "As long as the product smells fine it is safe",
+              "label": "As long as the product smells fine and looks right it is safe to serve",
               "explanation": "Bacteria do not smell. Products that have been above 8 degrees for too long are a risk, whatever they smell like."
             },
             "b": {
@@ -2402,11 +2402,11 @@
           "question": "How do you deal with the products now?",
           "options": {
             "a": {
-              "label": "Measure the temperature of the products, move the cold ones to the other fridge, throw away the rest",
+              "label": "Measure the products, move the cold ones to the other fridge, bin the rest",
               "explanation": "The thermometer in the fridge shows the air, not the product. Measure the products, save what has stayed cold and throw away what has not."
             },
             "b": {
-              "label": "Close the door and wait for the fridge to start again",
+              "label": "Close the door and wait for the fridge to start up again on its own",
               "explanation": "Every minute in the warmth makes more products unsafe. The fridge may not start again at all tonight."
             },
             "c": {
@@ -2426,7 +2426,7 @@
               "explanation": "A no after ordering feels like a failure to the guest. Tell them before they choose."
             },
             "b": {
-              "label": "Tell the floor which dishes are off and record the deviation in the food safety log",
+              "label": "Tell the floor which dishes are off and log the deviation",
               "explanation": "The staff can steer the guests before they order. The food safety log shows afterwards what happened and what was thrown away."
             },
             "c": {
@@ -2454,7 +2454,7 @@
           "question": "What applies to serving a guest who is noticeably drunk?",
           "options": {
             "a": {
-              "label": "The guest may be served if they eat something",
+              "label": "The guest may be served if they eat something first",
               "explanation": "Food does not change the rule. Someone who is noticeably intoxicated must not be served alcohol."
             },
             "b": {
@@ -2482,7 +2482,7 @@
               "explanation": "More alcohol does not calm an argument, and serving a noticeably drunk guest is not allowed."
             },
             "b": {
-              "label": "Serve no more alcohol, put out water and leave the glass alone",
+              "label": "Serve no more alcohol, put out water, leave the glass alone",
               "explanation": "Water is a kind gesture, and no alcohol is what the law requires. Snatching the glass out of their hand can set off a fight."
             },
             "c": {
@@ -2499,7 +2499,7 @@
           "question": "What do you do now with the guest and the party next to them?",
           "options": {
             "a": {
-              "label": "Tell the guest loudly to calm down",
+              "label": "Tell the guest loudly to calm down, so everyone in the room hears you take it seriously",
               "explanation": "Telling someone off in front of an audience makes a fight bigger. The guest does not want to lose face."
             },
             "b": {
@@ -2507,7 +2507,7 @@
               "explanation": "It protects the party but does not solve the problem: the guest is still drunk and still at the bar."
             },
             "c": {
-              "label": "Walk over calmly, talk to the guest on their own and help them leave in a taxi",
+              "label": "Walk over calmly, talk aside and help them leave in a taxi",
               "explanation": "Calm and privacy take the heat out of a fight. A taxi means the guest gets home safely. Responsibility for a drunk guest does not end at the door."
             }
           },
@@ -2556,7 +2556,7 @@
               "explanation": "The smell from the corked wine stays in the glass and carries over into the new wine."
             },
             "b": {
-              "label": "Decant the first bottle so the smell airs away",
+              "label": "Decant the first bottle so the smell has time to air away before the guest tastes again",
               "explanation": "A corked smell does not go away with air. The wine is faulty and must be replaced."
             },
             "c": {
@@ -2564,7 +2564,7 @@
               "explanation": "The wine will be right, but the guest does not see that the bottle is new. This guest in particular needs to see the exchange."
             },
             "d": {
-              "label": "Show the new bottle, open it at the table, change the glasses and let the guest taste",
+              "label": "Show the new bottle, open it at the table, change glasses, let them taste",
               "explanation": "The guest sees that the bottle is new and gets to taste first. New glasses mean no corked smell is left behind."
             }
           },
@@ -2584,7 +2584,7 @@
               "explanation": "An admitted mistake and a generous correction turn an unhappy guest into one who comes back and tells people about it."
             },
             "c": {
-              "label": "Explain that a corked smell is not the wine bar's fault",
+              "label": "Explain that a corked smell is not the wine bar's fault but the producer's, so the bottle is paid for",
               "explanation": "Getting defensive makes the mistake bigger. The guest was right from the start, and it is the wine bar that should have noticed."
             }
           },
@@ -2840,7 +2840,7 @@
               "explanation": "The person first, then the hazard, then the clean-up."
             },
             "d": {
-              "label": "Fetches a brush and dustpan and sweeps it all up at once",
+              "label": "Fetches a brush and dustpan and sweeps it all up at once, before anyone steps in it",
               "explanation": "The person first, then the hazard, then the clean-up."
             }
           },
@@ -2949,7 +2949,7 @@
               "explanation": "Clear, but the friends have done nothing wrong, and you lose regulars."
             },
             "d": {
-              "label": "Lets them order, he’s only had water since",
+              "label": "Lets them order as usual, he’s only had water since then after all",
               "explanation": "The ban applies whoever orders. Noting the time shows you did the right thing."
             }
           },
@@ -3010,7 +3010,7 @@
               "explanation": "A short, safe yes beats both a no and a kitchen in disarray."
             },
             "d": {
-              "label": "Says kindly that the kitchen isn’t taking visitors tonight",
+              "label": "Says kindly that the kitchen can’t take any visitors in there tonight",
               "explanation": "A short, safe yes beats both a no and a kitchen in disarray."
             }
           },
@@ -3091,7 +3091,7 @@
               "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
             },
             "c": {
-              "label": "The licence and course certificates for all staff",
+              "label": "The licence and the course certificates for all the staff",
               "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
             },
             "d": {
@@ -3114,7 +3114,7 @@
               }
             },
             "b": {
-              "label": "Asks his friends to take him home before they ask",
+              "label": "Asks his friends to take him home before they have the chance to ask anything more",
               "explanation": "Openness and a written note count for most in front of the inspectors.",
               "fail": {
                 "outcome": "Risk of a formal reminder"
@@ -3182,7 +3182,7 @@
               "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
             },
             "c": {
-              "label": "The licence and course certificates for all staff",
+              "label": "The licence and the course certificates for all the staff",
               "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
             },
             "d": {
@@ -3198,7 +3198,7 @@
           "question": "Two young guests in lounge B order wine from Sara. The licensing officer looks over. What do you do?",
           "options": {
             "a": {
-              "label": "Asks how old they are and trusts the answer",
+              "label": "Asks how old they are and trusts the answer they give, without checking any ID",
               "explanation": "Whoever serves must be sure the guest is 18 or over. If you are unsure, ask for ID.",
               "fail": {
                 "outcome": "Risk of a warning"
@@ -3273,7 +3273,7 @@
               "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
             },
             "c": {
-              "label": "The licence and course certificates for all staff",
+              "label": "The licence and the course certificates for all the staff",
               "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
             },
             "d": {
@@ -3364,7 +3364,7 @@
               "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
             },
             "c": {
-              "label": "The licence and course certificates for all staff",
+              "label": "The licence and the course certificates for all the staff",
               "explanation": "The inspection is about the licence and how you follow it: who is responsible and how you work to the self-monitoring plan."
             },
             "d": {
@@ -3391,7 +3391,7 @@
               "explanation": "Cooked food must be available to order throughout serving hours. A simple choice is enough, but snacks don’t count."
             },
             "c": {
-              "label": "Offers them olives and nuts from the bar instead",
+              "label": "Offers them olives and nuts from the bar instead of a proper meal",
               "explanation": "Cooked food must be available to order throughout serving hours. A simple choice is enough, but snacks don’t count.",
               "fail": {
                 "outcome": "Risk of a formal reminder"
@@ -3460,7 +3460,7 @@
               "explanation": "How the bottle is opened is part of the evening."
             },
             "c": {
-              "label": "An explanation of how Barolo ages",
+              "label": "An explanation of how Barolo ages in the bottle over the years",
               "explanation": "It might be fun, but the guests spoke about their memory, not about the grape."
             }
           },

@@ -28,7 +28,7 @@
               "explanation": "Doften kommer av ämnet TCA. Felet sitter i just den flaskan, inte i vinet som sådant."
             },
             "d": {
-              "label": "Ett ungt, stängt vin",
+              "label": "Ett ungt, stängt vin som behöver luft",
               "explanation": "Ett ungt vin kan säga lite, men det luktar inte källare. Doften är ett fel, inte en ålder."
             }
           },
@@ -49,7 +49,7 @@
               "explanation": "Gästen vill ha vinet hen valt och veta vad som händer."
             },
             "c": {
-              "label": "Något gott att börja med, vad som helst",
+              "label": "Något gott att börja med, vad som helst egentligen",
               "explanation": "Gästen vill komma igång, men har valt just det vinet."
             }
           },
@@ -326,7 +326,7 @@
               "explanation": "Handpenning är ett skydd mot uteblivna gäster, inte det som gör en bokning giltig. Bekräftelsen räcker."
             },
             "d": {
-              "label": "Giltig bara om gästen ringer samma dag",
+              "label": "Giltig bara om gästen ringer och bekräftar bordet samma dag",
               "explanation": "Vissa krogar ber gäster bekräfta på nytt, men utan en sådan regel gäller bekräftelsen som den är."
             }
           },
@@ -346,7 +346,7 @@
               "explanation": "Båda tror att de var först, och nu står de och tävlar inför varandra. Svaret finns i systemet."
             },
             "c": {
-              "label": "Låt den som kom först till dörren få bordet",
+              "label": "Låt den som kom först till dörren få bordet, det är det enda rättvisa",
               "explanation": "Det säger inget om vem som bokade först. Den som bokade tidigt men kom en minut senare känner sig orättvist behandlad."
             },
             "d": {
@@ -366,11 +366,11 @@
               "explanation": "Fler kuvert ger mer i kassan i kväll, men gästen som bokade först känner sig lurad och berättar det för andra."
             },
             "b": {
-              "label": "Be båda vänta medan du ringer runt och reder ut felet",
+              "label": "Be båda sällskapen vänta medan du ringer runt och reder ut felet först",
               "explanation": "Utredningen kan vänta till efter kvällen. Gästerna i dörren behöver ett beslut nu, och en entré full av väntande gäster syns i hela rummet."
             },
             "c": {
-              "label": "Ge bordet till den som bokade först, erbjud de andra baren och ett glas på huset",
+              "label": "Bordet till den som bokade först; de andra får baren och ett glas",
               "explanation": "Boken avgör, och den som får vänta ska få något för besväret. Ett glas på huset kostar lite och gör ett fel till en god historia."
             }
           },
@@ -403,7 +403,7 @@
               "explanation": "Vi pratar högre ju mer det låter runt oss, det kallas Lombardeffekten. Därför stiger ljudnivån i ett rum snabbare än musiken höjs."
             },
             "b": {
-              "label": "Vänjer sig och hör varandra bättre",
+              "label": "Vänjer sig efter en stund och hör då varandra bättre",
               "explanation": "Örat vänjer sig inte så att talet blir tydligare. Gästerna tröttnar i stället och pratar mindre."
             },
             "c": {
@@ -461,7 +461,7 @@
               }
             },
             "c": {
-              "label": "Låt musiken spela",
+              "label": "Låt musiken spela som den gör, de flesta gäster tycker om att det är fart i rummet",
               "explanation": "Musiken är en del av konceptet, men i ett halvtomt rum tidigt på kvällen stör den mer än den bär.",
               "explanationIn": {
                 "sent": "Sent på kvällen bär musiken rummet, men paret vid bordet behöver fortfarande en lösning."
@@ -489,11 +489,11 @@
           "question": "Vad betyder nio grader i kylen för ost och chark?",
           "options": {
             "a": {
-              "label": "Inom marginalen, kylen hämtar sig",
+              "label": "Inom marginalen, kylen hämtar sig av sig själv igen om en liten stund",
               "explanation": "En kyl som ligger över gränsen blir sällan bättre av sig själv. Utan åtgärd och dokumentation står krogen utan försvar om varorna blir dåliga."
             },
             "b": {
-              "label": "Varorna är förstörda och ska kasseras",
+              "label": "Varorna är förstörda och ska kasseras direkt, allihop",
               "explanation": "Säkert, men onödigt dyrt. Varor som legat kort tid vid 9 grader kan flyttas och bedömas."
             },
             "c": {
@@ -514,7 +514,7 @@
               "explanation": "Egenkontrollen ska visa hur det faktiskt var. En tillrättalagd siffra är värre än en avvikelse, och varorna står kvar i värmen."
             },
             "b": {
-              "label": "Mät i en vara, flytta varorna till andra kylen, skriv avvikelse och åtgärd",
+              "label": "Mät i en vara, flytta till andra kylen, skriv avvikelse och åtgärd",
               "explanation": "En mätning i varan visar hur varm den blivit. En avvikelse ska dokumenteras med tid och åtgärd; det är vad en inspektör frågar efter först."
             },
             "c": {
@@ -522,7 +522,7 @@
               "explanation": "Varorna är räddade, men utan anteckning finns inget som visar att avvikelsen upptäcktes och åtgärdades."
             },
             "d": {
-              "label": "Vrid termostaten till kallaste läget och låt varorna stå",
+              "label": "Vrid termostaten till kallaste läget och låt alla varorna stå kvar där de är",
               "explanation": "Om kylen är trasig hjälper inte termostaten, och varorna blir varmare medan du väntar. Först flyttas varorna, sedan felsöks kylen."
             }
           },
@@ -678,7 +678,7 @@
           "question": "Vad betyder ett kuvert på restaurangspråk?",
           "options": {
             "a": {
-              "label": "Ett bord för två",
+              "label": "Ett bord för två, dukat för kvällen",
               "explanation": "Ett bord för två kallas tvåbord. Ett kuvert är en enda plats, så ett tvåbord har två kuvert."
             },
             "b": {
@@ -702,7 +702,7 @@
           "question": "Hur tar du reda på var fem gäster får plats?",
           "options": {
             "a": {
-              "label": "Se i bordsplanen vilka bord som är lediga och vilka som snart betalar",
+              "label": "Se i bordsplanen vilka bord som är lediga eller snart betalar",
               "explanation": "Bordsplanen visar både lediga bord och vilka sällskap som är på kaffe eller nota. Då vet du vad du kan lova, och när."
             },
             "b": {
@@ -806,7 +806,7 @@
               "explanation": "Gästen sa rött och ska tas på orden."
             },
             "c": {
-              "label": "Att bli övertygad om att vitt passar bäst",
+              "label": "Att bli övertygad om att ett vitt vin passar bäst till osten",
               "explanation": "Gästen bad inte om en lektion."
             }
           },
@@ -882,7 +882,7 @@
               "explanation": "Alkohollagen förbjuder servering till den som är märkbart påverkad. Serveringstillståndet står på spel, och det gäller varje glas."
             },
             "c": {
-              "label": "Stamgäster får serveras efter personalens omdöme",
+              "label": "Stamgäster får serveras efter personalens eget omdöme om läget",
               "explanation": "Stamgäst eller inte gäller samma lag. Att servera en märkbart påverkad gäst kan kosta serveringstillståndet."
             }
           },
@@ -899,7 +899,7 @@
               "explanation": "Ett nej inför publik gör gästen generad och arg. Det blir en strid om att inte tappa ansiktet."
             },
             "b": {
-              "label": "Säg att flaskan är slut och hoppas att gästen ger sig",
+              "label": "Säg att flaskan är slut i baren och hoppas att gästen ger sig",
               "explanation": "Då ber gästen om en annan flaska. Nejet måste gälla servering, inte en viss flaska."
             },
             "c": {
@@ -916,11 +916,11 @@
           "question": "Gästen protesterar och vägrar ge sig. Vad gör du nu?",
           "options": {
             "a": {
-              "label": "Stå fast i lugn ton, ta hjälp av en kollega och erbjud att ringa en taxi",
+              "label": "Stå fast lugnt, ta hjälp av en kollega och erbjud en taxi",
               "explanation": "Ett nej som håller och en hjälp hem visar omsorg. Två personer lugnar läget bättre än en, och gästen kommer hem säkert."
             },
             "b": {
-              "label": "Servera ett sista glas så att det blir lugnt i rummet",
+              "label": "Servera ett sista glas så att det blir lugnt i rummet och gästen går hem nöjd",
               "explanation": "Ett sista glas är fortfarande servering till en märkbart påverkad gäst. Det köper några minuter och gör sedan läget värre.",
               "fail": {
                 "outcome": "Gästen får glaset och vill genast ha ett till.",
@@ -928,7 +928,7 @@
               }
             },
             "c": {
-              "label": "Be gästen gå direkt, utan att erbjuda hjälp hem",
+              "label": "Be gästen gå därifrån direkt, utan att erbjuda någon hjälp att komma hem",
               "explanation": "Beslutet är rätt, men en berusad gäst ensam ute på gatan är också ditt ansvar. En taxi hade gjort det bättre."
             },
             "d": {
@@ -991,7 +991,7 @@
               "explanation": "Gästen vill unna sig. Det handlar om känslan av ett fint val."
             },
             "b": {
-              "label": "Champagne, för att vara säker",
+              "label": "Champagne, för att vara på den säkra sidan i kväll",
               "explanation": "Det kan passa, men gästen frågade om ett glas."
             },
             "c": {
@@ -1086,7 +1086,7 @@
           "question": "Vad söker gästen?",
           "options": {
             "a": {
-              "label": "En förklaring av regeln om rumstemperatur",
+              "label": "En förklaring av den gamla regeln om rumstemperatur för rött vin",
               "explanation": "Det är vinet som ska rättas, inte gästen."
             },
             "b": {
@@ -1177,7 +1177,7 @@
           "question": "Hur lägger du upp bokningen och provlagningen med köket?",
           "options": {
             "a": {
-              "label": "Ta bokningen och kör den nya menyn i kväll",
+              "label": "Ta bokningen och kör den nya menyn redan i kväll",
               "explanation": "Att byta meny mitt i en service stressar köket och ger fel på bongarna. Bokningen är värdefull, men kvällens gäster betalar priset.",
               "explanationIn": {
                 "lugnt": "En lugn kväll har köket tid att provlaga utan att gästerna märker det. Delegationen får smaka i kväll, och bokningen blir av."
@@ -1218,11 +1218,11 @@
               "explanation": "Det håller dörren öppen, men delegationen får vänta på besked och kan boka någon annanstans under tiden."
             },
             "c": {
-              "label": "Be dem ringa tillbaka i morgon när det är lugnare",
+              "label": "Be dem ringa tillbaka i morgon förmiddag när det är lugnare i köket",
               "explanation": "Ett sällskap som vill boka hela stället ringer gärna nästa ställe på listan i stället."
             },
             "d": {
-              "label": "Bekräfta datum, antal gäster och allergier, och ge en tid för provsmakningen",
+              "label": "Bekräfta datum, antal, allergier och en tid för provsmakningen",
               "explanation": "Ett tydligt besked med detaljerna rätt gör bokningen säker. Allergierna behöver köket veta redan till provlagningen."
             }
           },
@@ -1275,7 +1275,7 @@
           "question": "Hur lägger du upp det glutenfria brödet till gästen?",
           "options": {
             "a": {
-              "label": "Ta bort surdegen ur korgen och lägg det glutenfria där",
+              "label": "Ta bort surdegen ur korgen och lägg det glutenfria brödet där i stället",
               "explanation": "Smulor från surdegen ligger kvar i korgen och i servetten. Det räcker för att göra gästen sjuk."
             },
             "b": {
@@ -1283,7 +1283,7 @@
               "explanation": "Brödrosten är full av smulor med gluten. Det glutenfria brödet blir inte längre glutenfritt."
             },
             "c": {
-              "label": "Tvätta händerna, ta ren bräda och kniv, egen korg, bär ut det för sig",
+              "label": "Tvätta händerna, ren bräda och kniv, egen korg, bär ut det separat",
               "explanation": "Rena händer, rena redskap och en egen korg håller smulorna borta. Att bära ut det för sig gör att det inte blandas ihop på vägen."
             }
           },
@@ -1295,7 +1295,7 @@
           "question": "Vem berättar du om celiakin för först?",
           "options": {
             "a": {
-              "label": "Köket, innan nästa rätt lagas, så att varje tallrik till gästen blir glutenfri",
+              "label": "Köket, innan nästa rätt lagas, så att allt till gästen blir glutenfritt",
               "explanation": "Glutenet kan finnas i såser, frityr och krutonger. Köket behöver veta innan de lagar, inte efteråt."
             },
             "b": {
@@ -1303,7 +1303,7 @@
               "explanation": "Gästen har redan sagt till. Nu är det krogens ansvar att det når köket."
             },
             "c": {
-              "label": "Resten av sällskapet, så att ingen bjuder gästen på bröd",
+              "label": "Resten av sällskapet, så att ingen av dem råkar bjuda gästen på bröd",
               "explanation": "Det skadar inte, men gästen vet redan vad hen inte tål. Den som behöver veta är köket."
             },
             "d": {
@@ -1351,11 +1351,11 @@
           "question": "Hur gör köket med tartaren i kväll?",
           "options": {
             "a": {
-              "label": "Använd fisken, köket är noga med resten",
+              "label": "Använd fisken ändå, köket är noga med allt annat och den har ju legat kallt nu",
               "explanation": "Rå fisk med bruten kylkedja och utan spårbarhet är en risk krogen tar för gästens räkning. Spårbarhet är ett krav, inte ett önskemål."
             },
             "b": {
-              "label": "Stryk tartaren i kväll utan att ersätta den",
+              "label": "Stryk tartaren i kväll utan att ersätta den med något annat",
               "explanation": "Säkert, men menyn blir tunnare, och gästerna som kom för tartaren blir besvikna."
             },
             "c": {
@@ -1380,7 +1380,7 @@
               "explanation": "Ärligt, men detaljerna kan göra gästen orolig för resten av maten. Det räcker att säga att fisken inte höll måttet."
             },
             "c": {
-              "label": "Säg bara att den är slut och gå vidare",
+              "label": "Säg bara att den är slut för i kväll och gå vidare till nästa bord utan att förklara",
               "explanation": "Gästen blir besviken och får inget i stället. Du missar chansen att visa varför beslutet var bra."
             },
             "d": {
@@ -1432,7 +1432,7 @@
               "explanation": "En stamgäst vill bli igenkänd. Namnet och en snabb hälsning visar det innan något annat sägs."
             },
             "b": {
-              "label": "Titta i bokningslistan först och hälsa sedan",
+              "label": "Titta i bokningslistan först, för säkerhets skull, och hälsa sedan",
               "explanation": "Gästen står och väntar medan du tittar ner. Hälsningen ska komma först, listan sedan."
             },
             "c": {
@@ -1456,11 +1456,11 @@
               "explanation": "Stamgästen blir nöjd, men paret som bokade får inte det de bokat. Det flyttar bara problemet."
             },
             "b": {
-              "label": "Förklara att det är bokat, erbjud bästa lediga bordet och ett glas medan gästen väljer",
+              "label": "Förklara att det är bokat, erbjud bästa lediga bordet och ett glas",
               "explanation": "En stamgäst vill känna sig sedd, inte gå före. Ärlighet och en gest gör mer än ett bord som egentligen är någon annans."
             },
             "c": {
-              "label": "Säg att bordet är upptaget, utan mer",
+              "label": "Säg att bordet är upptaget i kväll, utan att förklara mer eller erbjuda något annat",
               "explanation": "En stamgäst som känner sig avvisad kommer inte tillbaka. Samma nej med en gest hade behållit gästen."
             }
           },
@@ -1485,7 +1485,7 @@
           "question": "Varför har ett vinglas en rundad kupa som smalnar av uppåt?",
           "options": {
             "a": {
-              "label": "Så att vinet håller sig kallt längre",
+              "label": "Så att vinet håller sig kallt längre i glaset under kvällen",
               "explanation": "Det är foten och skaftet som skyddar vinet från handens värme. Kupans form handlar om doften."
             },
             "b": {
@@ -1505,15 +1505,15 @@
           "question": "Hur får du fram rena vinglas medan diskmaskinen går?",
           "options": {
             "a": {
-              "label": "Servera vinet i vattenglas",
+              "label": "Servera vinet i vattenglas från köket, det märks inte i mörkret och det går fortare",
               "explanation": "Vin i vattenglas säger att vinbaren inte klarar sin egen kväll. Det sparar tid men kostar rykte, och doften går förlorad."
             },
             "b": {
-              "label": "Plocka tomma glas från borden, handdiska, skölj och polera, ta enkla beställningar först",
+              "label": "Plocka tomma glas, handdiska och polera, ta enkla beställningar först",
               "explanation": "I en rusning handlar det om flödet. Tomma glas på borden är kvällens lager. Handdisk, sköljning och en ren duk ger glas utan fläckar, och enkla beställningar först håller kön i rörelse."
             },
             "c": {
-              "label": "Stoppa nya beställningar i tio minuter",
+              "label": "Stoppa alla nya beställningar i tio minuter tills det finns rena glas igen",
               "explanation": "Det ger personalen luft, men gästerna väntar, och kvällens intäkt går förlorad."
             }
           },
@@ -1687,11 +1687,11 @@
               }
             },
             "b": {
-              "label": "Pressa köket att ta de enklaste rätterna först, oavsett ordning",
+              "label": "Pressa köket att ta de enklaste rätterna först, oavsett i vilken ordning",
               "explanation": "Att bryta ordningen skapar förvirring, fel rätter och ett trött kök. De som väntat längst får vänta ännu längre."
             },
             "c": {
-              "label": "Säg till borden hur länge de får vänta, bjud på bröd, laga i den ordning bongarna kom",
+              "label": "Säg hur länge det tar, bjud på bröd, laga i bongarnas ordning",
               "explanation": "Gäster tål väntan när de vet hur lång den är. Bröd köper tid, och ordningen på bongarna gör väntan rättvis.",
               "explanationIn": {
                 "sent": "Sent på kvällen hinner köket inte ikapp med hela menyn innan det stänger. Bröd och besked hjälper, men listen blir inte kortare."
@@ -1763,7 +1763,7 @@
           "question": "Hur rättar du notan vid bordet?",
           "options": {
             "a": {
-              "label": "Gå igenom raderna med gästen, ta bort flaskorna i kassan och skriv ut ny nota",
+              "label": "Gå igenom raderna med gästen, rätta i kassan och skriv ut ny nota",
               "explanation": "Gästen ser att felet hittas och rättas. En ny nota ur kassan gör att kassan och betalningen stämmer."
             },
             "b": {
@@ -1771,7 +1771,7 @@
               "explanation": "En handskriven lapp är inget kvitto, och kassan visar fortfarande fel summa."
             },
             "c": {
-              "label": "Dra av beloppet på kortterminalen utan att ändra i kassan",
+              "label": "Dra av beloppet direkt på kortterminalen, utan att ändra något i själva kassan efteråt",
               "explanation": "Då stämmer inte kassan och betalningen, och gästens kvitto visar fortfarande fel."
             }
           },
@@ -1791,7 +1791,7 @@
               "explanation": "Ett fel på notan rättas direkt och utan diskussion. Det viktiga är att gästen inte går därifrån med känslan av att bli lurad."
             },
             "c": {
-              "label": "Säg att notan är rätt enligt kassan",
+              "label": "Säg att notan är rätt enligt kassan och att den inte går att ändra",
               "explanation": "Kassan kan ha fel. En gäst som inte blir lyssnad på går, och berättar om det."
             }
           },
@@ -1836,7 +1836,7 @@
           "question": "Hur tar du hand om såret och arbetsplatsen?",
           "options": {
             "a": {
-              "label": "Plåster och fortsätt som vanligt",
+              "label": "Plåster och fortsätt som vanligt, det är bara ett litet sår och kvällen är full",
               "explanation": "Ett otäckt sår vid mat är en hygienrisk och ett arbetsmiljöproblem. Det kan kosta mer än en person för en kväll."
             },
             "b": {
@@ -1897,7 +1897,7 @@
               "explanation": "Ursprungsbeteckningen visar att vinet kommer från ett bestämt område och följer dess regler, till exempel om druvor och odling."
             },
             "b": {
-              "label": "Att vinet är ekologiskt odlat",
+              "label": "Att vinet är ekologiskt odlat och certifierat av en kontrollör",
               "explanation": "Ekologisk odling har egna märkningar. Ursprungsbeteckningen handlar om plats och regler."
             },
             "c": {
@@ -1917,11 +1917,11 @@
               "explanation": "Det stämmer, men gästen kan läsa själv. Ett bra svar förklarar vad etiketten betyder."
             },
             "b": {
-              "label": "Gissa hellre än att säga att du inte vet",
+              "label": "Gissa hellre än att säga att du inte vet, det låter mer kunnigt",
               "explanation": "En gissning som är fel syns direkt för den som kan. Det är bättre att ta reda på svaret."
             },
             "c": {
-              "label": "Visa flaskan, berätta område, druva och producent, och hämta svar du inte kan",
+              "label": "Visa flaskan, nämn område, druva, producent, och hämta det du inte kan",
               "explanation": "Flaskan och ett kunnigt svar gör ursprunget konkret. Den som hämtar svaret i stället för att gissa visar att huset tar vinet på allvar."
             }
           },
@@ -1995,7 +1995,7 @@
           "question": "Vad söker bordet?",
           "options": {
             "a": {
-              "label": "Något festligt till dem som dricker vin",
+              "label": "Något festligt till dem som dricker vin, inget till den andra",
               "explanation": "Det är en del, men en vid bordet behöver också något."
             },
             "b": {
@@ -2092,11 +2092,11 @@
               "explanation": "Skillnaden syns, men gästen kan inte veta om den kommer från druvan eller platsen."
             },
             "c": {
-              "label": "Beskriv hur jord och sten doftar i vinet",
+              "label": "Beskriv hur jord och sten känns i doften av vinet, så förstår gästen",
               "explanation": "Ord hjälper, men gästen behöver smaka själv. Det är jämförelsen som visar platsen."
             },
             "d": {
-              "label": "Häll upp två små glas av samma druva från två olika platser, sida vid sida",
+              "label": "Häll upp samma druva från två olika platser, sida vid sida",
               "explanation": "Samma druva i båda glasen gör att skillnaden kommer från platsen. Då smakar gästen vad terroir betyder."
             }
           },
@@ -2108,11 +2108,11 @@
           "question": "Gästen vill veta mer, men två nya gäster kommer fram till baren. Vad gör du nu?",
           "options": {
             "a": {
-              "label": "Låt gästen jämföra glasen i lugn och ro, välkomna de nya och kom tillbaka sedan",
+              "label": "Låt gästen jämföra i lugn och ro, välkomna de nya, kom tillbaka",
               "explanation": "Gästen har något att göra medan du tar emot de nya. Ingen blir stående, och samtalet kan fortsätta."
             },
             "b": {
-              "label": "Stanna och prata färdigt, de nya får vänta",
+              "label": "Stanna och prata färdigt med gästen, de nya gästerna får vänta en stund",
               "explanation": "En nöjd gäst är inte värd två som väntar utan att bli sedda. Ett kort välkommen tar några sekunder."
             },
             "c": {
@@ -2160,11 +2160,11 @@
           "question": "Hur serverar du tre glas när baren redan håller på att städas?",
           "options": {
             "a": {
-              "label": "Öppna en ny flaska så att vinet är färskt",
+              "label": "Öppna en ny flaska så att vinet är så färskt som möjligt för dem",
               "explanation": "Det går, men då står ännu en öppnad flaska kvar när ni stänger. Ta hellre ur en som redan är öppen."
             },
             "b": {
-              "label": "Häll ur en redan öppnad flaska i rena glas vid barens ände",
+              "label": "Häll ur en öppnad flaska i rena glas vid barens ände",
               "explanation": "En öppnad flaska ska ändå säljas snart. En ren ände av baren låter städningen fortsätta runt gästerna."
             },
             "c": {
@@ -2188,7 +2188,7 @@
               "explanation": "Mer intäkt, men personalen är trött och stängningen drar ut. Ork som tas i kväll saknas i morgon."
             },
             "c": {
-              "label": "Släpp in dem i salen och be kocken fixa en ostbricka",
+              "label": "Släpp in dem i salen och be kocken fixa en ostbricka åt hela sällskapet",
               "explanation": "Köket har redan städats. Att starta det igen för ett sällskap kostar mer ork än det ger.",
               "fail": {
                 "outcome": "Kocken tar på sig förklädet igen. Köket får städas en gång till."
@@ -2244,7 +2244,7 @@
           "question": "Hur tar du hand om flaskorna innan du går hem?",
           "options": {
             "a": {
-              "label": "Häll ut det som finns kvar",
+              "label": "Häll ut det som finns kvar, öppnade flaskor håller ändå inte till i morgon",
               "explanation": "Ett halvfullt vin håller ofta ett par dagar om det förvaras rätt. Att hälla ut det är att hälla ut kvällens marginal."
             },
             "b": {
@@ -2268,7 +2268,7 @@
               "explanation": "Datumet säger hur gammal flaskan är, smaken säger om den går att sälja. Den äldsta först gör att inget blir stående."
             },
             "b": {
-              "label": "Sälj på glas utan att smaka, datumet räcker",
+              "label": "Sälj på glas utan att smaka, datumet på etiketten räcker alltid som besked",
               "explanation": "Ett vin kan ha tappat mer än väntat. Gästen som får ett trött glas märker det före dig."
             },
             "c": {
@@ -2328,7 +2328,7 @@
               }
             },
             "c": {
-              "label": "Följ gästen till personalrummet så hen får vara ifred",
+              "label": "Följ gästen till personalrummet så att hen får vara ifred och vila en stund",
               "explanation": "Att flytta gästen tar tid och gör att ingen ser om hen blir sämre. Ring 112 och stanna där gästen är."
             },
             "d": {
@@ -2345,7 +2345,7 @@
           "question": "Ambulansen har tagit över. Vad gör du nu?",
           "options": {
             "a": {
-              "label": "Servera vidare och ta det med köket efter stängning",
+              "label": "Servera vidare som vanligt och ta upp det med köket i lugn och ro efter stängning",
               "explanation": "Då kan samma rätt gå ut igen i kväll. Köket måste veta nu vad som hände."
             },
             "b": {
@@ -2353,7 +2353,7 @@
               "explanation": "Innan ni vet vad som hände är det en gissning. Lugna rummet kort, men ta reda på fakta i köket först."
             },
             "c": {
-              "label": "Spara det som var kvar av rätten, fråga köket vad den innehöll och skriv ner vad som hände",
+              "label": "Spara resten av rätten, fråga köket vad den innehöll, skriv ner vad som hände",
               "explanation": "Det som finns kvar på tallriken och kökets svar visar var felet låg. En skriftlig redogörelse behövs när gästen eller andra frågar."
             },
             "d": {
@@ -2381,7 +2381,7 @@
           "question": "Vad avgör om ost och chark ur en stannad kyl går att använda?",
           "options": {
             "a": {
-              "label": "Så länge varan luktar bra är den säker",
+              "label": "Så länge varan luktar bra och ser fin ut är den säker att servera",
               "explanation": "Bakterier luktar inte. Varor som legat över 8 grader för länge är en risk, oavsett doft."
             },
             "b": {
@@ -2402,11 +2402,11 @@
           "question": "Hur tar du hand om varorna nu?",
           "options": {
             "a": {
-              "label": "Mät temperaturen i varorna, flytta de kalla till andra kylen, kassera resten",
+              "label": "Mät i varorna, flytta de kalla till andra kylen, kassera resten",
               "explanation": "Termometern i kylen visar luften, inte varan. Mät varorna, rädda det som hållit sig kallt och släng det som inte gjort det."
             },
             "b": {
-              "label": "Stäng dörren och vänta på att kylen startar igen",
+              "label": "Stäng dörren och vänta på att kylen startar igen av sig själv",
               "explanation": "Varje minut i värmen gör fler varor osäkra. Kylen kanske inte startar alls i kväll."
             },
             "c": {
@@ -2478,7 +2478,7 @@
           "question": "Hur hanterar du gästens glas och vad gästen får dricka?",
           "options": {
             "a": {
-              "label": "Servera en sista drink så att gästen lugnar sig",
+              "label": "Servera en sista drink så att gästen lugnar sig och går hem sedan",
               "explanation": "Mer alkohol lugnar inte ett gräl, och det är inte tillåtet att servera en märkbart berusad gäst."
             },
             "b": {
@@ -2499,7 +2499,7 @@
           "question": "Vad gör du nu med gästen och sällskapet intill?",
           "options": {
             "a": {
-              "label": "Säg högt till gästen att lugna sig",
+              "label": "Säg högt till gästen att lugna sig, så att alla i rummet hör att du tar det på allvar",
               "explanation": "En tillsägelse inför publik gör ett bråk större. Gästen vill inte förlora ansiktet."
             },
             "b": {
@@ -2507,7 +2507,7 @@
               "explanation": "Det skyddar sällskapet men löser inte problemet: gästen är fortfarande berusad och kvar i baren."
             },
             "c": {
-              "label": "Gå fram lugnt, prata med gästen avsides och hjälp hen därifrån med en taxi",
+              "label": "Gå fram lugnt, prata avsides och hjälp gästen därifrån med en taxi",
               "explanation": "Lugn och avskildhet dämpar ett bråk. En taxi gör att gästen kommer hem säkert. Ansvaret för en berusad gäst slutar inte vid dörren."
             }
           },
@@ -2556,7 +2556,7 @@
               "explanation": "Doften från det korkade vinet sitter kvar i glaset och följer med in i det nya vinet."
             },
             "b": {
-              "label": "Dekantera den första flaskan så att lukten vädras bort",
+              "label": "Dekantera den första flaskan så att lukten hinner vädras bort innan gästen smakar igen",
               "explanation": "Korkdoft försvinner inte med luft. Vinet är fel och ska bytas."
             },
             "c": {
@@ -2564,7 +2564,7 @@
               "explanation": "Vinet blir rätt, men gästen ser inte att flaskan är ny. Just den här gästen behöver se bytet."
             },
             "d": {
-              "label": "Visa den nya flaskan, öppna den vid bordet, byt glas och låt gästen smaka",
+              "label": "Visa nya flaskan, öppna den vid bordet, byt glas och låt gästen smaka",
               "explanation": "Gästen ser att flaskan är ny och får smaka först. Nya glas gör att ingen korkdoft blir kvar."
             }
           },
@@ -2584,7 +2584,7 @@
               "explanation": "Ett erkänt fel och en generös rättelse gör en missnöjd gäst till en som kommer tillbaka och berättar om det."
             },
             "c": {
-              "label": "Förklara att korkdoft inte är vinbarens fel",
+              "label": "Förklara att korkdoft inte är vinbarens fel utan producentens, och att flaskan ska betalas",
               "explanation": "Att försvara sig gör felet större. Gästen hade rätt från början, och det är vinbaren som ska ha märkt det."
             }
           },
@@ -2804,7 +2804,7 @@
           "question": "Vad är risken just nu?",
           "options": {
             "a": {
-              "label": "Att gästen har skadat handen mot pulten",
+              "label": "Att gästen har skadat handen mot den vassa pulten",
               "explanation": "Glas och vatten i entrén är en risk för alla som går in, också för gästen i rullstolen. Hur gästen mår frågar du i nästa steg."
             },
             "b": {
@@ -2840,7 +2840,7 @@
               "explanation": "Människan först, sedan risken, sedan städningen."
             },
             "d": {
-              "label": "Hämtar borste och skyffel och sopar upp allt direkt",
+              "label": "Hämtar borste och skyffel och sopar upp allt direkt, innan någon trampar i det",
               "explanation": "Människan först, sedan risken, sedan städningen."
             }
           },
@@ -2913,7 +2913,7 @@
           "question": "Hur säger Mira det till honom?",
           "options": {
             "a": {
-              "label": "Högt nog att vännerna hör och kan hjälpa till",
+              "label": "Högt nog att vännerna hör det och kan hjälpa till",
               "explanation": "Ett nej som ges lugnt och enskilt, med något i utbyte, tas emot bättre."
             },
             "b": {
@@ -2949,7 +2949,7 @@
               "explanation": "Tydligt, men vännerna har inte gjort något fel, och ni förlorar stamgäster."
             },
             "d": {
-              "label": "Låter dem beställa, han har ju bara fått vatten",
+              "label": "Låter dem beställa som vanligt, han har ju bara fått vatten sedan dess",
               "explanation": "Förbudet gäller oavsett vem som beställer. Att skriva upp tiden visar att ni gjort rätt."
             }
           },
@@ -3010,7 +3010,7 @@
               "explanation": "Ett kort och tryggt ja slår både ett nej och ett kök i oordning."
             },
             "d": {
-              "label": "Säger vänligt att köket inte tar emot gäster i kväll",
+              "label": "Säger vänligt att köket inte tar emot några gäster i kväll",
               "explanation": "Ett kort och tryggt ja slår både ett nej och ett kök i oordning."
             }
           },
@@ -3114,7 +3114,7 @@
               }
             },
             "b": {
-              "label": "Ber vännerna ta med honom hem innan de frågar",
+              "label": "Ber vännerna ta med honom hem innan de hinner fråga något mer om saken",
               "explanation": "Öppenhet och en anteckning väger tyngst inför tillsynen.",
               "fail": {
                 "outcome": "Risk för erinran"
@@ -3198,7 +3198,7 @@
           "question": "Två unga gäster i lounge B beställer vin av Sara. Handläggaren tittar dit. Vad gör du?",
           "options": {
             "a": {
-              "label": "Frågar dem hur gamla de är och litar på svaret",
+              "label": "Frågar dem hur gamla de är och litar på svaret de ger, utan att se legitimation",
               "explanation": "Den som serverar ska vara säker på att gästen har fyllt 18. Är du osäker, be om legitimation.",
               "fail": {
                 "outcome": "Risk för varning"
@@ -3289,7 +3289,7 @@
           "question": "Handläggaren bläddrar i egenkontrollen och frågar hur personalen vet vad som står i den. Vad svarar du?",
           "options": {
             "a": {
-              "label": "Den ligger i pärmen vid kassan, där alla kan läsa",
+              "label": "Den ligger i en pärm vid kassan, där alla kan läsa den",
               "explanation": "Egenkontrollen ska vara känd av alla som serverar, inte bara finnas i en pärm.",
               "fail": {
                 "outcome": "Risk för erinran"
@@ -3391,7 +3391,7 @@
               "explanation": "Lagad mat ska gå att beställa under hela serveringstiden. Ett enkelt utbud räcker, men snacks räknas inte."
             },
             "c": {
-              "label": "Bjuder på oliver och nötter från baren i stället",
+              "label": "Bjuder på oliver och nötter från baren i stället för mat",
               "explanation": "Lagad mat ska gå att beställa under hela serveringstiden. Ett enkelt utbud räcker, men snacks räknas inte.",
               "fail": {
                 "outcome": "Risk för erinran"
@@ -3460,7 +3460,7 @@
               "explanation": "Hur flaskan öppnas är en del av kvällen."
             },
             "c": {
-              "label": "En förklaring av hur Barolo åldras",
+              "label": "En förklaring av hur Barolo åldras i flaskan med åren",
               "explanation": "Det kan vara roligt, men gästerna talade om sitt minne, inte om druvan."
             }
           },

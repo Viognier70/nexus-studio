@@ -1,26 +1,133 @@
 {
-  "definition": "A4: svarens längd i ord (mellanslag) i de elva situationerna. overWords: fler än 12 ord i steg 1–2 eller 15 i steg 3; overRatio: i steg 3 längsta / kortaste över 1,5. step3Longest: vinbarens och foodtruckens situationer i formen, med antalet ord i varje svar i steg 3 och om det hela greppet är längst (lika långt räknas). longestIsBest: steg (utom ordningskorten) i de elva där det längsta svaret i tecken är det bästa, mot slumpens väntevärde; oldFormLongestIsBest: detsamma i vinbarens situationer i den gamla formen. sv: Anders text (vinbar.text.sv.draft.json); en: översättningen (vinbar.text.en.json).",
+  "definition": "A4: svarens längd i ord (mellanslag) i de elva situationerna. overWords: fler än 12 ord i steg 1–2 eller 15 i steg 3; overRatio: i steg 3 längsta / kortaste över 1,5. step3Longest: vinbarens och foodtruckens situationer i formen, med antalet ord i varje svar i steg 3 och om det hela greppet är längst (lika långt räknas). longestIsBest: steg (utom ordningskorten) i de elva där det längsta svaret i tecken är det bästa, mot slumpens väntevärde; oldFormLongestIsBest: detsamma i vinbarens situationer i den gamla formen. bank (306b.3): per del av vinbarens bank, det längsta svaret i ord och tecken som är det bästa, och kvaliteten på gissarens val (längst i tecken) mot slumpens. sv: Anders text (vinbar.text.sv.draft.json); en: översättningen (vinbar.text.en.json).",
   "longestIsBest": {
     "sv": {
       "steps": 32,
-      "hits": 11,
+      "hits": 6,
       "randomExpectation": 9.4
     },
     "en": {
       "steps": 32,
-      "hits": 10,
+      "hits": 7,
       "randomExpectation": 9.4
     }
   },
+  "bank": [
+    {
+      "name": "nya formen",
+      "sv": {
+        "steps": 32,
+        "longestIsBestWords": 8,
+        "longestIsBestChars": 8,
+        "randomExpectation": 9.4,
+        "guesserPick": {
+          "best": 0.188,
+          "ok": 0.406,
+          "wrong": 0.406
+        },
+        "randomPick": {
+          "best": 0.294,
+          "ok": 0.292,
+          "wrong": 0.414
+        }
+      },
+      "en": {
+        "steps": 32,
+        "longestIsBestWords": 7,
+        "longestIsBestChars": 7,
+        "randomExpectation": 9.4,
+        "guesserPick": {
+          "best": 0.219,
+          "ok": 0.313,
+          "wrong": 0.469
+        },
+        "randomPick": {
+          "best": 0.294,
+          "ok": 0.292,
+          "wrong": 0.414
+        }
+      }
+    },
+    {
+      "name": "gamla formen",
+      "sv": {
+        "steps": 87,
+        "longestIsBestWords": 24,
+        "longestIsBestChars": 22,
+        "randomExpectation": 25.2,
+        "guesserPick": {
+          "best": 0.241,
+          "ok": 0.034,
+          "wrong": 0.724
+        },
+        "randomPick": {
+          "best": 0.29,
+          "ok": 0.162,
+          "wrong": 0.548
+        }
+      },
+      "en": {
+        "steps": 87,
+        "longestIsBestWords": 21,
+        "longestIsBestChars": 25,
+        "randomExpectation": 25.2,
+        "guesserPick": {
+          "best": 0.276,
+          "ok": 0,
+          "wrong": 0.724
+        },
+        "randomPick": {
+          "best": 0.29,
+          "ok": 0.162,
+          "wrong": 0.548
+        }
+      }
+    },
+    {
+      "name": "menyn",
+      "sv": {
+        "steps": 27,
+        "longestIsBestWords": 4,
+        "longestIsBestChars": 6,
+        "randomExpectation": 9,
+        "guesserPick": {
+          "best": 0.222,
+          "ok": 0,
+          "wrong": 0.778
+        },
+        "randomPick": {
+          "best": 0.333,
+          "ok": 0,
+          "wrong": 0.667
+        }
+      },
+      "en": {
+        "steps": 27,
+        "longestIsBestWords": 4,
+        "longestIsBestChars": 8,
+        "randomExpectation": 9,
+        "guesserPick": {
+          "best": 0.259,
+          "ok": 0,
+          "wrong": 0.741
+        },
+        "randomPick": {
+          "best": 0.333,
+          "ok": 0,
+          "wrong": 0.667
+        }
+      }
+    }
+  ],
   "oldFormLongestIsBest": {
     "sv": {
       "steps": 87,
-      "hits": 55,
+      "hits": 21,
       "randomExpectation": 25.2
     },
     "en": {
       "steps": 87,
-      "hits": 53,
+      "hits": 24,
       "randomExpectation": 25.2
     }
   },
@@ -733,18 +840,18 @@
       {
         "id": "vb01-korken",
         "step": 1,
-        "maxWords": 4,
+        "maxWords": 7,
         "minWords": 3,
-        "ratio": 1.33,
+        "ratio": 2.33,
         "overWords": false,
         "overRatio": false
       },
       {
         "id": "vb01-korken",
         "step": 2,
-        "maxWords": 8,
+        "maxWords": 9,
         "minWords": 5,
-        "ratio": 1.6,
+        "ratio": 1.8,
         "overWords": false,
         "overRatio": false
       },
@@ -850,9 +957,9 @@
       {
         "id": "vb09-getosten",
         "step": 2,
-        "maxWords": 9,
+        "maxWords": 12,
         "minWords": 6,
-        "ratio": 1.5,
+        "ratio": 2,
         "overWords": false,
         "overRatio": false
       },
@@ -877,9 +984,9 @@
       {
         "id": "vb11-cremant",
         "step": 2,
-        "maxWords": 9,
+        "maxWords": 10,
         "minWords": 5,
-        "ratio": 1.8,
+        "ratio": 2,
         "overWords": false,
         "overRatio": false
       },
@@ -904,9 +1011,9 @@
       {
         "id": "vb12-varmt-rott",
         "step": 2,
-        "maxWords": 9,
+        "maxWords": 11,
         "minWords": 3,
-        "ratio": 3,
+        "ratio": 3.67,
         "overWords": false,
         "overRatio": false
       },
@@ -958,9 +1065,9 @@
       {
         "id": "vb23-sott",
         "step": 2,
-        "maxWords": 10,
+        "maxWords": 11,
         "minWords": 7,
-        "ratio": 1.43,
+        "ratio": 1.57,
         "overWords": false,
         "overRatio": false
       },
@@ -1012,9 +1119,9 @@
       {
         "id": "vb40-karaffen",
         "step": 2,
-        "maxWords": 8,
+        "maxWords": 10,
         "minWords": 4,
-        "ratio": 2,
+        "ratio": 2.5,
         "overWords": false,
         "overRatio": false
       }
@@ -1026,18 +1133,18 @@
       {
         "id": "vb01-korken",
         "step": 1,
-        "maxWords": 5,
+        "maxWords": 7,
         "minWords": 4,
-        "ratio": 1.25,
+        "ratio": 1.75,
         "overWords": false,
         "overRatio": false
       },
       {
         "id": "vb01-korken",
         "step": 2,
-        "maxWords": 7,
+        "maxWords": 9,
         "minWords": 6,
-        "ratio": 1.17,
+        "ratio": 1.5,
         "overWords": false,
         "overRatio": false
       },
@@ -1143,9 +1250,9 @@
       {
         "id": "vb09-getosten",
         "step": 2,
-        "maxWords": 10,
+        "maxWords": 11,
         "minWords": 6,
-        "ratio": 1.67,
+        "ratio": 1.83,
         "overWords": false,
         "overRatio": false
       },
@@ -1170,9 +1277,9 @@
       {
         "id": "vb11-cremant",
         "step": 2,
-        "maxWords": 9,
+        "maxWords": 11,
         "minWords": 5,
-        "ratio": 1.8,
+        "ratio": 2.2,
         "overWords": false,
         "overRatio": false
       },
@@ -1197,9 +1304,9 @@
       {
         "id": "vb12-varmt-rott",
         "step": 2,
-        "maxWords": 9,
+        "maxWords": 12,
         "minWords": 3,
-        "ratio": 3,
+        "ratio": 4,
         "overWords": false,
         "overRatio": false
       },
@@ -1252,8 +1359,8 @@
         "id": "vb23-sott",
         "step": 2,
         "maxWords": 12,
-        "minWords": 7,
-        "ratio": 1.71,
+        "minWords": 9,
+        "ratio": 1.33,
         "overWords": false,
         "overRatio": false
       },
@@ -1305,9 +1412,9 @@
       {
         "id": "vb40-karaffen",
         "step": 2,
-        "maxWords": 11,
-        "minWords": 6,
-        "ratio": 1.83,
+        "maxWords": 12,
+        "minWords": 7,
+        "ratio": 1.71,
         "overWords": false,
         "overRatio": false
       }

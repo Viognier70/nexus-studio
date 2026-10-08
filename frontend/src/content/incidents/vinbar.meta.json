@@ -4282,7 +4282,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.15,
-              "stamina": -0.05,
+              "stamina": 0,
               "reputation": 0
             },
             "target": "room",
@@ -4321,7 +4321,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.08,
-              "stamina": -0.03,
+              "stamina": -0.08,
               "reputation": 0
             },
             "target": "room"

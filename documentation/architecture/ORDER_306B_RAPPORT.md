@@ -233,3 +233,62 @@ Båda är byggda och mergade till main, och main är pushad:
 - 319c: `51ddbabc` och mergen `995191e6`;
 - 320: `878b0483` och mergen `24f6485c`.
 
+## 306b.3: hela banken, steg 2 och texten i spelet
+
+Anders 2026-10-08:
+1. "skriv om de 29 situationerna i vinbarens gamla form på samma sätt (bara längd, innehållet och fakta står kvar). Mål: det längsta svaret är rätt i högst en fjärdedel plus marginal, och gissaren tjänar inte mer än slumpen över en vecka. Lägg till ett test för hela banken."
+2. "steg 2 tar aldrig något ur kassan eller av orken, i någon situation. Flytta följden till felsvaret i steg 3 i foodtruckens 13 situationer och i vb32."
+3. "Texten i spelet gäller före SITUATIONER_306b.md."
+
+### Hela banken
+
+Vinbarens bank är dess 40 situationer och menyns 9. Gissaren möter dem alla under en vecka, så jag skrev om svaren i den gamla formen, i menyn och i några steg 1–2 i de elva nya.
+- **Bara längden har ändrats:** ett felsvar har fått en bisats, eller så har det rätta svaret kortats. Talen (°C, cl, 112) och fakta står kvar.
+- **Ok-svaren:** en första omgång förlängde också ok-svar. Det gjorde gissaren bättre, eftersom ett ok-svar också klarar steget i den gamla formen. De är återställda, och felsvaren fick bisatserna i stället.
+- **Talen** står i `langd.json`, fältet `bank`. Där finns hur ofta det längsta svaret är det bästa, i ord och i tecken. Där finns också kvaliteten på gissarens val (det längsta i tecken, som i harnessen) mot slumpens.
+
+| Del | Steg | sv: längst = bäst (ord / tecken) | en: längst = bäst (ord / tecken) | Slumpen | Gissarens val fel (en) | Slumpens val fel |
+|---|---|---|---|---|---|---|
+| nya formen | 32 | 8 / 8 | 7 / 7 | 9,4 | 0,469 | 0,414 |
+| gamla formen | 87 | 24 / 22 | 21 / 25 | 25,2 | 0,724 | 0,548 |
+| menyn | 27 | 4 / 6 | 4 / 8 | 9 | 0,741 | 0,667 |
+
+- **Före** (306b.2, `langd.json` i `8d877557`): det längsta svaret var det bästa i 53–55 av 87 steg i den gamla formen.
+- **Testet** `src/sim/__tests__/order306b3Banken.test.ts` håller banken under 0,35 i ord och i tecken, på båda språken. Slumpen ger ungefär 0,30.
+- **Steg 3:** listan från 306b.2 håller fortfarande: det hela greppet är längst i 6 av 23.
+- **A4:** inget svar i de elva bryter mot längden (`over` är tom).
+- **Det som blir kvar är tvärtom:** i den gamla formen och menyn är det längsta svaret nu fel något oftare än slumpen ger, 0,72 mot 0,55 i den gamla formen. Den som alltid undviker det längsta svaret får en liten fördel. Säg till om jag ska jämna ut det.
+
+### Spelartyperna
+
+`spelartyper.json`, tio frön och sex dagar:
+
+| Spelartyp | Stannar | Resultat (kr) | Stannade | Krediter | Elva: helt | Elva: halvt | Elva: fel i steg 3 | Elva: fel på vägen |
+|---|---|---|---|---|---|---|---|---|
+| rimlig | 0 | 16 417 | 0 | 186 | 1 | 0 | 0 | 0 |
+| rimlig | 1 | 14 963 | 1 | 26 | 0 | 0 | 0 | 0 |
+| rimlig | 2 | 14 563 | 1 | 77 | 0 | 0 | 0 | 0 |
+| gissaren | 0 | −14 734 | 0 | 13 | 0,282 | 0,308 | 0,357 | 0,823 |
+| gissaren | 1 | −9 208 | 0,442 | 16 | 0,076 | 0,286 | 0,219 | 0,581 |
+| gissaren | 2 | −14 729 | 0,123 | 13 | 0,114 | 0,298 | 0,423 | 0,835 |
+| slumpen | 0 | −9 911 | 0 | 20 | 0,378 | 0,428 | 0,194 | 0,729 |
+| slumpen | 1 | −4 565 | 0,487 | 17 | 0,166 | 0,207 | 0,143 | 0,445 |
+| slumpen | 2 | −9 987 | 0,324 | 19 | 0,231 | 0,311 | 0,101 | 0,52 |
+| svag | alla | −19 670 | 0 | -9 | 0 | 0,062 | 0,46 | 0,522 |
+| ignorerar | alla | 1 557 | 0 | -25 | 0 | 0 | 0 | 0 |
+
+**Gissaren tjänar mindre än slumpen** med alla tre sätten att stanna: −14 734 kr mot −9 911 kr när båda alltid går vidare. Efter 306b.2 var det −6 889 kr mot −9 911 kr.
+
+### Steg 2
+
+Följden av fel i steg 2 tar varken kassa eller ork. Den har flyttats till felsvaren i steg 3:
+- **Foodtruckens tretton:** kassan (−0,04) ligger nu på varje felsvar i steg 3. Svar som saknade en egen följd har fått stegets följd och text som egen.
+- **vb32:** orken (−0,05) ligger på stegets egen följd i steg 3, den som gäller när tiden går ut. vb32 har två hela grepp och inget felsvar i steg 3.
+- **Testet** `steg 2 tar varken kassa eller ork` prövar alla 24 situationer i formen analys → upplevelse → handling, i vinbaren och i foodtrucken.
+
+**Inte flyttat: situationerna i den gamla formen.** Där är steg 2 handlingen (techne), inte upplevelsen. 27 av vinbarens situationer i den gamla formen, menyns nio och kriserna drar kassa eller ork i steg 2, till exempel de krossade flaskorna i vb26 (−0,4). Regeln "steg 2 påverkar bara stämningen och ryktet" gäller steget om upplevelsen, och jag tolkade den så. Säg till om den också ska gälla handlingen i den gamla formen. Då flyttas följden till phronesis-steget, som där är steg 3.
+
+### Texten i spelet
+
+Beslutet står överst i `SITUATIONER_306b.md` och i speldesignen.
+

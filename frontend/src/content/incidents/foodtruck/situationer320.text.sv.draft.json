@@ -73,7 +73,10 @@
       },
       "d": {
        "label": "Stäng luckan tills regnet har slutat och vänta inne i vagnen.",
-       "explanation": "Kön skingras, och gästerna går till någon som är öppen."
+       "explanation": "Kön skingras, och gästerna går till någon som är öppen.",
+       "fail": {
+        "outcome": "Kön skingras i regnet."
+       }
       }
      },
      "fail": {
@@ -169,7 +172,10 @@
       },
       "d": {
        "label": "Vifta bort getingen med en servett och servera vidare som vanligt.",
-       "explanation": "Viftandet gör getingen orolig, och risken för stick ökar."
+       "explanation": "Viftandet gör getingen orolig, och risken för stick ökar.",
+       "fail": {
+        "outcome": "Getingen blir orolig, och gästen backar."
+       }
       }
      },
      "fail": {
@@ -265,7 +271,10 @@
       },
       "d": {
        "label": "Säg att det bara går med kontanter i dag.",
-       "explanation": "De flesta har inte kontanter, och kön skingras."
+       "explanation": "De flesta har inte kontanter, och kön skingras.",
+       "fail": {
+        "outcome": "Kön skingras."
+       }
       }
      },
      "fail": {
@@ -361,7 +370,10 @@
       },
       "d": {
        "label": "Säg ingenting till kön, och fortsätt sälja tills korven tar slut.",
-       "explanation": "Den som står sist har köat förgäves."
+       "explanation": "Den som står sist har köat förgäves.",
+       "fail": {
+        "outcome": "Den som står sist har köat förgäves."
+       }
       }
      },
      "fail": {
@@ -457,7 +469,10 @@
       },
       "d": {
        "label": "Ge hunden en korvbit från grillen, så att den håller sig lugn.",
-       "explanation": "Hunden blir glad, men det är inte bra för hunden, och du har rört djuret med samma hand som maten."
+       "explanation": "Hunden blir glad, men det är inte bra för hunden, och du har rört djuret med samma hand som maten.",
+       "fail": {
+        "outcome": "Händerna som rörde hunden serverar nästa gäst."
+       }
       }
      },
      "fail": {
@@ -553,7 +568,10 @@
       },
       "d": {
        "label": "Sätt upp en skylt om att Grillvagnens korv är sämre.",
-       "explanation": "Det låter illa om er också, och byn märker det."
+       "explanation": "Det låter illa om er också, och byn märker det.",
+       "fail": {
+        "outcome": "Byn pratar om skylten."
+       }
       }
      },
      "fail": {

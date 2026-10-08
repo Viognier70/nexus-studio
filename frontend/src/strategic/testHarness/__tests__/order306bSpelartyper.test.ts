@@ -20,6 +20,9 @@ import ftBasSv from '../../../content/incidents/foodtruck/bas.text.sv.draft.json
 import ftBasEn from '../../../content/incidents/foodtruck/bas.text.en.json';
 import ft320Sv from '../../../content/incidents/foodtruck/situationer320.text.sv.draft.json';
 import ft320En from '../../../content/incidents/foodtruck/situationer320.text.en.json';
+import menuMetaFile from '../../../content/incidents/menu.meta.json';
+import menuSvFile from '../../../content/incidents/menu.text.sv.draft.json';
+import menuEnFile from '../../../content/incidents/menu.text.en.json';
 import ftBasMeta from '../../../content/incidents/foodtruck/bas.meta.json';
 import ft320Meta from '../../../content/incidents/foodtruck/situationer320.meta.json';
 import type { SimulationState } from '../../types';
@@ -92,6 +95,7 @@ function lengths(texts: Texts) {
 // Ordningskorten (Karaffen) har inga svar att läsa och är inte med. Metafilerna läses direkt, så att också
 // situationer som väntar på ⚖-granskning (och inte står i banken) är med.
 type MetaFile = { incidents: { id: string; form?: string; steps: { form?: string; options: { id: string; quality: string }[] }[] }[] };
+
 export function step3Longest() {
   const sets: { cls: 'vinbar' | 'foodtruck'; meta: MetaFile['incidents']; sv: Texts; en: Texts }[] = [
     { cls: 'vinbar', meta: (vinbarMeta as unknown as MetaFile).incidents, sv: sv as unknown as Texts, en: en as unknown as Texts },
@@ -111,6 +115,41 @@ export function step3Longest() {
     }
   }
   return rows;
+}
+
+// 306b.3 — vinbarens bank (situationerna och menyns) per del: hur ofta det längsta svaret (ord och tecken, lika långt
+// räknas) är det bästa, och vilken kvalitet gissarens val har (det längsta i tecken, första vid lika, som i harnessen)
+// mot slumpens väntevärde.
+function bankParts() {
+  const parts: { name: string; meta: MetaFile['incidents']; sv: Texts; en: Texts }[] = [
+    { name: 'nya formen', meta: (vinbarMeta as unknown as MetaFile).incidents.filter((i) => i.form === 'triad'), sv: sv as unknown as Texts, en: en as unknown as Texts },
+    { name: 'gamla formen', meta: (vinbarMeta as unknown as MetaFile).incidents.filter((i) => i.form !== 'triad'), sv: sv as unknown as Texts, en: en as unknown as Texts },
+    { name: 'menyn', meta: (menuMetaFile as unknown as MetaFile).incidents, sv: menuSvFile as unknown as Texts, en: menuEnFile as unknown as Texts }
+  ];
+  return parts.map(({ name, meta, sv: tsv, en: ten }) => {
+    const out: Record<string, unknown> = { name };
+    for (const [lang, t] of [['sv', tsv], ['en', ten]] as const) {
+      let steps = 0, words = 0, chars = 0, expected = 0;
+      const pick: Record<string, number> = { best: 0, ok: 0, wrong: 0 }, random: Record<string, number> = { best: 0, ok: 0, wrong: 0 };
+      for (const inc of meta) inc.steps.forEach((st, k) => {
+        if (st.form === 'sequence') return;
+        const label = (id: string) => t.texts[inc.id].steps[k].options[id].label.trim();
+        const w = (id: string) => label(id).split(/\s+/).length, c = (id: string) => label(id).length;
+        const mw = Math.max(...st.options.map((o) => w(o.id))), mc = Math.max(...st.options.map((o) => c(o.id)));
+        const q = (o: { quality: string }) => (o.quality === 'best' ? 'best' : o.quality === 'wrong' ? 'wrong' : 'ok');
+        steps++;
+        if (st.options.some((o) => o.quality === 'best' && w(o.id) === mw)) words++;
+        if (st.options.some((o) => o.quality === 'best' && c(o.id) === mc)) chars++;
+        expected += st.options.filter((o) => o.quality === 'best').length / st.options.length;
+        pick[q(st.options.find((o) => c(o.id) === mc)!)]++;
+        for (const o of st.options) random[q(o)] += 1 / st.options.length;
+      });
+      const sh = (x: number) => +(x / steps).toFixed(3);
+      out[lang] = { steps, longestIsBestWords: words, longestIsBestChars: chars, randomExpectation: +expected.toFixed(1),
+        guesserPick: { best: sh(pick.best), ok: sh(pick.ok), wrong: sh(pick.wrong) }, randomPick: { best: sh(random.best), ok: sh(random.ok), wrong: sh(random.wrong) } };
+    }
+    return out;
+  });
 }
 
 // A4 — hur ofta det längsta svaret (i tecken) är det bästa, mot vad slumpen ger (andelen bästa svar i steget).
@@ -158,8 +197,9 @@ describe('ORDER 306b A10 — spelartyperna och A4:s längder', () => {
     const dir = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports/order306b');
     mkdirSync(dir, { recursive: true });
     writeFileSync(resolve(dir, process.env.LANGD_FILE ?? 'langd.json'), JSON.stringify({
-      definition: 'A4: svarens längd i ord (mellanslag) i de elva situationerna. overWords: fler än 12 ord i steg 1–2 eller 15 i steg 3; overRatio: i steg 3 längsta / kortaste över 1,5. step3Longest: vinbarens och foodtruckens situationer i formen, med antalet ord i varje svar i steg 3 och om det hela greppet är längst (lika långt räknas). longestIsBest: steg (utom ordningskorten) i de elva där det längsta svaret i tecken är det bästa, mot slumpens väntevärde; oldFormLongestIsBest: detsamma i vinbarens situationer i den gamla formen. sv: Anders text (vinbar.text.sv.draft.json); en: översättningen (vinbar.text.en.json).',
+      definition: 'A4: svarens längd i ord (mellanslag) i de elva situationerna. overWords: fler än 12 ord i steg 1–2 eller 15 i steg 3; overRatio: i steg 3 längsta / kortaste över 1,5. step3Longest: vinbarens och foodtruckens situationer i formen, med antalet ord i varje svar i steg 3 och om det hela greppet är längst (lika långt räknas). longestIsBest: steg (utom ordningskorten) i de elva där det längsta svaret i tecken är det bästa, mot slumpens väntevärde; oldFormLongestIsBest: detsamma i vinbarens situationer i den gamla formen. bank (306b.3): per del av vinbarens bank, det längsta svaret i ord och tecken som är det bästa, och kvaliteten på gissarens val (längst i tecken) mot slumpens. sv: Anders text (vinbar.text.sv.draft.json); en: översättningen (vinbar.text.en.json).',
       longestIsBest: { sv: longestIsBest(sv as unknown as Texts), en: longestIsBest(en as unknown as Texts) },
+      bank: bankParts(),
       oldFormLongestIsBest: { sv: longestIsBest(sv as unknown as Texts, false), en: longestIsBest(en as unknown as Texts, false) },
       step3Longest: (() => { const rows = step3Longest(); const of = (l: string) => rows.filter((x) => x.lang === l); return { situations: of('sv').length, fullIsLongest: { sv: of('sv').filter((x) => x.fullIsLongest).length, en: of('en').filter((x) => x.fullIsLongest).length }, rows }; })(),
       sv: { over: sl.filter((r) => r.overWords || r.overRatio), rows: sl }, en: { over: el.filter((r) => r.overWords || r.overRatio), rows: el }
