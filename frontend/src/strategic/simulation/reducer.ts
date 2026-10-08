@@ -1885,6 +1885,8 @@ function payGuest(draft: SimulationState, guest: Guest, revenueMult: number, inL
       // en andel av den.
       const truck = draft.economy.businessClass === 'foodtruck';
       rev = (truck ? FOODTRUCK.billSek : revenuePerGuest(draft.policies)) * revenueMult * legacyBillFactor(guest);
+      // ORDER 319b del 2 — efter ett rätt svar till en nyfiken blir köpet större (sim/curious.ts).
+      if (truck && guest.fromCurious) rev *= 1 + (guest.billBonus ?? 0);
       if (truck) {
         ingredientCostSek = rev * FOODTRUCK.goodsShare;
         // ORDER 315b — kvällens gäster i foodtrucken är de som handlat vid

@@ -71,6 +71,8 @@ export interface MorningPlan {
   // morgonen det står (förvalt), 'careful' (spelartypen "försiktig") väntar
   // LADDER.carefulWaitDays, 'never' stannar kvar.
   ladder?: 'take' | 'careful' | 'never';
+  // ORDER 319b del 2 — det spelaren gör under servicen, varje tick (t.ex. pratar med de nyfikna).
+  onTick?: (s: SimulationState) => SimulationState;
 }
 
 // ORDER 296c — det kloka svaret på en nål: sätt sällskapet om det finns
@@ -124,9 +126,10 @@ export interface DayRecord {
   events: string[];
 }
 
-export function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, answer: ScenarioAnswer = 'best', _backs?: boolean, pins?: 'wise'): SimulationState {
+export function tickUntil(s: SimulationState, done: (s: SimulationState) => boolean, answer: ScenarioAnswer = 'best', _backs?: boolean, pins?: 'wise', onTick?: (s: SimulationState) => SimulationState): SimulationState {
   for (let i = 0; i < MAX_TICKS_PER_PHASE && !done(s); i++) {
     s = answerScenario(reducer(s, { type: 'TICK', dt: TICK_DT }), answer);
+    if (onTick) s = onTick(s);
     if (pins === 'wise' && (s.day.pins?.open.length ?? 0) > 0) s = answerPinsWisely(s);
   }
   return s;
@@ -261,7 +264,7 @@ export function playDay(s: SimulationState, plan: MorningPlan): { state: Simulat
     s = tickUntil(opened, (x) => {
       for (const g of x.guests) seen.add(g.id);
       return x.day.period === 'evening' || x.day.period === 'morning';
-    }, plan.scenarioAnswer, plan.backs, plan.pins);
+    }, plan.scenarioAnswer, plan.backs, plan.pins, plan.onTick);
   } else {
     s = reducer(s, { type: 'CLOSE_DAY' });
   }

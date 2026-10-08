@@ -1,0 +1,209 @@
+{
+ "language": "sv",
+ "status": "utkast",
+ "texts": {
+  "n01": {
+   "q": "Vad är skillnaden på halv och hel special?",
+   "options": {
+    "a": "Halv är en korv med mos i bröd, hel är två korvar.",
+    "b": "Hel special är större.",
+    "c": "Hel special har räksallad på.",
+    "d": "Det är samma sak, bara olika namn."
+   },
+   "why": "I Mellansverige är en halv special en korv med mos i bröd, och en hel special har två korvar. Orden skiljer sig mellan landsdelarna, så det är bra att kunna förklara dem."
+  },
+  "n02": {
+   "q": "Är grillkorven gjord på fläsk eller nöt?",
+   "options": {
+    "a": "Ofta båda. Jag visar förpackningen, så ser du själv.",
+    "b": "Fläsk, tror jag.",
+    "c": "Bara nötkött, som all grillkorv.",
+    "d": "Det spelar ingen roll, den är god."
+   },
+   "why": "Grillkorv görs ofta av både fläsk och nöt. Det som är säkert står på förpackningen, och att visa den är bättre än att gissa."
+  },
+  "n03": {
+   "q": "Den rostade löken, är den friterad?",
+   "options": {
+    "a": "Ja, den är friterad i olja, därför är den så krispig.",
+    "b": "Den är rostad i ugn, som namnet säger.",
+    "c": "Den är nog stekt på något sätt.",
+    "d": "Det är torkad lök utan fett."
+   },
+   "why": "Den rostade lök som säljs färdig är nästan alltid friterad i olja. Namnet lurar."
+  },
+  "n04": {
+   "q": "Har ni något utan kött?",
+   "options": {
+    "a": "Ja, vegokorven. Den grillas på en egen del, med egen tång.",
+    "b": "Ja, mos och bröd går bra.",
+    "c": "Jag kan ta bort korven ur en vanlig special.",
+    "d": "Nej, det här är en korvgrill."
+   },
+   "why": "Den som inte äter kött vill inte heller ha köttsaft på sin mat. Egen del av grillen och egen tång håller isär dem."
+  },
+  "n05": {
+   "q": "Lättöl, är det alkoholfritt?",
+   "options": {
+    "a": "Nej, lättöl har högst 2,25 procent alkohol.",
+    "b": "Ja, helt alkoholfritt.",
+    "c": "Nästan, det är väldigt lite alkohol i den.",
+    "d": "Det är vanlig öl, bara lättare i smaken."
+   },
+   "why": "Lättöl får innehålla upp till 2,25 volymprocent alkohol. Den som kör eller inte dricker alkohol alls behöver veta det."
+  },
+  "n06": {
+   "q": "Vilken senap ska jag ta?",
+   "options": {
+    "a": "Vill du ha milt och sött, eller starkt? Då väljer vi.",
+    "b": "Skånsk, det tar alla.",
+    "c": "Den starkaste, den är bäst till korv.",
+    "d": "Vilken som helst, de smakar likadant."
+   },
+   "why": "Gästen frågade om sin egen smak. En fråga tillbaka hittar rätt senap snabbare än en gissning."
+  },
+  "n07": {
+   "q": "Mm, varför luktar det så gott?",
+   "options": {
+    "a": "När korvskinnet bryns bildas nya dofter. Det är maillardreaktionen.",
+    "b": "Det är kryddorna som kokar ut i värmen.",
+    "c": "Det är röken från kolen som ger doften.",
+    "d": "Vi har en doftmaskin vid luckan."
+   },
+   "why": "När proteiner och socker i ytan blir varma bryns de, och då bildas hundratals doftämnen. Det är samma reaktion som i bröd och rostat kaffe."
+  },
+  "n08": {
+   "q": "Grillar ni på kol?",
+   "options": {
+    "a": "Nej, på gas. Röken kommer från fettet som droppar.",
+    "b": "Ja, det är därför det luktar så.",
+    "c": "Det är en vanlig elgrill.",
+    "d": "Det vet jag inte."
+   },
+   "why": "Vagnen grillar på gas. Doften av rök kommer från fett som droppar ner på det heta och förångas. Att svara ärligt är bättre än att låta gästen tro något annat."
+  },
+  "n09": {
+   "q": "Är korven genomstekt?",
+   "options": {
+    "a": "Den är färdigkokt och grillas tills den är varm rakt igenom.",
+    "b": "Ja, den har legat ett bra tag.",
+    "c": "Det behövs inte, korv kan ätas rå.",
+    "d": "Den är bara grillad på utsidan."
+   },
+   "why": "De flesta grillkorvar är färdigkokta, och de ska bli varma rakt igenom innan de serveras. Det är också ett krav i livsmedelssäkerheten."
+  },
+  "n10": {
+   "q": "Kan jag få den lite extra bränd?",
+   "options": {
+    "a": "Absolut, några minuter till. Brun och krispig, men inte svart.",
+    "b": "Ja, jag lägger den längst in där det är hetast.",
+    "c": "Nej, vi grillar alla lika.",
+    "d": "Visst, jag låter den bli helt svart."
+   },
+   "why": "Mer stekyta går bra och ger mer smak. Det som blir svart och förkolnat ska undvikas, både för smakens och hälsans skull."
+  },
+  "n11": {
+   "q": "Är korven härifrån trakten?",
+   "options": {
+    "a": "Jag vet var den är gjord, och kan ta reda på köttets ursprung.",
+    "b": "Ja, den är svensk.",
+    "c": "Ja, allt här kommer från Grythyttan.",
+    "d": "Det vet ingen."
+   },
+   "why": "Var en korv är gjord säger inte var köttet kommer ifrån. Den som är ärlig om vad hen vet, och tar reda på resten, får förtroende. Frågan hör ihop med foodtruckens fråga om ursprunget."
+  },
+  "n12": {
+   "q": "Hur länge har de där korvarna legat?",
+   "options": {
+    "a": "Vi grillar i små omgångar, och de som legat för länge slängs.",
+    "b": "Inte så länge, de är fortfarande varma.",
+    "c": "Sedan vi öppnade, de håller hela kvällen.",
+    "d": "Det syns ju inte på dem."
+   },
+   "why": "Varm mat som hålls varm ska hålla minst +60 °C och inte stå för länge. Små omgångar ger både säkrare och godare korv."
+  },
+  "n13": {
+   "q": "Brr. Hinner jag stå här och vänta?",
+   "options": {
+    "a": "Det tar två minuter. Ställ dig vid värmaren, så ropar vi.",
+    "b": "Ja, det går fort.",
+    "c": "Du får stå i kön som alla andra.",
+    "d": "Det kan ta en stund, kom tillbaka senare."
+   },
+   "why": "Gästen frågade om tiden, men sa också att hen fryser. Ett besked om tiden och en varm plats svarar på båda."
+  },
+  "n14": {
+   "q": "Kan jag ta med maten hem?",
+   "options": {
+    "a": "Ja, jag packar korven och moset var för sig, så blir brödet inte blött.",
+    "b": "Ja, i en vanlig påse.",
+    "c": "Nej, den ska ätas här.",
+    "d": "Ja, allt i samma bröd som vanligt."
+   },
+   "why": "Varmt mos gör brödet blött på några minuter. Att packa isär är en enkel teknik som gör maten god också hemma."
+  },
+  "n15": {
+   "q": "Har ni något varmt att dricka?",
+   "options": {
+    "a": "Kaffe finns. Ställ dig vid värmaren medan jag häller upp.",
+    "b": "Bara kaffe.",
+    "c": "Nej, vi har bara kall dricka.",
+    "d": "Ta en korv i stället, den är varm."
+   },
+   "why": "Svaret räcker långt med lite omtanke. Det enda som skiljer svar 1 från svar 2 är värmaren."
+  },
+  "n16": {
+   "q": "Varför kostar korven mer här än i affären?",
+   "options": {
+    "a": "Du får den grillad, varm och serverad, med allt runtomkring.",
+    "b": "Allt är dyrare ute.",
+    "c": "Affären säljer sämre korv.",
+    "d": "Det kostar vad det kostar."
+   },
+   "why": "Priset betalar för arbetet, platsen och tjänsten, inte bara korven. Att förklara utan att tala illa om någon annan bygger förtroende."
+  },
+  "n17": {
+   "q": "Grillvagnen där borta är billigare. Varför köpa här?",
+   "options": {
+    "a": "Titta på kötthalten på skylten, och smaka gärna.",
+    "b": "Vår är godare.",
+    "c": "Deras korv är skräp.",
+    "d": "Gå dit då."
+   },
+   "why": "Kötthalten är ett av de tydligaste tecknen på en korvs kvalitet, och den står på förpackningen. Att visa fakta och låta gästen smaka är starkare än att tala illa om konkurrenten."
+  },
+  "n18": {
+   "q": "Är senapen stark för en femåring?",
+   "options": {
+    "a": "Den skånska är söt och mild, annars passar ketchup.",
+    "b": "Ta ketchup, så är det säkert.",
+    "c": "Barn ska vänja sig vid stark mat.",
+    "d": "Det vet jag inte."
+   },
+   "why": "Föräldern vill att barnet ska få en god korv. Ett milt alternativ, och ett säkert reservval, svarar på frågan.",
+   "speaker": "parent"
+  },
+  "n19": {
+   "q": "Han är allergisk mot mjölk. Kan han äta korven?",
+   "options": {
+    "a": "Vi läser förpackningen tillsammans, och jag tar en ren tång.",
+    "b": "Korv brukar inte ha mjölk i sig.",
+    "c": "Jag frågar min kollega.",
+    "d": "Ta mos i stället, det är säkrare."
+   },
+   "why": "Korv kan innehålla mjölk, och mos görs ofta med mjölk och smör. Svaret finns på förpackningen, och en ren tång skyddar mot det som fastnat på grillen. Att gissa om allergener är aldrig ett svar.",
+   "speaker": "parent"
+  },
+  "n20": {
+   "q": "Vad gör du där?",
+   "options": {
+    "a": "Jag vänder korvarna, så att de blir bruna runt om. Vill du titta?",
+    "b": "Jag grillar.",
+    "c": "Akta dig, det är varmt här.",
+    "d": "Inget, ställ dig i kön."
+   },
+   "why": "Ett barn som blir sett tar med sig föräldrarna. Att förklara enkelt och bjuda in barnet att titta, på säkert avstånd, är bemötande i praktiken.",
+   "speaker": "child"
+  }
+ }
+}

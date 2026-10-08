@@ -282,6 +282,8 @@ Förebilden är *Two Point Hospital* och *Game Dev Tycoon*: att flytta till stö
 
 *Beslut 2026-10-08 (Vision Owner, de nyfikna och trängseln):* klicket på en nyfiken gäst vid foodtrucken öppnar frågekortet med en fråga ur foodtruckens bank, inte prototypens exempel, och svaret avgör utfallet: rätt ställer sig i kön, nästan tvekar och står kvar, fel går vidare. Ingen gäst eller personal kommer närmare en annan än 0,35 m i någon verksamhet. Vid vagnen väjer man, håller till höger och knuffas isär; i vinbaren och bistron väjer man och knuffas isär. Kortets sekunder, kögränsen för marschallerna och blicken på klockan står i balance.ts.
 
+*Beslut 2026-10-08 (Vision Owner, kunskapen vid luckan):* vagnens kapacitet ökas inte, eftersom det är verkligt att en foodtruck har en gräns. Kunskapen syns i stället i att köpet blir större, att gästen kommer tillbaka en senare kväll som stamgäst och att ryktet stiger. Mer kapacitet kan bli en satsning som spelaren köper, som en andra grill. De nyfikna har egna frågor i gästens röst, och frågan väljs efter vad gästen gör i bild: läser skylten, luktar på röken, fryser, ser på priset eller kommer med barn. Frågor om livsmedelssäkerhet är märkta ⚖ och dolda tills de är granskade. Medhjälparen vid luckan heter inte Elin, som finns i vinbaren.
+
 ## Servicen
 
 Servicen är slumpen, viktad av spelarens förberedelser. Det spelaren gjort på morgonen, och det hon kan, avgör hur ofta saker går rätt. Hon ser konsekvenserna i rummet, inte i siffertavlor.

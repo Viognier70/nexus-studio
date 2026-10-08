@@ -71,6 +71,8 @@ export interface TruckWalker {
   /** ORDER 319b — en nyfiken förbipasserande, eller gästen i kön som var det (seq). */
   curious?: CuriousWalk;
   fromCurious?: number;
+  /** ORDER 319b del 2 — kommer med ett barn i handen (sim/curious.ts child); barnet går bredvid. */
+  child?: boolean;
   /** Står still så här länge till (vänder sig mot luckan eller skakar på huvudet). */
   holdS: number;
   /** Där den här sträckan av vägen började (hålla till höger). */
@@ -124,6 +126,10 @@ function massOf(w: TruckWalker): MassKind {
 }
 
 const curiousKey = (seq: number) => `curious:${seq}`;
+/** Barnet bredvid en vuxen i `shown`. */
+export const childKey = (id: string) => `${id}:child`;
+/** Barnet går så långt till vänster om den vuxna. */
+const CHILD_SIDE_M = 0.55;
 
 /** Figuren ritas högst så här långt från sin väg (hålla till höger och knuffas isär): en ny figur börjar
  *  så mycket längre bort än minSpawnM, så att den inte ritas närmare. */
@@ -289,6 +295,7 @@ export class TruckGuestFlow {
     if (cur && !this.walkers.has(curiousKey(cur.seq))) {
       const w = this.newWalker(curiousKey(cur.seq), this.curiousArrival(cur.seq, cur.side), null);
       w.curious = { seq: cur.seq, side: cur.side, stage: 'approach' };
+      w.child = cur.child;
       this.walkers.set(w.id, w);
       events.push({ kind: 'spawn', id: w.id, x: w.x, z: w.z });
     }
@@ -371,8 +378,11 @@ export class TruckGuestFlow {
       // Den som går försvinner där den senast stod (redan ritad där): på gatan när den är minst
       // minSpawnM bort och utanför bilden, annars vid huset där vägen slutar.
       // Prövas där figuren senast ritades (trängseln flyttar den från vägen).
+      // Barnet bredvid prövas också.
       const [sx, sz] = this.shown.get(w.id) ?? [w.x, w.z];
-      const gone = w.leaving && w.holdS <= 0 && ((this.dist(sx, sz) >= TRUCK_GUESTS.minSpawnM && !this.inView(sx, sz)) || w.path.length === 0);
+      const [cx, cz] = w.child ? this.shown.get(childKey(w.id)) ?? [sx, sz] : [sx, sz];
+      const away = this.dist(sx, sz) >= TRUCK_GUESTS.minSpawnM && !this.inView(sx, sz) && this.dist(cx, cz) >= TRUCK_GUESTS.minSpawnM && !this.inView(cx, cz);
+      const gone = w.leaving && w.holdS <= 0 && (away || w.path.length === 0);
       if (gone) { this.walkers.delete(w.id); events.push({ kind: 'despawn', id: w.id, x: sx, z: sz }); continue; }
       if (w.holdS > 0) { w.holdS = Math.max(0, w.holdS - dt); continue; }
       // Den nyfikna vid skylten följer simuleringens tid (sakta in och gå fram, sedan stå).
@@ -427,6 +437,13 @@ export class TruckGuestFlow {
       }
       return { key: w.id, x, z, kind: massOf(w) };
     });
+    // Barnet går och står bredvid, till vänster om den vuxna (CHILD_SIDE_M), och räknas i trängseln.
+    for (const w of this.walkers.values()) {
+      if (!w.child) continue;
+      const b = bodies.find((x) => x.key === w.id)!;
+      const [rx, rz] = rightOf(Math.sin(w.yaw), Math.cos(w.yaw));
+      bodies.push({ key: childKey(w.id), x: b.x - rx * CHILD_SIDE_M, z: b.z - rz * CHILD_SIDE_M, kind: b.kind });
+    }
     const shown = this.space.step(bodies, dt);
     this.shown.clear();
     for (const [k, p] of shown) this.shown.set(k, p);

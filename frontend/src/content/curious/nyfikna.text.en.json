@@ -1,0 +1,209 @@
+{
+ "language": "en",
+ "status": "utkast",
+ "texts": {
+  "n01": {
+   "q": "What's the difference between a half and a full special?",
+   "options": {
+    "a": "A half is one sausage with mash in a bun; a full is two sausages.",
+    "b": "The full special is bigger.",
+    "c": "The full special has prawn salad on it.",
+    "d": "They're the same thing, just different names."
+   },
+   "why": "In central Sweden a half special is one sausage with mash in a bun, and a full special has two sausages. The words differ between regions, so it helps to be able to explain them."
+  },
+  "n02": {
+   "q": "Is the grilled sausage pork or beef?",
+   "options": {
+    "a": "Often both. I'll show you the packet so you can see for yourself.",
+    "b": "Pork, I think.",
+    "c": "Only beef, like all grilled sausage.",
+    "d": "It doesn't matter, it tastes good."
+   },
+   "why": "Grilled sausage is often made from both pork and beef. What is certain is printed on the packet, and showing it beats guessing."
+  },
+  "n03": {
+   "q": "The crispy onions, are they fried?",
+   "options": {
+    "a": "Yes, they're fried in oil, that's why they're so crisp.",
+    "b": "They're roasted in the oven, as the name says.",
+    "c": "They're probably fried in some way.",
+    "d": "They're dried onions with no fat."
+   },
+   "why": "Ready-made crispy onions are almost always fried in oil. The Swedish name, roasted onions, is misleading."
+  },
+  "n04": {
+   "q": "Do you have anything without meat?",
+   "options": {
+    "a": "Yes, the veggie sausage. It goes on its own part of the grill, with its own tongs.",
+    "b": "Yes, mash and a bun is fine.",
+    "c": "I can take the sausage out of a normal special.",
+    "d": "No, this is a sausage grill."
+   },
+   "why": "Someone who doesn't eat meat doesn't want meat juices on their food either. Their own part of the grill and their own tongs keep them apart."
+  },
+  "n05": {
+   "q": "Light beer, is that alcohol-free?",
+   "options": {
+    "a": "No, light beer has at most 2.25 per cent alcohol.",
+    "b": "Yes, completely alcohol-free.",
+    "c": "Almost, there's very little alcohol in it.",
+    "d": "It's normal beer, just lighter in taste."
+   },
+   "why": "Swedish light beer may contain up to 2.25 per cent alcohol by volume. Anyone driving or not drinking alcohol at all needs to know that."
+  },
+  "n06": {
+   "q": "Which mustard should I have?",
+   "options": {
+    "a": "Do you like it mild and sweet, or strong? Then we'll pick.",
+    "b": "Skåne mustard, everyone has that.",
+    "c": "The strongest, it's the best with sausage.",
+    "d": "Any of them, they taste the same."
+   },
+   "why": "The guest asked about their own taste. A question back finds the right mustard faster than a guess."
+  },
+  "n07": {
+   "q": "Mm, why does it smell so good?",
+   "options": {
+    "a": "When the sausage skin browns, new aromas form. It's the Maillard reaction.",
+    "b": "It's the spices cooking off in the heat.",
+    "c": "It's the smoke from the charcoal that gives the smell.",
+    "d": "We have a scent machine by the hatch."
+   },
+   "why": "When proteins and sugars on the surface heat up they brown, and hundreds of aromas form. It's the same reaction as in bread and roasted coffee."
+  },
+  "n08": {
+   "q": "Do you grill on charcoal?",
+   "options": {
+    "a": "No, on gas. The smoke comes from the fat dripping down.",
+    "b": "Yes, that's why it smells like that.",
+    "c": "It's an ordinary electric grill.",
+    "d": "I don't know."
+   },
+   "why": "The truck grills on gas. The smoky smell comes from fat dripping onto the hot surface and vaporising. An honest answer beats letting the guest believe something else."
+  },
+  "n09": {
+   "q": "Is the sausage cooked through?",
+   "options": {
+    "a": "It's pre-cooked and grilled until it's hot all the way through.",
+    "b": "Yes, it's been on there a good while.",
+    "c": "It doesn't need to be, sausage can be eaten raw.",
+    "d": "It's only grilled on the outside."
+   },
+   "why": "Most grilled sausages are pre-cooked, and they should be hot all the way through before they're served. It's also a food safety requirement."
+  },
+  "n10": {
+   "q": "Can I have it a bit extra charred?",
+   "options": {
+    "a": "Of course, a few more minutes. Brown and crisp, but not black.",
+    "b": "Yes, I'll put it at the back where it's hottest.",
+    "c": "No, we grill them all the same.",
+    "d": "Sure, I'll let it go completely black."
+   },
+   "why": "More browning is fine and gives more flavour. What turns black and charred should be avoided, for both taste and health."
+  },
+  "n11": {
+   "q": "Is the sausage from round here?",
+   "options": {
+    "a": "I know where it's made, and I can find out where the meat comes from.",
+    "b": "Yes, it's Swedish.",
+    "c": "Yes, everything here comes from Grythyttan.",
+    "d": "Nobody knows."
+   },
+   "why": "Where a sausage is made doesn't tell you where the meat comes from. Being honest about what you know, and finding out the rest, earns trust. The question ties in with the food truck's question on origin."
+  },
+  "n12": {
+   "q": "How long have those sausages been sitting there?",
+   "options": {
+    "a": "We grill in small batches, and any that sit too long are thrown away.",
+    "b": "Not long, they're still warm.",
+    "c": "Since we opened, they keep all evening.",
+    "d": "You can't tell by looking at them."
+   },
+   "why": "Hot food kept hot should stay at +60 °C or above and not stand too long. Small batches give sausages that are both safer and tastier."
+  },
+  "n13": {
+   "q": "Brr. Have I got time to stand here and wait?",
+   "options": {
+    "a": "It takes two minutes. Stand by the heater and we'll call you.",
+    "b": "Yes, it's quick.",
+    "c": "You'll have to queue like everyone else.",
+    "d": "It might take a while, come back later."
+   },
+   "why": "The guest asked about the time, but also said they were cold. A word on the time and a warm spot answer both."
+  },
+  "n14": {
+   "q": "Can I take the food home?",
+   "options": {
+    "a": "Yes, I'll pack the sausage and the mash separately so the bun doesn't go soggy.",
+    "b": "Yes, in an ordinary bag.",
+    "c": "No, it's meant to be eaten here.",
+    "d": "Yes, all in the same bun as usual."
+   },
+   "why": "Warm mash makes the bun soggy within minutes. Packing them separately is a simple technique that keeps the food good at home too."
+  },
+  "n15": {
+   "q": "Have you got anything hot to drink?",
+   "options": {
+    "a": "There's coffee. Stand by the heater while I pour.",
+    "b": "Only coffee.",
+    "c": "No, we only have cold drinks.",
+    "d": "Have a sausage instead, it's hot."
+   },
+   "why": "A little care goes a long way. The only difference between the first two answers is the heater."
+  },
+  "n16": {
+   "q": "Why does the sausage cost more here than in the shop?",
+   "options": {
+    "a": "You get it grilled, hot and served, with everything that goes with it.",
+    "b": "Everything costs more when you eat out.",
+    "c": "The shop sells worse sausage.",
+    "d": "It costs what it costs."
+   },
+   "why": "The price pays for the work, the place and the service, not just the sausage. Explaining without running anyone else down builds trust."
+  },
+  "n17": {
+   "q": "The grill van over there is cheaper. Why buy here?",
+   "options": {
+    "a": "Look at the meat content on the board, and have a taste.",
+    "b": "Ours tastes better.",
+    "c": "Their sausage is rubbish.",
+    "d": "Go there, then."
+   },
+   "why": "Meat content is one of the clearest signs of a sausage's quality, and it's printed on the packet. Showing the facts and letting the guest taste is stronger than running down the competition."
+  },
+  "n18": {
+   "q": "Is the mustard too strong for a five-year-old?",
+   "options": {
+    "a": "The Skåne mustard is sweet and mild, otherwise ketchup works.",
+    "b": "Have ketchup, then you're safe.",
+    "c": "Children should get used to strong food.",
+    "d": "I don't know."
+   },
+   "why": "The parent wants the child to enjoy the sausage. A mild option, and a safe fallback, answer the question.",
+   "speaker": "parent"
+  },
+  "n19": {
+   "q": "He's allergic to milk. Can he eat the sausage?",
+   "options": {
+    "a": "Let's read the packet together, and I'll use clean tongs.",
+    "b": "Sausage doesn't usually have milk in it.",
+    "c": "I'll ask my colleague.",
+    "d": "Have mash instead, that's safer."
+   },
+   "why": "Sausage can contain milk, and mash is often made with milk and butter. The answer is on the packet, and clean tongs guard against anything stuck to the grill. Guessing about allergens is never an answer.",
+   "speaker": "parent"
+  },
+  "n20": {
+   "q": "What are you doing there?",
+   "options": {
+    "a": "I'm turning the sausages so they go brown all round. Want to watch?",
+    "b": "I'm grilling.",
+    "c": "Careful, it's hot here.",
+    "d": "Nothing, go and stand in the queue."
+   },
+   "why": "A child who is noticed brings the parents along. Explaining simply and inviting the child to watch, at a safe distance, is good hospitality in practice.",
+   "speaker": "child"
+  }
+ }
+}

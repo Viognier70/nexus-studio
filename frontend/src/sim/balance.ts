@@ -911,9 +911,29 @@ export const CURIOUS = {
   friendChance: 0.3,
   // Krediterna är små (ORDER 319b.2): en situations steg ger INCIDENTS.bestAnswerCredit.
   creditRight: 0.25,
+  // Anders 2026-10-08: vagnens kapacitet ökas inte; kunskapen syns på tre sätt i stället.
+  //   1. Varje köp blir större: den som fått ett rätt svar tar en dryck eller en hel special i stället
+  //      för en halv. Notan gånger 1 + rightBillBonus (Guest.billBonus).
+  rightBillBonus: 0.35,
+  //   2. Gästen kommer tillbaka en senare kväll, som stamgäst, med returnChance. Hen kommer en av de
+  //      returnWithinServiceDays närmaste servicedagarna, någon gång före regularLatestShare av kvällen,
+  //      och köper lika mycket som efter samtalet.
+  returnChance: 0.5,
+  returnWithinServiceDays: 3,
+  regularLatestShare: 0.8,
+  //   3. Ryktet stiger, i ryktets poäng (REPUTATION.scale). En klarad situation ger 1. 0,25 → 0,1 efter
+  //      harness: med 0,25 steg ryktet 10 poäng mer i veckan för den som kan än för den som inte klickar
+  //      (reports/order319b/nyfikna.json reputationChangePerWeek), lika mycket som tio klarade situationer.
+  reputationRight: 0.1,
   // Repliken från luckan (HATCH_LINE): fyra varianter i tur och ordning, så här länge.
   hatchLineSeconds: 3.6,
-  hatchLines: 4
+  hatchLines: 4,
+  // ORDER 319b del 2 — de nyfiknas egna frågor (sim/curiousBank.ts, NYFIKNA_FRAGOR_319.md): fyra svar
+  // som blandas varje gång. Frågan följer vad gästen gör: en del kommer med barn (childShare), en del
+  // ser på priset när de läser skylten (priceShare).
+  answersPerQuestion: 4,
+  childShare: 0.2,
+  priceShare: 0.3
 } as const;
 
 // ORDER 319b (Designs D9-tillägg guestBodyLanguage.ts) — kroppsspråket i kön vid vagnen: en blick på

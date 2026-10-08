@@ -28,12 +28,18 @@
           "bubble": true,
           "hoverState": "hover",
           "card": {
-            "incidentId": "ft01-rusningen",
-            "step": 0,
-            "question": 7,
-            "moment": "sign"
+            "questionId": "n18",
+            "moment": "child",
+            "order": [
+              "b",
+              "c",
+              "d",
+              "a"
+            ]
           },
+          "sender": "“Är senapen stark för en femåring?”",
           "hatchLine": true,
+          "hatchSender": "Nils, medhjälpare",
           "outcome": "join",
           "grade": "right"
         },
@@ -43,12 +49,18 @@
           "bubble": true,
           "hoverState": "hover",
           "card": {
-            "incidentId": "ft03-rullen",
-            "step": 2,
-            "question": 12,
-            "moment": "sign"
+            "questionId": "n04",
+            "moment": "sign",
+            "order": [
+              "a",
+              "b",
+              "c",
+              "d"
+            ]
           },
+          "sender": "“Har ni något utan kött?”",
           "hatchLine": false,
+          "hatchSender": null,
           "outcome": "walkOn",
           "grade": "wrong"
         },
@@ -67,18 +79,19 @@
         "wrong": 1,
         "unanswered": 1,
         "joined": 1,
-        "friends": 1,
-        "queueFull": 0
+        "friends": 0,
+        "queueFull": 0,
+        "regulars": 0
       },
-      "frames": 6591,
-      "seen": 29,
+      "frames": 8409,
+      "seen": 26,
       "spawnInView": [],
       "despawnInView": [],
       "spawnNear": [],
       "despawnNear": [],
-      "minGapM": 0.43062556932751556,
-      "maxFigures": 23,
-      "curiousFigures": 2,
+      "minGapM": 0.4449945164201374,
+      "maxFigures": 16,
+      "curiousFigures": 3,
       "stop": true,
       "done": true
     },
@@ -100,12 +113,18 @@
           "bubble": true,
           "hoverState": "hover",
           "card": {
-            "incidentId": "ft01-rusningen",
-            "step": 0,
-            "question": 7,
-            "moment": "sign"
+            "questionId": "n18",
+            "moment": "child",
+            "order": [
+              "b",
+              "c",
+              "d",
+              "a"
+            ]
           },
+          "sender": "“Är senapen stark för en femåring?”",
           "hatchLine": true,
+          "hatchSender": "Nils, medhjälpare",
           "outcome": "join",
           "grade": "right"
         }
@@ -119,16 +138,17 @@
         "unanswered": 0,
         "joined": 1,
         "friends": 1,
-        "queueFull": 0
+        "queueFull": 0,
+        "regulars": 0
       },
-      "frames": 1320,
+      "frames": 1323,
       "seen": 4,
       "spawnInView": [],
       "despawnInView": [],
       "spawnNear": [],
       "despawnNear": [],
-      "minGapM": 0.4745664081996911,
-      "maxFigures": 9,
+      "minGapM": 0.4750302431467168,
+      "maxFigures": 10,
       "curiousFigures": 0,
       "stop": true,
       "done": true

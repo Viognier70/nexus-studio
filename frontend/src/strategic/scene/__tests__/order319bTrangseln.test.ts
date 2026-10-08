@@ -20,7 +20,7 @@ import { reducer } from '../../simulation/reducer';
 import { makeNewGameState } from '../../simulation/model';
 import { firstDayOfWeek } from '../../../sim/calendar';
 import { curiousOf, curiousTalkable } from '../../../sim/curious';
-import { incidentBankFor } from '../../../sim/incidentBank';
+import { curiousQuestion } from '../../../sim/curiousBank';
 import { playerTruckPlacement } from '../../content/villagePlaces';
 import { applyCameraState } from '../../camera/CameraController';
 import { truckCameraState } from '../village/truckCamera';
@@ -66,7 +66,7 @@ function truckEvening(seed: number): Reading {
     const c = curiousOf(s).current;
     if (c && curiousTalkable(s) && c.real >= 3) s = reducer(s, { type: 'CURIOUS_OPEN' });
     const card = curiousOf(s).current?.card;
-    if (card) s = reducer(s, { type: 'CURIOUS_ANSWER', optionId: incidentBankFor('foodtruck').find((x) => x.id === card.incidentId)!.steps[card.step].options.find((o) => o.quality === 'best')!.id });
+    if (card) s = reducer(s, { type: 'CURIOUS_ANSWER', optionId: curiousQuestion(card.questionId)!.options.find((o) => o.quality === 'right')!.id });
     const cq = s.day.curious;
     flow.update(s.guests, s.waitingIds, TICK_S, cq ? { current: cq.current, last: cq.last } : null);
     const raw = [...flow.walkers.values()].map((w) => [w.x, w.z] as [number, number]);
