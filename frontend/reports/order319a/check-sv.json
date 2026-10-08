@@ -14,23 +14,24 @@
         "check-sv-1440x900-2.png",
         "check-sv-1440x900-3.png"
       ],
-      "frames": 7201,
-      "seen": 35,
+      "frames": 7194,
+      "seen": 37,
       "spawnInView": [],
       "despawnInView": [],
       "spawnNear": [],
       "despawnNear": [],
       "cues": [],
-      "maxFigures": 24,
+      "maxFigures": 26,
       "before": [
-        "gst-1",
-        "gst-2",
-        "gst-3",
-        "gst-4",
-        "gst-5",
-        "gst-6",
-        "gst-7",
-        "gst-8"
+        "91857cac-79fb-4c4a-afd8-c95f4b883e58",
+        "0c2d50ca-6cc3-4650-b929-24fff18600f6",
+        "f43d856d-777c-4109-92d2-1db67f8028e9",
+        "63c5b823-cd06-4366-b7dc-88b07fd8a4d0",
+        "cb2a1313-fae0-4272-adbd-ebb8067b0ac3",
+        "4e2bb0fd-17d3-42e2-9316-697ca8a59f0e",
+        "9b2dcebc-2704-4956-b860-180a8787d97f",
+        "ef6dc57d-d323-4ef8-b0e8-8a720519ff63",
+        "2f4f5683-0cfa-4c07-be10-1efce6c2befc"
       ],
       "done": true
     },
@@ -43,19 +44,22 @@
         "check-sv-1280x720-2.png",
         "check-sv-1280x720-3.png"
       ],
-      "frames": 7201,
-      "seen": 16,
+      "frames": 7200,
+      "seen": 18,
       "spawnInView": [],
       "despawnInView": [],
       "spawnNear": [],
       "despawnNear": [],
       "cues": [],
-      "maxFigures": 9,
+      "maxFigures": 12,
       "before": [
-        "gst-1",
-        "gst-2",
-        "gst-3",
-        "gst-4"
+        "58a4b90f-aef2-434e-913c-b6324305d44c",
+        "fcfa3621-21a7-4cf0-8500-2a31062709b2",
+        "6f0fb2d8-ab59-4207-84ab-9f66995a39b5",
+        "76db55d8-7e08-4bef-b46e-b05ba472902b",
+        "6c50ad9a-fed8-4f15-8a4f-8194c2fd8cff",
+        "c6d91060-41cd-4cfe-9a55-9dbdd668961d",
+        "f66def18-8c1a-487b-a6ac-b45d04295f24"
       ],
       "done": true
     }

@@ -405,6 +405,8 @@ export interface Guest {
   // ORDER 279 — "rätt svar ger högre dricks": extra andel av notan i
   // dricks, från raketer som gällde gästens bord.
   tipBonus?: number;
+  // ORDER 319b — gästen ställde sig i kön efter ett samtal med en nyfiken (eller är vännen).
+  fromCurious?: boolean;
   // ORDER 290 — rätt och fel svar vid bordet: notan gånger 1 + billBonus.
   billBonus?: number;
   // ORDER 296 — hovmästarens vinbeslut: flaskan (sommeliern) eller husets vin (Per).
@@ -980,6 +982,9 @@ export interface DayState {
   seatHint?: { key: string; seats: readonly number[] } | null;
   // ORDER 296 — hovmästarens nålar och den flyttade personalen (sim/hostPins.ts).
   pins?: import('../sim/hostPins').PinsState;
+  // ORDER 319b — de nyfikna vid foodtruckens lucka (sim/curious.ts), och notorna från dem i kväll.
+  curious?: import('../sim/curious').CuriousState;
+  curiousRevenueSek?: number;
   helpZone?: { zone: 'bar' | 'floor' | 'lounge'; until: number } | null;
   // ORDER 296 — gästen med socialt kapital som gick missnöjd till en rival.
   socialWalkout?: { rivalId: string; at: number; nameIndex: number } | null;
@@ -1533,6 +1538,8 @@ export interface SimulationState {
   // ORDER 305b — portfolion: varje val i kvitt eller dubbelt (gick vidare
   // och hade rätt eller fel, stannade med rätt), hela säsongen (sim/incidents.ts).
   kvittLog?: import('../sim/incidents').KvittEntry[];
+  // ORDER 319b — portfolion: varje svar till en nyfiken gäst vid foodtruckens lucka, hela säsongen.
+  curiousLog?: import('../sim/curious').CuriousEntry[];
   // ORDER 105 — spårnedbrytning per axel. Läses av readSpar(); används
   // av R4 för att skilja verksamheter med identisk axel-profil (vinbar
   // vs restaurang) utan att växa vektorn ovan. Invariant: för varje axis,
@@ -1958,6 +1965,9 @@ export type SimAction =
   | { type: 'SHOP_SLOT'; id: string; on: boolean }
   // ORDER 296 — hovmästaren: svaret på en nål, och handgreppen.
   | { type: 'HOST_PIN_ANSWER'; id: string; answer: 0 | 1 }
+  // ORDER 319b — de nyfikna vid foodtruckens lucka (sim/curious.ts): klicket öppnar kortet, svaret avgör.
+  | { type: 'CURIOUS_OPEN'; cold?: boolean }
+  | { type: 'CURIOUS_ANSWER'; optionId: string }
   | { type: 'HOST_SEAT'; key: string; seats?: readonly number[] }
   | { type: 'HOST_COMP'; key: string; what: 'glass' | 'coffee' }
   | { type: 'HOST_UPSELL'; key: string; what: 'dessert' | 'wine' }

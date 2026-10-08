@@ -1,0 +1,2253 @@
+{
+  "definition": "Foodtruckens kvällar vecka 1 (startInFoodtruck, ladder never, situationerna rätt), samma frön för alla tre spelartyperna. kan: klickar efter 3 s och svarar rätt; gissar: klickar efter 3 s och väljer på måfå; klickar inte: låter dem gå. curiousPerEveningSek = day.curiousRevenueSek (notorna från gästerna som kom via en nyfiken); revenuePerEveningSek = serviceRevenueToday.dinner medan servicen pågår (en kollaps nollar den); collapsedEvenings = kvällar som föll ihop (day.serviceCollapsed); situationsPerEveningSek = summan av incidents.log deltas.cashSek; otherGuestsPerEveningSek = resten.",
+  "pairedNetDefinition": "Kvällens intäkt minus samma kväll (frö och dag) för den som inte klickar, bara kvällar där ingen av de två föll ihop. curiousPerEveningSek: notorna från gästerna via de nyfikna samma kvällar; skillnaden mot nettot är gästerna som de nyfikna tog platsen för i kön.",
+  "seeds": 6,
+  "reactionSeconds": 3,
+  "summary": {
+    "kan": {
+      "evenings": 36,
+      "revenuePerEveningSek": 5824,
+      "curiousPerEveningSek": 705,
+      "curiousShare": 0.121,
+      "otherGuestsPerEveningSek": 5119,
+      "situationsPerEveningSek": 0,
+      "billsPerEvening": 61.39,
+      "collapsedEvenings": 5,
+      "perEvening": {
+        "passersBy": 9.39,
+        "talked": 9.25,
+        "right": 9.25,
+        "ok": 0,
+        "wrong": 0,
+        "unanswered": 0,
+        "joined": 7.28,
+        "friends": 1.89,
+        "queueFull": 1.97
+      }
+    },
+    "gissar": {
+      "evenings": 36,
+      "revenuePerEveningSek": 5776,
+      "curiousPerEveningSek": 212,
+      "curiousShare": 0.037,
+      "otherGuestsPerEveningSek": 5564,
+      "situationsPerEveningSek": 0,
+      "billsPerEvening": 60.03,
+      "collapsedEvenings": 4,
+      "perEvening": {
+        "passersBy": 9.08,
+        "talked": 8.97,
+        "right": 2.31,
+        "ok": 1.33,
+        "wrong": 5.33,
+        "unanswered": 0,
+        "joined": 2.08,
+        "friends": 0.58,
+        "queueFull": 0.81
+      }
+    },
+    "klickar inte": {
+      "evenings": 36,
+      "revenuePerEveningSek": 5752,
+      "curiousPerEveningSek": 0,
+      "curiousShare": 0,
+      "otherGuestsPerEveningSek": 5752,
+      "situationsPerEveningSek": 0,
+      "billsPerEvening": 59.19,
+      "collapsedEvenings": 3,
+      "perEvening": {
+        "passersBy": 5.92,
+        "talked": 0,
+        "right": 0,
+        "ok": 0,
+        "wrong": 0,
+        "unanswered": 5.83,
+        "joined": 0,
+        "friends": 0,
+        "queueFull": 0
+      }
+    }
+  },
+  "pairedNet": {
+    "kan": {
+      "evenings": 31,
+      "netGainPerEveningSek": 250,
+      "curiousPerEveningSek": 712,
+      "extraBillsPerEvening": 2.42
+    },
+    "gissar": {
+      "evenings": 32,
+      "netGainPerEveningSek": 107,
+      "curiousPerEveningSek": 216,
+      "extraBillsPerEvening": 0.94
+    }
+  },
+  "evenings": {
+    "kan": [
+      {
+        "seed": 1,
+        "day": 1,
+        "revenueSek": 7124,
+        "bills": 65,
+        "collapsed": false,
+        "curiousSek": 1076,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 10,
+          "friends": 4,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 1,
+        "day": 2,
+        "revenueSek": 7237,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 831,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 9,
+          "friends": 3,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 1,
+        "day": 3,
+        "revenueSek": 7490,
+        "bills": 68,
+        "collapsed": false,
+        "curiousSek": 1045,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 9,
+          "friends": 3,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 1,
+        "day": 4,
+        "revenueSek": 7432,
+        "bills": 68,
+        "collapsed": false,
+        "curiousSek": 1008,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 9,
+          "friends": 3,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 1,
+        "day": 5,
+        "revenueSek": 6941,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 329,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 5,
+          "friends": 2,
+          "queueFull": 5
+        }
+      },
+      {
+        "seed": 1,
+        "day": 6,
+        "revenueSek": 4854,
+        "bills": 48,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 3,
+          "friends": 2,
+          "queueFull": 7
+        }
+      },
+      {
+        "seed": 2,
+        "day": 1,
+        "revenueSek": 5631,
+        "bills": 57,
+        "collapsed": false,
+        "curiousSek": 861,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 9,
+          "friends": 0,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 2,
+        "day": 2,
+        "revenueSek": 5538,
+        "bills": 57,
+        "collapsed": false,
+        "curiousSek": 809,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 9,
+          "friends": 0,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 2,
+        "day": 3,
+        "revenueSek": 5602,
+        "bills": 58,
+        "collapsed": false,
+        "curiousSek": 893,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 9,
+          "friends": 0,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 2,
+        "day": 4,
+        "revenueSek": 6621,
+        "bills": 68,
+        "collapsed": false,
+        "curiousSek": 931,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 8,
+          "friends": 0,
+          "queueFull": 2
+        }
+      },
+      {
+        "seed": 2,
+        "day": 5,
+        "revenueSek": 6174,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 315,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 5,
+          "friends": 0,
+          "queueFull": 5
+        }
+      },
+      {
+        "seed": 2,
+        "day": 6,
+        "revenueSek": 4458,
+        "bills": 48,
+        "collapsed": false,
+        "curiousSek": 263,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 6,
+          "friends": 0,
+          "queueFull": 4
+        }
+      },
+      {
+        "seed": 3,
+        "day": 1,
+        "revenueSek": 7308,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 1097,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 9,
+          "friends": 2,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 3,
+        "day": 2,
+        "revenueSek": 4844,
+        "bills": 67,
+        "collapsed": true,
+        "curiousSek": 852,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 8,
+          "talked": 7,
+          "right": 7,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 7,
+          "friends": 2,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 3,
+        "day": 3,
+        "revenueSek": 4786,
+        "bills": 67,
+        "collapsed": true,
+        "curiousSek": 810,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 8,
+          "talked": 7,
+          "right": 7,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 7,
+          "friends": 2,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 3,
+        "day": 4,
+        "revenueSek": 4854,
+        "bills": 67,
+        "collapsed": true,
+        "curiousSek": 622,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 8,
+          "talked": 7,
+          "right": 7,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 6,
+          "friends": 2,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 3,
+        "day": 5,
+        "revenueSek": 4763,
+        "bills": 65,
+        "collapsed": true,
+        "curiousSek": 481,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 8,
+          "talked": 7,
+          "right": 7,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 6,
+          "friends": 0,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 3,
+        "day": 6,
+        "revenueSek": 3333,
+        "bills": 64,
+        "collapsed": true,
+        "curiousSek": 517,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 8,
+          "talked": 7,
+          "right": 7,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 4,
+          "friends": 1,
+          "queueFull": 3
+        }
+      },
+      {
+        "seed": 4,
+        "day": 1,
+        "revenueSek": 6529,
+        "bills": 69,
+        "collapsed": false,
+        "curiousSek": 933,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 9,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 8,
+          "friends": 5,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 4,
+        "day": 2,
+        "revenueSek": 6356,
+        "bills": 68,
+        "collapsed": false,
+        "curiousSek": 964,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 9,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 9,
+          "friends": 3,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 4,
+        "day": 3,
+        "revenueSek": 6314,
+        "bills": 68,
+        "collapsed": false,
+        "curiousSek": 680,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 9,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 7,
+          "friends": 2,
+          "queueFull": 2
+        }
+      },
+      {
+        "seed": 4,
+        "day": 4,
+        "revenueSek": 6303,
+        "bills": 68,
+        "collapsed": false,
+        "curiousSek": 786,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 9,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 7,
+          "friends": 3,
+          "queueFull": 2
+        }
+      },
+      {
+        "seed": 4,
+        "day": 5,
+        "revenueSek": 5956,
+        "bills": 65,
+        "collapsed": false,
+        "curiousSek": 338,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 9,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 5,
+          "friends": 2,
+          "queueFull": 4
+        }
+      },
+      {
+        "seed": 4,
+        "day": 6,
+        "revenueSek": 4484,
+        "bills": 48,
+        "collapsed": false,
+        "curiousSek": 266,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 9,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 5,
+          "friends": 1,
+          "queueFull": 4
+        }
+      },
+      {
+        "seed": 5,
+        "day": 1,
+        "revenueSek": 7093,
+        "bills": 65,
+        "collapsed": false,
+        "curiousSek": 1322,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 9,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 9,
+          "friends": 4,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 5,
+        "day": 2,
+        "revenueSek": 5374,
+        "bills": 49,
+        "collapsed": false,
+        "curiousSek": 763,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 9,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 8,
+          "friends": 3,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 5,
+        "day": 3,
+        "revenueSek": 5368,
+        "bills": 49,
+        "collapsed": false,
+        "curiousSek": 763,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 9,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 7,
+          "friends": 2,
+          "queueFull": 2
+        }
+      },
+      {
+        "seed": 5,
+        "day": 4,
+        "revenueSek": 5368,
+        "bills": 49,
+        "collapsed": false,
+        "curiousSek": 742,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 9,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 8,
+          "friends": 2,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 5,
+        "day": 5,
+        "revenueSek": 6676,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 481,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 9,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 6,
+          "friends": 1,
+          "queueFull": 3
+        }
+      },
+      {
+        "seed": 5,
+        "day": 6,
+        "revenueSek": 4824,
+        "bills": 48,
+        "collapsed": false,
+        "curiousSek": 376,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 9,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 7,
+          "friends": 1,
+          "queueFull": 2
+        }
+      },
+      {
+        "seed": 6,
+        "day": 1,
+        "revenueSek": 4830,
+        "bills": 52,
+        "collapsed": false,
+        "curiousSek": 884,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 10,
+          "friends": 3,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 6,
+        "day": 2,
+        "revenueSek": 6232,
+        "bills": 67,
+        "collapsed": false,
+        "curiousSek": 1004,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 10,
+          "friends": 3,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 6,
+        "day": 3,
+        "revenueSek": 6198,
+        "bills": 67,
+        "collapsed": false,
+        "curiousSek": 706,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 8,
+          "friends": 2,
+          "queueFull": 2
+        }
+      },
+      {
+        "seed": 6,
+        "day": 4,
+        "revenueSek": 6243,
+        "bills": 67,
+        "collapsed": false,
+        "curiousSek": 706,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 8,
+          "friends": 2,
+          "queueFull": 2
+        }
+      },
+      {
+        "seed": 6,
+        "day": 5,
+        "revenueSek": 6045,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 338,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 4,
+          "friends": 1,
+          "queueFull": 6
+        }
+      },
+      {
+        "seed": 6,
+        "day": 6,
+        "revenueSek": 4486,
+        "bills": 48,
+        "collapsed": false,
+        "curiousSek": 577,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 10,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 0,
+          "joined": 6,
+          "friends": 2,
+          "queueFull": 4
+        }
+      }
+    ],
+    "gissar": [
+      {
+        "seed": 1,
+        "day": 1,
+        "revenueSek": 6963,
+        "bills": 63,
+        "collapsed": false,
+        "curiousSek": 559,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 3,
+          "ok": 0,
+          "wrong": 7,
+          "unanswered": 0,
+          "joined": 3,
+          "friends": 2,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 1,
+        "day": 2,
+        "revenueSek": 7265,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 575,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 2,
+          "ok": 3,
+          "wrong": 4,
+          "unanswered": 0,
+          "joined": 3,
+          "friends": 2,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 1,
+        "day": 3,
+        "revenueSek": 7244,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 350,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 1,
+          "ok": 2,
+          "wrong": 6,
+          "unanswered": 0,
+          "joined": 2,
+          "friends": 1,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 1,
+        "day": 4,
+        "revenueSek": 7260,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 293,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 3,
+          "ok": 2,
+          "wrong": 5,
+          "unanswered": 0,
+          "joined": 3,
+          "friends": 0,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 1,
+        "day": 5,
+        "revenueSek": 6888,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 3,
+          "ok": 1,
+          "wrong": 6,
+          "unanswered": 0,
+          "joined": 1,
+          "friends": 1,
+          "queueFull": 2
+        }
+      },
+      {
+        "seed": 1,
+        "day": 6,
+        "revenueSek": 4854,
+        "bills": 48,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 3,
+          "ok": 0,
+          "wrong": 7,
+          "unanswered": 0,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 3
+        }
+      },
+      {
+        "seed": 2,
+        "day": 1,
+        "revenueSek": 5248,
+        "bills": 53,
+        "collapsed": false,
+        "curiousSek": 282,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 2,
+          "ok": 3,
+          "wrong": 4,
+          "unanswered": 0,
+          "joined": 3,
+          "friends": 0,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 2,
+        "day": 2,
+        "revenueSek": 5135,
+        "bills": 52,
+        "collapsed": false,
+        "curiousSek": 221,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 2,
+          "ok": 0,
+          "wrong": 8,
+          "unanswered": 0,
+          "joined": 2,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 2,
+        "day": 3,
+        "revenueSek": 5418,
+        "bills": 55,
+        "collapsed": false,
+        "curiousSek": 357,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 4,
+          "ok": 1,
+          "wrong": 4,
+          "unanswered": 0,
+          "joined": 4,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 2,
+        "day": 4,
+        "revenueSek": 6071,
+        "bills": 62,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 1,
+          "ok": 1,
+          "wrong": 8,
+          "unanswered": 0,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 2,
+        "day": 5,
+        "revenueSek": 6293,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 94,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 3,
+          "ok": 1,
+          "wrong": 5,
+          "unanswered": 0,
+          "joined": 1,
+          "friends": 0,
+          "queueFull": 2
+        }
+      },
+      {
+        "seed": 2,
+        "day": 6,
+        "revenueSek": 4369,
+        "bills": 48,
+        "collapsed": false,
+        "curiousSek": 94,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 3,
+          "ok": 1,
+          "wrong": 5,
+          "unanswered": 0,
+          "joined": 1,
+          "friends": 0,
+          "queueFull": 2
+        }
+      },
+      {
+        "seed": 3,
+        "day": 1,
+        "revenueSek": 6670,
+        "bills": 61,
+        "collapsed": false,
+        "curiousSek": 105,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 1,
+          "ok": 2,
+          "wrong": 6,
+          "unanswered": 0,
+          "joined": 1,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 3,
+        "day": 2,
+        "revenueSek": 7437,
+        "bills": 68,
+        "collapsed": false,
+        "curiousSek": 376,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 3,
+          "ok": 2,
+          "wrong": 4,
+          "unanswered": 0,
+          "joined": 3,
+          "friends": 1,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 3,
+        "day": 3,
+        "revenueSek": 4964,
+        "bills": 66,
+        "collapsed": true,
+        "curiousSek": 188,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 8,
+          "talked": 7,
+          "right": 3,
+          "ok": 0,
+          "wrong": 4,
+          "unanswered": 0,
+          "joined": 2,
+          "friends": 0,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 3,
+        "day": 4,
+        "revenueSek": 4897,
+        "bills": 65,
+        "collapsed": true,
+        "curiousSek": 209,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 8,
+          "talked": 7,
+          "right": 2,
+          "ok": 1,
+          "wrong": 4,
+          "unanswered": 0,
+          "joined": 2,
+          "friends": 2,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 3,
+        "day": 5,
+        "revenueSek": 4763,
+        "bills": 65,
+        "collapsed": true,
+        "curiousSek": 329,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 8,
+          "talked": 7,
+          "right": 3,
+          "ok": 1,
+          "wrong": 3,
+          "unanswered": 0,
+          "joined": 3,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 3,
+        "day": 6,
+        "revenueSek": 3276,
+        "bills": 64,
+        "collapsed": true,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 8,
+          "talked": 7,
+          "right": 2,
+          "ok": 2,
+          "wrong": 3,
+          "unanswered": 0,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 2
+        }
+      },
+      {
+        "seed": 4,
+        "day": 1,
+        "revenueSek": 6029,
+        "bills": 65,
+        "collapsed": false,
+        "curiousSek": 298,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 2,
+          "ok": 3,
+          "wrong": 4,
+          "unanswered": 0,
+          "joined": 3,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 4,
+        "day": 2,
+        "revenueSek": 6446,
+        "bills": 69,
+        "collapsed": false,
+        "curiousSek": 160,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 3,
+          "ok": 2,
+          "wrong": 4,
+          "unanswered": 0,
+          "joined": 3,
+          "friends": 1,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 4,
+        "day": 3,
+        "revenueSek": 6383,
+        "bills": 68,
+        "collapsed": false,
+        "curiousSek": 298,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 1,
+          "ok": 2,
+          "wrong": 6,
+          "unanswered": 0,
+          "joined": 3,
+          "friends": 1,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 4,
+        "day": 4,
+        "revenueSek": 6454,
+        "bills": 69,
+        "collapsed": false,
+        "curiousSek": 209,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 3,
+          "ok": 0,
+          "wrong": 6,
+          "unanswered": 0,
+          "joined": 3,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 4,
+        "day": 5,
+        "revenueSek": 6045,
+        "bills": 65,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 4,
+          "ok": 0,
+          "wrong": 5,
+          "unanswered": 0,
+          "joined": 1,
+          "friends": 1,
+          "queueFull": 3
+        }
+      },
+      {
+        "seed": 4,
+        "day": 6,
+        "revenueSek": 4377,
+        "bills": 48,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 1,
+          "ok": 2,
+          "wrong": 6,
+          "unanswered": 0,
+          "joined": 1,
+          "friends": 0,
+          "queueFull": 2
+        }
+      },
+      {
+        "seed": 5,
+        "day": 1,
+        "revenueSek": 6555,
+        "bills": 60,
+        "collapsed": false,
+        "curiousSek": 293,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 2,
+          "ok": 0,
+          "wrong": 7,
+          "unanswered": 0,
+          "joined": 2,
+          "friends": 1,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 5,
+        "day": 2,
+        "revenueSek": 5189,
+        "bills": 47,
+        "collapsed": false,
+        "curiousSek": 376,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 2,
+          "ok": 1,
+          "wrong": 6,
+          "unanswered": 0,
+          "joined": 3,
+          "friends": 1,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 5,
+        "day": 3,
+        "revenueSek": 5058,
+        "bills": 46,
+        "collapsed": false,
+        "curiousSek": 387,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 2,
+          "ok": 1,
+          "wrong": 6,
+          "unanswered": 0,
+          "joined": 3,
+          "friends": 2,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 5,
+        "day": 4,
+        "revenueSek": 5209,
+        "bills": 48,
+        "collapsed": false,
+        "curiousSek": 376,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 4,
+          "ok": 0,
+          "wrong": 5,
+          "unanswered": 0,
+          "joined": 4,
+          "friends": 2,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 5,
+        "day": 5,
+        "revenueSek": 6943,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 105,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 3,
+          "ok": 0,
+          "wrong": 6,
+          "unanswered": 0,
+          "joined": 2,
+          "friends": 0,
+          "queueFull": 1
+        }
+      },
+      {
+        "seed": 5,
+        "day": 6,
+        "revenueSek": 4968,
+        "bills": 48,
+        "collapsed": false,
+        "curiousSek": 209,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 1,
+          "ok": 4,
+          "wrong": 4,
+          "unanswered": 0,
+          "joined": 2,
+          "friends": 0,
+          "queueFull": 2
+        }
+      },
+      {
+        "seed": 6,
+        "day": 1,
+        "revenueSek": 5878,
+        "bills": 64,
+        "collapsed": false,
+        "curiousSek": 444,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 3,
+          "ok": 1,
+          "wrong": 5,
+          "unanswered": 0,
+          "joined": 3,
+          "friends": 2,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 6,
+        "day": 2,
+        "revenueSek": 5181,
+        "bills": 56,
+        "collapsed": false,
+        "curiousSek": 249,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 2,
+          "ok": 1,
+          "wrong": 6,
+          "unanswered": 0,
+          "joined": 3,
+          "friends": 1,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 6,
+        "day": 3,
+        "revenueSek": 5814,
+        "bills": 63,
+        "collapsed": false,
+        "curiousSek": 120,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 1,
+          "ok": 2,
+          "wrong": 6,
+          "unanswered": 0,
+          "joined": 2,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 6,
+        "day": 4,
+        "revenueSek": 5975,
+        "bills": 64,
+        "collapsed": false,
+        "curiousSek": 89,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 1,
+          "ok": 2,
+          "wrong": 6,
+          "unanswered": 0,
+          "joined": 2,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 6,
+        "day": 5,
+        "revenueSek": 5950,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 9,
+          "talked": 9,
+          "right": 2,
+          "ok": 4,
+          "wrong": 3,
+          "unanswered": 0,
+          "joined": 1,
+          "friends": 0,
+          "queueFull": 4
+        }
+      },
+      {
+        "seed": 6,
+        "day": 6,
+        "revenueSek": 4466,
+        "bills": 49,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 10,
+          "talked": 10,
+          "right": 2,
+          "ok": 0,
+          "wrong": 8,
+          "unanswered": 0,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 2
+        }
+      }
+    ],
+    "klickar inte": [
+      {
+        "seed": 1,
+        "day": 1,
+        "revenueSek": 6367,
+        "bills": 58,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 1,
+        "day": 2,
+        "revenueSek": 7133,
+        "bills": 65,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 1,
+        "day": 3,
+        "revenueSek": 7176,
+        "bills": 65,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 1,
+        "day": 4,
+        "revenueSek": 6962,
+        "bills": 64,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 1,
+        "day": 5,
+        "revenueSek": 6879,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 1,
+        "day": 6,
+        "revenueSek": 4854,
+        "bills": 48,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 2,
+        "day": 1,
+        "revenueSek": 5003,
+        "bills": 51,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 2,
+        "day": 2,
+        "revenueSek": 5022,
+        "bills": 51,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 2,
+        "day": 3,
+        "revenueSek": 5072,
+        "bills": 52,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 2,
+        "day": 4,
+        "revenueSek": 6071,
+        "bills": 62,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 2,
+        "day": 5,
+        "revenueSek": 6189,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 2,
+        "day": 6,
+        "revenueSek": 4387,
+        "bills": 48,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 3,
+        "day": 1,
+        "revenueSek": 6587,
+        "bills": 60,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 3,
+        "day": 2,
+        "revenueSek": 7268,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 3,
+        "day": 3,
+        "revenueSek": 5047,
+        "bills": 64,
+        "collapsed": true,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 5,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 4,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 3,
+        "day": 4,
+        "revenueSek": 7291,
+        "bills": 67,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 3,
+        "day": 5,
+        "revenueSek": 4827,
+        "bills": 65,
+        "collapsed": true,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 5,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 4,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 3,
+        "day": 6,
+        "revenueSek": 3276,
+        "bills": 64,
+        "collapsed": true,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 5,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 4,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 4,
+        "day": 1,
+        "revenueSek": 5838,
+        "bills": 63,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 4,
+        "day": 2,
+        "revenueSek": 6429,
+        "bills": 69,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 4,
+        "day": 3,
+        "revenueSek": 6423,
+        "bills": 69,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 4,
+        "day": 4,
+        "revenueSek": 6428,
+        "bills": 69,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 4,
+        "day": 5,
+        "revenueSek": 6045,
+        "bills": 65,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 4,
+        "day": 6,
+        "revenueSek": 4377,
+        "bills": 48,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 5,
+        "day": 1,
+        "revenueSek": 6555,
+        "bills": 60,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 5,
+        "day": 2,
+        "revenueSek": 5012,
+        "bills": 46,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 5,
+        "day": 3,
+        "revenueSek": 4985,
+        "bills": 46,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 5,
+        "day": 4,
+        "revenueSek": 5012,
+        "bills": 46,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 5,
+        "day": 5,
+        "revenueSek": 7021,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 5,
+        "day": 6,
+        "revenueSek": 4968,
+        "bills": 48,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 6,
+        "day": 1,
+        "revenueSek": 5576,
+        "bills": 60,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 6,
+        "day": 2,
+        "revenueSek": 4870,
+        "bills": 53,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 6,
+        "day": 3,
+        "revenueSek": 5845,
+        "bills": 63,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 6,
+        "day": 4,
+        "revenueSek": 5851,
+        "bills": 63,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 6,
+        "day": 5,
+        "revenueSek": 5950,
+        "bills": 66,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      },
+      {
+        "seed": 6,
+        "day": 6,
+        "revenueSek": 4466,
+        "bills": 49,
+        "collapsed": false,
+        "curiousSek": 0,
+        "situationsSek": 0,
+        "t": {
+          "passersBy": 6,
+          "talked": 0,
+          "right": 0,
+          "ok": 0,
+          "wrong": 0,
+          "unanswered": 6,
+          "joined": 0,
+          "friends": 0,
+          "queueFull": 0
+        }
+      }
+    ]
+  }
+}

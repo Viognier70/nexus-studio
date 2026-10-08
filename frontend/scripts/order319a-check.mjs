@@ -5,6 +5,8 @@
 //   319a.1 — ingen figur dyker upp eller försvinner inom kamerans bild, och ingen närmare än 40 m
 //            från vagnen;
 //   319a.4 — kort som öppnas: förvarningen (cue) och om gästen som pekar syns.
+// ORDER 319b: figurerna följs per objekt (o.uuid), inte per gästens id, eftersom en nyfiken som ställer
+// sig i kön behåller sin figur men byter id (curious:<n> → gästens id).
 // Kontrollbilder i 1440 × 900 och 1280 × 720.
 // Utdata: reports/order319a/check-<lang>.json och check-<lang>-*.png.
 //
@@ -96,12 +98,12 @@ async function run(width, height) {
           if (!o.visible || !o.userData.guestId) continue;
           const p = o.position;
           const seenNow = inView(p.x, 0.1, p.z) || inView(p.x, 1.7, p.z);
-          now.set(o.userData.guestId, { x: p.x, z: p.z, inView: seenNow, d: Math.hypot(p.x - at.x, p.z - at.z) });
+          now.set(o.uuid, { id: o.userData.guestId, x: p.x, z: p.z, inView: seenNow, d: Math.hypot(p.x - at.x, p.z - at.z) });
         }
         // Figurer som redan fanns när mätningen började räknas inte som nya.
         if (out.frames === 0) for (const id of now.keys()) out.before = [...(out.before ?? []), id];
-        for (const [id, s] of now) if (!last.has(id) && out.frames > 0) { out.seen++; if (s.inView) out.spawnInView.push({ id, ...s }); if (s.d < minM) out.spawnNear.push({ id, ...s }); }
-        for (const [id, s] of last) if (!now.has(id)) { if (s.inView) out.despawnInView.push({ id, ...s }); if (s.d < minM) out.despawnNear.push({ id, ...s }); }
+        for (const [k, s] of now) if (!last.has(k) && out.frames > 0) { out.seen++; if (s.inView) out.spawnInView.push(s); if (s.d < minM) out.spawnNear.push(s); }
+        for (const [k, s] of last) if (!now.has(k)) { if (s.inView) out.despawnInView.push(s); if (s.d < minM) out.despawnNear.push(s); }
         last.clear(); for (const [k, v] of now) last.set(k, v);
         out.maxFigures = Math.max(out.maxFigures, now.size);
         out.frames++;

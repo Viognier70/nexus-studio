@@ -280,6 +280,8 @@ Förebilden är *Two Point Hospital* och *Game Dev Tycoon*: att flytta till stö
 
 *Beslut 2026-10-07 (Vision Owner, foodtruckens frågor):* de 15 frågorna utan ⚖ (med fråga 21) grupperas i fem situationer i ordningen episteme → phronesis → techne, och ⚖-frågorna ligger i egna situationer som är dolda tills de är granskade. Ett ⚖-märke ska aldrig dölja frågor utan ⚖. Fler situationer i foodtrucken kommer från Claude som en egen leverans och läggs in utan ny kod.
 
+*Beslut 2026-10-08 (Vision Owner, de nyfikna och trängseln):* klicket på en nyfiken gäst vid foodtrucken öppnar frågekortet med en fråga ur foodtruckens bank, inte prototypens exempel, och svaret avgör utfallet: rätt ställer sig i kön, nästan tvekar och står kvar, fel går vidare. Ingen gäst eller personal kommer närmare en annan än 0,35 m i någon verksamhet. Vid vagnen väjer man, håller till höger och knuffas isär; i vinbaren och bistron väjer man och knuffas isär. Kortets sekunder, kögränsen för marschallerna och blicken på klockan står i balance.ts.
+
 ## Servicen
 
 Servicen är slumpen, viktad av spelarens förberedelser. Det spelaren gjort på morgonen, och det hon kan, avgör hur ofta saker går rätt. Hon ser konsekvenserna i rummet, inte i siffertavlor.

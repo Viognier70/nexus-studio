@@ -54,7 +54,7 @@ describe('ORDER 319a.1 — gästerna vid vagnen kommer och går utanför bild', 
     let s = startInFoodtruck(2, firstDayOfWeek(1));
     s = { ...s, medals: { ...PLAYERS.baseline } };
     tickUntil(reducer(playMorning(s, plan), { type: 'START_SERVICE' }), (x) => {
-      events.push(...flow.update(x.guests, x.waitingIds, TICK_S));
+      events.push(...flow.update(x.guests, x.waitingIds, TICK_S, x.day.curious ? { current: x.day.curious.current, last: x.day.curious.last } : null));
       ticks++;
       // Hur ofta gästen vid luckan i simuleringen ännu inte är framme i bild.
       for (const g of x.guests) if (g.state === 'ordering') { atHatchTicks++; if (!flow.walkers.get(g.id)?.settled) lagTicks++; }
@@ -74,7 +74,8 @@ describe('ORDER 319a.1 — gästerna vid vagnen kommer och går utanför bild', 
     expect(cueTicks).toBeGreaterThan(0);
     expect(cueSettled).toBe(cueTicks);
     const d = (e: FlowEvent) => Math.hypot(e.x - at.x, e.z - at.z);
-    for (const e of events) {
+    // ORDER 319b — de nyfikna kommer och går på samma sätt; en nyfiken som ställer sig i kön byter bara namn.
+    for (const e of events.filter((x) => x.kind !== 'rename')) {
       expect(d(e)).toBeGreaterThanOrEqual(TRUCK_GUESTS.minSpawnM);
       expect(inView(e.x, e.z)).toBe(false);
     }
@@ -84,11 +85,11 @@ describe('ORDER 319a.1 — gästerna vid vagnen kommer och går utanför bild', 
       const { fileURLToPath } = await import('node:url');
       const dir = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports/order319a');
       mkdirSync(dir, { recursive: true });
-      const ds = events.map(d);
+      const ds = events.filter((e) => e.kind !== 'rename').map(d);
       writeFileSync(resolve(dir, 'gaster.json'), JSON.stringify({
         definition: 'En kväll i foodtrucken (seed 2, startInFoodtruck, rätt svar), harnessens tick = 0,2 s i normal fart, matad till scene/village/truckGuestFlow.ts. inView = krogens kamera (truckCamera.ts via CameraController applyCameraState, 42°) i 16:9 och 4:3, fötter och huvud. lagShare = andelen tick då gästen som beställer i simuleringen ännu inte står vid luckan i bild. cueSettledShare = andelen av tick då gästen pekar (guestAtHatch, 0 < introLeft ≤ askPointMenu) då gästen som pekar är högst NEAR_M (1,5 m, ett steg i kön) från sin plats.',
         ticks, spawns: spawns.length, despawns: despawns.length,
-        minDistanceM: +Math.min(...ds).toFixed(1), inViewEvents: events.filter((e) => inView(e.x, e.z)).length,
+        minDistanceM: +Math.min(...ds).toFixed(1), inViewEvents: events.filter((e) => e.kind !== 'rename' && inView(e.x, e.z)).length,
         lagShare: +(lagTicks / Math.max(1, atHatchTicks)).toFixed(3),
         cueTicks, cueSettledShare: +(cueSettled / Math.max(1, cueTicks)).toFixed(3)
       }, null, 2) + '\n');

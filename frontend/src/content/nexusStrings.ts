@@ -49,6 +49,7 @@ import { D6_STRINGS } from './design/d6Strings';
 import { DIN_VAG_STRINGS } from './design/dinVagStrings';
 // ORDER 316 — fikat efter stängning (dilemmana).
 import { FIKA_TEXT } from './fikaStrings';
+import { LUCKAN_STRINGS } from './luckanStrings';
 
 export type Lang = 'sv' | 'en';
 // ORDER 289 — singular eller plural efter antalet ("1 bottles" skulle vara
@@ -482,7 +483,11 @@ export const STRINGS = {
   ...EVENT_STRINGS,
   ...EVERYDAY_STRINGS,
   ...MOOD_STRINGS,
-  ...VILLAGE_EVENING_STRINGS
+  ...VILLAGE_EVENING_STRINGS,
+  // ORDER 319b — Designs D9 och tillägget (livet vid luckan), inslagna oförändrade.
+  ...LUCKAN_STRINGS,
+  // ORDER 319b — medhjälparen vid foodtruckens lucka (line.sender, Designs exempel "Elin, medhjälpare").
+  'truck.assistant.name': { sv: 'Elin', en: 'Elin' }
 } satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;

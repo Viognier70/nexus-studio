@@ -35,6 +35,8 @@ const ALLOWED = [
   'Intendent Åsa', 'Åsa',
   // ORDER 312b — gatan leveransbilen stannar på (kartans namn, inte spelartext).
   'Prästgatan',
+  // ORDER 319b — Designs D9 meny: tunnbröd är rättens namn också på engelska ("Tunnbröd wrap").
+  'Tunnbröd',
   // ORDER 301 — avhandlingarnas titlar i Kunskapsgrundens källor (egennamn).
   'Sinnesupplevelsens estetik: vinprovaren, i gränslandet mellan konsten och vetenskapen', 'Den arbetande gommen: vinprovarens dubbla grepp, från analys till upplevelse',
   // Kodens interna nycklar (typer och uppräkningar), inte spelartext.
@@ -53,6 +55,8 @@ const NOT_PLAYER_TEXT = [
   // ORDER 290 — Designs strängtabeller (sv och en sida vid sida), inslagna i
   // STRINGS i nexusStrings.ts.
   /^content\/design\/[A-Za-z0-9]+Strings\.ts$/,
+  // ORDER 319b — Designs D9 och tillägget (livet vid luckan), sv och en sida vid sida, inslagna i STRINGS.
+  /^content\/luckanStrings\.ts$/,
   // ORDER 317 — Designs D6 del 2: ordningstalen sv och en sida vid sida, och anteckningar om avsändarna.
   /^strategic\/ui\/d6Ui\.ts$/,
   // ORDER 316 — fikats dilemman (sv och en sida vid sida), inslagna i TABLE.
