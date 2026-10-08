@@ -66,8 +66,8 @@ export const ORDER_RESULT = {
 /** Tiden går ut med färre än fyra kort: personalen tar över (order 314). Inget grepp, inget rött. */
 export const TIMEOUT_TAKEOVER = {
   who: 'den som arbetar den kvällen i situationens roll ({name}, ur personallistan). I bilden Elin, i 306b:s exempel Sara.',
-  slots: 'Spelarens kort ligger kvar. De tomma platserna fylls av {name} med de handgrepp som saknas, i svarets ordning. Hennes platser har E i stället för numret och rollringens kant (ROLE_RING.sommelier #b98ae0).',
+  slots: 'Spelarens kort ligger kvar. De tomma platserna fylls av {name} med de handgrepp som saknas, i svarets ordning. Platserna har initialen i {name} i stället för numret och rollringens kant (ROLE_RING.sommelier #b98ae0).',
   verdict: 'Etiketten "Tiden ute: {name} tar över" på papper #efe1bf med kant 2 px #b98ae0.',
-  scene: 'Elin karafferar rätt i rummet (DECANTER_STATES), och situationen räknas som klarad utan grepp. Vad det ger i krediter avgör order 314.',
+  scene: '{name} karafferar rätt i rummet (DECANTER_STATES), och situationen räknas som klarad utan grepp. Vad det ger i krediter avgör order 314.',
   lockLabelKey: 'timeout.lock'
 };
