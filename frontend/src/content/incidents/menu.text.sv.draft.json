@@ -61,7 +61,7 @@
               "explanation": "Ett friskt och lätt vitt vin passar till lätt mat. Syran lyfter fisk och grönsaker utan att dränka dem."
             },
             "c": {
-              "label": "Viltet, den mäktigaste tallriken vi har",
+              "label": "Viltet, den mäktigaste tallriken vi har på menyn i kväll",
               "explanation": "Hjort vill ha ett vin med mer kropp, till exempel ett rött. Ett lätt vitt vin försvinner bredvid."
             }
           },
@@ -95,7 +95,7 @@
               "explanation": "Riojas röda viner görs främst på Tempranillo, inte Pinot Noir."
             },
             "c": {
-              "label": "Douro, i Portugal",
+              "label": "Douro, i norra Portugal",
               "explanation": "Douro är portvinets hem, med druvor som Touriga Nacional."
             }
           },
@@ -128,7 +128,7 @@
           "question": "Vilken rätt på kvällens meny passar till?",
           "options": {
             "a": {
-              "label": "Ingenting: ett gott rött vin dricks utan mat",
+              "label": "Ingenting: ett gott rött vin dricks bäst helt utan mat",
               "explanation": "Pinot Noir är ett av de mest matvänliga röda vinerna. Att säga nej tappar en försäljning och en bra kombination."
             },
             "b": {
@@ -166,7 +166,7 @@
               "explanation": "Gös är en sötvattensfisk i abborrfamiljen, med fast vitt kött. Hjälmaren, en sjö söder om Grythyttan, är känd för den."
             },
             "b": {
-              "label": "En saltvattensfisk från Nordsjön",
+              "label": "En saltvattensfisk som fiskas i Nordsjön och fryses ombord på båten",
               "explanation": "Gösen lever i sjöar och lugna älvar, och i Östersjöns bräckta vatten, inte i salta Nordsjön."
             },
             "c": {
@@ -186,7 +186,7 @@
               "explanation": "Alldeles för hårt och länge: fisken faller sönder och blir torr och trådig."
             },
             "b": {
-              "label": "Pocherad på morgonen och värmd när den beställs",
+              "label": "Pocherad redan på morgonen och sedan värmd när den beställs",
               "explanation": "Uppvärmd fisk tappar sin konsistens och kan vara en risk för livsmedelssäkerheten om den stått varm."
             },
             "c": {
@@ -207,11 +207,11 @@
               "explanation": "En fiskallergi gäller oftast också sötvattensfisk. Det är inte sant, och det är farligt."
             },
             "b": {
-              "label": "Fråga köket och säg ärligt vad som går och inte går att lova",
+              "label": "Fråga köket och säg ärligt vad som kan lovas",
               "explanation": "Vid allergi kommer ärligheten först. Köket vet om pannor och olja delas. Ett löfte som inte går att hålla är en risk för gästen."
             },
             "c": {
-              "label": "Säg att det går bra utan att fråga",
+              "label": "Säg att det går bra, utan att fråga köket först om fisken",
               "explanation": "Ett okontrollerat löfte om en allergi kan göra en gäst allvarligt sjuk."
             }
           },
@@ -241,7 +241,7 @@
               "explanation": "Kantareller växer vilt i svensk skog, i mossa nära björk och gran. Säsongen går från juli in på hösten, och de odlas inte."
             },
             "b": {
-              "label": "Odlade champinjoner",
+              "label": "Odlade champinjoner från en svampodling i närheten",
               "explanation": "Champinjoner odlas inomhus. Kantareller plockas vilda i skogen."
             },
             "c": {
@@ -261,7 +261,7 @@
               "explanation": "Blötlagda kantareller kokar i sitt eget vatten i stället för att stekas, och smaken blir platt."
             },
             "b": {
-              "label": "Inte alls, skogsjorden ger smak",
+              "label": "Inte alls, skogsjorden som sitter kvar ger svampen mer smak",
               "explanation": "Jord och barr knastrar mellan tänderna. Smaken sitter i svampen, inte i smutsen."
             },
             "c": {
@@ -316,7 +316,7 @@
               "explanation": "Rätten är linser, rotfrukter och örter. Linser är baljväxter och ger bra protein, så tallriken mättar utan kött eller mejeri."
             },
             "b": {
-              "label": "Nej, linser är en mejeriprodukt",
+              "label": "Nej, linser räknas som en mejeriprodukt och innehåller mjölkprotein",
               "explanation": "Linser är baljväxter, frön från en växt. De har inget med mejeri att göra."
             },
             "c": {
@@ -332,7 +332,7 @@
           "question": "Hur kokas linserna?",
           "options": {
             "a": {
-              "label": "Blötlagda över natten och hårdkokta i två timmar",
+              "label": "Blötlagda över natten och sedan hårdkokta i två hela timmar i saltat vatten",
               "explanation": "Då blir linserna mos. Så hanteras vissa torkade bönor, inte linser."
             },
             "b": {
@@ -353,7 +353,7 @@
           "question": "Den veganska gästen vill ha en dessert. Vad föreslår du?",
           "options": {
             "a": {
-              "label": "Säg att det inte finns något och kom med notan",
+              "label": "Säg att det inte finns något veganskt alls och kom med notan direkt",
               "explanation": "Det tappar en försäljning och gästen går och känner sig ovälkommen, när det fanns ett alternativ."
             },
             "b": {
@@ -395,7 +395,7 @@
               "explanation": "Lingon är små, vilda och syrliga. Jordgubbar är en annan växt."
             },
             "c": {
-              "label": "En citrusfrukt från Spanien",
+              "label": "En citrusfrukt som importeras från Spanien under vintern, söt och gul",
               "explanation": "Det är ett nordiskt skogsbär, inte en citrusfrukt."
             }
           },
@@ -411,7 +411,7 @@
               "explanation": "Många fryses, men att de håller sig även råa beror på bensoesyran."
             },
             "b": {
-              "label": "De innehåller mycket socker",
+              "label": "De innehåller så mycket socker att inga bakterier kan växa",
               "explanation": "Lingon är syrliga, med lite socker. Det är syran som håller dem."
             },
             "c": {
@@ -428,11 +428,11 @@
           "question": "Gästen dricker inte alkohol. Vad ska hen ta till maten?",
           "options": {
             "a": {
-              "label": "Ett litet glas vin, det är nästan ingenting",
+              "label": "Ett litet glas vin, det är ju nästan ingenting för en vuxen",
               "explanation": "En gäst som inte dricker alkohol menar ingen alls. Att tjata är respektlöst."
             },
             "b": {
-              "label": "Den alkoholfria lingondrickan: syrlig och frisk, den fungerar som ett vin till maten",
+              "label": "Den alkoholfria lingondrickan: syrlig och frisk, som ett vin till maten",
               "explanation": "Syra är det som får en dryck att fungera till mat. En syrlig, mousserande lingondricka gör ett vins jobb utan alkohol."
             },
             "c": {
@@ -482,7 +482,7 @@
           "question": "Hur tar man fram rotfrukternas sötma?",
           "options": {
             "a": {
-              "label": "Koka dem länge i mycket vatten",
+              "label": "Koka dem länge i mycket vatten tills de är helt mjuka och fina",
               "explanation": "Lång kokning lakar ut smaken i vattnet och ger ingen färg."
             },
             "b": {
@@ -557,7 +557,7 @@
           "question": "Hur öppnar du flaskan vid bordet?",
           "options": {
             "a": {
-              "label": "Öppna den i baren och häll upp åt alla direkt",
+              "label": "Öppna den i baren och häll upp åt hela bordet direkt, så går det fortare",
               "explanation": "Gästen ser aldrig flaskan och smakar inte först. En felaktig flaska hamnar i alla glas."
             },
             "b": {
@@ -565,7 +565,7 @@
               "explanation": "Ett stilla vin öppnas tyst. En smäll hör inte till något på den här listan."
             },
             "c": {
-              "label": "Visa etiketten, skär kapsylen under läppen, dra korken tyst och låt värden smaka först",
+              "label": "Visa etiketten, skär kapsylen under läppen, dra korken tyst, värden smakar först",
               "explanation": "Gästen ser att hen fått det hen beställt, vinet rör inte kapsylen, och värden kontrollerar vinet innan alla får."
             }
           },
@@ -586,7 +586,7 @@
               "explanation": "På vår lista kostar en flaska mindre än fem enstaka glas. För ett bord på fyra är det billigare och ett trevligare ögonblick."
             },
             "c": {
-              "label": "Fyra glas av fyra olika viner, alltid",
+              "label": "Fyra glas av fyra olika viner, alltid, så att alla vid bordet får prova något eget",
               "explanation": "Det kan vara roligt, men bordet frågade efter värde, och det kostar dem mer."
             }
           },
@@ -620,7 +620,7 @@
               "explanation": "Inte kvällens öl. Att ta fel på ursprunget undergräver den lokala berättelsen."
             },
             "c": {
-              "label": "Bryggt i vårt eget kök",
+              "label": "Bryggt i vårt eget kök, i små satser varje vecka under säsongen",
               "explanation": "Vinbaren brygger inte. Ölkrogen har eget bryggeri; vi köper från Nora."
             }
           },
@@ -636,7 +636,7 @@
               "explanation": "Glaset fylls med skum, ölet blir flatt och gästen får vänta."
             },
             "b": {
-              "label": "I ett varmt glas direkt ur diskmaskinen",
+              "label": "I ett varmt glas direkt ur diskmaskinen, så att ölet inte blir för kallt",
               "explanation": "Ett varmt glas får ölet att skumma över och bli ljummet."
             },
             "c": {
@@ -661,7 +661,7 @@
               "explanation": "Fläsk med rostade rotfrukter passar maltet i en öl lika bra som ett friskt vin. Ge gästen ett riktigt val."
             },
             "c": {
-              "label": "Öl passar aldrig till mat på en vinbar",
+              "label": "Öl passar aldrig till mat på en vinbar, det är vinet gästerna har kommit för",
               "explanation": "Öl är en utmärkt måltidsdryck, och den står på listan av en anledning."
             }
           },

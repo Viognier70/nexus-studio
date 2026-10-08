@@ -59,7 +59,10 @@
      "options": {
       "a": {
        "label": "På högsta värme, så går det fort och kön blir kortare.",
-       "explanation": "Hög värme spräcker korvarna innan de är varma inuti, och kön får vänta på nya."
+       "explanation": "Hög värme spräcker korvarna innan de är varma inuti, och kön får vänta på nya.",
+       "fail": {
+        "outcome": "Korvarna spricker i rusningen, och kön blir otålig."
+       }
       },
       "b": {
        "label": "Medelvärme och vänd ofta, så att de inte spricker.",
@@ -71,7 +74,10 @@
       },
       "d": {
        "label": "Bara på ena sidan, så att de behåller saften.",
-       "explanation": "Då blir korven bränd på en sida och kall på den andra."
+       "explanation": "Då blir korven bränd på en sida och kall på den andra.",
+       "fail": {
+        "outcome": "Korvarna spricker i rusningen, och kön blir otålig."
+       }
       }
      },
      "fail": {
@@ -151,11 +157,17 @@
       },
       "c": {
        "label": "En söt fruktsoda som svalkar efter den starka korven.",
-       "explanation": "Sötman krockar med kryddorna och gör korven tyngre."
+       "explanation": "Sötman krockar med kryddorna och gör korven tyngre.",
+       "fail": {
+        "outcome": "Gästen får en dryck som inte passar och köper ingen till."
+       }
       },
       "d": {
        "label": "Ett glas kall mjölk, som dämpar hettan i kryddorna.",
-       "explanation": "Mjölk dämpar hettan men gör inget för sältan och fettet."
+       "explanation": "Mjölk dämpar hettan men gör inget för sältan och fettet.",
+       "fail": {
+        "outcome": "Gästen får en dryck som inte passar och köper ingen till."
+       }
       }
      },
      "fail": {
@@ -227,7 +239,10 @@
      "options": {
       "a": {
        "label": "Mycket räksallad överst, så att rullen blir saftig hela vägen.",
-       "explanation": "Räksalladen överst gör rullen blöt och den faller isär."
+       "explanation": "Räksalladen överst gör rullen blöt och den faller isär.",
+       "fail": {
+        "outcome": "Rullen rinner ut, och gästen vill ha en ny."
+       }
       },
       "b": {
        "label": "Moset som bädd, sedan korven, räksalladen och löken, och rulla hårt.",
@@ -235,7 +250,10 @@
       },
       "c": {
        "label": "Rullar löst, så att gästen kan öppna den och se vad som finns i.",
-       "explanation": "En lös rulle öppnar sig av sig själv när gästen äter."
+       "explanation": "En lös rulle öppnar sig av sig själv när gästen äter.",
+       "fail": {
+        "outcome": "Rullen rinner ut, och gästen vill ha en ny."
+       }
       },
       "d": {
        "label": "Delar den i två, så att den blir lättare att hålla.",
@@ -311,7 +329,10 @@
      "options": {
       "a": {
        "label": "Alla du har, så att ingenting saknas när den stora kön kommer.",
-       "explanation": "Det som inte säljs i tid blir stående för länge."
+       "explanation": "Det som inte säljs i tid blir stående för länge.",
+       "fail": {
+        "outcome": "Korvarna blir liggande för länge inför rusningen."
+       }
       },
       "b": {
        "label": "Så många som kön tar närmaste halvtimmen, påfyllt i jämn takt.",
@@ -323,7 +344,10 @@
       },
       "d": {
        "label": "Inga, allt grillas först när gästen har beställt.",
-       "explanation": "Det blir långa väntetider när kön kommer."
+       "explanation": "Det blir långa väntetider när kön kommer.",
+       "fail": {
+        "outcome": "Korvarna blir liggande för länge inför rusningen."
+       }
       }
      },
      "fail": {
@@ -395,7 +419,10 @@
      "options": {
       "a": {
        "label": "Torkar händerna på förklädet mellan varje betalning och korv.",
-       "explanation": "Förklädet tar inte bort det som följer med pengarna."
+       "explanation": "Förklädet tar inte bort det som följer med pengarna.",
+       "fail": {
+        "outcome": "Pengar och mat blandas vid luckan."
+       }
       },
       "b": {
        "label": "Använder tång till maten, aldrig samma hand som pengarna, eller byter handskar.",
@@ -407,7 +434,10 @@
       },
       "d": {
        "label": "Låter kunden ta korven själv, med en servett runt.",
-       "explanation": "Då rör fler händer vid maten."
+       "explanation": "Då rör fler händer vid maten.",
+       "fail": {
+        "outcome": "Pengar och mat blandas vid luckan."
+       }
       }
      },
      "fail": {
@@ -479,7 +509,10 @@
      "options": {
       "a": {
        "label": "Fortsätter som vanligt, det är bara en kväll och boxen kyler ju fortfarande lite.",
-       "explanation": "Varor som står för varmt kan bli farliga att äta, också på en kväll."
+       "explanation": "Varor som står för varmt kan bli farliga att äta, också på en kväll.",
+       "fail": {
+        "outcome": "Varorna står för varmt resten av kvällen."
+       }
       },
       "b": {
        "label": "Flyttar varorna till kyla på högst +8 °C, skriver upp och bedömer resten.",
@@ -487,11 +520,17 @@
       },
       "c": {
        "label": "Stänger luckan för kvällen och kastar allt som legat i kylboxen.",
-       "explanation": "Det räddar inte varorna. Kylan måste ordnas först."
+       "explanation": "Det räddar inte varorna. Kylan måste ordnas först.",
+       "fail": {
+        "outcome": "Varorna står för varmt resten av kvällen."
+       }
       },
       "d": {
        "label": "Lägger is ovanpå locket och hoppas att temperaturen går ner igen.",
-       "explanation": "Is på locket kyler knappt det som ligger i boxen."
+       "explanation": "Is på locket kyler knappt det som ligger i boxen.",
+       "fail": {
+        "outcome": "Varorna står för varmt resten av kvällen."
+       }
       }
      },
      "fail": {
@@ -563,7 +602,10 @@
      "options": {
       "a": {
        "label": "Säljer dem så länge de ser bra ut och ingen gäst har klagat på smaken.",
-       "explanation": "Utseendet säger inte om de hållits varma nog."
+       "explanation": "Utseendet säger inte om de hållits varma nog.",
+       "fail": {
+        "outcome": "Korv som stått för länge säljs vidare."
+       }
       },
       "b": {
        "label": "Kontrollerar: minst +60 °C och inte längre än några timmar. Annars kastas de.",
@@ -571,11 +613,17 @@
       },
       "c": {
        "label": "Grillar om dem en gång till, så att de blir heta igen innan de säljs.",
-       "explanation": "Det räddar inte det som stått för svalt för länge."
+       "explanation": "Det räddar inte det som stått för svalt för länge.",
+       "fail": {
+        "outcome": "Korv som stått för länge säljs vidare."
+       }
       },
       "d": {
        "label": "Lägger dem i kylen och säljer dem i morgon som dagens första korvar.",
-       "explanation": "Varmhållen mat ska inte kylas ned och säljas igen."
+       "explanation": "Varmhållen mat ska inte kylas ned och säljas igen.",
+       "fail": {
+        "outcome": "Korv som stått för länge säljs vidare."
+       }
       }
      },
      "fail": {

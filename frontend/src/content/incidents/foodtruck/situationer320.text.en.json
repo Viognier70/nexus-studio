@@ -72,7 +72,10 @@
       },
       "d": {
        "label": "Close the hatch until the rain stops and wait inside the truck.",
-       "explanation": "The queue scatters, and the guests go to someone who is open."
+       "explanation": "The queue scatters, and the guests go to someone who is open.",
+       "fail": {
+        "outcome": "The queue scatters in the rain."
+       }
       }
      },
      "fail": {
@@ -168,7 +171,10 @@
       },
       "d": {
        "label": "Wave the wasp away with a napkin and keep serving as usual.",
-       "explanation": "Waving makes the wasp agitated, and the risk of a sting goes up."
+       "explanation": "Waving makes the wasp agitated, and the risk of a sting goes up.",
+       "fail": {
+        "outcome": "The wasp gets agitated, and the guest backs away."
+       }
       }
      },
      "fail": {
@@ -264,7 +270,10 @@
       },
       "d": {
        "label": "Tell the queue that only cash works today, sorry.",
-       "explanation": "Most people have no cash, and the queue scatters."
+       "explanation": "Most people have no cash, and the queue scatters.",
+       "fail": {
+        "outcome": "The queue scatters."
+       }
       }
      },
      "fail": {
@@ -360,7 +369,10 @@
       },
       "d": {
        "label": "Say nothing to anyone, and keep selling until they run out.",
-       "explanation": "The one at the back has queued for nothing."
+       "explanation": "The one at the back has queued for nothing.",
+       "fail": {
+        "outcome": "The one at the back has queued for nothing."
+       }
       }
      },
      "fail": {
@@ -456,7 +468,10 @@
       },
       "d": {
        "label": "Give the dog a piece of sausage from the grill to keep it calm.",
-       "explanation": "The dog is happy, but it's not good for the dog, and you've touched the animal with the hand that handles the food."
+       "explanation": "The dog is happy, but it's not good for the dog, and you've touched the animal with the hand that handles the food.",
+       "fail": {
+        "outcome": "The hands that touched the dog serve the next guest."
+       }
       }
      },
      "fail": {
@@ -552,7 +567,10 @@
       },
       "d": {
        "label": "Put up a sign saying the grill truck's sausages are worse.",
-       "explanation": "It reflects badly on you too, and the village notices."
+       "explanation": "It reflects badly on you too, and the village notices.",
+       "fail": {
+        "outcome": "The village talks about the sign."
+       }
       }
      },
      "fail": {

@@ -2,6 +2,8 @@
 
 Beslut från Anders 2026-10-07, kör efter 315c. Detta utkast ersätter `UTKAST_RAKETER.md` (306) och bygger på `GRANSKNING_306.md`. Innehållet är skrivet av Claude på Anders uppdrag. Formen bygger på TRIAD-modellen och det dubbla greppet (Crichton-Fock, tidigare Herdenstam).
 
+**Beslut 2026-10-08 (Anders):** texten i spelet gäller före den här filen. Svaren är omskrivna i längd i spelets textfiler (`frontend/src/content/incidents/vinbar.text.*.json`, ORDER 306b.2 och 306b.3), så ordalydelsen här kan skilja sig.
+
 ---
 
 ## Del A. Regler för Code

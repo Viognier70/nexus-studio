@@ -59,7 +59,10 @@
      "options": {
       "a": {
        "label": "On the highest heat, so it goes quickly and the queue moves.",
-       "explanation": "High heat splits the sausages before they are hot inside, and the queue waits for new ones."
+       "explanation": "High heat splits the sausages before they are hot inside, and the queue waits for new ones.",
+       "fail": {
+        "outcome": "The sausages split in the rush, and the queue grows impatient."
+       }
       },
       "b": {
        "label": "Medium heat, turning often, so they don't split.",
@@ -71,7 +74,10 @@
       },
       "d": {
        "label": "On one side only, so they keep their juices.",
-       "explanation": "Then the sausage is burnt on one side and cold on the other."
+       "explanation": "Then the sausage is burnt on one side and cold on the other.",
+       "fail": {
+        "outcome": "The sausages split in the rush, and the queue grows impatient."
+       }
       }
      },
      "fail": {
@@ -151,11 +157,17 @@
       },
       "c": {
        "label": "A sweet fruit soda to cool down after the hot sausage.",
-       "explanation": "The sweetness clashes with the spices and makes the sausage feel heavier."
+       "explanation": "The sweetness clashes with the spices and makes the sausage feel heavier.",
+       "fail": {
+        "outcome": "The guest gets a drink that does not suit and buys no more."
+       }
       },
       "d": {
        "label": "A glass of cold milk to calm the heat of the spices.",
-       "explanation": "Milk calms the heat but does nothing for the salt and the fat."
+       "explanation": "Milk calms the heat but does nothing for the salt and the fat.",
+       "fail": {
+        "outcome": "The guest gets a drink that does not suit and buys no more."
+       }
       }
      },
      "fail": {
@@ -227,7 +239,10 @@
      "options": {
       "a": {
        "label": "Plenty of prawn salad on top, so it's juicy all the way.",
-       "explanation": "Prawn salad on top makes the roll soggy, and it falls apart."
+       "explanation": "Prawn salad on top makes the roll soggy, and it falls apart.",
+       "fail": {
+        "outcome": "The roll spills, and the guest wants a new one."
+       }
       },
       "b": {
        "label": "Mash as a bed, then sausage, prawn salad, onion; rolled tight.",
@@ -235,7 +250,10 @@
       },
       "c": {
        "label": "Rolls it loosely, so the guest can open it and see inside.",
-       "explanation": "A loose roll opens by itself while the guest eats."
+       "explanation": "A loose roll opens by itself while the guest eats.",
+       "fail": {
+        "outcome": "The roll spills, and the guest wants a new one."
+       }
       },
       "d": {
        "label": "Cuts it in two, so it's easier to hold.",
@@ -311,7 +329,10 @@
      "options": {
       "a": {
        "label": "All you have, so nothing is missing when the big queue comes.",
-       "explanation": "What does not sell in time stands too long."
+       "explanation": "What does not sell in time stands too long.",
+       "fail": {
+        "outcome": "The sausages sit too long before the rush."
+       }
       },
       "b": {
        "label": "Enough for the next half hour's queue, topped up evenly.",
@@ -323,7 +344,10 @@
       },
       "d": {
        "label": "None; everything is grilled once the guest has ordered.",
-       "explanation": "The waits get long when the queue arrives."
+       "explanation": "The waits get long when the queue arrives.",
+       "fail": {
+        "outcome": "The sausages sit too long before the rush."
+       }
       }
      },
      "fail": {
@@ -395,7 +419,10 @@
      "options": {
       "a": {
        "label": "Wipe your hands on the apron between each payment and sausage.",
-       "explanation": "The apron does not remove what comes with the money."
+       "explanation": "The apron does not remove what comes with the money.",
+       "fail": {
+        "outcome": "Money and food get mixed at the hatch."
+       }
       },
       "b": {
        "label": "Use tongs for the food, never the hand that takes money, or change gloves.",
@@ -407,7 +434,10 @@
       },
       "d": {
        "label": "Let the customer take the sausage themselves, with a napkin.",
-       "explanation": "Then more hands touch the food."
+       "explanation": "Then more hands touch the food.",
+       "fail": {
+        "outcome": "Money and food get mixed at the hatch."
+       }
       }
      },
      "fail": {
@@ -479,7 +509,10 @@
      "options": {
       "a": {
        "label": "Carry on as usual; it's only one evening and the box still cools a little.",
-       "explanation": "Food kept too warm can become unsafe to eat, even in one evening."
+       "explanation": "Food kept too warm can become unsafe to eat, even in one evening.",
+       "fail": {
+        "outcome": "The goods stay too warm for the rest of the evening."
+       }
       },
       "b": {
        "label": "Move the goods to at most +8 °C, log it and judge the rest.",
@@ -487,11 +520,17 @@
       },
       "c": {
        "label": "Close the hatch for the evening and throw out everything in the box.",
-       "explanation": "That does not save the goods. The cold has to come first."
+       "explanation": "That does not save the goods. The cold has to come first.",
+       "fail": {
+        "outcome": "The goods stay too warm for the rest of the evening."
+       }
       },
       "d": {
        "label": "Put ice on top of the lid and hope the temperature drops again.",
-       "explanation": "Ice on the lid hardly cools what is inside the box."
+       "explanation": "Ice on the lid hardly cools what is inside the box.",
+       "fail": {
+        "outcome": "The goods stay too warm for the rest of the evening."
+       }
       }
      },
      "fail": {
@@ -563,7 +602,10 @@
      "options": {
       "a": {
        "label": "Sell them while they look fine and no guest has complained of the taste.",
-       "explanation": "How they look does not tell you whether they have been kept hot enough."
+       "explanation": "How they look does not tell you whether they have been kept hot enough.",
+       "fail": {
+        "outcome": "Sausage that has stood too long is sold on."
+       }
       },
       "b": {
        "label": "Check: at least +60 °C, no more than a few hours, else bin them.",
@@ -571,11 +613,17 @@
       },
       "c": {
        "label": "Grill them once more, so they're hot again before they are sold.",
-       "explanation": "That does not rescue what has stood too cool for too long."
+       "explanation": "That does not rescue what has stood too cool for too long.",
+       "fail": {
+        "outcome": "Sausage that has stood too long is sold on."
+       }
       },
       "d": {
        "label": "Put them in the fridge and sell them tomorrow as the first of the day.",
-       "explanation": "Food that has been kept hot should not be chilled and sold again."
+       "explanation": "Food that has been kept hot should not be chilled and sold again.",
+       "fail": {
+        "outcome": "Sausage that has stood too long is sold on."
+       }
       }
      },
      "fail": {

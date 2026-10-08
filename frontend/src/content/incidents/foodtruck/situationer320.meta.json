@@ -64,7 +64,7 @@
      ],
      "fail": {
       "effects": {
-       "cash": -0.04,
+       "cash": 0,
        "satisfaction": -0.04,
        "stamina": 0,
        "reputation": -0.5
@@ -94,7 +94,16 @@
       },
       {
        "id": "d",
-       "quality": "wrong"
+       "quality": "wrong",
+       "fail": {
+        "effects": {
+         "cash": -0.07,
+         "satisfaction": -0.05,
+         "stamina": -0.03,
+         "reputation": 0
+        },
+        "target": "room"
+       }
       }
      ],
      "fail": {
@@ -188,7 +197,7 @@
      ],
      "fail": {
       "effects": {
-       "cash": -0.04,
+       "cash": 0,
        "satisfaction": -0.04,
        "stamina": 0,
        "reputation": -0.5
@@ -216,7 +225,16 @@
       },
       {
        "id": "d",
-       "quality": "wrong"
+       "quality": "wrong",
+       "fail": {
+        "effects": {
+         "cash": -0.07,
+         "satisfaction": -0.05,
+         "stamina": -0.03,
+         "reputation": 0
+        },
+        "target": "room"
+       }
       }
      ],
      "fail": {
@@ -310,7 +328,7 @@
      ],
      "fail": {
       "effects": {
-       "cash": -0.04,
+       "cash": 0,
        "satisfaction": -0.04,
        "stamina": 0,
        "reputation": -0.5
@@ -339,7 +357,16 @@
       },
       {
        "id": "d",
-       "quality": "wrong"
+       "quality": "wrong",
+       "fail": {
+        "effects": {
+         "cash": -0.07,
+         "satisfaction": -0.05,
+         "stamina": -0.03,
+         "reputation": 0
+        },
+        "target": "room"
+       }
       }
      ],
      "fail": {
@@ -433,7 +460,7 @@
      ],
      "fail": {
       "effects": {
-       "cash": -0.04,
+       "cash": 0,
        "satisfaction": -0.04,
        "stamina": 0,
        "reputation": -0.5
@@ -461,7 +488,16 @@
       },
       {
        "id": "d",
-       "quality": "wrong"
+       "quality": "wrong",
+       "fail": {
+        "effects": {
+         "cash": -0.07,
+         "satisfaction": -0.05,
+         "stamina": -0.03,
+         "reputation": 0
+        },
+        "target": "room"
+       }
       }
      ],
      "fail": {
@@ -556,7 +592,7 @@
      ],
      "fail": {
       "effects": {
-       "cash": -0.04,
+       "cash": 0,
        "satisfaction": -0.04,
        "stamina": 0,
        "reputation": -0.5
@@ -584,7 +620,16 @@
       },
       {
        "id": "d",
-       "quality": "wrong"
+       "quality": "wrong",
+       "fail": {
+        "effects": {
+         "cash": -0.07,
+         "satisfaction": -0.05,
+         "stamina": -0.03,
+         "reputation": 0
+        },
+        "target": "room"
+       }
       }
      ],
      "fail": {
@@ -681,7 +726,7 @@
      ],
      "fail": {
       "effects": {
-       "cash": -0.04,
+       "cash": 0,
        "satisfaction": -0.04,
        "stamina": 0,
        "reputation": -0.5
@@ -710,7 +755,16 @@
       },
       {
        "id": "d",
-       "quality": "wrong"
+       "quality": "wrong",
+       "fail": {
+        "effects": {
+         "cash": -0.07,
+         "satisfaction": -0.05,
+         "stamina": -0.03,
+         "reputation": 0
+        },
+        "target": "room"
+       }
       }
      ],
      "fail": {

@@ -130,6 +130,8 @@ Kunskap mäts på två sätt. **Medaljer** per paviljong visar vilken nivå spel
 
 *Beslut 2026-10-08 (Anders, gissaren och felen i upplevelsen):* det hela greppet i handlingen ska inte gå att känna igen på att det är det längsta svaret; det är längst i högst hälften av situationerna, och den som alltid väljer det längsta svaret ska inte klara sig bättre än slumpen. Ett fel i upplevelsen påverkar bara stämningen och ryktet; det som felet kostar i kassan ligger på felsvaret i handlingen.
 
+*Beslut 2026-10-08 (Anders, hela banken):* i vinbarens alla situationer, också de i den äldre formen och menyns, är det längsta svaret rätt ungefär så ofta som slumpen ger, och den som alltid väljer det längsta svaret tjänar inte mer än slumpen över en vecka. Steget om upplevelsen tar aldrig något ur kassan eller av orken; den följden ligger på felsvaret i handlingen. Texten i spelet gäller före utkasten.
+
 ### Paviljongerna
 
 | Paviljong | Axel | Spår | Vem ställer frågan |
