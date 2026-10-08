@@ -39,8 +39,10 @@ describe('ORDER 319a.4 — förvarningen före foodtruckens kort', () => {
     expect(opened.length).toBeGreaterThan(0);
     for (const { active, guestState } of opened) {
       expect(active.cue).toBeDefined();
-      if (active.cue === 'delivery') {
-        expect(active.introLeft).toBeGreaterThan(THEATRE.cueSeconds.delivery - TICK);
+      if (active.cue !== 'guestAtHatch') {
+        // ORDER 320 — leveransen och de nya förvarningarna vid vagnen spelas i scenen under cueSeconds.
+        expect(active.introLeft).toBeGreaterThan(THEATRE.cueSeconds[active.cue!] - TICK);
+        expect(active.context.figure ?? null).toBeNull();
       } else {
         expect(active.context.figure?.clip).toBe('askPointMenu');
         expect(active.introLeft).toBeGreaterThan(THEATRE.rocketIntroSeconds.askPointMenu - TICK);

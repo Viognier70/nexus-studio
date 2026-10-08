@@ -86,11 +86,13 @@ describe('ORDER 305 — kvitt eller dubbelt', () => {
     expect(s.day.answerReviews?.filter((r) => !r.right)).toHaveLength(0);
   });
 
-  it('gå vidare och svara fel: hela potten går förlorad', () => {
+  // ORDER 306b A1/A2 — ett fel nollar potten, men situationen fortsätter.
+  it('gå vidare och svara fel: hela potten går förlorad, och situationen fortsätter', () => {
     let s = reducer(answer(open), { type: 'INCIDENT_GO' });
     s = answer(s, 'worst');
-    expect(last(s).quality).toBe('wrong');
-    expect(last(s).pot).toEqual(expect.objectContaining({ taken: false, credits: C }));
+    expect(s.incidents.active?.pot ?? null).toBeNull();
+    expect(s.incidents.active?.choosing).toBe(false);
+    expect(s.kvittLog!.at(-1)).toMatchObject({ choice: 'goWrong' });
     expect(totalCredits(s)).toBeLessThanOrEqual(totalCredits(open));
   });
 

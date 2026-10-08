@@ -31,7 +31,7 @@ import {
 import { valueQuotaSatisfactionDelta } from './valueQuota';
 import { applyMissingMepHit, consumeMepForOneGuest } from './mepConsumption';
 import { spreadDeparture } from '../../sim/guestMood';
-import { finishTruckEating, startTruckEating, truckAssistantAway } from '../../sim/truckLife';
+import { finishTruckEating, startTruckEating, truckAssistantAway, useTruckSausages } from '../../sim/truckLife';
 
 const TICK_SECONDS = 0.2;
 
@@ -607,6 +607,8 @@ export function tickGuests(state: SimulationState) {
       // uteplats: direkt till leaving som förut.
       // ORDER 319c — spelarens vagn: gästen äter vid en ledig plats på uteserveringen, eller tar maten
       // med sig (sim/truckLife.ts).
+      // ORDER 320 — korven ur lådan.
+      useTruckSausages(state, guest);
       if (state.economy?.businessClass === 'foodtruck' && startTruckEating(state, guest)) {
         guest.state = 'eating';
         guest.stateTime = now;

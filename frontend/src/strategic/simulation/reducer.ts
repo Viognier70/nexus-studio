@@ -2291,7 +2291,9 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
         eveningAccount: null,
         // ORDER 264 — ett avslutat besök hör till dagen. ORDER 270 —
         // kvällens lärdom likaså.
-        ...(state.incidents ? { incidents: { ...state.incidents, lesson: null, log: [], lastOutcome: null, turnedTonight: false } } : {}),
+        // ORDER 320 — kvällens situationer sparas som förra kvällens innan loggen töms (sim/incidents.ts
+        // previousEvening: samma situation kommer inte två kvällar i rad om det finns andra).
+        ...(state.incidents ? { incidents: { ...state.incidents, previousEvening: state.incidents.serviceEndsAt !== null ? state.incidents.log.map((r) => r.id) : state.incidents.previousEvening ?? [], serviceEndsAt: null, lesson: null, log: [], lastOutcome: null, turnedTonight: false } } : {}),
         pavilionVisit: state.pavilionVisit?.result ? null : state.pavilionVisit,
         morale: regressed,
         // Per-service tallies reset with the day.

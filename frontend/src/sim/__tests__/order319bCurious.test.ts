@@ -191,7 +191,7 @@ describe('Anders beslut 2026-10-08 om frågorna n04, n08, n15 och n18', () => {
   const quality = (id: string, o: string) => curiousQuestion(id)!.options.find((x) => x.id === o)!.quality;
 
   it('n04: vegokorven står på vagnens meny och skylt, och grillas på en egen del med egen tång', () => {
-    expect(tt('sv', 'menu.veggie')).toContain('Vegokorv');
+    expect(tt('sv', 'menu.veg')).toContain('Vegokorv');
     expect(TABLE.ladder.truckMenu.sv).toContain('vegokorv');
     const truck = makePlayerTrailer();
     for (const name of ['trailerGrillDivider', 'trailerTongsMeat', 'trailerTongsVeggie']) expect(truck.getObjectByName(name)).toBeTruthy();
@@ -208,12 +208,12 @@ describe('Anders beslut 2026-10-08 om frågorna n04, n08, n15 och n18', () => {
     expect(sv('n18').options.a).toBe('Ta den milda senapen, eller ketchup. Den skånska är ganska stark.');
     expect(sv('n18').why).toBe('Skånsk senap är sötstark. Till ett barn passar mild senap eller ketchup bättre.');
     expect(quality('n18', 'a')).toBe('right');
-    expect(tt('sv', 'menu.condiments')).toContain('mild');
+    expect(tt('sv', 'menu.mildMustard')).toContain('Mild');
     expect(TABLE.ladder.truckMenu.sv).toContain('mild');
   });
 
   it('n15: kaffet står på vagnens meny', () => {
-    expect(tt('sv', 'menu.drinks')).toContain('kaffe');
+    expect(tt('sv', 'menu.coffee')).toContain('Kaffe');
     expect(TABLE.ladder.truckMenu.sv).toContain('kaffe');
   });
 });

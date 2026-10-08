@@ -3,9 +3,8 @@
 // spelarens vagn, i vagnens ram (+X längs vagnen mot bakgaveln, +Z ut från luckan, meter).
 // Oförändrade. Kontrollen mot gator, hus och rivalen står i Designs luckanPlats.json.
 //
-// ORDER 319c — resten av D9:s truckProps.ts, oförändrad (TRUCK_PROPS, EAT_SPOTS, EAT_FLOW), utom den milda
-// senapen på hyllan vid luckan (Anders 2026-10-08, n18: "Lägg till mild senap på vagnen"): en tredje flaska
-// framför de två andra (TRUCK_PROPS.condiments.mildMustard).
+// ORDER 319c — resten av D9:s truckProps.ts, oförändrad (TRUCK_PROPS, EAT_SPOTS, EAT_FLOW). Den milda senapen
+// och såsernas platser på hyllan står i D10 (truckPropsD10.ts SHELF_D10, ORDER 320).
 
 export type Vec2 = [number, number];
 
@@ -41,7 +40,7 @@ export const TRUCK_PROPS = {
   heater: { at: [3.55, 2.45] as Vec2, base: { diameter: 0.48 }, hood: { diameter: 0.8, height: 2.2 }, colour: { steel: '#9b968e', base: '#5b5752' }, fuel: 'gasol', onWhen: 'truckWeather.ts cool', light: { radius: 2.5, colour: '#ff8c40', intensity: 0.38 }, ring: [[4.3, 2.5], [2.95, 2.0], [2.85, 2.8], [3.75, 3.17]] as Vec2[] },
   bin: { at: [2.7, 3.2] as Vec2, approach: [2.72, 2.72] as Vec2, approachFacing: '+Z', diameter: 0.42, height: 0.85, flap: { width: 0.24, depth: 0.1, openS: 0.7 }, colour: '#3f3b36', fillShows: 'vita bitar i luckan när den slår upp' },
   napkinHolder: { size: [0.18, 0.1, 0.14], gameScale: 1.5, colour: { steel: '#a9a39a', napkins: '#f7f3ea' }, at: ['standTable.A/B/C mitten', 'shelf.napkins'], windWeight: 'en tyngd över servetterna i blåsten (truckWeather.ts wind)' },
-  condiments: { ketchup: { at: [1.67, 1.28] as Vec2, colour: '#a7432c', cap: '#f2ece0' }, mustard: { at: [1.8, 1.28] as Vec2, colour: '#d8a930', cap: '#2c2a28' }, mildMustard: { at: [1.735, 1.19] as Vec2, colour: '#ead98a', cap: '#2c2a28' }, bottle: { diameter: 0.06, height: 0.2 }, gameScale: 1.5 },
+  condiments: { ketchup: { at: [1.67, 1.28] as Vec2, colour: '#a7432c', cap: '#f2ece0' }, mustard: { at: [1.8, 1.28] as Vec2, colour: '#d8a930', cap: '#2c2a28' }, bottle: { diameter: 0.06, height: 0.2 }, gameScale: 1.5 },
   shelf: { x0: 1.55, x1: 2.2, z0: 1.15, z1: 1.4, height: 1.05, colour: '#c9c3b6', on: 'vagnens sida, öster om luckan, under markisen', napkins: [2.03, 1.28] as Vec2, rainSpots: [[1.72, 1.8], [2.18, 1.8]] as Vec2[] },
   menuBoard: { at: [-2.2, 3.5] as Vec2, facing: '+Z (söder, mot torget)', size: [0.6, 0.95], footprint: [0.64, 0.46], kind: 'gatupratare, griffeltavla i träram', colour: { frame: '#5e4b3a', board: '#2b2a28', chalk: '#ece6d6', mustard: '#e6bb34' },
     content: 'Krita: en rubrik, fem rader och en korv som tecken. Ingen text i modellen. Menyn visas i HUD:en när man pekar på skylten (menu.* i luckanStrings.ts, priserna {price} från balance.ts).', readSpot: [-2.2, 4.15] as Vec2 },
@@ -108,3 +107,6 @@ export function binPath(key: string, spot: Vec2): Vec2[] {
   return [spot, ...back, EAT_SPOTS.toBin, TRUCK_PROPS.bin.approach];
 }
 
+/** ORDER 320 — vattenskålen vid bord B, längst bort från luckan. Designs D10 WATER_BOWL [5,82, 1,62] stod på D9:s
+ *  väg till ätplatsen B-E (0,03 m, order319cPlatsen.test.ts); här står den på bordets norra sida, utanför vägarna. */
+export const WATER_BOWL_AT: Vec2 = [5.85, 0.55];

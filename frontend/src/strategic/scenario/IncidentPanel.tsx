@@ -44,9 +44,10 @@ import { panelOpen, useServiceDrawer } from '../ui/service/serviceDrawer';
 import { useEffect, useRef, useState } from 'react';
 import { strings } from '../../content/strings';
 import { ANSWER_EFFECTS, BACK, DOUBLE_OR_NOTHING, INCIDENTS } from '../../sim/balance';
-import { incidentById, type Incident, type IncidentStep } from '../../sim/incidentBank';
+import { incidentById, optionExplanationHidden, type Incident, type IncidentStep } from '../../sim/incidentBank';
 import {
   formatIncidentText,
+  optionOrder,
   pendingPhase,
   potCredits,
   secondsFor,
@@ -178,6 +179,10 @@ export function IncidentCard() {
     outcomeText: string | null;
     // ORDER 276 — gäster som svaret släppte in.
     guestsIn: number;
+    // ORDER 320 — när situationen öppnades (alternativens ordning), gästens replik och stegen som blev fel.
+    openedAt: number;
+    line: 'a' | 'b' | null;
+    unclear: number[];
   } | null = null;
   if (active && cls) {
     const incident = incidentById(cls, active.id);
@@ -187,14 +192,16 @@ export function IncidentCard() {
         incident,
         context: active.context,
         situation: active.situation,
-        mode: revealing ? 'right' : 'ask',
+        // ORDER 306b A1 — ett fel på vägen visas som fel, och situationen fortsätter.
+        mode: revealing ? (active.revealed!.cleared ? 'right' : 'wrong') : 'ask',
         shown: revealing ? active.revealed!.step : active.step ?? 0,
         chosen: revealing ? active.revealed!.optionId : null,
         correct: revealing ? active.revealed!.correctId : null,
         struck: revealing ? [] : active.struck,
         role: null,
         outcomeText: null,
-        guestsIn: revealing ? active.revealed!.guestsIn ?? 0 : 0
+        guestsIn: revealing ? active.revealed!.guestsIn ?? 0 : 0,
+        openedAt: active.openedAt, line: active.line ?? null, unclear: active.unclear ?? []
       };
     }
   } else if (held && cls) {
@@ -214,13 +221,16 @@ export function IncidentCard() {
         struck: [],
         role: held.outcome.takeover?.role ?? null,
         outcomeText: held.outcome.text,
-        guestsIn: r?.guestsIn ?? 0
+        guestsIn: r?.guestsIn ?? 0,
+        openedAt: held.record.openedAt ?? held.record.at, line: held.record.line ?? null, unclear: held.record.unclear ?? []
       };
     }
   }
 
   const mode = view?.mode ?? null;
   const step = view ? view.incident.steps[view.shown] : undefined;
+  // ORDER 306b A4 / ORDER 320 — alternativen i blandad ordning (situationerna i 306b-formen).
+  const options = view && step ? optionOrder(view.incident, { openedAt: view.openedAt }, view.shown, sim.seed ?? 0) : [];
 
   // ORDER 299 — ett nytt steg börjar överst i kortet (berättelsen, listen och
   // frågan), också om förra stegets band rullade ned kortet.
@@ -253,13 +263,13 @@ export function IncidentCard() {
       }
       e.preventDefault();
       e.stopImmediatePropagation();
-      const o = step.options[i];
+      const o = options[i];
       if (!o || (active?.struck ?? []).includes(o.id)) return;
       dispatch({ type: 'ANSWER_INCIDENT', optionId: o.id });
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
-  }, [mode, step, active?.struck, active?.choosing, active?.pending, dispatch, backed]);
+  }, [mode, step, options, active?.struck, active?.choosing, active?.pending, dispatch, backed]);
 
   if (!view || !step) return null;
   // ORDER 286a — raketen börjar i rummet: kortet öppnas när figurens klipp
@@ -345,12 +355,14 @@ export function IncidentCard() {
   const extra = view.mode === 'ask' && medalSteps(sim.medals, step.pavilion) > 0 && total > INCIDENTS.stepSeconds[step.axis];
   const pavilionName = strings.knowledge.pavilions[step.pavilion];
 
+  // ORDER 306b A1 — felet gällde ett steg på vägen: situationen fortsätter.
+  const continuing = view.mode === 'wrong' && !!active && (active.revealLeft ?? 0) > 0;
   const boxFor = (i: number): StepBox => {
     switch (view!.mode) {
       case 'ask': return i < view!.shown ? 'cleared' : i === view!.shown ? 'current' : 'ahead';
       case 'right': return i <= view!.shown ? 'cleared' : i === view!.shown + 1 ? 'next' : 'ahead';
       case 'done': return 'cleared';
-      case 'wrong': return i < view!.shown ? 'cleared' : i === view!.shown ? 'failed' : 'unreached';
+      case 'wrong': return i < view!.shown ? 'cleared' : i === view!.shown ? 'failed' : continuing && i === view!.shown + 1 ? 'next' : continuing ? 'ahead' : 'unreached';
       case 'stopped': return i <= view!.shown ? 'cleared' : 'unreached';
     }
   };
@@ -381,7 +393,9 @@ export function IncidentCard() {
   if (view.mode === 'right') {
     const next = incident.steps[view.shown + 1];
     const chosenText = view.chosen ? step.text.options[view.chosen] : null;
-    const explanation = chosenText ? (view.situation && chosenText.explanationIn?.[view.situation]) || chosenText.explanation : '';
+    // ORDER 320 — förklaringen som är lagtext (⚖) visas inte förrän situationen är granskad.
+    const hidden = optionExplanationHidden(incident, step.options.find((o) => o.id === view!.chosen));
+    const explanation = hidden ? tt(lang, 'incident.legalPending') : chosenText ? (view.situation && chosenText.explanationIn?.[view.situation]) || chosenText.explanation : '';
     band = { kind: 'right', label: t.right(next ? s.stepName[next.axis] : ''), text: `${view.guestsIn > 0 ? `${t.guestsIn(view.guestsIn)} ` : ''}${f(explanation)}` };
   } else if (view.mode === 'done') {
     band = { kind: 'right', label: t.rightDone, text: `${view.guestsIn > 0 ? `${t.guestsIn(view.guestsIn)} ` : ''}${view.outcomeText ?? ''}` };
@@ -391,7 +405,10 @@ export function IncidentCard() {
     // Designs band (2026-09-28): "Wrong · the {role} takes over" /
     // "Out of time · the {role} takes over"; rollen med sin artikel.
     const role = takeoverWord(incident, step, view.role);
-    band = { kind: 'wrong', label: view.chosen === null ? t.outOfTime(role) : t.wrong(role), text: view.outcomeText ?? '' };
+    const next = incident.steps[view.shown + 1];
+    band = continuing && next
+      ? { kind: 'wrong', label: t.wrongOn(s.stepName[next.axis]), text: f(step.text.fail.outcome) }
+      : { kind: 'wrong', label: view.chosen === null ? t.outOfTime(role) : t.wrong(role), text: view.outcomeText ?? '' };
   }
 
   // ORDER 292 — följden i kassan: svarets händelse vid bordet (rummets reaktion
@@ -492,6 +509,18 @@ export function IncidentCard() {
         })}
       </ol>
 
+      {/* ORDER 306b A5/A6 / ORDER 320 — ledtrådarna från stegen före ("(oklart)" efter ett fel), och gästens
+          replik i steg 2. */}
+      {!choosing && view.mode === 'ask' && view.shown > 0 && incident.steps.slice(0, view.shown).some((st) => st.text.clue) && (
+        <ul className="nx-rocket-clues" data-testid="incident-clues">
+          {incident.steps.slice(0, view.shown).map((st, i) => st.text.clue ? (
+            <li key={i} data-unclear={view!.unclear.includes(i)}>{view!.unclear.includes(i) ? tt(lang, i === 0 ? 'incident.unclear.analysis' : 'incident.unclear.experience') : f(st.text.clue)}</li>
+          ) : null)}
+        </ul>
+      )}
+      {!choosing && view.mode === 'ask' && view.shown === 1 && view.line && incident.text.guestLine && (
+        <p className="nx-rocket-guest-line" data-testid="incident-guest-line" data-line={view.line}>{f(incident.text.guestLine[view.line])}</p>
+      )}
       {!choosing && <div className="nx-rocket-ask">
         <h2 className="nx-rocket-question" data-testid="incident-question">{f(step.text.question)}</h2>
         <div
@@ -518,7 +547,7 @@ export function IncidentCard() {
         </div>
       )}
       {!choosing && <div role="group" aria-label={f(step.text.question)}>
-        {step.options.map((o, i) => {
+        {options.map((o, i) => {
           const look = lookFor(o.id);
           const struck = look === 'struck';
           return (

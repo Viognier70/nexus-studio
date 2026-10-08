@@ -191,37 +191,44 @@ describe('ORDER 270 — en raket', () => {
     expect(s0.incidents.active!.secondsTotal).toBe(INCIDENTS.stepSeconds.episteme);
     const s1 = ans(s0, 'c');
     expect(s1.incidents.active).toMatchObject({ id: 'vb09-getosten', step: 1 });
-    expect(s1.incidents.active!.secondsTotal).toBe(INCIDENTS.stepSeconds.techne + INCIDENTS.extraSecondsPerMedalStep);
+    // ORDER 306b A3 — tiden följer stegets plats: 20, 30 och 30 s.
+    expect(s1.incidents.active!.secondsTotal).toBe(INCIDENTS.stepSecondsByIndex[1] + INCIDENTS.extraSecondsPerMedalStep);
     // ORDER 305b — krediten ligger i potten tills den tas.
     expect(s1.incidents.active!.pot?.credits.episteme).toBe(INCIDENTS.bestAnswerCredit);
     expect(s1.knowledgeCredits.episteme).toBe(s0.knowledgeCredits.episteme);
     const s2 = ans(s1, 'b');
     expect(s2.incidents.active).toMatchObject({ id: 'vb09-getosten', step: 2 });
-    expect(s2.incidents.active!.secondsTotal).toBe(INCIDENTS.stepSeconds.phronesis + INCIDENTS.extraSecondsPerMedalStep);
-    expect(s2.incidents.active!.pot?.credits.techne).toBe(INCIDENTS.bestAnswerCredit);
-    // Hela raketen klarad: bästa utfall, och potten tas (dubblad per steg).
+    expect(s2.incidents.active!.secondsTotal).toBe(INCIDENTS.stepSecondsByIndex[2] + INCIDENTS.extraSecondsPerMedalStep);
+    // ORDER 306b A2 — potten 1 → 3 → 7, stegets tillskott på stegets axel (vinbarens gamla ordning
+    // episteme, techne, phronesis: 1, +2, +4).
+    expect(s2.incidents.active!.pot?.credits.techne).toBe(2);
     const done = ans(s2, 'd');
     expect(done.incidents.active).toBeNull();
-    const g = DOUBLE_OR_NOTHING.growth;
-    expect(done.knowledgeCredits.episteme - s0.knowledgeCredits.episteme).toBe(INCIDENTS.bestAnswerCredit * g * g);
-    expect(done.knowledgeCredits.phronesis - s0.knowledgeCredits.phronesis).toBe(INCIDENTS.bestAnswerCredit);
+    expect(done.knowledgeCredits.episteme - s0.knowledgeCredits.episteme).toBe(1);
+    expect(done.knowledgeCredits.techne - s0.knowledgeCredits.techne).toBe(2);
+    expect(done.knowledgeCredits.phronesis - s0.knowledgeCredits.phronesis).toBe(4);
+    void DOUBLE_OR_NOTHING;
     expect(done.cash).toBeGreaterThan(s2.cash);
     expect(done.incidents.lastOutcome?.text).toBe(incidentById('vinbar', 'vb09-getosten')!.text.success.outcome);
     expect(done.incidents.log.at(-1)).toMatchObject({ id: 'vb09-getosten', step: null, quality: 'best' });
     expect(done.eventStream.at(-1)?.kind).toBe('v1_incident');
   });
 
-  it('fel svar på ett steg: stegets konsekvens, personalen tar över resten, raketen är slut', () => {
+  // ORDER 306b A1 — fel avslutar inte situationen: stegets följd gäller, potten nollas och
+  // nästa steg öppnas med ledtråden "(oklart)". Fel i sista steget avslutar med personalen.
+  it('fel svar i steg 1: stegets följd, potten nollas, och situationen fortsätter till steg 2', () => {
     const s = openNow(wineBarService(), 'vb09-getosten');
     const after = answerAndWait(s, 'a');
-    expect(after.incidents.active).toBeNull();
-    expect(after.incidents.log.at(-1)).toMatchObject({ id: 'vb09-getosten', step: 0, optionId: 'a', quality: 'wrong' });
+    expect(after.incidents.active).toMatchObject({ id: 'vb09-getosten', step: 1, pot: null, choosing: false, unclear: [0] });
     const inc = incidentById('vinbar', 'vb09-getosten')!;
-    expect(after.incidents.lastOutcome?.text).toContain(inc.steps[0].text.fail.outcome.slice(0, 20));
-    expect(after.incidents.lastOutcome?.text).toContain('The staff take over');
-    expect(after.cash).toBeLessThan(s.cash);
-    // Ingen kredit för ett fel svar, och ingen straffkredit.
+    expect(after.eventStream.at(-1)?.text).toContain(inc.steps[0].text.fail.outcome.slice(0, 20));
     expect(after.knowledgeCredits.episteme).toBe(s.knowledgeCredits.episteme);
+    // Fel i sista steget: stegets följd och personalen tar över, situationen är slut.
+    const end = answerAndWait(goOn(answerAndWait(after, 'b')), 'a');
+    expect(end.incidents.active).toBeNull();
+    expect(end.incidents.log.at(-1)).toMatchObject({ id: 'vb09-getosten', step: 2, optionId: 'a', quality: 'wrong', missed: [{ step: 0, optionId: 'a' }] });
+    expect(end.incidents.lastOutcome?.text).toContain('The staff take over');
+    expect(end.cash).toBeLessThan(s.cash);
   });
 
   it('personalen tar över färre steg ju längre raketen kom', () => {
@@ -267,7 +274,9 @@ describe('ORDER 270 — en raket', () => {
   it('ett fel kan utlösa en senare raket samma kväll, och en klarad raket förhindra den', () => {
     const s = openNow(wineBarService(), 'vb03-notallergi');
     const passed = ans(s, 'a');
-    const bad = ans(passed, 'c');
+    // ORDER 306b A1 — felet i steg 2 köar följden, och ett fel i steg 3 låter den stå kvar.
+    const bad = ans(ans(passed, 'c'), 'a');
+    expect(bad.incidents.active).toBeNull();
     expect(bad.incidents.queued).toContain('vb27-allergireaktion');
     let later = bad;
     for (let i = 0; i < 2000 && later.incidents.active?.id !== 'vb27-allergireaktion' && later.day.period === 'dinner'; i++) {
@@ -306,6 +315,7 @@ describe('ORDER 270 — kvällens lärdom', () => {
     }
     expect(s.day.period).toBe('evening');
     const lesson = s.incidents.lesson!;
+    // ORDER 306b A1 — situationen fortsatte och klarades, och lärdomen förklarar felet på vägen.
     expect(lesson.map((l) => l.incidentId)).toEqual(['vb12-varmt-rott']);
     expect(lesson[0].stepAxis).toBe('episteme');
     expect(lesson[0].question).toBe(incidentById('vinbar', 'vb12-varmt-rott')!.steps[0].text.question);
@@ -554,10 +564,11 @@ describe('ORDER 271 — svaret i stunden och vem som tar över', () => {
 
   it('vid fel tar den ordinarie personalen i rollen över en stund', async () => {
     const { takeoverActive } = await import('../incidents');
+    // ORDER 306b A1 — personalen tar över när situationen faller i sista steget.
     const s = openNow(wineBarService(), 'vb09-getosten');
-    const after = answerAndWait(s, 'a');
+    const after = answerAndWait(goOn(answerAndWait(goOn(answerAndWait(s, 'c')), 'b')), 'a');
     const o = after.incidents.lastOutcome!;
-    expect(o.reveal).toMatchObject({ step: 0, optionId: 'a', correctId: 'c', cleared: false });
+    expect(o.reveal).toMatchObject({ step: 2, optionId: 'a', correctId: 'd', cleared: false });
     expect(o.takeover?.role).toBeDefined();
     expect(takeoverActive(after)).not.toBeNull();
     expect(takeoverActive(tick(after, Math.ceil(INCIDENTS.takeoverSimSeconds / 0.2) + 2))).toBeNull();

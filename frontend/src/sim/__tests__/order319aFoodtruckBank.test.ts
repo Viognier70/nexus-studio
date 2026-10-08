@@ -19,7 +19,9 @@ describe('ORDER 319a.3 — ⚖ döljer aldrig frågor utan ⚖', () => {
 
   it('alla 15 frågor utan ⚖ (1–21 utom 3, 4, 9, 10, 15, 20) är med i spelet', () => {
     const shown = incidentBankFor('foodtruck').flatMap((i) => i.steps.map((s) => s.question!)).sort((a, b) => a - b);
-    expect(shown).toEqual([1, 2, 5, 6, 7, 8, 11, 12, 13, 14, 16, 17, 18, 19, 21]);
+    // ORDER 320 — och de sex nya situationernas frågor 22–39 (leveransen situationer320).
+    expect(shown.filter((q) => q <= 21)).toEqual([1, 2, 5, 6, 7, 8, 11, 12, 13, 14, 16, 17, 18, 19, 21]);
+    expect(shown.filter((q) => q > 21)).toEqual(Array.from({ length: 18 }, (_, i) => 22 + i));
   });
 
   it('valideringen stoppar en situation som blandar ⚖ och frågor utan ⚖', () => {

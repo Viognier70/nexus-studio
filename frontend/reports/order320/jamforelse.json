@@ -1,0 +1,379 @@
+{
+  "definition": "fore = reports/order315c/efter40 (315c:s sista kontroll), efter = reports/order320/efter40 (efter 319c och 320). 40 frön per rad. closed = stängda säsonger, meanCashEnd = medelkassan vid säsongens slut (kr), reachedVinbar/reachedBistro = säsonger som nådde steget, vinbarWeekMedian/bistroWeekMedian = medianveckan dit, starEarned = säsonger med stjärna.",
+  "rows": {
+    "koncept-bistro-0.85": {
+      "fore": {
+        "player": "bistro",
+        "closed": 0,
+        "meanCashEnd": 89996,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 30,
+        "bistroWeekMedian": 5,
+        "starEarned": 20
+      },
+      "efter": {
+        "player": "bistro",
+        "closed": 0,
+        "meanCashEnd": 97749,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 35,
+        "bistroWeekMedian": 4,
+        "starEarned": 30
+      }
+    },
+    "koncept-enkel-0.6": {
+      "fore": {
+        "player": "enkel",
+        "closed": 0,
+        "meanCashEnd": 139022,
+        "reachedVinbar": 14,
+        "vinbarWeekMedian": 6,
+        "reachedBistro": 2,
+        "bistroWeekMedian": 8,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "enkel",
+        "closed": 0,
+        "meanCashEnd": 149439,
+        "reachedVinbar": 7,
+        "vinbarWeekMedian": 4,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "koncept-enkel-0.85": {
+      "fore": {
+        "player": "enkel",
+        "closed": 0,
+        "meanCashEnd": 64713,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "starEarned": 35
+      },
+      "efter": {
+        "player": "enkel",
+        "closed": 0,
+        "meanCashEnd": 63094,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "starEarned": 39
+      }
+    },
+    "koncept-soigne-0.6": {
+      "fore": {
+        "player": "soigne",
+        "closed": 7,
+        "meanCashEnd": 99418,
+        "reachedVinbar": 14,
+        "vinbarWeekMedian": 6,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "soigne",
+        "closed": 5,
+        "meanCashEnd": 127670,
+        "reachedVinbar": 7,
+        "vinbarWeekMedian": 4,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "koncept-soigne-0.85": {
+      "fore": {
+        "player": "soigne",
+        "closed": 0,
+        "meanCashEnd": 128426,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 39,
+        "bistroWeekMedian": 4,
+        "starEarned": 32
+      },
+      "efter": {
+        "player": "soigne",
+        "closed": 0,
+        "meanCashEnd": 232075,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 3,
+        "starEarned": 39
+      }
+    },
+    "stjarna-0.6": {
+      "fore": {
+        "player": "stjarna",
+        "closed": 2,
+        "meanCashEnd": 134744,
+        "reachedVinbar": 14,
+        "vinbarWeekMedian": 6,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "stjarna",
+        "closed": 0,
+        "meanCashEnd": 144464,
+        "reachedVinbar": 7,
+        "vinbarWeekMedian": 4,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "stjarna-0.75": {
+      "fore": {
+        "player": "stjarna",
+        "closed": 0,
+        "meanCashEnd": 76459,
+        "reachedVinbar": 39,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 11,
+        "bistroWeekMedian": 6,
+        "starEarned": 2
+      },
+      "efter": {
+        "player": "stjarna",
+        "closed": 0,
+        "meanCashEnd": 88359,
+        "reachedVinbar": 37,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 12,
+        "bistroWeekMedian": 7,
+        "starEarned": 5
+      }
+    },
+    "stjarna-0.85": {
+      "fore": {
+        "player": "stjarna",
+        "closed": 0,
+        "meanCashEnd": 89996,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 30,
+        "bistroWeekMedian": 5,
+        "starEarned": 20
+      },
+      "efter": {
+        "player": "stjarna",
+        "closed": 0,
+        "meanCashEnd": 97749,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 35,
+        "bistroWeekMedian": 4,
+        "starEarned": 30
+      }
+    },
+    "trappa-forsiktig": {
+      "fore": {
+        "player": "forsiktig",
+        "closed": 0,
+        "meanCashEnd": 94409,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 4,
+        "reachedBistro": 23,
+        "bistroWeekMedian": 7,
+        "starEarned": 7
+      },
+      "efter": {
+        "player": "forsiktig",
+        "closed": 0,
+        "meanCashEnd": 91587,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 33,
+        "bistroWeekMedian": 6,
+        "starEarned": 22
+      }
+    },
+    "trappa-halva": {
+      "fore": {
+        "player": "halva",
+        "closed": 0,
+        "meanCashEnd": 113610,
+        "reachedVinbar": 1,
+        "vinbarWeekMedian": 7,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "halva",
+        "closed": 0,
+        "meanCashEnd": 114278,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "trappa-halvbra": {
+      "fore": {
+        "player": "halvbra",
+        "closed": 0,
+        "meanCashEnd": 97226,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "halvbra",
+        "closed": 0,
+        "meanCashEnd": 95328,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "trappa-ignorerar": {
+      "fore": {
+        "player": "ignorerar",
+        "closed": 0,
+        "meanCashEnd": 115207,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "ignorerar",
+        "closed": 0,
+        "meanCashEnd": 119642,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "trappa-ignorerarUtbildad": {
+      "fore": {
+        "player": "ignorerarUtbildad",
+        "closed": 0,
+        "meanCashEnd": 115783,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "ignorerarUtbildad",
+        "closed": 0,
+        "meanCashEnd": 119702,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "trappa-klok": {
+      "fore": {
+        "player": "klok",
+        "closed": 0,
+        "meanCashEnd": 72315,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 3,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "klok",
+        "closed": 0,
+        "meanCashEnd": 60428,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      }
+    },
+    "trappa-mentorn": {
+      "fore": {
+        "player": "mentorn",
+        "closed": 0,
+        "meanCashEnd": 46130,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "mentorn",
+        "closed": 0,
+        "meanCashEnd": 41111,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 39,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      }
+    },
+    "trappa-rimlig": {
+      "fore": {
+        "player": "rimlig",
+        "closed": 0,
+        "meanCashEnd": 34697,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "rimlig",
+        "closed": 0,
+        "meanCashEnd": 31965,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "trappa-slarvig": {
+      "fore": {
+        "player": "slarvig",
+        "closed": 0,
+        "meanCashEnd": 128435,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "efter": {
+        "player": "slarvig",
+        "closed": 0,
+        "meanCashEnd": 126133,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    }
+  }
+}

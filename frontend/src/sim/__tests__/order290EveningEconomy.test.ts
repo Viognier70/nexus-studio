@@ -150,7 +150,9 @@ describe('ORDER 290 — svarens följd i rummet', () => {
     resolveIncident(wrong, worst.id);
     const down = wrong.day.roomReactions!.at(-1)!;
     expect(down.kind).toBe('down');
-    expect(down.amountSek!).toBeLessThan(0);
+    // ORDER 306b A1/A10 — ett fel på vägen kostar i första hand stämningen och ryktet; notan
+    // minskar efter felets svårighet (lindrigt: ingen minskning).
+    expect(down.amountSek ?? 0).toBeLessThanOrEqual(0);
     if (down.leftGuestId) {
       const g = wrong.guests.find((x) => x.id === down.leftGuestId)!;
       expect(g.state).toBe('leaving');

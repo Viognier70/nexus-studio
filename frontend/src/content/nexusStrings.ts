@@ -49,6 +49,7 @@ import { D6_STRINGS } from './design/d6Strings';
 import { DIN_VAG_STRINGS } from './design/dinVagStrings';
 // ORDER 316 — fikat efter stängning (dilemmana).
 import { FIKA_TEXT } from './fikaStrings';
+import { VAGNEN_STRINGS } from './vagnenStrings';
 import { LUCKAN_STRINGS } from './luckanStrings';
 
 export type Lang = 'sv' | 'en';
@@ -495,9 +496,12 @@ export const STRINGS = {
   'curious.moment.child': { sv: 'Kommer fram med ett barn i handen.', en: 'Coming over with a child by the hand.' },
   'curious.speaker.parent': { sv: 'Föräldern', en: 'The parent' },
   'curious.speaker.child': { sv: 'Barnet pekar på grillen', en: 'The child points at the grill' },
-  // Anders 2026-10-08 (n04, n18): vegokorven och den milda senapen på vagnens meny och skylt (menu.*).
-  'menu.veggie': { sv: 'Vegokorv {price}', en: 'Veggie sausage {price}' },
-  'menu.condiments': { sv: 'Senap, skånsk och mild, och ketchup', en: 'Mustard, Scanian and mild, and ketchup' },
+  // ORDER 320 — Designs D10: skyltens nya rader och HUD-nålarna vid vagnen.
+  ...VAGNEN_STRINGS,
+  // ORDER 320 / 306b A1 — ledtråden efter ett fel steg, och lagtext som väntar på granskning (⚖).
+  'incident.unclear.analysis': { sv: 'Analys: (oklart)', en: 'Analysis: (unclear)' },
+  'incident.unclear.experience': { sv: 'Upplevelse: (oklart)', en: 'Experience: (unclear)' },
+  'incident.legalPending': { sv: 'Förklaringen granskas och visas senare.', en: 'The explanation is being reviewed and will be shown later.' },
   // ORDER 319c — priset på skylten (menu.* {price}) och kvällens väder vid vagnen på morgonen (weather.*).
   'menu.price': { sv: '{n} kr', en: 'SEK {n}' },
   'truck.forecast': { sv: 'Vädret i kväll vid vagnen: {weather}.', en: 'Tonight’s weather at the truck: {weather}.' },
@@ -3412,6 +3416,8 @@ export const TABLE = {
       },
       right: { sv: (next: string) => `Rätt · vidare till ${next}`, en: (next: string) => `Right · on to ${next}` },
       rightDone: { sv: 'Rätt · situationen klar', en: 'Right · situation complete' },
+      // ORDER 306b A1 — ett fel på vägen: situationen fortsätter till nästa steg.
+      wrongOn: { sv: (step: string) => `Fel · vidare till ${step}`, en: (step: string) => `Wrong · on to ${step}` },
       // ORDER 276 — raketerna styr gästflödet.
       guestsIn: {
         sv: (n: number) => (n === 1 ? 'En gäst till kommer in.' : `${n} ${pl(n, 'gäst', 'gäster')} till kommer in.`),
