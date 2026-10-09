@@ -140,7 +140,95 @@ Anders 2026-10-09: "Gör A och C först, merga och pusha. Sedan B.1 (listan) til
   - 47 syntetiska hus (`synthesised`, `counts.synthesisedShown`). Fem av dem står på en riktig väg (`synthesisedOnRoad`): de fyra ovan och `vw-pra-15s`, `vw-forskola`.
   - 56 uthus (`counts.outbuildings`). Inget av uthusen står på ett riktigt hus eller en riktig väg (`counts.shedConflicts` 0).
 
+## B. Rättningen efter Anders beslut (2026-10-09)
+
+Anders: "Princip: den riktiga kartan gäller." Fem beslut om B.1, sedan B.2 och B.3.
+
+**Bilderna, före och efter.**
+- `scripts/order322-karta.mjs` med `KARTA_TAG=fore` (före rättningen) och `KARTA_TAG=efter` skriver samma bilder som i B.1 till `frontend/reports/order322/fore/` och `.../efter/`, med var sin `karta.json`.
+- Utsnitten är låsta i `reports/order322/karta-vyer.json`, så att `karta-1.png` före och efter visar samma ruta.
+- `reports/order322/jamfor/karta-*.png` har före till vänster och efter till höger.
+- Ny i bilderna: en svart ring vid varje vägände som inte finns i verkligheten (`karta.json` `falseEnds`).
+- Före-körningen gav samma tal som B.1 (`fore/karta.json` `counts`).
+
+**Talen** (`fore/karta.json` och `efter/karta.json`, `counts`):
+
+| Mått | Före | Efter |
+|---|---|---|
+| Luckor i vägarna (`roadIssues`) | 32 | 0 |
+| Meter lucka (`gapMetres`) | 441 | 0 |
+| Vägändar som inte finns i verkligheten (`gameEndsNotRealEnds`) | 57 | 1 |
+| Riktiga hus som saknas (`missing`) | 2 | 0 |
+| Dolda påhittade hus (`synthesisedHidden`) | 16 | 0 |
+| Påhittade hus på en riktig väg (`synthesisedOnRoad`) | 5 | 0 |
+| Landmärken som står fel (`moved[].distM` > 0) | 6 | 0 |
+
+**1. De 16 dolda påhittade husen** är borttagna ur `grythyttan-world.json`. Vägarna genom dem är hela: Lokavägen vid Prästgatan, Kyrkbacken mot Torget, Kyrkogatan mellan Torget och Smedsgatan, Skolgatan, Magasinsgatan och Åsgatan.
+
+**2. Industrihusen vid stationen** (`w870510826`, `w870510828`) står.
+- Ett riktigt hus döljs aldrig (`buildingsOnRoads.ts`: `provenance 'osm'` hoppas över). Mängden `BUILDINGS_ON_ROADS` är nu tom.
+- De två servicevägarna (`w1329020075`, `w1329020076`) är i OSM märkta `tunnel=building_passage`: en genomfart genom huset, från vägg till vägg. De ritas inte.
+- Vägarna som möter dem ritas fram till husets vägg. Jämförelsen räknar genomfarterna för sig (`efter/karta.json` `passages`), inte som luckor.
+- Ändarna vid väggarna räknas som riktiga ändar (`gameEndsAtPassage`).
+
+**3. Riktiga hus nära vägen.** Vägen klipps inte längre (`roadSurface.ts`, `splitRoad`). Mittlinjen provas varje meter:
+- trottoaren ritas där dess kant är fri från hus. Annars ritas biten utan trottoar;
+- går också körbanans kant in i ett hus, ritas körbanan smalare där, så bred som ryms. Det sker i steg om 0,25 m, ner till 1 m körbana (`MIN_HALF_M`);
+- vägen klipps bara där mittlinjen själv går in i ett hus, eller där inte ens 1 m körbana ryms;
+- en väg som går rakt mot en gavel ritas fram till gaveln. Bitarna delar sin gränspunkt, så det blir ingen glipa;
+- en väg som inte når något hus är orörd.
+- Artur Lindqvists gata (förut 44 m borta), Kyrkogatan och servicevägarna är hela. Där riktiga uppfarter går 0,6–1,3 m från en vägg ritas de smalare.
+- Bilarna kör fortfarande på sin egen klippta väg (`world.ts` `CLIPPED_ROADS_VEHICLE`, 3,2 m från hus) och inte på de smala bitarna.
+
+**4. De sex påhittade husen på riktiga vägar** är borttagna: `vw-jarn-9`, `vw-kyr-9e-mansard`, `vw-hjv-5`, `vw-pra-8`, `vw-pra-15s`, `vw-forskola`.
+- Inget av dem används i spelet. Ingen kod läser deras id eller namn; de fanns bara i `grythyttan-world.json`.
+- Förskolan `vw-forskola` ("Grythyttans förskola") hade ett namn i datan, men ingen kod läste det. Den riktiga förskolan (Björken/Linden, `w870510884`, `w870510872`) ritas av `CraftedLandmarksD2.tsx` och står kvar. Ingenting behövde alltså flyttas.
+- Det finns två uthus färre (`outbuildings` 56 → 54). Uthusen ställs per hus (`onRoadAudit.ts`, `<hus>:uthus`), men vilka två som försvann är inte utrett.
+- Rättelse till B.1: där stod "fem av dem", men listan hade sex. `synthesisedOnRoad` var 5, eftersom `vw-pra-8` klippte Prästgatan genom trottoaren men inte stod på mittlinjen.
+
+**5. Landmärkena.**
+- Räknefelet var att ingesten räknade den slutande punkten två gånger. `polyCentroid` i `scripts/fetch-grythyttan-osm.mjs` räknar den nu en gång, som `CraftedLandmarks.tsx` gör.
+- `landmark.position` i `grythyttan-world.json` är rättad för de sex: Kyrkan, Campus, Gästgivaregården, Pizzans hus, Herrgården och Järnvägsstationen. Avståndet är 0 för alla (`efter/karta.json` `moved[].distM`).
+- Kärnhuset (0,9 m) och Länsmansgården (2,5 m) hade samma fel och är rättade på samma sätt. Det flyttar bara deras markör, inte husen.
+- Foodtruckens plats vid Måltidens hus (`villagePlaces.ts` `CAMPUS`) har kvar det gamla talet, så att vagnen står där den stod.
+
+**B.3. Vägändarna.**
+- Testet `src/strategic/__tests__/order322Byn.test.ts` provar varje ände av en ritad vägbit i byn (`roadRenderPieces`) mot OSM. Det använder samma mått och toleranser som `order322-karta.mjs`.
+- En ände är godkänd om den är en riktig återvändsgata, ligger vid en genomfarts vägg eller ligger på en annan ritad vägbit.
+- Testet prövar också beslut 1–5.
+- **Av de 57 ändarna är 1 kvar** (`efter/karta.json` `falseEnds`):
+  - **55** försvann för att luckorna är stängda;
+  - **1** (Järnvägsgatans serviceväg `w870510829` vid industrihuset) är nu en riktig ände vid genomfartens vägg (beslut 2);
+  - **1 är kvar:** uppfarten `w862853244` förbi Länsmansgården (`w1422743880`). I OSM går mittlinjen 0,34 m från husets hörn, så inte ens 1 m körbana ryms. Vägen bryts 3,6 m. Testet har den som enda undantag (`KNOWN_ENDS`).
+- Uppfarten kan bli hel på två sätt: att vägen får gå 0,2 m in under hörnet, eller att mittlinjen flyttas en halv meter från huset. Båda avviker från kartan, så det är Anders beslut.
+
+**B.2. Etiketterna.**
+- Det fanns ingen ordertext för B.2 i repot. Claude Codes tolkning: byns etiketter får inte ligga på varandra på skärmen. Byns etiketter är krogarnas skyltar, sällskapen på väg till krogen och gatunamnen.
+- Krogarnas skyltar flyttades redan isär sinsemellan (ORDER 297/300). Gatunamnen och sällskapen räknades inte mot något.
+- `scene/LabelDeclutter.tsx` placerar etiketterna i ordning, var sjätte bildruta:
+  1. krogarnas skyltar står kvar;
+  2. sällskapen, närmast dörren först;
+  3. gatunamnen, huvudvägarna först.
+- En etikett som skulle ligga på en som redan står döljs tills den har plats. Rektangeln är den omslutande på skärmen. För ett vridet gatunamn är den något större än texten, så hellre ett namn för mycket dolt än två på varandra.
+- **Kontrollen:** `scripts/order322-etiketter.mjs` körs i produktionsbygget, på svenska, i 1440 × 900 och 1280 × 720.
+  - Flödet: provspelet i vinbaren, förberedelserna och kvällen efter 19.05, på nivåerna Byn (V), Kvarteret (C) och Gatan (X).
+  - Morgonen mäts inte, eftersom morgonens panel täcker byn.
+  - Det som mäts är de synliga etiketternas rektanglar, par för par.
+- **Före** (`reports/order322/fore/etiketter.json`): 3–4 par per bild på nivån Byn, i 1280 × 720 som mest 4. Alla par var gatunamn under en krogskylt (Artur Lindqvists gata under Hyttgrillen, Hotellets matsal och Grillvagnen; Hyttgatan under Pizzeria Grytan) eller två gatunamn (Östra Bergvägen och Kolargatan).
+- **Efter** (`reports/order322/efter/etiketter.json`): `ok: true`, 0 par i alla tolv mätningar. På nivån Byn är 3 gatunamn dolda.
+- Bilderna ligger i `fore/etiketter-*.png` och `efter/etiketter-*.png`.
+- På nivåerna Kvarteret och Gatan stod som mest två etiketter, och de låg inte på varandra varken före eller efter.
+
+**Ändrade filer.**
+- `grythyttan-world.json`: 22 påhittade hus borttagna och åtta landmärkens position rättad.
+- `content/roadSurface.ts`: vägen ritas smalare eller utan trottoar i stället för att klippas.
+- `content/buildingsOnRoads.ts`: riktiga hus döljs aldrig.
+- `scripts/fetch-grythyttan-osm.mjs`: mitten räknas rätt.
+- `scene/LabelDeclutter.tsx` och `StrategicScene.tsx`: etiketterna.
+- Testerna `order322Byn.test.ts` och `order312bTillFots.test.ts`. Prästgatan är hel, så biten heter inte längre `#p1`.
+- Skripten `order322-karta.mjs` och `order322-etiketter.mjs`.
+
 ## Kvar
 
-- B.1-listan visas för Anders. Inget är rättat.
-- B.2 (etiketterna) och B.3 (testet för vägändarna) kommer efter Anders beslut. B.3 kan använda måttet för vägändarna i `order322-karta.mjs`.
+- Uppfarten vid Länsmansgården (B.3 ovan): Anders beslut om den sista vägänden.
+- B.2 byggdes efter Claude Codes tolkning (byns etiketter på skärmen). Gällde beslutet andra etiketter, behöver det sägas.

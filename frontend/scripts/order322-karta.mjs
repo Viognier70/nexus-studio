@@ -16,6 +16,7 @@
 //     - "saknar anslutning": OSM-vägen slutar där, men i verkligheten möter den en annan väg som inte når fram.
 //   Hus: de riktiga husen som inte ritas, de som ritas på en annan plats (de handbyggda landmärkena), och det som
 //   ritas men inte finns på kartan (syntetiska hus och uthus).
+// Med KARTA_TAG=efter också reports/order322/jamfor/<bild>.png: före till vänster, efter till höger.
 // Utdata: reports/order322/karta.json, karta-byn.png, karta-karnan.png, karta-torget.png (hela byn) och karta-<n>.png (utsnitt kring skillnaderna).
 //
 //   node scripts/order322-karta.mjs          (SKIP_DUMP=1 läser det senaste utdraget)
@@ -28,7 +29,12 @@ import { readdirSync, readFileSync, rmSync, writeFileSync, mkdirSync } from 'nod
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FRONTEND = resolve(HERE, '..');
-const OUT = resolve(FRONTEND, 'reports', 'order322');
+// ORDER 322 B.2 (Anders 2026-10-09: "Ta nya bilder som i B.1, före och efter"): KARTA_TAG=fore|efter skriver till
+// reports/order322/<tag>/. Utsnitten låses i reports/order322/karta-vyer.json vid första körningen med tagg, så att
+// före och efter visar samma rutor.
+const TAG = process.env.KARTA_TAG ?? '';
+const OUT = resolve(FRONTEND, 'reports', 'order322', TAG);
+const VIEWS = resolve(FRONTEND, 'reports', 'order322', 'karta-vyer.json');
 mkdirSync(OUT, { recursive: true });
 // Bilderna från en tidigare körning tas bort, så att inget utsnitt blir kvar med gamla nummer.
 for (const f of readdirSync(OUT)) if (/^karta-.*\.(png|svg)$/.test(f)) rmSync(resolve(OUT, f));
@@ -49,7 +55,11 @@ const ROAD_HALF_FALLBACK_M = 1.5, MARGIN_M = 60, END_TOL_M = 1.5, JOIN_TOL_M = 1
 
 // ---------- Den riktiga kartan ----------
 const ways = osm.elements.filter((e) => e.type === 'way');
-const realRoads = ways.filter((w) => w.tags?.highway).map((w) => ({ id: `w${w.id}`, kind: w.tags.highway, name: w.tags.name ?? w.tags.ref ?? null, nodes: w.nodes, poly: w.geometry.map((g) => proj(g.lat, g.lon)) }));
+const realRoads = ways.filter((w) => w.tags?.highway).map((w) => ({ id: `w${w.id}`, kind: w.tags.highway, name: w.tags.name ?? w.tags.ref ?? null, tunnel: w.tags.tunnel ?? null, nodes: w.nodes, poly: w.geometry.map((g) => proj(g.lat, g.lon)) }));
+// ORDER 322 B, Anders beslut 2: "Servicevägen ritas fram till husen, inte genom dem." En väg som i OSM går genom ett
+// hus (tunnel=building_passage) ritas inte; den räknas som genomfart, inte som lucka, och vägarna som möter den
+// får sluta vid husets vägg.
+const passages = realRoads.filter((r) => r.tunnel === 'building_passage');
 const realBuildings = ways.filter((w) => w.tags?.building).map((w) => ({ id: `w${w.id}`, kind: w.tags.building, name: w.tags.name ?? null, poly: w.geometry.map((g) => proj(g.lat, g.lon)) }));
 for (const b of world.buildings) if (b.provenance === 'osm' && !realBuildings.some((r) => r.id === b.id)) realBuildings.push({ id: b.id, kind: b.kind, name: b.name ?? null, poly: b.poly });
 // Noderna: i hur många vägar, och om de är en vägs ände.
@@ -121,6 +131,7 @@ let waysInArea = 0, outsideWays = 0;
 for (const way of realRoads) {
   if (!way.poly.some(inArea)) { outsideWays++; continue; }
   waysInArea++;
+  if (way.tunnel === 'building_passage') continue;
   const own = [...(piecesByWay.get(way.id) ?? []), plaza];
   const pts = dense(way.poly);
   const covered = pts.map((p) => !inArea(p) || own.some((g) => polyDist(p, g.poly) <= halfOf(g) + COVER_TOL_M));
@@ -157,7 +168,11 @@ roadIssues.sort((x, y) => y.lengthM - x.lengthM);
 const realEndNodes = new Set();
 for (const r of realRoads) for (const n of [r.nodes[0], r.nodes[r.nodes.length - 1]]) if (nodeWays.get(n) === 1) realEndNodes.add(n);
 const realEndPts = [...realEndNodes].map((n) => nodePos.get(n));
+// Genomfartens ändar ligger på husets vägg: där slutar vägarna som möter den (beslut 2).
+const passageEndPts = passages.flatMap((r) => [r.poly[0], r.poly[r.poly.length - 1]]);
+let passageEnds = 0;
 let gameEnds = 0, falseEnds = 0, outsideEnds = 0;
+const falseEndList = [];
 for (const g of game.roads) {
   if (g.role === 'plaza') continue;
   if (d2(g.poly[0], g.poly[g.poly.length - 1]) <= END_TOL_M) continue;
@@ -165,8 +180,13 @@ for (const g of game.roads) {
     if (!inArea(e)) { outsideEnds++; continue; }
     gameEnds++;
     if (realEndPts.some((r) => d2(r, e) <= END_TOL_M)) continue;
+    if (passageEndPts.some((r) => d2(r, e) <= END_TOL_M)) { passageEnds++; continue; }
     if (game.roads.some((o) => o !== g && polyDist(e, o.poly) <= halfOf(o) + o.sidewalk + JOIN_TOL_M)) continue;
     falseEnds++;
+    // Varför: den riktiga vägen under änden, och huset närmast.
+    const way = realRoads.find((r) => r.id === g.wayId);
+    const realEnd = realEndPts.reduce((m, r) => Math.min(m, d2(r, e)), Infinity);
+    falseEndList.push({ piece: g.id, way: g.wayId, name: way?.name ?? null, roadKind: way?.kind ?? null, role: g.role, at: pt(e), toRealEndM: r1(realEnd), building: nearestBuilding(e) });
   }
 }
 
@@ -209,11 +229,12 @@ const result = {
     realRoads: realRoads.length, realBuildings: realBuildings.length, realEnds: realEnds.length,
     gamePieces: game.roads.length, gameBuildings: game.buildings.filter((b) => b.source === 'building').length + game.crafted.length,
     waysInArea, waysOutsideArea: outsideWays, roadIssues: roadIssues.length, gapMetres: Math.round(roadIssues.reduce((a, r) => a + r.lengthM, 0)),
-    gameEnds, gameEndsNotRealEnds: falseEnds, gameEndsOutsideArea: outsideEnds,
+    gameEnds, gameEndsNotRealEnds: falseEnds, gameEndsOutsideArea: outsideEnds, gameEndsAtPassage: passageEnds, passages: passages.length,
     missing: missing.length, moved: moved.length, synthesisedShown: extra.length, synthesisedOnRoad: extra.filter((e) => e.onRoad).length, synthesisedHidden: hiddenSynth.length, outbuildings: sheds.length, shedConflicts: shedConflicts.length
   },
   roadIssues: roadIssues.map((r, i) => ({ n: i + 1, ...r })),
-  missing, moved, synthesised: extra, synthesisedHidden: hiddenSynth, shedConflicts
+  passages: passages.map((r) => ({ way: r.id, kind: r.kind, lengthM: r1(r.poly.slice(1).reduce((a, p, i) => a + d2(p, r.poly[i]), 0)), building: nearestBuilding(centre([...r.poly, r.poly[0]])) })),
+  missing, moved, synthesised: extra, synthesisedHidden: hiddenSynth, shedConflicts, falseEnds: falseEndList
 };
 writeFileSync(resolve(OUT, 'karta.json'), JSON.stringify(result, null, 2) + '\n');
 
@@ -240,7 +261,8 @@ function svg(view, scale, title) {
     s.push(`<circle cx="${X(e.at[0])}" cy="${Z(e.at[1])}" r="${r.toFixed(1)}" fill="${e.kind === 'saknar anslutning' ? '#8000c0' : '#c00'}" fill-opacity=".9"/>`);
     s.push(`<text x="${X(e.at[0])}" y="${(Number(Z(e.at[1])) + r * 0.38).toFixed(1)}" font-size="${(r * 1.05).toFixed(1)}" fill="#fff" text-anchor="middle" font-weight="700">${e.n}</text>`);
   }
-  s.push(`<text x="10" y="${H + 26}" font-size="15" fill="#222">${title} · blå linje: riktig väg · svart kant: riktigt hus · orange: spelets väg · sand: Torgets plan · rött: spelets hus · grönt: syntetiskt hus · lila: uthus · röd linje och ring: vägen saknas i spelet · lila ring: saknar anslutning · röd kant: huset saknas</text>`);
+  for (const e of result.falseEnds) s.push(`<circle cx="${X(e.at[0])}" cy="${Z(e.at[1])}" r="${(r * 0.8).toFixed(1)}" fill="none" stroke="#000" stroke-width="2"/>`);
+  s.push(`<text x="10" y="${H + 26}" font-size="15" fill="#222">${title} · svart ring: vägände som inte finns i verkligheten · blå linje: riktig väg · svart kant: riktigt hus · orange: spelets väg · sand: Torgets plan · rött: spelets hus · grönt: syntetiskt hus · lila: uthus · röd linje och ring: vägen saknas i spelet · lila ring: saknar anslutning · röd kant: huset saknas</text>`);
   s.push('</svg>');
   return { svg: s.join('\n'), W, H: H + 40 };
 }
@@ -257,6 +279,18 @@ for (const e of result.roadIssues) { const key = `${Math.floor(e.at[0] / 300)}:$
   const [cx, cz] = key.split(':').map(Number);
   shots.push({ name: `karta-${i + 1}`, view: { minX: cx * 300 - 40, maxX: cx * 300 + 340, minZ: cz * 300 - 40, maxZ: cz * 300 + 340 }, scale: 4, title: `Utsnitt ${i + 1}: punkterna ${list.map((e) => e.n).join(', ')}` });
 });
+// Före och efter: samma rutor (karta-vyer.json). Rubriken räknar punkterna i rutan i den här körningen.
+if (TAG) {
+  let frozen;
+  try { frozen = JSON.parse(readFileSync(VIEWS, 'utf8')); } catch { frozen = null; }
+  if (!frozen) { frozen = shots.map(({ name, view, scale, title }) => ({ name, view, scale, title: title.replace(/: punkterna.*$/, '') })); writeFileSync(VIEWS, JSON.stringify(frozen, null, 2) + '\n'); }
+  shots.length = 0;
+  for (const f of frozen) {
+    const inView = result.roadIssues.filter((e) => e.at[0] >= f.view.minX && e.at[0] <= f.view.maxX && e.at[1] >= f.view.minZ && e.at[1] <= f.view.maxZ).map((e) => e.n);
+    const label = TAG === 'fore' ? 'före' : TAG;
+    shots.push({ ...f, title: `${f.title} (${label})${f.name.match(/^karta-\d/) ? `: ${inView.length ? `punkterna ${inView.join(', ')}` : 'inga luckor'}` : ''}` });
+  }
+}
 const { chromium } = await import('playwright');
 const browser = await chromium.launch().catch(() => chromium.launch({ channel: 'chrome' }));
 for (const sh of shots) {
@@ -265,6 +299,22 @@ for (const sh of shots) {
   await page.setContent(`<html><body style="margin:0">${body}</body></html>`);
   await page.screenshot({ path: resolve(OUT, `${sh.name}.png`) });
   await page.close();
+}
+// Efter: bilden före (reports/order322/fore/) och efter sida vid sida i reports/order322/jamfor/.
+if (TAG === 'efter') {
+  const FORE = resolve(FRONTEND, 'reports', 'order322', 'fore');
+  const CMP = resolve(FRONTEND, 'reports', 'order322', 'jamfor');
+  mkdirSync(CMP, { recursive: true });
+  for (const sh of shots) {
+    let before;
+    try { before = readFileSync(resolve(FORE, `${sh.name}.png`)); } catch { continue; }
+    const after = readFileSync(resolve(OUT, `${sh.name}.png`));
+    const W = Math.round((sh.view.maxX - sh.view.minX) * sh.scale), H = Math.round((sh.view.maxZ - sh.view.minZ) * sh.scale) + 40;
+    const page = await browser.newPage({ viewport: { width: W * 2 + 20, height: H } });
+    await page.setContent(`<html><body style="margin:0;background:#222;display:flex;gap:20px"><img src="data:image/png;base64,${before.toString('base64')}"><img src="data:image/png;base64,${after.toString('base64')}"></body></html>`);
+    await page.screenshot({ path: resolve(CMP, `${sh.name}.png`) });
+    await page.close();
+  }
 }
 await browser.close();
 result.images = shots.map((s) => `${s.name}.png`);
