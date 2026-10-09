@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { useLanguage } from '../../content/language';
 import { t, type StringKey } from '../../content/nexusStrings';
-import { defaultCashSek, defaultSetup, savedBusinessName, PROV_PLACES, PROV_WEATHERS, PROV_WEEKS, provIncidents, type ProvPlace, type ProvSetup, type ProvWeather } from './provState';
+import { defaultCashSek, defaultSetup, PROV_PLACES, PROV_WEATHERS, PROV_WEEKS, provIncidents, type ProvPlace, type ProvSetup, type ProvWeather } from './provState';
 import '../business/name-entry.css';
 import './prov.css';
 
@@ -12,14 +12,10 @@ const WEATHER_KEY: Record<ProvWeather, StringKey> = {
   auto: 'prov.weather.auto', sun: 'weather.sun', rain: 'weather.rain', wind: 'weather.wind', cool: 'weather.cool'
 };
 
-// Läser webbläsarens lagring utan att skriva (sim/save.ts browserStore skriver en provnyckel).
-function readOnlyStore(): Pick<Storage, 'getItem'> | null {
-  try { return window.localStorage; } catch { return null; }
-}
-
 export function ProvStart({ onStart }: { onStart: (setup: ProvSetup) => void }) {
   const lang = useLanguage();
-  const [setup, setSetup] = useState<ProvSetup>(() => ({ ...defaultSetup(), name: savedBusinessName(readOnlyStore()) ?? t(lang, 'prov.businessName') }));
+  // ORDER 323 §8 — fältet är tomt: krogen heter det spelaren skriver, annars Hyttgrillen (platshållaren).
+  const [setup, setSetup] = useState<ProvSetup>(() => defaultSetup());
   const incidents = provIncidents(setup.place);
   const set = (patch: Partial<ProvSetup>) => setSetup((s) => ({ ...s, ...patch }));
   const choosePlace = (place: ProvPlace) => set({ place, cashSek: defaultCashSek(place), incidentId: null });
@@ -36,7 +32,7 @@ export function ProvStart({ onStart }: { onStart: (setup: ProvSetup) => void }) 
         <p>{t(lang, 'prov.body')}</p>
         <label className="business-name-label">
           <span>{t(lang, 'prov.name')}</span>
-          <input type="text" value={setup.name} maxLength={40} onChange={(e) => set({ name: e.target.value })} data-testid="prov-name" />
+          <input type="text" value={setup.name} maxLength={40} placeholder={t(lang, 'prov.businessName')} autoComplete="off" onChange={(e) => set({ name: e.target.value })} data-testid="prov-name" />
         </label>
         <fieldset className="nx-prov-places">
           <legend>{t(lang, 'prov.place')}</legend>

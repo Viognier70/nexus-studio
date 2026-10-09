@@ -16,7 +16,6 @@ import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import { reducer } from '../../../simulation/reducer';
 import { makeNewGameState } from '../../../simulation/model';
 import { firstDayOfWeek } from '../../../../sim/calendar';
-import { SAVING } from '../../../../sim/balance';
 import { stocked } from '../../../testHarness/stocked';
 import { setLanguage } from '../../../../content/language';
 import { t } from '../../../../content/nexusStrings';
@@ -24,7 +23,7 @@ import { setStatusMode } from '../../statusMode';
 import { StatusLegend } from '../../StatusLegend';
 import { STATUS_LEGEND } from '../../../scene/staffStatus';
 import { PyramidMoment, potIfRight } from '../PyramidMoment';
-import { savedBusinessName } from '../../../prov/provState';
+import { provBusinessName } from '../../../prov/provState';
 import type { SimulationState } from '../../../types';
 
 const SRC = resolve(dirname(fileURLToPath(import.meta.url)), '../../../..');
@@ -146,14 +145,11 @@ describe('ORDER 322 C — den tvingade situationen och krogens namn', () => {
     expect(s.incidents.active?.chained).toBe(true);
   });
 
-  it('namnet: det senast sparade spelets, annars Hyttgrillen', () => {
-    const files: Record<string, string> = {};
-    const store = { getItem: (k: string) => files[k] ?? null };
-    expect(savedBusinessName(store)).toBeNull();
+  // ORDER 323 §8 — namnet är det spelaren skriver; tomt ger Hyttgrillen (förut det sparade spelets namn).
+  it('namnet: det spelaren skrev, annars Hyttgrillen', () => {
     expect(t('sv', 'prov.businessName')).toBe('Hyttgrillen');
-    const save = (name: string, at: string) => JSON.stringify({ formatVersion: SAVING.formatVersion, kind: 'manual', savedAt: at, businessName: name, sim: makeNewGameState(1) });
-    files['nexus.v1.slot1'] = save('Gamla krogen', '2026-10-01T10:00:00Z');
-    files['nexus.v1.slot2'] = save('Bruksgrillen', '2026-10-08T10:00:00Z');
-    expect(savedBusinessName(store)).toBe('Bruksgrillen');
+    expect(provBusinessName('', 'sv')).toBe('Hyttgrillen');
+    expect(provBusinessName('   ', 'en')).toBe('Hyttgrillen');
+    expect(provBusinessName(' Bruksgrillen ', 'sv')).toBe('Bruksgrillen');
   });
 });
