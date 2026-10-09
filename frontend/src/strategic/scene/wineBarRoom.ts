@@ -253,7 +253,11 @@ const LOUNGE_H = 0.38;
 const LOUNGE_TOP_Y = 0.45;
 // ORDER 286a — ytorna rekvisitan ställs på (över golvet, utan sockeln), samma
 // höjder som rummet ritar borden och disken med.
-export const SURFACE_HEIGHT: Record<'two' | 'lounge' | 'bar', number> = { two: TABLE_TOP_Y, lounge: LOUNGE_TOP_Y, bar: BAR.height };
+// ORDER 323 §9 — skivornas översta yta: borden ritas med en 0,05 m skiva centrerad på
+// TABLE_TOP_Y (table()), disken med en 0,05 m skiva ovanpå BAR.height. Förut stod
+// föremålen 2,5 cm ned i borden och 5 cm ned i disken.
+const TABLE_SLAB_M = 0.05;
+export const SURFACE_HEIGHT: Record<'two' | 'lounge' | 'bar', number> = { two: TABLE_TOP_Y + TABLE_SLAB_M / 2, lounge: LOUNGE_TOP_Y + TABLE_SLAB_M / 2, bar: BAR.height + TABLE_SLAB_M };
 const KITCHEN = HOUSE.kitchen;
 const DJ = { ...HOUSE.dj, platform: 0.25 };
 const STOOL_X = HOUSE.stoolX;

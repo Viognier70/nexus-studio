@@ -1,9 +1,11 @@
 // ORDER 273 — spelets språk som inställning (Designs leverans 2026-09-28 §2:
 // "Spelet går på engelska som standard och byter språk med en inställning").
 //
-// Standard är engelska. Valet sparas i localStorage under `nexus.lang`; varje
+// ORDER 323 §1 (Anders 2026-10-09): spelet startar på svenska; engelska bara
+// om spelaren väljer det i menyn. Webbläsarens språk följs inte.
+// Valet sparas i localStorage under `nexus.lang`; varje
 // läsning och skrivning ligger inom try/catch (privat fönster, blockerad
-// lagring, testmiljö utan localStorage) och faller då tillbaka på engelska.
+// lagring, testmiljö utan localStorage) och faller då tillbaka på svenska.
 // content/strings.ts lyssnar här och byter `strings` till det valda språket;
 // gränssnittet ritas om via useLanguage().
 
@@ -13,7 +15,7 @@ import type { Lang } from './nexusStrings';
 export type { Lang } from './nexusStrings';
 
 export const LANGUAGES: readonly Lang[] = ['en', 'sv'];
-export const DEFAULT_LANG: Lang = 'en';
+export const DEFAULT_LANG: Lang = 'sv';
 export const LANG_STORAGE_KEY = 'nexus.lang';
 
 function isLang(v: unknown): v is Lang {

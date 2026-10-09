@@ -71,7 +71,10 @@ export function DecanterAtLounge() {
   useFrame(() => {
     const room = businessRoomRef.current;
     const loc = room?.seatsLocal ?? [];
-    props.g.visible = state !== 'none' && !!room && room.businessClass === 'vinbaren' && loc.length > 1;
+    // ORDER 323 §9 — bara där loungen står: bistron har ingen lounge, och karaffen
+    // svävade vid bänkborden (rummet byggs om men klassen är fortfarande vinbaren).
+    const hasLounge = (room?.seatKinds ?? []).includes('lounge');
+    props.g.visible = state !== 'none' && !!room && room.businessClass === 'vinbaren' && hasLounge && loc.length > 1;
     if (!props.g.visible || !room) return;
     // Lokalt → världen ur två platser (vrid och flytta; rummet är inte skalat).
     const [a, b] = [0, loc.length - 1];

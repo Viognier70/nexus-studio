@@ -14,6 +14,8 @@ import { specFor, type RoadRole } from '../content/roadRoles';
 import { trimPolylineToCarSurface } from '../content/roadSurface';
 import { createRng } from '../util/rng';
 import { readabilityScale, type ReadabilityCurve } from '../util/readability';
+import { cruiseSpeed, stopsAlong, targetSpeed, TRAFFIC_STOPS, type RoadStop } from './trafficStops';
+import { walkerNear } from './streetPresence';
 
 // Traffic-density weight per OSM `maxspeed` band. Missing maxspeed
 // (Overpass has no value for ~223/327 Grythyttan roads — most are
@@ -93,13 +95,24 @@ interface Vehicle {
   kind: VehicleKind;
   road: RawRoad;
   t: number;
-  speed: number;
   forward: 1 | -1;
   swap: number;
   colour: string;
   // Fade-in used to hide the frame where the vehicle swaps to a new road.
   entering: number;
+  // ORDER 323 §6 — körningen i meter: vägens längd, platserna längs den
+  // (trafficStops.ts), farten nu (m/s), andelen av vägens fart, och väntan
+  // vid ett övergångsställe.
+  len: number;
+  stops: RoadStop[];
+  v: number;
+  share: number;
+  waited: number;
+  passed: RoadStop | null;
 }
+
+// ORDER 323 §6 — fordonsslagets andel av vägens fart (trafficStops.ts cruiseSpeed).
+const KIND_SHARE: Record<VehicleKind, number> = { car: 1, taxi: 1, van: 0.9, truck: 0.8, bus: 0.8, tourist_bus: 0.8, motorcycle: 1.05 };
 
 // Per-kind readability curves. Cars grow modestly at village range so they
 // remain legible; large vehicles already read at strategic altitude and
@@ -110,7 +123,6 @@ export const KIND_CONFIG: Record<
   VehicleKind,
   {
     count: number;
-    speed: [number, number];
     palette: string[];
     minRoad: number;
     roads: 'all' | 'major';
@@ -121,7 +133,6 @@ export const KIND_CONFIG: Record<
 > = {
   car: {
     count: 10,
-    speed: [0.010, 0.020],
     palette: ['#6f6c65', '#4a4c50', '#8a877f', '#726a5a', '#3f4552', '#a05236'],
     minRoad: 30,
     roads: 'all',
@@ -131,7 +142,6 @@ export const KIND_CONFIG: Record<
   },
   taxi: {
     count: 2,
-    speed: [0.012, 0.022],
     palette: ['#e0b658', '#e0b658'],
     minRoad: 40,
     roads: 'all',
@@ -141,7 +151,6 @@ export const KIND_CONFIG: Record<
   },
   van: {
     count: 3,
-    speed: [0.008, 0.016],
     palette: ['#5b5850', '#7a7770', '#9b9789'],
     minRoad: 50,
     roads: 'all',
@@ -151,7 +160,6 @@ export const KIND_CONFIG: Record<
   },
   truck: {
     count: 2,
-    speed: [0.007, 0.014],
     palette: ['#4a453d', '#5b5245'],
     minRoad: 80,
     roads: 'major',
@@ -161,7 +169,6 @@ export const KIND_CONFIG: Record<
   },
   bus: {
     count: 2,
-    speed: [0.008, 0.014],
     palette: ['#b7ac91', '#a89786'],
     minRoad: 100,
     roads: 'major',
@@ -171,7 +178,6 @@ export const KIND_CONFIG: Record<
   },
   motorcycle: {
     count: 2,
-    speed: [0.014, 0.025],
     palette: ['#3f3f3f', '#5c574d'],
     minRoad: 30,
     roads: 'all',
@@ -185,7 +191,6 @@ export const KIND_CONFIG: Record<
   // village scale.
   tourist_bus: {
     count: 3,
-    speed: [0.006, 0.011],
     palette: ['#efe7d3', '#f0d69a'],
     minRoad: 90,
     roads: 'major',
@@ -359,17 +364,23 @@ export function OsmTraffic() {
       const { pool, weights } = pools[kind];
       if (pool.length === 0) return;
       for (let i = 0; i < cfg.count; i++) {
+        const road = weightedPick(pool, weights, () => rng.next());
         list.push({
           kind,
-          road: weightedPick(pool, weights, () => rng.next()),
+          road,
           t: rng.next(),
-          speed: rng.range(cfg.speed[0], cfg.speed[1]),
           forward: rng.chance(0.5) ? 1 : -1,
           // Deliberately long swap intervals so the pop-to-new-road event is
           // rare; the fade-in below hides the frame where it happens.
           swap: rng.range(45, 120),
           colour: rng.pick(cfg.palette),
-          entering: 1
+          entering: 1,
+          len: Math.max(1, polylineLength(road.poly)),
+          stops: stopsAlong(road),
+          v: 0,
+          share: KIND_SHARE[kind] * rng.range(0.85, 1),
+          waited: 0,
+          passed: null
         });
       }
     });
@@ -388,13 +399,31 @@ export function OsmTraffic() {
     camera.updateMatrixWorld();
     view.f.setFromProjectionMatrix(view.m.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
     const inView = (x: number, z: number) => view.f.containsPoint(view.p.set(x, 0, z)) || view.f.containsPoint(view.p.set(x, VEHICLE_TOP_M, z));
+    // ORDER 323 §6 — kontrollens räkning (bara i dev): bilar som står vid ett övergångsställe och som saktar in.
+    const stat = { total: vehicles.length, waiting: 0, slowed: 0 };
     for (let i = 0; i < vehicles.length; i++) {
       const v = vehicles[i];
       v.swap -= dt;
       // Bounce off the ends of the current road rather than teleporting
       // every time. Only pick a truly new road when the swap timer expires,
       // and hide the teleport frame behind a short fade.
-      v.t += dt * v.speed * v.forward;
+      // ORDER 323 §6 — farten i meter per sekund mot nästa plats längs vägen:
+      // in i korsningar saktar bilen in, vid ett övergångsställe där någon
+      // står stannar den (högst maxWaitS), och vid vägens ände vänder den
+      // sakta. Förut gled bilen fram i en fast andel av vägen per sekund.
+      const cruise = cruiseSpeed(v.road, v.share);
+      const at = v.t * v.len;
+      const { v: want, waiting } = targetSpeed(v.stops, at, v.forward, v.len, cruise,
+        (st) => st !== v.passed && walkerNear(st.x, st.z, TRAFFIC_STOPS.crossingWalkerM));
+      if (waiting) {
+        v.waited += dt;
+        if (v.waited > TRAFFIC_STOPS.maxWaitS) { v.passed = waiting; v.waited = 0; }
+      } else v.waited = 0;
+      if (waiting) stat.waiting++;
+      if (want < cruise * 0.95) stat.slowed++;
+      const rate = want > v.v ? TRAFFIC_STOPS.accelMps2 : TRAFFIC_STOPS.brakeMps2;
+      v.v = want > v.v ? Math.min(want, v.v + rate * dt) : Math.max(want, v.v - rate * dt);
+      v.t += (dt * v.v * v.forward) / v.len;
       if (v.t > 1) {
         v.t = 1 - (v.t - 1);
         v.forward = -1;
@@ -414,6 +443,9 @@ export function OsmTraffic() {
           const there = samplePolyline(road.poly, t);
           if (!inView(there.x, there.z)) {
             v.road = road;
+            v.len = Math.max(1, polylineLength(road.poly));
+            v.stops = stopsAlong(road);
+            v.passed = null;
             v.forward = rng.chance(0.5) ? 1 : -1;
             v.t = t;
             v.swap = rng.range(45, 120);
@@ -460,6 +492,7 @@ export function OsmTraffic() {
         cMat.opacity = v.entering;
       }
     }
+    if (import.meta.env.DEV) (window as unknown as { __nxTraffic?: typeof stat }).__nxTraffic = stat;
   });
 
   return (

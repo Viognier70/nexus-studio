@@ -43,7 +43,7 @@ import { GraduationCap, Lock, LockOpen } from 'lucide-react';
 import { strings } from '../../../content/strings';
 import { DOUBLE_OR_NOTHING, INCIDENTS } from '../../../sim/balance';
 import type { KnowledgeAxis } from '../../types';
-import { KnowledgePyramid, floorBand, type LevelState } from './KnowledgePyramid';
+import { KnowledgePyramid, floorBand, PYRAMID_CROP, type LevelState } from './KnowledgePyramid';
 
 /** D5 pyramidMoment.ts t.hold + t.shrink: den hela pyramiden står 1,5 s och krymper till 2 600 ms. */
 export const PYRAMID_MOMENT_MS = 2600;
@@ -162,6 +162,8 @@ export function PyramidMoment({
   const nextLevels = levels.map((l, i) => (phase === 'choosing' && i === step + 1 && l === 'empty' ? 'next' : l)) as LevelState[];
   // Marken: brässmarken med kreditsymbolen och potten som stod på spel. Den faller vid fel.
   const [y0, y1] = floorBand(step);
+  // ORDER 323 §3 — pyramiden ritas i den täta ramen (PYRAMID_CROP), så marken räknas i den.
+  const tokenTop = (((y0 + y1) / 2 - PYRAMID_CROP.y) / PYRAMID_CROP.h) * 100;
 
   return createPortal(
     <div className="nx nx-stake" role="status" data-testid="pyramid-moment" data-phase={phase} data-step={step} data-axis={axes[step]} data-reduced={reduced || undefined}
@@ -171,10 +173,10 @@ export function PyramidMoment({
           {/* ORDER 322 A1 — den lilla pyramiden i raden, bredvid steget; inget ritas över rummet. */}
           <div className="nx-stake-pyr" data-testid="stake-pyramid" data-shrink={phase === 'done' || undefined} data-out={phase === 'wrong' || undefined}
             style={waiting ? { ['--stake-pulse' as string]: pulse.toFixed(3) } : undefined} data-pulse={waiting ? pulse.toFixed(2) : undefined}>
-            <KnowledgePyramid levels={nextLevels} full={phase === 'done'} axes={axes} legend={false} instantBelow={step} testId="pyramid-moment-pyramid" />
+            <KnowledgePyramid levels={nextLevels} full={phase === 'done'} axes={axes} legend={false} crop instantBelow={step} testId="pyramid-moment-pyramid" />
             {waiting && (
               // ORDER 310b — marken på steget och mässingslåset (öppet tills låset slår igen).
-              <span className="nx-stake-token" data-phase={phase} data-testid="stake-token" style={{ top: `${(((y0 + y1) / 2) / 250) * 100}%` }} aria-hidden>
+              <span className="nx-stake-token" data-phase={phase} data-testid="stake-token" style={{ top: `${tokenTop}%` }} aria-hidden>
                 <GraduationCap size="42%" strokeWidth={2.2} />
                 {potBefore > 0 && <span>{potBefore}</span>}
                 <span className="nx-stake-lock" data-testid="stake-lock" data-shut={phase === 'wait' || undefined}>
@@ -183,7 +185,7 @@ export function PyramidMoment({
               </span>
             )}
             {!right && (
-              <span className="nx-stake-token" data-testid="stake-token" style={{ top: `${(((y0 + y1) / 2) / 250) * 100}%` }} aria-hidden>
+              <span className="nx-stake-token" data-testid="stake-token" style={{ top: `${tokenTop}%` }} aria-hidden>
                 <GraduationCap size="42%" strokeWidth={2.2} />
                 {potBefore > 0 && <span>{potBefore}</span>}
               </span>

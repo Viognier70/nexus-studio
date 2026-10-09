@@ -233,6 +233,92 @@ const DILEMMA_TEXT: Record<string, DilemmaText> = {
       sv: 'Livsmedelslagen kräver att lokalerna hålls rena. Arbetsmiljölagen kräver att arbetsgivaren förebygger olycksfall, som halka.',
       en: 'The Swedish Food Act requires the premises to be kept clean. The Work Environment Act requires the employer to prevent accidents, such as slips.'
     }
+  },
+  // ORDER 323 §5 — vagnens dilemman. Nils, medhjälparen i foodtrucken, frågar.
+  // Utkast till Anders: texten är skriven för ordern och inte granskad av
+  // projektledningen; lagtexterna visas inte förrän de är granskade.
+  'fika-vagn-kylboxen': {
+    question: {
+      sv: 'Kylboxen under disken stod i solen hela eftermiddagen, och korvarna låg på tolv grader när vi öppnade. Jag grillade dem ändå, de blir ju genomvarma. Gjorde jag fel?',
+      en: 'The cool box under the counter stood in the sun all afternoon, and the sausages were at twelve degrees when we opened. I grilled them anyway, they get heated right through. Did I do wrong?'
+    },
+    options: {
+      A: { sv: 'Det som legat varmt slänger vi, och vi skriver upp temperaturen. I morgon står boxen i skuggan, med en termometer i.', en: 'Whatever has been warm goes, and we write down the temperature. Tomorrow the box stands in the shade, with a thermometer in it.' },
+      B: { sv: 'Grillen tar det mesta. Det gick ju bra.', en: 'The grill takes care of most of it. It turned out fine.' },
+      C: { sv: 'Nästa gång frågar du mig innan du grillar något som legat varmt.', en: 'Next time, ask me before you grill anything that has been warm.' }
+    },
+    explanation: {
+      sv: 'Svinnet vägdes mot gästernas säkerhet. Att korven blir varm på grillen tar inte bort allt som hunnit växa medan den låg varm. En vagn i solen behöver en rutin för kylan, inte en person som ska minnas att fråga.',
+      en: 'The waste was weighed against the guests’ safety. Heating the sausage on the grill does not undo everything that grew while it lay warm. A truck in the sun needs a routine for keeping things cold, not one person who has to remember to ask.'
+    },
+    legalNote: {
+      sv: 'Livsmedelslagen och EU:s förordning om livsmedelshygien kräver att företagaren har en egenkontroll som håller varorna i rätt temperatur, också i en vagn.',
+      en: 'The Swedish Food Act and the EU regulation on food hygiene require the operator to run own checks that keep food at the right temperature, in a truck as well.'
+    }
+  },
+  'fika-vagn-kon': {
+    question: {
+      sv: 'Kön var så lång vid sju att några gick innan de hann beställa. En sa att han aldrig kommer tillbaka. Jag stod och vände korv och kunde inte göra något.',
+      en: 'The queue was so long at seven that some people left before they could order. One said he would never come back. I was turning sausages and couldn’t do anything.'
+    },
+    options: {
+      A: { sv: 'Nästa gång går en av oss längs kön, tar beställningar och säger hur lång väntan är. Då kan de välja själva.', en: 'Next time one of us walks down the queue, takes orders and says how long the wait is. Then people can choose for themselves.' },
+      B: { sv: 'Folk får vänta. Det är en foodtruck.', en: 'People have to wait. It’s a food truck.' },
+      C: { sv: 'De kvällar det är mycket stryker vi en rätt från tavlan, så går det fortare.', en: 'On busy evenings we take one dish off the board, so things move faster.' }
+    },
+    explanation: {
+      sv: 'Kön vägdes mot vad vagnen hinner. Den som vet hur lång väntan blir kan välja att stanna; den som inte vet går. En kortare meny hjälper takten men tar bort något som gästerna kom för.',
+      en: 'The queue was weighed against what the truck can manage. Someone who knows how long the wait will be can choose to stay; someone who doesn’t, leaves. A shorter menu helps the pace but takes away something the guests came for.'
+    }
+  },
+  'fika-vagn-dricksen': {
+    question: {
+      sv: 'Det låg mycket i dricksburken i kväll. Förra veckan lade du den i kassan. Är dricksen till vagnen eller till oss som står i luckan?',
+      en: 'There was a lot in the tip jar tonight. Last week you put it in the till. Are the tips for the truck or for us at the hatch?'
+    },
+    options: {
+      A: { sv: 'Dricksen delas lika mellan oss som jobbade i kväll, och vi säger det högt, så att alla vet hur det går till.', en: 'The tips are split equally between those of us who worked tonight, and we say so out loud, so everyone knows how it works.' },
+      B: { sv: 'Den går till vagnen. Det är vagnens gäster.', en: 'It goes to the truck. They are the truck’s customers.' },
+      C: { sv: 'Ta du den i kväll, du slet mest.', en: 'You take it tonight, you worked hardest.' }
+    },
+    explanation: {
+      sv: 'Vad som är rättvist vägdes mot att regeln är känd i förväg. En regel som alla känner till skyddar mot misstankar, också när summan är liten. Att ge den som slet mest kan kännas generöst men gör nästa kväll oklar.',
+      en: 'What is fair was weighed against a rule that is known in advance. A rule everyone knows protects against suspicion, even when the sum is small. Giving it to whoever worked hardest can feel generous but leaves the next evening unclear.'
+    }
+  },
+  'fika-vagn-benen': {
+    question: {
+      sv: 'Mina ben är slut. Vi står fem timmar i luckan utan att sätta oss, och i kväll var det kallt i vagnen. Hur länge ska det vara så här?',
+      en: 'My legs are done. We stand at the hatch for five hours without sitting down, and tonight it was cold in the truck. How long is it going to be like this?'
+    },
+    options: {
+      A: { sv: 'Vi tar en paus var, i tur och ordning, varje timme. Och jag skaffar en matta att stå på och ett element vid luckan.', en: 'We each take a break, in turns, every hour. And I’ll get a mat to stand on and a heater by the hatch.' },
+      B: { sv: 'Så är det att jobba i en vagn.', en: 'That’s what working in a truck is like.' },
+      C: { sv: 'Sätt dig när det är lugnt.', en: 'Sit down when it’s quiet.' }
+    },
+    explanation: {
+      sv: 'Tröttheten vägdes mot att vagnen ska hålla öppet. Pauser som är bestämda i förväg blir av; pauser när det är lugnt blir sällan av. En varm och skonsam plats att stå på är arbetsgivarens sak, inte den anställdes.',
+      en: 'The tiredness was weighed against keeping the truck open. Breaks that are set in advance happen; breaks for when it is quiet rarely do. A warm place to stand that is easy on the body is the employer’s business, not the employee’s.'
+    },
+    legalNote: {
+      sv: 'Arbetsmiljölagen och Arbetsmiljöverkets föreskrifter kräver att arbetsgivaren förebygger ohälsa, också av långvarigt stående arbete och kyla. Arbetstidslagen kräver rast efter högst fem timmars arbete.',
+      en: 'The Work Environment Act and the Work Environment Authority’s provisions require the employer to prevent ill health, including from long periods of standing and from cold. The Working Hours Act requires a break after no more than five hours of work.'
+    }
+  },
+  'fika-vagn-kortet': {
+    question: {
+      sv: 'När kortläsaren krånglade sa jag åt två gäster att de fick betala med Swish eller gå. Den ena blev sur. Det står ingenstans hur man kan betala hos oss.',
+      en: 'When the card reader played up, I told two customers they could pay by Swish or leave. One of them got annoyed. Nowhere does it say how you can pay at our truck.'
+    },
+    options: {
+      A: { sv: 'Vi sätter upp en skylt om hur man kan betala, och har en reserv när tekniken krånglar, en andra läsare eller att de får betala nästa gång.', en: 'We put up a sign saying how you can pay, and keep a fallback for when the technology fails: a second reader, or letting people pay next time.' },
+      B: { sv: 'Den som inte kan betala får ingen mat.', en: 'If you can’t pay, you don’t get food.' },
+      C: { sv: 'När läsaren krånglar bjuder vi.', en: 'When the reader plays up, it’s on the house.' }
+    },
+    explanation: {
+      sv: 'Gästen vägdes mot kassan. Det som står på skylten i förväg undviker grälet vid luckan, och en reserv gör att ett fel i tekniken inte blir ett fel mot gästen. Att bjuda varje gång blir dyrt och säger inget om nästa gång.',
+      en: 'The customer was weighed against the takings. What the sign says in advance avoids the argument at the hatch, and a fallback means a fault in the technology doesn’t become a fault against the customer. Treating everyone every time gets expensive and says nothing about next time.'
+    }
   }
 };
 
@@ -273,12 +359,13 @@ export const FIKA_TEXT = {
   changed: { sv: 'Ditt svar har förändrats.', en: 'Your answer has changed.' },
   same: { sv: 'Du svarade som förra gången.', en: 'You answered as you did last time.' },
   people: {
-    sv: { host: 'Per', server: 'Sara', sommelier: 'Elin', bartender: 'Mira', cook: 'Jonas', dishwasher: 'Linnea' } as Record<string, string>,
-    en: { host: 'Per', server: 'Sara', sommelier: 'Elin', bartender: 'Mira', cook: 'Jonas', dishwasher: 'Linnea' } as Record<string, string>
+    // ORDER 323 §5 — Nils, medhjälparen i foodtrucken (nexusStrings 'truck.assistant.name').
+    sv: { host: 'Per', server: 'Sara', sommelier: 'Elin', bartender: 'Mira', cook: 'Jonas', dishwasher: 'Linnea', assistant: 'Nils' } as Record<string, string>,
+    en: { host: 'Per', server: 'Sara', sommelier: 'Elin', bartender: 'Mira', cook: 'Jonas', dishwasher: 'Linnea', assistant: 'Nils' } as Record<string, string>
   },
   roles: {
-    sv: { host: 'hovmästare', server: 'servitör', sommelier: 'sommelier', bartender: 'bartender', cook: 'kock', dishwasher: 'diskare' } as Record<string, string>,
-    en: { host: 'head waiter', server: 'waiter', sommelier: 'sommelier', bartender: 'bartender', cook: 'chef', dishwasher: 'dishwasher' } as Record<string, string>
+    sv: { host: 'hovmästare', server: 'servitör', sommelier: 'sommelier', bartender: 'bartender', cook: 'kock', dishwasher: 'diskare', assistant: 'medhjälpare i vagnen' } as Record<string, string>,
+    en: { host: 'head waiter', server: 'waiter', sommelier: 'sommelier', bartender: 'bartender', cook: 'chef', dishwasher: 'dishwasher', assistant: 'assistant in the truck' } as Record<string, string>
   },
   // Lagarna i dilemmana (content/fika/dilemmas.ts legal.laws), visas bara när
   // dilemmat är granskat.

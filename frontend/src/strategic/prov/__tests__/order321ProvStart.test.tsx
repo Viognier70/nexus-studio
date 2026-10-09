@@ -21,6 +21,8 @@ describe('ORDER 321 — startskärmen', () => {
     fireEvent.change(screen.getByTestId('prov-weather'), { target: { value: 'cool' } });
     fireEvent.change(screen.getByTestId('prov-incident'), { target: { value: 'vb40-karaffen' } });
     fireEvent.click(screen.getByTestId('prov-begin'));
-    expect(onStart).toHaveBeenCalledWith({ place: 'vinbar', week: 5, cashSek: 42000, weather: 'cool', incidentId: 'vb40-karaffen', name: 'Hyttgrillen' });
+    // ORDER 323 §8 — fältet är tomt (Hyttgrillen som platshållare); tomt ger Hyttgrillen i spelet (provBusinessName).
+    expect(onStart).toHaveBeenCalledWith({ place: 'vinbar', week: 5, cashSek: 42000, weather: 'cool', incidentId: 'vb40-karaffen', name: '' });
+    expect((screen.getByTestId('prov-name') as HTMLInputElement).placeholder).toBe('Hyttgrillen');
   });
 });

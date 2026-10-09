@@ -48,6 +48,8 @@ export function FikaScreen({ sim, onContinue }: { sim: SimulationState; onContin
             <h1 className="nx-display nx-fika-asker" data-testid="fika-asker">{f.asks(name, role)}</h1>
           </div>
         </header>
+        {/* ORDER 323 §2 — kortets innehåll rullar, knapparna nederst står fast. */}
+        <div className="nx-evening-scroll">
         <div className="nx-paper nx-lesson-paper nx-fika-paper">
           <p className="nx-fika-question" data-testid="fika-question">{f.quote(text.question)}</p>
           {!answered && (
@@ -113,6 +115,7 @@ export function FikaScreen({ sim, onContinue }: { sim: SimulationState; onContin
               )}
             </div>
           )}
+        </div>
         </div>
         <footer className="nx-evening-foot">
           {!answered ? (

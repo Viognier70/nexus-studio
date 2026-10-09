@@ -39,13 +39,21 @@
 /* ---------- Byn i kväll (skärm 5) ---------- */
 .nx-visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .nx-cmp { width: min(calc(820 * var(--nx-u) + 20vw), 94vw); padding: calc(28 * var(--nx-u)) calc(34 * var(--nx-u)); border-radius: var(--w-radius-panel, 22px); }
-.nx-cmp-head { display: grid; grid-template-columns: auto 1fr auto; align-items: end; gap: calc(28 * var(--nx-u)); padding-bottom: calc(14 * var(--nx-u)); border-bottom: 2px solid rgba(42,28,19,.15); }
+/* ORDER 323 §7 — rubriken och placeringen på första raden, förklaringen på en egen rad under dem
+   (förut tre kolumner, där förklaringen fick det som blev över: ett ord per rad). */
+.nx-cmp-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'title place' 'note note'; align-items: end; column-gap: calc(28 * var(--nx-u)); row-gap: calc(8 * var(--nx-u)); padding-bottom: calc(14 * var(--nx-u)); border-bottom: 2px solid rgba(42,28,19,.15); }
+.nx-cmp-title { grid-area: title; min-width: 0; }
+.nx-cmp-note { grid-area: note; max-width: 70ch; }
+.nx-cmp-head .nx-cmp-place { grid-area: place; }
 .nx-cmp-head .nx-label { color: var(--w-ink-label, #9a6a2a); }
 .nx-cmp-place { font-weight: 700; color: var(--w-ink-label, #9a6a2a); white-space: nowrap; }
-.nx-cmp-table { width: 100%; border-collapse: collapse; margin-top: calc(10 * var(--nx-u)); }
+.nx-cmp-table { width: 100%; border-collapse: collapse; margin-top: calc(10 * var(--nx-u)); table-layout: fixed; }
+/* ORDER 323 §7 — kolumnerna: krogens namn 34 %, talen 22 % var, i alla storlekar. */
+.nx-cmp-table thead th:first-child { width: 34%; }
+.nx-cmp-table thead th:not(:first-child) { width: 22%; }
 .nx-cmp-table th, .nx-cmp-table td { text-align: left; padding: calc(10 * var(--nx-u)) calc(12 * var(--nx-u)); border-bottom: 1px dashed rgba(42,28,19,.18); vertical-align: top; }
 .nx-cmp-table thead th { font-size: max(12px, calc(13 * var(--nx-u))); letter-spacing: .12em; text-transform: uppercase; color: var(--w-ink-label, #9a6a2a); border-bottom: 0; }
-.nx-cmp-table tbody th { font-weight: 700; white-space: nowrap; }
+.nx-cmp-table tbody th { font-weight: 700; overflow-wrap: anywhere; }
 .nx-cmp-table tr.is-player { background: rgba(232,185,58,.22); }
 .nx-cmp-table tr.is-player th:first-child { border-radius: 12px 0 0 12px; }
 .nx-cmp-table tr.is-player td:last-child { border-radius: 0 12px 12px 0; }
@@ -61,7 +69,7 @@
 .nx-cmp-foot { display: flex; justify-content: flex-end; margin-top: calc(20 * var(--nx-u)); }
 @media (max-width: 760px) {
   .nx-cmp { padding: 14px; }
-  .nx-cmp-head { grid-template-columns: 1fr; gap: 6px; }
+  .nx-cmp-head { grid-template-columns: 1fr; grid-template-areas: 'title' 'place' 'note'; gap: 6px; }
   .nx-cmp-table th, .nx-cmp-table td { padding: 6px; }
 }
 

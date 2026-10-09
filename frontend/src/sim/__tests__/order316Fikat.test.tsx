@@ -51,7 +51,8 @@ afterEach(() => { cleanup(); setLanguage('en'); dispatched.length = 0; });
 
 describe('ORDER 316 — dilemmana', () => {
   it('tolv dilemman med text på svenska och engelska för frågan, varje svar och förklaringen', () => {
-    expect(DILEMMAS).toHaveLength(12);
+    // ORDER 323 §5 — vinbarens tolv; vagnens fem prövas i order323Fikat.test.ts.
+    expect(DILEMMAS.filter((d) => d.places.includes('wine'))).toHaveLength(12);
     for (const lang of ['sv', 'en'] as const) {
       const f = pickLang(TABLE, lang).fika;
       for (const d of DILEMMAS) {

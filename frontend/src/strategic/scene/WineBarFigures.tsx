@@ -674,7 +674,7 @@ export function WineBarFigures({ room, mood }: Props) {
     const staffMarks = STAFF_KEYS.map((k) => { const m = createStaffMark(k); group.add(m.group); return m; });
     const stage = new TheatreStage(group, room.floorY, STAFF_KEYS.length, WINE_BAR_GUEST_POOL);
     // ORDER 313 §8 — flaskorna i baren.
-    stage.dress(groupsFor(room));
+    stage.dress(groupsFor(room), room);
     // ORDER 309 — orkringen (D5 ORK_RING) vid varje anställds fötter.
     const orkRings = STAFF_KEYS.map(() => { const r = createOrkRing(); group.add(r.group); return r; });
     castRef.current = {

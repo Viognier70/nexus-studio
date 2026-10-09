@@ -1,0 +1,126 @@
+{
+  "tag": "fore",
+  "server": "dev",
+  "houseDistanceM": 38,
+  "housePitch": 0.5,
+  "houses": [
+    {
+      "id": "w869907973",
+      "kind": "yes",
+      "renderer": "OsmBuildings",
+      "at": [
+        14.525,
+        -37.0975
+      ],
+      "d": 18,
+      "image": "hus-01-OsmBuildings-w869907973.png"
+    },
+    {
+      "id": "w869907977",
+      "kind": "yes",
+      "renderer": "OsmBuildings",
+      "at": [
+        55.571666666666665,
+        -5.210000000000001
+      ],
+      "d": 36,
+      "image": "hus-02-OsmBuildings-w869907977.png"
+    },
+    {
+      "id": "w869907971",
+      "kind": "yes",
+      "renderer": "OsmBuildings",
+      "at": [
+        -12.2925,
+        -40.915
+      ],
+      "d": 41,
+      "image": "hus-03-OsmBuildings-w869907971.png"
+    },
+    {
+      "id": "w869907972",
+      "kind": "yes",
+      "renderer": "OsmBuildings",
+      "at": [
+        -7.93,
+        -61.3975
+      ],
+      "d": 51,
+      "image": "hus-04-OsmBuildings-w869907972.png"
+    },
+    {
+      "id": "w869907976",
+      "kind": "yes",
+      "renderer": "OsmBuildings",
+      "at": [
+        66.84333333333333,
+        5.078888888888889
+      ],
+      "d": 51,
+      "image": "hus-05-OsmBuildings-w869907976.png"
+    },
+    {
+      "id": "w1239584173",
+      "kind": "residential",
+      "renderer": "ProceduralFacades",
+      "at": [
+        19.1,
+        -65.6675
+      ],
+      "d": 45,
+      "image": "hus-06-ProceduralFacades-w1239584173.png"
+    },
+    {
+      "id": "vw-kyr-5",
+      "kind": "house",
+      "renderer": "ProceduralFacades",
+      "at": [
+        -40,
+        -5
+      ],
+      "d": 65,
+      "image": "hus-07-ProceduralFacades-vw-kyr-5.png"
+    },
+    {
+      "id": "w1239584172",
+      "kind": "residential",
+      "renderer": "ProceduralFacades",
+      "at": [
+        16.994999999999997,
+        -88.2225
+      ],
+      "d": 67,
+      "image": "hus-08-ProceduralFacades-w1239584172.png"
+    },
+    {
+      "id": "w1239589285",
+      "kind": "house",
+      "renderer": "ProceduralFacades",
+      "at": [
+        -14.5975,
+        -84.83
+      ],
+      "d": 74,
+      "image": "hus-09-ProceduralFacades-w1239589285.png"
+    },
+    {
+      "id": "vw-kyr-14",
+      "kind": "house",
+      "renderer": "ProceduralFacades",
+      "at": [
+        -53.11333333333334,
+        7.9700000000000015
+      ],
+      "d": 81,
+      "image": "hus-10-ProceduralFacades-vw-kyr-14.png"
+    }
+  ],
+  "errors": [],
+  "kvarteret": {
+    "x": 23.00000315361847,
+    "z": -20.999998547661797,
+    "distance": 89.99666294363217,
+    "yaw": -0.04999999375429916,
+    "pitch": 0.949999999803152
+  }
+}

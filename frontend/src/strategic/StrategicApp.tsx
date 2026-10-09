@@ -70,10 +70,9 @@ import { RoomCameraBounds } from './camera/RoomCameraBounds';
 import { HudBottom } from './ui/service/HudBottom';
 import { MoodMeter } from './ui/host/MoodMeter';
 import { OpeningSequence } from './opening/OpeningSequence';
-import { buildProvState, type ProvSetup } from './prov/provState';
+import { buildProvState, provBusinessName, type ProvSetup } from './prov/provState';
 import { ProvBadge } from './prov/ProvBadge';
 import { DEFAULT_SEED } from './simulation/model';
-import { t as tt } from '../content/nexusStrings';
 
 interface StrategicAppProps {
   // ORDER 267 — introduktionen börjar (ORDER 300: efter registreringen).
@@ -101,7 +100,7 @@ export function StrategicApp({ startIntroduction = false, onNewGame, player, ope
     return <WebGLFallback onRestart={() => window.location.reload()} />;
   }
   return (
-    <BusinessProvider initialName={provState ? prov!.name.trim() || tt(lang, 'prov.businessName') : null}>
+    <BusinessProvider initialName={provState ? provBusinessName(prov!.name, lang) : null}>
       <CameraProvider>
         <SimulationProvider seed={harnessParams.seed ?? undefined} startIntroduction={startIntroduction} player={player} initialState={provState}>
           <SaveProvider>

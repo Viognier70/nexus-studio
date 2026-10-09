@@ -1,0 +1,29 @@
+{
+  "onWallM": 0.12,
+  "sillMinM": 0.25,
+  "houses": 178,
+  "OsmBuildings": {
+    "windows": 1005,
+    "fasaden": 235,
+    "svävar": 0,
+    "inne": 770,
+    "utan hus": 0,
+    "över takfoten": 0,
+    "vid marken": 0,
+    "housesFloating": 0
+  },
+  "VillageWindows": {
+    "windows": 2341,
+    "fasaden": 2341,
+    "svävar": 0,
+    "inne": 0,
+    "utan hus": 0,
+    "över takfoten": 0,
+    "vid marken": 0,
+    "housesFloating": 0,
+    "housesWithout": 0,
+    "besideDayWindow": 1618,
+    "housesWithBoth": 52
+  },
+  "examples": []
+}

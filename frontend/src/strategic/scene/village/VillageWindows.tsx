@@ -11,28 +11,26 @@
 //   - Hotellets rum tänds när gästerna går upp (LIGHTS.hotelRooms).
 //   - Krogarnas fönster: matsalen när krogen har öppet, köket också före
 //     öppning och under städningen (venueLight.ts).
-// Fönstren sitter på husens väggar som de ritas (OsmBuildings osmWallHeight,
-// bara hus som OsmBuildings ritar: isRenderedByOsmBuildings),
-// en rad på 1,6 m och en till på 4,4 m i höga hus. Vår krog har rummets skal
+// Fönstren är husens egna, som OsmBuildings ritar dem (ORDER 323 §4,
+// facadeWindowsOf): en rad per våning. Vår krog har rummets skal
 // och egna fönster. Bara under servicen och kvällen.
 
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
-import { WORLD_RAW_BUILDINGS, type RawBuilding } from '../../content/world';
 import { VENUE_BUILDINGS } from '../../content/villagePlaces';
 import { useSimState } from '../../simulation/SimulationProvider';
 import { eveningProgress } from '../../../sim/clock';
 import { useOpeningEvening } from '../../opening/openingStage';
 import { venuesTonight, PLAYER_VENUE } from '../../../sim/village';
 import { COLOURS, LIGHTS } from '../../village/villageEvening';
-import { isRenderedByOsmBuildings, osmWallHeight } from '../OsmBuildings';
+import { drawnOsmBuildings, FACADE_WINDOW, facadeWindowsOf, osmBuildingVolume } from '../OsmBuildings';
 import { villageLive } from './villageLive';
 import { venueLightTargets } from './venueLight';
 
 type Vec2 = [number, number];
 type Kind = 'home' | 'school' | 'rooms' | 'venue';
-interface Win { x: number; y: number; z: number; ry: number; w: number; h: number; kind: Kind; owner: string; role: 'dining' | 'kitchen' | null; j: number }
+interface Win { x: number; y: number; z: number; ry: number; w: number; h: number; kind: Kind; owner: string; role: 'dining' | 'kitchen' | null; j: number; bid: string }
 
 const HOME_KINDS = new Set(['house', 'residential', 'apartments', 'detached', 'terrace']);
 // Byggnader av sorten 'yes' räknas som bostadshus på 40–320 m² (Designs byKvallPlats.js).
@@ -49,59 +47,41 @@ function area(poly: Vec2[]): number {
   return Math.abs(a) / 2;
 }
 
-/** Husets kanter med normalen utåt (bort från mitten). */
-function edges(poly: Vec2[]) {
-  const n = poly.length - 1;
-  const cx = poly.slice(0, n).reduce((a, p) => a + p[0], 0) / n;
-  const cz = poly.slice(0, n).reduce((a, p) => a + p[1], 0) / n;
-  const out: { a: Vec2; L: number; t: Vec2; n: Vec2 }[] = [];
-  for (let i = 0; i < n; i++) {
-    const a = poly[i];
-    const b = poly[i + 1];
-    const L = Math.hypot(b[0] - a[0], b[1] - a[1]);
-    if (L < 0.01) continue;
-    const t: Vec2 = [(b[0] - a[0]) / L, (b[1] - a[1]) / L];
-    let nn: Vec2 = [-t[1], t[0]];
-    const mx = (a[0] + b[0]) / 2;
-    const mz = (a[1] + b[1]) / 2;
-    if (nn[0] * (mx - cx) + nn[1] * (mz - cz) < 0) nn = [-nn[0], -nn[1]];
-    out.push({ a, L, t, n: nn });
-  }
-  return out;
-}
+// ORDER 323 §4 — fönstren är husens egna (OsmBuildings facadeWindowsOf): samma
+// ritade hus (drawnOsmBuildings, också delarna av ett hus med flera flyglar),
+// samma väggar och samma platser som fönstren som ritas på dagen. Rutan ligger
+// precis framför fönstrets låda (PANE_PROUD_M från lådans mitt). Förut lade
+// kvällen egna rutor på de odelade OSM-polygonernas kanter, på fasta höjder
+// (1,6 och 4,4 m), bredvid dagens fönster.
+const PANE_PROUD_M = FACADE_WINDOW.depth / 2 + 0.012;
 
-function buildWindows(): Win[] {
+export function buildWindows(): Win[] {
   const list: Win[] = [];
   const venueOf = new Map(Object.entries(VENUE_BUILDINGS).map(([id, bid]) => [bid, id]));
-  const row = (_b: RawBuilding, e: ReturnType<typeof edges>[number], y: number, size: Vec2, kind: Kind, owner: string, step: number, role?: (i: number, n: number) => 'dining' | 'kitchen') => {
-    const n = Math.floor((e.L - 1) / step);
-    for (let i = 0; i < n; i++) {
-      const s = ((i + 0.5) * e.L) / n;
-      list.push({ x: e.a[0] + e.t[0] * s + e.n[0] * 0.06, y, z: e.a[1] + e.t[1] * s + e.n[1] * 0.06, ry: Math.atan2(e.n[0], e.n[1]), w: size[0], h: size[1], kind, owner, role: role ? role(i, n) : null, j: list.length });
-    }
-  };
-  for (const b of WORLD_RAW_BUILDINGS) {
-    // Bara hus som ritas med samma volym (OsmBuildings), så att inget fönster
-    // hänger i luften där ett hus ritas på annat sätt eller inte alls.
-    if (b.poly.length < 4 || !isRenderedByOsmBuildings(b)) continue;
-    const poly = b.poly as Vec2[];
-    const venue = venueOf.get(b.id);
+  for (const b of drawnOsmBuildings()) {
+    if (b.poly.length < 4) continue;
+    const baseId = b.id.split('#')[0];
+    const venue = venueOf.get(baseId);
     if (venue === PLAYER_VENUE) continue; // vårt rum har sitt skal och sina fönster
-    const H = osmWallHeight(b);
     const kind = b.kind ?? '';
-    const E = edges(poly);
-    if (venue) {
-      E.filter((e) => e.L > 3.5).forEach((e) => {
-        row(b, e, 1.5, [1.4, 1.2], 'venue', venue, 2.6, (i, n) => (i === n - 1 ? 'kitchen' : 'dining'));
-        if (venue === 'hotellets-matsal') [3.9, 5.7].forEach((y) => { if (y < H - 1) row(b, e, y, [0.9, 1.1], 'rooms', venue, 2.4); });
-      });
-    } else if (HOME_KINDS.has(kind) || (kind === 'yes' && area(poly) >= YES_HOME_M2[0] && area(poly) <= YES_HOME_M2[1])) {
-      E.filter((e) => e.L > 3).forEach((e) => {
-        row(b, e, 1.6, [0.8, 1.0], 'home', b.id, 3);
-        if (H > 5.5) row(b, e, 4.4, [0.8, 1.0], 'home', b.id, 3);
-      });
-    } else if (kind === 'university' || kind === 'school') {
-      E.filter((e) => e.L > 3).forEach((e) => [1.5, 3.9].forEach((y) => { if (y < H - 1) row(b, e, y, [1.0, 1.2], 'school', b.id, 2.8); }));
+    const poly = b.poly as Vec2[];
+    const home = HOME_KINDS.has(kind) || (kind === 'yes' && area(poly) >= YES_HOME_M2[0] && area(poly) <= YES_HOME_M2[1]);
+    const school = kind === 'university' || kind === 'school';
+    if (!venue && !home && !school) continue;
+    const vol = osmBuildingVolume(b);
+    if (!vol) continue;
+    const wins = facadeWindowsOf(vol);
+    vol.geo.dispose();
+    for (const w of wins) {
+      let k: Kind;
+      let role: 'dining' | 'kitchen' | null = null;
+      if (venue) {
+        if (w.storey === 0) { k = 'venue'; role = w.i === w.n - 1 ? 'kitchen' : 'dining'; }
+        else if (venue === 'hotellets-matsal') k = 'rooms';
+        else continue;
+      } else k = home ? 'home' : 'school';
+      const nx = Math.sin(w.rotY), nz = Math.cos(w.rotY);
+      list.push({ x: w.pos[0] + nx * PANE_PROUD_M, y: w.pos[1], z: w.pos[2] + nz * PANE_PROUD_M, ry: w.rotY, w: w.w, h: w.h, kind: k, owner: venue ?? baseId, role, j: list.length, bid: b.id });
     }
   }
   return list;

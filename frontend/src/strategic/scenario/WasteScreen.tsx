@@ -72,7 +72,9 @@ export function WasteScreen({ sim, onContinue }: { sim: SimulationState; onConti
   const advice = w.advice;
   const perKg = strings.service.meters.sek(WASTE.feePerKg.toLocaleString(locale, { minimumFractionDigits: 2 }));
   return (
-    <NxScreen testId="screen-S1" label={t.title} className="nx-waste-screen">
+    <NxScreen testId="screen-S1" label={t.title} className="nx-waste-screen nx-screen-fixed-foot">
+      {/* ORDER 323 §2 — innehållet rullar, knapparna nederst står fast. */}
+      <div className="nx-evening-scroll">
       <div className="nx-waste-grid">
         <section className="nx-panel nx-waste-main">
           <header className="nx-waste-head">
@@ -128,6 +130,7 @@ export function WasteScreen({ sim, onContinue }: { sim: SimulationState; onConti
       </div>
       {/* ORDER 284 — knappen vidare står i en fot som syns också när skärmen
           är längre än fönstret (tredje provspelet), som på L1 och K1. */}
+      </div>
       <footer className="nx-evening-foot">
         <span />
         <div><NxButton testId="waste-continue" onClick={leave}>{t.continue}</NxButton></div>
