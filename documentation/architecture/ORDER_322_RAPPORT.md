@@ -72,6 +72,75 @@ Anders 2026-10-09: "Gör A och C först, merga och pusha. Sedan B.1 (listan) til
 - `order310Kvitt.test.tsx` (om rätt 3 efter steg 1, ingen ruta efter steg 3) och `order321ProvStart.test.tsx` (namnet) är uppdaterade.
 - Hela sviten: 2711 gröna, 1 förväntat fel, 19 överhoppade. Typecheck och bygget är gröna.
 
+## B.1. Byn mot den riktiga kartan (listan, inget är rättat)
+
+**Hur jämförelsen görs.**
+- `scripts/order322-karta.mjs` lägger spelets karta ovanpå den riktiga och skriver `frontend/reports/order322/karta.json` och bilderna `karta-*.png`.
+- **Spelets karta** tas ur renderingens egna moduler (`src/strategic/__tests__/order322Karta.test.ts`):
+  - vägytan som `OsmRoads` ritar (`roadRenderPieces`, med bredden per vägtyp);
+  - Torgets plan;
+  - husen som ritas (`renderedFootprints`, utan de dolda i `BUILDINGS_ON_ROADS`, med uthusen);
+  - de handbyggda landmärkena där `CraftedLandmarks.tsx` ställer dem.
+- **Den riktiga kartan** är kartunderlaget `grythyttan-osm.json` (OSM 2026-07-02) och `grythyttan-world.json`, i spelets projektion.
+- **Byn** är de riktiga husens utbredning plus 60 m. 323 av 327 vägar ligger där.
+
+**Bilderna.**
+- `karta-karnan.png` visar byns kärna.
+- `karta-torget.png` visar Torget, med sex pixlar per meter.
+- `karta-1.png` till `karta-10.png` är utsnitt kring skillnaderna.
+- `karta-byn.png` visar hela området.
+- Teckenförklaringen står under varje bild:
+  - blå linje: riktig väg;
+  - svart kant: riktigt hus;
+  - orange: spelets väg;
+  - rött, grönt och lila: spelets hus, syntetiska hus och uthus;
+  - röd linje: där vägen saknas i spelet;
+  - röd kant: ett riktigt hus som saknas.
+
+**Vägarna** (`karta.json` `roadIssues`, `counts.roadIssues`, `counts.gapMetres`).
+- Varje riktig väg i byn provas meter för meter mot spelets vägyta för samma väg.
+- 32 sträckor saknas i spelet, och den längsta är 44 m. Tre av dem saknas helt (`kind: 'saknas'`).
+- Orsakerna (`roadIssues[].building`):
+
+  | Orsak | Sträckor | Nummer |
+  |---|---|---|
+  | **Dolda syntetiska hus** | 19 | 2, 3, 5, 7–14, 16, 17, 20, 21, 23–25, 29 |
+  | Riktiga hus som dolts | 4 | 4, 6, 31, 32 |
+  | Riktiga hus nära vägen | 5 | 1, 15, 18, 27, 30 |
+  | Synliga syntetiska hus på vägen | 4 | 19, 22, 26, 28 |
+
+  - **Dolda syntetiska hus.** De 16 husen i `BUILDINGS_ON_ROADS` som inte finns i OSM (till exempel `vw-kyr-torget-lh`, `vw-pra-18`, `vw-sorgarden`, `vw-mag-warehouse`) ritas inte, eftersom en väg går genom dem. De klipper ändå vägen. Där står alltså varken hus eller väg.
+    - Lokavägen bryts 34 m vid Prästgatan.
+    - Kyrkbacken saknar 38 m mot Torget.
+    - Kyrkogatan saknas helt mellan Torget och Smedsgatan.
+    - Skolgatan, Magasinsgatan och Åsgatan bryts.
+  - **Riktiga hus som dolts.** De två industrihusen `w870510826` och `w870510828` vid stationen döljs, eftersom en serviceväg går genom dem i OSM. De klipper också vägen. Båda vägarna, `w1329020075` och `w1329020076`, saknas helt.
+  - **Riktiga hus nära vägen.** Trottoaren skulle gå in i huset, så hela vägen klipps (`roadSurface.ts`, ORDER 158):
+    - Artur Lindqvists gata saknar 44 m mellan `w869907963` och huset bredvid, och når inte fram till sin fortsättning;
+    - Kyrkogatan saknar 10 m;
+    - tre servicevägar saknar 3–14 m.
+  - **Synliga syntetiska hus på vägen:** Järnvägsgatan (`vw-jarn-9`), Smedsgatan (`vw-kyr-9e-mansard`), Hantverksgatan (`vw-hjv-5`) och Prästgatan (`vw-pra-8`).
+- **Ändarna.** Av spelets 668 vägändar i byn är 57 varken en riktig återvändsgata eller en anslutning till en annan väg (`counts.gameEndsNotRealEnds`). Det är luckornas ändar.
+
+**Husen.**
+- **Saknas:** 2 riktiga hus, de dolda industrihusen ovan (`missing`). Alla andra 273 riktiga hus ritas.
+- **Står fel:** de sex handbyggda landmärkena står 0,9–3,2 m från sin plats på kartan (`moved`):
+
+  | Landmärke | Avstånd |
+  |---|---|
+  | Herrgården | 3,2 m |
+  | Campus | 2,3 m |
+  | Pizzans hus | 1,8 m |
+  | Gästgivaregården | 1,7 m |
+  | Kyrkan | 1,4 m |
+  | Järnvägsstationen | 0,9 m |
+
+  Orsaken: ingesten räknade landmärkets mitt med den slutande punkten två gånger, medan `CraftedLandmarks.tsx` centrerar polygonen utan den.
+- **Finns i spelet men inte på kartan:**
+  - 47 syntetiska hus (`synthesised`, `counts.synthesisedShown`). Fem av dem står på en riktig väg (`synthesisedOnRoad`): de fyra ovan och `vw-pra-15s`, `vw-forskola`.
+  - 56 uthus (`counts.outbuildings`). Inget av uthusen står på ett riktigt hus eller en riktig väg (`counts.shedConflicts` 0).
+
 ## Kvar
 
-- B (byn): B.1, listan över skillnaderna mot den riktiga kartan, visas för Anders innan något rättas. B.2 och B.3, testerna för etiketterna och vägändarna, kommer efter det.
+- B.1-listan visas för Anders. Inget är rättat.
+- B.2 (etiketterna) och B.3 (testet för vägändarna) kommer efter Anders beslut. B.3 kan använda måttet för vägändarna i `order322-karta.mjs`.
