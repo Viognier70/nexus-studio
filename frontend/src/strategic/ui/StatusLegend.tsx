@@ -5,7 +5,7 @@
 // (scene/staffRing.ts) och MoodSymbol (ui/host/MoodSymbol.tsx, MOODS).
 // Formen kommer från Design (D6).
 
-import { useSyncExternalStore } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { strings } from '../../content/strings';
 import { t as tt, type StringKey } from '../../content/nexusStrings';
 import { useLanguage } from '../../content/language';
@@ -15,7 +15,7 @@ import { MoodSymbol } from './host/MoodSymbol';
 import { statusModeOn, subscribeStatusMode } from './statusMode';
 import './screens/screens.css';
 import type { StaffRole } from '../scene/staffRing';
-import { ORK_RING, WELLBEING_SYMBOL } from '../scene/staffStatus';
+import { ORK_RING, STATUS_LEGEND, WELLBEING_SYMBOL } from '../scene/staffStatus';
 
 const ROLES: readonly StaffRole[] = ['host', 'waiter', 'sommelier', 'bartender', 'cook', 'dishwasher', 'dj'];
 // ORDER 317 — kockens ring #7fa8ff ur samma tabell (d6Ui ROLE_RING via staffRing.ts ROLE_COLOUR).
@@ -100,16 +100,44 @@ export function StatusLegendBody({ withWhy }: { withWhy?: boolean } = {}) {
   );
 }
 
-/** Hörnet i statusläget. */
+/** Hörnet i statusläget. ORDER 322 A3 (Anders 2026-10-09): stängd från början, öppnas med tangenten (L), som
+ *  står i hörnet. Rubriken står utanför rullningen och klipps inte; under kvitt eller dubbelt slutar rutan ovanför
+ *  raden och valen (service.css, body:has(.nx-stake)). */
 export function StatusLegend() {
   const on = useSyncExternalStore(subscribeStatusMode, statusModeOn, statusModeOn);
   const lang = useLanguage();
+  const [open, setOpen] = useState(false);
+  useEffect(() => { if (on) setOpen(false); }, [on]);
+  useEffect(() => {
+    if (!on) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const tg = e.target as HTMLElement | null;
+      if (tg && (tg.tagName === 'INPUT' || tg.tagName === 'TEXTAREA' || tg.tagName === 'SELECT' || tg.isContentEditable)) return;
+      if (e.key.toUpperCase() === STATUS_LEGEND.key) setOpen((o) => !o);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [on]);
   if (!on) return null;
+  const hint = tt(lang, 'legend.keyHint', { key: STATUS_LEGEND.key });
+  if (!open) {
+    return (
+      <button type="button" className="nx nx-panel nx-status-legend nx-status-legend-chip" data-testid="status-legend-key" data-open="false"
+        aria-expanded={false} aria-keyshortcuts={STATUS_LEGEND.key} title={hint} onClick={() => setOpen(true)}>
+        <kbd className="nx-mode-cap">{STATUS_LEGEND.key}</kbd>
+        <span className="nx-label nx-accent-text">{strings.legend.heading}</span>
+      </button>
+    );
+  }
   return (
-    <aside className="nx nx-panel nx-status-legend" aria-label={strings.legend.heading} data-testid="status-legend">
-      <div className="nx-label nx-accent-text">{strings.legend.heading}</div>
-      <div className="nx-small nx-legend-why">{tt(lang, 'legend.hint' as StringKey)}</div>
-      <StatusLegendBody />
+    <aside className="nx nx-panel nx-status-legend" aria-label={strings.legend.heading} data-testid="status-legend" data-open="true">
+      <button type="button" className="nx-status-legend-head" data-testid="status-legend-key" aria-expanded aria-keyshortcuts={STATUS_LEGEND.key} title={hint} onClick={() => setOpen(false)}>
+        <kbd className="nx-mode-cap">{STATUS_LEGEND.key}</kbd>
+        <span className="nx-label nx-accent-text" data-testid="status-legend-heading">{strings.legend.heading}</span>
+      </button>
+      <div className="nx-small nx-legend-why">{hint}</div>
+      <div className="nx-status-legend-scroll"><StatusLegendBody /></div>
     </aside>
   );
 }

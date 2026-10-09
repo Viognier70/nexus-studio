@@ -26,5 +26,7 @@ export const PROV_STRINGS = {
     en: 'It is queued when the doors open and comes as soon as it can, for example the rain when it starts to rain.'
   },
   'prov.start': { sv: 'Börja', en: 'Start' },
-  'prov.businessName': { sv: 'Provspelet', en: 'The test play' }
+  // ORDER 322 C — namnet när inget spel är sparat: Designs exempel på företagets namn (din väg, LEVERANSNOT).
+  'prov.businessName': { sv: 'Hyttgrillen', en: 'Hyttgrillen' },
+  'prov.name': { sv: 'Verksamhetens namn', en: 'Name of the business' }
 } as const;

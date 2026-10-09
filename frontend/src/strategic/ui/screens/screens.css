@@ -448,7 +448,15 @@
 
 /* ORDER 313 §7 — teckenförklaringen (ui/StatusLegend.tsx). */
 /* ORDER 317 — D6 LEGEND.status: nere till höger, ovanför lägesknapparna. */
-.nx-status-legend { position: fixed; right: max(16px, 3vh); bottom: 96px; z-index: 30; max-width: min(320px, calc(100vw - 32px)); max-height: calc(100vh - 220px); overflow: auto; padding: 12px 14px; }
+/* ORDER 322 A3 — uppe till höger under farten: stängd en liten ruta med tangenten, öppen med rubriken fast
+ * överst och resten rullbart. Under kvitt eller dubbelt slutar den ovanför raden (service.css .nx-stake-row,
+ * 64,5vh − 4,7vh), så att den aldrig täcker valen. */
+.nx-status-legend { position: fixed; right: max(16px, 3vh); top: 96px; z-index: 30; box-sizing: border-box; width: min(320px, calc(100vw - 32px)); max-height: calc(100vh - 96px - 120px); display: flex; flex-direction: column; padding: 12px 14px; }
+.nx-status-legend-chip { width: auto; flex-direction: row; align-items: center; gap: 8px; cursor: pointer; font: inherit; color: inherit; }
+.nx-status-legend-head { display: flex; align-items: center; gap: 8px; flex: none; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-align: left; }
+.nx-status-legend .nx-label { white-space: nowrap; }
+.nx-status-legend-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; }
+body:has(.nx-stake) .nx-status-legend { max-height: calc(64.5vh - 4.7vh - 96px - 12px); }
 .nx-legend-list { list-style: none; margin: 4px 0 10px; padding: 0; display: grid; gap: 4px; font-size: 13px; }
 .nx-legend-list li { display: flex; align-items: center; gap: 6px; }
 .nx-legend-ring { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 3px solid; box-sizing: border-box; }

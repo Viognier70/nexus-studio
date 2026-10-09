@@ -490,6 +490,8 @@ export const STRINGS = {
   // ORDER 319b — Designs D9 och tillägget (livet vid luckan), inslagna oförändrade.
   ...LUCKAN_STRINGS,
   ...PROV_STRINGS,
+  // ORDER 322 A3 — teckenförklaringen i statusläget är stängd från början och öppnas med tangenten.
+  'legend.keyHint': { sv: '{key} öppnar och stänger', en: '{key} opens and closes' },
   // ORDER 319b — medhjälparen vid foodtruckens lucka (line.sender). Anders 2026-10-08: inte Elin, som
   // finns i vinbarens personal.
   'truck.assistant.name': { sv: 'Nils', en: 'Nils' },

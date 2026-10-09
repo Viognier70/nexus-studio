@@ -1,0 +1,932 @@
+{
+  "ok": true,
+  "runs": [
+    {
+      "viewport": "1440x900",
+      "moments": [
+        {
+          "step": 0,
+          "at": "wait",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 50,
+              "y": 118,
+              "w": 418,
+              "h": 752
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 599,
+              "y": 538,
+              "w": 709,
+              "h": 85
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 85
+            }
+          ],
+          "legendHeadClipped": null,
+          "legendOpen": false,
+          "legendKey": null,
+          "ifRight": "1",
+          "pot": "0",
+          "phase": "wait"
+        },
+        {
+          "step": 0,
+          "at": "choice",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 50,
+              "y": 118,
+              "w": 418,
+              "h": 752
+            },
+            {
+              "sel": "[data-testid=incident-kvitt]",
+              "x": 504,
+              "y": 662,
+              "w": 900,
+              "h": 139
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 593,
+              "y": 538,
+              "w": 723,
+              "h": 85
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 85
+            }
+          ],
+          "legendHeadClipped": null,
+          "legendOpen": false,
+          "legendKey": null,
+          "ifRight": "3",
+          "pot": "1",
+          "phase": "choosing"
+        },
+        {
+          "step": 0,
+          "at": "status",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 50,
+              "y": 118,
+              "w": 418,
+              "h": 752
+            },
+            {
+              "sel": "[data-testid=incident-kvitt]",
+              "x": 504,
+              "y": 662,
+              "w": 900,
+              "h": 139
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 593,
+              "y": 538,
+              "w": 723,
+              "h": 85
+            },
+            {
+              "sel": "[data-testid=status-legend-key]",
+              "x": 1157,
+              "y": 96,
+              "w": 256,
+              "h": 50
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 85
+            }
+          ],
+          "legendHeadClipped": null,
+          "legendOpen": false,
+          "legendKey": "L",
+          "ifRight": "3",
+          "pot": "1",
+          "phase": "choosing"
+        },
+        {
+          "step": 0,
+          "at": "legend",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 50,
+              "y": 118,
+              "w": 418,
+              "h": 752
+            },
+            {
+              "sel": "[data-testid=incident-kvitt]",
+              "x": 504,
+              "y": 662,
+              "w": 900,
+              "h": 139
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 593,
+              "y": 538,
+              "w": 723,
+              "h": 85
+            },
+            {
+              "sel": "[data-testid=status-legend]",
+              "x": 1093,
+              "y": 96,
+              "w": 320,
+              "h": 430
+            },
+            {
+              "sel": "[data-testid=status-legend-key]",
+              "x": 1108,
+              "y": 109,
+              "w": 290,
+              "h": 24
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 85
+            }
+          ],
+          "legendHeadClipped": false,
+          "legendOpen": true,
+          "legendKey": "L",
+          "ifRight": "3",
+          "pot": "1",
+          "phase": "choosing"
+        },
+        {
+          "step": 1,
+          "at": "wait",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 50,
+              "y": 118,
+              "w": 418,
+              "h": 752
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 592,
+              "y": 538,
+              "w": 723,
+              "h": 85
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 85
+            }
+          ],
+          "legendHeadClipped": null,
+          "legendOpen": false,
+          "legendKey": null,
+          "ifRight": "3",
+          "pot": "1",
+          "phase": "wait"
+        },
+        {
+          "step": 1,
+          "at": "choice",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 50,
+              "y": 118,
+              "w": 418,
+              "h": 752
+            },
+            {
+              "sel": "[data-testid=incident-kvitt]",
+              "x": 504,
+              "y": 662,
+              "w": 900,
+              "h": 139
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 577,
+              "y": 538,
+              "w": 754,
+              "h": 85
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 85
+            }
+          ],
+          "legendHeadClipped": null,
+          "legendOpen": false,
+          "legendKey": null,
+          "ifRight": "7",
+          "pot": "3",
+          "phase": "choosing"
+        },
+        {
+          "step": 1,
+          "at": "status",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 50,
+              "y": 118,
+              "w": 418,
+              "h": 752
+            },
+            {
+              "sel": "[data-testid=incident-kvitt]",
+              "x": 504,
+              "y": 662,
+              "w": 900,
+              "h": 139
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 577,
+              "y": 538,
+              "w": 754,
+              "h": 85
+            },
+            {
+              "sel": "[data-testid=status-legend-key]",
+              "x": 1157,
+              "y": 96,
+              "w": 256,
+              "h": 50
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 85
+            }
+          ],
+          "legendHeadClipped": null,
+          "legendOpen": false,
+          "legendKey": "L",
+          "ifRight": "7",
+          "pot": "3",
+          "phase": "choosing"
+        },
+        {
+          "step": 1,
+          "at": "legend",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 50,
+              "y": 118,
+              "w": 418,
+              "h": 752
+            },
+            {
+              "sel": "[data-testid=incident-kvitt]",
+              "x": 504,
+              "y": 662,
+              "w": 900,
+              "h": 139
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 577,
+              "y": 538,
+              "w": 754,
+              "h": 85
+            },
+            {
+              "sel": "[data-testid=status-legend]",
+              "x": 1093,
+              "y": 96,
+              "w": 320,
+              "h": 430
+            },
+            {
+              "sel": "[data-testid=status-legend-key]",
+              "x": 1108,
+              "y": 109,
+              "w": 290,
+              "h": 24
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 85
+            }
+          ],
+          "legendHeadClipped": false,
+          "legendOpen": true,
+          "legendKey": "L",
+          "ifRight": "7",
+          "pot": "3",
+          "phase": "choosing"
+        },
+        {
+          "step": 2,
+          "at": "wait",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 50,
+              "y": 118,
+              "w": 418,
+              "h": 752
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 618,
+              "y": 538,
+              "w": 671,
+              "h": 85
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 85
+            }
+          ],
+          "legendHeadClipped": null,
+          "legendOpen": false,
+          "legendKey": null,
+          "ifRight": "7",
+          "pot": "3",
+          "phase": "wait"
+        }
+      ],
+      "nameDefault": "Hyttgrillen",
+      "name": null,
+      "bodyHasProvName": false,
+      "bodyHasName": true,
+      "count": "Situation 1 i kväll"
+    },
+    {
+      "viewport": "1280x720",
+      "moments": [
+        {
+          "step": 0,
+          "at": "wait",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 45,
+              "y": 106,
+              "w": 371,
+              "h": 587
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 564,
+              "y": 431,
+              "w": 568,
+              "h": 68
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 68
+            }
+          ],
+          "legendHeadClipped": null,
+          "legendOpen": false,
+          "legendKey": null,
+          "ifRight": "1",
+          "pot": "0",
+          "phase": "wait"
+        },
+        {
+          "step": 0,
+          "at": "choice",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 45,
+              "y": 106,
+              "w": 371,
+              "h": 587
+            },
+            {
+              "sel": "[data-testid=incident-kvitt]",
+              "x": 488,
+              "y": 529,
+              "w": 720,
+              "h": 111
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 559,
+              "y": 431,
+              "w": 578,
+              "h": 68
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 68
+            }
+          ],
+          "legendHeadClipped": null,
+          "legendOpen": false,
+          "legendKey": null,
+          "ifRight": "3",
+          "pot": "1",
+          "phase": "choosing"
+        },
+        {
+          "step": 0,
+          "at": "status",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 45,
+              "y": 106,
+              "w": 371,
+              "h": 587
+            },
+            {
+              "sel": "[data-testid=incident-kvitt]",
+              "x": 488,
+              "y": 529,
+              "w": 720,
+              "h": 111
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 559,
+              "y": 431,
+              "w": 578,
+              "h": 68
+            },
+            {
+              "sel": "[data-testid=status-legend-key]",
+              "x": 1024,
+              "y": 96,
+              "w": 235,
+              "h": 50
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 68
+            }
+          ],
+          "legendHeadClipped": null,
+          "legendOpen": false,
+          "legendKey": "L",
+          "ifRight": "3",
+          "pot": "1",
+          "phase": "choosing"
+        },
+        {
+          "step": 0,
+          "at": "legend",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 45,
+              "y": 106,
+              "w": 371,
+              "h": 587
+            },
+            {
+              "sel": "[data-testid=incident-kvitt]",
+              "x": 488,
+              "y": 529,
+              "w": 720,
+              "h": 111
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 559,
+              "y": 431,
+              "w": 578,
+              "h": 68
+            },
+            {
+              "sel": "[data-testid=status-legend]",
+              "x": 938,
+              "y": 96,
+              "w": 320,
+              "h": 323
+            },
+            {
+              "sel": "[data-testid=status-legend-key]",
+              "x": 953,
+              "y": 109,
+              "w": 290,
+              "h": 24
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 68
+            }
+          ],
+          "legendHeadClipped": false,
+          "legendOpen": true,
+          "legendKey": "L",
+          "ifRight": "3",
+          "pot": "1",
+          "phase": "choosing"
+        },
+        {
+          "step": 1,
+          "at": "wait",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 45,
+              "y": 106,
+              "w": 371,
+              "h": 587
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 559,
+              "y": 431,
+              "w": 579,
+              "h": 68
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 68
+            }
+          ],
+          "legendHeadClipped": null,
+          "legendOpen": false,
+          "legendKey": null,
+          "ifRight": "3",
+          "pot": "1",
+          "phase": "wait"
+        },
+        {
+          "step": 1,
+          "at": "choice",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 45,
+              "y": 106,
+              "w": 371,
+              "h": 587
+            },
+            {
+              "sel": "[data-testid=incident-kvitt]",
+              "x": 488,
+              "y": 529,
+              "w": 720,
+              "h": 111
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 547,
+              "y": 431,
+              "w": 602,
+              "h": 68
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 68
+            }
+          ],
+          "legendHeadClipped": null,
+          "legendOpen": false,
+          "legendKey": null,
+          "ifRight": "7",
+          "pot": "3",
+          "phase": "choosing"
+        },
+        {
+          "step": 1,
+          "at": "status",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 45,
+              "y": 106,
+              "w": 371,
+              "h": 587
+            },
+            {
+              "sel": "[data-testid=incident-kvitt]",
+              "x": 488,
+              "y": 529,
+              "w": 720,
+              "h": 111
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 547,
+              "y": 431,
+              "w": 602,
+              "h": 68
+            },
+            {
+              "sel": "[data-testid=status-legend-key]",
+              "x": 1024,
+              "y": 96,
+              "w": 235,
+              "h": 50
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 68
+            }
+          ],
+          "legendHeadClipped": null,
+          "legendOpen": false,
+          "legendKey": "L",
+          "ifRight": "7",
+          "pot": "3",
+          "phase": "choosing"
+        },
+        {
+          "step": 1,
+          "at": "legend",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 45,
+              "y": 106,
+              "w": 371,
+              "h": 587
+            },
+            {
+              "sel": "[data-testid=incident-kvitt]",
+              "x": 488,
+              "y": 529,
+              "w": 720,
+              "h": 111
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 547,
+              "y": 431,
+              "w": 602,
+              "h": 68
+            },
+            {
+              "sel": "[data-testid=status-legend]",
+              "x": 938,
+              "y": 96,
+              "w": 320,
+              "h": 323
+            },
+            {
+              "sel": "[data-testid=status-legend-key]",
+              "x": 953,
+              "y": 109,
+              "w": 290,
+              "h": 24
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 68
+            }
+          ],
+          "legendHeadClipped": false,
+          "legendOpen": true,
+          "legendKey": "L",
+          "ifRight": "7",
+          "pot": "3",
+          "phase": "choosing"
+        },
+        {
+          "step": 2,
+          "at": "wait",
+          "boxes": [
+            {
+              "sel": "[data-testid=incident-card]",
+              "x": 45,
+              "y": 106,
+              "w": 371,
+              "h": 587
+            },
+            {
+              "sel": "[data-testid=pyramid-moment-line]",
+              "x": 579,
+              "y": 431,
+              "w": 538,
+              "h": 68
+            },
+            {
+              "sel": "[data-testid=prov-badge]",
+              "x": 8,
+              "y": 8,
+              "w": 84,
+              "h": 23
+            }
+          ],
+          "overlaps": [],
+          "outside": [],
+          "pyramids": [
+            {
+              "inRow": true,
+              "h": 68
+            }
+          ],
+          "legendHeadClipped": null,
+          "legendOpen": false,
+          "legendKey": null,
+          "ifRight": "7",
+          "pot": "3",
+          "phase": "wait"
+        }
+      ],
+      "nameDefault": "Hyttgrillen",
+      "name": null,
+      "bodyHasProvName": false,
+      "bodyHasName": true,
+      "count": "Situation 1 i kväll"
+    }
+  ],
+  "errors": []
+}

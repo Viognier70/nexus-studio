@@ -827,7 +827,8 @@ body[data-focus='1']:not([data-focus-unfold='rocket']) .nx-rocket:not([data-mode
   position: fixed; inset: 0; z-index: 48; pointer-events: none;
 }
 .nx-stake-col { position: absolute; top: 0; bottom: 0; left: var(--stake-cx); width: var(--stake-w); transform: translateX(-50%); }
-.nx-stake-pyr { position: absolute; left: 50%; top: 23vh; width: 40.8vh; height: 34vh; transform: translateX(-50%); animation: nx-stake-lift .35s cubic-bezier(.33,1,.68,1) both; }
+/* ORDER 322 A1 — pyramiden står liten i raden, bredvid steget (ramen 300 × 250), aldrig över rummet. */
+.nx-stake-pyr { position: relative; flex: none; width: 11.28vh; height: 9.4vh; animation: nx-stake-lift .35s cubic-bezier(.33,1,.68,1) both; }
 .nx-stake-pyr .nx-pyramid, .nx-stake-pyr .nx-pyr-svg { width: 100%; height: 100%; max-width: none; display: block; }
 .nx-stake-pyr .nx-pyr-floor[data-state='empty'] .nx-pyr-bg { fill: rgba(20,13,9,.6); }
 .nx-stake-pyr .nx-pyr-floor[data-state='empty'] .nx-pyr-edge,
@@ -840,10 +841,10 @@ body[data-focus='1']:not([data-focus-unfold='rocket']) .nx-rocket:not([data-mode
 .nx-pyr-floor[data-instant='true'] .nx-pyr-fill { transform: scaleY(1); }
 .nx-stake-pyr[data-shrink='true'] { animation: nx-stake-lift .35s cubic-bezier(.33,1,.68,1) both, nx-stake-shrink .45s ease-in-out 2.15s forwards; }
 .nx-stake-token {
-  position: absolute; left: 50%; width: 7.4vh; height: 7.4vh; margin: -3.7vh 0 0 -3.7vh; border-radius: 50%;
+  position: absolute; left: 50%; width: 4.4vh; height: 4.4vh; margin: -2.2vh 0 0 -2.2vh; border-radius: 50%;
   display: grid; place-items: center; align-content: center; gap: 0;
   background: radial-gradient(circle at 38% 32%, #ffe3a6, #e8b93a 55%, #a8772a); border: 2px solid #7a5420; color: #2a1c13;
-  font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); font-size: 2.2vh; line-height: 1;
+  font-family: var(--w-font-heading, 'Young Serif', Georgia, serif); font-size: 1.4vh; line-height: 1;
   animation: nx-stake-fall .7s cubic-bezier(.5,0,.75,0) .2s forwards;
 }
 .nx-stake-row {
@@ -894,20 +895,20 @@ body[data-focus='1']:not([data-focus-unfold='rocket']) .nx-rocket:not([data-mode
 .nx-stake-note { margin: 1.4vh 0 0; text-align: center; color: #f4e6cc; font-weight: 700; font-size: max(12px, 1.7vh); text-shadow: 0 1px 4px rgba(0,0,0,.6); }
 .nx-stake[data-phase='wrong'] .nx-stake-col { animation: nx-stake-away .45s ease-in 1.8s forwards; }
 body:has(.nx-stake) .nx-room-notices { display: none; }
-@keyframes nx-stake-lift { from { opacity: 0; transform: translateX(-50%) translateY(6vh) scale(.53); } to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } }
-@keyframes nx-stake-shrink { to { opacity: 0; transform: translateX(-50%) translateY(10vh) scale(.3); } }
+@keyframes nx-stake-lift { from { opacity: 0; transform: translateY(1.5vh) scale(.6); } to { opacity: 1; transform: none; } }
+@keyframes nx-stake-shrink { to { opacity: 0; transform: scale(.4); } }
 @keyframes nx-stake-flash { 0% { filter: drop-shadow(0 0 18px rgba(92,184,106,.9)) brightness(1.3); } 100% { filter: drop-shadow(0 0 8px rgba(92,184,106,.5)); } }
 @keyframes nx-stake-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes nx-stake-double { 0% { transform: scale(1.35); } 100% { transform: scale(1); } }
 @keyframes nx-stake-out { to { opacity: .55; transform: translateY(1vh); } }
-@keyframes nx-stake-fall { to { opacity: 0; transform: translateY(16vh) rotate(40deg); } }
+@keyframes nx-stake-fall { to { opacity: 0; transform: translateY(4vh) rotate(40deg); } }
 @keyframes nx-stake-away { to { opacity: 0; } }
 @keyframes nx-stake-ring-pulse { from { box-shadow: 0 0 8px rgba(255,190,90,.5); } to { box-shadow: 0 0 22px rgba(255,190,90,.9); } }
 /* ORDER 310b — låset och väntan (Designs kvitt eller dubbelt §3, lägena 1–2):
  * marken glider upp på steget 150–780 ms, låset slår igen vid 900 ms, och
  * steget pulserar från glöd till ljuslåga (--stake-pulse 0–1, waitPulse). */
 .nx-stake-token[data-phase] { animation: nx-stake-token-in .63s cubic-bezier(.65,0,.35,1) .15s both; }
-.nx-stake-lock { position: absolute; top: -1.4vh; right: -1.8vh; width: 3.6vh; height: 3.6vh; min-width: 20px; min-height: 20px; padding: .7vh; box-sizing: border-box; border-radius: 50%; background: #2a1c13; color: #f0cd82; display: grid; place-items: center; }
+.nx-stake-lock { position: absolute; top: -1vh; right: -1.2vh; width: 2.4vh; height: 2.4vh; min-width: 14px; min-height: 14px; padding: .45vh; box-sizing: border-box; border-radius: 50%; background: #2a1c13; color: #f0cd82; display: grid; place-items: center; }
 .nx-stake-lock[data-shut='true'] { animation: nx-stake-shackle .12s ease-out both; }
 .nx-stake[data-phase='lock'] .nx-pyr-floor[data-state='current'] .nx-pyr-edge,
 .nx-stake[data-phase='wait'] .nx-pyr-floor[data-state='current'] .nx-pyr-edge { stroke: #ffd58f; stroke-width: calc(2px + var(--stake-pulse, 0) * 2.5px); }
@@ -915,13 +916,12 @@ body:has(.nx-stake) .nx-room-notices { display: none; }
 .nx-stake-cell[data-kind='step'][data-state='wait'] { background: #6b4a2a; color: #f5ead5; border: 2px solid #f0cd82; }
 .nx-stake-cell[data-kind='step'][data-state='wait'] .nx-stake-label { color: #f0cd82; }
 .nx-stake-wait-note { position: absolute; left: 0; right: 0; top: 73.5vh; }
-@keyframes nx-stake-token-in { from { opacity: 0; transform: translateY(14vh) scale(.8); } to { opacity: 1; transform: none; } }
+@keyframes nx-stake-token-in { from { opacity: 0; transform: translateY(4vh) scale(.8); } to { opacity: 1; transform: none; } }
 @keyframes nx-stake-shackle { from { transform: scale(1.25); } to { transform: scale(1); } }
 
 /* Smala skärmar: kolumnen tar hela bredden, ovanpå kortet. */
 @media (max-width: 900px) {
   .nx-stake { --stake-cx: 50vw; --stake-w: calc(100vw - 32px); }
-  .nx-stake-pyr { top: 18vh; width: 30vh; height: 25vh; }
   .nx-stake-row { gap: 6px; }
   .nx-stake-cell { min-width: 0; padding: 0 10px; }
   .nx-stake-choices { grid-template-columns: 1fr; justify-items: stretch; }

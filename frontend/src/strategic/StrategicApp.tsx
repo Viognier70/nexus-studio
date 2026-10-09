@@ -101,7 +101,7 @@ export function StrategicApp({ startIntroduction = false, onNewGame, player, ope
     return <WebGLFallback onRestart={() => window.location.reload()} />;
   }
   return (
-    <BusinessProvider initialName={provState ? tt(lang, 'prov.businessName') : null}>
+    <BusinessProvider initialName={provState ? prov!.name.trim() || tt(lang, 'prov.businessName') : null}>
       <CameraProvider>
         <SimulationProvider seed={harnessParams.seed ?? undefined} startIntroduction={startIntroduction} player={player} initialState={provState}>
           <SaveProvider>

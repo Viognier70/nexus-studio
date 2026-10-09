@@ -99,6 +99,8 @@ export function drawWellbeing(c: CanvasRenderingContext2D, id: WellbeingId, x: n
 // stämningssymbolen (guestMood.ts) över alla bord på en gång, orkringen och trivselplattan vid all personal.
 // Allt annat i HUD:en står kvar. Tonas in på 180 ms. Rummet dämpas inte (det är ingen paus).
 export const STATUS_MODE = { key: 'S', toggle: true, fadeMs: 180, button: { icon: 'scan-eye', corner: 'bottomRight' }, dimRoom: 0 };
+/** ORDER 322 A3 — teckenförklaringen i statusläget: stängd från början, tangenten öppnar och stänger den. */
+export const STATUS_LEGEND = { key: 'L' };
 
 // ---------- kortet ----------
 // Klick på en gäst eller i personalen öppnar ett litet kort i papper bredvid figuren, med en prickad tråd i

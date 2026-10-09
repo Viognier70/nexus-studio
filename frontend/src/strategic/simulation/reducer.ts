@@ -300,7 +300,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       // ORDER 321 — en tid nu (inc.slots, som en kedjad följd), så att den köade kommer så snart dess signal
       // håller och inte bara när slumpen träffar (provspelet ?prov och #playtest=1&rocket=).
       const slots = [...inc.slots, { at: state.simTime, phase: queuedIncident.arc }].sort((a, b) => a.at - b.at);
-      return { ...state, incidents: { ...inc, queued: [action.incidentId, ...inc.queued], slots } };
+      // ORDER 322 C — tvingad, inte en följd: kortet säger inte "Följd".
+      return { ...state, incidents: { ...inc, queued: [action.incidentId, ...inc.queued], forced: [...(inc.forced ?? []), action.incidentId], slots } };
     }
     case 'ANSWER_INCIDENT': {
       if (!isIncidentOpen(state)) return state;
