@@ -134,6 +134,8 @@ Kunskap mäts på två sätt. **Medaljer** per paviljong visar vilken nivå spel
 
 *Beslut 2026-10-09 (Anders, kunskapsformen och längden):* regeln om kassan och orken gäller kunskapsformen, inte stegets nummer: steget om upplevelsen (phronesis) tar aldrig kassa eller ork, i någon situation och i någon form. I den äldre formen, där upplevelsen är sista steget, får handlingen (techne) kosta som förut, och den följden ligger på handlingen. Det längsta svaret är fel ungefär så ofta som slumpen ger, inom en tiondel, i vinbarens bank, foodtruckens situationer och de nyfikna gästernas frågor; den som alltid undviker det längsta svaret tjänar inte mer än slumpen. Fakta och talen i räkneuppgifterna ändras inte när längden jämnas ut.
 
+*Beslut 2026-10-09 (Anders, gissaren):* gissaren lika med slumpen räcker. Längden ska inte säga något om vilket svar som är rätt, och det gör den inte nu; ingen mer kalibrering av längden. Testerna med ±0,1 (`order306b4.test.ts`) står kvar, så att det håller när nya situationer läggs till. Det ersätter "den som alltid väljer det längsta svaret ska inte klara sig bättre än slumpen" och "tjänar inte mer än slumpen över en vecka" från 2026-10-08.
+
 ### Paviljongerna
 
 | Paviljong | Axel | Spår | Vem ställer frågan |

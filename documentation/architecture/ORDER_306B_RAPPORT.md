@@ -409,3 +409,7 @@ Med tio frön var standardfelet 1 000–1 700 kr, större än skillnaderna mella
 Mina fem väntande skal (`bo8gk4mj5`, `buxsmu2z9`, `bm5lwkiz3`, `b7gfpbf2k`, `b8dzm1qm4`) väntade på "ALLT-KLART" i `bqohseolr.output`. Den uppgiften avslutades med kod 144 utan att skriva ordet, i ORDER 320.
 
 De är stängda en i taget med TaskStop. Inga andra processer är rörda.
+
+### Beslut efteråt
+
+Anders 2026-10-09: gissaren lika med slumpen räcker. Längden ska inte säga något om vilket svar som är rätt, och det gör den inte nu. Ingen mer kalibrering av längden. Testerna med ±0,1 i `order306b4.test.ts` står kvar. Det ersätter "gissaren ska inte tjäna mer än slumpen" från 2026-10-08. 306b är klar.
