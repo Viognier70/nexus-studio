@@ -32,7 +32,8 @@ import {
 } from '../../strategic/scene/village/streetFigureLight';
 import { STREET_FIGURE_LIGHT } from '../../strategic/village/villageEvening';
 import { makeInstanced } from '../../strategic/scene/village/VillageLife';
-import { streetHeadGeometry, streetLegsGeometry, streetSignGeometry, streetTorsoGeometry } from '../../strategic/scene/village/streetLooks';
+import { streetHeadGeometry, streetSignGeometry, streetTorsoGeometry } from '../../strategic/scene/village/streetLooks';
+import { streetLegGeometry } from '../../strategic/scene/village/streetGait';
 import { createFigureRig } from '../../strategic/scene/figureRig';
 import { attachProps } from '../../strategic/scene/figureProps';
 import { applyStreetBlend, dressAllGroups, GROUP_IDS } from '../../strategic/scene/guestLooks';
@@ -96,7 +97,8 @@ describe('ORDER 302d — varje sorts figur på gatan tar ljus och har golvet', (
   it('gatans gäster (VillageLife): kroppen, benen, huvudet och tecknen', () => {
     const meshes = [
       makeInstanced(streetTorsoGeometry()),
-      makeInstanced(streetLegsGeometry()),
+      // ORDER 323 §6 — benen som två instanser (streetGait.ts), samma material.
+      makeInstanced(streetLegGeometry(0.095, 0.51)),
       makeInstanced(streetHeadGeometry(), '#d9b48a'),
       ...GROUP_IDS.map((g) => makeInstanced(streetSignGeometry(g)))
     ];

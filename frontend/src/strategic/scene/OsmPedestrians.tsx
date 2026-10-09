@@ -17,6 +17,8 @@ import { GROUP_IDS } from './guestLooks';
 import { OSM_FRAME, streetSignGeometry } from './village/streetLooks';
 import { streetFigureMaterial, streetFloorRef } from './village/streetFigureLight';
 import { addProbeFigures, lampProbeRequested, type ProbeFigure } from './village/lampProbe';
+import { advanceGait, composeLeg, easeMoving, gaitBob, legSwing, streetLegGeometry } from './village/streetGait';
+import { clearStreetWalkers, publishStreetWalkers } from './streetPresence';
 
 // Village-scale readability treatment. At close and district range the
 // walker keeps its authored 1.2 m height; from ~320 m up the visual scale
@@ -52,6 +54,12 @@ interface Walker {
   // into "three or four people leaving Campus in a group."
   leaderIndex: number;
   groupOffset: number;
+  // ORDER 323 §6 — gången: fasen ur sträckan, 0 står och 1 går, och pauserna.
+  len: number;
+  phase: number;
+  moving: number;
+  pauseLeft: number;
+  nextPause: number;
 }
 
 interface Cyclist {
@@ -69,6 +77,18 @@ const CYCLIST_COUNT = 10;
 const MIN_PATH_LENGTH = 25;
 const MIN_CYCLE_LENGTH = 60;
 const WALKER_SEED = 0xa30f7c;
+// ORDER 323 §6 — farten i meter per sekund (förut en andel av vägen per
+// sekund, så att en gående på en lång väg gled fram i 10 m/s), och pauserna:
+// var 12–40 s stannar en gående (och hans sällskap) 2–6 s och ser sig om.
+const WALK_MPS: [number, number] = [1.05, 1.5];
+const PAUSE_EVERY_S: [number, number] = [12, 40];
+const PAUSE_S: [number, number] = [2, 6];
+// Benen: höften och avståndet mellan benen (meter vid storlek 1).
+const PED_HIP_Y = 0.66;
+// Överkroppen från strax under höften till axlarna (förut en låda 0–1,2 m).
+const PED_BODY_H = 0.6;
+const PED_BODY_Y = PED_HIP_Y - 0.06 + PED_BODY_H / 2;
+const PED_LEG_HALF_GAP = 0.1;
 const CYCLIST_SEED = 0x5c17f3;
 
 // Bus stop and campus parking are anchored on / next to the campus complex.
@@ -219,14 +239,19 @@ export function OsmPedestrians() {
         role,
         path: weightedPick(paths, weights, rng.next()),
         t: rng.next(),
-        speed: rng.range(0.008, 0.020),
+        speed: rng.range(WALK_MPS[0], WALK_MPS[1]),
         forward: rng.chance(0.5) ? 1 : -1,
         swap: rng.range(35, 90),
         colour: rng.pick(ROLE_PALETTE[role]),
         variant: 0,
         entering: 1,
         leaderIndex: -1,
-        groupOffset: 0
+        groupOffset: 0,
+        len: 1,
+        phase: rng.next(),
+        moving: 1,
+        pauseLeft: 0,
+        nextPause: rng.range(PAUSE_EVERY_S[0], PAUSE_EVERY_S[1])
       };
     });
     // Second pass: group formation. Roughly one in every seven walkers
@@ -268,7 +293,10 @@ export function OsmPedestrians() {
       }
       i += followerCount + 1;
     }
-    for (const w of list) w.variant = Math.max(0, ROLE_PALETTE[w.role].indexOf(w.colour));
+    for (const w of list) {
+      w.variant = Math.max(0, ROLE_PALETTE[w.role].indexOf(w.colour));
+      w.len = Math.max(1, polylineLength(w.path.poly));
+    }
     return list;
   }, [paths, weights]);
 
@@ -329,11 +357,13 @@ export function OsmPedestrians() {
       (signs.meshes[g].material as THREE.Material).dispose();
     }
   }, [signs]);
-  // Random phase offset per walker so the crowd doesn't bob in unison.
-  const walkerPhase = useMemo(
-    () => walkers.map((_, i) => (i * 12.9898) % (Math.PI * 2)),
-    [walkers]
-  );
+  // ORDER 323 §6 — benen (vänster, höger) och platserna som bilarna ser vid övergångarna.
+  const walkerLegMeshes = [useRef<THREE.InstancedMesh>(null), useRef<THREE.InstancedMesh>(null)] as const;
+  const legMatrix = useMemo(() => new THREE.Matrix4(), []);
+  const legGeometry = useMemo(() => streetLegGeometry(0.075, PED_HIP_Y - 0.02), []);
+  useEffect(() => () => legGeometry.dispose(), [legGeometry]);
+  const presence = useMemo(() => new Float32Array(walkers.length * 2), [walkers]);
+  useEffect(() => () => clearStreetWalkers('peds'), []);
 
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05);
@@ -355,18 +385,30 @@ export function OsmPedestrians() {
         // Followers shadow their leader every frame. The leader owns the
         // pathing decisions; the follower just holds their group offset
         // in progress so the group walks together.
+        const prevT = w.t;
+        const prevPath = w.path;
         if (w.leaderIndex >= 0) {
           const L = walkers[w.leaderIndex];
           w.path = L.path;
+          w.len = L.len;
           w.forward = L.forward;
+          // Sällskapet står när ledaren står.
+          w.pauseLeft = L.pauseLeft;
           w.t = Math.max(0, Math.min(1, L.t + w.groupOffset));
           // No further simulation for a follower — the sample below runs
           // on the shadowed values.
         } else {
           // Landmark-adjacent walkers move at 60% speed. Reads as dwelling.
           const linger = isLandmarkPath(w.path);
-          const walkSpeed = linger ? w.speed * 0.6 : w.speed;
-          w.t += dt * walkSpeed * w.forward;
+          const walkSpeed = linger ? w.speed * 0.75 : w.speed;
+          // ORDER 323 §6 — ibland stannar den gående en stund.
+          if (w.pauseLeft > 0) w.pauseLeft = Math.max(0, w.pauseLeft - dt);
+          else if ((w.nextPause -= dt) <= 0) {
+            const r = createRng(Math.floor(now * 1000) + i * 31);
+            w.pauseLeft = r.range(PAUSE_S[0], PAUSE_S[1]) * (linger ? 1.5 : 1);
+            w.nextPause = r.range(PAUSE_EVERY_S[0], PAUSE_EVERY_S[1]);
+          }
+          if (w.pauseLeft <= 0) w.t += (dt * walkSpeed * w.forward) / w.len;
           if (w.t > 1) {
             w.t = 1 - (w.t - 1);
             w.forward = -1;
@@ -383,6 +425,7 @@ export function OsmPedestrians() {
             // Den nya platsen syns: försök igen nästa bild.
             if (inView(there.x, there.z)) continue;
             w.path = path;
+            w.len = Math.max(1, polylineLength(path.poly));
             w.forward = rng.chance(0.5) ? 1 : -1;
             w.t = t;
             // A walker who has just arrived near a landmark stays longer
@@ -398,20 +441,29 @@ export function OsmPedestrians() {
           w.entering = Math.min(1, w.entering + dt * 2.2);
         }
         const p = samplePolyline(w.path.poly, w.t);
-        // Walking animation: gait frequency scales with speed; the walker
-        // bobs up and down and sways slightly to the side. Tiny amplitudes
-        // — enough to read as "moving" without looking cartoony.
-        const gait = now * 6 * (0.6 + w.speed * 20) + walkerPhase[i];
-        const bob = Math.sin(gait) * 0.08;
-        const sway = Math.sin(gait * 0.5) * 0.06;
+        // ORDER 323 §6 — gången: benen svingar med sträckan den gående har
+        // gått (streetGait.ts), så att fötterna följer marken; i en paus står
+        // benen raka och kroppen stilla. Förut gungade en låda utan ben.
+        const walked = prevPath === w.path ? Math.abs(w.t - prevT) * w.len : 0;
+        w.moving = easeMoving(w.moving, walked > 1e-4, dt);
+        w.phase = advanceGait(w.phase, walked, 1, dt);
+        const bob = gaitBob(w.phase, w.moving);
         // Face the direction of motion.
         const yaw = p.yaw + (w.forward === -1 ? Math.PI : 0);
         // Fade-in hides the teleport frame; readability grows the walker
         // at village range only. Feet stay on the ground because position.y
         // scales with the same factor.
         const scale = w.entering * w.entering * walkerRead;
-        tempObj.position.set(p.x, (0.6 + bob) * scale, p.z);
-        tempObj.rotation.set(0, yaw, sway);
+        for (const [k, side] of [[0, -1], [1, 1]] as const) {
+          const leg = walkerLegMeshes[k].current;
+          if (!leg) continue;
+          composeLeg(legMatrix, p.x, bob * scale, p.z, yaw, side, legSwing(w.phase, side, w.moving), scale, PED_HIP_Y, PED_LEG_HALF_GAP);
+          leg.setMatrixAt(i, legMatrix);
+        }
+        presence[i * 2] = p.x;
+        presence[i * 2 + 1] = p.z;
+        tempObj.position.set(p.x, (PED_BODY_Y + bob) * scale, p.z);
+        tempObj.rotation.set(0, yaw, 0);
         tempObj.scale.set(scale, scale, scale);
         tempObj.updateMatrix();
         walkerMesh.current.setMatrixAt(i, tempObj.matrix);
@@ -419,14 +471,14 @@ export function OsmPedestrians() {
         walkerMesh.current.setColorAt(i, c);
         if (walkerHeadMesh.current) {
           tempObj.position.set(p.x, (1.35 + bob) * scale, p.z);
-          tempObj.rotation.set(0, yaw, sway);
+          tempObj.rotation.set(0, yaw, 0);
           tempObj.scale.set(scale, scale, scale);
           tempObj.updateMatrix();
           walkerHeadMesh.current.setMatrixAt(i, tempObj.matrix);
         }
         // ORDER 302b — gruppens tecken i figurens ram (fötterna vid 0).
         const group = ROLE_GROUP[w.role];
-        if (probe && group && w.entering >= 1) probe.push({ src: 'peds', group, variant: w.variant % 2, colour: w.colour, x: p.x, z: p.z, bodyY: (0.6 + bob) * scale, halfW: 0.21 * scale, scale });
+        if (probe && group && w.entering >= 1) probe.push({ src: 'peds', group, variant: w.variant % 2, colour: w.colour, x: p.x, z: p.z, bodyY: (PED_BODY_Y + bob) * scale, halfW: 0.21 * scale, scale });
         if (group) {
           tempObj.position.set(p.x, bob * scale, p.z);
           tempObj.updateMatrix();
@@ -434,6 +486,8 @@ export function OsmPedestrians() {
         }
       }
       walkerMesh.current.instanceMatrix.needsUpdate = true;
+      for (const leg of walkerLegMeshes) if (leg.current) leg.current.instanceMatrix.needsUpdate = true;
+      publishStreetWalkers('peds', presence, walkers.length);
       if (walkerHeadMesh.current) {
         walkerHeadMesh.current.instanceMatrix.needsUpdate = true;
       }
@@ -494,14 +548,20 @@ export function OsmPedestrians() {
     <group>
       {walkers.length > 0 && (
         <>
-          {/* Body — narrower box so peds read as human silhouettes. */}
+          {/* Body — narrower box so peds read as human silhouettes. ORDER 323 §6:
+              överkroppen från höften, benen egna instanser som svingar. */}
           <instancedMesh
             ref={walkerMesh}
             args={[undefined, undefined, walkers.length]}
           >
-            <boxGeometry args={[0.42, 1.2, 0.32]} />
+            <boxGeometry args={[0.42, PED_BODY_H, 0.32]} />
             <meshStandardMaterial ref={streetFloorRef} roughness={0.9} />
           </instancedMesh>
+          {walkerLegMeshes.map((ref, k) => (
+            <instancedMesh key={k} ref={ref} args={[legGeometry, undefined, walkers.length]}>
+              <meshStandardMaterial ref={streetFloorRef} color="#3b342d" roughness={0.9} />
+            </instancedMesh>
+          ))}
           {/* Head — small warm neutral sphere. Shares per-instance colour
               with body via the head material fixed to a skin tone. */}
           <primitive object={signs.root} />

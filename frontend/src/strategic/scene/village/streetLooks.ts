@@ -124,10 +124,7 @@ export function streetTorsoGeometry(): THREE.BufferGeometry {
   const t = STREET_FIGURE.torso;
   return mergeGeometries([cyl(t.r0, t.r1, t.y0, t.y1)]);
 }
-export function streetLegsGeometry(): THREE.BufferGeometry {
-  const l = STREET_FIGURE.legs;
-  return mergeGeometries([cyl(l.r0, l.r1, l.y0, l.y1)]);
-}
+// ORDER 323 §6 — benen ritas som två egna instanser som svingar (streetGait.ts streetLegGeometry).
 export function streetHeadGeometry(): THREE.BufferGeometry {
   const h = new THREE.SphereGeometry(STREET_FIGURE.headR, 10, 8);
   h.translate(0, STREET_FIGURE.headY, 0);

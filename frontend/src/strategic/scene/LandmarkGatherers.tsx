@@ -134,8 +134,6 @@ interface Gatherer {
   cz: number;
   offX: number;
   offZ: number;
-  targetOffX: number;
-  targetOffZ: number;
   colour: GathererLook;
   yaw: number;
   targetYaw: number;
@@ -180,8 +178,6 @@ export function LandmarkGatherers() {
           cz: point.centre[1],
           offX: ox,
           offZ: oz,
-          targetOffX: ox,
-          targetOffZ: oz,
           colour: rng.pick(point.palette),
           yaw: rng.range(0, Math.PI * 2),
           targetYaw: rng.range(0, Math.PI * 2),
@@ -266,8 +262,6 @@ export function LandmarkGatherers() {
             if (inView(a.cx + ox, a.cz + oz)) continue;
             a.offX = ox;
             a.offZ = oz;
-            a.targetOffX = ox;
-            a.targetOffZ = oz;
             a.colour = p.palette[Math.floor(s.next() * p.palette.length)];
             a.yaw = s.range(0, Math.PI * 2);
             a.targetYaw = s.range(0, Math.PI * 2);
@@ -276,19 +270,11 @@ export function LandmarkGatherers() {
             a.seed = s.next();
           }
         }
-        // Occasional drift: gatherers slowly ease toward a fresh offset
-        // and turn slightly. Reads as fidgeting / re-orienting, not
-        // walking.
-        a.offX += (a.targetOffX - a.offX) * dt * 0.4;
-        a.offZ += (a.targetOffZ - a.offZ) * dt * 0.4;
+        // ORDER 323 §6 ("Inget står stilla och glider"): den som står vid
+        // landmärket vänder sig ibland mot något annat, men flyttar sig inte.
+        // Förut gled figuren utan ben till en ny plats var sjunde sekund.
         a.yaw += (a.targetYaw - a.yaw) * dt * 0.6;
-        // Every ~7 s, pick a new nearby target.
-        if (Math.random() < dt * 0.14) {
-          const p = groups[g].point;
-          const range = p.radius * 0.65;
-          [a.targetOffX, a.targetOffZ] = clearOfTruck(a.cx, a.cz, a.offX + (Math.random() - 0.5) * range, a.offZ + (Math.random() - 0.5) * range);
-          a.targetYaw = Math.random() * Math.PI * 2;
-        }
+        if (Math.random() < dt * 0.14) a.targetYaw = a.yaw + (Math.random() - 0.5) * Math.PI;
 
         const fade = a.life; // 0 → invisible, 1 → full.
         const s = scale * fade;
