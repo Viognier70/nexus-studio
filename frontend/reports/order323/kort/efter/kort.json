@@ -1,0 +1,1091 @@
+{
+  "tag": "efter",
+  "build": "produktion (vite build + preview)",
+  "sizes": [
+    "1024×600",
+    "1180×660",
+    "1280×720",
+    "1440×900"
+  ],
+  "centre": 0.4,
+  "screens": {
+    "krogen-forberedelser": [
+      {
+        "size": "1024x600",
+        "level": "room",
+        "centreHits": [],
+        "hudShare": 0.112,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 38,
+            "y": 27,
+            "w": 235,
+            "h": 89
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 284,
+            "y": 27,
+            "w": 277,
+            "h": 55
+          },
+          {
+            "el": "rival-band",
+            "x": 38,
+            "y": 122,
+            "w": 235,
+            "h": 46
+          },
+          {
+            "el": "prep-hint",
+            "x": 38,
+            "y": 178,
+            "w": 139,
+            "h": 24
+          },
+          {
+            "el": "mood-meter",
+            "x": 572,
+            "y": 27,
+            "w": 230,
+            "h": 69
+          },
+          {
+            "el": "speed-toggle",
+            "x": 858,
+            "y": 27,
+            "w": 88,
+            "h": 25
+          },
+          {
+            "el": "div.",
+            "x": 953,
+            "y": 27,
+            "w": 33,
+            "h": 25
+          }
+        ],
+        "prepHint": {
+          "el": "prep-hint",
+          "x": 38,
+          "y": 178,
+          "w": 139,
+          "h": 24
+        },
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 38,
+          "y": 122,
+          "w": 235,
+          "h": 46
+        }
+      },
+      {
+        "size": "1180x660",
+        "level": "room",
+        "centreHits": [],
+        "hudShare": 0.107,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 44,
+            "y": 31,
+            "w": 269,
+            "h": 99
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 325,
+            "y": 31,
+            "w": 318,
+            "h": 60
+          },
+          {
+            "el": "rival-band",
+            "x": 44,
+            "y": 137,
+            "w": 269,
+            "h": 48
+          },
+          {
+            "el": "prep-hint",
+            "x": 44,
+            "y": 198,
+            "w": 144,
+            "h": 25
+          },
+          {
+            "el": "mood-meter",
+            "x": 655,
+            "y": 31,
+            "w": 230,
+            "h": 74
+          },
+          {
+            "el": "speed-toggle",
+            "x": 990,
+            "y": 31,
+            "w": 101,
+            "h": 26
+          },
+          {
+            "el": "div.",
+            "x": 1098,
+            "y": 31,
+            "w": 38,
+            "h": 26
+          }
+        ],
+        "prepHint": {
+          "el": "prep-hint",
+          "x": 44,
+          "y": 198,
+          "w": 144,
+          "h": 25
+        },
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 44,
+          "y": 137,
+          "w": 269,
+          "h": 48
+        }
+      },
+      {
+        "size": "1280x720",
+        "level": "room",
+        "centreHits": [],
+        "hudShare": 0.105,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 48,
+            "y": 33,
+            "w": 293,
+            "h": 107
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 355,
+            "y": 33,
+            "w": 347,
+            "h": 66
+          },
+          {
+            "el": "rival-band",
+            "x": 48,
+            "y": 148,
+            "w": 293,
+            "h": 53
+          },
+          {
+            "el": "prep-hint",
+            "x": 48,
+            "y": 214,
+            "w": 157,
+            "h": 27
+          },
+          {
+            "el": "mood-meter",
+            "x": 715,
+            "y": 33,
+            "w": 230,
+            "h": 80
+          },
+          {
+            "el": "speed-toggle",
+            "x": 1073,
+            "y": 33,
+            "w": 110,
+            "h": 28
+          },
+          {
+            "el": "div.",
+            "x": 1191,
+            "y": 33,
+            "w": 41,
+            "h": 28
+          }
+        ],
+        "prepHint": {
+          "el": "prep-hint",
+          "x": 48,
+          "y": 214,
+          "w": 157,
+          "h": 27
+        },
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 48,
+          "y": 148,
+          "w": 293,
+          "h": 53
+        }
+      },
+      {
+        "size": "1440x900",
+        "level": "room",
+        "centreHits": [],
+        "hudShare": 0.097,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 54,
+            "y": 38,
+            "w": 330,
+            "h": 118
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 399,
+            "y": 38,
+            "w": 390,
+            "h": 75
+          },
+          {
+            "el": "rival-band",
+            "x": 54,
+            "y": 164,
+            "w": 330,
+            "h": 59
+          },
+          {
+            "el": "prep-hint",
+            "x": 54,
+            "y": 238,
+            "w": 176,
+            "h": 31
+          },
+          {
+            "el": "mood-meter",
+            "x": 804,
+            "y": 38,
+            "w": 255,
+            "h": 110
+          },
+          {
+            "el": "speed-toggle",
+            "x": 1207,
+            "y": 38,
+            "w": 124,
+            "h": 31
+          },
+          {
+            "el": "div.",
+            "x": 1340,
+            "y": 38,
+            "w": 47,
+            "h": 31
+          }
+        ],
+        "prepHint": {
+          "el": "prep-hint",
+          "x": 54,
+          "y": 238,
+          "w": 176,
+          "h": 31
+        },
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 54,
+          "y": 164,
+          "w": 330,
+          "h": 59
+        }
+      }
+    ],
+    "krogen-servicen": [
+      {
+        "size": "1024x600",
+        "level": "room",
+        "centreHits": [],
+        "hudShare": 0.124,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 38,
+            "y": 27,
+            "w": 235,
+            "h": 78
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 284,
+            "y": 27,
+            "w": 353,
+            "h": 54
+          },
+          {
+            "el": "rival-band",
+            "x": 38,
+            "y": 112,
+            "w": 235,
+            "h": 78
+          },
+          {
+            "el": "mood-meter",
+            "x": 648,
+            "y": 27,
+            "w": 230,
+            "h": 75
+          },
+          {
+            "el": "speed-toggle",
+            "x": 858,
+            "y": 27,
+            "w": 88,
+            "h": 25
+          },
+          {
+            "el": "div.",
+            "x": 953,
+            "y": 27,
+            "w": 33,
+            "h": 25
+          }
+        ],
+        "prepHint": null,
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 38,
+          "y": 112,
+          "w": 235,
+          "h": 78
+        }
+      },
+      {
+        "size": "1180x660",
+        "level": "room",
+        "centreHits": [],
+        "hudShare": 0.115,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 44,
+            "y": 31,
+            "w": 269,
+            "h": 89
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 325,
+            "y": 31,
+            "w": 367,
+            "h": 61
+          },
+          {
+            "el": "rival-band",
+            "x": 44,
+            "y": 127,
+            "w": 269,
+            "h": 80
+          },
+          {
+            "el": "mood-meter",
+            "x": 704,
+            "y": 31,
+            "w": 230,
+            "h": 80
+          },
+          {
+            "el": "speed-toggle",
+            "x": 990,
+            "y": 31,
+            "w": 101,
+            "h": 26
+          },
+          {
+            "el": "div.",
+            "x": 1098,
+            "y": 31,
+            "w": 38,
+            "h": 26
+          }
+        ],
+        "prepHint": null,
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 44,
+          "y": 127,
+          "w": 269,
+          "h": 80
+        }
+      },
+      {
+        "size": "1280x720",
+        "level": "room",
+        "centreHits": [],
+        "hudShare": 0.111,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 48,
+            "y": 33,
+            "w": 293,
+            "h": 97
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 355,
+            "y": 33,
+            "w": 385,
+            "h": 66
+          },
+          {
+            "el": "rival-band",
+            "x": 48,
+            "y": 139,
+            "w": 293,
+            "h": 83
+          },
+          {
+            "el": "mood-meter",
+            "x": 753,
+            "y": 33,
+            "w": 230,
+            "h": 84
+          },
+          {
+            "el": "speed-toggle",
+            "x": 1073,
+            "y": 33,
+            "w": 110,
+            "h": 28
+          },
+          {
+            "el": "div.",
+            "x": 1191,
+            "y": 33,
+            "w": 41,
+            "h": 28
+          }
+        ],
+        "prepHint": null,
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 48,
+          "y": 139,
+          "w": 293,
+          "h": 83
+        }
+      },
+      {
+        "size": "1440x900",
+        "level": "room",
+        "centreHits": [],
+        "hudShare": 0.101,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 54,
+            "y": 38,
+            "w": 330,
+            "h": 109
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 399,
+            "y": 38,
+            "w": 422,
+            "h": 75
+          },
+          {
+            "el": "rival-band",
+            "x": 54,
+            "y": 156,
+            "w": 330,
+            "h": 89
+          },
+          {
+            "el": "mood-meter",
+            "x": 836,
+            "y": 38,
+            "w": 255,
+            "h": 111
+          },
+          {
+            "el": "speed-toggle",
+            "x": 1207,
+            "y": 38,
+            "w": 124,
+            "h": 31
+          },
+          {
+            "el": "div.",
+            "x": 1340,
+            "y": 38,
+            "w": 47,
+            "h": 31
+          }
+        ],
+        "prepHint": null,
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 54,
+          "y": 156,
+          "w": 330,
+          "h": 89
+        }
+      }
+    ],
+    "fragekortet": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-rocket-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-rocket-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-rocket-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-rocket-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      }
+    ],
+    "resultatet": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-result-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [
+          {
+            "el": "div.nx-result-grid",
+            "over": 400
+          }
+        ]
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-result-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [
+          {
+            "el": "div.nx-result-grid",
+            "over": 439
+          }
+        ]
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-result-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [
+          {
+            "el": "div.nx-result-grid",
+            "over": 462
+          }
+        ]
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-result-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [
+          {
+            "el": "div.nx-result-grid",
+            "over": 425
+          }
+        ]
+      }
+    ],
+    "lardomen": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      }
+    ],
+    "berattelsen": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [
+          {
+            "el": "div.nx-evening-scroll",
+            "over": 3
+          }
+        ]
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [
+          {
+            "el": "div.nx-evening-scroll",
+            "over": 3
+          }
+        ]
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      }
+    ],
+    "fikat-fragan": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      }
+    ],
+    "fikat-svaret": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [
+          {
+            "el": "div.nx-evening-scroll",
+            "over": 22
+          }
+        ]
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [
+          {
+            "el": "div.nx-evening-scroll",
+            "over": 66
+          }
+        ]
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [
+          {
+            "el": "div.nx-evening-scroll",
+            "over": 92
+          }
+        ]
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [
+          {
+            "el": "div.nx-evening-scroll",
+            "over": 31
+          }
+        ]
+      }
+    ],
+    "byn-i-kvall": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-cmp-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [],
+        "compare": {
+          "noteLines": 1,
+          "noteWords": 15,
+          "wordPerLine": false,
+          "noteOnTitleRow": false,
+          "noteOnPlaceRow": false,
+          "colWidths": [
+            205,
+            133,
+            133,
+            133
+          ],
+          "playerTag": "Din krog",
+          "note": "Byn räknar gästerna under kvällen. Här syns också vad varje gäst och varje stol gav."
+        }
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-cmp-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [],
+        "compare": {
+          "noteLines": 1,
+          "noteWords": 15,
+          "wordPerLine": false,
+          "noteOnTitleRow": false,
+          "noteOnPlaceRow": false,
+          "colWidths": [
+            236,
+            153,
+            153,
+            153
+          ],
+          "playerTag": "Din krog",
+          "note": "Byn räknar gästerna under kvällen. Här syns också vad varje gäst och varje stol gav."
+        }
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-cmp-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [],
+        "compare": {
+          "noteLines": 1,
+          "noteWords": 15,
+          "wordPerLine": false,
+          "noteOnTitleRow": false,
+          "noteOnPlaceRow": false,
+          "colWidths": [
+            257,
+            166,
+            166,
+            166
+          ],
+          "playerTag": "Din krog",
+          "note": "Byn räknar gästerna under kvällen. Här syns också vad varje gäst och varje stol gav."
+        }
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-cmp-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [],
+        "compare": {
+          "noteLines": 1,
+          "noteWords": 15,
+          "wordPerLine": false,
+          "noteOnTitleRow": false,
+          "noteOnPlaceRow": false,
+          "colWidths": [
+            289,
+            187,
+            187,
+            187
+          ],
+          "playerTag": "Din krog",
+          "note": "Byn räknar gästerna under kvällen. Här syns också vad varje gäst och varje stol gav."
+        }
+      }
+    ],
+    "vagnen-fikat-fragan": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      }
+    ],
+    "vagnen-fikat-svaret": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [
+          {
+            "el": "div.nx-evening-scroll",
+            "over": 43
+          }
+        ]
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [
+          {
+            "el": "div.nx-evening-scroll",
+            "over": 86
+          }
+        ]
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [
+          {
+            "el": "div.nx-evening-scroll",
+            "over": 144
+          }
+        ]
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [
+          {
+            "el": "div.nx-evening-scroll",
+            "over": 112
+          }
+        ]
+      }
+    ]
+  },
+  "errors": [],
+  "ok": true,
+  "truck": {
+    "asker": "Nils, medhjälpare i vagnen, kommer fram med koppen.",
+    "dilemma": "fika-vagn-kylboxen",
+    "sequence": [
+      "[data-testid=transfer-do]",
+      "[data-testid=transfer-continue]",
+      "[data-testid=screen-R1]",
+      "[data-testid=screen-L1]",
+      "[data-testid=screen-K1]"
+    ],
+    "opened": true
+  }
+}

@@ -44,7 +44,8 @@ const OUT = resolve(FRONTEND, 'reports', process.env.REPORT_ORDER ?? 'order300')
 mkdirSync(OUT, { recursive: true });
 const PORT = Number(process.env.PORT ?? 4176);
 const URL = `http://localhost:${PORT}`;
-const SIZES = (process.env.LAYOUT_SIZES ?? '1280x720,1366x768,1440x900,1512x982,1500x950').split(',').map((x) => x.split('x').map(Number));
+// ORDER 323 §2 — också 1024 × 600 och 1180 × 660 (Anders 2026-10-09: "Lägg till de två minsta i layoutkontrollen").
+const SIZES = (process.env.LAYOUT_SIZES ?? '1024x600,1180x660,1280x720,1366x768,1440x900,1512x982,1500x950').split(',').map((x) => x.split('x').map(Number));
 const SCREEN_SHARE = 0.6;
 const MIN_FONT_PX = 12;
 const ONLY = process.env.LAYOUT_ONLY ? process.env.LAYOUT_ONLY.split(',') : null;

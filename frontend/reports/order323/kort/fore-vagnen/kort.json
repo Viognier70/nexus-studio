@@ -1,0 +1,168 @@
+{
+  "tag": "fore-vagnen",
+  "build": "produktion (vite build + preview)",
+  "sizes": [
+    "1024×600",
+    "1180×660",
+    "1280×720",
+    "1440×900"
+  ],
+  "centre": 0.4,
+  "screens": {
+    "vagnen-fikat-fragan": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      }
+    ],
+    "vagnen-fikat-svaret": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [
+          {
+            "el": "li.",
+            "text": "3 krediter i Phronesis.",
+            "by": "knapparna (footer.nx-evening-foot)"
+          }
+        ],
+        "coveredCount": 1,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [
+          {
+            "el": "li.",
+            "text": "Det kostar 600 kr.",
+            "by": "knapparna (footer.nx-evening-foot)"
+          },
+          {
+            "el": "li.",
+            "text": "3 krediter i Phronesis.",
+            "by": "knapparna (footer.nx-evening-foot)"
+          }
+        ],
+        "coveredCount": 2,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [
+          {
+            "el": "li.",
+            "text": "Laget trivs bättre.",
+            "by": "knapparna (footer.nx-evening-foot)"
+          },
+          {
+            "el": "li.",
+            "text": "Nils litar mer på dig.",
+            "by": "knapparna (footer.nx-evening-foot)"
+          },
+          {
+            "el": "li.",
+            "text": "Det kostar 600 kr.",
+            "by": "knapparna (footer.nx-evening-foot)"
+          }
+        ],
+        "coveredCount": 3,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [
+          {
+            "el": "li.",
+            "text": "Det kostar 600 kr.",
+            "by": "knapparna (footer.nx-evening-foot)"
+          },
+          {
+            "el": "li.",
+            "text": "3 krediter i Phronesis.",
+            "by": "knapparna (footer.nx-evening-foot)"
+          }
+        ],
+        "coveredCount": 2,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      }
+    ]
+  },
+  "errors": [
+    "vagnen-fikat-svaret 1024x600: 1 täckta (3 krediter i Phronesis. av knapparna (footer.nx-evening-foot))",
+    "vagnen-fikat-svaret 1180x660: 2 täckta (Det kostar 600 kr. av knapparna (footer.nx-evening-foot); 3 krediter i Phronesis. av knapparna (footer.nx-evening-foot))",
+    "vagnen-fikat-svaret 1280x720: 3 täckta (Laget trivs bättre. av knapparna (footer.nx-evening-foot); Nils litar mer på dig. av knapparna (footer.nx-evening-foot); Det kostar 600 kr. av knapparna (footer.nx-evening-foot))",
+    "vagnen-fikat-svaret 1440x900: 2 täckta (Det kostar 600 kr. av knapparna (footer.nx-evening-foot); 3 krediter i Phronesis. av knapparna (footer.nx-evening-foot))"
+  ],
+  "ok": false,
+  "truck": {
+    "asker": "Nils, medhjälpare i vagnen, kommer fram med koppen.",
+    "dilemma": "fika-vagn-kylboxen",
+    "sequence": [
+      "[data-testid=transfer-do]",
+      "[data-testid=transfer-continue]",
+      "[data-testid=screen-R1]",
+      "[data-testid=screen-L1]",
+      "[data-testid=screen-K1]"
+    ],
+    "opened": true
+  }
+}

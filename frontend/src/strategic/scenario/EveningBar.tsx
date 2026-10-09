@@ -129,6 +129,8 @@ function LessonScreen({ sim, lesson, onStory, onEnd }: { sim: SimulationState; l
           </div>
           <span className="nx-mid" aria-hidden><BookIcon /></span>
         </header>
+        {/* ORDER 323 §2 — innehållet rullar, knapparna nederst står fast. */}
+        <div className="nx-evening-scroll">
         <div className="nx-evening-body">
           {/* ORDER 285 — lärdomen på papper, raketerna på trä (Designs lärdomen). */}
           <div className="nx-paper nx-lesson-paper" data-testid="evening-lesson" data-items={lesson.length}>
@@ -162,6 +164,7 @@ function LessonScreen({ sim, lesson, onStory, onEnd }: { sim: SimulationState; l
             })}
           </div>
           <Grid grid={grid} lessonIndex={lessonIndex} />
+        </div>
         </div>
         <footer className="nx-evening-foot">
           <button
@@ -207,6 +210,7 @@ function StoryScreen({ sim, onBack, onEnd }: { sim: SimulationState; onBack: (()
             <h1 className="nx-display">{title}</h1>
           </div>
         </header>
+        <div className="nx-evening-scroll">
         {sim.eveningAccount?.paragraph && (
           <p className="nx-story-lead" data-testid="evening-story">{sim.eveningAccount.paragraph}</p>
         )}
@@ -235,6 +239,7 @@ function StoryScreen({ sim, onBack, onEnd }: { sim: SimulationState; onBack: (()
               ))}
             </ul>
           </div>
+        </div>
         </div>
         <footer className="nx-evening-foot">
           {onBack ? (

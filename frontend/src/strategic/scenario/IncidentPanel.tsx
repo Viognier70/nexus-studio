@@ -468,6 +468,9 @@ export function IncidentCard() {
         <div className="nx-label" data-testid={backed ? 'incident-back-kicker' : undefined}>{backed ? strings.back.kicker(view.context.staff, where) : eventRole ?? `${view.context.staff} · ${where}`}</div>
         <div className="nx-rocket-count" data-testid="rocket-count">{active?.backed ? t.backOf(sim.incidents?.betsTonight ?? 1, BACK.maxPerEvening) : active?.chained ? t.followUp : t.rocketN(String(Math.max(1, n)))}</div>
       </div>
+      {/* ORDER 323 §2 — kortets innehåll rullar inuti kortet; huvudet överst och knapparna och bandet
+          nederst står fast (förut rullade hela kortet, och knapparna kunde ligga över innehållet). */}
+      <div className="nx-rocket-body" data-testid="incident-body">
       {/* ORDER 284 — introduktionen står där raketen startas (EventsPanel):
           på kortet tryckte den ned svaren under skärmen (tredje provspelet). */}
       {/* ORDER 284 — i Back your knowledge med ett låst svar (klockan står)
@@ -628,6 +631,7 @@ export function IncidentCard() {
         })}
       </div>}
 
+      </div>
       {lockPhase ? (
         // ORDER 310b — Designs knapp efter trycket: Låst, med låset.
         <div className="nx-rocket-locked" data-testid="incident-locked" data-phase={lockPhase} role="status" aria-label={t.lockedNote}>

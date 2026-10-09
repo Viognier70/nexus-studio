@@ -14,7 +14,8 @@ export function PrepHint() {
   if (!beforeDoors(sim)) return null;
   const p = strings.prepHint;
   return (
-    <div className="nx nx-prep-hint" role="status" data-testid="prep-hint">
+    // ORDER 323 §10 — vid Krogen (Z) fälls raden ihop till rubriken (service.css); hela texten står i title.
+    <div className="nx nx-prep-hint" role="status" data-testid="prep-hint" title={`${p.now} ${p.faster(formatClock(doorsOpenMinutes(sim)), PREP_TIME.speedAtLeast)}`}>
       <span className="nx-label nx-accent-text">{p.label}</span>
       <span className="nx-prep-hint-text">{p.now}</span>
       <span className="nx-prep-hint-fast">{p.faster(formatClock(doorsOpenMinutes(sim)), PREP_TIME.speedAtLeast)}</span>

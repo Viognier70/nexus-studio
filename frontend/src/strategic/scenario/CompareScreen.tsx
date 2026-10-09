@@ -50,13 +50,16 @@ export function CompareScreen({ sim, onContinue }: { sim: SimulationState; onCon
     <NxScreen testId="screen-J1" label={tt(lang, 'cmp.title')} className="nx-compare-screen">
       <section className="nx-panel nx-paper nx-cmp">
         <header className="nx-cmp-head">
-          <div>
+          <div className="nx-cmp-title">
             <div className="nx-label">{tt(lang, 'cmp.kicker')}</div>
             <h1 className="nx-heading" style={{ margin: 0 }}>{tt(lang, 'cmp.title')}</h1>
           </div>
-          <p className="nx-small" style={{ margin: 0 }}>{tt(lang, 'cmp.note')}</p>
+          {/* ORDER 323 §7 — förklaringen på en egen rad under rubriken och placeringen (förut ett ord per rad mellan dem). */}
+          <p className="nx-small nx-cmp-note" data-testid="compare-note" style={{ margin: 0 }}>{tt(lang, 'cmp.note')}</p>
           {rank > 0 && <span className="nx-cmp-place" data-testid="compare-place" data-rank={rank}>{strings.village.compare.place(rank, rows.length)}</span>}
         </header>
+        {/* ORDER 323 §2 — tabellen rullar inuti kortet, knappen nederst står fast. */}
+        <div className="nx-cmp-scroll">
         <table className="nx-cmp-table">
           <thead>
             <tr>
@@ -91,6 +94,7 @@ export function CompareScreen({ sim, onContinue }: { sim: SimulationState; onCon
             })}
           </tbody>
         </table>
+        </div>
         <div className="nx-cmp-foot">
           <NxButton testId="compare-continue" onClick={onContinue}>{tt(lang, 'cmp.next')}</NxButton>
         </div>

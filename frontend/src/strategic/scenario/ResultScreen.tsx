@@ -243,10 +243,11 @@ export function ResultScreen({ sim, onContinue }: { sim: SimulationState; onCont
               {drags.some((d) => d.key === 'waste') && drags.some((d) => d.key === 'stock') && <div className="nx-small nx-muted">{t.drags.note}</div>}
             </div>
           )}
-          <div className="nx-result-foot">
-            <NxButton testId="result-continue" onClick={onContinue}>{t.continue}</NxButton>
-          </div>
         </section>
+      </div>
+      {/* ORDER 323 §2 — knappen står fast nederst, utanför det som rullar (förut sticky ovanpå innehållet). */}
+      <div className="nx-result-foot">
+        <NxButton testId="result-continue" onClick={onContinue}>{t.continue}</NxButton>
       </div>
     </NxScreen>
   );

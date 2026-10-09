@@ -1,0 +1,1099 @@
+{
+  "tag": "fore",
+  "build": "produktion (vite build + preview)",
+  "sizes": [
+    "1024×600",
+    "1180×660",
+    "1280×720",
+    "1440×900"
+  ],
+  "centre": 0.4,
+  "screens": {
+    "krogen-forberedelser": [
+      {
+        "size": "1024x600",
+        "level": "room",
+        "centreHits": [
+          {
+            "el": "prep-hint",
+            "px": 15040
+          }
+        ],
+        "hudShare": 0.18,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 38,
+            "y": 27,
+            "w": 235,
+            "h": 89
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 284,
+            "y": 27,
+            "w": 277,
+            "h": 55
+          },
+          {
+            "el": "rival-band",
+            "x": 38,
+            "y": 122,
+            "w": 523,
+            "h": 36
+          },
+          {
+            "el": "prep-hint",
+            "x": 38,
+            "y": 168,
+            "w": 523,
+            "h": 71
+          },
+          {
+            "el": "mood-meter",
+            "x": 572,
+            "y": 27,
+            "w": 230,
+            "h": 69
+          },
+          {
+            "el": "speed-toggle",
+            "x": 858,
+            "y": 27,
+            "w": 88,
+            "h": 25
+          },
+          {
+            "el": "div.",
+            "x": 953,
+            "y": 27,
+            "w": 33,
+            "h": 25
+          }
+        ],
+        "prepHint": {
+          "el": "prep-hint",
+          "x": 38,
+          "y": 168,
+          "w": 523,
+          "h": 71
+        },
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 38,
+          "y": 122,
+          "w": 523,
+          "h": 36
+        }
+      },
+      {
+        "size": "1180x660",
+        "level": "room",
+        "centreHits": [
+          {
+            "el": "prep-hint",
+            "px": 18167
+          }
+        ],
+        "hudShare": 0.171,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 44,
+            "y": 31,
+            "w": 269,
+            "h": 99
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 325,
+            "y": 31,
+            "w": 318,
+            "h": 60
+          },
+          {
+            "el": "rival-band",
+            "x": 44,
+            "y": 137,
+            "w": 599,
+            "h": 38
+          },
+          {
+            "el": "prep-hint",
+            "x": 44,
+            "y": 187,
+            "w": 599,
+            "h": 74
+          },
+          {
+            "el": "mood-meter",
+            "x": 655,
+            "y": 31,
+            "w": 230,
+            "h": 74
+          },
+          {
+            "el": "speed-toggle",
+            "x": 990,
+            "y": 31,
+            "w": 101,
+            "h": 26
+          },
+          {
+            "el": "div.",
+            "x": 1098,
+            "y": 31,
+            "w": 38,
+            "h": 26
+          }
+        ],
+        "prepHint": {
+          "el": "prep-hint",
+          "x": 44,
+          "y": 187,
+          "w": 599,
+          "h": 74
+        },
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 44,
+          "y": 137,
+          "w": 599,
+          "h": 38
+        }
+      },
+      {
+        "size": "1280x720",
+        "level": "room",
+        "centreHits": [
+          {
+            "el": "prep-hint",
+            "px": 13635
+          }
+        ],
+        "hudShare": 0.153,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 48,
+            "y": 33,
+            "w": 293,
+            "h": 107
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 355,
+            "y": 33,
+            "w": 347,
+            "h": 66
+          },
+          {
+            "el": "rival-band",
+            "x": 48,
+            "y": 148,
+            "w": 653,
+            "h": 41
+          },
+          {
+            "el": "prep-hint",
+            "x": 48,
+            "y": 202,
+            "w": 653,
+            "h": 57
+          },
+          {
+            "el": "mood-meter",
+            "x": 715,
+            "y": 33,
+            "w": 230,
+            "h": 80
+          },
+          {
+            "el": "speed-toggle",
+            "x": 1073,
+            "y": 33,
+            "w": 110,
+            "h": 28
+          },
+          {
+            "el": "div.",
+            "x": 1191,
+            "y": 33,
+            "w": 41,
+            "h": 28
+          }
+        ],
+        "prepHint": {
+          "el": "prep-hint",
+          "x": 48,
+          "y": 202,
+          "w": 653,
+          "h": 57
+        },
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 48,
+          "y": 148,
+          "w": 653,
+          "h": 41
+        }
+      },
+      {
+        "size": "1440x900",
+        "level": "room",
+        "centreHits": [
+          {
+            "el": "prep-hint",
+            "px": 6828
+          }
+        ],
+        "hudShare": 0.141,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 54,
+            "y": 38,
+            "w": 330,
+            "h": 118
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 399,
+            "y": 38,
+            "w": 390,
+            "h": 75
+          },
+          {
+            "el": "rival-band",
+            "x": 54,
+            "y": 164,
+            "w": 735,
+            "h": 47
+          },
+          {
+            "el": "prep-hint",
+            "x": 54,
+            "y": 226,
+            "w": 735,
+            "h": 64
+          },
+          {
+            "el": "mood-meter",
+            "x": 804,
+            "y": 38,
+            "w": 255,
+            "h": 110
+          },
+          {
+            "el": "speed-toggle",
+            "x": 1207,
+            "y": 38,
+            "w": 124,
+            "h": 31
+          },
+          {
+            "el": "div.",
+            "x": 1340,
+            "y": 38,
+            "w": 47,
+            "h": 31
+          }
+        ],
+        "prepHint": {
+          "el": "prep-hint",
+          "x": 54,
+          "y": 226,
+          "w": 735,
+          "h": 64
+        },
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 54,
+          "y": 164,
+          "w": 735,
+          "h": 47
+        }
+      }
+    ],
+    "krogen-servicen": [
+      {
+        "size": "1024x600",
+        "level": "room",
+        "centreHits": [],
+        "hudShare": 0.124,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 38,
+            "y": 27,
+            "w": 235,
+            "h": 78
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 284,
+            "y": 27,
+            "w": 353,
+            "h": 54
+          },
+          {
+            "el": "rival-band",
+            "x": 38,
+            "y": 112,
+            "w": 235,
+            "h": 78
+          },
+          {
+            "el": "mood-meter",
+            "x": 648,
+            "y": 27,
+            "w": 230,
+            "h": 75
+          },
+          {
+            "el": "speed-toggle",
+            "x": 858,
+            "y": 27,
+            "w": 88,
+            "h": 25
+          },
+          {
+            "el": "div.",
+            "x": 953,
+            "y": 27,
+            "w": 33,
+            "h": 25
+          }
+        ],
+        "prepHint": null,
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 38,
+          "y": 112,
+          "w": 235,
+          "h": 78
+        }
+      },
+      {
+        "size": "1180x660",
+        "level": "room",
+        "centreHits": [],
+        "hudShare": 0.115,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 44,
+            "y": 31,
+            "w": 269,
+            "h": 89
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 325,
+            "y": 31,
+            "w": 367,
+            "h": 61
+          },
+          {
+            "el": "rival-band",
+            "x": 44,
+            "y": 127,
+            "w": 269,
+            "h": 80
+          },
+          {
+            "el": "mood-meter",
+            "x": 704,
+            "y": 31,
+            "w": 230,
+            "h": 80
+          },
+          {
+            "el": "speed-toggle",
+            "x": 990,
+            "y": 31,
+            "w": 101,
+            "h": 26
+          },
+          {
+            "el": "div.",
+            "x": 1098,
+            "y": 31,
+            "w": 38,
+            "h": 26
+          }
+        ],
+        "prepHint": null,
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 44,
+          "y": 127,
+          "w": 269,
+          "h": 80
+        }
+      },
+      {
+        "size": "1280x720",
+        "level": "room",
+        "centreHits": [],
+        "hudShare": 0.111,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 48,
+            "y": 33,
+            "w": 293,
+            "h": 97
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 355,
+            "y": 33,
+            "w": 385,
+            "h": 66
+          },
+          {
+            "el": "rival-band",
+            "x": 48,
+            "y": 139,
+            "w": 293,
+            "h": 83
+          },
+          {
+            "el": "mood-meter",
+            "x": 753,
+            "y": 33,
+            "w": 230,
+            "h": 84
+          },
+          {
+            "el": "speed-toggle",
+            "x": 1073,
+            "y": 33,
+            "w": 110,
+            "h": 28
+          },
+          {
+            "el": "div.",
+            "x": 1191,
+            "y": 33,
+            "w": 41,
+            "h": 28
+          }
+        ],
+        "prepHint": null,
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 48,
+          "y": 139,
+          "w": 293,
+          "h": 83
+        }
+      },
+      {
+        "size": "1440x900",
+        "level": "room",
+        "centreHits": [],
+        "hudShare": 0.101,
+        "panels": [
+          {
+            "el": "service-clock",
+            "x": 54,
+            "y": 38,
+            "w": 330,
+            "h": 109
+          },
+          {
+            "el": "div.nx.nx-till-wrap",
+            "x": 399,
+            "y": 38,
+            "w": 422,
+            "h": 75
+          },
+          {
+            "el": "rival-band",
+            "x": 54,
+            "y": 156,
+            "w": 330,
+            "h": 89
+          },
+          {
+            "el": "mood-meter",
+            "x": 836,
+            "y": 38,
+            "w": 255,
+            "h": 111
+          },
+          {
+            "el": "speed-toggle",
+            "x": 1207,
+            "y": 38,
+            "w": 124,
+            "h": 31
+          },
+          {
+            "el": "div.",
+            "x": 1340,
+            "y": 38,
+            "w": 47,
+            "h": 31
+          }
+        ],
+        "prepHint": null,
+        "rivalBand": {
+          "el": "rival-band",
+          "x": 54,
+          "y": 156,
+          "w": 330,
+          "h": 89
+        }
+      }
+    ],
+    "fragekortet": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-rocket-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-rocket-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-rocket-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-rocket-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      }
+    ],
+    "resultatet": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [
+          {
+            "el": "div.nx-result-medal-label",
+            "text": "Ekonomisk hållbarhet",
+            "by": "knapparna (div.nx-result-foot)"
+          },
+          {
+            "el": "div.nx-small.nx-muted",
+            "text": "Marginal 1 % av kvällens intäkt",
+            "by": "knapparna (div.nx-result-foot)"
+          },
+          {
+            "el": "div.nx-result-medal-label",
+            "text": "Ekologisk hållbarhet",
+            "by": "knapparna (div.nx-result-foot)"
+          },
+          {
+            "el": "div.nx-small.nx-muted",
+            "text": "Råvarorna och svinnet: 18,4 kg till sopb",
+            "by": "knapparna (div.nx-result-foot)"
+          },
+          {
+            "el": "div.nx-result-medal-label",
+            "text": "Svinn",
+            "by": "knapparna (div.nx-result-foot)"
+          },
+          {
+            "el": "div.nx-small.nx-muted",
+            "text": "Till sopbilen efter stängning",
+            "by": "knapparna (div.nx-result-foot)"
+          }
+        ],
+        "coveredCount": 6,
+        "feet": [
+          "div.nx-result-foot"
+        ],
+        "footFixed": false,
+        "scrolls": [
+          {
+            "el": "screen-R1",
+            "over": 331
+          }
+        ]
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [
+          {
+            "el": "div.nx-result-medal-label",
+            "text": "Ekonomisk hållbarhet",
+            "by": "knapparna (div.nx-result-foot)"
+          },
+          {
+            "el": "div.nx-small.nx-muted",
+            "text": "Marginal 1 % av kvällens intäkt",
+            "by": "knapparna (div.nx-result-foot)"
+          },
+          {
+            "el": "div.nx-result-medal-label",
+            "text": "Ekologisk hållbarhet",
+            "by": "knapparna (div.nx-result-foot)"
+          },
+          {
+            "el": "div.nx-small.nx-muted",
+            "text": "Råvarorna och svinnet: 18,4 kg till sopb",
+            "by": "knapparna (div.nx-result-foot)"
+          },
+          {
+            "el": "div.nx-result-medal-label",
+            "text": "Svinn",
+            "by": "knapparna (div.nx-result-foot)"
+          },
+          {
+            "el": "div.nx-small.nx-muted",
+            "text": "Till sopbilen efter stängning",
+            "by": "knapparna (div.nx-result-foot)"
+          }
+        ],
+        "coveredCount": 6,
+        "feet": [
+          "div.nx-result-foot"
+        ],
+        "footFixed": false,
+        "scrolls": [
+          {
+            "el": "screen-R1",
+            "over": 367
+          }
+        ]
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [
+          {
+            "el": "div.nx-result-medal-label",
+            "text": "Ekonomisk hållbarhet",
+            "by": "knapparna (div.nx-result-foot)"
+          },
+          {
+            "el": "div.nx-small.nx-muted",
+            "text": "Marginal 1 % av kvällens intäkt",
+            "by": "knapparna (div.nx-result-foot)"
+          },
+          {
+            "el": "div.nx-result-medal-label",
+            "text": "Ekologisk hållbarhet",
+            "by": "knapparna (div.nx-result-foot)"
+          },
+          {
+            "el": "div.nx-small.nx-muted",
+            "text": "Råvarorna och svinnet: 18,4 kg till sopb",
+            "by": "knapparna (div.nx-result-foot)"
+          },
+          {
+            "el": "div.nx-result-medal-label",
+            "text": "Svinn",
+            "by": "knapparna (div.nx-result-foot)"
+          },
+          {
+            "el": "div.nx-small.nx-muted",
+            "text": "Till sopbilen efter stängning",
+            "by": "knapparna (div.nx-result-foot)"
+          }
+        ],
+        "coveredCount": 6,
+        "feet": [
+          "div.nx-result-foot"
+        ],
+        "footFixed": false,
+        "scrolls": [
+          {
+            "el": "screen-R1",
+            "over": 382
+          }
+        ]
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [
+          {
+            "el": "div.nx-label",
+            "text": "Det här drog ned kvällen",
+            "by": "knapparna (div.nx-result-foot)"
+          }
+        ],
+        "coveredCount": 1,
+        "feet": [
+          "div.nx-result-foot"
+        ],
+        "footFixed": false,
+        "scrolls": [
+          {
+            "el": "screen-R1",
+            "over": 336
+          }
+        ]
+      }
+    ],
+    "lardomen": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      }
+    ],
+    "berattelsen": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      }
+    ],
+    "fikat-fragan": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      }
+    ],
+    "fikat-svaret": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [
+          {
+            "el": "li.",
+            "text": "3 krediter i Phronesis.",
+            "by": "knapparna (footer.nx-evening-foot)"
+          }
+        ],
+        "coveredCount": 1,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [
+          {
+            "el": "li.",
+            "text": "Sara litar mer på dig.",
+            "by": "knapparna (footer.nx-evening-foot)"
+          },
+          {
+            "el": "li.",
+            "text": "3 krediter i Phronesis.",
+            "by": "knapparna (footer.nx-evening-foot)"
+          }
+        ],
+        "coveredCount": 2,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "footer.nx-evening-foot"
+        ],
+        "footFixed": true,
+        "scrolls": []
+      }
+    ],
+    "byn-i-kvall": [
+      {
+        "size": "1024x600",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-cmp-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [],
+        "compare": {
+          "noteLines": 3,
+          "noteWords": 15,
+          "wordPerLine": false,
+          "noteOnTitleRow": true,
+          "noteOnPlaceRow": true,
+          "colWidths": [
+            267,
+            100,
+            119,
+            117
+          ],
+          "playerTag": "Vi",
+          "note": "Under kvällen räknar bandet gäster. Här syns också vad varje gäst och varje stol gav."
+        }
+      },
+      {
+        "size": "1180x660",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-cmp-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [],
+        "compare": {
+          "noteLines": 3,
+          "noteWords": 15,
+          "wordPerLine": false,
+          "noteOnTitleRow": true,
+          "noteOnPlaceRow": true,
+          "colWidths": [
+            323,
+            111,
+            131,
+            129
+          ],
+          "playerTag": "Vi",
+          "note": "Under kvällen räknar bandet gäster. Här syns också vad varje gäst och varje stol gav."
+        }
+      },
+      {
+        "size": "1280x720",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-cmp-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [],
+        "compare": {
+          "noteLines": 3,
+          "noteWords": 15,
+          "wordPerLine": false,
+          "noteOnTitleRow": true,
+          "noteOnPlaceRow": true,
+          "colWidths": [
+            364,
+            117,
+            139,
+            136
+          ],
+          "playerTag": "Vi",
+          "note": "Under kvällen räknar bandet gäster. Här syns också vad varje gäst och varje stol gav."
+        }
+      },
+      {
+        "size": "1440x900",
+        "pageScroll": false,
+        "covered": [],
+        "coveredCount": 0,
+        "feet": [
+          "div.nx-cmp-foot"
+        ],
+        "footFixed": true,
+        "scrolls": [],
+        "compare": {
+          "noteLines": 3,
+          "noteWords": 15,
+          "wordPerLine": false,
+          "noteOnTitleRow": true,
+          "noteOnPlaceRow": true,
+          "colWidths": [
+            427,
+            127,
+            149,
+            147
+          ],
+          "playerTag": "Vi",
+          "note": "Under kvällen räknar bandet gäster. Här syns också vad varje gäst och varje stol gav."
+        }
+      }
+    ]
+  },
+  "errors": [
+    "krogen-forberedelser 1024x600: paneler i rummets mitt: prep-hint",
+    "krogen-forberedelser 1180x660: paneler i rummets mitt: prep-hint",
+    "krogen-forberedelser 1280x720: paneler i rummets mitt: prep-hint",
+    "krogen-forberedelser 1440x900: paneler i rummets mitt: prep-hint",
+    "resultatet 1024x600: 6 täckta (Ekonomisk hållbarhet av knapparna (div.nx-result-foot); Marginal 1 % av kvällens intäkt av knapparna (div.nx-result-foot); Ekologisk hållbarhet av knapparna (div.nx-result-foot))",
+    "resultatet 1024x600: knapparna står inte fast nederst (div.nx-result-foot)",
+    "resultatet 1180x660: 6 täckta (Ekonomisk hållbarhet av knapparna (div.nx-result-foot); Marginal 1 % av kvällens intäkt av knapparna (div.nx-result-foot); Ekologisk hållbarhet av knapparna (div.nx-result-foot))",
+    "resultatet 1180x660: knapparna står inte fast nederst (div.nx-result-foot)",
+    "resultatet 1280x720: 6 täckta (Ekonomisk hållbarhet av knapparna (div.nx-result-foot); Marginal 1 % av kvällens intäkt av knapparna (div.nx-result-foot); Ekologisk hållbarhet av knapparna (div.nx-result-foot))",
+    "resultatet 1280x720: knapparna står inte fast nederst (div.nx-result-foot)",
+    "resultatet 1440x900: 1 täckta (Det här drog ned kvällen av knapparna (div.nx-result-foot))",
+    "resultatet 1440x900: knapparna står inte fast nederst (div.nx-result-foot)",
+    "fikat-svaret 1180x660: 1 täckta (3 krediter i Phronesis. av knapparna (footer.nx-evening-foot))",
+    "fikat-svaret 1280x720: 2 täckta (Sara litar mer på dig. av knapparna (footer.nx-evening-foot); 3 krediter i Phronesis. av knapparna (footer.nx-evening-foot))",
+    "byn-i-kvall 1024x600: förklaringen (3 rader, 15 ord) eller på rubrikens rad",
+    "byn-i-kvall 1180x660: förklaringen (3 rader, 15 ord) eller på rubrikens rad",
+    "byn-i-kvall 1280x720: förklaringen (3 rader, 15 ord) eller på rubrikens rad",
+    "byn-i-kvall 1440x900: förklaringen (3 rader, 15 ord) eller på rubrikens rad",
+    "vagnen: fikat kom inte"
+  ],
+  "ok": false,
+  "truck": {
+    "asker": null,
+    "dilemma": null,
+    "sequence": [],
+    "opened": true
+  }
+}

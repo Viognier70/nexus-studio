@@ -25,10 +25,14 @@
   background: var(--nx-ground);
   border-top: calc(8 * var(--nx-u)) solid var(--nx-accent);
   padding: calc(32 * var(--nx-u)) calc(32 * var(--nx-u)) 0;
-  overflow-y: auto;
+  /* ORDER 323 §2 — kortet rullar inte; innehållet (.nx-rocket-body) rullar, knapparna nederst står fast. */
+  overflow: hidden;
   pointer-events: auto;
   z-index: 42;
 }
+.nx-rocket > .nx-rocket-head { flex: none; }
+.nx-rocket-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; margin: 0 calc(-8 * var(--nx-u)); padding: 0 calc(8 * var(--nx-u)) calc(12 * var(--nx-u)); }
+.nx-rocket > .nx-rocket-foot, .nx-rocket > .nx-rocket-band, .nx-rocket > .nx-rocket-locked { flex: none; }
 .nx-rocket-head { display: flex; justify-content: space-between; align-items: baseline; gap: calc(16 * var(--nx-u)); }
 .nx-rocket-head .nx-label { color: var(--nx-accent-700); }
 .nx-rocket-count { font-size: calc(20 * var(--nx-u)); color: var(--nx-ink-2); white-space: nowrap; }
@@ -810,7 +814,8 @@ body[data-focus='1']:not([data-focus-unfold='rocket']) .nx-rocket:not([data-mode
 
 /* ORDER 305 / ORDER 310 — kvitt eller dubbelt: kortet medan spelaren väljer
  * (valet står i kolumnen). Kortet tonas, så att kolumnen är det man läser. */
-.nx-rocket[data-choosing='true'] > :not(.nx-rocket-kvitt):not(.nx-rocket-head):not(.nx-pyr-strip) { opacity: .45; }
+.nx-rocket[data-choosing='true'] > .nx-rocket-body > :not(.nx-rocket-kvitt):not(.nx-pyr-strip),
+.nx-rocket[data-choosing='true'] > :not(.nx-rocket-body):not(.nx-rocket-head) { opacity: .45; }
 .nx-rocket-kvitt { margin-top: calc(14 * var(--nx-u)); }
 .nx-rocket-kvitt p { margin: 0 0 calc(6 * var(--nx-u)); }
 .nx-rocket-kvitt p:first-child { font-size: max(15px, calc(26 * var(--nx-u))); font-weight: 800; }
@@ -995,3 +1000,39 @@ body:has(.nx-stake) .nx-room-notices { display: none; }
 .nx-order[data-grade='wrong'] .nx-order-row:not([data-answer]) .nx-order-slot { background: #e0533f; border-color: #b8392a; animation: nx-shake-7 .38s ease-out .12s both; }
 .nx-order .nx-order-row[data-answer] .nx-order-slot { border: 3px dashed #5cb86a; background: #f5ead5; animation: nx-fade-in .2s ease-out .65s both; }
 @media (prefers-reduced-motion: reduce) { .nx-order-slot, .nx-rocket-option[data-look='half'] { animation: none !important; } }
+
+/* ORDER 323 §2 (Anders 2026-10-09: "Kortens innehåll rullar inuti kortet när det inte får plats, och
+ * knapparna står fast nederst. Knapparna längst ner får aldrig täcka innehåll.") — kvällens skärmar
+ * (lärdomen, berättelsen, fikat, sopbilen, resultatet och Byn i kväll) rullar inte som helhet: rubriken
+ * överst och knapparna nederst står fast, och det mellan dem rullar i sin egen ruta (.nx-evening-scroll,
+ * .nx-result-grid, .nx-cmp-scroll). Förut rullade hela skärmen och foten låg sticky ovanpå innehållet. */
+.nx-screen:has(> .nx-evening), .nx-screen.nx-screen-fixed-foot, .nx-screen.nx-result-screen { display: flex; flex-direction: column; overflow: hidden; }
+.nx-screen > .nx-evening { flex: 1 1 auto; min-height: 0; height: auto; }
+.nx-evening > .nx-evening-head { flex: none; }
+.nx-evening-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.nx-evening-foot { position: static; flex: none; margin-top: calc(16 * var(--nx-u)); }
+.nx-screen.nx-result-screen > .nx-result-grid { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.nx-screen.nx-result-screen > .nx-result-foot { position: static; flex: none; margin-top: calc(12 * var(--nx-u)); background: none; }
+@media (max-width: 900px) { .nx-screen.nx-result-screen > .nx-result-foot { position: static; } .nx-result-grid { padding-bottom: 0; } }
+.nx-screen.nx-compare-screen { overflow: hidden; align-items: stretch; }
+.nx-compare-screen > .nx-cmp { display: flex; flex-direction: column; max-height: 100%; min-height: 0; margin: 0 auto; align-self: flex-start; box-sizing: border-box; }
+.nx-cmp > .nx-cmp-head, .nx-cmp > .nx-cmp-foot { flex: none; }
+.nx-cmp-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+/* ORDER 323 §2 — kassarutan (högerhörnet) ligger aldrig över fikats rubrik: den döljs medan fikat står,
+ * som under överföringen. */
+body:has(.nx-fika-overlay) .gb-topright { display: none; }
+.nx-screen.nx-fika-overlay { z-index: 60; }
+
+/* ORDER 323 §10 (Anders 2026-10-09: "Panelerna Byn i kväll och Förberedelser täcker halva rummet vid
+ * Krogen (Z). De ska vara mindre eller fällas ihop vid nära vy, och aldrig täcka rummets mitt.") — på
+ * nivån Krogen (body[data-level='room'], LevelBar) fälls förberedelseraden ihop till sin rubrik och
+ * Byn i kväll före öppningen till en rad; båda tar bara den bredd de behöver (förut hela kolumnens,
+ * klockans och kassans bredd). Kontrollen: reports/order323/kort/<tag>/kort.json, krogen-*. */
+body[data-level='room'] .nx-hud-stack .nx-prep-hint { width: auto; min-width: 0; align-self: flex-start; padding: calc(6 * var(--nx-u)) calc(14 * var(--nx-u)); }
+body[data-level='room'] .nx-prep-hint .nx-prep-hint-text,
+body[data-level='room'] .nx-prep-hint .nx-prep-hint-fast { display: none; }
+body[data-level='room'] .nx-rival-band[data-state='before'] { align-self: flex-start; width: auto; max-width: calc(440 * var(--nx-u)); padding-top: calc(8 * var(--nx-u)); padding-bottom: calc(8 * var(--nx-u)); }
+body[data-level='room'] .nx-rival-band[data-state='before'] .nx-rival-calm { display: none; }
+/* ORDER 323 §2 — kvällens skärmar som låter HUD:en stå kvar (resultatet, sopbilen, Byn i kväll) börjar
+ * under HUD:ens nederkant (--nx-hud-bottom, HudBottom.tsx): i 1024 × 600 låg klockan över "Vad kvällen gav". */
+.nx-screen.nx-result-screen, .nx-screen.nx-compare-screen, .nx-screen.nx-waste-screen { padding-top: max(calc(160 * var(--nx-u)), calc(var(--nx-hud-bottom, 0px) + 12px)); }
