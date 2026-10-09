@@ -296,6 +296,9 @@ export interface IncidentsState {
   // ORDER 296c — när dörrarna öppnade (kvällens fönster för raketerna).
   doorsOpenAt?: number | null;
   queued: string[];
+  // ORDER 322 C — de köade som tvingats fram (provspelet ?prov, #playtest=1&rocket=) och inte följer ett val:
+  // de kommer som en kedjad följd men räknas och visas som en vanlig situation, inte "Följd".
+  forced?: string[];
   // Den kedjade händelsens sammanhang (samma bord som valet gällde).
   queuedContext: Record<string, IncidentContext>;
   blocked: string[];
@@ -537,14 +540,14 @@ function chooseIncident(
   state: SimulationState,
   phase: ArcPhase,
   r: number
-): { incident: Incident; chained: boolean; context?: IncidentContext } | null {
+): { incident: Incident; chained: boolean; queued?: boolean; context?: IncidentContext } | null {
   const inc = incidentsOf(state);
   const bank = incidentBankFor(state.economy.businessClass);
   for (const queuedId of inc.queued) {
     if (inc.blocked.includes(queuedId) || inc.fired.includes(queuedId)) continue;
     const q = bank.find((i) => i.id === queuedId);
     const ctx = inc.queuedContext[queuedId];
-    if (q && eligibleNow(state, { ...q, when: undefined }, ctx)) return { incident: q, chained: true, context: ctx };
+    if (q && eligibleNow(state, { ...q, when: undefined }, ctx)) return { incident: q, chained: !(inc.forced ?? []).includes(queuedId), queued: true, context: ctx };
   }
   const weekday = calendarFor(state.day.dayNumber).weekday;
   const menuIds = state.menu.map((m) => m.dishId);
@@ -642,7 +645,7 @@ export function maybeOpenIncident(draft: SimulationState, dt: number): void {
   }
   const chosen = chooseIncident(draft, phaseAt(frac), r());
   // Följdens tid öppnar bara följden; annat väntar på rummet eller golvet.
-  if (chosen && (rolled || chosen.chained)) openIncident(draft, chosen.incident, chosen.chained, chosen.context, false, r);
+  if (chosen && (rolled || chosen.queued)) openIncident(draft, chosen.incident, chosen.chained, chosen.context, false, r);
   draft.rngState = rng.state;
 }
 

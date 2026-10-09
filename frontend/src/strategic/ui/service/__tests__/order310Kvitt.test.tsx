@@ -123,7 +123,8 @@ describe('ORDER 310 — valet på kortet (Designs kvitt eller dubbelt)', () => {
     expect(q('stake-step')!.textContent).toBe(`${p().stepTerm(1)}${name.episteme}`);
     expect(q('stake-pot')!.textContent).toContain(p().first);
     expect(q('stake-pot-value')!.textContent).toBe('1');
-    expect(q('stake-if-right')!.getAttribute('data-value')).toBe('1');
+    // ORDER 322 A2 — "Om rätt" är potten efter nästa rätta svar.
+    expect(q('stake-if-right')!.getAttribute('data-value')).toBe('3');
     expect(q('incident-kvitt-stop')!.textContent).toContain('Stanna, och ta det du har');
     expect(q('incident-kvitt-stop-sub')!.textContent).toBe('1 kredit är din');
     expect(q('incident-kvitt-go')!.textContent).toContain('Gå vidare, med allt på spel');
@@ -169,7 +170,8 @@ describe('ORDER 310 — valet på kortet (Designs kvitt eller dubbelt)', () => {
     sim.state = s;
     rerender(<IncidentCard />);
     expect(q('pyramid-moment')!.getAttribute('data-phase')).toBe('done');
-    expect(q('stake-if-right')!.getAttribute('data-value')).toBe('7');
+    // ORDER 322 A2 — efter det sista steget finns inget nästa svar, så "Om rätt" står inte.
+    expect(q('stake-if-right')).toBeNull();
     expect(q('incident-kvitt')).toBeNull();
     expect(s.incidents.lastOutcome?.pot).toEqual(expect.objectContaining({ taken: true, credits: 7 }));
   });

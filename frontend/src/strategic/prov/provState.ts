@@ -9,6 +9,9 @@
 //   bistron:     därtill erbjudandet om bistron, utan de stängda dagarna för ombyggnaden.
 // Medaljerna och kraven för steget räknas som uppfyllda (balance.ts LADDER.requirements och FOODTRUCK).
 // Ett provspel sparas aldrig (sim/save.ts savesForDayChange, SaveContext), så det når inte portfolion.
+// ORDER 322 C (Anders 2026-10-09) — krogen heter verksamhetens riktiga namn: namnet i det senast sparade spelet
+// (liggarens namn, SaveFile.businessName), annars Designs exempel Hyttgrillen (prov.businessName). Det går att
+// skriva ett annat på startskärmen.
 
 import { reducer } from '../simulation/reducer';
 import { makeNewGameState } from '../simulation/model';
@@ -20,6 +23,7 @@ import { incidentBankFor } from '../../sim/incidentBank';
 import { TRUCK_WEATHERS, type TruckWeatherKind } from '../../sim/truckLife';
 import type { MedalLevel } from '../../sim/balance';
 import { awardMedal } from '../knowledge/pavilionVisit';
+import { readSlot, slotNumbers, type SaveStore } from '../../sim/save';
 import type { PavilionKey, SimulationState } from '../types';
 
 export type ProvPlace = PlayableStep;
@@ -35,6 +39,8 @@ export interface ProvSetup {
   weather: ProvWeather;
   /** Situationen som tvingas fram den första kvällen, eller null. */
   incidentId: string | null;
+  /** Verksamhetens namn; tomt ger det sparade eller exemplet (savedBusinessName, prov.businessName). */
+  name: string;
 }
 
 /** Är adressens sökdel ?prov (ensam eller bland andra)? Värdet spelar ingen roll; ?prova är inte prov. */
@@ -48,7 +54,19 @@ export function defaultCashSek(place: ProvPlace): number {
 }
 
 export function defaultSetup(place: ProvPlace = 'foodtruck'): ProvSetup {
-  return { place, week: 1, cashSek: defaultCashSek(place), weather: 'auto', incidentId: null };
+  return { place, week: 1, cashSek: defaultCashSek(place), weather: 'auto', incidentId: null, name: '' };
+}
+
+/** Namnet i det senast sparade spelet (bara läst; provspelet skriver aldrig), eller null. */
+export function savedBusinessName(store: Pick<SaveStore, 'getItem'> | null): string | null {
+  if (!store) return null;
+  let best: { at: string; name: string } | null = null;
+  for (const n of slotNumbers()) {
+    const slot = readSlot(store as SaveStore, n);
+    const name = slot.status === 'ok' ? slot.file.businessName?.trim() : null;
+    if (slot.status === 'ok' && name && (!best || slot.file.savedAt > best.at)) best = { at: slot.file.savedAt, name };
+  }
+  return best?.name ?? null;
 }
 
 /** Situationerna som kan komma på platsen (banken för stegets klass; bistron spelar vinbarens). */

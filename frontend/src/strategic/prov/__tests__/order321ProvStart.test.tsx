@@ -21,6 +21,6 @@ describe('ORDER 321 — startskärmen', () => {
     fireEvent.change(screen.getByTestId('prov-weather'), { target: { value: 'cool' } });
     fireEvent.change(screen.getByTestId('prov-incident'), { target: { value: 'vb40-karaffen' } });
     fireEvent.click(screen.getByTestId('prov-begin'));
-    expect(onStart).toHaveBeenCalledWith({ place: 'vinbar', week: 5, cashSek: 42000, weather: 'cool', incidentId: 'vb40-karaffen' });
+    expect(onStart).toHaveBeenCalledWith({ place: 'vinbar', week: 5, cashSek: 42000, weather: 'cool', incidentId: 'vb40-karaffen', name: 'Hyttgrillen' });
   });
 });
