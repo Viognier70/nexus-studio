@@ -16,7 +16,7 @@
 // av kvällen och harnessens tal inte flyttas av fikat.
 
 import type { SimulationState, StaffMember } from '../strategic/types';
-import { DILEMMAS, FIKA_PEOPLE, STAFF_ROLE_OF, dilemmaById, type Dilemma, type DilemmaGrade, type DilemmaOptionId, type DilemmaTrigger, type FikaPerson } from '../content/fika/dilemmas';
+import { DILEMMAS, FIKA_PEOPLE, STAFF_ROLE_OF, dilemmaById, fikaPlaceOf, type Dilemma, type DilemmaGrade, type DilemmaOptionId, type DilemmaTrigger, type FikaPerson } from '../content/fika/dilemmas';
 import { FIKA } from './balance';
 import { calendarFor } from './calendar';
 import { wellbeingOf, staminaOf } from './staffCondition';
@@ -88,11 +88,17 @@ function triggerHolds(state: SimulationState, t: DilemmaTrigger): boolean {
   }
 }
 
-/** Dilemman vars utlösare har hänt i kväll och som inte kommit de senaste två veckorna. */
+/**
+ * Dilemman vars utlösare har hänt i kväll och som inte kommit de senaste två
+ * veckorna. ORDER 323 §5: bara platsens dilemman, vagnens i foodtrucken och
+ * vinbarens i vinbaren och bistron (fikaPlaceOf).
+ */
 export function eligibleDilemmas(state: SimulationState): Dilemma[] {
   const log = fikaOf(state).log;
   const day = state.day.dayNumber;
+  const place = fikaPlaceOf(state.economy.businessClass);
   return DILEMMAS.filter((dl) => {
+    if (!place || !dl.places.includes(place)) return false;
     const last = [...log].reverse().find((e) => e.dilemmaId === dl.id);
     if (last && day - last.day < FIKA.repeatAfterDays) return false;
     return dl.triggers.some((t) => triggerHolds(state, t));

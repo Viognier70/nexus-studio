@@ -22,7 +22,9 @@ const SIP_OFFSETS_S = [0, 2.5, 4.0];
 const TEAM: FikaPerson[] = ['host', 'server', 'bartender', 'cook'];
 const UNIFORM: Record<FikaPerson, string> = {
   host: STAFF_UNIFORMS.host, server: STAFF_UNIFORMS.server, sommelier: STAFF_UNIFORMS.sommelier,
-  bartender: STAFF_UNIFORMS.bartender, cook: STAFF_UNIFORMS.kitchen, dishwasher: STAFF_UNIFORMS.kitchen
+  bartender: STAFF_UNIFORMS.bartender, cook: STAFF_UNIFORMS.kitchen, dishwasher: STAFF_UNIFORMS.kitchen,
+  // ORDER 323 §5 — Nils fikar i vagnen, inte vid vinbarens bord (se `active`).
+  assistant: STAFF_UNIFORMS.server
 };
 // Bordet: de fyra första platserna i bordsordningen (vinbarens tvåor 6–9, bistrons bänkbord 0–3).
 const SEATS_WINEBAR = [6, 7, 8, 9];
@@ -33,7 +35,8 @@ export function FikaAtTable() {
   const { targetRef } = useCamera();
   const tonight = fikaTonight(sim);
   const asker = tonight ? dilemmaById(tonight.dilemmaId)?.asker ?? null : null;
-  const active = sim.day.period === 'evening' && sim.day.eveningStep === 'fika' && !!tonight;
+  // ORDER 323 §5 — bordet är vinbarens och bistrons; foodtrucken har inget.
+  const active = sim.day.period === 'evening' && sim.day.eveningStep === 'fika' && !!tonight && sim.economy.businessClass === 'vinbar';
   const team = useMemo(() => {
     const people = asker && !TEAM.includes(asker) ? [asker, ...TEAM.slice(1)] : TEAM;
     const g = new THREE.Group();
