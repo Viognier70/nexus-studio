@@ -488,6 +488,13 @@ export function OsmPedestrians() {
       walkerMesh.current.instanceMatrix.needsUpdate = true;
       for (const leg of walkerLegMeshes) if (leg.current) leg.current.instanceMatrix.needsUpdate = true;
       publishStreetWalkers('peds', presence, walkers.length);
+      // ORDER 323 §6 — kontrollens räkning (bara i dev): gående som står still och som går.
+      if (import.meta.env.DEV) {
+        let standing = 0;
+        const walkingAt: Array<[number, number]> = [];
+        walkers.forEach((w, i) => { if (w.moving < 0.5) standing++; else if (walkingAt.length < 8) walkingAt.push([presence[i * 2], presence[i * 2 + 1]]); });
+        (window as unknown as { __nxPeds?: unknown }).__nxPeds = { total: walkers.length, standing, walking: walkers.length - standing, walkingAt };
+      }
       if (walkerHeadMesh.current) {
         walkerHeadMesh.current.instanceMatrix.needsUpdate = true;
       }

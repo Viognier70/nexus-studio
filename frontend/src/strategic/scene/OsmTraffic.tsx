@@ -399,6 +399,8 @@ export function OsmTraffic() {
     camera.updateMatrixWorld();
     view.f.setFromProjectionMatrix(view.m.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
     const inView = (x: number, z: number) => view.f.containsPoint(view.p.set(x, 0, z)) || view.f.containsPoint(view.p.set(x, VEHICLE_TOP_M, z));
+    // ORDER 323 §6 — kontrollens räkning (bara i dev): bilar som står vid ett övergångsställe och som saktar in.
+    const stat = { total: vehicles.length, waiting: 0, slowed: 0 };
     for (let i = 0; i < vehicles.length; i++) {
       const v = vehicles[i];
       v.swap -= dt;
@@ -417,6 +419,8 @@ export function OsmTraffic() {
         v.waited += dt;
         if (v.waited > TRAFFIC_STOPS.maxWaitS) { v.passed = waiting; v.waited = 0; }
       } else v.waited = 0;
+      if (waiting) stat.waiting++;
+      if (want < cruise * 0.95) stat.slowed++;
       const rate = want > v.v ? TRAFFIC_STOPS.accelMps2 : TRAFFIC_STOPS.brakeMps2;
       v.v = want > v.v ? Math.min(want, v.v + rate * dt) : Math.max(want, v.v - rate * dt);
       v.t += (dt * v.v * v.forward) / v.len;
@@ -488,6 +492,7 @@ export function OsmTraffic() {
         cMat.opacity = v.entering;
       }
     }
+    if (import.meta.env.DEV) (window as unknown as { __nxTraffic?: typeof stat }).__nxTraffic = stat;
   });
 
   return (
