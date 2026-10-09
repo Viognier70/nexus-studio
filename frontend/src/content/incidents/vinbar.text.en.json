@@ -346,7 +346,7 @@
               "explanation": "Both think they were first, and now they are competing in front of each other. The answer is in the system."
             },
             "c": {
-              "label": "Give the table to whoever reached the door first, as that is the only fair way",
+              "label": "Give the table to whoever reached the door first",
               "explanation": "That says nothing about who booked first. Whoever booked early but arrived a minute later feels unfairly treated."
             },
             "d": {
@@ -461,7 +461,7 @@
               }
             },
             "c": {
-              "label": "Let the music play as it is, most guests like a lively room",
+              "label": "Let the music play",
               "explanation": "The music is part of the concept, but in a half-empty room early in the evening it disturbs more than it carries.",
               "explanationIn": {
                 "sent": "Late in the evening the music carries the room, but the couple at the table still need a solution."
@@ -489,7 +489,7 @@
           "question": "What do nine degrees in the fridge mean for cheese and charcuterie?",
           "options": {
             "a": {
-              "label": "Within the margin, the fridge will recover on its own again in a little while",
+              "label": "Within the margin, the fridge will recover",
               "explanation": "A fridge that is above the limit rarely gets better on its own. Without action and records, the restaurant has no defence if the food goes bad."
             },
             "b": {
@@ -920,7 +920,7 @@
               "explanation": "A no that holds and help getting home show care. Two people calm the situation better than one, and the guest gets home safely."
             },
             "b": {
-              "label": "Serve one last glass so the whole room calms down and the guest goes home happy",
+              "label": "Serve one last glass so the room calms down",
               "explanation": "One last glass is still serving a visibly intoxicated guest. It buys a few minutes and then makes things worse.",
               "fail": {
                 "outcome": "The guest gets the glass and immediately wants another.",
@@ -1218,7 +1218,7 @@
               "explanation": "It keeps the door open, but the delegation has to wait for an answer and may book somewhere else in the meantime."
             },
             "c": {
-              "label": "Ask them to call back tomorrow morning when it is quieter in the kitchen",
+              "label": "Ask them to call back tomorrow when it is quieter",
               "explanation": "A party that wants to book the whole place will happily call the next place on the list instead."
             },
             "d": {
@@ -1351,7 +1351,7 @@
           "question": "What does the kitchen do with the tartare tonight?",
           "options": {
             "a": {
-              "label": "Use the fish anyway, the kitchen is careful with everything else and it is cold now",
+              "label": "Use the fish, the kitchen is careful with everything else",
               "explanation": "Raw fish with a broken cold chain and no traceability is a risk the restaurant takes on the guest's behalf. Traceability is a requirement, not a wish."
             },
             "b": {
@@ -1460,7 +1460,7 @@
               "explanation": "A regular wants to feel seen, not to jump the queue. Honesty and a gesture do more than a table that really belongs to someone else."
             },
             "c": {
-              "label": "Say the table is taken tonight, without explaining more or offering anything else",
+              "label": "Say the table is taken, nothing more",
               "explanation": "A regular who feels turned away does not come back. The same no with a gesture would have kept the guest."
             }
           },
@@ -1687,7 +1687,7 @@
               }
             },
             "b": {
-              "label": "Push the kitchen to do the simplest dishes first, whatever order they came in",
+              "label": "Push the kitchen to do the simplest dishes first, whatever the order",
               "explanation": "Breaking the order creates confusion, wrong dishes and a tired kitchen. Those who have waited longest wait even longer."
             },
             "c": {
@@ -2268,7 +2268,7 @@
               "explanation": "The date tells you how old the bottle is, the taste tells you whether it can be sold. Oldest first means nothing is left standing."
             },
             "b": {
-              "label": "Sell by the glass without tasting, the date on the label is always enough to go on",
+              "label": "Sell by the glass without tasting, the date is enough",
               "explanation": "A wine may have faded more than expected. The guest who gets a tired glass notices before you do."
             },
             "c": {
@@ -2381,7 +2381,7 @@
           "question": "What decides whether cheese and charcuterie from a fridge that has stopped can be used?",
           "options": {
             "a": {
-              "label": "As long as the product smells fine and looks right it is safe to serve",
+              "label": "As long as the product smells fine it is safe",
               "explanation": "Bacteria do not smell. Products that have been above 8 degrees for too long are a risk, whatever they smell like."
             },
             "b": {
@@ -2949,7 +2949,7 @@
               "explanation": "Clear, but the friends have done nothing wrong, and you lose regulars."
             },
             "d": {
-              "label": "Lets them order as usual, he’s only had water since then after all",
+              "label": "Lets them order, he’s only had water since",
               "explanation": "The ban applies whoever orders. Noting the time shows you did the right thing."
             }
           },
@@ -3114,7 +3114,7 @@
               }
             },
             "b": {
-              "label": "Asks his friends to take him home before they have the chance to ask anything more",
+              "label": "Asks his friends to take him home before they ask",
               "explanation": "Openness and a written note count for most in front of the inspectors.",
               "fail": {
                 "outcome": "Risk of a formal reminder"
@@ -3198,7 +3198,7 @@
           "question": "Two young guests in lounge B order wine from Sara. The licensing officer looks over. What do you do?",
           "options": {
             "a": {
-              "label": "Asks how old they are and trusts the answer they give, without checking any ID",
+              "label": "Asks how old they are and trusts the answer",
               "explanation": "Whoever serves must be sure the guest is 18 or over. If you are unsure, ask for ID.",
               "fail": {
                 "outcome": "Risk of a warning"
@@ -3391,7 +3391,7 @@
               "explanation": "Cooked food must be available to order throughout serving hours. A simple choice is enough, but snacks don’t count."
             },
             "c": {
-              "label": "Offers them olives and nuts from the bar instead of a proper meal",
+              "label": "Offers them olives and nuts from the bar instead",
               "explanation": "Cooked food must be available to order throughout serving hours. A simple choice is enough, but snacks don’t count.",
               "fail": {
                 "outcome": "Risk of a formal reminder"

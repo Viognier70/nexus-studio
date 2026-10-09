@@ -7,7 +7,7 @@
    "options": {
     "a": "A half is one sausage with mash in a bun; a full is two sausages.",
     "b": "The full special is bigger.",
-    "c": "The full special has prawn salad on it.",
+    "c": "The full special has prawn salad on top of the mash; the half has only mash and mustard.",
     "d": "They're the same thing, just different names."
    },
    "why": "In central Sweden a half special is one sausage with mash in a bun, and a full special has two sausages. The words differ between regions, so it helps to be able to explain them."
@@ -26,7 +26,7 @@
    "q": "The crispy onions, are they fried?",
    "options": {
     "a": "Yes, they're fried in oil, that's why they're so crisp.",
-    "b": "They're roasted in the oven, as the name says.",
+    "b": "They’re roasted in the oven, as the name says, which is why there’s no fat in them.",
     "c": "They're probably fried in some way.",
     "d": "They're dried onions with no fat."
    },
@@ -48,7 +48,7 @@
     "a": "No, light beer has at most 2.25 per cent alcohol.",
     "b": "Yes, completely alcohol-free.",
     "c": "Almost, there's very little alcohol in it.",
-    "d": "It's normal beer, just lighter in taste."
+    "d": "It’s normal beer, just lighter in taste and a little less fizzy in the glass."
    },
    "why": "Swedish light beer may contain up to 2.25 per cent alcohol by volume. Anyone driving or not drinking alcohol at all needs to know that."
   },
@@ -57,7 +57,7 @@
    "options": {
     "a": "Do you like it mild and sweet, or strong? Then we'll pick.",
     "b": "Skåne mustard, everyone has that.",
-    "c": "The strongest, it's the best with sausage.",
+    "c": "The strongest, it’s the best with sausage and brings out the flavour of the spices.",
     "d": "Any of them, they taste the same."
    },
    "why": "The guest asked about their own taste. A question back finds the right mustard faster than a guess."
@@ -67,7 +67,7 @@
    "options": {
     "a": "When the sausage skin browns, new aromas form. It's the Maillard reaction.",
     "b": "It's the spices cooking off in the heat.",
-    "c": "It's the smoke from the charcoal that gives the smell.",
+    "c": "It’s the smoke from the charcoal that gives the smell; it gets into the sausage as it grills.",
     "d": "We have a scent machine by the hatch."
    },
    "why": "When proteins and sugars on the surface heat up they brown, and hundreds of aromas form. It's the same reaction as in bread and roasted coffee."
@@ -87,7 +87,7 @@
    "options": {
     "a": "It's pre-cooked and grilled until it's hot all the way through.",
     "b": "Yes, it's been on there a good while.",
-    "c": "It doesn't need to be, sausage can be eaten raw.",
+    "c": "It doesn’t need to be, sausage can be eaten raw because the meat is already salted and spiced.",
     "d": "It's only grilled on the outside."
    },
    "why": "Most grilled sausages are pre-cooked, and they should be hot all the way through before they're served. It's also a food safety requirement."
@@ -117,7 +117,7 @@
    "options": {
     "a": "We grill in small batches, and any that sit too long are thrown away.",
     "b": "Not long, they're still warm.",
-    "c": "Since we opened, they keep all evening.",
+    "c": "Since we opened; they keep all evening, as long as they stay on the warm part of the grill.",
     "d": "You can't tell by looking at them."
    },
    "why": "Hot food kept hot should stay at +60 °C or above and not stand too long. Small batches give sausages that are both safer and tastier."
@@ -138,7 +138,7 @@
     "a": "Yes, I'll pack the sausage and the mash separately so the bun doesn't go soggy.",
     "b": "Yes, in an ordinary bag.",
     "c": "No, it's meant to be eaten here.",
-    "d": "Yes, all in the same bun as usual."
+    "d": "Yes, all in the same bun as usual, with the sausage, mash and mustard packed together in a single bag."
    },
    "why": "Warm mash makes the bun soggy within minutes. Packing them separately is a simple technique that keeps the food good at home too."
   },
@@ -167,7 +167,7 @@
    "options": {
     "a": "Look at the meat content on the board, and have a taste.",
     "b": "Ours tastes better.",
-    "c": "Their sausage is rubbish.",
+    "c": "Their sausage is rubbish; it’s only cheaper because they use worse meat in it.",
     "d": "Go there, then."
    },
    "why": "Meat content is one of the clearest signs of a sausage's quality, and it's printed on the packet. Showing the facts and letting the guest taste is stronger than running down the competition."
@@ -187,7 +187,7 @@
    "q": "He's allergic to milk. Can he eat the sausage?",
    "options": {
     "a": "Let's read the packet together, and I'll use clean tongs.",
-    "b": "Sausage doesn't usually have milk in it.",
+    "b": "Sausage doesn’t usually have milk in it, so it’s fine to eat without asking.",
     "c": "I'll ask my colleague.",
     "d": "Have mash instead, that's safer."
    },

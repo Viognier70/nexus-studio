@@ -102,14 +102,16 @@ function answerPinsWisely(s: SimulationState): SimulationState {
 // ORDER 306b A10 — 'guess' (spelartypen "gissaren") väljer alltid det längsta alternativet, 'random'
 // ett alternativ på måfå (ur fröet, situationen och steget). I ordningskorten lägger båda fyra kort på
 // måfå. På scenariot vid dörren svarar de som 'half'.
-export type ScenarioAnswer = 'best' | 'worst' | 'half' | 'halfRocket' | 'skill' | 'ignore' | 'guess' | 'random';
+// ORDER 306b.4 — 'avoid' (spelartypen "undviker längsta") väljer på måfå bland alternativen som inte är
+// längst i tecken (alla, om alla är lika långa); ordningskorten och dörren som 'random'.
+export type ScenarioAnswer = 'best' | 'worst' | 'half' | 'halfRocket' | 'skill' | 'ignore' | 'guess' | 'random' | 'avoid';
 export const ROCKET_SKILL = Number(process.env.ROCKET_SKILL ?? 0.75);
 let KVITT_STOP_AFTER = Number(process.env.KVITT_STOP_AFTER ?? 0);
 // ORDER 306b A10 — spelartypens val i kvitt eller dubbelt: stanna efter n klarade steg (0 = gå alltid vidare).
 export function setKvittStopAfter(n: number): void { KVITT_STOP_AFTER = n; }
 function resolveAnswer(answer: ScenarioAnswer, key: number, seed = 0): 'best' | 'worst' {
   if (answer === 'ignore') return 'worst';
-  if (answer === 'guess' || answer === 'random') return Math.round(key) % 2 === 0 ? 'best' : 'worst';
+  if (answer === 'guess' || answer === 'random' || answer === 'avoid') return Math.round(key) % 2 === 0 ? 'best' : 'worst';
   // Nyckeln börjar med det som skiljer (FNV sprider dåligt när bara slutet gör det).
   if (answer === 'skill') return hashKey(seed, `${Math.round(key * 1000)}|skill`) < ROCKET_SKILL ? 'best' : 'worst';
   return answer === 'half' || answer === 'halfRocket' ? (Math.round(key) % 2 === 0 ? 'best' : 'worst') : answer;
@@ -155,7 +157,7 @@ export function rankedChoice(scenarioId: string | null, answer: 'best' | 'worst'
 // reports/order268/save-lordag-vecka1.json: lördagens intäkt 7 140 SEK
 // i harnessen mot 17 850 SEK + 8 000 SEK (scenario) i spelarens vy.
 // ORDER 306b A10 — gissaren och slumpen. Nyckeln är fröet, situationens öppningstid och steget.
-function blindAnswer(s: SimulationState, step: IncidentStep, given: 'guess' | 'random'): SimulationState {
+function blindAnswer(s: SimulationState, step: IncidentStep, given: 'guess' | 'random' | 'avoid'): SimulationState {
   const a = s.incidents!.active!;
   const key = `${a.openedAt}|${a.step}|${given}`;
   const draw = (k: string) => hashKey(s.seed ?? 0, `${key}|${k}`);
@@ -165,9 +167,12 @@ function blindAnswer(s: SimulationState, step: IncidentStep, given: 'guess' | 'r
   }
   const open = step.options.filter((o) => !a.struck.includes(o.id) && canAfford(s, o));
   if (open.length === 0) return s;
+  const len = (id: string) => step.text.options[id].label.length;
+  const longest = Math.max(...open.map((o) => len(o.id)));
+  const pool = given === 'avoid' && open.some((o) => len(o.id) < longest) ? open.filter((o) => len(o.id) < longest) : open;
   const pick = given === 'guess'
-    ? [...open].sort((x, y) => step.text.options[y.id].label.length - step.text.options[x.id].label.length)[0]
-    : open[Math.min(open.length - 1, Math.floor(draw('pick') * open.length))];
+    ? [...open].sort((x, y) => len(y.id) - len(x.id))[0]
+    : pool[Math.min(pool.length - 1, Math.floor(draw('pick') * pool.length))];
   return reducer(s, { type: 'ANSWER_INCIDENT', optionId: pick.id });
 }
 
@@ -187,7 +192,7 @@ export function answerScenario(s: SimulationState, given: ScenarioAnswer = 'best
     if (active.pending) return s;
     if (active.choosing) return reducer(s, { type: KVITT_STOP_AFTER > 0 && active.step >= KVITT_STOP_AFTER ? 'INCIDENT_STOP' : 'INCIDENT_GO' });
     const step = incident?.steps[active.step ?? 0];
-    if (step && (given === 'guess' || given === 'random')) return blindAnswer(s, step, given);
+    if (step && (given === 'guess' || given === 'random' || given === 'avoid')) return blindAnswer(s, step, given);
     if (step) {
       return reducer(s, { type: 'ANSWER_INCIDENT', optionId: rankedStepOption(step, resolveAnswer(given, given === 'halfRocket' ? active.openedAt : given === 'skill' ? active.openedAt + (active.step ?? 0) / 10 : active.openedAt + (active.step ?? 0), s.seed ?? 0), active.struck, active.situation) });
     }

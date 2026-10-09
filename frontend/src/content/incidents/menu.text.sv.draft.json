@@ -261,7 +261,7 @@
               "explanation": "Blötlagda kantareller kokar i sitt eget vatten i stället för att stekas, och smaken blir platt."
             },
             "b": {
-              "label": "Inte alls, skogsjorden som sitter kvar ger svampen mer smak",
+              "label": "Inte alls, skogsjorden ger smak",
               "explanation": "Jord och barr knastrar mellan tänderna. Smaken sitter i svampen, inte i smutsen."
             },
             "c": {
@@ -332,7 +332,7 @@
           "question": "Hur kokas linserna?",
           "options": {
             "a": {
-              "label": "Blötlagda över natten och sedan hårdkokta i två hela timmar i saltat vatten",
+              "label": "Blötlagda över natten och hårdkokta i två timmar",
               "explanation": "Då blir linserna mos. Så hanteras vissa torkade bönor, inte linser."
             },
             "b": {
@@ -411,7 +411,7 @@
               "explanation": "Många fryses, men att de håller sig även råa beror på bensoesyran."
             },
             "b": {
-              "label": "De innehåller så mycket socker att inga bakterier kan växa",
+              "label": "De innehåller mycket socker",
               "explanation": "Lingon är syrliga, med lite socker. Det är syran som håller dem."
             },
             "c": {
@@ -482,7 +482,7 @@
           "question": "Hur tar man fram rotfrukternas sötma?",
           "options": {
             "a": {
-              "label": "Koka dem länge i mycket vatten tills de är helt mjuka och fina",
+              "label": "Koka dem länge i mycket vatten",
               "explanation": "Lång kokning lakar ut smaken i vattnet och ger ingen färg."
             },
             "b": {

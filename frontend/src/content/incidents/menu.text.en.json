@@ -261,7 +261,7 @@
               "explanation": "Soaked chanterelles boil in their own water instead of frying, and the flavour goes flat."
             },
             "b": {
-              "label": "Not at all, the forest soil left on them gives more flavour",
+              "label": "Not at all, the forest soil gives flavour",
               "explanation": "Soil and needles grate between the teeth. The flavour is in the mushroom, not the dirt."
             },
             "c": {
@@ -332,7 +332,7 @@
           "question": "How are the lentils cooked?",
           "options": {
             "a": {
-              "label": "Soaked overnight, then boiled hard for two whole hours in salted water",
+              "label": "Soaked overnight and boiled hard for two hours",
               "explanation": "That turns lentils to mush. It is how some dried beans are treated, not lentils."
             },
             "b": {
@@ -411,7 +411,7 @@
               "explanation": "Many are frozen, but the reason they keep even raw is the benzoic acid."
             },
             "b": {
-              "label": "They contain so much sugar that no bacteria can grow in them",
+              "label": "They contain a lot of sugar",
               "explanation": "Lingonberries are tart, with little sugar. It is the acid that keeps them."
             },
             "c": {
@@ -482,7 +482,7 @@
           "question": "How do you bring out the sweetness of the root vegetables?",
           "options": {
             "a": {
-              "label": "Boil them for a long time in plenty of water until completely soft",
+              "label": "Boil them for a long time in plenty of water",
               "explanation": "Long boiling leaches flavour into the water and gives no browning."
             },
             "b": {

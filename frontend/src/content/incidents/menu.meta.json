@@ -61,7 +61,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": 0,
+              "cash": -0.1,
               "satisfaction": -0.1,
               "stamina": -0.02,
               "reputation": 0
@@ -93,7 +93,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": 0,
               "satisfaction": -0.08,
               "stamina": 0,
               "reputation": -1
@@ -190,7 +190,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": 0,
+              "cash": -0.1,
               "satisfaction": -0.1,
               "stamina": -0.02,
               "reputation": 0
@@ -222,7 +222,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": 0,
               "satisfaction": -0.08,
               "stamina": 0,
               "reputation": -1
@@ -318,7 +318,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": 0,
+              "cash": -0.1,
               "satisfaction": -0.1,
               "stamina": -0.02,
               "reputation": 0
@@ -350,7 +350,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": 0,
               "satisfaction": -0.08,
               "stamina": 0,
               "reputation": -1
@@ -446,7 +446,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": 0,
+              "cash": -0.1,
               "satisfaction": -0.1,
               "stamina": -0.02,
               "reputation": 0
@@ -478,7 +478,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": 0,
               "satisfaction": -0.08,
               "stamina": 0,
               "reputation": -1
@@ -574,7 +574,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": 0,
+              "cash": -0.1,
               "satisfaction": -0.1,
               "stamina": -0.02,
               "reputation": 0
@@ -606,7 +606,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": 0,
               "satisfaction": -0.08,
               "stamina": 0,
               "reputation": -1
@@ -703,7 +703,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": 0,
+              "cash": -0.1,
               "satisfaction": -0.1,
               "stamina": -0.02,
               "reputation": 0
@@ -735,7 +735,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": 0,
               "satisfaction": -0.08,
               "stamina": 0,
               "reputation": -1
@@ -831,7 +831,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": 0,
+              "cash": -0.1,
               "satisfaction": -0.1,
               "stamina": -0.02,
               "reputation": 0
@@ -863,7 +863,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": 0,
               "satisfaction": -0.08,
               "stamina": 0,
               "reputation": -1
@@ -960,7 +960,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": 0,
+              "cash": -0.1,
               "satisfaction": -0.1,
               "stamina": -0.02,
               "reputation": 0
@@ -992,7 +992,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": 0,
               "satisfaction": -0.08,
               "stamina": 0,
               "reputation": -1
@@ -1088,7 +1088,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": 0,
+              "cash": -0.1,
               "satisfaction": -0.1,
               "stamina": -0.02,
               "reputation": 0
@@ -1120,7 +1120,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": 0,
               "satisfaction": -0.08,
               "stamina": 0,
               "reputation": -1

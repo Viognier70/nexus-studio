@@ -22,7 +22,7 @@
        "explanation": "The sausage is hot at first, but the rain cools it and makes the bun soggy."
       },
       "c": {
-       "label": "It gets better, it cools just right.",
+       "label": "It gets better, it cools just right and the rain keeps the bun soft.",
        "explanation": "A lukewarm sausage in a soggy bun is not better."
       },
       "d": {
@@ -125,7 +125,7 @@
        "explanation": "It can play a part, but it's the sugar that draws them."
       },
       "d": {
-       "label": "Noise and movement.",
+       "label": "Noise and movement, like someone waving their arms near the food.",
        "explanation": "Movement can make them agitated, but doesn't draw them."
       }
      },
@@ -224,7 +224,7 @@
        "explanation": "It could be, but you check the network first."
       },
       "d": {
-       "label": "It's overheated by the grill.",
+       "label": "It’s overheated by the grill and switches itself off until it cools down.",
        "explanation": "That's rare. The connection is far more common."
       }
      },
@@ -315,7 +315,7 @@
        "explanation": "9 people, 3 of whom take two sausages: 6 + 6 = 12. It's just enough, but not for a single guest more."
       },
       "b": {
-       "label": "Yes, with plenty to spare.",
+       "label": "Yes, with plenty to spare; there will be several sausages left when the queue is done.",
        "explanation": "Three full specials take six sausages. There's nothing to spare."
       },
       "c": {
@@ -542,7 +542,7 @@
        "explanation": "Perhaps, but they said they like you."
       },
       "c": {
-       "label": "To hear something bad about the grill truck.",
+       "label": "To hear something bad about the grill truck before deciding.",
        "explanation": "They didn't ask for that, and it reflects badly on you too."
       }
      },

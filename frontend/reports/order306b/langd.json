@@ -1,5 +1,5 @@
 {
-  "definition": "A4: svarens längd i ord (mellanslag) i de elva situationerna. overWords: fler än 12 ord i steg 1–2 eller 15 i steg 3; overRatio: i steg 3 längsta / kortaste över 1,5. step3Longest: vinbarens och foodtruckens situationer i formen, med antalet ord i varje svar i steg 3 och om det hela greppet är längst (lika långt räknas). longestIsBest: steg (utom ordningskorten) i de elva där det längsta svaret i tecken är det bästa, mot slumpens väntevärde; oldFormLongestIsBest: detsamma i vinbarens situationer i den gamla formen. bank (306b.3): per del av vinbarens bank, det längsta svaret i ord och tecken som är det bästa, och kvaliteten på gissarens val (längst i tecken) mot slumpens. sv: Anders text (vinbar.text.sv.draft.json); en: översättningen (vinbar.text.en.json).",
+  "definition": "A4: svarens längd i ord (mellanslag) i de elva situationerna. overWords: fler än 12 ord i steg 1–2 eller 15 i steg 3; overRatio: i steg 3 längsta / kortaste över 1,5. step3Longest: vinbarens och foodtruckens situationer i formen, med antalet ord i varje svar i steg 3 och om det hela greppet är längst (lika långt räknas). longestIsBest: steg (utom ordningskorten) i de elva där det längsta svaret i tecken är det bästa, mot slumpens väntevärde; oldFormLongestIsBest: detsamma i vinbarens situationer i den gamla formen. bank (306b.3): per del av vinbarens bank, det längsta svaret i ord och tecken som är det bästa, och kvaliteten på gissarens val (längst i tecken) mot slumpens. longestWrong (306b.4): per del, andelen fel bland de längsta svaren (lika långa delar) mot andelen fel bland alla (slumpen), diff = skillnaden; checked: delen ska ligga inom ±0,1 (order306b4.test.ts), strategic/testHarness/longestAnswer.ts. sv: Anders text (vinbar.text.sv.draft.json); en: översättningen (vinbar.text.en.json).",
   "longestIsBest": {
     "sv": {
       "steps": 32,
@@ -52,13 +52,13 @@
       "name": "gamla formen",
       "sv": {
         "steps": 87,
-        "longestIsBestWords": 24,
-        "longestIsBestChars": 22,
+        "longestIsBestWords": 28,
+        "longestIsBestChars": 28,
         "randomExpectation": 25.2,
         "guesserPick": {
-          "best": 0.241,
-          "ok": 0.034,
-          "wrong": 0.724
+          "best": 0.299,
+          "ok": 0.126,
+          "wrong": 0.575
         },
         "randomPick": {
           "best": 0.29,
@@ -68,13 +68,13 @@
       },
       "en": {
         "steps": 87,
-        "longestIsBestWords": 21,
+        "longestIsBestWords": 27,
         "longestIsBestChars": 25,
         "randomExpectation": 25.2,
         "guesserPick": {
           "best": 0.276,
-          "ok": 0,
-          "wrong": 0.724
+          "ok": 0.161,
+          "wrong": 0.563
         },
         "randomPick": {
           "best": 0.29,
@@ -87,13 +87,13 @@
       "name": "menyn",
       "sv": {
         "steps": 27,
-        "longestIsBestWords": 4,
-        "longestIsBestChars": 6,
+        "longestIsBestWords": 8,
+        "longestIsBestChars": 10,
         "randomExpectation": 9,
         "guesserPick": {
-          "best": 0.222,
+          "best": 0.37,
           "ok": 0,
-          "wrong": 0.778
+          "wrong": 0.63
         },
         "randomPick": {
           "best": 0.333,
@@ -103,13 +103,13 @@
       },
       "en": {
         "steps": 27,
-        "longestIsBestWords": 4,
-        "longestIsBestChars": 8,
+        "longestIsBestWords": 8,
+        "longestIsBestChars": 12,
         "randomExpectation": 9,
         "guesserPick": {
-          "best": 0.259,
+          "best": 0.407,
           "ok": 0,
-          "wrong": 0.741
+          "wrong": 0.593
         },
         "randomPick": {
           "best": 0.333,
@@ -119,10 +119,300 @@
       }
     }
   ],
+  "longestWrong": [
+    {
+      "name": "vinbaren, gamla formen",
+      "checked": true,
+      "sv": {
+        "words": {
+          "steps": 87,
+          "longestWrong": 0.612,
+          "randomWrong": 0.548,
+          "diff": 0.064
+        },
+        "chars": {
+          "steps": 87,
+          "longestWrong": 0.569,
+          "randomWrong": 0.548,
+          "diff": 0.021
+        }
+      },
+      "en": {
+        "words": {
+          "steps": 87,
+          "longestWrong": 0.613,
+          "randomWrong": 0.548,
+          "diff": 0.065
+        },
+        "chars": {
+          "steps": 87,
+          "longestWrong": 0.563,
+          "randomWrong": 0.548,
+          "diff": 0.015
+        }
+      }
+    },
+    {
+      "name": "vinbaren, nya formen",
+      "checked": true,
+      "sv": {
+        "words": {
+          "steps": 32,
+          "longestWrong": 0.477,
+          "randomWrong": 0.414,
+          "diff": 0.062
+        },
+        "chars": {
+          "steps": 32,
+          "longestWrong": 0.411,
+          "randomWrong": 0.414,
+          "diff": -0.003
+        }
+      },
+      "en": {
+        "words": {
+          "steps": 32,
+          "longestWrong": 0.479,
+          "randomWrong": 0.414,
+          "diff": 0.065
+        },
+        "chars": {
+          "steps": 32,
+          "longestWrong": 0.469,
+          "randomWrong": 0.414,
+          "diff": 0.055
+        }
+      }
+    },
+    {
+      "name": "menyn",
+      "checked": true,
+      "sv": {
+        "words": {
+          "steps": 27,
+          "longestWrong": 0.722,
+          "randomWrong": 0.667,
+          "diff": 0.056
+        },
+        "chars": {
+          "steps": 27,
+          "longestWrong": 0.63,
+          "randomWrong": 0.667,
+          "diff": -0.037
+        }
+      },
+      "en": {
+        "words": {
+          "steps": 27,
+          "longestWrong": 0.722,
+          "randomWrong": 0.667,
+          "diff": 0.056
+        },
+        "chars": {
+          "steps": 27,
+          "longestWrong": 0.593,
+          "randomWrong": 0.667,
+          "diff": -0.074
+        }
+      }
+    },
+    {
+      "name": "vinbarens bank (de tre ovan)",
+      "checked": true,
+      "sv": {
+        "words": {
+          "steps": 146,
+          "longestWrong": 0.603,
+          "randomWrong": 0.541,
+          "diff": 0.062
+        },
+        "chars": {
+          "steps": 146,
+          "longestWrong": 0.546,
+          "randomWrong": 0.541,
+          "diff": 0.005
+        }
+      },
+      "en": {
+        "words": {
+          "steps": 146,
+          "longestWrong": 0.604,
+          "randomWrong": 0.541,
+          "diff": 0.063
+        },
+        "chars": {
+          "steps": 146,
+          "longestWrong": 0.548,
+          "randomWrong": 0.541,
+          "diff": 0.007
+        }
+      }
+    },
+    {
+      "name": "foodtrucken, steg 1–2",
+      "checked": true,
+      "sv": {
+        "words": {
+          "steps": 26,
+          "longestWrong": 0.538,
+          "randomWrong": 0.558,
+          "diff": -0.019
+        },
+        "chars": {
+          "steps": 26,
+          "longestWrong": 0.538,
+          "randomWrong": 0.558,
+          "diff": -0.019
+        }
+      },
+      "en": {
+        "words": {
+          "steps": 26,
+          "longestWrong": 0.538,
+          "randomWrong": 0.558,
+          "diff": -0.019
+        },
+        "chars": {
+          "steps": 26,
+          "longestWrong": 0.538,
+          "randomWrong": 0.558,
+          "diff": -0.019
+        }
+      }
+    },
+    {
+      "name": "foodtrucken, alla steg",
+      "checked": true,
+      "sv": {
+        "words": {
+          "steps": 39,
+          "longestWrong": 0.513,
+          "randomWrong": 0.513,
+          "diff": 0
+        },
+        "chars": {
+          "steps": 39,
+          "longestWrong": 0.449,
+          "randomWrong": 0.513,
+          "diff": -0.064
+        }
+      },
+      "en": {
+        "words": {
+          "steps": 39,
+          "longestWrong": 0.538,
+          "randomWrong": 0.513,
+          "diff": 0.026
+        },
+        "chars": {
+          "steps": 39,
+          "longestWrong": 0.487,
+          "randomWrong": 0.513,
+          "diff": -0.026
+        }
+      }
+    },
+    {
+      "name": "de nyfikna",
+      "checked": true,
+      "sv": {
+        "words": {
+          "steps": 20,
+          "longestWrong": 0.5,
+          "randomWrong": 0.5,
+          "diff": 0
+        },
+        "chars": {
+          "steps": 20,
+          "longestWrong": 0.5,
+          "randomWrong": 0.5,
+          "diff": 0
+        }
+      },
+      "en": {
+        "words": {
+          "steps": 20,
+          "longestWrong": 0.5,
+          "randomWrong": 0.5,
+          "diff": 0
+        },
+        "chars": {
+          "steps": 20,
+          "longestWrong": 0.5,
+          "randomWrong": 0.5,
+          "diff": 0
+        }
+      }
+    },
+    {
+      "name": "foodtrucken, steg 3",
+      "checked": false,
+      "sv": {
+        "words": {
+          "steps": 13,
+          "longestWrong": 0.462,
+          "randomWrong": 0.423,
+          "diff": 0.038
+        },
+        "chars": {
+          "steps": 13,
+          "longestWrong": 0.269,
+          "randomWrong": 0.423,
+          "diff": -0.154
+        }
+      },
+      "en": {
+        "words": {
+          "steps": 13,
+          "longestWrong": 0.538,
+          "randomWrong": 0.423,
+          "diff": 0.115
+        },
+        "chars": {
+          "steps": 13,
+          "longestWrong": 0.385,
+          "randomWrong": 0.423,
+          "diff": -0.038
+        }
+      }
+    },
+    {
+      "name": "kriserna (utkast, inte i spelet)",
+      "checked": false,
+      "sv": {
+        "words": {
+          "steps": 27,
+          "longestWrong": 0,
+          "randomWrong": 0.694,
+          "diff": -0.694
+        },
+        "chars": {
+          "steps": 27,
+          "longestWrong": 0,
+          "randomWrong": 0.694,
+          "diff": -0.694
+        }
+      },
+      "en": {
+        "words": {
+          "steps": 27,
+          "longestWrong": 0,
+          "randomWrong": 0.694,
+          "diff": -0.694
+        },
+        "chars": {
+          "steps": 27,
+          "longestWrong": 0,
+          "randomWrong": 0.694,
+          "diff": -0.694
+        }
+      }
+    }
+  ],
   "oldFormLongestIsBest": {
     "sv": {
       "steps": 87,
-      "hits": 21,
+      "hits": 26,
       "randomExpectation": 25.2
     },
     "en": {
@@ -627,7 +917,7 @@
         "id": "ft06-stangningen",
         "lang": "sv",
         "words": {
-          "a": 15,
+          "a": 16,
           "b": 13,
           "c": 15,
           "d": 13
@@ -780,7 +1070,7 @@
           "a": 9,
           "b": 12,
           "c": 10,
-          "d": 12
+          "d": 14
         },
         "full": [
           "a"
