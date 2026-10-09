@@ -224,6 +224,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `BRIEF_DESIGN_FOODTRUCKEN.md`: Brief till Claude Design — Food trucken.
 - `BRIEF_DESIGN_GASTGIVERIET.md`: Brief till Claude Design — Gästgiveriet.
 - `BRIEF_DESIGN_REKVISITAN.md`: Brief till Claude Design — Rekvisitan.
+- `BRIEF_DESIGN_D11_ANSIKTEN_OCH_GESTER.md`: Brief till Claude Design — D11 Ansiktsuttryck och gester.
 - `BRIEF_DESIGN_RITUALERNA.md`: Brief till Claude Design — Ritualerna i servicen.
 - `DESIGN_SPEC_NEXUS_V1.md`: Designspecifikation — Nexus version 1.
 - `SVAR_TILL_DESIGN.md`: Svar till Design — FRAGOR §1–50.
