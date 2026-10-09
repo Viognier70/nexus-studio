@@ -149,6 +149,8 @@ export function firstEmptySlot(store: SaveStore): number | null {
 // Autospar vid varje dagsavslut; veckokopia när den nya dagen är
 // veckans första (efter söndagens veckoavräkning).
 export function savesForDayChange(prevDay: number, sim: SimulationState): SaveKind[] {
+  // ORDER 321 — ett provspel sparas aldrig (portfolion och sparplatserna gäller bara det vanliga spelet).
+  if (sim.prov) return [];
   if (sim.day.dayNumber <= prevDay) return [];
   const cal = calendarFor(sim.day.dayNumber);
   const startsWeek = cal.weekday === calendarFor(1).weekday;

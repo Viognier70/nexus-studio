@@ -161,13 +161,16 @@ interface Props {
   startIntroduction?: boolean;
   // ORDER 300 §4 — spelarens namn och samtycke från registreringen.
   player?: PlayerRegistration;
+  // ORDER 321 — provspelet (?prov, strategic/prov/provState.ts) börjar i ett färdigt tillstånd.
+  initialState?: SimulationState;
 }
 
 const TICK_HZ = 5;
 const TICK_MS = 1000 / TICK_HZ;
 
-export function SimulationProvider({ children, seed = DEFAULT_SEED, startIntroduction = false, player }: Props) {
+export function SimulationProvider({ children, seed = DEFAULT_SEED, startIntroduction = false, player, initialState }: Props) {
   const [state, dispatch] = useReducer(reducer, undefined, () => {
+    if (initialState) return initialState;
     const start = makeNewGameState(seed);
     return applyDevStartOverride(applyDevFoodtruckSeed(applyDevBusinessOverride(startIntroduction ? beginIntroduction(start, player) : start)));
   });

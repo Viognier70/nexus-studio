@@ -295,8 +295,12 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
     case 'QUEUE_INCIDENT': {
       const inc = state.incidents;
       if (!inc || !inc.enabled || inc.queued.includes(action.incidentId)) return state;
-      if (!incidentBankFor(state.economy.businessClass).some((i) => i.id === action.incidentId)) return state;
-      return { ...state, incidents: { ...inc, queued: [action.incidentId, ...inc.queued] } };
+      const queuedIncident = incidentBankFor(state.economy.businessClass).find((i) => i.id === action.incidentId);
+      if (!queuedIncident) return state;
+      // ORDER 321 — en tid nu (inc.slots, som en kedjad följd), så att den köade kommer så snart dess signal
+      // håller och inte bara när slumpen träffar (provspelet ?prov och #playtest=1&rocket=).
+      const slots = [...inc.slots, { at: state.simTime, phase: queuedIncident.arc }].sort((a, b) => a.at - b.at);
+      return { ...state, incidents: { ...inc, queued: [action.incidentId, ...inc.queued], slots } };
     }
     case 'ANSWER_INCIDENT': {
       if (!isIncidentOpen(state)) return state;
