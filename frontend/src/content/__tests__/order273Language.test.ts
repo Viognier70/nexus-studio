@@ -12,8 +12,10 @@ const heldNode = strings.rocket.meters;
 afterEach(() => setLanguage('en'));
 
 describe('ORDER 273 — språket', () => {
-  it('spelet går på engelska som standard', () => {
-    expect(DEFAULT_LANG).toBe('en');
+  // ORDER 323 §1 — spelet startar på svenska (förut engelska). Testsviten
+  // sätter engelskan före varje fil (src/test/testLanguage.ts).
+  it('spelet går på svenska som standard; testsviten läser engelskan', () => {
+    expect(DEFAULT_LANG).toBe('sv');
     expect(getLanguage()).toBe('en');
     expect(strings.rocket.meters.cash).toBe(STRINGS['hud.meter.cash'].en);
   });

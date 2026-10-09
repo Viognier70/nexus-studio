@@ -18,6 +18,8 @@ export default defineConfig({
     // finishes in <2 s; ubuntu-latest with 2 vCPUs and vitest's
     // reduced parallelism takes longer than 15 s. 60 s is generous
     // enough that any real "test hangs" regression still surfaces.
-    testTimeout: 60000
+    testTimeout: 60000,
+    // ORDER 323 §1 — testerna läser engelskan (spelet startar på svenska).
+    setupFiles: ['./src/test/testLanguage.ts']
   }
 });
