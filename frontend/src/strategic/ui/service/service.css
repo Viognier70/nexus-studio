@@ -828,7 +828,8 @@ body[data-focus='1']:not([data-focus-unfold='rocket']) .nx-rocket:not([data-mode
 }
 .nx-stake-col { position: absolute; top: 0; bottom: 0; left: var(--stake-cx); width: var(--stake-w); transform: translateX(-50%); }
 /* ORDER 322 A1 — pyramiden står liten i raden, bredvid steget (ramen 300 × 250), aldrig över rummet. */
-.nx-stake-pyr { position: relative; flex: none; width: 11.28vh; height: 9.4vh; animation: nx-stake-lift .35s cubic-bezier(.33,1,.68,1) both; }
+/* ORDER 323 §3 — lika hög som stegrutorna: SVG:n i den täta ramen (PYRAMID_CROP, 275 × 220), samma höjd som .nx-stake-cell. */
+.nx-stake-pyr { position: relative; flex: none; width: 11.75vh; height: 9.4vh; animation: nx-stake-lift .35s cubic-bezier(.33,1,.68,1) both; }
 .nx-stake-pyr .nx-pyramid, .nx-stake-pyr .nx-pyr-svg { width: 100%; height: 100%; max-width: none; display: block; }
 .nx-stake-pyr .nx-pyr-floor[data-state='empty'] .nx-pyr-bg { fill: rgba(20,13,9,.6); }
 .nx-stake-pyr .nx-pyr-floor[data-state='empty'] .nx-pyr-edge,

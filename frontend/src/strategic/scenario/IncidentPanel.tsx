@@ -565,11 +565,11 @@ export function IncidentCard() {
       </div>}
 
       {/* ORDER 305 / ORDER 310 — kvitt eller dubbelt: valet står i kolumnen
-          (PyramidMoment); kortet visar potten och att tiden ut ger Stanna. */}
+          (PyramidMoment); kortet visar potten. ORDER 323 §3: att tiden ut ger
+          Stanna står bara en gång, under valen. */}
       {choosing && active && (
         <div className="nx-rocket-kvitt" data-testid="incident-kvitt-card">
           <p data-testid="incident-kvitt-pot">{t.kvitt.pot(potCredits(active.pot))}</p>
-          <p className="nx-small">{t.kvitt.timeout}</p>
         </div>
       )}
       {!choosing && seq && (

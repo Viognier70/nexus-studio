@@ -44,6 +44,14 @@ function band(i: number): string {
   const cx = P.apex[0];
   return `${cx - half(y0)},${y0} ${cx + half(y0)},${y0} ${cx + half(y1)},${y1} ${cx - half(y1)},${y1}`;
 }
+/** ORDER 323 §3 — ramen tätt kring våningarna (topp till botten, bredast vid
+ *  botten), så att pyramiden i kvitt eller dubbelt blir lika hög som rutorna. */
+export const PYRAMID_CROP = (() => {
+  const top = P.bands[SLOTS[SLOTS.length - 1]][0];
+  const bottom = P.bands[SLOTS[0]][1];
+  const w = 2 * half(bottom);
+  return { x: P.apex[0] - w / 2, y: top, w, h: bottom - top } as const;
+})();
 /** Raketens våningar nedifrån och upp: stegens kunskapsformer i raketens ordning. */
 export function axesOf(steps: readonly { axis: KnowledgeAxis }[] | null | undefined): readonly KnowledgeAxis[] {
   return steps && steps.length > 0 ? steps.map((s) => s.axis) : DEFAULT_AXES;
@@ -53,7 +61,7 @@ export function stepMult(i: number, lang: string): string {
   return `×${(DOUBLE_OR_NOTHING.growth ** i).toLocaleString(lang === 'sv' ? 'sv-SE' : 'en-GB')}`;
 }
 
-export function KnowledgePyramid({ levels, full, small = false, testId, showMult = false, axes = DEFAULT_AXES, instantBelow = -1, legend = !small }: { levels: LevelState[]; full: boolean; small?: boolean; testId?: string; showMult?: boolean; axes?: readonly KnowledgeAxis[]; instantBelow?: number; legend?: boolean }) {
+export function KnowledgePyramid({ levels, full, small = false, testId, showMult = false, axes = DEFAULT_AXES, instantBelow = -1, legend = !small, crop = false }: { levels: LevelState[]; full: boolean; small?: boolean; testId?: string; showMult?: boolean; axes?: readonly KnowledgeAxis[]; instantBelow?: number; legend?: boolean; crop?: boolean }) {
   const lang = useLanguage();
   const cracked = levels.indexOf('cracked');
   const asks = strings.service.incident.stepAsks as Record<string, string>;
@@ -63,7 +71,7 @@ export function KnowledgePyramid({ levels, full, small = false, testId, showMult
   return (
     <div className="nx-pyramid" data-small={small} data-full={full} data-testid={testId} role="img"
       aria-label={strings.pyramid.aria(levels.filter((l) => l === 'filled').length, levels.length)}>
-      <svg viewBox={`0 0 ${P.viewBox[0]} ${P.viewBox[1]}`} className="nx-pyr-svg" aria-hidden>
+      <svg viewBox={crop ? `${PYRAMID_CROP.x} ${PYRAMID_CROP.y} ${PYRAMID_CROP.w} ${PYRAMID_CROP.h}` : `0 0 ${P.viewBox[0]} ${P.viewBox[1]}`} className="nx-pyr-svg" aria-hidden>
         <defs>
           {floors.map((_, i) => <clipPath key={i} id={`nx-pyr-${i}${testId ?? ''}`}><polygon points={band(i)} /></clipPath>)}
         </defs>
