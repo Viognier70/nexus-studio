@@ -25,7 +25,7 @@
     "roadIssues": 0,
     "gapMetres": 0,
     "gameEnds": 662,
-    "gameEndsNotRealEnds": 1,
+    "gameEndsNotRealEnds": 0,
     "gameEndsOutsideArea": 18,
     "gameEndsAtPassage": 4,
     "passages": 2,
@@ -516,26 +516,7 @@
   ],
   "synthesisedHidden": [],
   "shedConflicts": [],
-  "falseEnds": [
-    {
-      "piece": "w862853244#e2",
-      "way": "w862853244",
-      "name": null,
-      "roadKind": "service",
-      "role": "service",
-      "at": [
-        -25.1,
-        87.4
-      ],
-      "toRealEndM": 25,
-      "building": {
-        "id": "w1422743880",
-        "dist": 0.8,
-        "shown": true,
-        "synthesised": false
-      }
-    }
-  ],
+  "falseEnds": [],
   "images": [
     "karta-byn.png",
     "karta-karnan.png",

@@ -98,7 +98,7 @@ function extractBuildings(els) {
     if (e.type !== 'way' || !e.tags?.building) continue;
     const g = e.geometry;
     if (!g || g.length < 3) continue;
-    const poly = g.map((n) => toLocal(n.lat, n.lon));
+    const poly = shiftRoad('w' + e.id, g.map((n) => toLocal(n.lat, n.lon)));
     out.push({
       id: 'w' + e.id,
       poly,
@@ -140,6 +140,26 @@ const PED_HIGHWAYS = new Set([
   'track', 'living_street', 'residential', 'unclassified', 'tertiary'
 ]);
 
+// Avsteg från OSM, ett per väg (ORDER 322 B, Anders 2026-10-09: "flytta mittlinjen en halv meter, så att
+// uppfarten blir hel. Vägen ska inte gå in under huset."). Uppfarten w862853244 går i OSM tätt förbi
+// Länsmansgårdens hörn (w1422743880); punkterna 1 och 2 flyttas 0,5 m från huset, vinkelrätt mot biten
+// mellan dem. Allt annat i vägen följer OSM.
+const ROAD_SHIFTS = {
+  w862853244: { points: [1, 2], awayFrom: [-24.22, 87.52], metres: 0.5 }
+};
+
+function shiftRoad(id, poly) {
+  const shift = ROAD_SHIFTS[id];
+  if (!shift) return poly;
+  const [i, j] = shift.points;
+  const [ax, az] = poly[i], [bx, bz] = poly[j];
+  const len = Math.hypot(bx - ax, bz - az);
+  let nx = -(bz - az) / len, nz = (bx - ax) / len;
+  if ((shift.awayFrom[0] - ax) * nx + (shift.awayFrom[1] - az) * nz > 0) { nx = -nx; nz = -nz; }
+  const r = (v) => Math.round(v * 100) / 100;
+  return poly.map((p, k) => (shift.points.includes(k) ? [r(p[0] + shift.metres * nx), r(p[1] + shift.metres * nz)] : p));
+}
+
 function extractRoads(els) {
   const out = [];
   for (const e of els) {
@@ -147,7 +167,7 @@ function extractRoads(els) {
     const g = e.geometry;
     if (!g || g.length < 2) continue;
     const kind = e.tags.highway;
-    const poly = g.map((n) => toLocal(n.lat, n.lon));
+    const poly = shiftRoad('w' + e.id, g.map((n) => toLocal(n.lat, n.lon)));
     out.push({
       id: 'w' + e.id,
       poly,

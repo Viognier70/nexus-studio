@@ -143,7 +143,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_276_RAPPORT.md`: ORDER 276 — Raketerna styr gästflödet (rapport).
 - `ORDER_300B_RAPPORT.md`: ORDER 300b — Början efter besluten: samtycket om forskningen, regel 1 och skripten utan bussen (rapport).
 - `ORDER_321_RAPPORT.md`: ORDER 321 — Provspelsläge: ?prov, börja direkt i foodtrucken, vinbaren eller bistron (rapport).
-- `ORDER_322_RAPPORT.md`: ORDER 322 — Efter provspel 2026-10-09: kvitt eller dubbelt, provspelets namn och Följd, listan över byns skillnader mot kartan och rättningen efter Anders beslut, etiketterna och vägändarna (rapport, del A, B och C).
+- `ORDER_322_RAPPORT.md`: ORDER 322 — Efter provspel 2026-10-09: kvitt eller dubbelt, provspelets namn och Följd, listan över byns skillnader mot kartan och rättningen efter Anders beslut, etiketterna och vägändarna, uppfarten vid Länsmansgården och etiketterna i alla zoomnivåer (rapport, del A, B och C).
 - `ORDER_RECONSTRUCTION_004_005_019_020.md`: ORDER_RECONSTRUCTION_004_005_019_020 — Evidence record for four sprint orders.
 - `ORDER_REGISTRY.md`: ORDER REGISTRY.
 - `PERFORMANCE_PREPARATION_REFERENCE.md`: Performance Preparation Reference.
