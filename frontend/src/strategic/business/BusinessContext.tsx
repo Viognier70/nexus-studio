@@ -58,8 +58,9 @@ export interface BusinessApi {
 
 const BusinessCtx = createContext<BusinessApi | null>(null);
 
-export function BusinessProvider({ children }: { children: ReactNode }) {
-  const [business, setBusiness] = useState<PlayerBusiness>(INITIAL_BUSINESS);
+// ORDER 321 — provspelet (?prov) börjar med ett namn, så att startskärmen och registreringen hoppas över.
+export function BusinessProvider({ children, initialName = null }: { children: ReactNode; initialName?: string | null }) {
+  const [business, setBusiness] = useState<PlayerBusiness>(() => ({ ...INITIAL_BUSINESS, name: initialName }));
 
   const setName = useCallback((name: string) => {
     const trimmed = name.trim();

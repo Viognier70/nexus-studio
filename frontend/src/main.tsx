@@ -4,6 +4,9 @@ import App from './App';
 import { StrategicApp } from './strategic/StrategicApp';
 import { NEW_GAME_FLOW_START, newGameFlow } from './strategic/opening/newGameFlow';
 import { useLanguage } from './content/language';
+// ORDER 321 — provspelsläget, bara med ?prov i adressen.
+import { ProvRoot } from './strategic/prov/ProvRoot';
+import { isProvSearch } from './strategic/prov/provState';
 import './index.css';
 // ORDER 285 — den varma formen: typsnitten och tokens (Designs leverans 2026-09-29).
 import './ui/theme/fonts';
@@ -52,6 +55,6 @@ if (!rootElement) throw new Error('Missing root element');
 
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <Root />
+    {isProvSearch(window.location.search) ? <ProvRoot /> : <Root />}
   </React.StrictMode>
 );

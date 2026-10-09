@@ -70,6 +70,10 @@ import { RoomCameraBounds } from './camera/RoomCameraBounds';
 import { HudBottom } from './ui/service/HudBottom';
 import { MoodMeter } from './ui/host/MoodMeter';
 import { OpeningSequence } from './opening/OpeningSequence';
+import { buildProvState, type ProvSetup } from './prov/provState';
+import { ProvBadge } from './prov/ProvBadge';
+import { DEFAULT_SEED } from './simulation/model';
+import { t as tt } from '../content/nexusStrings';
 
 interface StrategicAppProps {
   // ORDER 267 — introduktionen börjar (ORDER 300: efter registreringen).
@@ -82,23 +86,27 @@ interface StrategicAppProps {
   // samma scen som morgonen sedan tonar upp i; onOpeningDone när den är slut.
   opening?: boolean;
   onOpeningDone?: () => void;
+  // ORDER 321 — provspelsläget (?prov): börjar i det valda steget utan startskärm, registrering och sparande.
+  prov?: ProvSetup;
 }
 
-export function StrategicApp({ startIntroduction = false, onNewGame, player, opening = false, onOpeningDone }: StrategicAppProps = {}) {
+export function StrategicApp({ startIntroduction = false, onNewGame, player, opening = false, onOpeningDone, prov }: StrategicAppProps = {}) {
   const [webglOk] = useState<boolean>(() => detectWebGL());
   // ORDER 273 — språkbytet (menyn) ritar om hela gränssnittet: roten ritas
   // om när språket byts, och alla komponenter under läser `strings` på nytt.
   // Ingen nyckel (remount), så speltillståndet och scenen står kvar.
-  useLanguage();
+  const lang = useLanguage();
+  const [provState] = useState(() => (prov ? buildProvState(prov, harnessParams.seed ?? DEFAULT_SEED) : undefined));
   if (!webglOk) {
     return <WebGLFallback onRestart={() => window.location.reload()} />;
   }
   return (
-    <BusinessProvider>
+    <BusinessProvider initialName={provState ? tt(lang, 'prov.businessName') : null}>
       <CameraProvider>
-        <SimulationProvider seed={harnessParams.seed ?? undefined} startIntroduction={startIntroduction} player={player}>
+        <SimulationProvider seed={harnessParams.seed ?? undefined} startIntroduction={startIntroduction} player={player} initialState={provState}>
           <SaveProvider>
             <StrategicShell />
+            {provState && <ProvBadge />}
             <NameEntryOverlay onNewGame={onNewGame} />
             <SaveMenu />
             {opening && <OpeningSequence onDone={() => onOpeningDone?.()} />}
@@ -140,11 +148,13 @@ function StrategicShell() {
   const mentorView = useMentor();
   const queuedRocketDay = useRef(-1);
   useEffect(() => {
-    const id = harnessParams.rocket;
+    // ORDER 321 — provspelets situation den första kvällen (strategic/prov/provState.ts).
+    const p = simForRocket.prov;
+    const id = harnessParams.rocket ?? (p?.incidentId && p.incidentDay === simForRocket.day.dayNumber ? p.incidentId : null);
     if (!id || !simForRocket.day.doorsOpenedThisService || queuedRocketDay.current === simForRocket.day.dayNumber) return;
     queuedRocketDay.current = simForRocket.day.dayNumber;
     simDispatch({ type: 'QUEUE_INCIDENT', incidentId: id });
-  }, [simForRocket.day.doorsOpenedThisService, simForRocket.day.dayNumber, simDispatch]);
+  }, [simForRocket.day.doorsOpenedThisService, simForRocket.day.dayNumber, simForRocket.prov, simDispatch]);
   const save = useSave();
 
   const getHost = useCallback(() => hostRef.current, []);

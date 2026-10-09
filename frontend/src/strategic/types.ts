@@ -1719,6 +1719,9 @@ export interface SimulationState {
   // ORDER 315a — karriärstegen: steget, när stegen nåddes och Åsas erbjudande
   // (sim/ladder.ts). Saknas i spel från före ordern (steget läses då ur klassen).
   ladder?: import('../sim/ladderStep').LadderState;
+  // ORDER 321 — provspelsläget (?prov, strategic/prov/): vädret varje kväll (null = prognosen) och situationen
+  // som tvingas fram den första kvällen. Saknas i det vanliga spelet; ett provspel sparas aldrig (sim/save.ts).
+  prov?: { weather: import('../sim/truckLife').TruckWeatherKind | null; incidentId: string | null; incidentDay: number };
   // ORDER 316 — fikat efter stängning: kvällens dilemma, portfolion (loggen
   // över svaren), lojaliteten per person i laget och tillsynens risk
   // (sim/fika.ts). Saknas i spel från före ordern.

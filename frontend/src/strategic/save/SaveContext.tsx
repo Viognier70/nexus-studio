@@ -66,7 +66,8 @@ export function SaveProvider({ children }: { children: ReactNode }) {
 
   const write = useCallback(
     (slot: number, kinds: ('auto' | 'weekly' | 'manual')[]) => {
-      if (!store) return;
+      // ORDER 321 — ett provspel sparas aldrig, inte heller med menyns Spara.
+      if (!store || sim.prov) return;
       for (const kind of kinds) {
         const file = makeSaveFile(sim, business.name, kind);
         if (kind === 'weekly') writeWeeklyCopy(store, slot, file);
@@ -108,12 +109,13 @@ export function SaveProvider({ children }: { children: ReactNode }) {
 
   const saveTo = useCallback(
     (slot: number) => {
-      if (!store) return;
+      // ORDER 321 — provspelet rör inte sparplatserna (clearSlot tömde annars platsen).
+      if (!store || sim.prov) return;
       if (slot !== activeSlot) clearSlot(store, slot);
       setActiveSlot(slot);
       write(slot, ['manual', 'weekly']);
     },
-    [store, activeSlot, write]
+    [store, activeSlot, write, sim.prov]
   );
 
   const load = useCallback(

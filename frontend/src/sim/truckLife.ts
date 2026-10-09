@@ -64,21 +64,23 @@ export interface TruckDayState {
 
 const EMPTY_TONIGHT: TruckTonight = { eaters: 0, takeaway: 0, littered: 0, clearedByAssistant: 0, clearedByPlayer: 0, torchStartE: null, torchWaited: false, hatchEmptySimSeconds: 0 };
 
-/** Prognosen för en kväll: vädret och när regnet börjar. Samma frö och dag ger samma väder. */
-export function truckWeatherFor(seed: number, dayNumber: number): { weather: TruckWeatherKind; rainFromE: number | null } {
+/** Prognosen för en kväll: vädret och när regnet börjar. Samma frö och dag ger samma väder. ORDER 321 — i
+ *  provspelet kan vädret vara valt (forced); regnet börjar då som i en prognos med regn. */
+export function truckWeatherFor(seed: number, dayNumber: number, forced: TruckWeatherKind | null = null): { weather: TruckWeatherKind; rainFromE: number | null } {
   const w = TRUCK_WEATHER.weights;
   const total = TRUCK_WEATHERS.reduce((a, k) => a + w[k], 0);
   let r = hashKey(seed, `${dayNumber}|truckWeather|forecast of the evening at the truck`) * total;
   let weather: TruckWeatherKind = TRUCK_WEATHERS[TRUCK_WEATHERS.length - 1];
   for (const k of TRUCK_WEATHERS) { if (r < w[k]) { weather = k; break; } r -= w[k]; }
+  if (forced) weather = forced;
   const [a, b] = TRUCK_WEATHER.rainFromE;
   const rainFromE = weather === 'rain' ? a + (b - a) * hashKey(seed, `${dayNumber}|truckRain|when the rain starts at the truck`) : null;
   return { weather, rainFromE };
 }
 
-export function truckOf(state: Pick<SimulationState, 'day' | 'seed'>): TruckDayState {
+export function truckOf(state: Pick<SimulationState, 'day' | 'seed' | 'prov'>): TruckDayState {
   if (state.day.truck) return state.day.truck;
-  return { ...truckWeatherFor(state.seed ?? 0, state.day.dayNumber), litter: { A: 0, B: 0, C: 0 }, errand: null, torchesLit: false, sausagesLeft: SAUSAGE.perEvening, tonight: EMPTY_TONIGHT };
+  return { ...truckWeatherFor(state.seed ?? 0, state.day.dayNumber, state.prov?.weather ?? null), litter: { A: 0, B: 0, C: 0 }, errand: null, torchesLit: false, sausagesLeft: SAUSAGE.perEvening, tonight: EMPTY_TONIGHT };
 }
 
 function isTruck(state: Pick<SimulationState, 'economy'>): boolean {
@@ -93,9 +95,11 @@ export function truckWeatherOf(state: SimulationState): TruckWeatherKind | null 
 /** Byns väder vid vagnen samma kväll, så att det stämmer med vagnens (TRUCK_WEATHER.village). Slumpen för byns
  *  väder dras som förut (reducer.ts openService), och det som inte stämmer rättas. */
 export function truckVillageWeather(state: SimulationState, w: WeatherConditions): WeatherConditions {
-  if (!isTruck(state)) return w;
+  // ORDER 321 — i provspelet gäller det valda vädret också i vinbaren och bistron.
+  const kind = isTruck(state) ? truckOf(state).weather : state.prov?.weather ?? null;
+  if (!kind) return w;
   const V = TRUCK_WEATHER.village;
-  switch (truckOf(state).weather) {
+  switch (kind) {
     case 'sun': return { ...w, tempC: Math.max(w.tempC, V.sunMinTempC), precipitation: 'none', cloudCover: 'clear' };
     case 'rain': return { ...w, precipitation: 'rain', cloudCover: 'overcast', outdoorViable: false };
     case 'wind': return { ...w, windMS: Math.max(w.windMS, V.windMinMS), precipitation: 'none', outdoorViable: false };

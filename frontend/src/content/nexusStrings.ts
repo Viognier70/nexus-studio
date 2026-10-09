@@ -52,6 +52,7 @@ import { FIKA_TEXT } from './fikaStrings';
 import { VAGNEN_STRINGS } from './vagnenStrings';
 import { D8_STRINGS } from './d8Strings';
 import { LUCKAN_STRINGS } from './luckanStrings';
+import { PROV_STRINGS } from './provStrings';
 
 export type Lang = 'sv' | 'en';
 // ORDER 289 — singular eller plural efter antalet ("1 bottles" skulle vara
@@ -488,6 +489,7 @@ export const STRINGS = {
   ...VILLAGE_EVENING_STRINGS,
   // ORDER 319b — Designs D9 och tillägget (livet vid luckan), inslagna oförändrade.
   ...LUCKAN_STRINGS,
+  ...PROV_STRINGS,
   // ORDER 319b — medhjälparen vid foodtruckens lucka (line.sender). Anders 2026-10-08: inte Elin, som
   // finns i vinbarens personal.
   'truck.assistant.name': { sv: 'Nils', en: 'Nils' },

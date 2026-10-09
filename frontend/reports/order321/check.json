@@ -1,0 +1,44 @@
+{
+  "ok": true,
+  "normal": {
+    "startScreen": 1,
+    "provStart": 0,
+    "provBadge": 0
+  },
+  "prov": [
+    {
+      "place": "foodtruck",
+      "cashDefault": 15000,
+      "incidentOptions": 11,
+      "badge": "PROVSPEL",
+      "startScreen": 0,
+      "registerScreen": 0,
+      "saveKeys": [],
+      "incidentsTonight": [
+        "ft01-rusningen",
+        "ft10-kortet",
+        "ft08-regnet"
+      ],
+      "saveKeysAfterEvening": []
+    },
+    {
+      "place": "vinbar",
+      "cashDefault": 30000,
+      "incidentOptions": 49,
+      "badge": "PROVSPEL",
+      "startScreen": 0,
+      "registerScreen": 0,
+      "saveKeys": []
+    },
+    {
+      "place": "bistro",
+      "cashDefault": 60000,
+      "incidentOptions": 49,
+      "badge": "PROVSPEL",
+      "startScreen": 0,
+      "registerScreen": 0,
+      "saveKeys": []
+    }
+  ],
+  "errors": []
+}
