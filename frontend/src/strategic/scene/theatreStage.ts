@@ -19,7 +19,8 @@ import { CLIPS, sampleClip, type ClipSample, type SeatKind, type TempoId } from 
 import { createProp, holdProp, placeProp, updateHeld, type PropHandle, type PropId } from './tableware';
 import { guestClipFor, sampleForFigure, staffClipFor, tempoFor } from './theatreClips';
 import type { FigureSample, LedgerEntry, StaffKey, WineBarDirector } from './wineBarDirector';
-import { SURFACE_HEIGHT, WINE_BAR_PLAN } from './wineBarRoom';
+import { planRects, SURFACE_HEIGHT, WINE_BAR_PLAN, type WineBarRoom } from './wineBarRoom';
+import { BISTRO } from './bistroHouse';
 import { THEATRE } from '../../sim/balance';
 import { PROP_VISUAL_SCALE } from './staffRing';
 import type { CameraTarget } from '../types';
@@ -42,8 +43,55 @@ const BAR_BOTTLES: readonly Vec2[] = [
   [WINE_BAR_PLAN.bar.x1 - 0.55, BAR_COUNTER_N], [WINE_BAR_PLAN.bar.x1 - 0.3, BAR_COUNTER_N],
   [WINE_BAR_PLAN.bar.x1 - 0.55, BAR_COUNTER_S], [WINE_BAR_PLAN.bar.x1 - 0.3, BAR_COUNTER_S]
 ];
+// ORDER 323 §9 — bistrons bar står i sydväst och löper längs z (bistroHouse.ts BISTRO.bar);
+// flaskorna står på personalens sida (västra kanten), två vid var ände.
+const BISTRO_BAR_BOTTLES: readonly Vec2[] = [
+  [BISTRO.bar.x0 + 0.2, BISTRO.bar.z1 - 0.25], [BISTRO.bar.x0 + 0.2, BISTRO.bar.z1 - 0.5],
+  [BISTRO.bar.x0 + 0.2, BISTRO.bar.z0 + 0.25], [BISTRO.bar.x0 + 0.2, BISTRO.bar.z0 + 0.5]
+];
 const TABLE_CARAFE_OFFSET = 0.32;
 const TABLE_SPREAD = 0.22;
+
+// ---------- ORDER 323 §9 — ytorna rekvisitan står på ----------
+// Anders 2026-10-09: "Föremål på bord (flaskor, glas, ljus) ska stå på
+// bordsskivan och följa bordet när rummet byggs om (vinbar → bistro)."
+// Ytorna läses ur rummets ritade meshar (wineBarRoom.ts planRects): bordens
+// skivor (<bord>Top) och diskens (barTop…). Ett föremål står på skivans
+// översta yta, minst PROP_EDGE_M innanför kanten.
+
+export interface PropSurface { name: string; x0: number; x1: number; z0: number; z1: number; top: number }
+export const PROP_EDGE_M = 0.08;
+const SURFACE_NAME = /Top(Bistro|[NSE])?$|^barTop/;
+
+/** Rummets bords- och diskskivor (lokala meter, toppen i rummets Y). */
+export function propSurfaces(room: WineBarRoom): PropSurface[] {
+  return planRects(room).filter((r) => SURFACE_NAME.test(r.name) && !/^(djBooth|musicSideboard|passCounter|hostDesk)/.test(r.name));
+}
+
+/** Den minsta skivan under punkten, eller null. */
+export function surfaceUnder(surfaces: readonly PropSurface[], x: number, z: number): PropSurface | null {
+  let best: PropSurface | null = null;
+  for (const r of surfaces) {
+    if (x < r.x0 || x > r.x1 || z < r.z0 || z > r.z1) continue;
+    if (!best || (r.x1 - r.x0) * (r.z1 - r.z0) < (best.x1 - best.x0) * (best.z1 - best.z0)) best = r;
+  }
+  return best;
+}
+
+/**
+ * Platsen för föremål nummer `slot` på skivan kring `at`: längs skivans
+ * långsida, TABLE_SPREAD isär, och så många som ryms innan raden börjar om
+ * (förut gick slot 3 och uppåt utanför ett bord för fyra).
+ */
+export function spotOnSurface(r: PropSurface, at: Vec2, slot: number, extra = 0): Vec2 {
+  const alongX = r.x1 - r.x0 >= r.z1 - r.z0;
+  const len = alongX ? r.x1 - r.x0 : r.z1 - r.z0;
+  const cap = Math.max(2, Math.floor((len - 2 * PROP_EDGE_M) / TABLE_SPREAD) + 1);
+  const off = ((slot % cap) - 0.5) * TABLE_SPREAD + extra;
+  const x = Math.max(r.x0 + PROP_EDGE_M, Math.min(r.x1 - PROP_EDGE_M, at[0] + (alongX ? off : 0)));
+  const z = Math.max(r.z0 + PROP_EDGE_M, Math.min(r.z1 - PROP_EDGE_M, at[1] + (alongX ? 0 : off)));
+  return [x, z];
+}
 
 interface ClipState { id: string | null; tempo: TempoId }
 
@@ -161,16 +209,38 @@ export class TheatreStage {
   // sidan). Ägarboken har flaskan bara vid loungerna.
   private readonly dressing: PropHandle[] = [];
   private readonly carafes = new Map<string, PropHandle>();
-  private tableAtOf = new Map<string, { at: Vec2; kind: 'two' | 'lounge' | 'bar' }>();
+  private tableAtOf = new Map<string, { at: Vec2; kind: 'two' | 'lounge' | 'bar'; surface: PropSurface | null }>();
+  private surfaces: PropSurface[] = [];
 
-  /** Dukningen som står kvar: flaskorna i baren. Anropas en gång när rummet monteras. */
-  dress(groups: readonly { id: string; kind: 'two' | 'lounge' | 'bar'; tableAt?: Vec2 }[]): void {
-    for (const g of groups) if (g.tableAt) this.tableAtOf.set(g.id, { at: g.tableAt, kind: g.kind });
-    for (const [x, z] of BAR_BOTTLES) {
+  /**
+   * Dukningen som står kvar: flaskorna i baren. Anropas en gång när rummet
+   * monteras, och på nytt när rummet byggs om (WineBarFigures bygger om
+   * ensemblen per rum). ORDER 323 §9: med rummet står allt på de skivor
+   * rummet ritar, i bistron på bistrons bar och bord.
+   */
+  dress(groups: readonly { id: string; kind: 'two' | 'lounge' | 'bar'; tableAt?: Vec2 }[], room?: WineBarRoom): void {
+    this.surfaces = room ? propSurfaces(room) : [];
+    for (const g of groups) if (g.tableAt) this.tableAtOf.set(g.id, { at: g.tableAt, kind: g.kind, surface: surfaceUnder(this.surfaces, g.tableAt[0], g.tableAt[1]) });
+    for (const [x, z] of room?.layout === 'bistro' ? BISTRO_BAR_BOTTLES : BAR_BOTTLES) {
       const p = this.take('wineBottle');
-      placeProp(p, this.group, x, this.floorY + SURFACE_HEIGHT.bar, z, 0);
+      placeProp(p, this.group, x, this.surfaceY(x, z, 'bar'), z, 0);
       this.dressing.push(p);
     }
+  }
+
+  /** Skivans topp under punkten (rummets ritade yta), annars ytans höjd i SURFACE_HEIGHT. */
+  private surfaceY(x: number, z: number, kind: 'two' | 'lounge' | 'bar'): number {
+    return surfaceUnder(this.surfaces, x, z)?.top ?? this.floorY + SURFACE_HEIGHT[kind];
+  }
+
+  /** Föremålen som står på en yta (dukningen, karafferna och ägarbokens på bord): läget i rummet (för provet). */
+  standingProps(): { name: string; x: number; y: number; z: number }[] {
+    const out: { name: string; x: number; y: number; z: number }[] = [];
+    const add = (p: PropHandle) => { if (p.group.visible && !p.held) out.push({ name: p.group.name, x: p.group.position.x, y: p.group.position.y, z: p.group.position.z }); };
+    this.dressing.forEach(add);
+    this.carafes.forEach(add);
+    this.ledgerProps.forEach(add);
+    return out;
   }
 
   /** Antal föremål i dukningen och karafferna (för provet). */
@@ -198,9 +268,12 @@ export class TheatreStage {
         // gästerna sitter, inte på tomma bord") — på bordets mitt eller på
         // disken framför gästerna, i sidled längs bordet.
         const ta = e.owner.tableAt;
-        const x = ta ? ta[0] + lateral : e.owner.at[0] + fx * TABLE_INSET + fz * lateral;
-        const z = ta ? ta[1] : e.owner.at[1] + fz * TABLE_INSET - fx * lateral;
-        placeProp(p, this.group, x, this.floorY + SURFACE_HEIGHT[e.owner.groupKind], z, f);
+        // ORDER 323 §9 — på skivan under bordets mitt, längs långsidan och innanför kanten.
+        const surf = this.tableAtOf.get(e.owner.group)?.surface ?? null;
+        const [x, z] = ta && surf ? spotOnSurface(surf, ta, e.owner.slot)
+          : ta ? [ta[0] + lateral, ta[1]]
+          : [e.owner.at[0] + fx * TABLE_INSET + fz * lateral, e.owner.at[1] + fz * TABLE_INSET - fx * lateral];
+        placeProp(p, this.group, x, this.surfaceY(x, z, e.owner.groupKind), z, f);
       }
     }
     for (const [id, p] of this.ledgerProps) if (!seen.has(id)) { this.giveBack(p); this.ledgerProps.delete(id); }
@@ -210,7 +283,9 @@ export class TheatreStage {
       const g = this.tableAtOf.get(gid);
       if (!g || this.carafes.has(gid)) continue;
       const p = this.take('carafe');
-      placeProp(p, this.group, g.at[0] + TABLE_CARAFE_OFFSET, this.floorY + SURFACE_HEIGHT[g.kind], g.at[1], 0);
+      // ORDER 323 §9 — karaffen innanför bordets kant (förut 0,32 m ut på ett bord som är 0,35 m brett åt varje håll).
+      const [cx, cz] = g.surface ? spotOnSurface(g.surface, g.at, 0, 0.5 * TABLE_SPREAD + TABLE_CARAFE_OFFSET) : [g.at[0] + TABLE_CARAFE_OFFSET, g.at[1]];
+      placeProp(p, this.group, cx, this.surfaceY(cx, cz, g.kind), cz, 0);
       this.carafes.set(gid, p);
     }
     for (const [gid, p] of this.carafes) if (!served.has(gid)) { this.giveBack(p); this.carafes.delete(gid); }
