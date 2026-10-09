@@ -22,7 +22,7 @@
        "explanation": "Salt does not melt at grill heat. It is the water that boils."
       },
       "d": {
-       "label": "Because the grill is too dirty.",
+       "label": "Because the grill is too dirty, so old burnt fat sticks to the casing and tears it open as the sausage is turned.",
        "explanation": "A dirty grill gives a burnt taste but does not split the sausage."
       }
      },
@@ -34,11 +34,11 @@
      "question": "The queue is long, and a guest says the sausage is cold inside. What do you do?",
      "options": {
       "a": {
-       "label": "Apologise and give a discount.",
+       "label": "Apologise, give a discount on the next purchase and promise that the rest of the evening’s sausages will be better.",
        "explanation": "The discount does not fix a cold sausage, and the next one may be the same."
       },
       "b": {
-       "label": "Swap it at once for one that is hot through, and check the grill’s heat and pace so it does not happen again.",
+       "label": "Swap it at once for one that is hot through, and check the grill’s heat and pace.",
        "explanation": "Right. The guest gets a hot sausage, and you fix the cause instead of hoping the queue can wait."
       },
       "c": {
@@ -112,7 +112,7 @@
        "explanation": "The bubbles do not change the sausage’s temperature. They clear the fat from the mouth."
       },
       "d": {
-       "label": "They do not go together; sausage should be eaten with water.",
+       "label": "They do not go together; sausage should be eaten with water, as the bubbles and bitterness drown out the spices.",
        "explanation": "Water is fine, but a bitter, sparkling drink lifts the sausage through the salt and the fat."
       }
      },
@@ -190,7 +190,7 @@
      "question": "What holds a grilled sausage together, so that it does not fall apart on the grill?",
      "options": {
       "a": {
-       "label": "The flour in the mixture.",
+       "label": "The flour in the mixture, which swells in the heat and holds the fat and water together.",
        "explanation": "Flour binds a little water, but it is not what holds the sausage together."
       },
       "b": {
@@ -288,7 +288,7 @@
        "explanation": "Right. A grilling sausage has natural casing or an edible collagen casing."
       },
       "c": {
-       "label": "Paper.",
+       "label": "Paper, a thin baking paper the sausage is shaped in and that is pulled off before grilling.",
        "explanation": "Paper does not hold on the grill."
       },
       "d": {
@@ -370,7 +370,7 @@
      "question": "What does the meat content on a sausage packet mean?",
      "options": {
       "a": {
-       "label": "How much of the sausage is pork.",
+       "label": "How much of the sausage is pork, counted by weight before it is grilled.",
        "explanation": "The meat content does not say which animal the meat is from."
       },
       "b": {
@@ -472,7 +472,7 @@
        "explanation": "Right. And the sausage itself can contain allergens, such as milk, mustard or celery, so read the packaging."
       },
       "d": {
-       "label": "None; sausage stands are exempt.",
+       "label": "None; sausage stands are exempt because the food is sold unpackaged over the counter straight to the guest.",
        "explanation": "No one is exempt. Anyone selling food must be able to answer."
       }
      },
@@ -553,7 +553,7 @@
      "question": "What is required for a sausage to be labelled \"Meat from Sweden\"?",
      "options": {
       "a": {
-       "label": "That the sausage is made in Sweden.",
+       "label": "That the sausage is made in Sweden, even if the meat in it may come from another country.",
        "explanation": "Where it is made says nothing about where the animals come from."
       },
       "b": {
@@ -585,7 +585,7 @@
        "explanation": "Right. What has stood hot is thrown away, and next evening you grill to the queue."
       },
       "c": {
-       "label": "Give them to the helper to take home without thinking about how they were kept.",
+       "label": "Give them to the helper to take home, without thinking about how long or at what heat they have been kept.",
        "explanation": "Eating it at home does not make the food safer."
       },
       "d": {

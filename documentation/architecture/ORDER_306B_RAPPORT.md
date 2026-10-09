@@ -292,3 +292,120 @@ Följden av fel i steg 2 tar varken kassa eller ork. Den har flyttats till felsv
 
 Beslutet står överst i `SITUATIONER_306b.md` och i speldesignen.
 
+
+## 306b.4: kunskapsformen, längden och städningen
+
+Anders 2026-10-09:
+1. "Regeln gäller kunskapsformen, inte stegets nummer: phronesis-steget (upplevelsen) tar aldrig kassa eller ork, i någon situation och i någon form. I den gamla formen får handlingen (techne) kosta som förut. Flytta kassa och ork från phronesis-steget till techne-steget där det behövs, och utöka testet."
+2. "Jämna ut så att det längsta svaret är fel ungefär så ofta som slumpen ger (inom ±0,1). Lägg till spelartypen 'undviker längsta'. Den får inte tjäna mer än slumpen."
+3. "Jämna också ut längden i foodtruckens steg 1–2 och i de nyfikna gästernas frågor. Fakta och talen i räkneuppgifterna ändras inte."
+4. "Städa: stäng dina egna kvarglömda bakgrundsuppgifter, de som väntar på 'ALLT-KLART'."
+
+### Phronesis-steget
+
+I den gamla formen (episteme → techne → phronesis) är phronesis steg 3. Där drog 39 situationer kassa eller ork:
+- 21 i vinbaren, varav de fyra varianterna av vb35;
+- menyns 9;
+- kriserna 9.
+
+Foodtruckens och vinbarens situationer i den nya formen hade redan noll efter 306b.3.
+
+Så här flyttades följden:
+- **Belopp:** för varje situation togs det mest negativa beloppet i phronesis-steget, för kassan och orken var för sig. Det gäller både stegets följd och svarens egna följder.
+- **Mottagare:** beloppet lades till techne-stegets följd och till varje felsvar med egen följd i techne-steget, eftersom ett svars egen följd ersätter stegets.
+- **Phronesis-steget:** kassan och orken där sattes till 0.
+
+Exempel:
+- **vb25 efter stängning:** techne-stegets följd går från kassa −0,1 och ork −0,04 till −0,5 och −0,16.
+- **Menyn:** kassan −0,1 ligger nu på fel i steg 2 (hur vinet serveras, hur fisken tillagas …).
+
+Texterna i följderna nämner inga belopp, så ingen text har ändrats.
+
+**Kvar med kassa uppåt:**
+- vb08 a: sällskapet på fem får bordet (+0,3);
+- vb10 b: den berusade gästen får ett glas till (+0,1).
+
+De tar inte ur kassan utan ger, och står kvar. Orken i dem har flyttats.
+
+**Testet** `src/sim/__tests__/order306b4.test.ts` prövar phronesis-steget i alla banker: vinbaren, menyn, kriserna och foodtrucken. Det ska ha:
+- ingen negativ kassa;
+- ingen ork;
+- ingen kostnad.
+
+Det prövar också att vb25:s techne-steg bär följden.
+
+### Längden
+
+Måttet finns i `src/strategic/testHarness/longestAnswer.ts`. Det är andelen fel bland de längsta svaren, där lika långa delar på valet, mot andelen fel bland alla svar (slumpen). Det räknas i ord och tecken, på svenska och engelska.
+
+Talen står i `reports/order306b/langd.json`, fältet `longestWrong`. Testet håller varje del inom ±0,1.
+
+| Del | Steg | sv ord | sv tecken | en ord | en tecken | Slumpen |
+|---|---|---|---|---|---|---|
+| vinbaren, gamla formen | 87 | 0,612 | 0,569 | 0,613 | 0,563 | 0,548 |
+| vinbaren, nya formen | 32 | 0,477 | 0,411 | 0,479 | 0,469 | 0,414 |
+| menyn | 27 | 0,722 | 0,630 | 0,722 | 0,593 | 0,667 |
+| vinbarens bank | 146 | 0,603 | 0,546 | 0,604 | 0,548 | 0,541 |
+| foodtrucken, steg 1–2 | 26 | 0,538 | 0,538 | 0,538 | 0,538 | 0,558 |
+| foodtrucken, alla steg | 39 | 0,513 | 0,449 | 0,538 | 0,487 | 0,513 |
+| de nyfikna | 20 | 0,5 | 0,5 | 0,5 | 0,5 | 0,5 |
+
+**Före** (306b.3):
+
+| Del | Det längsta är fel | Slumpen |
+|---|---|---|
+| Den gamla formen | 0,72–0,76 | 0,55 |
+| Menyn | 0,74–0,87 | 0,67 |
+| Foodtruckens steg 1–2 | 0–0,04 | 0,42–0,68 |
+| De nyfikna | 0 | 0,5 |
+
+Ändringarna:
+- **Den gamla formen:** i 14 steg har felsvaren fått tillbaka sin lydelse från före 306b.3 (`54e9f82f^1`). I dem är nu ett ok-svar längst, i ett par av stegen det bästa.
+- **Menyn:** samma sak i 4 steg: mn04, mn05, mn06 och mn07, steg 2.
+- **Foodtruckens steg 1–2:**
+  - 14 felsvar har förlängts med en bisats som håller dem fel.
+  - Två rätta svar har kortats utan att fakta försvann (ft01 steg 1 och 2).
+  - Talen står kvar, till exempel ft11 (tolv korvar) och ft13 (13 kr mot 23).
+- **Foodtruckens steg 3:** två felsvar har fått två ord till på svenska (ft06 a, ft12 d), så att foodtrucken som helhet ligger inom gränsen. Mätt i svenska tecken låg den på −0,103.
+- **De nyfikna:** 10 av 20 frågor har ett felsvar som nu är längst.
+
+**Bara rapporterat, ej utjämnat:**
+- **Foodtruckens steg 3 för sig:** 13 steg. Ett steg flyttar andelen med 0,08, och svenska tecken ligger på −0,154. Steg 3 har sin egen regel från 306b.2 (det hela greppet längst i högst hälften), som håller.
+- **Kriserna:** utkast, inte i spelet. Där är det längsta svaret aldrig fel.
+
+**Första omgången:** jag gjorde också det bästa svaret längst i fem steg i den gamla formen, så att den låg på ±0,04. Med tio frön tjänade gissaren då mer än slumpen: −7 615 kr mot −10 400 kr. Gissaren valde det bästa svaret oftare än slumpen, 0,333 mot 0,29. De fem stegen har fått tillbaka längden från 306b.3: vb17 steg 1, vb20 steg 2, vb22 steg 1, vb27 steg 2 och vb30 steg 2.
+
+### Spelartyperna
+
+Spelartypen **undviker längsta** (`weekHarness.ts`, svaret `'avoid'`) väljer på måfå bland alternativen som inte är längst i tecken. Den väljer bland alla om alla är lika långa, och lägger ordningskorten på måfå.
+
+Med tio frön var standardfelet 1 000–1 700 kr, större än skillnaderna mellan gissaren, slumpen och den nya typen. Därför är körningen gjord med 40 frön. Tabellen är `spelartyper.json`, 40 frön och sex dagar:
+
+| Spelartyp | Stannar | Resultat (kr) | Stannade | Krediter | Elva: helt | Elva: halvt | Elva: fel i steg 3 | Elva: fel på vägen |
+|---|---|---|---|---|---|---|---|---|
+| rimlig | 0 | 15 773 | 0 | 182 | 0,97 | 0 | 0 | 0 |
+| rimlig | 1 | 14 837 | 1 | 25 | 0 | 0 | 0 | 0 |
+| rimlig | 2 | 14 037 | 0,999 | 74 | 0 | 0 | 0 | 0 |
+| gissaren | 0 | −9 479 | 0 | 29 | 0,276 | 0,341 | 0,371 | 0,865 |
+| gissaren | 1 | −3 164 | 0,528 | 16 | 0,144 | 0,349 | 0,209 | 0,702 |
+| gissaren | 2 | −10 506 | 0,228 | 15 | 0,152 | 0,372 | 0,36 | 0,884 |
+| slumpen | 0 | −9 507 | 0 | 19 | 0,297 | 0,417 | 0,282 | 0,734 |
+| slumpen | 1 | −4 389 | 0,55 | 17 | 0,148 | 0,201 | 0,137 | 0,451 |
+| slumpen | 2 | −8 571 | 0,338 | 19 | 0,206 | 0,296 | 0,128 | 0,497 |
+| undviker längsta | 0 | −11 628 | 0 | 16 | 0,304 | 0,469 | 0,206 | 0,783 |
+| undviker längsta | 1 | −9 655 | 0,446 | 14 | 0,143 | 0,215 | 0,062 | 0,42 |
+| undviker längsta | 2 | −11 090 | 0,27 | 16 | 0,201 | 0,255 | 0,112 | 0,54 |
+| svag | alla | −19 445 | 0 | −8 | 0 | 0,166 | 0,483 | 0,656 |
+| ignorerar | alla | 4 319 | 0 | −25 | 0 | 0 | 0 | 0 |
+
+- **Undviker längsta** tjänar mindre än slumpen med alla tre sätten att stanna: −11 628, −9 655 och −11 090 kr, mot −9 507, −4 389 och −8 571 kr.
+- **Gissaren** ligger lika med slumpen när båda alltid går vidare: −9 479 mot −9 507 kr. Det följer av målet att det längsta svaret är fel lika ofta som slumpens svar.
+  - Efter steg 1 ligger gissaren 1 225 kr över slumpen. Standardfelet för skillnaden är omkring 1 090 kr, så det är inom bruset, men det är inte under slumpen som 306b.3 krävde.
+  - Efter steg 2 ligger gissaren under slumpen.
+- **Jämförelse med 306b.3:** tabellen där hade tio frön. Phronesis-flytten ändrar alla spelartyper, så talen går inte att jämföra rad för rad.
+
+### Städningen
+
+Mina fem väntande skal (`bo8gk4mj5`, `buxsmu2z9`, `bm5lwkiz3`, `b7gfpbf2k`, `b8dzm1qm4`) väntade på "ALLT-KLART" i `bqohseolr.output`. Den uppgiften avslutades med kod 144 utan att skriva ordet, i ORDER 320.
+
+De är stängda en i taget med TaskStop. Inga andra processer är rörda.

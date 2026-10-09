@@ -510,7 +510,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.08,
-              "stamina": -0.03,
+              "stamina": -0.08,
               "reputation": 0
             },
             "target": "room"
@@ -536,7 +536,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.15,
-              "stamina": -0.05,
+              "stamina": 0,
               "reputation": 0
             },
             "target": "room",
@@ -642,7 +642,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": 0,
+              "cash": -0.2,
               "satisfaction": -0.05,
               "stamina": 0,
               "reputation": 0
@@ -672,7 +672,7 @@
               },
               "fail": {
                 "effects": {
-                  "cash": -0.2,
+                  "cash": 0,
                   "satisfaction": -0.08,
                   "stamina": 0,
                   "reputation": 0
@@ -807,9 +807,9 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": -0.2,
               "satisfaction": 0,
-              "stamina": -0.03,
+              "stamina": -0.06,
               "reputation": 0
             },
             "target": "room"
@@ -837,9 +837,9 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": 0,
               "satisfaction": 0,
-              "stamina": -0.03,
+              "stamina": 0,
               "reputation": 0
             },
             "target": "room"
@@ -1091,7 +1091,7 @@
             "effects": {
               "cash": -0.1,
               "satisfaction": 0,
-              "stamina": -0.03,
+              "stamina": -0.13,
               "reputation": 0
             },
             "target": "room"
@@ -1115,7 +1115,7 @@
                 "effects": {
                   "cash": 0.3,
                   "satisfaction": -0.1,
-                  "stamina": -0.1,
+                  "stamina": 0,
                   "reputation": 0
                 },
                 "target": "room",
@@ -1407,7 +1407,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.04,
-              "stamina": -0.02,
+              "stamina": -0.04,
               "reputation": -1
             },
             "target": "room",
@@ -1433,7 +1433,7 @@
                 "effects": {
                   "cash": 0.1,
                   "satisfaction": -0.04,
-                  "stamina": -0.02,
+                  "stamina": 0,
                   "reputation": -1
                 },
                 "target": "room",
@@ -1461,7 +1461,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.04,
-              "stamina": -0.02,
+              "stamina": 0,
               "reputation": -1
             },
             "target": "room",
@@ -1847,7 +1847,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.4,
+              "cash": -0.7,
               "satisfaction": -0.1,
               "stamina": -0.12,
               "reputation": 0
@@ -1886,7 +1886,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.3,
+              "cash": 0,
               "satisfaction": 0,
               "stamina": 0,
               "reputation": 0
@@ -1998,7 +1998,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": -0.2,
               "satisfaction": -0.05,
               "stamina": 0,
               "reputation": 0
@@ -2031,7 +2031,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": 0,
               "satisfaction": -0.05,
               "stamina": 0,
               "reputation": 0
@@ -2868,7 +2868,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": 0,
-              "stamina": -0.15,
+              "stamina": -0.23,
               "reputation": -2
             },
             "target": "room",
@@ -2904,7 +2904,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": 0,
-              "stamina": -0.08,
+              "stamina": 0,
               "reputation": 0
             },
             "target": "room"
@@ -3347,9 +3347,9 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": -0.5,
               "satisfaction": -0.05,
-              "stamina": -0.04,
+              "stamina": -0.16,
               "reputation": 0
             },
             "target": "table"
@@ -3371,9 +3371,9 @@
               "quality": "wrong",
               "fail": {
                 "effects": {
-                  "cash": -0.1,
+                  "cash": 0,
                   "satisfaction": 0,
-                  "stamina": -0.1,
+                  "stamina": 0,
                   "reputation": 0
                 },
                 "target": "table"
@@ -3386,9 +3386,9 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.4,
+              "cash": 0,
               "satisfaction": 0,
-              "stamina": -0.12,
+              "stamina": 0,
               "reputation": 0
             },
             "target": "table",
@@ -3480,7 +3480,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.4,
+              "cash": -0.5,
               "satisfaction": 0,
               "stamina": 0,
               "reputation": 0
@@ -3506,7 +3506,7 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": 0,
               "satisfaction": -0.05,
               "stamina": 0,
               "reputation": 0
@@ -3581,9 +3581,9 @@
               "quality": "wrong",
               "fail": {
                 "effects": {
-                  "cash": -0.3,
+                  "cash": -0.5,
                   "satisfaction": -0.15,
-                  "stamina": -0.05,
+                  "stamina": -0.1,
                   "reputation": -3
                 },
                 "target": "table",
@@ -3606,9 +3606,9 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.5,
+              "cash": -0.7,
               "satisfaction": -0.2,
-              "stamina": -0.1,
+              "stamina": -0.15,
               "reputation": -4
             },
             "target": "table",
@@ -3645,9 +3645,9 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.2,
+              "cash": 0,
               "satisfaction": -0.08,
-              "stamina": -0.05,
+              "stamina": 0,
               "reputation": -2
             },
             "target": "table"
@@ -3732,9 +3732,9 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": -0.2,
               "satisfaction": 0,
-              "stamina": -0.02,
+              "stamina": -0.05,
               "reputation": -1
             },
             "target": "room"
@@ -3758,9 +3758,9 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.1,
+              "cash": 0,
               "satisfaction": -0.05,
-              "stamina": -0.03,
+              "stamina": 0,
               "reputation": 0
             },
             "target": "room"
@@ -3845,7 +3845,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.1,
-              "stamina": -0.05,
+              "stamina": -0.15,
               "reputation": -1
             },
             "target": "room",
@@ -3877,7 +3877,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.2,
-              "stamina": -0.1,
+              "stamina": 0,
               "reputation": -2
             },
             "target": "room",
@@ -4109,9 +4109,9 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.15,
+              "cash": -0.45,
               "satisfaction": -0.03,
-              "stamina": -0.02,
+              "stamina": -0.07,
               "reputation": 0
             },
             "target": "room"
@@ -4134,9 +4134,9 @@
               },
               "fail": {
                 "effects": {
-                  "cash": -0.3,
+                  "cash": 0,
                   "satisfaction": -0.05,
-                  "stamina": -0.03,
+                  "stamina": 0,
                   "reputation": 0,
                   "credit": -1
                 },
@@ -4165,7 +4165,7 @@
                 "effects": {
                   "cash": 0,
                   "satisfaction": -0.05,
-                  "stamina": -0.03,
+                  "stamina": 0,
                   "reputation": 0,
                   "credit": -1
                 },
@@ -4181,9 +4181,9 @@
           ],
           "fail": {
             "effects": {
-              "cash": -0.3,
+              "cash": 0,
               "satisfaction": -0.08,
-              "stamina": -0.05,
+              "stamina": 0,
               "reputation": 0
             },
             "target": "room",
@@ -4410,7 +4410,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.08,
-              "stamina": -0.03,
+              "stamina": -0.08,
               "reputation": 0
             },
             "target": "room"
@@ -4440,7 +4440,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.15,
-              "stamina": -0.05,
+              "stamina": 0,
               "reputation": 0
             },
             "target": "room",
@@ -4536,7 +4536,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.08,
-              "stamina": -0.03,
+              "stamina": -0.08,
               "reputation": 0
             },
             "target": "room"
@@ -4566,7 +4566,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.15,
-              "stamina": -0.05,
+              "stamina": 0,
               "reputation": 0
             },
             "target": "room",
@@ -4662,7 +4662,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.08,
-              "stamina": -0.03,
+              "stamina": -0.08,
               "reputation": 0
             },
             "target": "room"
@@ -4692,7 +4692,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.15,
-              "stamina": -0.05,
+              "stamina": 0,
               "reputation": 0
             },
             "target": "room",
@@ -4788,7 +4788,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.08,
-              "stamina": -0.03,
+              "stamina": -0.08,
               "reputation": 0
             },
             "target": "room"
@@ -4836,7 +4836,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.15,
-              "stamina": -0.05,
+              "stamina": 0,
               "reputation": 0
             },
             "target": "room",
@@ -4935,7 +4935,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.08,
-              "stamina": -0.03,
+              "stamina": -0.08,
               "reputation": 0
             },
             "target": "room"
@@ -4983,7 +4983,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.15,
-              "stamina": -0.05,
+              "stamina": 0,
               "reputation": 0
             },
             "target": "room",
@@ -5082,7 +5082,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.08,
-              "stamina": -0.03,
+              "stamina": -0.08,
               "reputation": 0
             },
             "target": "room"
@@ -5130,7 +5130,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.15,
-              "stamina": -0.05,
+              "stamina": 0,
               "reputation": 0
             },
             "target": "room",
@@ -5229,7 +5229,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.08,
-              "stamina": -0.03,
+              "stamina": -0.08,
               "reputation": 0
             },
             "target": "room"
@@ -5277,7 +5277,7 @@
             "effects": {
               "cash": 0,
               "satisfaction": -0.15,
-              "stamina": -0.05,
+              "stamina": 0,
               "reputation": 0
             },
             "target": "room",

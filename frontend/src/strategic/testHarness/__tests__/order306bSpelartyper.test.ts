@@ -26,10 +26,13 @@ import menuEnFile from '../../../content/incidents/menu.text.en.json';
 import ftBasMeta from '../../../content/incidents/foodtruck/bas.meta.json';
 import ft320Meta from '../../../content/incidents/foodtruck/situationer320.meta.json';
 import type { SimulationState } from '../../types';
+import { LENGTH_PARTS, longestWrong } from '../longestAnswer';
 
 const TYPES: { player: string; answer: ScenarioAnswer }[] = [
   { player: 'rimlig', answer: 'best' }, { player: 'svag', answer: 'worst' }, { player: 'gissaren', answer: 'guess' },
-  { player: 'slumpen', answer: 'random' }, { player: 'ignorerar', answer: 'ignore' }
+  { player: 'slumpen', answer: 'random' }, { player: 'ignorerar', answer: 'ignore' },
+  // 306b.4 — den som alltid undviker det längsta svaret (weekHarness 'avoid').
+  { player: 'undviker längsta', answer: 'avoid' }
 ];
 // Kvitt eller dubbelt: gå alltid vidare (0), stanna efter steg 1 eller efter steg 2.
 const STOPS = [0, 1, 2];
@@ -179,8 +182,10 @@ describe('ORDER 306b A10 — spelartyperna och A4:s längder', () => {
     }
   });
 
-  it('gissaren och slumpen svarar på situationerna, också på ordningskorten', () => {
+  it('gissaren, slumpen och den som undviker det längsta svarar på situationerna, också på ordningskorten', () => {
     const g = week(1, 'guess', 0, 1);
+    const a = week(1, 'avoid', 0, 1);
+    expect(a.log.length).toBeGreaterThan(0);
     const r = week(1, 'random', 0, 1);
     expect(g.log.length).toBeGreaterThan(0);
     expect(r.log.length).toBeGreaterThan(0);
@@ -197,9 +202,10 @@ describe('ORDER 306b A10 — spelartyperna och A4:s längder', () => {
     const dir = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports/order306b');
     mkdirSync(dir, { recursive: true });
     writeFileSync(resolve(dir, process.env.LANGD_FILE ?? 'langd.json'), JSON.stringify({
-      definition: 'A4: svarens längd i ord (mellanslag) i de elva situationerna. overWords: fler än 12 ord i steg 1–2 eller 15 i steg 3; overRatio: i steg 3 längsta / kortaste över 1,5. step3Longest: vinbarens och foodtruckens situationer i formen, med antalet ord i varje svar i steg 3 och om det hela greppet är längst (lika långt räknas). longestIsBest: steg (utom ordningskorten) i de elva där det längsta svaret i tecken är det bästa, mot slumpens väntevärde; oldFormLongestIsBest: detsamma i vinbarens situationer i den gamla formen. bank (306b.3): per del av vinbarens bank, det längsta svaret i ord och tecken som är det bästa, och kvaliteten på gissarens val (längst i tecken) mot slumpens. sv: Anders text (vinbar.text.sv.draft.json); en: översättningen (vinbar.text.en.json).',
+      definition: 'A4: svarens längd i ord (mellanslag) i de elva situationerna. overWords: fler än 12 ord i steg 1–2 eller 15 i steg 3; overRatio: i steg 3 längsta / kortaste över 1,5. step3Longest: vinbarens och foodtruckens situationer i formen, med antalet ord i varje svar i steg 3 och om det hela greppet är längst (lika långt räknas). longestIsBest: steg (utom ordningskorten) i de elva där det längsta svaret i tecken är det bästa, mot slumpens väntevärde; oldFormLongestIsBest: detsamma i vinbarens situationer i den gamla formen. bank (306b.3): per del av vinbarens bank, det längsta svaret i ord och tecken som är det bästa, och kvaliteten på gissarens val (längst i tecken) mot slumpens. longestWrong (306b.4): per del, andelen fel bland de längsta svaren (lika långa delar) mot andelen fel bland alla (slumpen), diff = skillnaden; checked: delen ska ligga inom ±0,1 (order306b4.test.ts), strategic/testHarness/longestAnswer.ts. sv: Anders text (vinbar.text.sv.draft.json); en: översättningen (vinbar.text.en.json).',
       longestIsBest: { sv: longestIsBest(sv as unknown as Texts), en: longestIsBest(en as unknown as Texts) },
       bank: bankParts(),
+      longestWrong: LENGTH_PARTS.map((p) => ({ name: p.name, checked: p.checked, sv: { words: longestWrong(p.steps(), 'sv', 'words'), chars: longestWrong(p.steps(), 'sv', 'chars') }, en: { words: longestWrong(p.steps(), 'en', 'words'), chars: longestWrong(p.steps(), 'en', 'chars') } })),
       oldFormLongestIsBest: { sv: longestIsBest(sv as unknown as Texts, false), en: longestIsBest(en as unknown as Texts, false) },
       step3Longest: (() => { const rows = step3Longest(); const of = (l: string) => rows.filter((x) => x.lang === l); return { situations: of('sv').length, fullIsLongest: { sv: of('sv').filter((x) => x.fullIsLongest).length, en: of('en').filter((x) => x.fullIsLongest).length }, rows }; })(),
       sv: { over: sl.filter((r) => r.overWords || r.overRatio), rows: sl }, en: { over: el.filter((r) => r.overWords || r.overRatio), rows: el }
@@ -229,11 +235,11 @@ describe('ORDER 306b A10 — spelartyperna och A4:s längder', () => {
         }
       };
     }));
-    // Fel i steg 2 (phronesis i formen) ska i första hand ge stämningen och ryktet, mindre kassan.
+    // Fel i steg 2 (phronesis i formen) ger bara stämningen och ryktet (306b.3); phronesis tar aldrig kassa eller ork (306b.4).
     const step2 = (vinbarMeta as { incidents: { id: string; form?: string; steps: { fail: { effects: Record<string, number> } }[] }[] }).incidents
       .filter((i) => i.form === 'triad').map((i) => ({ id: i.id, ...i.steps[1].fail.effects }));
     writeFileSync(resolve(dir, 'spelartyper.json'), JSON.stringify({
-      definition: 'Vinbaren, vecka 2 (DAYS dagar), medaljerna PLAYERS.baseline, frö 1..SEEDS, texterna på engelska (spelets förval; gissaren mäter längden i tecken). Spelartyperna: rimlig (bästa svaret), svag (sämsta), gissaren (det längsta alternativet; ordningskorten fyra på måfå), slumpen (ett alternativ på måfå; ordningskorten fyra på måfå), ignorerar (svarar inte). stopAfter: kvitt eller dubbelt, stanna efter n klarade steg (0 = gå alltid vidare; weekHarness setKvittStopAfter). resultSek: kassans förändring utan avräkningens påfyllnad och amortering (som order270 week-players). stoppedShare: andel situationer som slutade med att spelaren stannade. triad: de elva situationerna i formen analys → upplevelse → handling (fullGrip/halfGrip: klarade med helt/halvt grepp; wrongLastStep: fel i steg 3; staff: tiden ute; missedOnTheWay: fel i steg 1 eller 2). credits och incidentCashSek: loggens deltas. step2FailEffects: följden av fel i steg 2 (meta, i scenarioenheter).',
+      definition: 'Vinbaren, vecka 2 (DAYS dagar), medaljerna PLAYERS.baseline, frö 1..SEEDS, texterna på engelska (spelets förval; gissaren mäter längden i tecken). Spelartyperna: rimlig (bästa svaret), svag (sämsta), gissaren (det längsta alternativet; ordningskorten fyra på måfå), slumpen (ett alternativ på måfå; ordningskorten fyra på måfå), ignorerar (svarar inte), undviker längsta (på måfå bland alternativen som inte är längst i tecken; alla om alla är lika långa; ordningskorten fyra på måfå). stopAfter: kvitt eller dubbelt, stanna efter n klarade steg (0 = gå alltid vidare; weekHarness setKvittStopAfter). resultSek: kassans förändring utan avräkningens påfyllnad och amortering (som order270 week-players). stoppedShare: andel situationer som slutade med att spelaren stannade. triad: de elva situationerna i formen analys → upplevelse → handling (fullGrip/halfGrip: klarade med helt/halvt grepp; wrongLastStep: fel i steg 3; staff: tiden ute; missedOnTheWay: fel i steg 1 eller 2). credits och incidentCashSek: loggens deltas. step2FailEffects: följden av fel i steg 2 (meta, i scenarioenheter).',
       seeds, days, table, step2FailEffects: step2, rows
     }, null, 2) + '\n');
   }, 7200000);

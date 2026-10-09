@@ -7,7 +7,7 @@
    "options": {
     "a": "Halv är en korv med mos i bröd, hel är två korvar.",
     "b": "Hel special är större.",
-    "c": "Hel special har räksallad på.",
+    "c": "Hel special har räksallad ovanpå moset, halv special har bara mos och senap.",
     "d": "Det är samma sak, bara olika namn."
    },
    "why": "I Mellansverige är en halv special en korv med mos i bröd, och en hel special har två korvar. Orden skiljer sig mellan landsdelarna, så det är bra att kunna förklara dem."
@@ -26,7 +26,7 @@
    "q": "Den rostade löken, är den friterad?",
    "options": {
     "a": "Ja, den är friterad i olja, därför är den så krispig.",
-    "b": "Den är rostad i ugn, som namnet säger.",
+    "b": "Den är rostad i ugn, som namnet säger, och därför är den helt utan fett.",
     "c": "Den är nog stekt på något sätt.",
     "d": "Det är torkad lök utan fett."
    },
@@ -48,7 +48,7 @@
     "a": "Nej, lättöl har högst 2,25 procent alkohol.",
     "b": "Ja, helt alkoholfritt.",
     "c": "Nästan, det är väldigt lite alkohol i den.",
-    "d": "Det är vanlig öl, bara lättare i smaken."
+    "d": "Det är vanlig öl, bara lättare i smaken och lite mindre bubblig i glaset."
    },
    "why": "Lättöl får innehålla upp till 2,25 volymprocent alkohol. Den som kör eller inte dricker alkohol alls behöver veta det."
   },
@@ -57,7 +57,7 @@
    "options": {
     "a": "Vill du ha milt och sött, eller starkt? Då väljer vi.",
     "b": "Skånsk, det tar alla.",
-    "c": "Den starkaste, den är bäst till korv.",
+    "c": "Den starkaste, den är bäst till korv och tar fram smaken av kryddorna.",
     "d": "Vilken som helst, de smakar likadant."
    },
    "why": "Gästen frågade om sin egen smak. En fråga tillbaka hittar rätt senap snabbare än en gissning."
@@ -67,7 +67,7 @@
    "options": {
     "a": "När korvskinnet bryns bildas nya dofter. Det är maillardreaktionen.",
     "b": "Det är kryddorna som kokar ut i värmen.",
-    "c": "Det är röken från kolen som ger doften.",
+    "c": "Det är röken från kolen som ger doften, den sätter sig i korven medan den grillas.",
     "d": "Vi har en doftmaskin vid luckan."
    },
    "why": "När proteiner och socker i ytan blir varma bryns de, och då bildas hundratals doftämnen. Det är samma reaktion som i bröd och rostat kaffe."
@@ -87,7 +87,7 @@
    "options": {
     "a": "Den är färdigkokt och grillas tills den är varm rakt igenom.",
     "b": "Ja, den har legat ett bra tag.",
-    "c": "Det behövs inte, korv kan ätas rå.",
+    "c": "Det behövs inte, korv kan ätas rå eftersom köttet redan är saltat och kryddat.",
     "d": "Den är bara grillad på utsidan."
    },
    "why": "De flesta grillkorvar är färdigkokta, och de ska bli varma rakt igenom innan de serveras. Det är också ett krav i livsmedelssäkerheten."
@@ -117,7 +117,7 @@
    "options": {
     "a": "Vi grillar i små omgångar, och de som legat för länge slängs.",
     "b": "Inte så länge, de är fortfarande varma.",
-    "c": "Sedan vi öppnade, de håller hela kvällen.",
+    "c": "Sedan vi öppnade, de håller hela kvällen så länge de ligger kvar på värmen.",
     "d": "Det syns ju inte på dem."
    },
    "why": "Varm mat som hålls varm ska hålla minst +60 °C och inte stå för länge. Små omgångar ger både säkrare och godare korv."
@@ -138,7 +138,7 @@
     "a": "Ja, jag packar korven och moset var för sig, så blir brödet inte blött.",
     "b": "Ja, i en vanlig påse.",
     "c": "Nej, den ska ätas här.",
-    "d": "Ja, allt i samma bröd som vanligt."
+    "d": "Ja, allt i samma bröd som vanligt, med korven, moset och senapen hoppackade i en enda påse."
    },
    "why": "Varmt mos gör brödet blött på några minuter. Att packa isär är en enkel teknik som gör maten god också hemma."
   },
@@ -167,7 +167,7 @@
    "options": {
     "a": "Titta på kötthalten på skylten, och smaka gärna.",
     "b": "Vår är godare.",
-    "c": "Deras korv är skräp.",
+    "c": "Deras korv är skräp, den är billigare för att de använder sämre kött.",
     "d": "Gå dit då."
    },
    "why": "Kötthalten är ett av de tydligaste tecknen på en korvs kvalitet, och den står på förpackningen. Att visa fakta och låta gästen smaka är starkare än att tala illa om konkurrenten."
@@ -187,7 +187,7 @@
    "q": "Han är allergisk mot mjölk. Kan han äta korven?",
    "options": {
     "a": "Vi läser förpackningen tillsammans, och jag tar en ren tång.",
-    "b": "Korv brukar inte ha mjölk i sig.",
+    "b": "Korv brukar inte ha mjölk i sig, så den går bra att äta utan att fråga.",
     "c": "Jag frågar min kollega.",
     "d": "Ta mos i stället, det är säkrare."
    },

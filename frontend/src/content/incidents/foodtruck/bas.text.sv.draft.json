@@ -14,7 +14,7 @@
        "explanation": "Åldern spräcker inte korven. Det gör ångan inuti."
       },
       "b": {
-       "label": "För att vattnet i korven kokar och trycket spräcker fjälstret innan korven är varm inuti.",
+       "label": "För att vattnet i korven kokar och trycket spräcker fjälstret innan mitten är varm.",
        "explanation": "Rätt. Vattnet kokar till ånga, trycket spräcker fjälstret, och saften rinner ut medan mitten fortfarande är kall."
       },
       "c": {
@@ -22,7 +22,7 @@
        "explanation": "Saltet smälter inte vid grillens värme. Det är vattnet som kokar."
       },
       "d": {
-       "label": "För att grillen är för smutsig.",
+       "label": "För att grillen är för smutsig, så att gammalt bränt fett fastnar på fjälstret och river upp det när korven vänds.",
        "explanation": "En smutsig grill ger bränd smak men spräcker inte korven."
       }
      },
@@ -34,11 +34,11 @@
      "question": "Kön är lång, och en gäst säger att korven är kall inuti. Vad gör du?",
      "options": {
       "a": {
-       "label": "Ber om ursäkt och ger rabatt.",
+       "label": "Ber om ursäkt, ger rabatt på nästa köp och lovar att resten av kvällens korvar blir bättre.",
        "explanation": "Rabatten löser inte att korven är kall, och nästa korv kan bli likadan."
       },
       "b": {
-       "label": "Byter till en korv som är genomvarm direkt, och ser över grillens värme och takt så att det inte händer igen.",
+       "label": "Byter till en genomvarm korv direkt och ser över grillens värme och takt.",
        "explanation": "Rätt. Gästen får en varm korv, och du rättar orsaken i stället för att hoppas att kön hinner vänta."
       },
       "c": {
@@ -112,7 +112,7 @@
        "explanation": "Kolsyran påverkar inte korvens temperatur. Den rensar munnen från fett."
       },
       "d": {
-       "label": "De passar inte, korv ska ätas med vatten.",
+       "label": "De passar inte, korv ska ätas med vatten eftersom kolsyran och beskan tar ut smaken av kryddorna.",
        "explanation": "Vatten går bra, men en bitter och kolsyrad dryck lyfter korven genom sältan och fettet."
       }
      },
@@ -190,7 +190,7 @@
      "question": "Vad håller ihop en grillkorv, så att den inte faller sönder när den grillas?",
      "options": {
       "a": {
-       "label": "Mjölet i smeten.",
+       "label": "Mjölet i smeten, som sväller i värmen och håller ihop fettet och vattnet.",
        "explanation": "Mjöl binder lite vatten, men det är inte det som håller ihop korven."
       },
       "b": {
@@ -288,7 +288,7 @@
        "explanation": "Rätt. Grillkorv har naturtarm eller ett ätbart fjälster av kollagen."
       },
       "c": {
-       "label": "Papper.",
+       "label": "Papper, ett tunt bakpapper som korven formas i och som dras av innan den grillas.",
        "explanation": "Papper håller inte på grillen."
       },
       "d": {
@@ -370,7 +370,7 @@
      "question": "Vad betyder köttandelen på en korvförpackning?",
      "options": {
       "a": {
-       "label": "Hur mycket av korven som är fläsk.",
+       "label": "Hur mycket av korven som är fläsk, räknat på vikten före grillningen.",
        "explanation": "Köttandelen säger inte vilket djur köttet kommer ifrån."
       },
       "b": {
@@ -472,7 +472,7 @@
        "explanation": "Rätt. Och korven själv kan innehålla allergener, till exempel mjölk, senap eller selleri, så läs förpackningen."
       },
       "d": {
-       "label": "Inget, korvkiosker är undantagna.",
+       "label": "Inget, korvkiosker är undantagna eftersom maten säljs oförpackad över disk direkt till gästen.",
        "explanation": "Ingen är undantagen. Den som säljer mat ska kunna svara."
       }
      },
@@ -553,7 +553,7 @@
      "question": "Vad krävs för att en korv ska få märkas \"Kött från Sverige\"?",
      "options": {
       "a": {
-       "label": "Att korven är tillverkad i Sverige.",
+       "label": "Att korven är tillverkad i Sverige, även om köttet i den kan komma från ett annat land.",
        "explanation": "Tillverkningen säger inget om var djuren kommer ifrån."
       },
       "b": {
@@ -585,7 +585,7 @@
        "explanation": "Rätt. Det som stått varmt slängs, och nästa kväll grillar du efter kön."
       },
       "c": {
-       "label": "Ger dem till medhjälparen att ta hem utan att tänka på hur de förvarats.",
+       "label": "Ger dem till medhjälparen att ta hem utan att tänka på hur länge och hur varmt de har förvarats.",
        "explanation": "Det gör inte maten säkrare att den äts hemma."
       },
       "d": {
@@ -601,7 +601,7 @@
      "question": "Korvarna har legat i varmhållningen sedan öppning. Vad gör du?",
      "options": {
       "a": {
-       "label": "Säljer dem så länge de ser bra ut och ingen gäst har klagat på smaken.",
+       "label": "Säljer dem så länge de ser bra ut och ingen av gästerna har klagat på smaken.",
        "explanation": "Utseendet säger inte om de hållits varma nog.",
        "fail": {
         "outcome": "Korv som stått för länge säljs vidare."

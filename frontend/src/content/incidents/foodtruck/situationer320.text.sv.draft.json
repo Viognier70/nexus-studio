@@ -23,7 +23,7 @@
        "explanation": "Korven är varm i början, men regnet kyler den och gör brödet blött."
       },
       "c": {
-       "label": "Den blir godare, den svalnar lagom.",
+       "label": "Den blir godare, den svalnar lagom och regnet håller brödet mjukt.",
        "explanation": "Ljummen korv i blött bröd är inte godare."
       },
       "d": {
@@ -126,7 +126,7 @@
        "explanation": "Det kan spela in, men det är sockret som drar dem."
       },
       "d": {
-       "label": "Ljud och rörelse.",
+       "label": "Ljud och rörelse, som när någon viftar med armarna nära maten.",
        "explanation": "Rörelse kan göra dem oroliga, men lockar dem inte."
       }
      },
@@ -225,7 +225,7 @@
        "explanation": "Det kan vara det, men först kontrollerar man nätet."
       },
       "d": {
-       "label": "Den är överhettad av grillen.",
+       "label": "Den är överhettad av grillen och stänger av sig själv tills den svalnat.",
        "explanation": "Det är ovanligt. Uppkopplingen är mycket vanligare."
       }
      },
@@ -316,7 +316,7 @@
        "explanation": "9 personer, där 3 tar två korvar: 6 + 6 = 12. Det räcker precis, men inte till en enda gäst till."
       },
       "b": {
-       "label": "Ja, med god marginal.",
+       "label": "Ja, med god marginal, det blir flera korvar över när kön är slut.",
        "explanation": "Tre hela specialer tar sex korvar. Marginalen är noll."
       },
       "c": {
@@ -468,7 +468,7 @@
        "explanation": "Omtänksamt, men utan att tvätta händerna och med hunden nära den oroliga gästen."
       },
       "d": {
-       "label": "Ge hunden en korvbit från grillen, så att den håller sig lugn.",
+       "label": "Ge hunden en korvbit från grillen, så att den håller sig lugn vid bordet.",
        "explanation": "Hunden blir glad, men det är inte bra för hunden, och du har rört djuret med samma hand som maten.",
        "fail": {
         "outcome": "Händerna som rörde hunden serverar nästa gäst."
@@ -543,7 +543,7 @@
        "explanation": "Kanske, men hen sa att hen gillar er."
       },
       "c": {
-       "label": "Att få höra illa om Grillvagnen.",
+       "label": "Att få höra något illa om Grillvagnen innan hen bestämmer sig.",
        "explanation": "Det bad hen inte om, och det låter illa om er också."
       }
      },
