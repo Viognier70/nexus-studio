@@ -1,0 +1,4073 @@
+{
+  "tag": "efter",
+  "server": "dev",
+  "overlapPx": 1,
+  "wheelStep": -200,
+  "stepWaitMs": 1500,
+  "flightSamples": 12,
+  "flightSampleMs": 300,
+  "ok": true,
+  "runs": [
+    {
+      "viewport": "1440x900",
+      "moments": [
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-00",
+          "cam": {
+            "actual": 243.3,
+            "target": 660
+          },
+          "count": 3,
+          "byKind": {
+            "venue": 1,
+            "street": 2,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-01",
+          "cam": {
+            "actual": 424.3,
+            "target": 660
+          },
+          "count": 12,
+          "byKind": {
+            "venue": 5,
+            "street": 7,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-02",
+          "cam": {
+            "actual": 527.3,
+            "target": 660
+          },
+          "count": 18,
+          "byKind": {
+            "venue": 6,
+            "street": 12,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-03",
+          "cam": {
+            "actual": 585.7,
+            "target": 660
+          },
+          "count": 18,
+          "byKind": {
+            "venue": 7,
+            "street": 11,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-04",
+          "cam": {
+            "actual": 617.9,
+            "target": 660
+          },
+          "count": 19,
+          "byKind": {
+            "venue": 7,
+            "street": 12,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-05",
+          "cam": {
+            "actual": 636.7,
+            "target": 660
+          },
+          "count": 19,
+          "byKind": {
+            "venue": 7,
+            "street": 12,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-06",
+          "cam": {
+            "actual": 647,
+            "target": 660
+          },
+          "count": 19,
+          "byKind": {
+            "venue": 7,
+            "street": 12,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-07",
+          "cam": {
+            "actual": 652.6,
+            "target": 660
+          },
+          "count": 19,
+          "byKind": {
+            "venue": 7,
+            "street": 12,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-08",
+          "cam": {
+            "actual": 655.9,
+            "target": 660
+          },
+          "count": 19,
+          "byKind": {
+            "venue": 7,
+            "street": 12,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-09",
+          "cam": {
+            "actual": 657.7,
+            "target": 660
+          },
+          "count": 20,
+          "byKind": {
+            "venue": 7,
+            "street": 13,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-10",
+          "cam": {
+            "actual": 658.7,
+            "target": 660
+          },
+          "count": 20,
+          "byKind": {
+            "venue": 7,
+            "street": 13,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-11",
+          "cam": {
+            "actual": 659.3,
+            "target": 660
+          },
+          "count": 20,
+          "byKind": {
+            "venue": 7,
+            "street": 13,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn",
+          "cam": {
+            "actual": 660,
+            "target": 660
+          },
+          "count": 20,
+          "byKind": {
+            "venue": 7,
+            "street": 13,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-00",
+          "cam": {
+            "actual": 400.5,
+            "target": 90
+          },
+          "count": 13,
+          "byKind": {
+            "venue": 5,
+            "street": 8,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-01",
+          "cam": {
+            "actual": 267,
+            "target": 90
+          },
+          "count": 7,
+          "byKind": {
+            "venue": 4,
+            "street": 3,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-02",
+          "cam": {
+            "actual": 189.5,
+            "target": 90
+          },
+          "count": 5,
+          "byKind": {
+            "venue": 4,
+            "street": 1,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-03",
+          "cam": {
+            "actual": 146.6,
+            "target": 90
+          },
+          "count": 5,
+          "byKind": {
+            "venue": 4,
+            "street": 1,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-04",
+          "cam": {
+            "actual": 121.9,
+            "target": 90
+          },
+          "count": 3,
+          "byKind": {
+            "venue": 3,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-05",
+          "cam": {
+            "actual": 107.9,
+            "target": 90
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-06",
+          "cam": {
+            "actual": 100.3,
+            "target": 90
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-07",
+          "cam": {
+            "actual": 95.9,
+            "target": 90
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-08",
+          "cam": {
+            "actual": 93.4,
+            "target": 90
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-09",
+          "cam": {
+            "actual": 91.9,
+            "target": 90
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-10",
+          "cam": {
+            "actual": 91.1,
+            "target": 90
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-11",
+          "cam": {
+            "actual": 90.6,
+            "target": 90
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret",
+          "cam": {
+            "actual": 90,
+            "target": 90
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-00",
+          "cam": {
+            "actual": 68.7,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-01",
+          "cam": {
+            "actual": 57.5,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-02",
+          "cam": {
+            "actual": 50.9,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-03",
+          "cam": {
+            "actual": 47.1,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-04",
+          "cam": {
+            "actual": 45,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-05",
+          "cam": {
+            "actual": 43.7,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-06",
+          "cam": {
+            "actual": 43,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-07",
+          "cam": {
+            "actual": 42.6,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-08",
+          "cam": {
+            "actual": 42.3,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-09",
+          "cam": {
+            "actual": 42.2,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-10",
+          "cam": {
+            "actual": 42.1,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-11",
+          "cam": {
+            "actual": 42.1,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan",
+          "cam": {
+            "actual": 42,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-00",
+          "cam": {
+            "actual": 34.6,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-01",
+          "cam": {
+            "actual": 30,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-02",
+          "cam": {
+            "actual": 27.4,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-03",
+          "cam": {
+            "actual": 26,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-04",
+          "cam": {
+            "actual": 25.2,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-05",
+          "cam": {
+            "actual": 24.7,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-06",
+          "cam": {
+            "actual": 24.4,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-07",
+          "cam": {
+            "actual": 24.2,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-08",
+          "cam": {
+            "actual": 24.1,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-09",
+          "cam": {
+            "actual": 24.1,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-10",
+          "cam": {
+            "actual": 24,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-11",
+          "cam": {
+            "actual": 24,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen",
+          "cam": {
+            "actual": 24,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-00",
+          "cam": {
+            "actual": 760,
+            "target": 760
+          },
+          "count": 22,
+          "byKind": {
+            "venue": 7,
+            "street": 15,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-01",
+          "cam": {
+            "actual": 622.3,
+            "target": 609.9
+          },
+          "count": 18,
+          "byKind": {
+            "venue": 7,
+            "street": 11,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-02",
+          "cam": {
+            "actual": 500.3,
+            "target": 489.5
+          },
+          "count": 16,
+          "byKind": {
+            "venue": 6,
+            "street": 10,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-03",
+          "cam": {
+            "actual": 401.6,
+            "target": 392.8
+          },
+          "count": 10,
+          "byKind": {
+            "venue": 6,
+            "street": 4,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-04",
+          "cam": {
+            "actual": 322.3,
+            "target": 315.2
+          },
+          "count": 5,
+          "byKind": {
+            "venue": 3,
+            "street": 2,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-05",
+          "cam": {
+            "actual": 258.7,
+            "target": 253
+          },
+          "count": 3,
+          "byKind": {
+            "venue": 1,
+            "street": 2,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-06",
+          "cam": {
+            "actual": 207.6,
+            "target": 203
+          },
+          "count": 2,
+          "byKind": {
+            "venue": 0,
+            "street": 2,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-07",
+          "cam": {
+            "actual": 166.6,
+            "target": 162.9
+          },
+          "count": 2,
+          "byKind": {
+            "venue": 0,
+            "street": 2,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-08",
+          "cam": {
+            "actual": 133.8,
+            "target": 130.8
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 0,
+            "street": 1,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-09",
+          "cam": {
+            "actual": 107.4,
+            "target": 104.9
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-10",
+          "cam": {
+            "actual": 86.2,
+            "target": 84.2
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-11",
+          "cam": {
+            "actual": 69.2,
+            "target": 67.6
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-12",
+          "cam": {
+            "actual": 55.5,
+            "target": 54.2
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-13",
+          "cam": {
+            "actual": 44.5,
+            "target": 43.5
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-14",
+          "cam": {
+            "actual": 35.7,
+            "target": 34.9
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-15",
+          "cam": {
+            "actual": 28.7,
+            "target": 28
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-16",
+          "cam": {
+            "actual": 23,
+            "target": 22.5
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-17",
+          "cam": {
+            "actual": 18.5,
+            "target": 18.1
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-18",
+          "cam": {
+            "actual": 14.8,
+            "target": 14.5
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-19",
+          "cam": {
+            "actual": 11.9,
+            "target": 11.6
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-20",
+          "cam": {
+            "actual": 10.2,
+            "target": 10
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-21",
+          "cam": {
+            "actual": 10,
+            "target": 10
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-00",
+          "cam": {
+            "actual": 265.2,
+            "target": 660
+          },
+          "count": 4,
+          "byKind": {
+            "venue": 1,
+            "street": 3,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-01",
+          "cam": {
+            "actual": 434,
+            "target": 660
+          },
+          "count": 12,
+          "byKind": {
+            "venue": 6,
+            "street": 6,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-02",
+          "cam": {
+            "actual": 533.9,
+            "target": 660
+          },
+          "count": 18,
+          "byKind": {
+            "venue": 7,
+            "street": 11,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-03",
+          "cam": {
+            "actual": 588.3,
+            "target": 660
+          },
+          "count": 18,
+          "byKind": {
+            "venue": 7,
+            "street": 11,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-04",
+          "cam": {
+            "actual": 619.4,
+            "target": 660
+          },
+          "count": 19,
+          "byKind": {
+            "venue": 7,
+            "street": 12,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-05",
+          "cam": {
+            "actual": 637,
+            "target": 660
+          },
+          "count": 19,
+          "byKind": {
+            "venue": 7,
+            "street": 12,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-06",
+          "cam": {
+            "actual": 647.2,
+            "target": 660
+          },
+          "count": 19,
+          "byKind": {
+            "venue": 7,
+            "street": 12,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-07",
+          "cam": {
+            "actual": 513.2,
+            "target": 24
+          },
+          "count": 17,
+          "byKind": {
+            "venue": 5,
+            "street": 12,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-08",
+          "cam": {
+            "actual": 306.7,
+            "target": 24
+          },
+          "count": 10,
+          "byKind": {
+            "venue": 4,
+            "street": 6,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-09",
+          "cam": {
+            "actual": 185.5,
+            "target": 24
+          },
+          "count": 7,
+          "byKind": {
+            "venue": 4,
+            "street": 3,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-10",
+          "cam": {
+            "actual": 117.4,
+            "target": 24
+          },
+          "count": 5,
+          "byKind": {
+            "venue": 4,
+            "street": 1,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-11",
+          "cam": {
+            "actual": 77.6,
+            "target": 24
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn",
+          "cam": {
+            "actual": 13.8,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-00",
+          "cam": {
+            "actual": 14.1,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-01",
+          "cam": {
+            "actual": 13.3,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-02",
+          "cam": {
+            "actual": 12.7,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-03",
+          "cam": {
+            "actual": 12.4,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-04",
+          "cam": {
+            "actual": 12.3,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-05",
+          "cam": {
+            "actual": 12.1,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-06",
+          "cam": {
+            "actual": 12.1,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-07",
+          "cam": {
+            "actual": 12.1,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-08",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-09",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-10",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-11",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-00",
+          "cam": {
+            "actual": 12.5,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-01",
+          "cam": {
+            "actual": 12.3,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-02",
+          "cam": {
+            "actual": 12.2,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-03",
+          "cam": {
+            "actual": 12.1,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-04",
+          "cam": {
+            "actual": 12.1,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-05",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-06",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-07",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-08",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-09",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-10",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-11",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-00",
+          "cam": {
+            "actual": 12.2,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-01",
+          "cam": {
+            "actual": 12.1,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-02",
+          "cam": {
+            "actual": 12.1,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-03",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-04",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-05",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-06",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-07",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-08",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-09",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-10",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-11",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-00",
+          "cam": {
+            "actual": 759.4,
+            "target": 760
+          },
+          "count": 22,
+          "byKind": {
+            "venue": 5,
+            "street": 17,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-01",
+          "cam": {
+            "actual": 622.3,
+            "target": 609.9
+          },
+          "count": 19,
+          "byKind": {
+            "venue": 4,
+            "street": 15,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-02",
+          "cam": {
+            "actual": 500.2,
+            "target": 489.5
+          },
+          "count": 17,
+          "byKind": {
+            "venue": 4,
+            "street": 13,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-03",
+          "cam": {
+            "actual": 401.7,
+            "target": 392.8
+          },
+          "count": 12,
+          "byKind": {
+            "venue": 4,
+            "street": 8,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-04",
+          "cam": {
+            "actual": 322.4,
+            "target": 315.2
+          },
+          "count": 11,
+          "byKind": {
+            "venue": 4,
+            "street": 7,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-05",
+          "cam": {
+            "actual": 258.7,
+            "target": 253
+          },
+          "count": 8,
+          "byKind": {
+            "venue": 4,
+            "street": 4,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-06",
+          "cam": {
+            "actual": 207.6,
+            "target": 203
+          },
+          "count": 7,
+          "byKind": {
+            "venue": 4,
+            "street": 3,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-07",
+          "cam": {
+            "actual": 166.6,
+            "target": 162.9
+          },
+          "count": 5,
+          "byKind": {
+            "venue": 4,
+            "street": 1,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-08",
+          "cam": {
+            "actual": 133.7,
+            "target": 130.8
+          },
+          "count": 5,
+          "byKind": {
+            "venue": 4,
+            "street": 1,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-09",
+          "cam": {
+            "actual": 107.3,
+            "target": 104.9
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-10",
+          "cam": {
+            "actual": 86.1,
+            "target": 84.2
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-11",
+          "cam": {
+            "actual": 69.1,
+            "target": 67.6
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-12",
+          "cam": {
+            "actual": 20.8,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-13",
+          "cam": {
+            "actual": 12.7,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        }
+      ]
+    },
+    {
+      "viewport": "1280x720",
+      "moments": [
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-00",
+          "cam": {
+            "actual": 249,
+            "target": 660
+          },
+          "count": 4,
+          "byKind": {
+            "venue": 1,
+            "street": 3,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-01",
+          "cam": {
+            "actual": 432.7,
+            "target": 660
+          },
+          "count": 14,
+          "byKind": {
+            "venue": 5,
+            "street": 9,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-02",
+          "cam": {
+            "actual": 532.9,
+            "target": 660
+          },
+          "count": 18,
+          "byKind": {
+            "venue": 6,
+            "street": 12,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-03",
+          "cam": {
+            "actual": 588.5,
+            "target": 660
+          },
+          "count": 20,
+          "byKind": {
+            "venue": 7,
+            "street": 13,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-04",
+          "cam": {
+            "actual": 619.7,
+            "target": 660
+          },
+          "count": 21,
+          "byKind": {
+            "venue": 7,
+            "street": 14,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-05",
+          "cam": {
+            "actual": 638.1,
+            "target": 660
+          },
+          "count": 21,
+          "byKind": {
+            "venue": 7,
+            "street": 14,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-06",
+          "cam": {
+            "actual": 647.6,
+            "target": 660
+          },
+          "count": 21,
+          "byKind": {
+            "venue": 7,
+            "street": 14,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-07",
+          "cam": {
+            "actual": 653.1,
+            "target": 660
+          },
+          "count": 21,
+          "byKind": {
+            "venue": 7,
+            "street": 14,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-08",
+          "cam": {
+            "actual": 656.3,
+            "target": 660
+          },
+          "count": 21,
+          "byKind": {
+            "venue": 7,
+            "street": 14,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-09",
+          "cam": {
+            "actual": 658,
+            "target": 660
+          },
+          "count": 21,
+          "byKind": {
+            "venue": 7,
+            "street": 14,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-10",
+          "cam": {
+            "actual": 658.9,
+            "target": 660
+          },
+          "count": 21,
+          "byKind": {
+            "venue": 7,
+            "street": 14,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn-flygning-11",
+          "cam": {
+            "actual": 659.4,
+            "target": 660
+          },
+          "count": 21,
+          "byKind": {
+            "venue": 7,
+            "street": 14,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "byn",
+          "cam": {
+            "actual": 660,
+            "target": 660
+          },
+          "count": 21,
+          "byKind": {
+            "venue": 7,
+            "street": 14,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-00",
+          "cam": {
+            "actual": 399,
+            "target": 90
+          },
+          "count": 15,
+          "byKind": {
+            "venue": 5,
+            "street": 10,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-01",
+          "cam": {
+            "actual": 264.6,
+            "target": 90
+          },
+          "count": 8,
+          "byKind": {
+            "venue": 4,
+            "street": 4,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-02",
+          "cam": {
+            "actual": 189.1,
+            "target": 90
+          },
+          "count": 4,
+          "byKind": {
+            "venue": 4,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-03",
+          "cam": {
+            "actual": 144.7,
+            "target": 90
+          },
+          "count": 5,
+          "byKind": {
+            "venue": 4,
+            "street": 1,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-04",
+          "cam": {
+            "actual": 120.3,
+            "target": 90
+          },
+          "count": 4,
+          "byKind": {
+            "venue": 3,
+            "street": 1,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-05",
+          "cam": {
+            "actual": 106.7,
+            "target": 90
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-06",
+          "cam": {
+            "actual": 99.5,
+            "target": 90
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-07",
+          "cam": {
+            "actual": 95.4,
+            "target": 90
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-08",
+          "cam": {
+            "actual": 93,
+            "target": 90
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-09",
+          "cam": {
+            "actual": 91.7,
+            "target": 90
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-10",
+          "cam": {
+            "actual": 91,
+            "target": 90
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret-flygning-11",
+          "cam": {
+            "actual": 90.6,
+            "target": 90
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret",
+          "cam": {
+            "actual": 90,
+            "target": 90
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-00",
+          "cam": {
+            "actual": 68.6,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-01",
+          "cam": {
+            "actual": 57.2,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-02",
+          "cam": {
+            "actual": 50.5,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-03",
+          "cam": {
+            "actual": 46.7,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-04",
+          "cam": {
+            "actual": 44.6,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-05",
+          "cam": {
+            "actual": 43.5,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-06",
+          "cam": {
+            "actual": 42.8,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-07",
+          "cam": {
+            "actual": 42.5,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-08",
+          "cam": {
+            "actual": 42.3,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-09",
+          "cam": {
+            "actual": 42.2,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-10",
+          "cam": {
+            "actual": 42.1,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan-flygning-11",
+          "cam": {
+            "actual": 42,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan",
+          "cam": {
+            "actual": 42,
+            "target": 42
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-00",
+          "cam": {
+            "actual": 34.1,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-01",
+          "cam": {
+            "actual": 29.8,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-02",
+          "cam": {
+            "actual": 27.4,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-03",
+          "cam": {
+            "actual": 26,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-04",
+          "cam": {
+            "actual": 25.1,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-05",
+          "cam": {
+            "actual": 24.7,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-06",
+          "cam": {
+            "actual": 24.4,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-07",
+          "cam": {
+            "actual": 24.2,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-08",
+          "cam": {
+            "actual": 24.1,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-09",
+          "cam": {
+            "actual": 24.1,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-10",
+          "cam": {
+            "actual": 24,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen-flygning-11",
+          "cam": {
+            "actual": 24,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "krogen",
+          "cam": {
+            "actual": 24,
+            "target": 24
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-00",
+          "cam": {
+            "actual": 760,
+            "target": 760
+          },
+          "count": 20,
+          "byKind": {
+            "venue": 7,
+            "street": 13,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-01",
+          "cam": {
+            "actual": 622.1,
+            "target": 609.9
+          },
+          "count": 21,
+          "byKind": {
+            "venue": 7,
+            "street": 14,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-02",
+          "cam": {
+            "actual": 500.3,
+            "target": 489.5
+          },
+          "count": 16,
+          "byKind": {
+            "venue": 6,
+            "street": 10,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-03",
+          "cam": {
+            "actual": 401.5,
+            "target": 392.8
+          },
+          "count": 11,
+          "byKind": {
+            "venue": 6,
+            "street": 5,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-04",
+          "cam": {
+            "actual": 322.4,
+            "target": 315.2
+          },
+          "count": 7,
+          "byKind": {
+            "venue": 4,
+            "street": 3,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-05",
+          "cam": {
+            "actual": 258.6,
+            "target": 253
+          },
+          "count": 4,
+          "byKind": {
+            "venue": 2,
+            "street": 2,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-06",
+          "cam": {
+            "actual": 207.6,
+            "target": 203
+          },
+          "count": 2,
+          "byKind": {
+            "venue": 0,
+            "street": 2,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-07",
+          "cam": {
+            "actual": 166.6,
+            "target": 162.9
+          },
+          "count": 2,
+          "byKind": {
+            "venue": 0,
+            "street": 2,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-08",
+          "cam": {
+            "actual": 133.7,
+            "target": 130.8
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 0,
+            "street": 1,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-09",
+          "cam": {
+            "actual": 107.4,
+            "target": 104.9
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-10",
+          "cam": {
+            "actual": 86.1,
+            "target": 84.2
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-11",
+          "cam": {
+            "actual": 69.1,
+            "target": 67.6
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-12",
+          "cam": {
+            "actual": 55.5,
+            "target": 54.2
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-13",
+          "cam": {
+            "actual": 44.5,
+            "target": 43.5
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-14",
+          "cam": {
+            "actual": 35.7,
+            "target": 34.9
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-15",
+          "cam": {
+            "actual": 28.7,
+            "target": 28
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-16",
+          "cam": {
+            "actual": 23,
+            "target": 22.5
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-17",
+          "cam": {
+            "actual": 18.5,
+            "target": 18.1
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-18",
+          "cam": {
+            "actual": 14.8,
+            "target": 14.5
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-19",
+          "cam": {
+            "actual": 11.9,
+            "target": 11.6
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-20",
+          "cam": {
+            "actual": 10.2,
+            "target": 10
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "svep-21",
+          "cam": {
+            "actual": 10,
+            "target": 10
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-00",
+          "cam": {
+            "actual": 270,
+            "target": 660
+          },
+          "count": 5,
+          "byKind": {
+            "venue": 2,
+            "street": 3,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-01",
+          "cam": {
+            "actual": 445.6,
+            "target": 660
+          },
+          "count": 12,
+          "byKind": {
+            "venue": 6,
+            "street": 6,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-02",
+          "cam": {
+            "actual": 541.7,
+            "target": 660
+          },
+          "count": 17,
+          "byKind": {
+            "venue": 7,
+            "street": 10,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-03",
+          "cam": {
+            "actual": 592.6,
+            "target": 660
+          },
+          "count": 20,
+          "byKind": {
+            "venue": 7,
+            "street": 13,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-04",
+          "cam": {
+            "actual": 622.2,
+            "target": 660
+          },
+          "count": 21,
+          "byKind": {
+            "venue": 7,
+            "street": 14,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-05",
+          "cam": {
+            "actual": 385.3,
+            "target": 24
+          },
+          "count": 13,
+          "byKind": {
+            "venue": 4,
+            "street": 9,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-06",
+          "cam": {
+            "actual": 226.2,
+            "target": 24
+          },
+          "count": 7,
+          "byKind": {
+            "venue": 4,
+            "street": 3,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-07",
+          "cam": {
+            "actual": 135.8,
+            "target": 24
+          },
+          "count": 5,
+          "byKind": {
+            "venue": 4,
+            "street": 1,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-08",
+          "cam": {
+            "actual": 85.9,
+            "target": 24
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-09",
+          "cam": {
+            "actual": 63.7,
+            "target": 24
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-10",
+          "cam": {
+            "actual": 42,
+            "target": 12
+          },
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn-flygning-11",
+          "cam": {
+            "actual": 28.9,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn",
+          "cam": {
+            "actual": 12.3,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-00",
+          "cam": {
+            "actual": 13.4,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-01",
+          "cam": {
+            "actual": 12.8,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-02",
+          "cam": {
+            "actual": 12.5,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-03",
+          "cam": {
+            "actual": 12.3,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-04",
+          "cam": {
+            "actual": 12.2,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-05",
+          "cam": {
+            "actual": 12.1,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-06",
+          "cam": {
+            "actual": 12.1,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-07",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-08",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-09",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-10",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret-flygning-11",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-00",
+          "cam": {
+            "actual": 12.5,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-01",
+          "cam": {
+            "actual": 12.3,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-02",
+          "cam": {
+            "actual": 12.2,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-03",
+          "cam": {
+            "actual": 12.1,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-04",
+          "cam": {
+            "actual": 12.1,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-05",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-06",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-07",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-08",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-09",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-10",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan-flygning-11",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-00",
+          "cam": {
+            "actual": 12.2,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-01",
+          "cam": {
+            "actual": 12.1,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-02",
+          "cam": {
+            "actual": 12.1,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-03",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-04",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-05",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-06",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-07",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-08",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-09",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-10",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen-flygning-11",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "krogen",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-00",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-01",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-02",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "svep-03",
+          "cam": {
+            "actual": 12,
+            "target": 12
+          },
+          "count": 0,
+          "byKind": {
+            "venue": 0,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

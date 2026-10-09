@@ -40,6 +40,7 @@ import { useBusiness } from '../../business/BusinessContext';
 import { strings } from '../../../content/strings';
 import { BLEND, LIGHTS } from '../../village/villageEvening';
 import { venueLightTargets } from './venueLight';
+import { cameraMoved, declutterLabels } from '../LabelDeclutter';
 
 // ORDER 297 — glorian: grundstorleken och "fullt hus" för skenets styrka (Designs byKvall.js: 14 m, 14 gäster).
 const HALO_BASE_M = 14;
@@ -130,6 +131,8 @@ export function VillageVenues() {
   const size = useThree((x) => x.size);
   const labelEls = useRef<Map<string, HTMLDivElement>>(new Map());
   const frame = useRef(0);
+  const lastView = useRef(new THREE.Matrix4());
+  const settle = useRef(0);
   const proj = useMemo(() => new THREE.Vector3(), []);
   const shownRef = useRef(false);
   const tex = useMemo(() => glowTexture(), []);
@@ -199,6 +202,55 @@ export function VillageVenues() {
     tex.dispose();
   }, [root, tex]);
 
+  // Skyltarnas plats på skärmen (se useFrame nedan).
+  const place = useRef<() => void>(() => {});
+  place.current = () => {
+    const placed: Array<{ x0: number; x1: number; y0: number; y1: number }> = [];
+    const items = venues.flatMap((v) => {
+      const el = labelEls.current.get(v.id);
+      const p = v.spot ? truckSpotPlace(v.spot).doorPoint : places[v.id]?.centre;
+      if (!el || !p) return [];
+      proj.set(p[0], v.spot ? 6 : 14, p[1]).project(camera);
+      return [{ el, ours: v.id === PLAYER_VENUE, x: (proj.x * 0.5 + 0.5) * size.width, y: (-proj.y * 0.5 + 0.5) * size.height, w: el.offsetWidth, h: el.offsetHeight }];
+    // ORDER 297 (Designs Byn i kvällsljus omtag §9: "en regel för när namn
+    // krockar, till exempel att vår krog alltid ligger överst"): vår krogs
+    // namn placeras först och flyttas aldrig, och ritas överst.
+    }).sort((a, b) => (a.ours === b.ours ? b.y - a.y : a.ours ? -1 : 1));
+    // ORDER 300 §7 — HUD:ens rutor räknas som upptagna, så att en etikett
+    // inte flyttas in under klockan, kassan eller nivåraden. Först uppåt;
+    // når den HUD:en prövas nedåt från sin plats.
+    const hud = [...document.querySelectorAll('.gb-topleft > *, .gb-topright, .nx-hud-tools, [data-testid=service-tabs], .nx-feed-back')].map((e) => {
+      const r = e.getBoundingClientRect();
+      return { x0: r.left, x1: r.right, y0: r.top, y1: r.bottom };
+    }).filter((r) => r.x1 > r.x0 && r.y1 > r.y0);
+    for (const it of items) {
+      const start = it.y - it.h / 2;
+      let y0 = start;
+      const x0 = it.x - it.w / 2;
+      const x1 = x0 + it.w;
+      const hitAt = (y: number) => placed.find((r) => x0 < r.x1 && x1 > r.x0 && y < r.y1 && y + it.h > r.y0) ?? hud.find((r) => x0 < r.x1 && x1 > r.x0 && y < r.y1 && y + it.h > r.y0);
+      let dir = -1;
+      let free = false;
+      for (let guard = 0; guard < 16; guard++) {
+        const hit = hitAt(y0);
+        if (!hit) { free = true; break; }
+        if (dir < 0 && hud.includes(hit)) { dir = 1; y0 = start; continue; }
+        y0 = dir < 0 ? hit.y0 - it.h - 4 : hit.y1 + 4;
+      }
+      // ORDER 322 B — fanns ingen fri plats döljs skylten tills den har plats
+      // (vår krogs står alltid).
+      const show = free || it.ours;
+      if (show) placed.push({ x0, x1, y0, y1: y0 + it.h });
+      const vis = show ? '' : 'hidden';
+      if (it.el.style.visibility !== vis) it.el.style.visibility = vis;
+      const dy = Math.round(y0 - (it.y - it.h / 2));
+      it.el.style.transform = dy !== 0 ? `translateY(${dy}px)` : '';
+      if (it.el.parentElement) it.el.parentElement.style.zIndex = it.ours ? '2' : '1';
+    }
+    // Gatunamnen och sällskapen räknas mot skyltarnas nya plats i samma bildruta.
+    declutterLabels();
+  };
+
   useFrame((_, delta) => {
     const dist = actualRef.current.distance;
     const night = Math.max(0.35, skyState.nightFactor);
@@ -235,48 +287,26 @@ export function VillageVenues() {
     if (c !== compactRef.current) {
       compactRef.current = c;
       setCompact(c);
+      // Etiketterna byter storlek när React ritat om dem: placera om de närmaste bildrutorna.
+      settle.current = 3;
     }
     // Etiketterna får inte ligga över varandra: de som skulle överlappa på
     // skärmen flyttas uppåt, närmast först (några gånger i sekunden).
-    if (want && ++frame.current % 6 === 0) {
-      const placed: Array<{ x0: number; x1: number; y0: number; y1: number }> = [];
-      const items = venues.flatMap((v) => {
-        const el = labelEls.current.get(v.id);
-        const p = v.spot ? truckSpotPlace(v.spot).doorPoint : places[v.id]?.centre;
-        if (!el || !p) return [];
-        proj.set(p[0], v.spot ? 6 : 14, p[1]).project(camera);
-        return [{ el, ours: v.id === PLAYER_VENUE, x: (proj.x * 0.5 + 0.5) * size.width, y: (-proj.y * 0.5 + 0.5) * size.height, w: el.offsetWidth, h: el.offsetHeight }];
-      // ORDER 297 (Designs Byn i kvällsljus omtag §9: "en regel för när namn
-      // krockar, till exempel att vår krog alltid ligger överst"): vår krogs
-      // namn placeras först och flyttas aldrig, och ritas överst.
-      }).sort((a, b) => (a.ours === b.ours ? b.y - a.y : a.ours ? -1 : 1));
-      // ORDER 300 §7 — HUD:ens rutor räknas som upptagna, så att en etikett
-      // inte flyttas in under klockan, kassan eller nivåraden. Först uppåt;
-      // når den HUD:en prövas nedåt från sin plats.
-      const hud = [...document.querySelectorAll('.gb-topleft > *, .gb-topright, .nx-hud-tools, [data-testid=service-tabs], .nx-feed-back')].map((e) => {
-        const r = e.getBoundingClientRect();
-        return { x0: r.left, x1: r.right, y0: r.top, y1: r.bottom };
-      }).filter((r) => r.x1 > r.x0 && r.y1 > r.y0);
-      for (const it of items) {
-        const start = it.y - it.h / 2;
-        let y0 = start;
-        const x0 = it.x - it.w / 2;
-        const x1 = x0 + it.w;
-        const hitAt = (y: number) => placed.find((r) => x0 < r.x1 && x1 > r.x0 && y < r.y1 && y + it.h > r.y0) ?? hud.find((r) => x0 < r.x1 && x1 > r.x0 && y < r.y1 && y + it.h > r.y0);
-        let dir = -1;
-        for (let guard = 0; guard < 16; guard++) {
-          const hit = hitAt(y0);
-          if (!hit) break;
-          if (dir < 0 && hud.includes(hit)) { dir = 1; y0 = start; continue; }
-          y0 = dir < 0 ? hit.y0 - it.h - 4 : hit.y1 + 4;
-        }
-        placed.push({ x0, x1, y0, y1: y0 + it.h });
-        const dy = Math.round(y0 - (it.y - it.h / 2));
-        it.el.style.transform = dy !== 0 ? `translateY(${dy}px)` : '';
-        if (it.el.parentElement) it.el.parentElement.style.zIndex = it.ours ? '2' : '1';
-      }
-    }
+    // ORDER 322 B (Anders 2026-10-09: "i någon zoomnivå"): varje bildruta medan
+    // kameran rör sig, annars hann de glida på varandra mellan omgångarna.
+    const moved = cameraMoved(camera, lastView.current);
+    if (settle.current > 0) settle.current--;
+    if (want && (moved || settle.current > 0 || ++frame.current % 6 === 0)) place.current();
   });
+
+  // ORDER 322 B — när en skylt bytt storlek (kort ↔ full) placeras de om innan
+  // webbläsaren ritar, inte först i nästa bildruta. drei Html ritar skyltarna i
+  // en egen React-rot, så storleken ändras inte i samma commit som `compact`;
+  // ResizeObserver körs efter layouten och före målningen.
+  const resize = useMemo(() => (typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(() => {
+    if (shownRef.current) place.current();
+  })), []);
+  useEffect(() => () => resize?.disconnect(), [resize]);
 
   return (
     <>
@@ -303,7 +333,11 @@ export function VillageVenues() {
         return (
           <group key={v.id} position={[p[0], v.spot ? 6 : 14, p[1]]}>
             <Html center zIndexRange={[12, 0]} style={{ pointerEvents: 'none' }}>
-              <VenueLabel v={v} guests={guests} compact={compact} playerName={playerBusiness.name} playerStyle={playerStyle} playerTier={playerConcept} innerRef={(el) => { if (el) labelEls.current.set(v.id, el); else labelEls.current.delete(v.id); }} />
+              <VenueLabel v={v} guests={guests} compact={compact} playerName={playerBusiness.name} playerStyle={playerStyle} playerTier={playerConcept} innerRef={(el) => {
+                const old = labelEls.current.get(v.id);
+                if (old && old !== el) resize?.unobserve(old);
+                if (el) { labelEls.current.set(v.id, el); resize?.observe(el); } else labelEls.current.delete(v.id);
+              }} />
             </Html>
           </group>
         );

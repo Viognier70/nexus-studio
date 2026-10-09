@@ -10,9 +10,13 @@
 // En etikett som skulle ligga på en som redan står döljs (visibility), tills den har plats igen. Rektangeln är
 // den omslutande på skärmen (getBoundingClientRect), för ett vridet gatunamn alltså något större än texten.
 // scripts/order322-etiketter.mjs mäter samma rektanglar i produktionsbygget.
+// Tillägg (Anders 2026-10-09: "de får inte ligga på varandra i någon zoomnivå"): medan kameran rör sig körs det
+// varje bildruta, så att etiketterna inte hinner glida på varandra mellan omgångarna. VillageVenues kör det
+// också direkt efter att skyltarna placerats, i samma bildruta.
 
 import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
+import type * as THREE from 'three';
 
 const EVERY_N_FRAMES = 6;
 /** Luft mellan två etiketter, px. */
@@ -37,8 +41,9 @@ function faded(el: HTMLElement): boolean {
 
 export function declutterLabels(root: ParentNode = document): { hidden: number } {
   const placed: Box[] = [];
-  for (const el of root.querySelectorAll('.nx-venue-label')) {
-    const b = boxOf(el);
+  for (const el of root.querySelectorAll<HTMLElement>('.nx-venue-label')) {
+    // En skylt som VillageVenues dolt (ingen fri plats) tar ingen plats.
+    const b = el.style.visibility === 'hidden' ? null : boxOf(el);
     if (b) placed.push(b);
   }
   const yielding: HTMLElement[] = [
@@ -57,10 +62,20 @@ export function declutterLabels(root: ParentNode = document): { hidden: number }
   return { hidden };
 }
 
+/** Har kameran rört sig sedan förra bildrutan? Uppdaterar `last`. */
+export function cameraMoved(camera: THREE.Camera, last: THREE.Matrix4): boolean {
+  camera.updateMatrixWorld();
+  if (last.equals(camera.matrixWorld)) return false;
+  last.copy(camera.matrixWorld);
+  return true;
+}
+
 export function LabelDeclutter() {
   const frame = useRef(0);
-  useFrame(() => {
-    if (++frame.current % EVERY_N_FRAMES === 0) declutterLabels();
+  const last = useRef<THREE.Matrix4 | null>(null);
+  useFrame(({ camera }) => {
+    if (!last.current) last.current = camera.matrixWorld.clone();
+    if (cameraMoved(camera, last.current) || ++frame.current % EVERY_N_FRAMES === 0) declutterLabels();
   });
   return null;
 }

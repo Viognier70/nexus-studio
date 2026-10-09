@@ -157,7 +157,7 @@ Anders: "Princip: den riktiga kartan gäller." Fem beslut om B.1, sedan B.2 och 
 |---|---|---|
 | Luckor i vägarna (`roadIssues`) | 32 | 0 |
 | Meter lucka (`gapMetres`) | 441 | 0 |
-| Vägändar som inte finns i verkligheten (`gameEndsNotRealEnds`) | 57 | 1 |
+| Vägändar som inte finns i verkligheten (`gameEndsNotRealEnds`) | 57 | 0 (1 före B.4) |
 | Riktiga hus som saknas (`missing`) | 2 | 0 |
 | Dolda påhittade hus (`synthesisedHidden`) | 16 | 0 |
 | Påhittade hus på en riktig väg (`synthesisedOnRoad`) | 5 | 0 |
@@ -199,8 +199,7 @@ Anders: "Princip: den riktiga kartan gäller." Fem beslut om B.1, sedan B.2 och 
 - **Av de 57 ändarna är 1 kvar** (`efter/karta.json` `falseEnds`):
   - **55** försvann för att luckorna är stängda;
   - **1** (Järnvägsgatans serviceväg `w870510829` vid industrihuset) är nu en riktig ände vid genomfartens vägg (beslut 2);
-  - **1 är kvar:** uppfarten `w862853244` förbi Länsmansgården (`w1422743880`). I OSM går mittlinjen 0,34 m från husets hörn, så inte ens 1 m körbana ryms. Vägen bryts 3,6 m. Testet har den som enda undantag (`KNOWN_ENDS`).
-- Uppfarten kan bli hel på två sätt: att vägen får gå 0,2 m in under hörnet, eller att mittlinjen flyttas en halv meter från huset. Båda avviker från kartan, så det är Anders beslut.
+  - **1 var kvar:** uppfarten `w862853244` förbi Länsmansgården (`w1422743880`). I OSM går mittlinjen 0,34 m från husets hörn, så inte ens 1 m körbana ryms. Vägen bröts 3,6 m. Rättad i B.4 nedan.
 
 **B.2. Etiketterna.**
 - Det fanns ingen ordertext för B.2 i repot. Claude Codes tolkning: byns etiketter får inte ligga på varandra på skärmen. Byns etiketter är krogarnas skyltar, sällskapen på väg till krogen och gatunamnen.
@@ -215,7 +214,7 @@ Anders: "Princip: den riktiga kartan gäller." Fem beslut om B.1, sedan B.2 och 
   - Morgonen mäts inte, eftersom morgonens panel täcker byn.
   - Det som mäts är de synliga etiketternas rektanglar, par för par.
 - **Före** (`reports/order322/fore/etiketter.json`): 3–4 par per bild på nivån Byn, i 1280 × 720 som mest 4. Alla par var gatunamn under en krogskylt (Artur Lindqvists gata under Hyttgrillen, Hotellets matsal och Grillvagnen; Hyttgatan under Pizzeria Grytan) eller två gatunamn (Östra Bergvägen och Kolargatan).
-- **Efter** (`reports/order322/efter/etiketter.json`): `ok: true`, 0 par i alla tolv mätningar. På nivån Byn är 3 gatunamn dolda.
+- **Efter** (`reports/order322/efter/etiketter.json`): `ok: true`, 0 par i alla tolv mätningar. Filen är skriven om i B.4 med den utökade kontrollen, och de tolv mätningarna finns kvar i den (`level` byn, kvarteret, gatan). På nivån Byn är 3 gatunamn dolda.
 - Bilderna ligger i `fore/etiketter-*.png` och `efter/etiketter-*.png`.
 - På nivåerna Kvarteret och Gatan stod som mest två etiketter, och de låg inte på varandra varken före eller efter.
 
@@ -227,8 +226,61 @@ Anders: "Princip: den riktiga kartan gäller." Fem beslut om B.1, sedan B.2 och 
 - `scene/LabelDeclutter.tsx` och `StrategicScene.tsx`: etiketterna.
 - Testerna `order322Byn.test.ts` och `order312bTillFots.test.ts`. Prästgatan är hel, så biten heter inte längre `#p1`.
 - Skripten `order322-karta.mjs` och `order322-etiketter.mjs`.
+- B.4:
+  - `scripts/fetch-grythyttan-osm.mjs` (`ROAD_SHIFTS`) och `grythyttan-world.json`: uppfarten;
+  - `scene/village/VillageVenues.tsx` och `scene/LabelDeclutter.tsx`: etiketterna;
+  - testet `order322Byn.test.ts`: `KNOWN_ENDS` tom;
+  - skripten `order322-etiketter.mjs` (Krogen, flygningarna, svepet, mätpunkten, `SERVER=dev`) och `order322-uppfarten.mjs`.
+
+## B.4. Avslutningen efter Anders beslut (2026-10-09, kväll)
+
+Anders: "1. Länsmansgården: flytta mittlinjen en halv meter, så att uppfarten blir hel. Vägen ska inte gå in under huset. 2. B.2: ja, det gäller byns etiketter på skärmen (t.ex. "Hotellets matsal", "Grillvagnen", "Pizzeria Grytan" och verksamhetens namn). De får inte ligga på varandra i någon zoomnivå."
+
+**1. Uppfarten vid Länsmansgården.**
+- Punkterna 1 och 2 i `w862853244` är flyttade 0,5 m från huset, vinkelrätt mot biten mellan dem. Resten av vägen följer OSM.
+- Flytten står på två ställen:
+  - i ingesten, `scripts/fetch-grythyttan-osm.mjs` `ROAD_SHIFTS`, så att den finns kvar när kartan hämtas om;
+  - i `grythyttan-world.json`, där punkterna är `[-18.9, 89.52]` och `[-30.55, 86.56]`, förut `[-18.78, 89.04]` och `[-30.43, 86.08]`.
+- Vägen går inte in under huset. `roadSurface.ts` ritar körbanan smalare vid hörnet, så bred som ryms utan att kanten går in i huset (B.3 ovan).
+- `efter/karta.json` `counts.gameEndsNotRealEnds` är 0 och `falseEnds` tom.
+- Testet `order322Byn.test.ts` har inga undantag längre (`KNOWN_ENDS` tom).
+- Bilden: `reports/order322/jamfor/uppfarten-lansmansgarden.png` (`scripts/order322-uppfarten.mjs`). Den visar före (63bb1f85) och efter, ett utsnitt ur `karta-torget.png`. `efter/karta-*.png` och `jamfor/karta-*.png` är ritade om.
+
+**2. Etiketterna i alla zoomnivåer.**
+- **Kontrollen är utökad** (`scripts/order322-etiketter.mjs`):
+  - nivån Krogen (Z) mäts också;
+  - efter varje nivåbyte tas 12 prov under kamerans flygning, ett var 300:e ms;
+  - ett svep med mushjulet på duken, som spelaren zoomar: från Byn ut till 760 m och in i steg om × 0,80 till det innersta. Varje steg mäts när kameran stått stilla 1,5 s.
+- Varje mätning görs strax före en målning, alltså i det läge spelaren ser. Mellan målningarna finns ett läge som aldrig målas: skyltarna har bytt storlek men inte flyttats. Sonden fann det, och skriptet mätte det först som par.
+  - Mätpunkten nås med en ny ResizeObserver på `body`. Den anropas efter alla rAF-anrop och före målningen. rAF-anropen är där r3f placerar skyltarna.
+- Produktionsbygget lämnar inte ut kamerans avstånd. Därför körs samma flöde också mot dev-servern (`SERVER=dev`, `etiketter-dev.json`). Där har varje mätning kamerans verkliga avstånd och mål (`cam.actual`, `cam.target`). I bygget står bara stegets nummer.
+- **Vad den utökade kontrollen fann i B.2:**
+  - landat på en nivå låg inga etiketter på varandra;
+  - under flygningen mellan nivåerna låg de på varandra, till exempel Hyttgrillen, Hotellets matsal och Grillvagnen (1280 × 720, kvällen, 455,8 m på väg mot 24 m).
+- **Två orsaker:**
+  - Krogskyltarna flyttades isär var sjätte bildruta (`VillageVenues.tsx`), gatunamnen var sjätte i en annan takt (`LabelDeclutter.tsx`). Under flygningen hann etiketterna glida på varandra mellan omgångarna.
+  - När kameran passerar 450 m (`COMPACT_FROM_M`) byter skyltarna mellan kort och full form. React ritade om dem i den nya storleken innan de placerats om.
+- **Rättningen:**
+  - Medan kameran rör sig (`cameraMoved`) placeras skyltar och gatunamn varje bildruta, och när den står still var sjätte bildruta som förut.
+  - Gatunamnen och sällskapen räknas om i samma bildruta, direkt efter skyltarna.
+  - När en skylt byter storlek placeras skyltarna om innan webbläsaren målar (`ResizeObserver`). drei Html ritar skyltarna i en egen React-rot, så storleken ändras inte i samma commit som `compact`.
+  - En skylt som inte får någon fri plats inom 16 försök döljs tills den har plats. Förut lades den ovanpå. Spelarens egen skylt står alltid kvar.
+- **Före och efter.** Samma skript, i samma flöde, körs mot main före B.4 (63bb1f85, `reports/order322/fore-zoom/`) och efter (`reports/order322/efter/`):
+
+  | Körning | Fil | `ok` | Mätningar med par |
+  |---|---|---|---|
+  | Före, bygget | `fore-zoom/etiketter.json` | false | 8 av 312, alla under en flygning |
+  | Före, dev | `fore-zoom/etiketter-dev.json` | false | 9 av 270, alla under en flygning |
+  | Efter, bygget | `efter/etiketter.json` | true | 0 av 312 |
+  | Efter, dev | `efter/etiketter-dev.json` | true | 0 av 270 |
+
+  - Bilder tas på varje nivå och av varje prov med par (`*-flygning-NN.png`, `*-svep-NN.png`).
+  - Före, till exempel `fore-zoom/etiketter-dev-1280x720-forberedelser-kvarteret-flygning-02.png`: Torgkrogen ligger över Grillvagnen, 141,7 m på väg mot 90 m.
+  - Svepet gick från 760 m till 10 m (`etiketter-dev.json`, `cam.actual`) och hade inga par varken före eller efter. Felet fanns bara under flygningarna.
+- **Det som inte mäts:**
+  - Under servicen drar spelet kameran till krogen. Kvällens svep når därför inte alltid ut till byn, och V går inte under servicen. Kvällens nivåmätning mäter då flygningen dit.
+  - Sällskapen på gatan (`.nx-street-tag`) fanns inte på skärmen i någon av mätningarna (`byKind.group` 0). Svepet tar längre tid än förut, så kvällens mätningar hamnar under servicen. De prövas alltså inte i den här kontrollen. I B.2 syntes de på nivån Gatan utan par.
 
 ## Kvar
 
-- Uppfarten vid Länsmansgården (B.3 ovan): Anders beslut om den sista vägänden.
-- B.2 byggdes efter Claude Codes tolkning (byns etiketter på skärmen). Gällde beslutet andra etiketter, behöver det sägas.
+- Inget i B. Uppfarten och etiketterna är avgjorda och rättade (B.4).

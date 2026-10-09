@@ -26,9 +26,9 @@ const proj = (lat: number, lon: number): Vec2Tuple => [(lon - LON0) * MX, -(lat 
 // Toleranserna som i order322-karta.mjs.
 const END_TOL_M = 1.5, JOIN_TOL_M = 1.0, MARGIN_M = 60;
 
-// Den enda änden som är kvar: uppfarten w862853244 går i OSM 0,34 m från Länsmansgårdens hörn (w1422743880), så
-// inte ens MIN_HALF_M ryms där. Vägen bryts 3,6 m.
-const KNOWN_ENDS = ['w862853244#e2'];
+// Inga undantag. Uppfarten w862853244 gick i OSM 0,34 m från Länsmansgårdens hörn (w1422743880) och bröts; dess
+// mittlinje är flyttad 0,5 m från huset (fetch-grythyttan-osm.mjs ROAD_SHIFTS, Anders 2026-10-09).
+const KNOWN_ENDS: string[] = [];
 
 const d2 = (a: Vec2Tuple, b: Vec2Tuple) => Math.hypot(a[0] - b[0], a[1] - b[1]);
 function segDist(p: Vec2Tuple, a: Vec2Tuple, b: Vec2Tuple) {
