@@ -45,6 +45,7 @@ import { IncidentOutcomeBubble } from './IncidentOutcomeBubble';
 import { MentorComment } from './MentorComment';
 import { PlayerBusiness } from './PlayerBusiness';
 import { StreetLabels } from './StreetLabels';
+import { LabelDeclutter } from './LabelDeclutter';
 import { PublicRealm } from './PublicRealm';
 import { RetainingWalls } from './RetainingWalls';
 import { StreetTrees } from './StreetTrees';
@@ -171,6 +172,8 @@ export const StrategicScene = memo(function StrategicScene({ onSelect, selectedI
         <group name="part:OsmBoats"><OsmBoats /></group>
         <group name="part:ChimneySmoke"><ChimneySmoke /></group>
         <group name="part:StreetLabels"><StreetLabels /></group>
+        {/* ORDER 322 B.2 — etiketterna ligger inte på varandra (skyltarna, sällskapen, gatunamnen). */}
+        <LabelDeclutter />
         {/* ORDER 308 — Ingrid i dörren till Måltidens hus, bara under öppningen. */}
         <group name="part:OpeningMentor"><OpeningMentor /></group>
         <RenderProfileProbe />

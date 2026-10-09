@@ -18,7 +18,9 @@ import type { Vec2Tuple } from '../content/world';
 
 describe('ORDER 312b — till fots bara på gångytor och trottoarer', () => {
   it('gångplatsen: trottoarens mitt är gångyta, gatans mitt och gräset bredvid är det inte', () => {
-    const street = roadRenderPieces().find((p) => p.id === 'w122157691#p1')!; // Prästgatan
+    // Prästgatan: den längsta biten med trottoar (ORDER 322 B: vägen är hel sedan de påhittade husen togs bort,
+    // och biten heter inte längre #p1).
+    const street = roadRenderPieces().filter((p) => p.wayId === 'w122157691' && p.sidewalk > 0).sort((a, b) => b.poly.length - a.poly.length)[0];
     expect(street.sidewalk).toBeGreaterThan(0);
     const i = Math.floor(street.poly.length / 2);
     const at = (off: number): Vec2Tuple => stripEdges(street.poly, off).left[i];

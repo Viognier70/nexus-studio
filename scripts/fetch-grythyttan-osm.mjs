@@ -297,9 +297,13 @@ function extractBuildingsFromRelations(els) {
 // the OSM id no longer resolves in the current bbox, we keep the
 // previous position rather than dropping the landmark.
 
+// ORDER 322 B: en stängd OSM-väg upprepar första punkten sist. Den räknades förut två gånger, så mitten låg
+// 0,9–3,2 m fel mot CraftedLandmarks.tsx polygonCentre (som räknar utan den).
 function polyCentroid(poly) {
+  const closed = poly.length > 1 && poly[0][0] === poly[poly.length - 1][0] && poly[0][1] === poly[poly.length - 1][1];
+  const pts = closed ? poly.slice(0, -1) : poly;
   let cx = 0, cz = 0, n = 0;
-  for (const [x, z] of poly) { cx += x; cz += z; n++; }
+  for (const [x, z] of pts) { cx += x; cz += z; n++; }
   return n === 0 ? [0, 0] : [round2(cx / n), round2(cz / n)];
 }
 

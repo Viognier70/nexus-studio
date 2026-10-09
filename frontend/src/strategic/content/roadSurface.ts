@@ -16,7 +16,7 @@
 import { CLIPPED_ROADS, WORLD } from './world';
 import type { RawRoad, Vec2Tuple } from './world';
 import { specFor, type RoadRole } from './roadRoles';
-import { clipPolylineForVehicles, inside, polygonBounds } from '../procgen/geom';
+import { inside, polygonBounds } from '../procgen/geom';
 
 // Ytor där en stenlagd trottoar skulle motsäga vägen själv (OsmRoads).
 export const UNPAVED_SURFACES: ReadonlySet<string> = new Set([
@@ -40,37 +40,86 @@ export interface RoadRenderPiece {
   poly: Vec2Tuple[];
 }
 
-// Ritar trottoaren om inget hörn av dess kant hamnar i ett hus (OsmRoads).
-function sidewalkClearsBuildings(poly: Vec2Tuple[], envHalf: number): boolean {
-  if (poly.length < 2) return true;
-  for (let i = 0; i < poly.length; i++) {
-    const p = poly[i];
-    const prev = poly[Math.max(0, i - 1)];
-    const next = poly[Math.min(poly.length - 1, i + 1)];
-    const dx = next[0] - prev[0];
-    const dz = next[1] - prev[1];
-    const len = Math.hypot(dx, dz) || 1;
-    const nx = -dz / len;
-    const nz = dx / len;
-    for (const sign of [1, -1]) {
-      const ex = p[0] + nx * envHalf * sign;
-      const ez = p[1] + nz * envHalf * sign;
-      for (const b of WORLD.buildings) {
-        if (b.poly.length < 3) continue;
-        const bb = polygonBounds(b.poly);
-        if (ex < bb.minX || ex > bb.maxX || ez < bb.minZ || ez > bb.maxZ) continue;
-        if (inside(b.poly, ex, ez)) return false;
-      }
-    }
+// ORDER 322 B (Anders 2026-10-09: "Vid riktiga hus nära vägen ritas vägen utan trottoar i stället för att tas
+// bort"). Förut klipptes hela vägen där remsan med trottoaren (ORDER 158) kom inom räckhåll från ett hus, och en
+// bit utan trottoar fick den bara om ingen punkt på biten nådde ett hus. Nu provas mittlinjen var SAMPLE_M meter:
+//   - trottoaren ritas där dess kant (halva bredden + trottoaren) är fri från hus. Annars ritas biten utan den;
+//   - går också körbanans kant (±halva bredden) in i ett hus, ritas körbanan smalare där, så bred som ryms
+//     (steg om NARROW_STEP_M, minst MIN_HALF_M, alltså 1 m körbana). Riktiga uppfarter går i Grythyttan ibland
+//     0,6 m från en husvägg;
+//   - bara där mittlinjen själv går in i ett hus, eller inte ens MIN_HALF_M ryms, klipps vägen. En väg som går
+//     rakt mot en gavel ritas fram till gaveln.
+// Vägens egna punkter står kvar, och bitarna delar sin gränspunkt så att de möts utan glipa. En väg som inte
+// når något hus lämnas orörd.
+const SAMPLE_M = 1.0;
+const NARROW_STEP_M = 0.25;
+export const MIN_HALF_M = 0.5;
+
+function pointInBuilding(x: number, z: number): boolean {
+  for (const b of WORLD.buildings) {
+    if (b.poly.length < 3) continue;
+    const bb = polygonBounds(b.poly);
+    if (x < bb.minX || x > bb.maxX || z < bb.minZ || z > bb.maxZ) continue;
+    if (inside(b.poly, x, z)) return true;
   }
-  return true;
+  return false;
 }
 
-// ORDER 158 — envelope-klippet: vägen klipps där remsan (asfalt + trottoar)
-// skulle gå in i ett hus.
-function clipRoadForEnvelope(road: RawRoad, halfEnvelope: number): Vec2Tuple[][] {
-  if (halfEnvelope <= 0) return [road.poly];
-  return clipPolylineForVehicles(road.poly, halfEnvelope);
+/** Halva körbanan som ryms vid punkten (0: klipps), och om trottoaren ryms. */
+interface Sample { p: Vec2Tuple; half: number; sw: boolean }
+
+function sampleRoad(poly: Vec2Tuple[], half: number, swReach: number): Sample[] {
+  const pts: Vec2Tuple[] = [poly[0]];
+  for (let i = 1; i < poly.length; i++) {
+    const a = poly[i - 1], b = poly[i];
+    const n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / SAMPLE_M));
+    for (let k = 1; k <= n; k++) pts.push(k === n ? b : [a[0] + ((b[0] - a[0]) * k) / n, a[1] + ((b[1] - a[1]) * k) / n]);
+  }
+  return pts.map((p, i) => {
+    const prev = pts[Math.max(0, i - 1)], next = pts[Math.min(pts.length - 1, i + 1)];
+    const dx = next[0] - prev[0], dz = next[1] - prev[1];
+    const len = Math.hypot(dx, dz) || 1;
+    const nx = -dz / len, nz = dx / len;
+    const clear = (r: number) => !pointInBuilding(p[0] + nx * r, p[1] + nz * r) && !pointInBuilding(p[0] - nx * r, p[1] - nz * r);
+    if (pointInBuilding(p[0], p[1])) return { p, half: 0, sw: false };
+    if (clear(half)) return { p, half, sw: swReach > half && clear(swReach) };
+    for (let k = 1; half - k * NARROW_STEP_M >= MIN_HALF_M - 1e-9; k++) {
+      const r = Math.round((half - k * NARROW_STEP_M) * 100) / 100;
+      if (clear(r)) return { p, half: r, sw: false };
+    }
+    return { p, half: 0, sw: false };
+  });
+}
+
+/** Körbanans bitar: delad där trottoaren börjar eller slutar och där körbanan smalnar. */
+function splitRoad(poly: Vec2Tuple[], half: number, swReach: number): Array<{ poly: Vec2Tuple[]; half: number; sidewalk: boolean }> {
+  const samples = sampleRoad(poly, half, swReach);
+  const hasSw = swReach > half;
+  if (samples.every((s) => s.half === half && s.sw === hasSw)) return [{ poly, half, sidewalk: hasSw }];
+  const out: Array<{ poly: Vec2Tuple[]; half: number; sidewalk: boolean }> = [];
+  // Läget per punkt: 'sw' (full bredd med trottoar), 'full' (utan trottoar), 'narrow' (smalare), 'cut'.
+  const mode = (s: Sample) => (s.half === 0 ? 'cut' : s.half < half ? 'narrow' : s.sw ? 'sw' : 'full');
+  // En gränspunkt hör till den bit som tål minst: trottoaren och den fulla bredden når aldrig huset.
+  const rank = { cut: 0, narrow: 1, full: 2, sw: 3 } as const;
+  let k = 0;
+  while (k < samples.length) {
+    const m = mode(samples[k]);
+    if (m === 'cut') { k++; continue; }
+    let j = k;
+    while (j + 1 < samples.length && mode(samples[j + 1]) === m) j++;
+    // Gränspunkterna mot grannarna läggs till den bit som tål minst.
+    let from = k, to = j;
+    if (k > 0 && mode(samples[k - 1]) !== 'cut' && rank[mode(samples[k - 1])] > rank[m]) from = k - 1;
+    if (j + 1 < samples.length && mode(samples[j + 1]) !== 'cut' && rank[mode(samples[j + 1])] > rank[m]) to = j + 1;
+    const run = samples.slice(from, to + 1);
+    if (run.length >= 2) {
+      const keep = run.filter((s, i) => i === 0 || i === run.length - 1 || poly.includes(s.p));
+      const h = m === 'narrow' ? Math.min(...run.slice(from === k ? 0 : 1, run.length - (to === j ? 0 : 1)).map((s) => s.half)) : half;
+      out.push({ poly: keep.map((s) => s.p), half: h, sidewalk: m === 'sw' });
+    }
+    k = j + 1;
+  }
+  return out;
 }
 
 function computeRoadRenderPieces(): RoadRenderPiece[] {
@@ -80,26 +129,21 @@ function computeRoadRenderPieces(): RoadRenderPiece[] {
     const spec = specFor(road);
     const half = spec.width / 2;
     const surfaceIsUnpaved = road.surface != null && UNPAVED_SURFACES.has(road.surface);
-    const halfEnvelope = half + (surfaceIsUnpaved ? 0 : spec.sidewalkWidth);
-    const envelopePieces = clipRoadForEnvelope(road, halfEnvelope);
-    for (let pi = 0; pi < envelopePieces.length; pi++) {
-      const piecePoly = envelopePieces[pi];
-      if (piecePoly.length < 2) continue;
-      const sidewalk =
-        spec.sidewalkWidth > 0 && !surfaceIsUnpaved && sidewalkClearsBuildings(piecePoly, half + spec.sidewalkWidth)
-          ? spec.sidewalkWidth
-          : 0;
+    const swWidth = spec.sidewalkWidth > 0 && !surfaceIsUnpaved ? spec.sidewalkWidth : 0;
+    const pieces = splitRoad(road.poly, half, half + swWidth);
+    pieces.forEach((piece, pi) => {
+      const id = pi === 0 ? road.id : `${road.id}#e${pi}`;
       out.push({
-        id: pi === 0 ? road.id : `${road.id}#e${pi}`,
+        id,
         wayId: road.id.split('#')[0],
-        road: { ...road, id: pi === 0 ? road.id : `${road.id}#e${pi}`, poly: piecePoly },
+        road: { ...road, id, poly: piece.poly },
         role: spec.role,
         ped: spec.ped,
-        half,
-        sidewalk,
-        poly: piecePoly
+        half: piece.half,
+        sidewalk: piece.sidewalk ? swWidth : 0,
+        poly: piece.poly
       });
-    }
+    });
   }
   return out;
 }

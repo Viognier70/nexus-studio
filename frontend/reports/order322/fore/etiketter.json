@@ -1,0 +1,279 @@
+{
+  "tag": "fore",
+  "overlapPx": 1,
+  "ok": false,
+  "runs": [
+    {
+      "viewport": "1440x900",
+      "moments": [
+        {
+          "when": "forberedelser",
+          "level": "byn",
+          "count": 23,
+          "byKind": {
+            "venue": 7,
+            "street": 16,
+            "group": 0
+          },
+          "overlaps": [
+            {
+              "a": "venue: Hyttgrillen, din krog0 gäster i kväll",
+              "b": "street: Artur Lindqvists gata",
+              "px": [
+                29,
+                39
+              ]
+            },
+            {
+              "a": "venue: Pizzeria Grytan★★★★★0 gäster i kväll",
+              "b": "street: Hyttgatan",
+              "px": [
+                14,
+                7
+              ]
+            },
+            {
+              "a": "venue: Hotellets matsal★★★★★0 gäster i kväll",
+              "b": "street: Artur Lindqvists gata",
+              "px": [
+                29,
+                95
+              ]
+            },
+            {
+              "a": "venue: Grillvagnen★★★★★Stängt i kväll",
+              "b": "street: Artur Lindqvists gata",
+              "px": [
+                12,
+                6
+              ]
+            }
+          ]
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret",
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan",
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn",
+          "count": 23,
+          "byKind": {
+            "venue": 7,
+            "street": 16,
+            "group": 0
+          },
+          "overlaps": [
+            {
+              "a": "venue: Pizzeria Grytan★★★★★0 gäster i kväll",
+              "b": "street: Hyttgatan",
+              "px": [
+                14,
+                7
+              ]
+            },
+            {
+              "a": "venue: Hotellets matsal★★★★★0 gäster i kväll",
+              "b": "street: Artur Lindqvists gata",
+              "px": [
+                29,
+                94
+              ]
+            },
+            {
+              "a": "venue: Grillvagnen★★★★★Stängt i kväll",
+              "b": "street: Artur Lindqvists gata",
+              "px": [
+                12,
+                51
+              ]
+            }
+          ]
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret",
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan",
+          "count": 2,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 1
+          },
+          "overlaps": []
+        }
+      ]
+    },
+    {
+      "viewport": "1280x720",
+      "moments": [
+        {
+          "when": "forberedelser",
+          "level": "byn",
+          "count": 24,
+          "byKind": {
+            "venue": 7,
+            "street": 17,
+            "group": 0
+          },
+          "overlaps": [
+            {
+              "a": "venue: Hyttgrillen, din krog0 gäster i kväll",
+              "b": "street: Artur Lindqvists gata",
+              "px": [
+                30,
+                73
+              ]
+            },
+            {
+              "a": "venue: Pizzeria Grytan★★★★★0 gäster i kväll",
+              "b": "street: Hyttgatan",
+              "px": [
+                23,
+                22
+              ]
+            },
+            {
+              "a": "venue: Hotellets matsal★★★★★0 gäster i kväll",
+              "b": "street: Artur Lindqvists gata",
+              "px": [
+                30,
+                56
+              ]
+            },
+            {
+              "a": "street: Östra Bergvägen",
+              "b": "street: Kolargatan",
+              "px": [
+                8,
+                40
+              ]
+            }
+          ]
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret",
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan",
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn",
+          "count": 24,
+          "byKind": {
+            "venue": 7,
+            "street": 17,
+            "group": 0
+          },
+          "overlaps": [
+            {
+              "a": "venue: Hyttgrillen, din krog4 gäster i kväll",
+              "b": "street: Artur Lindqvists gata",
+              "px": [
+                29,
+                52
+              ]
+            },
+            {
+              "a": "venue: Pizzeria Grytan★★★★★0 gäster i kväll",
+              "b": "street: Hyttgatan",
+              "px": [
+                23,
+                22
+              ]
+            },
+            {
+              "a": "venue: Hotellets matsal★★★★★0 gäster i kväll",
+              "b": "street: Artur Lindqvists gata",
+              "px": [
+                29,
+                93
+              ]
+            },
+            {
+              "a": "street: Östra Bergvägen",
+              "b": "street: Kolargatan",
+              "px": [
+                8,
+                40
+              ]
+            }
+          ]
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret",
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan",
+          "count": 2,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 1
+          },
+          "overlaps": []
+        }
+      ]
+    }
+  ],
+  "errors": [
+    "1440x900 forberedelser byn: 4 par (venue: Hyttgrillen, din krog0 gäster i kväll / street: Artur Lindqvists gata; venue: Pizzeria Grytan★★★★★0 gäster i kväll / street: Hyttgatan; venue: Hotellets matsal★★★★★0 gäster i kväll / street: Artur Lindqvists gata)",
+    "1440x900 kvall byn: 3 par (venue: Pizzeria Grytan★★★★★0 gäster i kväll / street: Hyttgatan; venue: Hotellets matsal★★★★★0 gäster i kväll / street: Artur Lindqvists gata; venue: Grillvagnen★★★★★Stängt i kväll / street: Artur Lindqvists gata)",
+    "1280x720 forberedelser byn: 4 par (venue: Hyttgrillen, din krog0 gäster i kväll / street: Artur Lindqvists gata; venue: Pizzeria Grytan★★★★★0 gäster i kväll / street: Hyttgatan; venue: Hotellets matsal★★★★★0 gäster i kväll / street: Artur Lindqvists gata)",
+    "1280x720 kvall byn: 4 par (venue: Hyttgrillen, din krog4 gäster i kväll / street: Artur Lindqvists gata; venue: Pizzeria Grytan★★★★★0 gäster i kväll / street: Hyttgatan; venue: Hotellets matsal★★★★★0 gäster i kväll / street: Artur Lindqvists gata)"
+  ]
+}

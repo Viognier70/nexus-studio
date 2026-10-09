@@ -1,0 +1,145 @@
+[
+  {
+    "name": "karta-byn",
+    "view": {
+      "minX": -1245.472789999923,
+      "maxX": 1785.0278660000465,
+      "minZ": -2199.052719330121,
+      "maxZ": 2918.7160398604387
+    },
+    "scale": 0.9899354398951928,
+    "title": "Byn"
+  },
+  {
+    "name": "karta-karnan",
+    "view": {
+      "minX": -965.7,
+      "maxX": 768,
+      "minZ": -449.2,
+      "maxZ": 319.4
+    },
+    "scale": 2,
+    "title": "Byns kärna"
+  },
+  {
+    "name": "karta-torget",
+    "view": {
+      "minX": -140,
+      "maxX": 160,
+      "minZ": -130,
+      "maxZ": 120
+    },
+    "scale": 6,
+    "title": "Torget"
+  },
+  {
+    "name": "karta-1",
+    "view": {
+      "minX": -340,
+      "maxX": 40,
+      "minZ": -340,
+      "maxZ": 40
+    },
+    "scale": 4,
+    "title": "Utsnitt 1"
+  },
+  {
+    "name": "karta-2",
+    "view": {
+      "minX": -340,
+      "maxX": 40,
+      "minZ": -40,
+      "maxZ": 340
+    },
+    "scale": 4,
+    "title": "Utsnitt 2"
+  },
+  {
+    "name": "karta-3",
+    "view": {
+      "minX": 260,
+      "maxX": 640,
+      "minZ": -40,
+      "maxZ": 340
+    },
+    "scale": 4,
+    "title": "Utsnitt 3"
+  },
+  {
+    "name": "karta-4",
+    "view": {
+      "minX": -40,
+      "maxX": 340,
+      "minZ": -40,
+      "maxZ": 340
+    },
+    "scale": 4,
+    "title": "Utsnitt 4"
+  },
+  {
+    "name": "karta-5",
+    "view": {
+      "minX": -640,
+      "maxX": -260,
+      "minZ": -340,
+      "maxZ": 40
+    },
+    "scale": 4,
+    "title": "Utsnitt 5"
+  },
+  {
+    "name": "karta-6",
+    "view": {
+      "minX": -940,
+      "maxX": -560,
+      "minZ": -640,
+      "maxZ": -260
+    },
+    "scale": 4,
+    "title": "Utsnitt 6"
+  },
+  {
+    "name": "karta-7",
+    "view": {
+      "minX": -940,
+      "maxX": -560,
+      "minZ": -340,
+      "maxZ": 40
+    },
+    "scale": 4,
+    "title": "Utsnitt 7"
+  },
+  {
+    "name": "karta-8",
+    "view": {
+      "minX": -640,
+      "maxX": -260,
+      "minZ": -40,
+      "maxZ": 340
+    },
+    "scale": 4,
+    "title": "Utsnitt 8"
+  },
+  {
+    "name": "karta-9",
+    "view": {
+      "minX": -340,
+      "maxX": 40,
+      "minZ": -640,
+      "maxZ": -260
+    },
+    "scale": 4,
+    "title": "Utsnitt 9"
+  },
+  {
+    "name": "karta-10",
+    "view": {
+      "minX": -940,
+      "maxX": -560,
+      "minZ": -40,
+      "maxZ": 340
+    },
+    "scale": 4,
+    "title": "Utsnitt 10"
+  }
+]

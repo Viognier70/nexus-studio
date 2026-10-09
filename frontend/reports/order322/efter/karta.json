@@ -1,0 +1,554 @@
+{
+  "area": {
+    "minX": -1245,
+    "maxX": 1785,
+    "minZ": -2199,
+    "maxZ": 2919
+  },
+  "tolerances": {
+    "END_TOL_M": 1.5,
+    "JOIN_TOL_M": 1,
+    "MARGIN_M": 60,
+    "COVER_TOL_M": 0.75,
+    "MIN_GAP_M": 2,
+    "TORGET_HALF_M": 9,
+    "BUILDING_NEAR_M": 8
+  },
+  "counts": {
+    "realRoads": 327,
+    "realBuildings": 275,
+    "realEnds": 112,
+    "gamePieces": 346,
+    "gameBuildings": 318,
+    "waysInArea": 323,
+    "waysOutsideArea": 4,
+    "roadIssues": 0,
+    "gapMetres": 0,
+    "gameEnds": 662,
+    "gameEndsNotRealEnds": 1,
+    "gameEndsOutsideArea": 18,
+    "gameEndsAtPassage": 4,
+    "passages": 2,
+    "missing": 0,
+    "moved": 6,
+    "synthesisedShown": 41,
+    "synthesisedOnRoad": 0,
+    "synthesisedHidden": 0,
+    "outbuildings": 54,
+    "shedConflicts": 0
+  },
+  "roadIssues": [],
+  "passages": [
+    {
+      "way": "w1329020075",
+      "kind": "service",
+      "lengthM": 19.4,
+      "building": {
+        "id": "w870510826",
+        "dist": 0,
+        "shown": true,
+        "synthesised": false
+      }
+    },
+    {
+      "way": "w1329020076",
+      "kind": "service",
+      "lengthM": 25.3,
+      "building": {
+        "id": "w870510828",
+        "dist": 0,
+        "shown": true,
+        "synthesised": false
+      }
+    }
+  ],
+  "missing": [],
+  "moved": [
+    {
+      "id": "w869907961",
+      "landmark": "gry-kyrka",
+      "shiftM": [
+        0,
+        0
+      ],
+      "distM": 0,
+      "at": [
+        -44.1,
+        17.5
+      ]
+    },
+    {
+      "id": "w193810975",
+      "landmark": "gry-campus",
+      "shiftM": [
+        0,
+        0
+      ],
+      "distM": 0,
+      "at": [
+        568.8,
+        -83.7
+      ]
+    },
+    {
+      "id": "w869907964",
+      "landmark": "gry-gastgivaregard",
+      "shiftM": [
+        0,
+        0
+      ],
+      "distM": 0,
+      "at": [
+        62.4,
+        39.3
+      ]
+    },
+    {
+      "id": "w598989255",
+      "landmark": "gry-pizzanshus",
+      "shiftM": [
+        0,
+        0
+      ],
+      "distM": 0,
+      "at": [
+        343.3,
+        22.4
+      ]
+    },
+    {
+      "id": "w611766160",
+      "landmark": "gry-herrgard",
+      "shiftM": [
+        0,
+        0
+      ],
+      "distM": 0,
+      "at": [
+        689.1,
+        110.8
+      ]
+    },
+    {
+      "id": "w870510841",
+      "landmark": "gry-jarnvag",
+      "shiftM": [
+        0,
+        0
+      ],
+      "distM": 0,
+      "at": [
+        -462.3,
+        -177.6
+      ]
+    }
+  ],
+  "synthesised": [
+    {
+      "id": "vw-qvarn",
+      "kind": "historic",
+      "at": [
+        547.7,
+        38.9
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-skg-5",
+      "kind": "house",
+      "at": [
+        -115,
+        60
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-skg-8",
+      "kind": "house",
+      "at": [
+        -135,
+        15
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-skg-9",
+      "kind": "house",
+      "at": [
+        -131.6,
+        70.7
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-skg-10",
+      "kind": "house",
+      "at": [
+        -155,
+        15
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-skg-12",
+      "kind": "house",
+      "at": [
+        -175,
+        15
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-skg-14",
+      "kind": "outbuilding",
+      "at": [
+        -195,
+        15
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-2",
+      "kind": "house",
+      "at": [
+        -455,
+        320
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-4",
+      "kind": "house",
+      "at": [
+        -500,
+        297
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-6",
+      "kind": "house",
+      "at": [
+        -540,
+        283
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-6-aux",
+      "kind": "outbuilding",
+      "at": [
+        -533,
+        290
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-8",
+      "kind": "house",
+      "at": [
+        -580,
+        268
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-12",
+      "kind": "house",
+      "at": [
+        -660,
+        238
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-tree-cluster",
+      "kind": "house",
+      "at": [
+        -750,
+        200
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-tree-garage",
+      "kind": "outbuilding",
+      "at": [
+        -744.8,
+        210.9
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-15",
+      "kind": "house",
+      "at": [
+        -810,
+        178
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-18",
+      "kind": "house",
+      "at": [
+        -880,
+        148
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-18-garage",
+      "kind": "outbuilding",
+      "at": [
+        -873,
+        155
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-lakeshore",
+      "kind": "house",
+      "at": [
+        -960,
+        110
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-lakeshore-boathouse",
+      "kind": "outbuilding",
+      "at": [
+        -954,
+        117.4
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-kyr-5",
+      "kind": "house",
+      "at": [
+        -40,
+        -5
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-kyr-12",
+      "kind": "apartments",
+      "at": [
+        -58,
+        -8
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-kyr-14",
+      "kind": "house",
+      "at": [
+        -53.1,
+        8
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-kyr-20",
+      "kind": "house",
+      "at": [
+        -55,
+        40
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-kyr-25",
+      "kind": "house",
+      "at": [
+        -28,
+        55
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-kyr-26",
+      "kind": "house",
+      "at": [
+        -55,
+        60
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-pra-16",
+      "kind": "apartments",
+      "at": [
+        365,
+        35
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-nyg-4",
+      "kind": "house",
+      "at": [
+        -75,
+        -85
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-nyg-9",
+      "kind": "apartments",
+      "at": [
+        -155,
+        -110
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-hjv-7",
+      "kind": "house",
+      "at": [
+        -360,
+        -145
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-stalmobler",
+      "kind": "house",
+      "at": [
+        -350,
+        30
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-solidfeet",
+      "kind": "house",
+      "at": [
+        -545,
+        483
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-icopal",
+      "kind": "industrial",
+      "at": [
+        -800,
+        684
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-takskiffer",
+      "kind": "industrial",
+      "at": [
+        -604,
+        528
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-grythyttevikens-skiffertak",
+      "kind": "industrial",
+      "at": [
+        -464,
+        -639
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-skg-5-shed",
+      "kind": "shed",
+      "at": [
+        -108,
+        72
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-north-multi",
+      "kind": "apartments",
+      "at": [
+        -600,
+        270
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-north-red-shed",
+      "kind": "shed",
+      "at": [
+        -680,
+        245
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-kyr-20-garage",
+      "kind": "outbuilding",
+      "at": [
+        -43.8,
+        44.5
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-stn-5",
+      "kind": "house",
+      "at": [
+        -430,
+        -135
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-stn-6",
+      "kind": "house",
+      "at": [
+        -430,
+        -160
+      ],
+      "onRoad": null
+    }
+  ],
+  "synthesisedHidden": [],
+  "shedConflicts": [],
+  "falseEnds": [
+    {
+      "piece": "w862853244#e2",
+      "way": "w862853244",
+      "name": null,
+      "roadKind": "service",
+      "role": "service",
+      "at": [
+        -25.1,
+        87.4
+      ],
+      "toRealEndM": 25,
+      "building": {
+        "id": "w1422743880",
+        "dist": 0.8,
+        "shown": true,
+        "synthesised": false
+      }
+    }
+  ],
+  "images": [
+    "karta-byn.png",
+    "karta-karnan.png",
+    "karta-torget.png",
+    "karta-1.png",
+    "karta-2.png",
+    "karta-3.png",
+    "karta-4.png",
+    "karta-5.png",
+    "karta-6.png",
+    "karta-7.png",
+    "karta-8.png",
+    "karta-9.png",
+    "karta-10.png"
+  ]
+}

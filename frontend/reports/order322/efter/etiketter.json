@@ -1,0 +1,150 @@
+{
+  "tag": "efter",
+  "overlapPx": 1,
+  "ok": true,
+  "runs": [
+    {
+      "viewport": "1440x900",
+      "moments": [
+        {
+          "when": "forberedelser",
+          "level": "byn",
+          "count": 20,
+          "byKind": {
+            "venue": 7,
+            "street": 13,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret",
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan",
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn",
+          "count": 20,
+          "byKind": {
+            "venue": 7,
+            "street": 13,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret",
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan",
+          "count": 2,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 1
+          },
+          "overlaps": []
+        }
+      ]
+    },
+    {
+      "viewport": "1280x720",
+      "moments": [
+        {
+          "when": "forberedelser",
+          "level": "byn",
+          "count": 21,
+          "byKind": {
+            "venue": 7,
+            "street": 14,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "kvarteret",
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "forberedelser",
+          "level": "gatan",
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "byn",
+          "count": 21,
+          "byKind": {
+            "venue": 7,
+            "street": 14,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "kvarteret",
+          "count": 1,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 0
+          },
+          "overlaps": []
+        },
+        {
+          "when": "kvall",
+          "level": "gatan",
+          "count": 2,
+          "byKind": {
+            "venue": 1,
+            "street": 0,
+            "group": 1
+          },
+          "overlaps": []
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

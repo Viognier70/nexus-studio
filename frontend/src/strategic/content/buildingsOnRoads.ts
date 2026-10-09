@@ -26,6 +26,12 @@
 // den blir egen order när vi vet om gapet stör mer än den nuvarande
 // "byggnad över korsning"-observationen.
 
+// ORDER 322 B (Anders 2026-10-09: "den riktiga kartan gäller"): ett riktigt hus (provenance 'osm') döljs aldrig.
+// Står det över en vägs mittlinje i OSM är det vägen som slutar vid huset (CLIPPED_ROADS klipper mittlinjen vid
+// husets vägg, roadSurface.ts ritar körbanan fram dit). De påhittade husen som stod på vägarna är borttagna ur
+// grythyttan-world.json, så mängden är tom; ett nytt påhittat hus på en väg hamnar här och fångas av testet
+// order322Byn.test.ts.
+
 import { WORLD } from './world';
 import { specFor } from './roadRoles';
 import { inside } from '../procgen/geom';
@@ -37,6 +43,7 @@ function computeBuildingsOnRoads(): Set<string> {
   const out = new Set<string>();
   for (const b of WORLD.buildings) {
     if (!b.poly || b.poly.length < 3) continue;
+    if (b.provenance === 'osm') continue;
     // OBB-bounds för snabb bbox-filter av roads
     let bMinX = Infinity, bMaxX = -Infinity, bMinZ = Infinity, bMaxZ = -Infinity;
     for (const [x, z] of b.poly) {
