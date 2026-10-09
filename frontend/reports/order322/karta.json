@@ -1,0 +1,2580 @@
+{
+  "area": {
+    "minX": -1245,
+    "maxX": 1785,
+    "minZ": -2199,
+    "maxZ": 2919
+  },
+  "tolerances": {
+    "END_TOL_M": 1.5,
+    "JOIN_TOL_M": 1,
+    "MARGIN_M": 60,
+    "COVER_TOL_M": 0.75,
+    "MIN_GAP_M": 2,
+    "TORGET_HALF_M": 9,
+    "BUILDING_NEAR_M": 8
+  },
+  "counts": {
+    "realRoads": 327,
+    "realBuildings": 275,
+    "realEnds": 112,
+    "gamePieces": 348,
+    "gameBuildings": 322,
+    "waysInArea": 323,
+    "waysOutsideArea": 4,
+    "roadIssues": 32,
+    "gapMetres": 441,
+    "gameEnds": 668,
+    "gameEndsNotRealEnds": 57,
+    "gameEndsOutsideArea": 18,
+    "missing": 2,
+    "moved": 6,
+    "synthesisedShown": 47,
+    "synthesisedOnRoad": 5,
+    "synthesisedHidden": 16,
+    "outbuildings": 56,
+    "shedConflicts": 0
+  },
+  "roadIssues": [
+    {
+      "n": 1,
+      "kind": "saknar anslutning",
+      "way": "w1422743879",
+      "roadKind": "residential",
+      "name": "Artur Lindqvists gata",
+      "from": [
+        54.4,
+        67.5
+      ],
+      "to": [
+        48.8,
+        27.6
+      ],
+      "at": [
+        51.2,
+        46.9
+      ],
+      "lengthM": 44,
+      "meets": [
+        "w862853214"
+      ],
+      "building": {
+        "id": "w869907963",
+        "dist": 2.2,
+        "shown": true,
+        "synthesised": false
+      },
+      "run": [
+        [
+          54.4,
+          67.5
+        ],
+        [
+          53.7,
+          65.7
+        ],
+        [
+          53,
+          63.8
+        ],
+        [
+          52.7,
+          62.8
+        ],
+        [
+          52.5,
+          60.8
+        ],
+        [
+          52.3,
+          58.8
+        ],
+        [
+          52.1,
+          56.9
+        ],
+        [
+          51.9,
+          54.9
+        ],
+        [
+          51.7,
+          52.9
+        ],
+        [
+          51.5,
+          50.9
+        ],
+        [
+          51.3,
+          48.9
+        ],
+        [
+          51.2,
+          46.9
+        ],
+        [
+          51,
+          44.9
+        ],
+        [
+          50.9,
+          43.7
+        ],
+        [
+          50.7,
+          41.7
+        ],
+        [
+          50.6,
+          39.7
+        ],
+        [
+          50.4,
+          37.7
+        ],
+        [
+          50.3,
+          35.7
+        ],
+        [
+          50.2,
+          33.7
+        ],
+        [
+          49.9,
+          32.5
+        ],
+        [
+          49.5,
+          30.5
+        ],
+        [
+          49,
+          28.6
+        ],
+        [
+          48.8,
+          27.6
+        ]
+      ]
+    },
+    {
+      "n": 2,
+      "kind": "saknar anslutning",
+      "way": "w860753009",
+      "roadKind": "residential",
+      "name": "Kyrkbacken",
+      "from": [
+        -62.6,
+        -31
+      ],
+      "to": [
+        -28.9,
+        -32
+      ],
+      "at": [
+        -44.7,
+        -36.1
+      ],
+      "lengthM": 38,
+      "meets": [
+        "w122157691",
+        "w860753012",
+        "w1239628611"
+      ],
+      "building": {
+        "id": "vw-torget-west-corner",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -62.6,
+          -31
+        ],
+        [
+          -60.8,
+          -31.8
+        ],
+        [
+          -58.9,
+          -32.6
+        ],
+        [
+          -57.1,
+          -33.4
+        ],
+        [
+          -55.4,
+          -33.9
+        ],
+        [
+          -53.5,
+          -34.3
+        ],
+        [
+          -51.5,
+          -34.7
+        ],
+        [
+          -49.5,
+          -35.1
+        ],
+        [
+          -47.6,
+          -35.5
+        ],
+        [
+          -45.6,
+          -35.9
+        ],
+        [
+          -43.8,
+          -36.3
+        ],
+        [
+          -41.9,
+          -36
+        ],
+        [
+          -39.9,
+          -35.8
+        ],
+        [
+          -37.9,
+          -35.5
+        ],
+        [
+          -35.9,
+          -35.3
+        ],
+        [
+          -34.2,
+          -35
+        ],
+        [
+          -32.5,
+          -34
+        ],
+        [
+          -30.7,
+          -33
+        ],
+        [
+          -29,
+          -32
+        ],
+        [
+          -28.9,
+          -32
+        ]
+      ]
+    },
+    {
+      "n": 3,
+      "kind": "bryts",
+      "way": "w1329020070",
+      "roadKind": "secondary",
+      "name": "Lokavägen",
+      "from": [
+        396.4,
+        7.7
+      ],
+      "to": [
+        381.7,
+        35.4
+      ],
+      "at": [
+        387.5,
+        21.4
+      ],
+      "lengthM": 34,
+      "meets": [],
+      "building": {
+        "id": "vw-pra-18",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          396.4,
+          7.7
+        ],
+        [
+          395.2,
+          9.3
+        ],
+        [
+          394.1,
+          10.9
+        ],
+        [
+          392.9,
+          12.5
+        ],
+        [
+          391.7,
+          14.1
+        ],
+        [
+          390.9,
+          15.3
+        ],
+        [
+          389.9,
+          17.1
+        ],
+        [
+          389,
+          18.8
+        ],
+        [
+          388,
+          20.6
+        ],
+        [
+          387,
+          22.3
+        ],
+        [
+          386,
+          24.1
+        ],
+        [
+          385.1,
+          25.8
+        ],
+        [
+          384.1,
+          27.6
+        ],
+        [
+          383.5,
+          28.6
+        ],
+        [
+          383,
+          30.6
+        ],
+        [
+          382.5,
+          32.5
+        ],
+        [
+          382,
+          34.4
+        ],
+        [
+          381.7,
+          35.4
+        ]
+      ]
+    },
+    {
+      "n": 4,
+      "kind": "saknas",
+      "way": "w1329020076",
+      "roadKind": "service",
+      "name": null,
+      "from": [
+        -660.3,
+        -358.7
+      ],
+      "to": [
+        -635.4,
+        -363.1
+      ],
+      "at": [
+        -647.5,
+        -361
+      ],
+      "lengthM": 27,
+      "meets": [
+        "w1329020077"
+      ],
+      "building": {
+        "id": "w870510828",
+        "dist": 0,
+        "shown": false,
+        "synthesised": false
+      },
+      "run": [
+        [
+          -660.3,
+          -358.7
+        ],
+        [
+          -658.3,
+          -359.1
+        ],
+        [
+          -656.4,
+          -359.4
+        ],
+        [
+          -654.4,
+          -359.8
+        ],
+        [
+          -652.4,
+          -360.1
+        ],
+        [
+          -650.5,
+          -360.5
+        ],
+        [
+          -648.5,
+          -360.8
+        ],
+        [
+          -646.5,
+          -361.2
+        ],
+        [
+          -644.5,
+          -361.5
+        ],
+        [
+          -642.6,
+          -361.8
+        ],
+        [
+          -640.6,
+          -362.2
+        ],
+        [
+          -638.6,
+          -362.5
+        ],
+        [
+          -636.7,
+          -362.9
+        ],
+        [
+          -635.4,
+          -363.1
+        ]
+      ]
+    },
+    {
+      "n": 5,
+      "kind": "slutar för tidigt",
+      "way": "w193810976",
+      "roadKind": "service",
+      "name": null,
+      "from": [
+        371.6,
+        -1.8
+      ],
+      "to": [
+        357.4,
+        14.4
+      ],
+      "at": [
+        362.2,
+        4.5
+      ],
+      "lengthM": 24,
+      "meets": [],
+      "building": {
+        "id": "vw-pra-21",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          371.6,
+          -1.8
+        ],
+        [
+          369.9,
+          -0.7
+        ],
+        [
+          368.3,
+          0.4
+        ],
+        [
+          366.6,
+          1.5
+        ],
+        [
+          364.9,
+          2.7
+        ],
+        [
+          363.3,
+          3.8
+        ],
+        [
+          362.2,
+          4.5
+        ],
+        [
+          361.3,
+          6.3
+        ],
+        [
+          360.4,
+          8.2
+        ],
+        [
+          359.6,
+          10
+        ],
+        [
+          358.7,
+          11.8
+        ],
+        [
+          357.9,
+          13.6
+        ],
+        [
+          357.4,
+          14.4
+        ]
+      ]
+    },
+    {
+      "n": 6,
+      "kind": "saknas",
+      "way": "w1329020075",
+      "roadKind": "service",
+      "name": null,
+      "from": [
+        -633.1,
+        -266.5
+      ],
+      "to": [
+        -614,
+        -269.4
+      ],
+      "at": [
+        -623.3,
+        -268
+      ],
+      "lengthM": 21,
+      "meets": [
+        "w870510820"
+      ],
+      "building": {
+        "id": "w870510826",
+        "dist": 0,
+        "shown": false,
+        "synthesised": false
+      },
+      "run": [
+        [
+          -633.1,
+          -266.5
+        ],
+        [
+          -631.2,
+          -266.8
+        ],
+        [
+          -629.2,
+          -267.1
+        ],
+        [
+          -627.2,
+          -267.4
+        ],
+        [
+          -625.2,
+          -267.7
+        ],
+        [
+          -623.3,
+          -268
+        ],
+        [
+          -621.3,
+          -268.3
+        ],
+        [
+          -619.3,
+          -268.6
+        ],
+        [
+          -617.3,
+          -268.9
+        ],
+        [
+          -615.3,
+          -269.2
+        ],
+        [
+          -614,
+          -269.4
+        ]
+      ]
+    },
+    {
+      "n": 7,
+      "kind": "bryts",
+      "way": "w193810976",
+      "roadKind": "service",
+      "name": null,
+      "from": [
+        361.6,
+        16.7
+      ],
+      "to": [
+        347.2,
+        8.2
+      ],
+      "at": [
+        353.9,
+        12.5
+      ],
+      "lengthM": 19,
+      "meets": [],
+      "building": {
+        "id": "vw-pra-djurskyddet",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          361.6,
+          16.7
+        ],
+        [
+          359.8,
+          15.7
+        ],
+        [
+          358.1,
+          14.7
+        ],
+        [
+          356.6,
+          13.9
+        ],
+        [
+          354.8,
+          13
+        ],
+        [
+          353.1,
+          12
+        ],
+        [
+          351.3,
+          11.1
+        ],
+        [
+          349.5,
+          10.1
+        ],
+        [
+          347.8,
+          9.1
+        ],
+        [
+          347.2,
+          8.2
+        ]
+      ]
+    },
+    {
+      "n": 8,
+      "kind": "bryts",
+      "way": "w862853201",
+      "roadKind": "service",
+      "name": null,
+      "from": [
+        -306.8,
+        -186.2
+      ],
+      "to": [
+        -311.6,
+        -202.6
+      ],
+      "at": [
+        -309,
+        -194
+      ],
+      "lengthM": 19,
+      "meets": [],
+      "building": {
+        "id": "vw-sorgarden",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -306.8,
+          -186.2
+        ],
+        [
+          -307.4,
+          -188.2
+        ],
+        [
+          -307.9,
+          -190.1
+        ],
+        [
+          -308.4,
+          -192
+        ],
+        [
+          -308.7,
+          -193
+        ],
+        [
+          -309.3,
+          -194.9
+        ],
+        [
+          -309.9,
+          -196.9
+        ],
+        [
+          -310.4,
+          -198.8
+        ],
+        [
+          -311,
+          -200.7
+        ],
+        [
+          -311.6,
+          -202.6
+        ]
+      ]
+    },
+    {
+      "n": 9,
+      "kind": "bryts",
+      "way": "w191323432",
+      "roadKind": "residential",
+      "name": "Skolgatan",
+      "from": [
+        -271.3,
+        41.4
+      ],
+      "to": [
+        -287.8,
+        42.9
+      ],
+      "at": [
+        -280.3,
+        42.3
+      ],
+      "lengthM": 18,
+      "meets": [],
+      "building": {
+        "id": "vw-barbellclub",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -271.3,
+          41.4
+        ],
+        [
+          -273.3,
+          41.6
+        ],
+        [
+          -275.3,
+          41.8
+        ],
+        [
+          -277.3,
+          42
+        ],
+        [
+          -279.3,
+          42.2
+        ],
+        [
+          -281.3,
+          42.4
+        ],
+        [
+          -283.3,
+          42.6
+        ],
+        [
+          -284.8,
+          42.7
+        ],
+        [
+          -286.8,
+          42.9
+        ],
+        [
+          -287.8,
+          42.9
+        ]
+      ]
+    },
+    {
+      "n": 10,
+      "kind": "bryts",
+      "way": "w175036243",
+      "roadKind": "residential",
+      "name": "Magasinsgatan",
+      "from": [
+        -404.3,
+        192.8
+      ],
+      "to": [
+        -408.9,
+        207.3
+      ],
+      "at": [
+        -406.7,
+        200.5
+      ],
+      "lengthM": 17,
+      "meets": [],
+      "building": {
+        "id": "vw-mag-warehouse",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -404.3,
+          192.8
+        ],
+        [
+          -404.9,
+          194.7
+        ],
+        [
+          -405.5,
+          196.7
+        ],
+        [
+          -406.1,
+          198.6
+        ],
+        [
+          -406.7,
+          200.5
+        ],
+        [
+          -407.3,
+          202.4
+        ],
+        [
+          -407.9,
+          204.3
+        ],
+        [
+          -408.5,
+          206.2
+        ],
+        [
+          -408.9,
+          207.3
+        ]
+      ]
+    },
+    {
+      "n": 11,
+      "kind": "bryts",
+      "way": "w860753012",
+      "roadKind": "tertiary",
+      "name": "Smedsgatan",
+      "from": [
+        -25.3,
+        -11
+      ],
+      "to": [
+        -27.6,
+        -25
+      ],
+      "at": [
+        -26.4,
+        -18.1
+      ],
+      "lengthM": 16,
+      "meets": [],
+      "building": {
+        "id": "vw-kyr-torget-lh",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -25.3,
+          -11
+        ],
+        [
+          -25.6,
+          -13
+        ],
+        [
+          -25.9,
+          -15
+        ],
+        [
+          -26.2,
+          -16.9
+        ],
+        [
+          -26.4,
+          -18.1
+        ],
+        [
+          -26.8,
+          -20.1
+        ],
+        [
+          -27.1,
+          -22
+        ],
+        [
+          -27.5,
+          -24
+        ],
+        [
+          -27.6,
+          -25
+        ]
+      ]
+    },
+    {
+      "n": 12,
+      "kind": "saknas",
+      "way": "w1239628611",
+      "roadKind": "tertiary",
+      "name": "Kyrkogatan",
+      "from": [
+        -28.9,
+        -32
+      ],
+      "to": [
+        -32.5,
+        -46
+      ],
+      "at": [
+        -30.9,
+        -39.7
+      ],
+      "lengthM": 16,
+      "meets": [
+        "w122157691",
+        "w860753009",
+        "w860753012"
+      ],
+      "building": {
+        "id": "vw-torget-kyrkbacken-pair",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -28.9,
+          -32
+        ],
+        [
+          -29.4,
+          -33.9
+        ],
+        [
+          -29.9,
+          -35.8
+        ],
+        [
+          -30.4,
+          -37.8
+        ],
+        [
+          -30.9,
+          -39.7
+        ],
+        [
+          -31.4,
+          -41.6
+        ],
+        [
+          -31.9,
+          -43.6
+        ],
+        [
+          -32.3,
+          -45.5
+        ],
+        [
+          -32.5,
+          -46
+        ]
+      ]
+    },
+    {
+      "n": 13,
+      "kind": "saknar anslutning",
+      "way": "w1329020068",
+      "roadKind": "living_street",
+      "name": "Prästgatan",
+      "from": [
+        58.1,
+        16.4
+      ],
+      "to": [
+        72.9,
+        14
+      ],
+      "at": [
+        65.9,
+        15.1
+      ],
+      "lengthM": 16,
+      "meets": [
+        "w122157691"
+      ],
+      "building": {
+        "id": "vw-torget-east-barn",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          58.1,
+          16.4
+        ],
+        [
+          60,
+          16.1
+        ],
+        [
+          62,
+          15.8
+        ],
+        [
+          64,
+          15.5
+        ],
+        [
+          65.9,
+          15.1
+        ],
+        [
+          67.9,
+          14.8
+        ],
+        [
+          69.9,
+          14.5
+        ],
+        [
+          71.9,
+          14.1
+        ],
+        [
+          72.9,
+          14
+        ]
+      ]
+    },
+    {
+      "n": 14,
+      "kind": "bryts",
+      "way": "w287145630",
+      "roadKind": "service",
+      "name": null,
+      "from": [
+        -215.8,
+        21.4
+      ],
+      "to": [
+        -221.8,
+        9.8
+      ],
+      "at": [
+        -219,
+        15.2
+      ],
+      "lengthM": 14,
+      "meets": [],
+      "building": {
+        "id": "vw-skg-16",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -215.8,
+          21.4
+        ],
+        [
+          -216.7,
+          19.6
+        ],
+        [
+          -217.7,
+          17.8
+        ],
+        [
+          -218.6,
+          16
+        ],
+        [
+          -219.5,
+          14.3
+        ],
+        [
+          -220.4,
+          12.5
+        ],
+        [
+          -221.4,
+          10.7
+        ],
+        [
+          -221.8,
+          9.8
+        ]
+      ]
+    },
+    {
+      "n": 15,
+      "kind": "bryts",
+      "way": "w934308175",
+      "roadKind": "service",
+      "name": null,
+      "from": [
+        -198.9,
+        -344.8
+      ],
+      "to": [
+        -191.6,
+        -334.8
+      ],
+      "at": [
+        -195.1,
+        -339.7
+      ],
+      "lengthM": 14,
+      "meets": [],
+      "building": {
+        "id": "w875778824",
+        "dist": 1.3,
+        "shown": true,
+        "synthesised": false
+      },
+      "run": [
+        [
+          -198.9,
+          -344.8
+        ],
+        [
+          -198.1,
+          -343.7
+        ],
+        [
+          -196.9,
+          -342.1
+        ],
+        [
+          -195.7,
+          -340.5
+        ],
+        [
+          -194.6,
+          -338.9
+        ],
+        [
+          -193.4,
+          -337.2
+        ],
+        [
+          -192.2,
+          -335.6
+        ],
+        [
+          -191.6,
+          -334.8
+        ]
+      ]
+    },
+    {
+      "n": 16,
+      "kind": "bryts",
+      "way": "w1239628612",
+      "roadKind": "tertiary",
+      "name": "Kyrkogatan",
+      "from": [
+        -36.6,
+        -69.1
+      ],
+      "to": [
+        -39,
+        -80.8
+      ],
+      "at": [
+        -37.8,
+        -74.9
+      ],
+      "lengthM": 13,
+      "meets": [],
+      "building": {
+        "id": "vw-nyg-3",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -36.6,
+          -69.1
+        ],
+        [
+          -37,
+          -71
+        ],
+        [
+          -37.4,
+          -73
+        ],
+        [
+          -37.8,
+          -74.9
+        ],
+        [
+          -38.2,
+          -76.9
+        ],
+        [
+          -38.6,
+          -78.9
+        ],
+        [
+          -39,
+          -80.8
+        ]
+      ]
+    },
+    {
+      "n": 17,
+      "kind": "bryts",
+      "way": "w1329020035",
+      "roadKind": "residential",
+      "name": "Åsgatan",
+      "from": [
+        -884.9,
+        244.4
+      ],
+      "to": [
+        -886.3,
+        235.5
+      ],
+      "at": [
+        -885.7,
+        239.4
+      ],
+      "lengthM": 10,
+      "meets": [],
+      "building": {
+        "id": "vw-csvwellness",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -884.9,
+          244.4
+        ],
+        [
+          -885.2,
+          242.4
+        ],
+        [
+          -885.5,
+          240.4
+        ],
+        [
+          -885.8,
+          238.4
+        ],
+        [
+          -886.1,
+          236.5
+        ],
+        [
+          -886.3,
+          235.5
+        ]
+      ]
+    },
+    {
+      "n": 18,
+      "kind": "bryts",
+      "way": "w1329020065",
+      "roadKind": "tertiary",
+      "name": "Kyrkogatan",
+      "from": [
+        -92,
+        -220.5
+      ],
+      "to": [
+        -96.8,
+        -227.6
+      ],
+      "at": [
+        -94.8,
+        -224.6
+      ],
+      "lengthM": 10,
+      "meets": [],
+      "building": {
+        "id": "w1422745011",
+        "dist": 2.5,
+        "shown": true,
+        "synthesised": false
+      },
+      "run": [
+        [
+          -92,
+          -220.5
+        ],
+        [
+          -93.1,
+          -222.1
+        ],
+        [
+          -94.2,
+          -223.8
+        ],
+        [
+          -95.4,
+          -225.4
+        ],
+        [
+          -96.2,
+          -226.7
+        ],
+        [
+          -96.8,
+          -227.6
+        ]
+      ]
+    },
+    {
+      "n": 19,
+      "kind": "bryts",
+      "way": "w191323431",
+      "roadKind": "residential",
+      "name": "Järnvägsgatan",
+      "from": [
+        -418.7,
+        -52.5
+      ],
+      "to": [
+        -416.5,
+        -45.4
+      ],
+      "at": [
+        -417.5,
+        -48.7
+      ],
+      "lengthM": 9,
+      "meets": [],
+      "building": {
+        "id": "vw-jarn-9",
+        "dist": 0.5,
+        "shown": true,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -418.7,
+          -52.5
+        ],
+        [
+          -418.1,
+          -50.6
+        ],
+        [
+          -417.5,
+          -48.7
+        ],
+        [
+          -416.9,
+          -46.8
+        ],
+        [
+          -416.5,
+          -45.4
+        ]
+      ]
+    },
+    {
+      "n": 20,
+      "kind": "saknar anslutning",
+      "way": "w193810976",
+      "roadKind": "service",
+      "name": null,
+      "from": [
+        383.5,
+        28.6
+      ],
+      "to": [
+        377.4,
+        25.3
+      ],
+      "at": [
+        380,
+        26.7
+      ],
+      "lengthM": 8,
+      "meets": [
+        "w1329020070"
+      ],
+      "building": {
+        "id": "vw-pra-19n",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          383.5,
+          28.6
+        ],
+        [
+          381.8,
+          27.7
+        ],
+        [
+          380,
+          26.7
+        ],
+        [
+          378.2,
+          25.8
+        ],
+        [
+          377.4,
+          25.3
+        ]
+      ]
+    },
+    {
+      "n": 21,
+      "kind": "bryts",
+      "way": "w287145634",
+      "roadKind": "service",
+      "name": null,
+      "from": [
+        -191.8,
+        -233.7
+      ],
+      "to": [
+        -194.4,
+        -239.1
+      ],
+      "at": [
+        -193.1,
+        -236.4
+      ],
+      "lengthM": 7,
+      "meets": [],
+      "building": {
+        "id": "vw-stn-11",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -191.8,
+          -233.7
+        ],
+        [
+          -192.7,
+          -235.5
+        ],
+        [
+          -193.5,
+          -237.3
+        ],
+        [
+          -194.4,
+          -239.1
+        ]
+      ]
+    },
+    {
+      "n": 22,
+      "kind": "bryts",
+      "way": "w860753012",
+      "roadKind": "tertiary",
+      "name": "Smedsgatan",
+      "from": [
+        -22.3,
+        9.8
+      ],
+      "to": [
+        -23.2,
+        3.9
+      ],
+      "at": [
+        -22.8,
+        6.8
+      ],
+      "lengthM": 7,
+      "meets": [],
+      "building": {
+        "id": "vw-kyr-9e-mansard",
+        "dist": 2.8,
+        "shown": true,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -22.3,
+          9.8
+        ],
+        [
+          -22.6,
+          7.8
+        ],
+        [
+          -22.9,
+          5.8
+        ],
+        [
+          -23.2,
+          3.9
+        ]
+      ]
+    },
+    {
+      "n": 23,
+      "kind": "bryts",
+      "way": "w1329020064",
+      "roadKind": "residential",
+      "name": "Magasinsgatan",
+      "from": [
+        -255.8,
+        62.1
+      ],
+      "to": [
+        -260.2,
+        66.1
+      ],
+      "at": [
+        -258,
+        64.1
+      ],
+      "lengthM": 7,
+      "meets": [],
+      "building": {
+        "id": "vw-jaktakademin",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -255.8,
+          62.1
+        ],
+        [
+          -257.3,
+          63.4
+        ],
+        [
+          -258.7,
+          64.8
+        ],
+        [
+          -260.2,
+          66.1
+        ]
+      ]
+    },
+    {
+      "n": 24,
+      "kind": "slutar för tidigt",
+      "way": "w862853202",
+      "roadKind": "service",
+      "name": null,
+      "from": [
+        -326.4,
+        -203.7
+      ],
+      "to": [
+        -330.3,
+        -202.3
+      ],
+      "at": [
+        -329.3,
+        -202.7
+      ],
+      "lengthM": 6,
+      "meets": [],
+      "building": {
+        "id": "vw-sorgarden",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -326.4,
+          -203.7
+        ],
+        [
+          -328.3,
+          -203
+        ],
+        [
+          -330.2,
+          -202.3
+        ],
+        [
+          -330.3,
+          -202.3
+        ]
+      ]
+    },
+    {
+      "n": 25,
+      "kind": "saknar anslutning",
+      "way": "w287145632",
+      "roadKind": "residential",
+      "name": "Hantverksgatan",
+      "from": [
+        -284.8,
+        42.7
+      ],
+      "to": [
+        -285.9,
+        38.9
+      ],
+      "at": [
+        -285.3,
+        40.8
+      ],
+      "lengthM": 5,
+      "meets": [
+        "w191323432"
+      ],
+      "building": {
+        "id": "vw-barbellclub",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -284.8,
+          42.7
+        ],
+        [
+          -285.3,
+          40.8
+        ],
+        [
+          -285.9,
+          38.9
+        ]
+      ]
+    },
+    {
+      "n": 26,
+      "kind": "bryts",
+      "way": "w1329020083",
+      "roadKind": "residential",
+      "name": "Hantverksgatan",
+      "from": [
+        -341.4,
+        -160.7
+      ],
+      "to": [
+        -342.5,
+        -164.5
+      ],
+      "at": [
+        -341.9,
+        -162.6
+      ],
+      "lengthM": 5,
+      "meets": [],
+      "building": {
+        "id": "vw-hjv-5",
+        "dist": 1.5,
+        "shown": true,
+        "synthesised": true
+      },
+      "run": [
+        [
+          -341.4,
+          -160.7
+        ],
+        [
+          -341.9,
+          -162.6
+        ],
+        [
+          -342.5,
+          -164.5
+        ]
+      ]
+    },
+    {
+      "n": 27,
+      "kind": "bryts",
+      "way": "w869907966",
+      "roadKind": "service",
+      "name": null,
+      "from": [
+        116,
+        18
+      ],
+      "to": [
+        116.2,
+        21
+      ],
+      "at": [
+        116.1,
+        20
+      ],
+      "lengthM": 4,
+      "meets": [],
+      "building": {
+        "id": "w869907965",
+        "dist": 1.3,
+        "shown": true,
+        "synthesised": false
+      },
+      "run": [
+        [
+          116,
+          18
+        ],
+        [
+          116.1,
+          20
+        ],
+        [
+          116.2,
+          21
+        ]
+      ]
+    },
+    {
+      "n": 28,
+      "kind": "bryts",
+      "way": "w122157689",
+      "roadKind": "residential",
+      "name": "Prästgatan",
+      "from": [
+        302.3,
+        36.8
+      ],
+      "to": [
+        300.3,
+        36.5
+      ],
+      "at": [
+        301.3,
+        36.7
+      ],
+      "lengthM": 3,
+      "meets": [],
+      "building": {
+        "id": "vw-pra-8",
+        "dist": 2.5,
+        "shown": true,
+        "synthesised": true
+      },
+      "run": [
+        [
+          302.3,
+          36.8
+        ],
+        [
+          300.3,
+          36.5
+        ]
+      ]
+    },
+    {
+      "n": 29,
+      "kind": "saknar anslutning",
+      "way": "w122157691",
+      "roadKind": "living_street",
+      "name": "Prästgatan",
+      "from": [
+        56.8,
+        16.7
+      ],
+      "to": [
+        58.1,
+        16.4
+      ],
+      "at": [
+        57.8,
+        16.5
+      ],
+      "lengthM": 3,
+      "meets": [
+        "w1329020068"
+      ],
+      "building": {
+        "id": "vw-torget-east-barn",
+        "dist": 0,
+        "shown": false,
+        "synthesised": true
+      },
+      "run": [
+        [
+          56.8,
+          16.7
+        ],
+        [
+          58.1,
+          16.4
+        ]
+      ]
+    },
+    {
+      "n": 30,
+      "kind": "bryts",
+      "way": "w862853244",
+      "roadKind": "service",
+      "name": null,
+      "from": [
+        -21.7,
+        88.3
+      ],
+      "to": [
+        -23.6,
+        87.8
+      ],
+      "at": [
+        -22.7,
+        88.1
+      ],
+      "lengthM": 3,
+      "meets": [],
+      "building": {
+        "id": "w1422743880",
+        "dist": 0.3,
+        "shown": true,
+        "synthesised": false
+      },
+      "run": [
+        [
+          -21.7,
+          88.3
+        ],
+        [
+          -23.6,
+          87.8
+        ]
+      ]
+    },
+    {
+      "n": 31,
+      "kind": "saknar anslutning",
+      "way": "w870510820",
+      "roadKind": "service",
+      "name": null,
+      "from": [
+        -633.3,
+        -266.5
+      ],
+      "to": [
+        -633.1,
+        -266.5
+      ],
+      "at": [
+        -633.1,
+        -266.5
+      ],
+      "lengthM": 2,
+      "meets": [
+        "w1329020075"
+      ],
+      "building": {
+        "id": "w870510826",
+        "dist": 0,
+        "shown": false,
+        "synthesised": false
+      },
+      "run": [
+        [
+          -633.3,
+          -266.5
+        ],
+        [
+          -633.1,
+          -266.5
+        ]
+      ]
+    },
+    {
+      "n": 32,
+      "kind": "saknar anslutning",
+      "way": "w1329020077",
+      "roadKind": "service",
+      "name": null,
+      "from": [
+        -660.6,
+        -358.7
+      ],
+      "to": [
+        -660.3,
+        -358.7
+      ],
+      "at": [
+        -660.3,
+        -358.7
+      ],
+      "lengthM": 2,
+      "meets": [
+        "w1329020076"
+      ],
+      "building": {
+        "id": "w870510828",
+        "dist": 0,
+        "shown": false,
+        "synthesised": false
+      },
+      "run": [
+        [
+          -660.6,
+          -358.7
+        ],
+        [
+          -660.3,
+          -358.7
+        ]
+      ]
+    }
+  ],
+  "missing": [
+    {
+      "id": "w870510826",
+      "kind": "industrial",
+      "name": null,
+      "at": [
+        -623.6,
+        -268.4
+      ],
+      "why": "dold: en vägs mittlinje går genom huset (buildingsOnRoads.ts)"
+    },
+    {
+      "id": "w870510828",
+      "kind": "industrial",
+      "name": null,
+      "at": [
+        -648.7,
+        -369.2
+      ],
+      "why": "dold: en vägs mittlinje går genom huset (buildingsOnRoads.ts)"
+    }
+  ],
+  "moved": [
+    {
+      "id": "w869907961",
+      "landmark": "gry-kyrka",
+      "shiftM": [
+        -1.4,
+        -0.3
+      ],
+      "distM": 1.4,
+      "at": [
+        -45.5,
+        17.2
+      ]
+    },
+    {
+      "id": "w193810975",
+      "landmark": "gry-campus",
+      "shiftM": [
+        -0.71,
+        -2.18
+      ],
+      "distM": 2.3,
+      "at": [
+        568,
+        -85.8
+      ]
+    },
+    {
+      "id": "w869907964",
+      "landmark": "gry-gastgivaregard",
+      "shiftM": [
+        -0.76,
+        -1.54
+      ],
+      "distM": 1.7,
+      "at": [
+        61.6,
+        37.8
+      ]
+    },
+    {
+      "id": "w598989255",
+      "landmark": "gry-pizzanshus",
+      "shiftM": [
+        1.67,
+        -0.73
+      ],
+      "distM": 1.8,
+      "at": [
+        345,
+        21.7
+      ]
+    },
+    {
+      "id": "w611766160",
+      "landmark": "gry-herrgard",
+      "shiftM": [
+        -1.13,
+        -3.02
+      ],
+      "distM": 3.2,
+      "at": [
+        688,
+        107.8
+      ]
+    },
+    {
+      "id": "w870510841",
+      "landmark": "gry-jarnvag",
+      "shiftM": [
+        -0.65,
+        -0.66
+      ],
+      "distM": 0.9,
+      "at": [
+        -462.9,
+        -178.3
+      ]
+    }
+  ],
+  "synthesised": [
+    {
+      "id": "vw-qvarn",
+      "kind": "historic",
+      "at": [
+        547.7,
+        38.9
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-skg-5",
+      "kind": "house",
+      "at": [
+        -115,
+        60
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-skg-8",
+      "kind": "house",
+      "at": [
+        -135,
+        15
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-skg-9",
+      "kind": "house",
+      "at": [
+        -131.6,
+        70.7
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-skg-10",
+      "kind": "house",
+      "at": [
+        -155,
+        15
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-skg-12",
+      "kind": "house",
+      "at": [
+        -175,
+        15
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-skg-14",
+      "kind": "outbuilding",
+      "at": [
+        -195,
+        15
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-2",
+      "kind": "house",
+      "at": [
+        -455,
+        320
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-4",
+      "kind": "house",
+      "at": [
+        -500,
+        297
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-6",
+      "kind": "house",
+      "at": [
+        -540,
+        283
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-6-aux",
+      "kind": "outbuilding",
+      "at": [
+        -533,
+        290
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-8",
+      "kind": "house",
+      "at": [
+        -580,
+        268
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-12",
+      "kind": "house",
+      "at": [
+        -660,
+        238
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-tree-cluster",
+      "kind": "house",
+      "at": [
+        -750,
+        200
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-tree-garage",
+      "kind": "outbuilding",
+      "at": [
+        -744.8,
+        210.9
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-15",
+      "kind": "house",
+      "at": [
+        -810,
+        178
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-18",
+      "kind": "house",
+      "at": [
+        -880,
+        148
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-18-garage",
+      "kind": "outbuilding",
+      "at": [
+        -873,
+        155
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-lakeshore",
+      "kind": "house",
+      "at": [
+        -960,
+        110
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-lakeshore-boathouse",
+      "kind": "outbuilding",
+      "at": [
+        -954,
+        117.4
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-kyr-5",
+      "kind": "house",
+      "at": [
+        -40,
+        -5
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-kyr-12",
+      "kind": "apartments",
+      "at": [
+        -58,
+        -8
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-kyr-14",
+      "kind": "house",
+      "at": [
+        -53.1,
+        8
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-kyr-20",
+      "kind": "house",
+      "at": [
+        -55,
+        40
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-kyr-25",
+      "kind": "house",
+      "at": [
+        -28,
+        55
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-kyr-26",
+      "kind": "house",
+      "at": [
+        -55,
+        60
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-pra-8",
+      "kind": "house",
+      "at": [
+        305,
+        30
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-pra-16",
+      "kind": "apartments",
+      "at": [
+        365,
+        35
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-nyg-4",
+      "kind": "house",
+      "at": [
+        -75,
+        -85
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-nyg-9",
+      "kind": "apartments",
+      "at": [
+        -155,
+        -110
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-hjv-5",
+      "kind": "house",
+      "at": [
+        -350,
+        -160
+      ],
+      "onRoad": {
+        "way": "w1329020083",
+        "name": "Hantverksgatan",
+        "kind": "residential",
+        "dist": 1.5,
+        "at": [
+          -342.5,
+          -164.5
+        ]
+      }
+    },
+    {
+      "id": "vw-hjv-7",
+      "kind": "house",
+      "at": [
+        -360,
+        -145
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-stalmobler",
+      "kind": "house",
+      "at": [
+        -350,
+        30
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-forskola",
+      "kind": "house",
+      "at": [
+        -215,
+        -250
+      ],
+      "onRoad": {
+        "way": "w287145634",
+        "name": null,
+        "kind": "service",
+        "dist": 1.1,
+        "at": [
+          -202.9,
+          -257.2
+        ]
+      }
+    },
+    {
+      "id": "vw-solidfeet",
+      "kind": "house",
+      "at": [
+        -545,
+        483
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-icopal",
+      "kind": "industrial",
+      "at": [
+        -800,
+        684
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-takskiffer",
+      "kind": "industrial",
+      "at": [
+        -604,
+        528
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-grythyttevikens-skiffertak",
+      "kind": "industrial",
+      "at": [
+        -464,
+        -639
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-skg-5-shed",
+      "kind": "shed",
+      "at": [
+        -108,
+        72
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-north-multi",
+      "kind": "apartments",
+      "at": [
+        -600,
+        270
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-bv-north-red-shed",
+      "kind": "shed",
+      "at": [
+        -680,
+        245
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-kyr-20-garage",
+      "kind": "outbuilding",
+      "at": [
+        -43.8,
+        44.5
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-pra-15s",
+      "kind": "house",
+      "at": [
+        352,
+        5
+      ],
+      "onRoad": {
+        "way": "w193810976",
+        "name": null,
+        "kind": "service",
+        "dist": 0.1,
+        "at": [
+          347.8,
+          9.1
+        ]
+      }
+    },
+    {
+      "id": "vw-stn-5",
+      "kind": "house",
+      "at": [
+        -430,
+        -135
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-stn-6",
+      "kind": "house",
+      "at": [
+        -430,
+        -160
+      ],
+      "onRoad": null
+    },
+    {
+      "id": "vw-jarn-9",
+      "kind": "house",
+      "at": [
+        -410,
+        -50
+      ],
+      "onRoad": {
+        "way": "w191323431",
+        "name": "Järnvägsgatan",
+        "kind": "residential",
+        "dist": 0.5,
+        "at": [
+          -416.5,
+          -45.4
+        ]
+      }
+    },
+    {
+      "id": "vw-kyr-9e-mansard",
+      "kind": "house",
+      "at": [
+        -14,
+        5
+      ],
+      "onRoad": {
+        "way": "w860753012",
+        "name": "Smedsgatan",
+        "kind": "tertiary",
+        "dist": 2.8,
+        "at": [
+          -22.3,
+          9.8
+        ]
+      }
+    }
+  ],
+  "synthesisedHidden": [
+    "vw-skg-16",
+    "vw-pra-18",
+    "vw-pra-21",
+    "vw-pra-djurskyddet",
+    "vw-nyg-3",
+    "vw-sorgarden",
+    "vw-jaktakademin",
+    "vw-barbellclub",
+    "vw-csvwellness",
+    "vw-kyr-torget-lh",
+    "vw-torget-kyrkbacken-pair",
+    "vw-torget-west-corner",
+    "vw-torget-east-barn",
+    "vw-pra-19n",
+    "vw-stn-11",
+    "vw-mag-warehouse"
+  ],
+  "shedConflicts": [],
+  "images": [
+    "karta-byn.png",
+    "karta-karnan.png",
+    "karta-torget.png",
+    "karta-1.png",
+    "karta-2.png",
+    "karta-3.png",
+    "karta-4.png",
+    "karta-5.png",
+    "karta-6.png",
+    "karta-7.png",
+    "karta-8.png",
+    "karta-9.png",
+    "karta-10.png"
+  ]
+}
