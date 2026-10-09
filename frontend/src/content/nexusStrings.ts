@@ -333,7 +333,7 @@ export const STRINGS = {
   'rival.opens': { sv: 'Byn öppnar {time}', en: 'The village opens at {time}' },
   // ORDER 298b — när ryktet håller nere gästerna (arrivals.ts reputationHoldsGuests),
   // och provsmakningens sällskap med spelarens medaljer.
-  'calm.evening': { sv: 'Lugn kväll: ryktet är ännu lågt i byn', en: 'A quiet evening: your name is still small in the village' },
+  'calm.evening': { sv: 'Lugn kväll: ryktet är ännu lågt i byn', en: 'A quiet evening: your reputation in the village is still low' },
   // ORDER 299 — kamerans knappar.
   'cam.group': { sv: 'Kameran', en: 'Camera' },
   'cam.left': { sv: 'Vrid åt vänster (Q)', en: 'Turn left (Q)' },
@@ -358,8 +358,9 @@ export const STRINGS = {
   'tasting.parties': { sv: '{n} sällskap till i kväll. Fler med medaljer i Stensöta och Kalastorget.', en: '{n} more parties tonight. More with medals in Stensöta and Kalastorget.' },
   // ORDER 298 — kvällskassans prognos.
   'till.forecast': { sv: 'I den här takten: {n}', en: 'At this pace: {n}' },
-  'rival.overtake': { sv: 'Förbi {name}', en: 'Past {name}' },
-  'rival.us': { sv: 'Vi', en: 'Us' },
+  'rival.overtake': { sv: 'Förbi {name}', en: 'Overtook {name}' },
+  // ORDER 323 §7 — etiketten efter krogens namn i Byn i kväll (förut "Vi" / "Us").
+  'rival.us': { sv: 'Din krog', en: 'Your place' },
   // Namnen är desamma som byk.venue.* och byTruckar.js. {company} är företagets namn i liggaren.
   'venue.ours': { sv: '{company}', en: '{company}' },
   'venue.torg': { sv: 'Torgkrogen', en: 'Torgkrogen' },
@@ -373,7 +374,8 @@ export const STRINGS = {
   // Jämförelsen efter kvällen
   'cmp.kicker': { sv: 'Efter kvällen', en: 'After the evening' },
   'cmp.title': { sv: 'Byn i kväll', en: 'The village tonight' },
-  'cmp.note': { sv: 'Under kvällen räknar bandet gäster. Här syns också vad varje gäst och varje stol gav.', en: 'During the evening the band counts guests. Here you also see what each guest and each seat brought in.' },
+  // ORDER 323 §7 — "bandet" (raden Byn i kväll) blev "the band" på engelska; det är byn som räknar.
+  'cmp.note': { sv: 'Byn räknar gästerna under kvällen. Här syns också vad varje gäst och varje stol gav.', en: 'The village counts the guests during the evening. Here you can also see what each guest and each seat brought in.' },
   'cmp.guests': { sv: 'Gäster', en: 'Guests' },
   'cmp.perGuest': { sv: 'Per gäst', en: 'Per guest' },
   'cmp.perSeat': { sv: 'Per stol', en: 'Per seat' },
@@ -392,11 +394,11 @@ export const STRINGS = {
   'shop.medals': { sv: 'Medaljerna', en: 'Medals' },
   'shop.needs': { sv: 'Kräver {medal} i {pavilion}', en: 'Needs {medal} in {pavilion}' },
   'shop.needsShort': { sv: 'Kräver {medal}', en: 'Needs {medal}' },
-  'shop.inSlot': { sv: 'I facket', en: 'In tomorrow' },
+  'shop.inSlot': { sv: 'I facket', en: 'Set for tomorrow' },
   'shop.have': { sv: 'Du har {medal}', en: 'You have {medal}' },
   'shop.noMedal': { sv: 'Ingen medalj än', en: 'No medal yet' },
   'shop.tomorrow': { sv: 'I morgon', en: 'Tomorrow' },
-  'shop.course': { sv: 'Kurs i Måltidens hus i morgon bitti', en: 'A course at Måltidens hus tomorrow morning' },
+  'shop.course': { sv: 'Kurs i Måltidens hus i morgon bitti', en: 'A course at the House of the Meal tomorrow morning' },
   'shop.buy': { sv: 'Köp för {price}', en: 'Buy for {price}' },
   'shop.short': { sv: 'Krediterna räcker inte', en: 'Not enough credits' },
   'shop.locked': { sv: 'Medaljen öppnar den', en: 'The medal opens it' },
@@ -565,7 +567,7 @@ export const TABLE = {
       } as Record<string, string>,
       en: {
         foodtruck: 'You have passed the entrance exam. There is a food truck free on the square. It is yours, if you want it.',
-        vinbar: 'Congratulations! You have a good name in the village, and I hear you have been taking money. Now, entirely of your own free will, you can take over the wine bar.',
+        vinbar: 'Congratulations! You have a good name in the village, and I hear the money has been coming in. Now, entirely of your own free will, you can take over the wine bar.',
         bistro: 'You have what it takes for a bistro. The owner will let you rebuild the house, and the bank lends for the work. The star is only awarded to a bistro.'
       } as Record<string, string>
     },
@@ -858,7 +860,7 @@ export const TABLE = {
       },
       exam: {
         sv: 'Bra. Nu inträdesprovet i samma paviljong: åtta frågor, och sex rätt ger brons. Går det inte, gör om det. I dag räknas besöken inte bland dagens val.',
-        en: "Good. Now the entrance exam in the same pavilion: eight questions, and six right gives bronze. If it doesn't work, try again. Today the visits don't use up any of today's choices."
+        en: "Good. Now the entrance exam in the same pavilion: eight questions, and six correct answers earn bronze. If it doesn't work, try again. Today the visits don't use up any of today's choices."
       },
       // ORDER 313 §2 — Åsas replik när första provet är klarat.
       // ORDER 315b — foodtrucken (ORDRAR_314-316_D7.md, ORDER 315 Flödet punkt 2).
@@ -1002,7 +1004,7 @@ export const TABLE = {
     noMedalsYet: { sv: 'Inga medaljer ännu', en: 'No medals yet' },
     practice: { sv: 'Öva', en: 'Practise' },
     exam: { sv: (level: string) => `Prov: ${level}`, en: (level: string) => `Exam: ${level}` },
-    examDone: { sv: 'Platina är taget', en: 'Platinum is taken' },
+    examDone: { sv: 'Platina är taget', en: 'Platinum earned' },
     theatreLocked: {
       sv: 'Öppnas när du har silver i två paviljonger',
       en: 'Opens when you have silver in two pavilions'
@@ -1091,7 +1093,7 @@ export const TABLE = {
     colGuests: { sv: 'Gäster', en: 'Guests' },
     colContent: { sv: 'Nöjda', en: 'Satisfied' },
     open: { sv: 'Visa hela byn (B)', en: 'Show the whole village (B)' },
-    close: { sv: 'Fäll ihop (B)', en: 'Fold (B)' },
+    close: { sv: 'Fäll ihop (B)', en: 'Collapse (B)' },
     youLead: {
       sv: (second: string | null) => (second ? `Du har flest nöjda gäster i kväll. ${second} är tvåa.` : 'Du har flest nöjda gäster i kväll.'),
       en: (second: string | null) => (second ? `You have the most satisfied guests tonight. ${second} is second.` : 'You have the most satisfied guests tonight.')
@@ -1412,7 +1414,7 @@ export const TABLE = {
       metodkoket: { sv: 'köket', en: 'the kitchen' },
       stensota: { sv: 'vin och dryck', en: 'wine and drinks' },
       kalastorget: { sv: 'bemötande och omdöme', en: 'hospitality and judgement' },
-      gastronomiskateatern: { sv: 'helheten', en: 'the whole' }
+      gastronomiskateatern: { sv: 'helheten', en: 'the meal as a whole' }
     },
     counts: { sv: ['ingen', 'en', 'två', 'tre', 'fyra', 'fem'], en: ['no', 'one', 'two', 'three', 'four', 'five'] },
     pavilionOne: { sv: 'paviljong', en: 'pavilion' },
@@ -2010,7 +2012,7 @@ export const TABLE = {
     },
     'book-dj': {
       name: { sv: 'DJ i kväll', en: 'A DJ tonight' },
-      description: { sv: 'Musik från nio, och alla som sitter tar ett glas till. Köp vin till. Lönar sig en full kväll, och mest när det inte är varje kväll.', en: 'Music from nine o’clock, and everyone seated orders another glass. Buy wine for it. It pays on a full evening, and most when it isn’t every evening.' }
+      description: { sv: 'Musik från nio, och alla som sitter tar ett glas till. Köp vin till. Lönar sig en full kväll, och mest när det inte är varje kväll.', en: 'Music from nine o’clock, and everyone seated orders another glass. Stock up on wine. It pays on a full evening, and most when it isn’t every evening.' }
     }
   },
   // ORDER 291 — rätter, råvaror och leverantörer (m4Catalogue.ts) på
@@ -2353,7 +2355,7 @@ export const TABLE = {
       business: { sv: 'Affärsfolk', en: 'Business guests' }
     },
     book: {
-      student: { sv: 'Studenter från Måltidens hus', en: 'Students from Måltidens hus' },
+      student: { sv: 'Studenter från Måltidens hus', en: 'Students from the House of the Meal' },
       middle: { sv: 'Par och familjer från byn', en: 'Couples and families from the village' },
       high: { sv: 'Bilar från Örebro och Karlstad', en: 'Cars from Örebro and Karlstad' },
       social: { sv: (name: string) => name, en: (name: string) => name },
@@ -2426,7 +2428,7 @@ export const TABLE = {
         en: (first: string, second: string | null) => second ? `Most guests were ${first}, followed by ${second}.` : `Most guests were ${first}.`
       },
       who: {
-        student: { sv: 'studenter från Måltidens hus', en: 'students from Måltidens hus' },
+        student: { sv: 'studenter från Måltidens hus', en: 'students from the House of the Meal' },
         middle: { sv: 'par och familjer från byn', en: 'couples and families from the village' },
         high: { sv: 'bilar från Örebro och Karlstad', en: 'cars from Örebro and Karlstad' }
       },
@@ -2791,7 +2793,7 @@ export const TABLE = {
     continue: { sv: 'Fortsätt', en: 'Continue' },
     scaleDown: {
       heading: { sv: 'Skala ner', en: 'Scale down' },
-      body: { sv: 'En aktiv reträtt när passet blöder. Går att ångra — öppna igen när kassan tål det.', en: 'An active retreat when the pass is bleeding. Reversible — reopen when the cash can take it.' },
+      body: { sv: 'En aktiv reträtt när passet blöder. Går att ångra — öppna igen när kassan tål det.', en: 'An active retreat when service is losing money. Reversible — reopen when the cash can take it.' },
       shortenMenu: { sv: 'Korta menyn', en: 'Shorten the menu' },
       restoreMenu: { sv: 'Återställ menyn', en: 'Restore the menu' },
       shortenMenuDesc: { sv: 'Sänk råvarunivån ett steg. Sparar per gäst, sänker matens kvalitet över tid.', en: 'Lower the ingredient level one step. Saves per guest, dampens food quality over time.' },
@@ -2802,7 +2804,7 @@ export const TABLE = {
       restoreWineDesc: { sv: 'Öppna listan igen. Kvaliteten börjar återhämta sig.', en: 'Open the list again. The quality reading starts to recover.' },
       closeLunch: { sv: 'Stäng lunchen', en: 'Close lunch' },
       openLunch: { sv: 'Öppna lunchen igen', en: 'Open lunch again' },
-      closeLunchDesc: { sv: 'Ingen lunch förrän du öppnar igen. Sparar personal och råvaror; stamgästerna märker den stängda dörren.', en: "No lunch until you open again. Saves staff + ingredients; the room's regular tables notice the door." },
+      closeLunchDesc: { sv: 'Ingen lunch förrän du öppnar igen. Sparar personal och råvaror; stamgästerna märker den stängda dörren.', en: "No lunch until you open again. Saves staff and ingredients; the regulars notice the closed door." },
       openLunchDesc: { sv: 'Ta tillbaka lunchen. Ryktet börjar återhämta sig.', en: 'Bring lunch back. The reputation starts to recover.' },
       closeDinner: { sv: 'Stäng kvällen', en: 'Close dinner' },
       openDinner: { sv: 'Öppna kvällen igen', en: 'Open dinner again' },
@@ -3418,7 +3420,7 @@ export const TABLE = {
         en: (ask: string, sec: string) => `${ask} · ${sec} s`
       },
       stepFailed: { sv: (ask: string) => `${ask} · fel`, en: (ask: string) => `${ask} · wrong` },
-      stepUnreached: { sv: 'Nås inte', en: 'Locked' },
+      stepUnreached: { sv: 'Nås inte', en: 'Not reached' },
       stepAsks: {
         sv: { episteme: 'Vad', techne: 'Hur', phronesis: 'När och varför' } as Record<string, string>,
         en: { episteme: 'What', techne: 'How', phronesis: 'When and why' } as Record<string, string>

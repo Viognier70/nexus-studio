@@ -62,7 +62,7 @@
             },
             "c": {
               "label": "The game, the richest and heaviest plate we have tonight",
-              "explanation": "Deer wants a wine with more body, such as a red. A light white disappears next to it."
+              "explanation": "Venison wants a wine with more body, such as a red. A light white disappears next to it."
             }
           },
           "fail": {
@@ -621,7 +621,7 @@
             },
             "c": {
               "label": "Brewed in our own kitchen, in small batches every week in season",
-              "explanation": "The wine bar does not brew. The ale house has its own brewery; we buy from Nora."
+              "explanation": "The wine bar does not brew. The Brewpub has its own brewery; we buy from Nora."
             }
           },
           "fail": {

@@ -298,7 +298,7 @@ const DILEMMA_TEXT: Record<string, DilemmaText> = {
     },
     explanation: {
       sv: 'Tröttheten vägdes mot att vagnen ska hålla öppet. Pauser som är bestämda i förväg blir av; pauser när det är lugnt blir sällan av. En varm och skonsam plats att stå på är arbetsgivarens sak, inte den anställdes.',
-      en: 'The tiredness was weighed against keeping the truck open. Breaks that are set in advance happen; breaks for when it is quiet rarely do. A warm, kind place to stand is the employer’s business, not the employee’s.'
+      en: 'The tiredness was weighed against keeping the truck open. Breaks that are set in advance happen; breaks for when it is quiet rarely do. A warm place to stand that is easy on the body is the employer’s business, not the employee’s.'
     },
     legalNote: {
       sv: 'Arbetsmiljölagen och Arbetsmiljöverkets föreskrifter kräver att arbetsgivaren förebygger ohälsa, också av långvarigt stående arbete och kyla. Arbetstidslagen kräver rast efter högst fem timmars arbete.',
@@ -317,7 +317,7 @@ const DILEMMA_TEXT: Record<string, DilemmaText> = {
     },
     explanation: {
       sv: 'Gästen vägdes mot kassan. Det som står på skylten i förväg undviker grälet vid luckan, och en reserv gör att ett fel i tekniken inte blir ett fel mot gästen. Att bjuda varje gång blir dyrt och säger inget om nästa gång.',
-      en: 'The customer was weighed against the till. What the sign says in advance avoids the argument at the hatch, and a fallback means a fault in the technology doesn’t become a fault against the customer. Treating everyone every time gets expensive and says nothing about next time.'
+      en: 'The customer was weighed against the takings. What the sign says in advance avoids the argument at the hatch, and a fallback means a fault in the technology doesn’t become a fault against the customer. Treating everyone every time gets expensive and says nothing about next time.'
     }
   }
 };

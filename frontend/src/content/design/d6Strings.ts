@@ -31,7 +31,7 @@ export const D6_STRINGS: Record<string, { sv: string; en: string }> = {
   'msg.open': { sv: 'Öppna', en: 'Open' },
   'msg.later': { sv: 'Sedan', en: 'Later' },
 
-  'asa.line.welcome': { sv: 'Välkommen till Grythyttan. Jag kommer från Campus och följer dig i dag. Banken lånar inte ut något förrän den har sett vad du kan, så vi börjar med att öva. Öppna Måltidens hus och öva i Stensöta, där sommelierna håller till. Inget står på spel.', en: 'Welcome to Grythyttan. I’m from Campus and I’ll be with you today. The bank won’t lend you anything until it has seen what you can do, so we start by practising. Open Måltidens hus and practise in Stensöta, where the sommeliers are. Nothing is at stake.' },
+  'asa.line.welcome': { sv: 'Välkommen till Grythyttan. Jag kommer från Campus och följer dig i dag. Banken lånar inte ut något förrän den har sett vad du kan, så vi börjar med att öva. Öppna Måltidens hus och öva i Stensöta, där sommelierna håller till. Inget står på spel.', en: 'Welcome to Grythyttan. I’m from Campus and I’ll be with you today. The bank won’t lend you anything until it has seen what you can do, so we start by practising. Open the House of the Meal and practise in Stensöta, where the sommeliers are. Nothing is at stake.' },
   'asa.line.unlock': { sv: 'Nu har du visat vad du kan. Banken lyssnar, och du kan börja satsa.', en: 'Now you’ve shown what you can do. The bank is listening, and you can start to invest.' },
 
   // ----- teckenförklaringen -----

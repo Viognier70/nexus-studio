@@ -225,7 +225,7 @@
       },
       "d": {
        "label": "It’s overheated by the grill and switches itself off until it cools down.",
-       "explanation": "That's rare. The connection is far more common."
+       "explanation": "That's rare. A dropped connection is far more common."
       }
      },
      "fail": {
@@ -419,7 +419,7 @@
       },
       "c": {
        "label": "Nowhere near the food at all.",
-       "explanation": "Careful, but out by the tables is fine."
+       "explanation": "Overly cautious: out by the tables is fine."
       },
       "d": {
        "label": "Only if it's tied up.",

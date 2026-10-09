@@ -20,7 +20,7 @@ export const SERVICE_MODE_STRINGS = {
   "cost.dj": { sv: "DJ", en: "DJ" },
   "cost.dj.sub": { sv: "Helgens kvällar", en: "Weekend evenings" },
   "cost.skills": { sv: "Kompetens", en: "Training" },
-  "cost.skills.sub": { sv: "Kursen i Måltidens hus", en: "The course at Måltidens hus" },
+  "cost.skills.sub": { sv: "Kursen i Måltidens hus", en: "The course at the House of the Meal" },
   "serviceMode.tab.stock": { sv: "Lagret", en: "Stock" },
   "serviceMode.tab.stream": { sv: "Kvällen", en: "Tonight" },
   "serviceMode.tab.room": { sv: "Rummet", en: "The room" },
