@@ -1151,121 +1151,80 @@ const WINDOW_KINDS = new Set([
   'commercial'
 ]);
 
-// Compute world-space instances of procedural windows on the four OBB
-// faces of a building. Windows sit ~0.03 m inside the wall so they
-// depth-write above the wall face without z-fighting. Reasonable bay
-// and storey counts per OBB extent — no exhaustive per-vertex.
-function windowsFor(b: Extruded): Array<{
-  pos: [number, number, number];
-  rotY: number;
-  w: number;
-  h: number;
-}> {
+// ORDER 323 §4 (Anders 2026-10-09: "fönstren ska sitta i fasaden, inte sväva
+// framför väggen eller ligga på marken"). Fönstren sitter på husets ritade
+// väggar: polygonens kanter (samma polygon som ExtrudeGeometry), med normalen
+// utåt prövad per kant mot polygonen (också i hus med inåtgående hörn).
+// Förut stod de på den omskrivna rektangelns fyra sidor (OBB); där väggen
+// inte låg på rektangeln hamnade 770 av 1 005 fönster inne i huset, och
+// lådans kant stack ut genom väggen. Byns kvällsljus (VillageWindows) tänder
+// samma fönster, så ett hus har en uppsättning fönster.
+//
+// Höjden som förut (ORDER 021A): våningarna delar väggen mellan sockeln och
+// takfoten, fönstrets mitt mitt i våningen, och en rad som inte ryms under
+// takfoten (WINDOW_EAVE_MARGIN_M) ritas inte.
+export const FACADE_WINDOW = { w: 0.95, h: 1.35, depth: 0.06, bayM: 3.2, cornerM: 0.6, eaveMarginM: 0.15, proudM: 0.02 } as const;
+export interface FacadeWindow { pos: [number, number, number]; rotY: number; w: number; h: number; edge: number; i: number; n: number; storey: number }
+
+export function plinthHeightFor(b: Extruded): number {
+  return b.profile.wealth === 'prosperous' ? 0.65 : b.profile.wealth === 'modest' ? 0.32 : 0.42;
+}
+
+/** Väggens kanter med normalen utåt (prövad mot polygonen) och längden. */
+export function wallEdges(poly: readonly Vec2Tuple[]): Array<{ a: Vec2Tuple; t: [number, number]; n: [number, number]; L: number }> {
+  const ring = poly.length > 1 && poly[0][0] === poly[poly.length - 1][0] && poly[0][1] === poly[poly.length - 1][1] ? poly : [...poly, poly[0]];
+  const out: Array<{ a: Vec2Tuple; t: [number, number]; n: [number, number]; L: number }> = [];
+  for (let k = 0; k < ring.length - 1; k++) {
+    const a = ring[k];
+    const b = ring[k + 1];
+    const L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    if (L < 0.01) continue;
+    const t: [number, number] = [(b[0] - a[0]) / L, (b[1] - a[1]) / L];
+    let n: [number, number] = [t[1], -t[0]];
+    const mx = (a[0] + b[0]) / 2;
+    const mz = (a[1] + b[1]) / 2;
+    if (inside(ring as Vec2Tuple[], mx + n[0] * 0.05, mz + n[1] * 0.05)) n = [-n[0], -n[1]];
+    out.push({ a, t, n, L });
+  }
+  return out;
+}
+
+function windowsFor(b: Extruded): FacadeWindow[] {
+  const F = FACADE_WINDOW;
   const wallH = b.height;
-  // ORDER 021A facade-fidelity fix. Prior storey-Y formula placed the
-  // ground-floor window at Y=0.90 (below the 0.32–0.65 m plinth) and
-  // the top-floor window at Y = wallH − 0.30 (poking through the roof
-  // ridge for 2+ storey buildings). Corrected algorithm:
-  //   1. Budget the usable wall span as `wallH − plinthH` where
-  //      plinthH matches the wealth-tier plinth added by BuildingPlinth.
-  //   2. Storey count preferrs OSM `building:levels` if present,
-  //      otherwise floor(usable/2.7) — Bergslag domestic storeys are
-  //      2.4–2.7 m floor-to-floor, hence the 2.7 default.
-  //   3. Storeys evenly divide the usable span (accommodates 4.5 m
-  //      one-storey houses through 12 m four-storey apartments).
-  //   4. Window centre sits at each storey's midpoint. With winH=1.35
-  //      the sill lands at ~0.6 m above each floor — a typical
-  //      Bergslag sill height, comfortably above any plinth band.
-  const plinthH =
-    b.profile.wealth === 'prosperous' ? 0.65 :
-    b.profile.wealth === 'modest' ? 0.32 : 0.42;
+  const plinthH = plinthHeightFor(b);
   const storeyH = 2.7;
   const usableH = Math.max(1.8, wallH - plinthH);
-  const wallLevels =
+  const storeys =
     b.building.buildingLevels != null &&
     b.building.buildingLevels >= 1 &&
     b.building.buildingLevels < 6
       ? b.building.buildingLevels
       : Math.max(1, Math.min(4, Math.floor(usableH / (storeyH * 0.9))));
-  const storeys = wallLevels;
   const storeySpan = usableH / storeys;
   const storeyYs: number[] = [];
   for (let s = 0; s < storeys; s++) {
-    storeyYs.push(plinthH + (s + 0.5) * storeySpan);
+    const y = plinthH + (s + 0.5) * storeySpan;
+    if (y + F.h / 2 <= wallH - F.eaveMarginM) storeyYs.push(y);
   }
-  // Bay counts per side scale with the OBB extent.
-  const rw = b.ridgeW;
-  const rd = b.ridgeD;
-  const longBays = Math.max(2, Math.min(8, Math.round(rw / 3.2)));
-  const shortBays = Math.max(1, Math.min(4, Math.round(rd / 3.2)));
-  const longSpan = rw - 1.8;
-  const shortSpan = rd - 1.8;
-  const longXs: number[] = [];
-  for (let i = 0; i < longBays; i++) {
-    longXs.push(-longSpan / 2 + (i * longSpan) / Math.max(1, longBays - 1));
-  }
-  const shortZs: number[] = [];
-  for (let i = 0; i < shortBays; i++) {
-    shortZs.push(-shortSpan / 2 + (i * shortSpan) / Math.max(1, shortBays - 1));
-  }
-  const angle = -b.ridgeAngle;
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
-  const cx = b.ridgeCentre[0];
-  const cz = b.ridgeCentre[1];
-  const halfD = rd / 2 - 0.03;
-  const halfW = rw / 2 - 0.03;
-  const out: Array<{ pos: [number, number, number]; rotY: number; w: number; h: number }> = [];
-  const winW = 0.95;
-  const winH = 1.35;
-
-  const project = (lx: number, ly: number, lz: number): [number, number, number] => {
-    const wx = cx + lx * cos - lz * sin;
-    const wz = cz + lx * sin + lz * cos;
-    return [wx, ly, wz];
-  };
-
-  // ORDER 132 — polygon-guard. Fönster-XZ som faller utanför byggnadens
-  // faktiska footprint kasseras. ORDER 130 mätte 3 156 fönster som hängde
-  // upp till 36 m från fasaden på 297 av 338 hus (88 %) — orsaken var
-  // att positionerna beräknas från OBB-facen (`ridgeW`/`ridgeD`), inte
-  // från polygonens kanter. Icke-rektangulära hus har OBB-face som
-  // sticker ut i luften.
-  //
-  // `buildFacade` (LOD 0/1) undviker felet strukturellt genom att
-  // iterera polygonens kanter direkt (ORDER 058 §1); här (LOD 2)
-  // behåller vi OBB-iterationen och drop:ar utfallen efteråt.
-  // Projicering till närmaste kant hade varit ett annat val — den
-  // vägen väljs inte förrän det finns skäl att inte kassera, och
-  // ORDER 132 §2 säger "uppfinn ingen ny strategi".
-  const poly = b.building.poly;
-  const inFootprint = (pos: [number, number, number]): boolean =>
-    inside(poly, pos[0], pos[2]);
-
-  for (const y of storeyYs) {
-    // Long +Z face (outward +Z in local frame → world rotY = angle)
-    for (const lx of longXs) {
-      const p = project(lx, y, halfD);
-      if (inFootprint(p)) out.push({ pos: p, rotY: angle, w: winW, h: winH });
+  const out: FacadeWindow[] = [];
+  wallEdges(b.building.poly).forEach((e, edge) => {
+    const span = e.L - 2 * F.cornerM;
+    const n = Math.min(8, Math.floor(span / F.bayM) + (span >= F.w ? 1 : 0));
+    if (n < 1) return;
+    const rotY = Math.atan2(e.n[0], e.n[1]);
+    for (let i = 0; i < n; i++) {
+      const s = F.cornerM + ((i + 0.5) * span) / n;
+      const x = e.a[0] + e.t[0] * s + e.n[0] * F.proudM;
+      const z = e.a[1] + e.t[1] * s + e.n[1] * F.proudM;
+      storeyYs.forEach((y, storey) => out.push({ pos: [x, y, z], rotY, w: F.w, h: F.h, edge, i, n, storey }));
     }
-    // Long -Z face
-    for (const lx of longXs) {
-      const p = project(lx, y, -halfD);
-      if (inFootprint(p)) out.push({ pos: p, rotY: angle + Math.PI, w: winW, h: winH });
-    }
-    // Short +X face
-    for (const lz of shortZs) {
-      const p = project(halfW, y, lz);
-      if (inFootprint(p)) out.push({ pos: p, rotY: angle - Math.PI / 2, w: winW, h: winH });
-    }
-    // Short -X face
-    for (const lz of shortZs) {
-      const p = project(-halfW, y, lz);
-      if (inFootprint(p)) out.push({ pos: p, rotY: angle + Math.PI / 2, w: winW, h: winH });
-    }
-  }
+  });
   return out;
 }
+
+/** ORDER 323 §4 — fönstren på ett ritat hus (samma som OsmBuildings ritar och byns kvällsljus tänder). */
+export const facadeWindowsOf: (b: Extruded) => FacadeWindow[] = windowsFor;
 
 // ORDER 271 — samma urval och samma volym som renderingen, för vinbarens
 // kameraprov med grannhusen (wineBarRoom.checkCameraView `extra`).
@@ -1276,10 +1235,9 @@ export function isRenderedByOsmBuildings(b: RawBuilding): boolean {
 export type OsmBuildingVolume = Extruded;
 export const osmBuildingVolume: (b: RawBuilding) => OsmBuildingVolume | null = toExtruded;
 
-export function OsmBuildings() {
-  const buildings = useMemo(
-    () =>
-      WORLD.buildings
+// ORDER 323 §4 — husen OsmBuildings ritar (för fönstren och mätningen av dem).
+export function drawnOsmBuildings(): RawBuilding[] {
+  return WORLD.buildings
         .filter((b) => !LANDMARK_BUILDING_IDS.has(b.id))
         .filter((b) => b.kind !== 'church')
         // ORDER 056 Del F — buildings owned by ProceduralFacades render
@@ -1292,7 +1250,36 @@ export function OsmBuildings() {
         // vägs mittlinje (≥ 2 sample-punkter inuti polygonen) skippas.
         // Löser "väg går in i gaveln och slutar" som ORDER 158-guarden
         // producerar när OSM har byggnaden felplacerad över korsning.
-        .filter((b) => !BUILDINGS_ON_ROADS.has(b.id))
+        .filter((b) => !BUILDINGS_ON_ROADS.has(b.id));
+}
+
+type OsmWindow = FacadeWindow & { id: string };
+
+/** Fönstren på husen som de ritas (en instans per fönster), samma urval som renderingen. */
+export function osmWindowsOf(buildings: readonly Extruded[]): OsmWindow[] {
+  const out: OsmWindow[] = [];
+  for (const b of buildings) {
+    const kind = b.effectiveKind;
+    const inWindowSet = WINDOW_KINDS.has(kind);
+    // ORDER 032 — historic red-brick industrial buildings show sparse
+    // rectangular windows in Vision Owner Street View shots
+    // (Nygatan / Prästgatan 10 / Swedecote area). Include industrial
+    // + warehouse when a Vision Owner colour override exists OR the
+    // building is tall enough to read as a multi-storey industrial
+    // (buildingLevels ≥ 2) rather than a single-storey shed.
+    const isMultiStoreyIndustrial =
+      (kind === 'industrial' || kind === 'warehouse') &&
+      (b.building.wallColour != null || (b.building.buildingLevels ?? 0) >= 2);
+    if (!inWindowSet && !isMultiStoreyIndustrial) continue;
+    for (const w of windowsFor(b)) out.push({ ...w, id: b.id });
+  }
+  return out;
+}
+
+export function OsmBuildings() {
+  const buildings = useMemo(
+    () =>
+      drawnOsmBuildings()
         .map(toExtruded)
         .filter((b): b is Extruded => b !== null),
     []
@@ -1301,25 +1288,7 @@ export function OsmBuildings() {
   // Aggregate every window across every eligible building into one flat
   // list, rendered via a single drei Instances call — one draw call for
   // the entire village window population instead of one mesh per pane.
-  const windows = useMemo(() => {
-    const out: Array<{ pos: [number, number, number]; rotY: number; w: number; h: number }> = [];
-    for (const b of buildings) {
-      const kind = b.effectiveKind;
-      const inWindowSet = WINDOW_KINDS.has(kind);
-      // ORDER 032 — historic red-brick industrial buildings show sparse
-      // rectangular windows in Vision Owner Street View shots
-      // (Nygatan / Prästgatan 10 / Swedecote area). Include industrial
-      // + warehouse when a Vision Owner colour override exists OR the
-      // building is tall enough to read as a multi-storey industrial
-      // (buildingLevels ≥ 2) rather than a single-storey shed.
-      const isMultiStoreyIndustrial =
-        (kind === 'industrial' || kind === 'warehouse') &&
-        (b.building.wallColour != null || (b.building.buildingLevels ?? 0) >= 2);
-      if (!inWindowSet && !isMultiStoreyIndustrial) continue;
-      for (const w of windowsFor(b)) out.push(w);
-    }
-    return out;
-  }, [buildings]);
+  const windows = useMemo(() => osmWindowsOf(buildings), [buildings]);
 
   return (
     <group>
@@ -1410,12 +1379,12 @@ export function OsmBuildings() {
       })}
       {/* Procedural window rhythm — one Instances draw call for the
           entire village. Windows are small emissive rectangles pinned
-          just proud of the OBB wall face. Legible from village zoom as
+          just proud of the drawn wall (ORDER 323 §4, facadeWindowsOf). Legible from village zoom as
           a horizontal band and readable as individual panes at close
           zoom without the earlier blank-slab feel. */}
       {windows.length > 0 && (
         <Instances frames={STATIC_INSTANCE_FRAMES} limit={windows.length} range={windows.length}>
-          <boxGeometry args={[0.95, 1.35, 0.06]} />
+          <boxGeometry args={[FACADE_WINDOW.w, FACADE_WINDOW.h, FACADE_WINDOW.depth]} />
           <meshStandardMaterial
             color="#efe6d4"
             emissive="#f4c680"

@@ -1,0 +1,186 @@
+{
+  "tag": "efter",
+  "server": "dev",
+  "houseDistanceM": 45,
+  "housePitch": 0.45,
+  "houses": [
+    {
+      "id": "w869907973",
+      "kind": "yes",
+      "renderer": "OsmBuildings",
+      "at": [
+        14.525,
+        -37.0975
+      ],
+      "view": {
+        "focus": [
+          13.946239583355174,
+          -42.8950990670756
+        ],
+        "yaw": -3.042048127044454
+      },
+      "image": "hus-01-OsmBuildings-w869907973.png"
+    },
+    {
+      "id": "w869907977",
+      "kind": "yes",
+      "renderer": "OsmBuildings",
+      "at": [
+        55.571666666666665,
+        -5.210000000000001
+      ],
+      "view": {
+        "focus": [
+          46.89383681417743,
+          -4.377199128263685
+        ],
+        "yaw": -1.4767573492585724
+      },
+      "image": "hus-02-OsmBuildings-w869907977.png"
+    },
+    {
+      "id": "w869907971",
+      "kind": "yes",
+      "renderer": "OsmBuildings",
+      "at": [
+        -12.2925,
+        -40.915
+      ],
+      "view": {
+        "focus": [
+          -1.8958692379171225,
+          -40.31895927487624
+        ],
+        "yaw": 1.6002802357787331
+      },
+      "image": "hus-03-OsmBuildings-w869907971.png"
+    },
+    {
+      "id": "w869907972",
+      "kind": "yes",
+      "renderer": "OsmBuildings",
+      "at": [
+        -7.93,
+        -61.3975
+      ],
+      "view": {
+        "focus": [
+          -2.098851360330725,
+          -61.94795503383309
+        ],
+        "yaw": 1.6649127277493012
+      },
+      "image": "hus-04-OsmBuildings-w869907972.png"
+    },
+    {
+      "id": "w869907976",
+      "kind": "yes",
+      "renderer": "OsmBuildings",
+      "at": [
+        66.84333333333333,
+        5.078888888888889
+      ],
+      "view": {
+        "focus": [
+          66.52194019130205,
+          12.825967481657004
+        ],
+        "yaw": 0.06351278747160304
+      },
+      "image": "hus-05-OsmBuildings-w869907976.png"
+    },
+    {
+      "id": "w1239584173",
+      "kind": "residential",
+      "renderer": "ProceduralFacades",
+      "at": [
+        19.1,
+        -65.6675
+      ],
+      "view": {
+        "focus": [
+          26.498857131311023,
+          -66.66582530975498
+        ],
+        "yaw": 1.6764051855588327
+      },
+      "image": "hus-06-ProceduralFacades-w1239584173.png"
+    },
+    {
+      "id": "vw-kyr-5",
+      "kind": "house",
+      "renderer": "ProceduralFacades",
+      "at": [
+        -40,
+        -5
+      ],
+      "view": {
+        "focus": [
+          -33,
+          -5
+        ],
+        "yaw": 1.5707963267948966
+      },
+      "image": "hus-07-ProceduralFacades-vw-kyr-5.png"
+    },
+    {
+      "id": "w1239584172",
+      "kind": "residential",
+      "renderer": "ProceduralFacades",
+      "at": [
+        16.994999999999997,
+        -88.2225
+      ],
+      "view": {
+        "focus": [
+          24.39398143067673,
+          -89.21964939404431
+        ],
+        "yaw": 1.675813952074568
+      },
+      "image": "hus-08-ProceduralFacades-w1239584172.png"
+    },
+    {
+      "id": "w1239589285",
+      "kind": "house",
+      "renderer": "ProceduralFacades",
+      "at": [
+        -14.5975,
+        -84.83
+      ],
+      "view": {
+        "focus": [
+          -9.369040568424476,
+          -85.81458639413775
+        ],
+        "yaw": 1.7414161421156915
+      },
+      "image": "hus-09-ProceduralFacades-w1239589285.png"
+    },
+    {
+      "id": "vw-kyr-14",
+      "kind": "house",
+      "renderer": "ProceduralFacades",
+      "at": [
+        -53.11333333333334,
+        7.9700000000000015
+      ],
+      "view": {
+        "focus": [
+          -47.78,
+          5.970000000000001
+        ],
+        "yaw": 1.5707963267948966
+      },
+      "image": "hus-10-ProceduralFacades-vw-kyr-14.png"
+    }
+  ],
+  "errors": [],
+  "kvarteret": {
+    "x": 23.00000269228563,
+    "z": -20.99999876011974,
+    "distance": 89.99699688801374,
+    "yaw": -0.04999999494178647,
+    "pitch": 0.9499999998405786
+  }
+}
