@@ -130,7 +130,7 @@
 .nxs-list-row:focus-visible { outline: calc(3 * var(--nx-u)) solid var(--nx-accent); outline-offset: calc(-3 * var(--nx-u)); }
 .nxs-list-row[data-static='true'] { cursor: default; }
 .nxs-row-title { font-size: calc(28 * var(--nx-u)); line-height: 1.2; font-weight: 700; }
-.nxs-row-sub { font-size: calc(22 * var(--nx-u)); line-height: 1.35; color: var(--nx-ink-2); }
+.nxs-row-sub { font-size: max(12px, calc(22 * var(--nx-u))); line-height: 1.35; color: var(--nx-ink-2); }
 .nxs-tag { margin-left: auto; }
 .nxs-dark-box { background: var(--w-wash-strong); color: var(--nx-ink); border: var(--w-panel-border); border-radius: var(--nx-radius-card); padding: calc(32 * var(--nx-u)); display: flex; gap: calc(24 * var(--nx-u)); align-items: flex-start; }
 .nxs-box { border: 1px solid var(--nx-rule); padding: calc(28 * var(--nx-u)); display: flex; gap: calc(24 * var(--nx-u)); align-items: center; }
@@ -399,6 +399,9 @@
   .nxs-morning .nxs-two-col { flex: 1; min-height: 0; margin-top: calc(16 * var(--nx-u)); }
   .nxs-morning .nxs-two-col > div { min-height: 0; display: flex; flex-direction: column; }
   .nxs-list-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+  /* ORDER 324 B — listan rullar så att allt kan nås, och rullisten syns (inte bara vid rullning), så att
+     spelaren ser att det finns mer under kanten i små fönster. */
+  .nxs-list-scroll, .nxs-morning-right { scrollbar-width: thin; scrollbar-color: rgba(216, 184, 119, 0.6) transparent; }
   .nxs-morning .nxs-list-head { min-height: max(36px, calc(48 * var(--nx-u))); padding-bottom: calc(6 * var(--nx-u)); }
   .nxs-shelf-list .nxs-list-row { min-height: max(38px, calc(60 * var(--nx-u))); padding-top: calc(6 * var(--nx-u)); padding-bottom: calc(6 * var(--nx-u)); }
   .nxs-morning > .nxs-foot { position: static; margin-top: calc(12 * var(--nx-u)); padding-top: calc(12 * var(--nx-u)); padding-bottom: calc(20 * var(--nx-u)); }
@@ -466,7 +469,7 @@ body:has(.nx-stake) .nx-status-legend { max-height: calc(64.5vh - 4.7vh - 96px -
 .nx-sender-badge { width: max(22px, 3vh); height: max(22px, 3vh); flex: 0 0 auto; }
 .nx-sender-portrait { width: max(22px, 3vh) !important; height: max(22px, 3vh) !important; box-shadow: 0 0 0 1.5px #e9c46a !important; }
 .nx-sender-name { font-weight: 800; letter-spacing: 0.02em; }
-.nx-sender-sub { font-size: 0.8em; opacity: 0.75; }
+.nx-sender-sub { font-size: max(12px, 0.8em); opacity: 0.75; }
 .nx-sender-initial {
   display: inline-flex; align-items: center; justify-content: center; width: max(22px, 3vh); height: max(22px, 3vh);
   border-radius: 50%; border: 2px solid; background: #2a1c13; color: #f4e6cc;

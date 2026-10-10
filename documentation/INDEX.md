@@ -145,6 +145,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_321_RAPPORT.md`: ORDER 321 — Provspelsläge: ?prov, börja direkt i foodtrucken, vinbaren eller bistron (rapport).
 - `ORDER_322_RAPPORT.md`: ORDER 322 — Efter provspel 2026-10-09: kvitt eller dubbelt, provspelets namn och Följd, listan över byns skillnader mot kartan och rättningen efter Anders beslut, etiketterna och vägändarna, uppfarten vid Länsmansgården och etiketterna i alla zoomnivåer (rapport, del A, B och C).
 - `ORDER_323_RAPPORT.md`: ORDER 323 — Efter provspel 2026-10-09 kväll: språket, korten som inte får plats, kvitt eller dubbelt, fönstren, fikat per plats, gatorna, Byn i kväll och felöversättningarna, provspelets namn, föremålen på borden och panelerna vid Krogen (rapport).
+- `ORDER_324_RAPPORT.md`: ORDER 324 — Beslut om FÖR_GRANSKNING_323.md i spelet (svenska och engelska), ft06 steg 2 för Claude, somm-h7, och layouten i 1180 × 660 och 1024 × 600 (rapport).
 - `ORDER_RECONSTRUCTION_004_005_019_020.md`: ORDER_RECONSTRUCTION_004_005_019_020 — Evidence record for four sprint orders.
 - `ORDER_REGISTRY.md`: ORDER REGISTRY.
 - `PERFORMANCE_PREPARATION_REFERENCE.md`: Performance Preparation Reference.
@@ -198,6 +199,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 ## documentation/blueprints/
 
 - `ORDER_304_FORSLAG.md`: ORDER 304 — Konceptet och varukorgen: förslag till datamodell och balans (för beslut, inget byggt).
+- `BESLUT_GRANSKNING_323.md`: Beslut om FÖR_GRANSKNING_323.md (Claude med Anders 2026-10-10), infört i ORDER 324.
 - `FÖR_GRANSKNING_323.md`: För granskning efter ORDER 323 — vagnens fem fikadilemman (svenska, svar, nivåer, förklaringar, lagtexter) och listan över termval, onaturlig engelska och svenska fel.
 - `ORDER_304_UTKAST/`: utkastet till frågebanken per vara och utrustning, 90 frågor (`UTKAST_FRAGOR.md` för granskning, JSON i spelets format).
 - `M9_MEDGANG_REPORT_ORDER_089.md`: M9 — Medgången: rapportgrind (ORDER 089).
