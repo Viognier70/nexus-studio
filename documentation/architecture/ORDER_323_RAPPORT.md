@@ -163,8 +163,24 @@ Kvällens bilar till parkeringen (`VillageLife`) saktar in i svängarna (rutten 
 
 ## Återstår
 
-- `scripts/order300-layout.mjs` kördes inte i sju storlekar i den här ordern. Den har nu 1024 × 600 och 1180 × 660, och bör köras före nästa provspel. Textgolvet (12 px) kan slå till i 1024 × 600.
+- `scripts/order300-layout.mjs` kördes inte i sju storlekar i den här ordern. Den kördes efteråt (323b, nedan): fel i 1180 × 660 och 1024 × 600.
 - Vagnens fem dilemman behöver Anders granskning (text och bedömning). Lagtexterna i två av dem väntar på granskaren.
 - Termvalen och de onaturliga raderna i listan under §7.
-- `NEXUS_SPELDESIGN_V1.md` (§1, flaggat).
+- `NEXUS_SPELDESIGN_V1.md` (§1, flaggat; ändrat i 323b).
 - D11 (ansikten och gester) från Design, inbyggt i en senare order.
+
+## Efter ordern: Anders beslut 2026-10-10 (323b)
+
+1. **Språket i specen.** `documentation/foundation/vision/NEXUS_SPELDESIGN_V1.md` > Språk och målgrupp säger nu att spelet startar på svenska och att engelska är ett val i menyn. Beslutet 2026-09-28 om engelska står kvar, märkt som ersatt. CLAUDE.md regel 7 följer med. Ändringen i foundation gjordes på Anders uppdrag.
+2. **Granskningsfilen.** `documentation/blueprints/FÖR_GRANSKNING_323.md` innehåller vagnens fem dilemman på svenska, med svar, nivåer, följder, förklaringar och lagtexter. Texterna är utdragna ur `fikaStrings.ts` och `dilemmas.ts` med ett skript och inte skrivna av för hand. Där finns också termvalen, den onaturliga engelskan, frågebanken och de svenska felen, med förslag. Filen tar upp en fråga till granskaren: kylboxens svar A kostar 600 kr (`discardSomeGoodsSek`), men svaret slänger allt som legat varmt.
+3. **Layoutkontrollen i sju storlekar** (`scripts/order300-layout.mjs`, produktionsbygget, svenska; utdata `frontend/reports/order323b/layout.json`):
+   - **1280 × 720 och större**: alla 16 skärmar godkända i alla fem storlekarna.
+   - **1180 × 660**: 4 av 16 skärmar underkända, alla av samma skäl. Byn och Gatan före öppning, servicen och statusläget: panelflikarna (Lagret, Kvällen, Rummet) ligger över kameraknapparna, 1 155 px² (`overlaps` `camera-buttons` × `service-tabs`). Knappen som vrider kameran åt vänster syns inte (`layout-servicen-1180x660.png`).
+   - **1024 × 600**: 13 av 16 skärmar underkända:
+     - samma överlappning, 5 319 px², och under servicen dessutom stämningsmätaren över hastighetsknapparna, 495 px²;
+     - texten under 12 px: raketens "Situation 1 i kväll" 10,7 px, morgonens och inköpens underrader 11,7 px, avsändarens "Campus" 11,9 px;
+     - en paviljong i morgonens lista syns inte utan att listan rullas (`shelfHidden`) i öppningen, regelkortet, mentorn, första morgonen och reglerna.
+   - Godkända i alla sju storlekarna: startskärmen, registreringen och fokusläget.
+   - Inga sidfel (`errors: []`). Fyra bilder ligger i `reports/order323b/`; de övriga togs bort för att inte checka in 47 MB.
+   - Inget av detta är rättat. Det föreslås som en egen order.
+4. De tre bakgrundsuppgifterna från ordern, som väntade på foodtruckens körning, är stängda.
