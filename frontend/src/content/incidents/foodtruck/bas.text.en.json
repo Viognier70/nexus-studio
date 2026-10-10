@@ -577,8 +577,8 @@
      "question": "The evening is over, and there are ten grilled sausages left. What do you do?",
      "options": {
       "a": {
-       "label": "Cool them in the warmer and sell them tomorrow.",
-       "explanation": "Food kept hot should not be sold again the next day."
+       "label": "Chills them in the cool box and sells them tomorrow.",
+       "explanation": "Hot-held food that is left over should be thrown away. It has already been held hot for hours, and cooling and reheating it adds to the risk."
       },
       "b": {
        "label": "Throw away those that stood in the warmer, and plan fewer for the next evening by how the queue went.",
@@ -590,7 +590,7 @@
       },
       "d": {
        "label": "Put them back in the packet.",
-       "explanation": "A grilled sausage does not turn raw again."
+       "explanation": "The sausages have been held hot for hours. Putting them back in the packet does not make them safe again."
       }
      },
      "fail": {

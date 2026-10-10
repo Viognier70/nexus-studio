@@ -61,10 +61,10 @@ describe('ORDER 316 — dilemmana', () => {
         expect(t.explanation.length).toBeGreaterThan(20);
         for (const o of d.options) expect(t.options[o.id], `${d.id} ${o.id} ${lang}`).toBeTruthy();
         expect(Object.keys(t.options).sort()).toEqual(d.options.map((o) => o.id).sort());
-        // Varje ⚖-märkt dilemma har lagtexten, ogranskad; de andra har ingen.
+        // Varje ⚖-märkt dilemma har lagtexten, ogranskad utom kylboxen (Anders, ORDER 324b); de andra har ingen.
         if (d.legal) {
           expect(t.legalNote, d.id).toBeTruthy();
-          expect(d.legal.legalReviewed).toBe(false);
+          expect(d.legal.legalReviewed).toBe(d.id === 'fika-vagn-kylboxen');
         } else {
           expect(t.legalNote).toBeUndefined();
         }

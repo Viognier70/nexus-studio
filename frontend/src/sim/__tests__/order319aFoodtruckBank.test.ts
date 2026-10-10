@@ -9,18 +9,21 @@ import { INCIDENTS } from '../balance';
 const clone = <T,>(x: T): T => JSON.parse(JSON.stringify(x)) as T;
 
 describe('ORDER 319a.3 — ⚖ döljer aldrig frågor utan ⚖', () => {
-  it('varje dold situation består bara av ⚖-frågor, och varje ⚖-fråga ligger i en dold situation', () => {
+  // ORDER 324b: ft06 är granskad och visas; en ⚖-fråga ligger i en situation med granskningsstatus,
+  // dold tills den är granskad.
+  it('varje dold situation består bara av ⚖-frågor, och varje ⚖-fråga ligger i en situation med granskningsstatus', () => {
     for (const i of FOODTRUCK_ALL) {
       const legal = i.steps.map((s) => !!s.legal);
       if (!legallyCleared(i)) expect(legal.every(Boolean)).toBe(true);
+      if (i.legal) expect(legal.every(Boolean)).toBe(true);
       else expect(legal.some(Boolean)).toBe(false);
     }
   });
 
-  it('alla 15 frågor utan ⚖ (1–21 utom 3, 4, 9, 10, 15, 20) är med i spelet', () => {
+  it('alla 15 frågor utan ⚖ (1–21 utom 3, 4, 9, 10, 15, 20) är med i spelet, och ft06:s granskade 3, 9, 20', () => {
     const shown = incidentBankFor('foodtruck').flatMap((i) => i.steps.map((s) => s.question!)).sort((a, b) => a - b);
     // ORDER 320 — och de sex nya situationernas frågor 22–39 (leveransen situationer320).
-    expect(shown.filter((q) => q <= 21)).toEqual([1, 2, 5, 6, 7, 8, 11, 12, 13, 14, 16, 17, 18, 19, 21]);
+    expect(shown.filter((q) => q <= 21)).toEqual([1, 2, 3, 5, 6, 7, 8, 9, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21]);
     expect(shown.filter((q) => q > 21)).toEqual(Array.from({ length: 18 }, (_, i) => 22 + i));
   });
 

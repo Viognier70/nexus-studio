@@ -577,8 +577,8 @@
      "question": "Kvällen är slut, och det finns tio grillade korvar kvar. Vad gör du?",
      "options": {
       "a": {
-       "label": "Kyler dem i varmhållningen och säljer dem i morgon.",
-       "explanation": "Varmhållen mat ska inte säljas igen nästa dag."
+       "label": "Kyler ner dem i kylboxen och säljer dem i morgon.",
+       "explanation": "Varmhållen mat som blir över ska kastas. Den har redan stått varm i timmar, och att kyla och värma den igen ökar risken."
       },
       "b": {
        "label": "Kastar dem som stått varmhållna, och planerar mindre till nästa kväll efter hur kön gick.",
@@ -590,7 +590,7 @@
       },
       "d": {
        "label": "Lägger tillbaka dem i förpackningen.",
-       "explanation": "Grillad korv blir inte rå igen."
+       "explanation": "Korven har stått varm i timmar. Den blir inte säker igen av att ligga i sin förpackning."
       }
      },
      "fail": {

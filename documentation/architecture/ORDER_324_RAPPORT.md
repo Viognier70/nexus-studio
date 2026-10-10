@@ -88,6 +88,38 @@ Om steget misslyckas: "Det som blev över hanteras fel." / "What was left over i
 
 ## Återstår
 
-- ft06 steg 2, svar A: Claude skriver om det, och sedan förs det in.
-- Lagtexterna: kylboxen väntar på Anders, benen på juristen (rätt AFS).
-- Den engelska texten är inte mätt i layoutkontrollen; den körs på svenska. Under 1280 px bredd är tangenttipset vid flikarna dolt.
+- ~~ft06 steg 2, svar A~~: infört i 324b.
+- Lagtexterna: ~~kylboxen väntar på Anders~~ (granskad, 324b), benen på juristen (rätt AFS).
+- ~~Den engelska texten är inte mätt i layoutkontrollen~~ (mätt i 324b). Under 1280 px bredd är tangenttipset vid flikarna dolt.
+
+---
+
+# 324b — ft06, lagtexterna och layoutkontrollen på engelska
+
+*Anders 2026-10-10. Gren `order-324b` från main `bff029cd`.*
+
+**1. ft06-stangningen, steg 2** (`content/incidents/foodtruck/bas.text.sv.draft.json` och `.text.en.json`). Claudes text, införd ordagrant.
+
+| Svar | Svar (sv) | Förklaring (sv) | Svar (en) | Förklaring (en) |
+|---|---|---|---|---|
+| A (fel) | Kyler ner dem i kylboxen och säljer dem i morgon. | Varmhållen mat som blir över ska kastas. Den har redan stått varm i timmar, och att kyla och värma den igen ökar risken. | Chills them in the cool box and sells them tomorrow. | Hot-held food that is left over should be thrown away. It has already been held hot for hours, and cooling and reheating it adds to the risk. |
+| D (fel) | Lägger tillbaka dem i förpackningen. *(oförändrad)* | Korven har stått varm i timmar. Den blir inte säker igen av att ligga i sin förpackning. | Put them back in the packet. *(oförändrad)* | The sausages have been held hot for hours. Putting them back in the packet does not make them safe again. |
+
+B och C är oförändrade. Den engelska A-texten står i tredje person ("Chills … sells"), medan de andra tre svaren står i imperativ ("Throw away", "Give", "Put"). Den är införd som den skrevs; det är en fråga till granskningen om den ska bli "Chill them in the cool box and sell them tomorrow."
+
+Längdtestet (`src/sim/__tests__/order306b4.test.ts`, måttet i `strategic/testHarness/longestAnswer.ts`) håller: foodtrucken steg 1–2 och alla steg, i ord och tecken, på båda språken. Det längsta svaret i steget är fortfarande C (fel).
+
+**2. Lagtexterna.** Anders har granskat kylboxens lagtext och ft06 (svar i sessionen 2026-10-10: "Ja, båda granskade"; "anders godkänner texten").
+- `fika-vagn-kylboxen`: `legalReviewed: true` (`content/fika/dilemmas.ts`). Lagtexten (SFS 2006:804, EG 852/2004) visas nu i fikat.
+- `ft06-stangningen`: `legal.legalReviewed: true` (`bas.meta.json`). Situationen är med i vagnens bank; av de sju i `bas` är bara ft05-allergin dold.
+- `fika-vagn-benen` står kvar som `false` tills juristen anger rätt AFS.
+- Testerna följer med: `order315cFoodtruck.test.ts` (ft05 ensam dold), `order316Fikat.test.tsx` (kylboxen granskad), `order319aFoodtruckBank.test.ts` (frågorna 3, 9 och 20 är med; en situation med granskningsstatus består bara av ⚖-frågor), `order324Beslut.test.ts` (texterna och flaggorna).
+
+**3. Layoutkontrollen på engelska** (`scripts/order300-layout.mjs`). Den tar nu `LAYOUT_LANG=sv|en` (förval svenska) och skriver språket i `nexus.lang`, som menyns val. Varje rad prövar att `<html lang>`, som `main.tsx` sätter ur det valda språket, är det begärda språket, och raden skriver det i `htmlLang`.
+- Engelska: `frontend/reports/order324b-en/layout.json`, 16 skärmar × 7 storlekar, alla godkända, inga sidfel. Fyra bilder i 1024 × 600 i samma mapp (servicen, raketen, första morgonen, inköpen).
+- Svenska, omkörd med det ändrade skriptet: `frontend/reports/order324b-sv/layout.json`, alla godkända (bara JSON).
+- I 1024 × 600 kräver Gastronomiska Teatern rullning i listan i sex engelska skärmar (`shelfBelowEdge`; också morgonen i vecka 2) och fem svenska; den går att rulla fram i alla.
+
+**Återstår**
+- Benens lagtext: juristen.
+- ft06 svar A på engelska: tredje person eller imperativ (se ovan).
