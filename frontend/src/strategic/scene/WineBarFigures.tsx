@@ -120,6 +120,7 @@ import { roofAt } from '../village/roofBlend';
 const ROOM_SHOWN_ROOF = 0.99;
 import { MoodSymbolLayer, type MoodGroup } from './moodSymbols';
 import { attachFace, type FaceHandle } from './figureFace';
+import { FaceProbe } from './faceProbe';
 import { MoodGestures } from './moodGestures';
 import { FACE_STEP, scriptFaceMood } from './scriptFaces';
 import { guestMoodValue, moodOf } from '../../sim/guestMood';
@@ -581,6 +582,7 @@ export function WineBarFigures({ room, mood }: Props) {
   // rummet syns; drei:s Html ritar annars sin DOM över byn när kameran är ute.
   const [roomShown, setRoomShown] = useState(false);
   const roomShownRef = useRef(false);
+  const faceProbe = useMemo(() => new FaceProbe('faceDist'), []);
   const clockRef = useRef<number>(-Infinity);
 
   // Övertagandet som direktören läser: byggs när utfallet byts, inte per bildruta.
@@ -908,9 +910,12 @@ export function WineBarFigures({ room, mood }: Props) {
         walkSample = { ...sample, y: room.floorY };
       }
       // ORDER 299 — gesten efter stämningen när gästen bara sitter (moodGestures.ts).
+      // ORDER 325 — och efter situationerna i Designs D11-karta (gestureMap.ts): väntan, första tuggan, fel svar.
       let gesture: { id: string; clip: ClipSample } | null = null;
       if (walkSample === sample && sample.seated && !isFigure && simGuest) {
-        gesture = cast.moodGestures.sample(i, sample.guestId, clip ? cast.stage.guestClipId(i) : null, guestMoodValue(simGuest, s.day.roomMoodLift ?? 0), s.simTime, seatKind, s.day.consequence, s.seed ?? 0);
+        const partySize = simGuest.partyId ? s.guests.reduce((n, g) => n + (g.partyId === simGuest.partyId ? 1 : 0), 0) : 1;
+        gesture = cast.moodGestures.sample(i, sample.guestId, clip ? cast.stage.guestClipId(i) : null, guestMoodValue(simGuest, s.day.roomMoodLift ?? 0), s.simTime, seatKind, s.day.consequence, s.seed ?? 0,
+          { state: simGuest.state, stateSinceS: s.simTime - simGuest.stateTime, partyId: simGuest.partyId ?? null, partySize });
       } else {
         cast.moodGestures.reset(i);
       }
@@ -1260,9 +1265,12 @@ export function WineBarFigures({ room, mood }: Props) {
       const face = cast.guestFaces[i];
       const id = gs[i]?.guestId;
       const g = id ? s.guests.find((x) => x.id === id) : undefined;
-      if (g && !faceHold) face.set(moodOf(guestMoodValue(g, s.day.roomMoodLift ?? 0)));
-      face.update(camera);
+      // ORDER 325 (D11 GESTURE_RULES.faceWithGesture) — ansiktet följer gesten medan den spelas.
+      if (g && !faceHold) face.set(cast.moodGestures.faceFor(i) ?? moodOf(guestMoodValue(g, s.day.roomMoodLift ?? 0)));
+      // ORDER 325 §2 — avståndet till huvudet för mätningen (faceProbe.ts), bara för gäster som syns.
+      faceProbe.add(face.update(camera), !!g && !!gs[i]?.visible && roomShownRef.current);
     }
+    faceProbe.flush();
     for (const face of cast.staffFaces) face.update(camera);
     if (active && ringAt && !ev.playing) {
       // ORDER 297 — ringen syns inte genom taket (rummet syns när taket lyfts).

@@ -119,6 +119,8 @@ export interface PoseTorso {
 export interface PoseHead {
   pitch?: number;
   yaw?: number;
+  /** ORDER 325 (Designs D11, 2026-10-10): huvudet på sned, positivt mot figurens högra axel. Samma led, ingen ny nod. */
+  roll?: number;
 }
 
 export interface FigurePose {
@@ -468,7 +470,7 @@ export function applyPose(rig: FigureRig, pose: FigurePose): void {
   const t = pose.torso ?? {};
   j.chest.rotation.set(-(t.pitch ?? 0), t.yaw ?? 0, t.roll ?? 0);
   const h = pose.head ?? {};
-  j.head.rotation.set(-(h.pitch ?? 0), h.yaw ?? 0, 0);
+  j.head.rotation.set(-(h.pitch ?? 0), h.yaw ?? 0, -(h.roll ?? 0));
   applyArm(j.shoulderL, j.elbowL, pose.armL, -1);
   applyArm(j.shoulderR, j.elbowR, pose.armR, 1);
   applyLeg(j.hipL, j.kneeL, j.ankleL, pose.legL, -1);
@@ -502,7 +504,7 @@ export function blendPose(a: FigurePose, b: FigurePose, k: number): FigurePose {
     lift: n(a.lift, b.lift),
     hipDrop: n(a.hipDrop, b.hipDrop),
     torso: { pitch: n(ta.pitch, tb.pitch), yaw: n(ta.yaw, tb.yaw), roll: n(ta.roll, tb.roll) },
-    head: { pitch: n(ha.pitch, hb.pitch), yaw: n(ha.yaw, hb.yaw) },
+    head: { pitch: n(ha.pitch, hb.pitch), yaw: n(ha.yaw, hb.yaw), roll: n(ha.roll, hb.roll) },
     armL: arm(a.armL, b.armL), armR: arm(a.armR, b.armR),
     legL: leg(a.legL, b.legL), legR: leg(a.legR, b.legR)
   };

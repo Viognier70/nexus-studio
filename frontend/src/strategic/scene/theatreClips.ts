@@ -35,8 +35,9 @@ export function staffClipFor(s: FigureSample, key: StaffKey): string | null {
     case 'carry': return carryClip(s.carrying);
     case 'idle':
     case 'nod': return 'staff.idle';
-    case 'takeOrder':
-    case 'handle': return 'waiter.takeOrder';
+    case 'takeOrder': return 'waiter.takeOrder';
+    // ORDER 325 (D11 guestSpeaks) — den som tar över en situation vid bordet lyssnar på gästen med lutat huvud.
+    case 'handle': return 'staff.listenTilt';
     case 'serve':
       if (key === 'cook') return 'cook.plate';
       // Vid passet eller baren (inget i handen än): tar upp. Vid bordet: serverar.
@@ -66,7 +67,8 @@ export function staffClipFor(s: FigureSample, key: StaffKey): string | null {
     case 'polishGlass': return 'bar.polishGlass';
     case 'holdDoor': return 'staff.holdDoor';
     case 'checkTable': return 'staff.checkTable';
-    case 'wipeTable': return 'staff.wipeTable';
+    // ORDER 325 (D11 tableLeft) — avtorkningen av ett tomt bord före nästa sällskap, Designs nya klipp.
+    case 'wipeTable': return 'waiter.wipeTable';
     case 'chat': return 'staff.chat';
     default: return null;
   }

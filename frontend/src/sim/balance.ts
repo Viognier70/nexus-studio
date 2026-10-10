@@ -702,6 +702,47 @@ export const MOOD_BALANCE = {
   meterVisibleStepsAfterAnswer: 0.02
 };
 
+// ORDER 325 (Designs D11 figureFace.ts FACE_D11, Anders 2026-10-10: "sätt gränserna för ansiktena i balance.ts")
+// — ansiktenas två skal efter kamerans avstånd till huvudet, i meter. Det nära skalet (ögon, bryn och mun på
+// huvudets framsida) syns helt till near.fullUntilM och är borta vid near.goneAtM; det långa (masken över
+// hårfästet) tonas in från far.fromM, är helt från far.fullFromM och tonas ut mellan far.fadeFromM och
+// far.goneAtM. Avstånden vid Krogen (Z) i vinbaren, bistron och vid vagnen är mätta i spelet
+// (frontend/reports/order325/kamera.json, scripts/order325-kamera.mjs) och står i ORDER_325_RAPPORT.md.
+export const FACE_LOD = {
+  section: 'Servicen > Gästerna',
+  near: { fullUntilM: 9, goneAtM: 12 },
+  far: { fromM: 9, fullFromM: 12, fadeFromM: 30, goneAtM: 42 },
+  swapMs: 120
+} as const;
+
+// ORDER 325 (Designs D11 gestureMap.ts GESTURE_BALANCE) — när gästerna gör vilken gest. Sekunder i simulerad tid
+// (servicen: en halv spelminut per simsekund). Valda tal mot kön (QUEUE.patienceSimSeconds 60): klockan efter en
+// tredjedel av tålamodet, vinkningen efter två tredjedelar; stämningens egna gester i samma takt som förut (ORDER 299,
+// 24–48 s). Simuleringen har inget betyg per rätt; pushPlateBelow läser gästens stämning vid första tuggan, på
+// samma skala (MOOD_BALANCE.threshold, otålig 0,4). Gatans andelar och avstånd gäller de som går i byn.
+export const GESTURE_BALANCE = {
+  section: 'Servicen > Gästerna',
+  waitWatchS: 20,
+  watchEveryS: 20,
+  waitWaveS: 40,
+  moodGestureEveryS: 36,
+  moodGestureJitter: 12,
+  gestureCooldownS: 6,
+  /** Så länge efter att rätten ställts fram räknas tuggan som den första. */
+  firstBiteWithinS: 8,
+  pushPlateBelow: 0.4,
+  // Gatan (VillageLife.tsx): stanna vid en annan krogs meny inom stopLookRadiusM med sannolikheten stopLookP (samma
+  // som pauserna vid menyn sedan ORDER 302), hälsa på en bekant inom greetRadiusM.
+  stopLookP: 0.3, stopLookRadiusM: 9,
+  greetP: 0.3, greetRadiusM: 4,
+  childShare: { day: 0.12, evening: 0.04 },
+  dogShare: 0.08,
+  /** Brådskande sent på kvällen: kvällens förlopp (sim/truckLife eveningProgress) över så här. */
+  hurryFromE: 0.8,
+  /** Gångsättens fart som faktor på sällskapets egen (D11 §5). */
+  streetSpeed: { calm: 0.85, hurried: 1.45, child: 0.7, dog: 0.9 }
+} as const;
+
 export const DOWNGRADE = {
   section: 'Ekonomin > Nedgradering',
   consecutiveNegativeDayEnds: 3, // "under minus veckogolvet vid tre dagsavslut i rad"
