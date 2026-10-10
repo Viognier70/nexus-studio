@@ -26,7 +26,7 @@
    "q": "The crispy onions, are they fried?",
    "options": {
     "a": "Yes, they're fried in oil, that's why they're so crisp.",
-    "b": "They’re roasted in the oven, as the name says, which is why there’s no fat in them.",
+    "b": "They’re roasted in the oven, as the Swedish name says, which is why there’s no fat in them.",
     "c": "They're probably fried in some way.",
     "d": "They're dried onions with no fat."
    },
@@ -56,7 +56,7 @@
    "q": "Which mustard should I have?",
    "options": {
     "a": "Do you like it mild and sweet, or strong? Then we'll pick.",
-    "b": "Skåne mustard, everyone has that.",
+    "b": "Skåne mustard, everyone goes for that.",
     "c": "The strongest, it’s the best with sausage and brings out the flavour of the spices.",
     "d": "Any of them, they taste the same."
    },

@@ -128,7 +128,7 @@
        "explanation": "Rain often passes, and those who come go to another truck."
       },
       "b": {
-       "label": "Slow the grill to the queue’s pace, put out the shelter and offer something hot to drink.",
+       "label": "Slow the grill to the queue’s pace, put out the awning and offer something hot to drink.",
        "explanation": "Right. You waste no sausages, the guests stay dry, and the evening can pick up again."
       },
       "c": {
@@ -137,7 +137,7 @@
       },
       "d": {
        "label": "Cut the price in half.",
-       "explanation": "Half price draws few in the rain and costs on everyone else."
+       "explanation": "Half price draws few in the rain and costs you on every other sale."
       }
      },
      "fail": {
@@ -249,14 +249,14 @@
        "explanation": "Right. The mash holds the sausage, and a tight roll with the edge underneath holds in the hand."
       },
       "c": {
-       "label": "Rolls it loosely, so the guest can open it and see inside.",
+       "label": "Roll it loosely, so the guest can open it and see inside.",
        "explanation": "A loose roll opens by itself while the guest eats.",
        "fail": {
         "outcome": "The roll spills, and the guest wants a new one."
        }
       },
       "d": {
-       "label": "Cuts it in two, so it's easier to hold.",
+       "label": "Cut it in two, so it's easier to hold.",
        "explanation": "Cut in two, the filling runs out of both ends."
       }
      },
@@ -516,7 +516,7 @@
       },
       "b": {
        "label": "Move the goods to at most +8 °C, log it and judge the rest.",
-       "explanation": "Right. The cold first, then the note and the judgement of what has stood warm."
+       "explanation": "Right. Get it cold first, then make the note and judge what has stood warm."
       },
       "c": {
        "label": "Close the hatch for the evening and throw out everything in the box.",

@@ -162,9 +162,9 @@ describe('M2 DoD — morning activity model', () => {
     expect(r.finalState.day.dayNumber).toBeGreaterThanOrEqual(2);
     // Ledger has a 'Satsningens effekt' line naming the activity
     const effectLine = r.finalState.ledger.find((l) =>
-      l.cause.startsWith('Investment effect')
+      l.cause.startsWith('Initiative effect')
     );
-    expect(effectLine, 'no Investment effect ledger line found').toBeDefined();
+    expect(effectLine, 'no Initiative effect ledger line found').toBeDefined();
     expect(effectLine!.cause).toContain('Wine tasting with the team');
     expect(effectLine!.amount).toBe(1000);
   });

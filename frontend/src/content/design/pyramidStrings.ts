@@ -13,5 +13,5 @@ export const PYRAMID_STRINGS = {
   "pyramid.next": { sv: "Nästa steg", en: "Next step" },
   "pyramid.takeover": { sv: "Per tar över vid bordet", en: "Per takes over at the table" },
   "pyramid.full": { sv: "Hela pyramiden", en: "The whole pyramid" },
-  "pyramid.full.sub": { sv: "Vad, hur, när och varför. Du visste alla tre.", en: "What, how, when and why. You knew all three." },
+  "pyramid.full.sub": { sv: "Vad och varför, hur och när. Du kunde alla tre.", en: "What and why, how and when. You knew all three." },
 } as const;

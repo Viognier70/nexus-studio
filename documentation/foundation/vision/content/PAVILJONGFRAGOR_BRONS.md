@@ -161,7 +161,7 @@ ANKARE: när vin serveras
 ```
 PAVILJONG: Stensöta
 FRÅGESTÄLLARE: Sommelieren
-FRÅGA: Why does a tannic red work so well with a fatty, well-hung rib-eye?
+FRÅGA: Why does a tannic red work so well with a fatty, well-aged rib-eye?
 A: The acidity in the wine breaks down the fat chemically in the mouth
 B: The alcohol dissolves the fat so it's rinsed away
 C: The tannins bind to proteins, so the astringency softens and the fat feels lighter
@@ -267,7 +267,7 @@ PAVILJONG: Stensöta
 FRÅGESTÄLLARE: Gästen
 FRÅGA: I'm not drinking tonight. What would go with the fried dish I ordered?
 A: A sweet fruit drink to balance the salt
-B: A sparkling drink with clear acidity and little sweetness
+B: A sparkling drink with clear acidity and a touch of sweetness
 C: A rich, creamy drink to match the fat of the fry
 D: Still water with lemon, so nothing interferes with the flavour
 RÄTT: B
@@ -477,7 +477,7 @@ ANKARE: när beställningen tas upp
 ```
 PAVILJONG: Kalastorget
 FRÅGESTÄLLARE: Gästen
-FRÅGA: I don't think we ordered this bottle on the bill. Could you look at it?
+FRÅGA: I don't think we ordered this bottle that's on the bill. Could you look into it?
 A: Show the till printout as proof
 B: Go through the order calmly with the guest, and take the item off if it can't be sorted out
 C: Fetch the manager straight away

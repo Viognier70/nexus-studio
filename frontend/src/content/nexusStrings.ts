@@ -95,7 +95,7 @@ export const STRINGS = {
   'hud.clock.left': { sv: '{h} h {m} min kvar', en: '{h} h {m} min left' },
   'hud.clock.leftMin': { sv: '{m} min kvar', en: '{m} min left' },
   'hud.clock.last': { sv: 'Sista beställningen', en: 'Last orders' },
-  'hud.meter.cash': { sv: 'Kassa', en: 'Takings' },
+  'hud.meter.cash': { sv: 'Kassa', en: 'Cash' },
   'hud.meter.guests': { sv: 'Gästerna', en: 'Guests' },
   'hud.meter.staff': { sv: 'Personalen', en: 'Staff' },
   'hud.feed': { sv: 'Kvällen', en: 'Tonight' },
@@ -116,7 +116,7 @@ export const STRINGS = {
   'role.runner': { sv: 'Runner', en: 'Runner' },
   'role.sommelier': { sv: 'Sommelier', en: 'Sommelier' },
   'role.bartender': { sv: 'Bartender', en: 'Bartender' },
-  'role.cook': { sv: 'Kock', en: 'Cook' },
+  'role.cook': { sv: 'Kock', en: 'Chef' },
   'role.dish': { sv: 'Diskare', en: 'Kitchen porter' },
   // ORDER 313 §1 — mentorn heter Intendent Åsa.
   'role.mentor': { sv: 'Intendent Åsa', en: 'Curator Åsa' },
@@ -219,14 +219,14 @@ export const STRINGS = {
   'risk.settle.hit': { sv: 'Veckomålet är nått: {n} av {target}.', en: 'The weekly target is met: {n} of {target}.' },
   'risk.settle.miss': { sv: 'Veckomålet är missat: {n} av {target}.', en: 'The weekly target is missed: {n} of {target}.' },
   'risk.settle.renegotiated': { sv: 'Två missade veckor i rad. Banken har förhandlat om lånet, och räntan är dubbel resten av säsongen.', en: 'Two missed weeks running. The bank has renegotiated the loan, and the interest is doubled for the rest of the season.' },
-  'risk.settle.below': { sv: 'Kassan är under noll efter avräkningen, {weeks} av {max} veckor i rad. Vid {max} stänger krogen.', en: 'The account is below zero after the settlement, {weeks} of {max} weeks in a row. At {max} the restaurant closes.' },
+  'risk.settle.below': { sv: 'Kassan är under noll efter avräkningen, {weeks} av {max} veckor i rad. Vid {max} stänger krogen.', en: 'Your cash is below zero after the settlement, {weeks} of {max} weeks in a row. At {max} the restaurant closes.' },
   // ORDER 318 (Anders 2026-10-07) — Bankens varning efter första och andra bokslutet under noll.
-  'risk.bank.twoLeft': { sv: 'Kassan är under noll. Två bokslut till i rad, så stänger krogen.', en: 'The account is below zero. Two more settlements in a row, and the restaurant closes.' },
+  'risk.bank.twoLeft': { sv: 'Kassan är under noll. Två bokslut till i rad, så stänger krogen.', en: 'Your cash is below zero. Two more settlements in a row, and the restaurant closes.' },
   'risk.bank.oneLeft': { sv: 'Ett bokslut till under noll, så stänger vi.', en: 'One more settlement below zero, and we close you down.' },
   'risk.closed.kicker': { sv: 'Säsongen är slut', en: 'The season is over' },
   'risk.closed.title': { sv: 'Krogen stänger', en: 'The restaurant closes' },
-  'risk.closed.body': { sv: 'Kassan har stått under noll vid tre veckoavräkningar i rad. Banken säger upp lånet efter vecka {week}, och dörren förblir stängd.', en: 'The account has been below zero at three weekly settlements in a row. The bank calls in the loan after week {week}, and the door stays shut.' },
-  'risk.closed.bodySeasonEnd': { sv: 'Kassan står under noll i säsongens sista bokslut. Det är konkurs: banken säger upp lånet efter vecka {week}, och dörren förblir stängd.', en: 'The account is below zero at the season\'s last settlement. That is bankruptcy: the bank calls in the loan after week {week}, and the door stays closed.' },
+  'risk.closed.body': { sv: 'Kassan har stått under noll vid tre veckoavräkningar i rad. Banken säger upp lånet efter vecka {week}, och dörren förblir stängd.', en: 'Your cash has been below zero at three weekly settlements in a row. The bank calls in the loan after week {week}, and the door stays shut.' },
+  'risk.closed.bodySeasonEnd': { sv: 'Kassan står under noll i säsongens sista bokslut. Det är konkurs: banken säger upp lånet efter vecka {week}, och dörren förblir stängd.', en: 'Your cash is below zero at the season\'s last settlement. That is bankruptcy: the bank calls in the loan after week {week}, and the door stays closed.' },
   'risk.closed.medals': { sv: 'Dina medaljer och det du lärt dig är kvar. En ny säsong börjar med samma kunskap.', en: 'Your medals and what you have learned remain. A new season starts with the same knowledge.' },
   // ORDER 296 (punkt 3) — recensionen i morgonens tidning, förvarningen och
   // gästen med socialt kapital som går till en rival.
@@ -380,7 +380,7 @@ export const STRINGS = {
   'cmp.perGuest': { sv: 'Per gäst', en: 'Per guest' },
   'cmp.perSeat': { sv: 'Per stol', en: 'Per seat' },
   'cmp.noSeats': { sv: 'Inga stolar', en: 'No seats' },
-  'cmp.van': { sv: 'Vagn', en: 'Van' },
+  'cmp.van': { sv: 'Vagn', en: 'Truck' },
   'cmp.next': { sv: 'Till butiken', en: 'On to the shop' },
 
   // Butiken
@@ -466,10 +466,10 @@ export const STRINGS = {
   'ab.regulars.teaches': { sv: 'Per börjar föra bok över stamgästerna.', en: 'Per starts keeping a book of the regulars.' },
   'ab.regulars.fx': { sv: 'Per känner igen stamgästerna vid dörren. De kommer tillbaka oftare och har mer tålamod i kön.', en: 'Per knows the regulars at the door. They come back more often and are more patient in the queue.' },
   'ab.birthday.name': { sv: 'Födelsedagspaket', en: 'Birthday package' },
-  'ab.birthday.teaches': { sv: 'Krogen tar fram ett paket för sällskap som firar.', en: 'The bar puts together a package for parties who are celebrating.' },
+  'ab.birthday.teaches': { sv: 'Krogen tar fram ett paket för sällskap som firar.', en: 'The house puts together a package for parties who are celebrating.' },
   'ab.birthday.fx': { sv: 'Sällskap som firar kan boka tårta och bubbel i förväg, så att köket vet i tid.', en: 'Parties who are celebrating can book cake and fizz in advance, so the kitchen knows in good time.' },
   'ab.lova.name': { sv: 'Lovas nätverk', en: 'Lova’s network' },
-  'ab.lova.teaches': { sv: 'Lova blir krogens kontakt i byn.', en: 'Lova becomes the bar’s contact in the village.' },
+  'ab.lova.teaches': { sv: 'Lova blir krogens kontakt i byn.', en: 'Lova becomes your venue’s contact in the village.' },
   'ab.lova.fx': { sv: 'Lova tipsar sina vänner, och fler gäster med socialt kapital söker sig till vinbaren.', en: 'Lova tells her friends, and more guests with social capital find their way to the wine bar.' },
   'ab.chefsTable.name': { sv: 'Kockens bord', en: 'The chef’s table' },
   'ab.chefsTable.teaches': { sv: 'Kocken lär sig servera ett bord själv vid köket.', en: 'The chef learns to serve a table in person by the kitchen.' },
@@ -573,7 +573,7 @@ export const TABLE = {
     },
     price: {
       sv: (deposit: string, loan: string) => `Insats ur kassan: ${deposit} kr · Lån: ${loan} kr`,
-      en: (deposit: string, loan: string) => `Deposit from the till: SEK ${deposit} · Loan: SEK ${loan}`
+      en: (deposit: string, loan: string) => `Deposit from your cash: SEK ${deposit} · Loan: SEK ${loan}`
     },
     cashShort: {
       sv: (deposit: string) => `Insatsen är ${deposit} kr, och kassan räcker inte än.`,
@@ -586,7 +586,7 @@ export const TABLE = {
     truckMenuLabel: { sv: 'Kvällens meny vid luckan', en: 'Tonight’s menu at the hatch' },
     truckMenu: {
       sv: 'Grillkorv med bröd, vegokorv från en egen del av grillen, tunnbrödsrulle med räksallad och mos, senap (skånsk och mild) och ketchup, läsk och kaffe. Varorna köps in efter hur kön går.',
-      en: 'Grilled sausage in a bun, veggie sausage from its own part of the grill, a flatbread roll with prawn salad and mash, mustard (Scanian and mild) and ketchup, fizzy drinks and coffee. The goods are bought in as the queue goes.'
+      en: 'Grilled sausage in a bun, veggie sausage from its own part of the grill, a flatbread roll with prawn salad and mash, mustard (Scanian and mild) and ketchup, fizzy drinks and coffee. Stock is bought in to match the queue.'
     },
     truckPrice: { sv: 'Ingen insats och inget lån. Platsen vid Torget kostar en avgift i veckan.', en: 'No deposit and no loan. The pitch on the square costs a weekly fee.' },
     take: { sv: 'Ta över', en: 'Take over' },
@@ -602,7 +602,7 @@ export const TABLE = {
     youAreHere: { sv: 'Du är här', en: 'You are here' },
     comingLater: { sv: 'Kommer senare', en: 'Coming later' },
     nextNeeds: { sv: (step: string) => `För ${step.toLowerCase()} behövs`, en: (step: string) => `For the ${step.toLowerCase()} you need` },
-    reqCash: { sv: (need: string, have: string) => `Kassan minst ${need} kr vid dagens slut (nu ${have} kr)`, en: (need: string, have: string) => `At least SEK ${need} in the till at the end of the day (now SEK ${have})` },
+    reqCash: { sv: (need: string, have: string) => `Kassan minst ${need} kr vid dagens slut (nu ${have} kr)`, en: (need: string, have: string) => `At least SEK ${need} in cash at the end of the day (now SEK ${have})` },
     reqReputation: { sv: (need: string, have: string) => `Ryktet minst ${need} av 100 (nu ${have})`, en: (need: string, have: string) => `A reputation of at least ${need} out of 100 (now ${have})` },
     reqMedals: { sv: (m: string) => `Medaljer: ${m}`, en: (m: string) => `Medals: ${m}` },
     open: { sv: 'Din väg', en: 'Your way' },
@@ -745,7 +745,7 @@ export const TABLE = {
     },
     reviewTitleBad: {
       sv: (weekday: string, name: string) => `En ${weekday}kväll hos ${name} som inte höll`,
-      en: (weekday: string, name: string) => `A ${weekday} evening at ${name} that did not hold`
+      en: (weekday: string, name: string) => `A ${weekday} evening at ${name} that fell apart`
     },
     reviewFull: {
       sv: 'Det var fullt, och kön ringlade ut mot torget.',
@@ -1011,7 +1011,7 @@ export const TABLE = {
     },
     noSlotsLeft: { sv: 'Dagens val är gjorda', en: "Today's choices are made" },
     askers: {
-      kock: { sv: 'Kocken', en: 'The cook' },
+      kock: { sv: 'Kocken', en: 'The chef' },
       sommelier: { sv: 'Sommelieren', en: 'The sommelier' },
       gäst: { sv: 'Gästen', en: 'The guest' },
       värd: { sv: 'Värden', en: 'The host' },
@@ -1113,7 +1113,7 @@ export const TABLE = {
   legend: {
     heading: { sv: 'Teckenförklaring', en: 'Key' },
     staff: { sv: 'Personalen: ringen i rollens färg', en: 'Staff: the ring in the role’s colour' },
-    ork: { sv: 'Orken: fylld ring orkar, streckad ring är trött', en: 'Energy: a filled ring has energy, a dashed ring is tired' },
+    ork: { sv: 'Orken: fylld ring orkar, streckad ring är trött', en: 'Stamina: a filled ring has stamina left, a dashed ring is tired' },
     wellbeing: { sv: 'Trivseln: hel låga, liten låga, släckt veke', en: 'Morale: full flame, small flame, snuffed wick' },
     guests: { sv: 'Gästernas stämning', en: 'The guests’ mood' }
   },
@@ -1288,7 +1288,7 @@ export const TABLE = {
   economy: {
     ledger: {
       interest: { sv: 'Ränta på lånet', en: 'Interest on the loan' },
-      floor: { sv: 'Golvet fyllde på veckan', en: 'The floor topped up the week' },
+      floor: { sv: 'Golvet fyllde på veckan', en: 'The income floor topped up the week' },
       amortisation: { sv: 'Amortering på lånet', en: 'Repayment on the loan' },
       rent: { sv: 'Veckohyra för lokalen', en: "The week's rent for the premises" },
       sale: { sv: 'Lokalen såld till banken', en: 'Premises sold to the bank' },
@@ -1315,7 +1315,7 @@ export const TABLE = {
     warnings: {
       first: {
         sv: 'Kassan är under det banken lånar ut mot ditt golv i kväll. Om den är det tre kvällar i rad tar banken lokalen vid veckoavräkningen.',
-        en: 'Tonight your cash is below what the bank lends against your floor. If it stays there three evenings in a row, the bank takes the premises at the weekly settlement.'
+        en: 'Tonight your cash is below what the bank lends against your income floor. If it stays there three evenings in a row, the bank takes the premises at the weekly settlement.'
       },
       second: {
         sv: 'Andra kvällen i rad under det banken lånar ut mot. En kväll till, och banken tar lokalen vid söndagens avräkning.',
@@ -1357,11 +1357,11 @@ export const TABLE = {
     // veckor ur balance.ts (RENT.introWeeks) och ingen hyra när den är 0.
     introRent: {
       sv: (weeks: string, firstFullWeek: string, intro: string, full: string) => `De ${weeks} första veckorna har du introduktionshyra: ${intro} kr i veckan. Från vecka ${firstFullWeek} är hyran ${full} kr.`,
-      en: (weeks: string, firstFullWeek: string, intro: string, full: string) => `For your first ${weeks} weeks you pay an introductory rent of ${intro} kr a week. From week ${firstFullWeek} the rent is ${full} kr.`
+      en: (weeks: string, firstFullWeek: string, intro: string, full: string) => `For your first ${weeks} weeks you pay an introductory rent of SEK ${intro} a week. From week ${firstFullWeek} the rent is SEK ${full}.`
     },
     introRentFree: {
       sv: (weeks: string, firstFullWeek: string, full: string) => `De ${weeks} första veckorna betalar du ingen hyra. Från vecka ${firstFullWeek} är hyran ${full} kr i veckan.`,
-      en: (weeks: string, firstFullWeek: string, full: string) => `For your first ${weeks} weeks you pay no rent. From week ${firstFullWeek} the rent is ${full} kr a week.`
+      en: (weeks: string, firstFullWeek: string, full: string) => `For your first ${weeks} weeks you pay no rent. From week ${firstFullWeek} the rent is SEK ${full} a week.`
     },
     bankNone: { sv: 'Du har ingen verksamhet.', en: 'You have no business.' },
     bankNoLoan: {
@@ -1422,14 +1422,14 @@ export const TABLE = {
     and: { sv: 'och', en: 'and' },
     settlement: {
       heading: { sv: 'Veckoavräkningen', en: 'The weekly settlement' },
-      aboveFloor: { sv: 'Veckan gav mer än golvet.', en: 'The week gave more than the floor.' },
+      aboveFloor: { sv: 'Veckan gav mer än golvet.', en: 'The week gave more than the income floor.' },
       topUp: {
         sv: 'Veckan blev svag, och golvet fyllde på skillnaden.',
-        en: 'The week was weak, and the floor topped up the difference.'
+        en: 'The week was weak, and the income floor topped up the difference.'
       },
       noFloor: {
         sv: 'Du har inget golv ännu. Det växer med dina medaljer.',
-        en: 'You have no floor yet. It grows with your medals.'
+        en: 'You have no income floor yet. It grows with your medals.'
       },
       amortised: { sv: 'Banken drog veckans amortering.', en: "The bank took this week's repayment." },
       // ORDER 280 — hyran och veckans löner.
@@ -1444,7 +1444,7 @@ export const TABLE = {
       // ORDER 303 E — dricksen och den sociala hållbarheten.
       social: {
         sv: (tips: string, stamina: number, wellbeing: number) => `Personalen fick ${tips} i dricks. Den sociala hållbarheten: orken ${stamina} %, trivseln ${wellbeing} %.`,
-        en: (tips: string, stamina: number, wellbeing: number) => `The staff received ${tips} in tips. Social sustainability: stamina ${stamina}%, wellbeing ${wellbeing}%.`
+        en: (tips: string, stamina: number, wellbeing: number) => `The staff received ${tips} in tips. Social sustainability: stamina ${stamina}%, morale ${wellbeing}%.`
       },
       // ORDER 291 — kurserna är investeringar, inte kvällens kostnad.
       courses: {
@@ -1606,7 +1606,7 @@ export const TABLE = {
     heading: { sv: 'Kvällens lager', en: "Tonight's stock" },
     intro: {
       sv: 'Köp lagret innan du öppnar. Pengarna går ur kassan direkt. Portionerna säljs ur lagret under servicen, och osåld mat blir svinn i kväll.',
-      en: 'Buy the stock before you open. The money leaves the till at once. Portions are sold from the stock during service, and unsold food goes to waste tonight.'
+      en: 'Buy the stock before you open. The money leaves your cash at once. Portions are sold from the stock during service, and unsold food goes to waste tonight.'
     },
     base: { sv: 'Baspaket', en: 'Base package' },
     addOns: { sv: 'Köp till', en: 'Add more' },
@@ -1708,7 +1708,7 @@ export const TABLE = {
       en: {
           'vinbar-base': { name: 'Base package', description: 'An ordinary weekday evening: soup, chicken, pork, a vegan plate and desserts, with house wine by the glass and bottle, local beer and alcohol-free.' },
           'vinbar-green': { name: 'Green', description: 'Roast roots with lentils (vegan) and chanterelles on toast (vegetarian).' },
-          'vinbar-alcohol-free': { name: 'More alcohol-free', description: 'Alcohol-free lingonberry sparkling, for guests who drink neither wine nor beer.' },
+          'vinbar-alcohol-free': { name: 'More alcohol-free', description: 'An alcohol-free sparkling lingonberry drink, for guests who drink neither wine nor beer.' },
           'vinbar-char': { name: 'Arctic char from the fisherman', description: 'Smoked Arctic char from the lake. Needs the fisherman.' },
           'vinbar-wine-merchant': { name: 'The wine merchant’s wines', description: 'Chablis and Riesling by the glass, and a bottle of Priorat. Needs the wine merchant.' },
           'vinbar-cheese': { name: 'The cheese affineur’s cheeses', description: 'Brie de Meaux, Munster and Västerbotten cheese. Needs the cheese affineur.' },
@@ -1749,7 +1749,7 @@ export const TABLE = {
   waste: {
     event: {
       sv: (kept: number, units: number, fee: string) => `Efter kvällen: ${kept} ${pl(kept, 'portion', 'portioner')} går att använda i morgon. Sopbilen hämtade ${units} ${pl(units, 'portion', 'portioner')}, miljöavgift ${fee}.`,
-      en: (kept: number, units: number, fee: string) => `After the evening: ${kept} ${pl(kept, 'portion', 'portions')} can be used tomorrow. The refuse truck took ${units} ${pl(units, 'portion', 'portions')}, environmental fee ${fee}.`
+      en: (kept: number, units: number, fee: string) => `After the evening: ${kept} ${pl(kept, 'portion', 'portions')} can be used tomorrow. The bin lorry took ${units} ${pl(units, 'portion', 'portions')}, environmental fee ${fee}.`
     },
     keptOnly: {
       sv: (kept: number) => `Efter kvällen: ${kept} ${pl(kept, 'portion', 'portioner')} går att använda i morgon. Inget svinn.`,
@@ -1757,9 +1757,9 @@ export const TABLE = {
     },
     morning: {
       sv: (kept: number, units: number, value: string, fee: string) => `I går: ${kept} ${pl(kept, 'portion', 'portioner')} sparades till i dag. ${units} ${pl(units, 'portion', 'portioner')} blev svinn (${value}), och sopbilen tog ${fee} i miljöavgift.`,
-      en: (kept: number, units: number, value: string, fee: string) => `Yesterday: ${kept} ${pl(kept, 'portion', 'portions')} were kept for today. ${units} ${pl(units, 'portion', 'portions')} went to waste (${value}), and the refuse truck charged ${fee} as an environmental fee.`
+      en: (kept: number, units: number, value: string, fee: string) => `Yesterday: ${kept} ${pl(kept, 'portion', 'portions')} were kept for today. ${units} ${pl(units, 'portion', 'portions')} went to waste (${value}), and the bin lorry charged ${fee} as an environmental fee.`
     },
-    ledger: { sv: 'Sopbilen: miljöavgift för svinnet', en: 'Refuse truck: environmental fee for the waste' }
+    ledger: { sv: 'Sopbilen: miljöavgift för svinnet', en: 'Bin lorry: environmental fee for the waste' }
   },
   // ORDER 285 — gårdagens rester: en fråga om hur råvaran tas tillvara. Rätt
   // svar gör resterna säljbara i dag; annars går de till sopbilen.
@@ -1794,7 +1794,7 @@ export const TABLE = {
         question: { sv: 'Stekt fläsk från i går. Vilken rätt tar vara på det?', en: 'Fried pork from yesterday. Which dish makes use of it?' },
         options: {
           a: { sv: 'Pytt i panna med potatis och lök, stekt het', en: 'Pytt i panna, a hash with potato and onion, fried hot' },
-          b: { sv: 'Kallt på tallrik som i går', en: "Cold on the plate, as yesterday's" },
+          b: { sv: 'Kallt på tallrik som i går', en: 'Served cold on the plate, as yesterday' },
           c: { sv: 'Fryses och tinas igen till i kväll', en: 'Frozen and thawed again for tonight' }
         },
         why: { sv: 'Pytt i panna är en klassisk resträtt: köttet tärnas och steks hett tillsammans med potatis och lök.', en: 'Pytt i panna is a classic leftover dish: the meat is diced and fried hot with potato and onion.' }
@@ -1848,7 +1848,7 @@ export const TABLE = {
         question: { sv: 'Långkokt kött från i går. Vilken rätt tar vara på det?', en: 'Slow-cooked meat from yesterday. Which dish makes use of it?' },
         options: {
           a: { sv: 'En ragu eller gryta som kokas upp i dag', en: 'A ragù or a stew brought to the boil today' },
-          b: { sv: 'Kallt på tallrik som i går', en: "Cold on the plate, as yesterday's" },
+          b: { sv: 'Kallt på tallrik som i går', en: 'Served cold on the plate, as yesterday' },
           c: { sv: 'Står framme så att köttet mjuknar', en: 'Left out so the meat softens' }
         },
         why: { sv: 'Långkokt kött blir ofta bättre dagen efter i en ragu eller gryta. Den kokas upp ordentligt innan den serveras.', en: 'Slow-cooked meat is often better the next day in a ragù or a stew. It is brought to the boil before it is served.' }
@@ -1880,7 +1880,7 @@ export const TABLE = {
       },
       wrong: {
         sv: (n: number, kr: string) => `Fel svar: ${n} ${n === 1 ? 'situation' : 'situationer'}, ${kr} i kassan`,
-        en: (n: number, kr: string) => `Wrong answers: ${n} ${n === 1 ? 'situation' : 'situations'}, ${kr} from the till`
+        en: (n: number, kr: string) => `Wrong answers: ${n} ${n === 1 ? 'situation' : 'situations'}, ${kr} from your cash`
       },
       stock: { sv: (kr: string) => `Inköp i dag: ${kr}`, en: (kr: string) => `Bought today: ${kr}` },
       note: { sv: 'Svinnets värde ingår i inköpen.', en: 'The value of the waste is part of the purchases.' }
@@ -1944,28 +1944,28 @@ export const TABLE = {
       ingredients: { sv: 'Råvaror', en: 'Ingredients' },
       staff: { sv: 'Personal', en: 'Staff' },
       dj: { sv: 'DJ', en: 'DJ' },
-      investments: { sv: 'Satsningar', en: 'Investments' },
+      investments: { sv: 'Satsningar', en: 'Initiatives' },
       competence: { sv: 'Kompetens', en: 'Training' },
       interest: { sv: 'Räntan', en: 'Interest' }
     },
     total: { sv: 'Break-even', en: 'Break-even' },
-    note: { sv: 'Kvällskassan ska fylla linjen innan kvällen går plus.', en: 'The till has to reach the line before the evening makes money.' }
+    note: { sv: 'Kvällskassan ska fylla linjen innan kvällen går plus.', en: 'Tonight’s takings have to reach the line before the evening makes money.' }
   },
   transfer: {
     kicker: { sv: 'Efter servicen', en: 'After service' },
     title: { sv: 'Kvällens resultat till kontot', en: "Tonight's result to the account" },
-    revenue: { sv: 'Kvällskassan', en: "Tonight's till" },
+    revenue: { sv: 'Kvällskassan', en: "Tonight's takings" },
     variable: { sv: 'Råvaror och sopbilen', en: 'Ingredients and the bin lorry' },
     contribution: { sv: 'Täckningsbidrag', en: 'Contribution margin' },
     ratio: { sv: 'Täckningsgrad', en: 'Contribution ratio' },
-    fixed: { sv: 'Personal, DJ, satsningar, kompetens och ränta', en: 'Staff, DJ, investments, training and interest' },
+    fixed: { sv: 'Personal, DJ, satsningar, kompetens och ränta', en: 'Staff, DJ, initiatives, training and interest' },
     result: { sv: 'Kvällens resultat', en: "Tonight's result" },
-    till: { sv: 'Kvällskassan', en: "Tonight's till" },
+    till: { sv: 'Kvällskassan', en: "Tonight's takings" },
     account: { sv: 'Företagskontot', en: 'Company account' },
     breakEven: { sv: (be: string) => `Break-even ${be}`, en: (be: string) => `Break-even ${be}` },
     toAccount: { sv: 'Förs till kontot', en: 'Transferred to the account' },
     fromAccount: { sv: 'Dras från kontot', en: 'Taken from the account' },
-    morningNote: { sv: 'Råvarorna och satsningarna betalades i morse. Lönerna och räntan dras i kväll.', en: 'The ingredients and investments were paid this morning. Wages and interest are paid tonight.' },
+    morningNote: { sv: 'Råvarorna och satsningarna betalades i morse. Lönerna och räntan dras i kväll.', en: 'The ingredients and initiatives were paid this morning. Wages and interest are paid tonight.' },
     forecastWeeks: {
       sv: (w: number) => `Med det här konceptet klarar du dig ${w} ${pl(w, 'vecka', 'veckor')}.`,
       en: (w: number) => `With this concept you last ${w} ${pl(w, 'week', 'weeks')}.`
@@ -2034,7 +2034,7 @@ export const TABLE = {
       'fine-wine-glass': { sv: 'Pinot Noir, per glas', en: 'Pinot Noir, by the glass' },
       'house-wine-bottle': { sv: 'Grüner Veltliner, flaska', en: 'Grüner Veltliner, bottle' },
       'fine-wine-bottle': { sv: 'Pinot Noir, flaska', en: 'Pinot Noir, bottle' },
-      'alcohol-free-glass': { sv: 'Alkoholfritt mousserande lingon', en: 'Alcohol-free lingonberry sparkling' },
+      'alcohol-free-glass': { sv: 'Alkoholfritt mousserande lingon', en: 'Alcohol-free sparkling lingonberry' },
       // ORDER 307 — varorna från krogens leverantörer.
       'char-plate': { sv: 'Rökt röding', en: 'Smoked Arctic char' },
       'brie-plate': { sv: 'Brie de Meaux med honung', en: 'Brie de Meaux with honey' },
@@ -2095,16 +2095,16 @@ export const TABLE = {
     terrace: { sv: 'Uteplatsen öppnade. Ståbord ute på gatan.', en: 'Terrace opened. Standing tables out on the street.' },
     cutShort: {
       sv: (where: 'kitchen' | 'room' | 'house') => `Kvällen tog slut i förtid — ${where === 'kitchen' ? 'köket' : where === 'room' ? 'salen' : 'huset'} höll inte.`,
-      en: (where: 'kitchen' | 'room' | 'house') => `The evening was cut short — ${where === 'kitchen' ? 'the kitchen' : where === 'room' ? 'the room' : 'the house'} did not hold.`
+      en: (where: 'kitchen' | 'room' | 'house') => `The evening was cut short — ${where === 'kitchen' ? 'the kitchen' : where === 'room' ? 'the room' : 'the house'} could not keep up.`
     },
     mentor: { sv: (c: string) => `Åsa: ${c}`, en: (c: string) => `Åsa: ${c}` },
     scenarioChose: { sv: (c: string) => `Scenario: valde ${c}`, en: (c: string) => `Scenario: chose ${c}` }
   },
   // ORDER 291 — kassabokens rader (EveningAccountPanel) på spelarens språk.
   ledgerCause: {
-    investment: { sv: (n: string) => `Satsning: ${n}`, en: (n: string) => `Investment: ${n}` },
-    investmentRefunded: { sv: (n: string) => `Satsning återbetald: ${n}`, en: (n: string) => `Investment refunded: ${n}` },
-    investmentEffect: { sv: (n: string) => `Satsningens följd: ${n}`, en: (n: string) => `Investment effect: ${n}` },
+    investment: { sv: (n: string) => `Satsning: ${n}`, en: (n: string) => `Initiative: ${n}` },
+    investmentRefunded: { sv: (n: string) => `Satsning återbetald: ${n}`, en: (n: string) => `Initiative refunded: ${n}` },
+    investmentEffect: { sv: (n: string) => `Satsningens följd: ${n}`, en: (n: string) => `Initiative effect: ${n}` },
     purchase: { sv: (u: number, i: string, s: string) => `Inköp ${u}× ${i} från ${s}`, en: (u: number, i: string, s: string) => `Purchase ${u}× ${i} from ${s}` },
     bankLoan: { sv: (tier: string) => `Banklån (${tier})`, en: (tier: string) => `Bank loan (${tier})` },
     latePayment: { sv: 'Sen betalning från en gäst', en: 'Late payment from a guest' },
@@ -2139,7 +2139,7 @@ export const TABLE = {
   // ORDER 291 — platsnamnet överst i byn (ui/ViewLabel.tsx).
   viewLabel: {
     grythyttan: { sv: 'Grythyttan', en: 'Grythyttan' },
-    kvarteret: { sv: 'Kvarteret', en: 'The District' },
+    kvarteret: { sv: 'Kvarteret', en: 'The Block' },
     vinbaren: { sv: 'Vinbaren', en: 'The Wine Bar' }
   },
   // ORDER 291 — kvällsberättelsens första mening om morgonens val.
@@ -2198,7 +2198,7 @@ export const TABLE = {
   village: {
     // ORDER 290 — knappen till byn och tillbaka.
     out: { sv: 'Byn', en: 'Village' },
-    back: { sv: 'Tillbaka till krogen', en: 'Back to the bar' },
+    back: { sv: 'Tillbaka till krogen', en: 'Back to your place' },
     keyHint: { sv: 'Tangenten V', en: 'Key V' },
     // ORDER 300 §7 — "Tannin, din krog".
     playerNamed: { sv: (name: string) => `${name}, din krog`, en: (name: string) => `${name}, your place` },
@@ -2230,20 +2230,20 @@ export const TABLE = {
       sv: (n: number) => `${n} ${pl(n, 'gäst', 'gäster')} i kväll`,
       en: (n: number) => `${n} ${pl(n, 'guest', 'guests')} tonight`
     },
-    priceTag: { sv: (sek: string) => `omkring ${sek} kr per gäst`, en: (sek: string) => `about ${sek} kr per guest` },
+    priceTag: { sv: (sek: string) => `omkring ${sek} kr per gäst`, en: (sek: string) => `about SEK ${sek} per guest` },
     starsAria: { sv: (n: number) => `${n} av 5 stjärnor`, en: (n: number) => `${n} of 5 stars` },
     controlHuman: { sv: 'spelare', en: 'player' },
     levels: {
       aria: { sv: 'Nivåer', en: 'Levels' },
       village: { sv: 'Byn', en: 'Village' },
-      district: { sv: 'Kvarteret', en: 'Quarter' },
+      district: { sv: 'Kvarteret', en: 'Block' },
       street: { sv: 'Gatan', en: 'Street' },
       room: { sv: 'Krogen', en: 'Your place' },
       // ORDER 300 §6 — "Byn (V)".
       withKey: { sv: (name: string, key: string) => `${name} (${key})`, en: (name: string, key: string) => `${name} (${key})` },
       hint: {
         village: { sv: 'Krogarna och grupperna i byn', en: 'The restaurants and the groups in the village' },
-        district: { sv: 'Gästflödet i kvarteret', en: 'The flow of guests in the quarter' },
+        district: { sv: 'Gästflödet i kvarteret', en: 'The flow of guests in the block' },
         street: { sv: 'Vem som är på väg in', en: 'Who is on the way in' },
         room: { sv: 'Rummet', en: 'The room' }
       }
@@ -2286,9 +2286,9 @@ export const TABLE = {
       bus: { sv: (n: number) => `varav ${n} från bussen`, en: (n: number) => `${n} from the coach` },
       place: {
         sv: (rank: number, of: number) => `Din krog kom ${rank} av ${of} i gäster i kväll.`,
-        en: (rank: number, of: number) => `Your place came ${rank} of ${of} in guests tonight.`
+        en: (rank: number, of: number) => `Your place ranked ${rank} of ${of} for guests tonight.`
       },
-      kr: { sv: (sek: string) => `${sek} kr`, en: (sek: string) => `${sek} kr` },
+      kr: { sv: (sek: string) => `${sek} kr`, en: (sek: string) => `SEK ${sek}` },
       next: { sv: 'Vidare', en: 'Continue' }
     },
     newspaper: {
@@ -2296,7 +2296,7 @@ export const TABLE = {
       title: { sv: 'Veckans rankning', en: "This week's ranking" },
       row: {
         sv: (rank: number, name: string, guests: number, perGuest: string) => `${rank}. ${name}: ${guests} gäster, ${perGuest} kr per gäst`,
-        en: (rank: number, name: string, guests: number, perGuest: string) => `${rank}. ${name}: ${guests} guests, ${perGuest} kr per guest`
+        en: (rank: number, name: string, guests: number, perGuest: string) => `${rank}. ${name}: ${guests} guests, SEK ${perGuest} per guest`
       },
       rose: { sv: (name: string) => `${name} steg mest i ryktet den här veckan.`, en: (name: string) => `${name} rose the most in reputation this week.` },
       fell: { sv: (name: string) => `${name} föll mest.`, en: (name: string) => `${name} fell the most.` }
@@ -2599,7 +2599,7 @@ export const TABLE = {
     phase: { sv: 'Morgonen', en: 'Morning' },
     menu: { sv: 'Meny', en: 'Menu' },
     menuStep: { sv: '+ köper 5 portioner', en: '+ buys 5 portions' },
-    wine: { sv: 'Dryckeslista', en: 'Wine list' },
+    wine: { sv: 'Dryckeslista', en: 'Drinks list' },
     wineStep: { sv: '+ köper 2 flaskor', en: '+ buys 2 bottles' },
     dishSub: { sv: (cost: string, price: string) => `Inköp ${cost} · säljs för ${price}`, en: (cost: string, price: string) => `Cost ${cost} · sells for ${price}` },
     wineSub: { sv: (cost: string, glasses: number, price: string) => `Inköp ${cost}/fl · ${glasses} glas à ${price}`, en: (cost: string, glasses: number, price: string) => `Cost ${cost}/btl · ${glasses} ${pl(glasses, 'glass', 'glasses')} at ${price}` },
@@ -2652,8 +2652,8 @@ export const TABLE = {
     notEnough: { sv: 'Kassan räcker inte till partiet.', en: 'The till cannot cover that batch.' },
     unitPortion: { sv: 'port', en: 'ptn' },
     unitBottle: { sv: 'fl', en: 'btl' },
-    less: { sv: (name: string) => `Ett parti färre ${name}`, en: (name: string) => `One batch less ${name}` },
-    more: { sv: (name: string) => `Ett parti till ${name}`, en: (name: string) => `One more batch ${name}` }
+    less: { sv: (name: string) => `Ett parti färre ${name}`, en: (name: string) => `One batch fewer: ${name}` },
+    more: { sv: (name: string) => `Ett parti till ${name}`, en: (name: string) => `One more batch: ${name}` }
   },
   stockL1: {
     kitchen: { sv: 'Lagret · kök', en: 'Stock · kitchen' },
@@ -2783,7 +2783,7 @@ export const TABLE = {
       },
       hide: { sv: 'Dölj kontrollerna', en: 'Hide controls' },
       village: { sv: 'byn', en: 'the village' },
-      district: { sv: 'kvarteret', en: 'the district' },
+      district: { sv: 'kvarteret', en: 'the block' },
       block: { sv: 'ditt kvarter', en: 'your block' },
       business: { sv: 'din verksamhet', en: 'your business' }
     },
@@ -2817,8 +2817,8 @@ export const TABLE = {
     label: { sv: 'Kassa', en: 'Cash' },
     aria: { sv: (amount: string) => `Kassan: ${amount}`, en: (amount: string) => `Cash: ${amount}` },
     // ORDER 290 — kvällskassan under servicen, mot linjen för break-even.
-    tillLabel: { sv: 'Kvällskassan', en: 'Tonight' },
-    tillAria: { sv: (till: string, be: string) => `Kvällskassan: ${till} av ${be} till break-even`, en: (till: string, be: string) => `Tonight's till: ${till} of ${be} to break even` },
+    tillLabel: { sv: 'Kvällskassan', en: 'Tonight’s takings' },
+    tillAria: { sv: (till: string, be: string) => `Kvällskassan: ${till} av ${be} till break-even`, en: (till: string, be: string) => `Tonight's takings: ${till} of ${be} to break even` },
     breakEven: { sv: (be: string) => `Break-even ${be}`, en: (be: string) => `Break-even ${be}` }
   },
   // ORDER 277 — gästerna har kost och plånbok.
@@ -2849,7 +2849,7 @@ export const TABLE = {
           wallet: 'found nothing in their price range',
           alcoholFree: 'found nothing alcohol-free'
         };
-        const party = partyLeft > 0 ? ` Their party left with them, ${partyLeft === 1 ? 'one more' : `${partyLeft} more`}.` : '';
+        const party = partyLeft > 0 ? ` The rest of their party left too (${partyLeft === 1 ? 'one more' : `${partyLeft} more`}).` : '';
         return `${at} ${why[reason] ?? why.soldOut} and left without ordering.${party}`;
       }
     },
@@ -2992,7 +2992,7 @@ export const TABLE = {
     roleLabel: {
       'värd': { sv: 'Värd', en: 'Host' },
       'servitör': { sv: 'Servitör', en: 'Waiter' },
-      'kock': { sv: 'Kock', en: 'Cook' },
+      'kock': { sv: 'Kock', en: 'Chef' },
       'lärling': { sv: 'Lärling', en: 'Apprentice' }
     },
     roleDescription: {
@@ -3194,7 +3194,7 @@ export const TABLE = {
       en: 'You have read the field but never lived it. Come back once you have worked at {pavilion}.'
     },
     pavilionNames: {
-      maltidbiblioteket: { sv: 'Måltidbiblioteket', en: 'Måltidsbiblioteket' },
+      maltidbiblioteket: { sv: 'Måltidsbiblioteket', en: 'Måltidsbiblioteket' },
       kalastorget: { sv: 'Kalastorget', en: 'Kalastorget' },
       stensota: { sv: 'Stensöta', en: 'Stensöta' },
       metodkoket: { sv: 'Metodköket', en: 'Metodköket' },
@@ -3331,7 +3331,7 @@ export const TABLE = {
         stock: { sv: 'Inköp', en: 'Stock' },
         waste: { sv: 'Svinn', en: 'Waste' },
         bet: { sv: 'Insats', en: 'Stake' },
-        floor: { sv: 'Golv', en: 'Floor' },
+        floor: { sv: 'Golv', en: 'Inc. floor' },
         amortisation: { sv: 'Amort.', en: 'Repay.' },
         rent: { sv: 'Hyra', en: 'Rent' },
         other: { sv: '—', en: '—' }
@@ -3454,7 +3454,7 @@ export const TABLE = {
       lockedNote: { sv: 'Svaret är låst. Avgörandet kommer när gästen reagerar.', en: 'Your answer is locked. The verdict comes when the guest reacts.' }
     },
     meters: {
-      cash: { sv: 'Kassa', en: 'Takings' },
+      cash: { sv: 'Kassa', en: 'Cash' },
       guests: { sv: 'Gästerna', en: 'Guests' },
       staff: { sv: 'Personalen', en: 'Staff' },
       note: { sv: 'Tio steg per mätare. Riktning, inte belopp.', en: 'Ten steps per meter. Direction, not amounts.' },
@@ -3550,7 +3550,7 @@ export const TABLE = {
     equipmentIntro: { sv: 'Utrustningen köps för kassan, står i rummet och lyfter krogens koncept.', en: 'Equipment is bought with cash, stands in the room and lifts the restaurant’s concept.' },
     open: { sv: 'Öppen från start', en: 'Open from the start' },
     buyCredits: { sv: (n: number) => `Öppna för ${n} krediter`, en: (n: number) => `Open for ${n} credits` },
-    buyCash: { sv: (kr: string) => `Köp för ${kr} kr`, en: (kr: string) => `Buy for ${kr} kr` },
+    buyCash: { sv: (kr: string) => `Köp för ${kr} kr`, en: (kr: string) => `Buy for SEK ${kr}` },
     equipmentLedger: { sv: (name: string) => `Utrustning: ${name}`, en: (name: string) => `Equipment: ${name}` },
     supplier: {
       sv: {
@@ -3606,13 +3606,13 @@ export const TABLE = {
       en: { fish: 'fish', wine: 'wine', cheese: 'cheese', charcuterie: 'charcuterie', spirits: 'spirits', kitchen: 'the kitchen', cigar: 'cigars' } as Record<string, string>
     },
     unlockMedal: { sv: (medal: string, pav: string, n: number) => `Öppnas med ${medal}-medaljen i ${pav} och ${n} krediter`, en: (medal: string, pav: string, n: number) => `Unlocked with the ${medal} medal in ${pav} and ${n} credits` },
-    payTill: { sv: (kr: string) => `Köp för ${kr} kr ur kassan`, en: (kr: string) => `Buy for ${kr} kr from the till` },
+    payTill: { sv: (kr: string) => `Köp för ${kr} kr ur kassan`, en: (kr: string) => `Buy for SEK ${kr} from your cash` },
     payPurchases: { sv: 'Varorna betalas i morgonens inköp.', en: 'The goods are paid for in the morning purchase.' },
     ownedSupplier: { sv: 'Levererar från morgon', en: 'Delivers from tomorrow' },
     ownedEquipment: { sv: 'Står i rummet', en: 'In the room' },
     locked: { sv: 'Låst', en: 'Locked' },
     shortCredits: { sv: 'Krediterna räcker inte', en: 'Not enough credits' },
-    shortCash: { sv: 'Kassan räcker inte', en: 'Not enough in the till' },
+    shortCash: { sv: 'Kassan räcker inte', en: 'Not enough cash' },
     done: { sv: 'Klar för i kväll', en: 'Ready for tonight' },
     tonight: { sv: (tier: string) => `I kväll: ${tier}`, en: (tier: string) => `Tonight: ${tier}` },
     tonightNote: { sv: 'Konceptet följer varukorgen: det du köper in avgör vilka gäster som kommer.', en: 'The concept follows the basket: what you buy decides which guests come.' }
@@ -3646,7 +3646,7 @@ export const TABLE = {
     button: { sv: 'Status', en: 'Status' },
     hint: { sv: 'Stämningen vid alla bord och personalens ork', en: 'The mood at every table and the staff’s stamina' },
     stamina: { sv: 'Ork', en: 'Stamina' },
-    wellbeing: { sv: 'Trivsel', en: 'Wellbeing' },
+    wellbeing: { sv: 'Trivsel', en: 'Morale' },
     skills: { sv: 'Kan', en: 'Knows' },
     level: { sv: ['låg', 'mellan', 'god'] as readonly string[], en: ['low', 'medium', 'good'] as readonly string[] },
     area: { sv: { vin: 'vin', mat: 'mat', service: 'service' } as Record<string, string>, en: { vin: 'wine', mat: 'food', service: 'service' } as Record<string, string> },
@@ -3695,12 +3695,12 @@ export const TABLE = {
     },
     rule1: {
       sv: (closings: string) => `Klarar du veckans mål blir krogen kvar. ${closings} bokslut under noll i rad, och den stänger.`,
-      en: (closings: string) => `Meet the week's target and the restaurant stays. ${closings} accounts below zero in a row, and it closes.`
+      en: (closings: string) => `Meet the week's target and the restaurant stays. ${closings} settlements below zero in a row, and it closes.`
     },
     // ORDER 311 — säsongens sista bokslut.
     seasonEnd: {
       sv: 'Står kassan under noll i säsongens sista bokslut är det konkurs, och krogen stänger.',
-      en: 'If the account is below zero at the season\'s last settlement, that is bankruptcy, and the restaurant closes.'
+      en: 'If your cash is below zero at the season\'s last settlement, that is bankruptcy, and the restaurant closes.'
     },
     rule2: {
       sv: 'Det du visar i Måltidens hus öppnar satsningar och lån.',
@@ -3764,10 +3764,10 @@ export const TABLE = {
   foljder: {
     statusButton: { sv: 'Status', en: 'Status' },
     focusButton: { sv: 'Fokus', en: 'Focus' },
-    statusHint: { sv: 'Statusläge: stämningen vid alla bord, och personalens ork och trivsel. Klicka på en figur för kortet.', en: 'Status view: the mood at every table, and the staff’s energy and morale. Click a figure for its card.' },
-    focusHint: { sv: 'Fokusläge: panelerna fälls till lister. Klockan, kassan och mätaren står kvar.', en: 'Focus view: the panels fold into strips. Clock, till and meter stay.' },
+    statusHint: { sv: 'Statusläge: stämningen vid alla bord, och personalens ork och trivsel. Klicka på en figur för kortet.', en: 'Status view: the mood at every table, and the staff’s stamina and morale. Click a figure for its card.' },
+    focusHint: { sv: 'Fokusläge: panelerna fälls till lister. Klockan, kassan och mätaren står kvar.', en: 'Focus view: the panels fold into strips. Clock, cash and meter stay.' },
     rocketStrip: { sv: 'Situationen', en: 'Situation' },
-    stamina: { sv: 'Ork', en: 'Energy' },
+    stamina: { sv: 'Ork', en: 'Stamina' },
     staminaLevel: {
       sv: { fresh: 'Pigg', tired: 'Trött', spent: 'Slut' } as Record<string, string>,
       en: { fresh: 'Fresh', tired: 'Tired', spent: 'Worn out' } as Record<string, string>

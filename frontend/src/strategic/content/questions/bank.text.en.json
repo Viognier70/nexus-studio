@@ -213,7 +213,7 @@
       "explanation": "Warmth makes the alcohol more volatile, so it dominates the nose while the fruit's freshness is muted. A few minutes in the fridge or an ice bucket brings the balance back. Decanting is tempting because it often fixes closed wines, but air does nothing about temperature."
     },
     "stensota-brons-02": {
-      "prompt": "Why does a tannic red work so well with a fatty, well-hung rib-eye?",
+      "prompt": "Why does a tannic red work so well with a fatty, well-aged rib-eye?",
       "options": [
         "The acidity in the wine breaks down the fat chemically in the mouth",
         "The alcohol dissolves the fat so it's rinsed away",
@@ -296,7 +296,7 @@
       "prompt": "I'm not drinking tonight. What would go with the fried dish I ordered?",
       "options": [
         "A sweet fruit drink to balance the salt",
-        "A sparkling drink with clear acidity and little sweetness",
+        "A sparkling drink with clear acidity and a touch of sweetness",
         "A rich, creamy drink to match the fat of the fry",
         "Still water with lemon, so nothing interferes with the flavour"
       ],
@@ -353,7 +353,7 @@
       "explanation": "Under Swedish law, alcohol may not be served to anyone who is visibly intoxicated, so the answer is no whatever the size of the glass. Saying so discreetly while offering water and food lets the guest keep their dignity. B tempts because the party knows the guest, but responsibility for serving can't be handed over to them."
     },
     "kalastorget-brons-06": {
-      "prompt": "I don't think we ordered this bottle on the bill. Could you look at it?",
+      "prompt": "I don't think we ordered this bottle that's on the bill. Could you look into it?",
       "options": [
         "Show the till printout as proof",
         "Go through the order calmly with the guest, and take the item off if it can't be sorted out",

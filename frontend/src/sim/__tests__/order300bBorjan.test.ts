@@ -55,7 +55,7 @@ describe('ORDER 300b — början', () => {
     const w = r.numberWord[RISK.closeAfterWeeksBelowZero];
     expect(r.rule1(w[0].toUpperCase() + w.slice(1))).toBe('Klarar du veckans mål blir krogen kvar. Tre bokslut under noll i rad, och den stänger.');
     const e = pickLang(TABLE, 'en').rules;
-    expect(e.rule1('Three')).toBe("Meet the week's target and the restaurant stays. Three accounts below zero in a row, and it closes.");
+    expect(e.rule1('Three')).toBe("Meet the week's target and the restaurant stays. Three settlements below zero in a row, and it closes.");
   });
 
   it('inget skript börjar längre med bussen', () => {
