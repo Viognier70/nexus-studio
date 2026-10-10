@@ -1024,7 +1024,7 @@
     "target": "room"
    },
    "legal": {
-    "legalReviewed": false
+    "legalReviewed": true
    }
   }
  ]

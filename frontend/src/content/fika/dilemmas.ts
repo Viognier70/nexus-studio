@@ -208,8 +208,8 @@ export const DILEMMAS: readonly Dilemma[] = [
   {
     id: 'fika-vagn-kylboxen', theme: 'food-safety', asker: 'assistant', places: TRUCK,
     triggers: [{ kind: 'incident', ids: ['ft04-leveransen', 'ft11-slut'] }, { kind: 'delivery' }],
-    // BESLUT_GRANSKNING_323: lagrummen stämmer; Anders läser lagtexten själv och sätter legalReviewed.
-    legal: unreviewed('SFS 2006:804', 'EG 852/2004'),
+    // BESLUT_GRANSKNING_323: lagrummen stämmer. Lagtexten granskad av Anders (ORDER 324b).
+    legal: { laws: ['SFS 2006:804', 'EG 852/2004'], legalReviewed: true },
     options: [
       { id: 'A', grade: 'well', economy: [{ kind: 'cost', key: 'discardGoodsSek' }] },
       { id: 'B', grade: 'weakly', economy: [{ kind: 'inspectionRisk' }] },

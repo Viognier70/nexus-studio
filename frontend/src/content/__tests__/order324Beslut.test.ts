@@ -41,10 +41,10 @@ describe('ORDER 324 A — vagnens dilemman', () => {
     expect(a.en).not.toContain('next time');
   });
 
-  it('lagtexterna i vagnen är inte granskade än', () => {
-    for (const id of ['fika-vagn-kylboxen', 'fika-vagn-benen']) {
-      expect(DILEMMAS.find((d) => d.id === id)!.legal!.legalReviewed).toBe(false);
-    }
+  // ORDER 324b: kylboxens lagtext är granskad av Anders; benen väntar på juristen.
+  it('lagtexterna i vagnen: kylboxen granskad, benen inte än', () => {
+    expect(DILEMMAS.find((d) => d.id === 'fika-vagn-kylboxen')!.legal!.legalReviewed).toBe(true);
+    expect(DILEMMAS.find((d) => d.id === 'fika-vagn-benen')!.legal!.legalReviewed).toBe(false);
   });
 });
 
@@ -78,5 +78,28 @@ describe('ORDER 324 A — termer och språk', () => {
     const ft = json('incidents/foodtruck/situationer320.text.sv.draft.json').texts;
     expect(ft['ft13-priset'].halfGrip.experience).toContain('bara lite mer än hälften så mycket');
     expect(JSON.stringify(TABLE)).not.toContain('Måltidbiblioteket');
+  });
+});
+
+// ORDER 324b (Anders 2026-10-10): ft06-stangningen steg 2, svar A och förklaringarna till A och D
+// omskrivna av Claude; ft06 granskad av Anders.
+describe('ORDER 324b — ft06-stangningen', () => {
+  const meta = json('incidents/foodtruck/bas.meta.json').incidents.find((i: { id: string }) => i.id === 'ft06-stangningen');
+  const step = (lang: 'sv' | 'en') =>
+    json(`incidents/foodtruck/bas.text.${lang === 'sv' ? 'sv.draft' : 'en'}.json`).texts['ft06-stangningen'].steps[1].options;
+
+  it('svar A: kylboxen, och förklaringarna till A och D', () => {
+    const sv = step('sv');
+    const en = step('en');
+    expect(sv.a.label).toBe('Kyler ner dem i kylboxen och säljer dem i morgon.');
+    expect(en.a.label).toBe('Chills them in the cool box and sells them tomorrow.');
+    expect(sv.a.explanation).toBe('Varmhållen mat som blir över ska kastas. Den har redan stått varm i timmar, och att kyla och värma den igen ökar risken.');
+    expect(en.a.explanation).toBe('Hot-held food that is left over should be thrown away. It has already been held hot for hours, and cooling and reheating it adds to the risk.');
+    expect(sv.d.explanation).toBe('Korven har stått varm i timmar. Den blir inte säker igen av att ligga i sin förpackning.');
+    expect(en.d.explanation).toBe('The sausages have been held hot for hours. Putting them back in the packet does not make them safe again.');
+  });
+
+  it('ft06 är granskad', () => {
+    expect(meta.legal.legalReviewed).toBe(true);
   });
 });

@@ -145,7 +145,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_321_RAPPORT.md`: ORDER 321 — Provspelsläge: ?prov, börja direkt i foodtrucken, vinbaren eller bistron (rapport).
 - `ORDER_322_RAPPORT.md`: ORDER 322 — Efter provspel 2026-10-09: kvitt eller dubbelt, provspelets namn och Följd, listan över byns skillnader mot kartan och rättningen efter Anders beslut, etiketterna och vägändarna, uppfarten vid Länsmansgården och etiketterna i alla zoomnivåer (rapport, del A, B och C).
 - `ORDER_323_RAPPORT.md`: ORDER 323 — Efter provspel 2026-10-09 kväll: språket, korten som inte får plats, kvitt eller dubbelt, fönstren, fikat per plats, gatorna, Byn i kväll och felöversättningarna, provspelets namn, föremålen på borden och panelerna vid Krogen (rapport).
-- `ORDER_324_RAPPORT.md`: ORDER 324 — Beslut om FÖR_GRANSKNING_323.md i spelet (svenska och engelska), ft06 steg 2 för Claude, somm-h7, och layouten i 1180 × 660 och 1024 × 600 (rapport).
+- `ORDER_324_RAPPORT.md`: ORDER 324 — Beslut om FÖR_GRANSKNING_323.md i spelet (svenska och engelska), ft06 steg 2 för Claude, somm-h7, och layouten i 1180 × 660 och 1024 × 600 (rapport); 324b: ft06 svar A, lagtexterna granskade, layoutkontrollen på engelska.
 - `ORDER_RECONSTRUCTION_004_005_019_020.md`: ORDER_RECONSTRUCTION_004_005_019_020 — Evidence record for four sprint orders.
 - `ORDER_REGISTRY.md`: ORDER REGISTRY.
 - `PERFORMANCE_PREPARATION_REFERENCE.md`: Performance Preparation Reference.

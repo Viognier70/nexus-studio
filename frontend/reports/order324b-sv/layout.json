@@ -1,0 +1,2274 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "sizes": [
+    "1024×600",
+    "1180×660",
+    "1280×720",
+    "1366×768",
+    "1440×900",
+    "1512×982",
+    "1500×950"
+  ],
+  "screenShare": 0.6,
+  "minFontPx": 12,
+  "screens": {
+    "start": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Grythyttan",
+          "clipped": []
+        }
+      ]
+    },
+    "registrering": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "div.business-name-kicker: Måltidens hus · Liggaren",
+          "clipped": []
+        }
+      ]
+    },
+    "oppningen": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [
+            "shelf-empty-gastronomiskateatern"
+          ],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12.5,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.7,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 14.6,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 17.1,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 18.7,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 18.1,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
+          "clipped": []
+        }
+      ]
+    },
+    "regelkortet": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.08,
+              "over": 590,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-list-scroll.nxs-shelf-list",
+              "share": 0.08,
+              "over": 17,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [
+            "shelf-empty-gastronomiskateatern"
+          ],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 625,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12.2,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 677,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 718,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 14.2,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 664,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 15,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 660,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 15.8,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 679,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 15.6,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        }
+      ]
+    },
+    "mentorn": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.08,
+              "over": 590,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-list-scroll.nxs-shelf-list",
+              "share": 0.08,
+              "over": 17,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [
+            "shelf-empty-gastronomiskateatern"
+          ],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 625,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12.2,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 677,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 718,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 14.2,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 664,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 15,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 660,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 15.8,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 679,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 15.6,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        }
+      ]
+    },
+    "morgonen-dag1": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.08,
+              "over": 590,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-list-scroll.nxs-shelf-list",
+              "share": 0.08,
+              "over": 17,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [
+            "shelf-empty-gastronomiskateatern"
+          ],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-label: Kassa",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 625,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12.2,
+          "minFontAt": "span.nx-label: Kassa",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 677,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "span.nx-label: Kassa",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 718,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 14.2,
+          "minFontAt": "span.nx-label: Kassa",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 664,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 15,
+          "minFontAt": "span.nx-label: Kassa",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 660,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 15.8,
+          "minFontAt": "span.nx-label: Kassa",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 679,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 15.6,
+          "minFontAt": "span.nx-label: Kassa",
+          "clipped": []
+        }
+      ]
+    },
+    "reglerna": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.08,
+              "over": 590,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-list-scroll.nxs-shelf-list",
+              "share": 0.08,
+              "over": 17,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [
+            "shelf-empty-gastronomiskateatern"
+          ],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "rules-season-end: Står kassan under noll i säson",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 625,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12.2,
+          "minFontAt": "h3.nx-label.nxs-mt-24: Det här gäller inte",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 677,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "legend-role-host: Hovmästare",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 718,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "legend-role-host: Hovmästare",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 664,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "legend-role-host: Hovmästare",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 660,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "legend-role-host: Hovmästare",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 679,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13,
+          "minFontAt": "legend-role-host: Hovmästare",
+          "clipped": []
+        }
+      ]
+    },
+    "morgonen": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.08,
+              "over": 435,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-morning-right",
+              "share": 0.16,
+              "over": 304,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-label: Byn i kväll",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 472,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-morning-right",
+              "share": 0.16,
+              "over": 321,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12.2,
+          "minFontAt": "div.nx-label: Byn i kväll",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 511,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-morning-right",
+              "share": 0.16,
+              "over": 349,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "div.nx-label: Byn i kväll",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 541,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-morning-right",
+              "share": 0.16,
+              "over": 372,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 14.2,
+          "minFontAt": "div.nx-label: Byn i kväll",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 478,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-morning-right",
+              "share": 0.17,
+              "over": 302,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 15,
+          "minFontAt": "div.nx-label: Byn i kväll",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 465,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-morning-right",
+              "share": 0.18,
+              "over": 279,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 15.8,
+          "minFontAt": "div.nx-label: Byn i kväll",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.11,
+              "over": 485,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-morning-right",
+              "share": 0.17,
+              "over": 301,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 15.6,
+          "minFontAt": "div.nx-label: Byn i kväll",
+          "clipped": []
+        }
+      ]
+    },
+    "inkopen": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "div.nxs-buy-rows",
+              "share": 0.19,
+              "over": 226,
+              "screen": false
+            }
+          ],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-label: Kassa",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "div.nxs-buy-rows",
+              "share": 0.19,
+              "over": 242,
+              "screen": false
+            }
+          ],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nxs-row-sub: Inköp 14 kr · säljs för 95 kr",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "div.nxs-buy-rows",
+              "share": 0.19,
+              "over": 238,
+              "screen": false
+            }
+          ],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nxs-row-sub: Inköp 14 kr · säljs för 95 kr",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "div.nxs-buy-rows",
+              "share": 0.19,
+              "over": 234,
+              "screen": false
+            }
+          ],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-label: port",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "div.nxs-buy-rows",
+              "share": 0.2,
+              "over": 142,
+              "screen": false
+            }
+          ],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-label: port",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "div.nxs-buy-rows",
+              "share": 0.21,
+              "over": 103,
+              "screen": false
+            }
+          ],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-label: port",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "div.nxs-buy-rows",
+              "share": 0.2,
+              "over": 127,
+              "screen": false
+            }
+          ],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-label: port",
+          "clipped": []
+        }
+      ]
+    },
+    "byn-fore-oppning": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-label: Byn i kväll",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        }
+      ]
+    },
+    "gatan-fore-oppning": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-label: Byn i kväll",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        }
+      ]
+    },
+    "servicen": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-label: Byn i kväll",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        }
+      ]
+    },
+    "statuslaget-kortet": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-label: Byn i kväll",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-rival-chevron: ▾",
+          "clipped": []
+        }
+      ]
+    },
+    "fokuslaget": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-label: Stämningen i rummet",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "kbd.nx-mode-cap: S",
+          "clipped": []
+        }
+      ]
+    },
+    "raketen": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "incident-body",
+              "share": 0.19,
+              "over": 18,
+              "screen": false
+            }
+          ],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-label: Stämningen i rummet",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12.1,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12.8,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.4,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        }
+      ]
+    },
+    "raketen-byn-utfalld": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "incident-body",
+              "share": 0.19,
+              "over": 18,
+              "screen": false
+            }
+          ],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-label: Stämningen i rummet",
+          "clipped": []
+        },
+        {
+          "size": "1180×660",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1366×768",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12.1,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1440×900",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12.8,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1512×982",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.4,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        },
+        {
+          "size": "1500×950",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 0,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "span.: Episteme",
+          "clipped": []
+        }
+      ]
+    }
+  },
+  "errors": []
+}

@@ -31,7 +31,10 @@
 // situationen mäts med Byn just nu ihopfälld och utfälld (B).
 // Utdata: reports/<REPORT_ORDER|order300>/layout.json och layout-*.png.
 //
-//   [REPORT_ORDER=order300] [SKIP_BUILD=1] [LAYOUT_SIZES=1280x720,...] node scripts/order300-layout.mjs
+// ORDER 324b §3 — LAYOUT_LANG=en kör kontrollen på engelska (språket i menyn, nexus.lang); förvalet är
+// svenska, som spelet startar på.
+//
+//   [REPORT_ORDER=order300] [SKIP_BUILD=1] [LAYOUT_SIZES=1280x720,...] [LAYOUT_LANG=sv|en] node scripts/order300-layout.mjs
 
 import { spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -50,6 +53,7 @@ const SIZES = (process.env.LAYOUT_SIZES ?? '1024x600,1180x660,1280x720,1366x768,
 const SCREEN_SHARE = 0.6;
 const MIN_FONT_PX = 12;
 const ONLY = process.env.LAYOUT_ONLY ? process.env.LAYOUT_ONLY.split(',') : null;
+const LANG = process.env.LAYOUT_LANG ?? 'sv';
 
 if (process.env.SKIP_BUILD !== '1') {
   await new Promise((res, rej) => { const b = spawn('npm', ['run', 'build'], { cwd: FRONTEND, stdio: 'ignore' }); b.on('exit', (c) => (c === 0 ? res() : rej(new Error(`build ${c}`)))); });
@@ -59,7 +63,7 @@ for (let i = 0; i < 240; i++) { try { const r = await fetch(URL); if (r.ok) brea
 const { chromium } = await import('playwright');
 const browser = await chromium.launch().catch(() => chromium.launch({ channel: 'chrome' }));
 const SAVE = readFileSync(resolve(FRONTEND, 'reports/order284/save-mandag-vinbaren.json'), 'utf8');
-const report = { build: 'produktion (vite build + preview)', sizes: SIZES.map(([w, h]) => `${w}×${h}`), screenShare: SCREEN_SHARE, minFontPx: MIN_FONT_PX, screens: {}, errors: [] };
+const report = { build: 'produktion (vite build + preview)', lang: LANG, sizes: SIZES.map(([w, h]) => `${w}×${h}`), screenShare: SCREEN_SHARE, minFontPx: MIN_FONT_PX, screens: {}, errors: [] };
 
 async function probe(page, buttons) {
   return page.evaluate(([share, buttons]) => {
@@ -170,8 +174,10 @@ async function measure(page, name, buttons = []) {
     await page.setViewportSize({ width: w, height: h });
     await delay(500);
     const p = await probe(page, buttons);
-    const ok = !p.pageScroll && p.overlaps.length === 0 && p.covered.length === 0 && p.shelfHidden.length === 0 && p.screenScroll.length === 0 && (p.minFontPx ?? 99) >= MIN_FONT_PX && p.clipped.length === 0;
-    rows.push({ size: `${w}×${h}`, ok, ...p });
+    // ORDER 324b — språket som faktiskt visas (main.tsx sätter <html lang> ur det valda språket).
+    const htmlLang = await page.evaluate(() => document.documentElement.lang);
+    const ok = htmlLang === LANG && !p.pageScroll && p.overlaps.length === 0 && p.covered.length === 0 && p.shelfHidden.length === 0 && p.screenScroll.length === 0 && (p.minFontPx ?? 99) >= MIN_FONT_PX && p.clipped.length === 0;
+    rows.push({ size: `${w}×${h}`, ok, htmlLang, ...p });
     await page.screenshot({ path: resolve(OUT, `layout-${name}-${w}x${h}.png`) });
   }
   report.screens[name] = { ok: rows.every((r) => r.ok), rows };
@@ -180,9 +186,9 @@ async function measure(page, name, buttons = []) {
 
 async function newPage(seed) {
   const ctx = await browser.newContext({ viewport: { width: SIZES[0][0], height: SIZES[0][1] } });
-  await ctx.addInitScript(([key, value, seed]) => {
-    if (!sessionStorage.getItem('o300')) { if (seed) localStorage.setItem(key, value); localStorage.setItem('nexus.lang', 'sv'); sessionStorage.setItem('o300', '1'); }
-  }, ['nexus.v1.slot1', SAVE, seed]);
+  await ctx.addInitScript(([key, value, seed, lang]) => {
+    if (!sessionStorage.getItem('o300')) { if (seed) localStorage.setItem(key, value); localStorage.setItem('nexus.lang', lang); sessionStorage.setItem('o300', '1'); }
+  }, ['nexus.v1.slot1', SAVE, seed, LANG]);
   const page = await ctx.newPage();
   page.on('pageerror', (e) => report.errors.push(e.message));
   return { ctx, page };
