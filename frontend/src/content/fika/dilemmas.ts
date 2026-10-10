@@ -208,9 +208,10 @@ export const DILEMMAS: readonly Dilemma[] = [
   {
     id: 'fika-vagn-kylboxen', theme: 'food-safety', asker: 'assistant', places: TRUCK,
     triggers: [{ kind: 'incident', ids: ['ft04-leveransen', 'ft11-slut'] }, { kind: 'delivery' }],
+    // BESLUT_GRANSKNING_323: lagrummen stämmer; Anders läser lagtexten själv och sätter legalReviewed.
     legal: unreviewed('SFS 2006:804', 'EG 852/2004'),
     options: [
-      { id: 'A', grade: 'well', economy: [{ kind: 'cost', key: 'discardSomeGoodsSek' }] },
+      { id: 'A', grade: 'well', economy: [{ kind: 'cost', key: 'discardGoodsSek' }] },
       { id: 'B', grade: 'weakly', economy: [{ kind: 'inspectionRisk' }] },
       { id: 'C', grade: 'partly' }
     ]
@@ -238,6 +239,8 @@ export const DILEMMAS: readonly Dilemma[] = [
   {
     id: 'fika-vagn-benen', theme: 'work-environment', asker: 'assistant', places: TRUCK,
     triggers: [{ kind: 'lowStamina' }, { kind: 'tiredTeam' }, { kind: 'lowWellbeing' }],
+    // BESLUT_GRANSKNING_323: rasten efter fem timmar stämmer (ATL 15 §). Vilken AFS som gäller stående arbete
+    // och kyla anger juristen; legalReviewed står kvar som false tills dess.
     legal: unreviewed('SFS 1977:1160', 'AFS 2023:2', 'SFS 1982:673'),
     options: [
       { id: 'A', grade: 'well' },

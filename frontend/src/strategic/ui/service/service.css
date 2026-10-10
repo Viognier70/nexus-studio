@@ -35,9 +35,9 @@
 .nx-rocket > .nx-rocket-foot, .nx-rocket > .nx-rocket-band, .nx-rocket > .nx-rocket-locked { flex: none; }
 .nx-rocket-head { display: flex; justify-content: space-between; align-items: baseline; gap: calc(16 * var(--nx-u)); }
 .nx-rocket-head .nx-label { color: var(--nx-accent-700); }
-.nx-rocket-count { font-size: calc(20 * var(--nx-u)); color: var(--nx-ink-2); white-space: nowrap; }
-.nx-rocket-story { font-size: calc(22 * var(--nx-u)); line-height: 1.4; color: var(--nx-ink-2); margin: calc(14 * var(--nx-u)) 0 0; }
-.nx-rocket-situation { font-size: calc(22 * var(--nx-u)); line-height: 1.4; color: var(--nx-ink); margin: calc(6 * var(--nx-u)) 0 0; }
+.nx-rocket-count { font-size: max(12px, calc(20 * var(--nx-u))); color: var(--nx-ink-2); white-space: nowrap; }
+.nx-rocket-story { font-size: max(12px, calc(22 * var(--nx-u))); line-height: 1.4; color: var(--nx-ink-2); margin: calc(14 * var(--nx-u)) 0 0; }
+.nx-rocket-situation { font-size: max(12px, calc(22 * var(--nx-u))); line-height: 1.4; color: var(--nx-ink); margin: calc(6 * var(--nx-u)) 0 0; }
 
 .nx-rocket-steps {
   flex-shrink: 0;
@@ -50,8 +50,8 @@
   border: var(--nx-line) solid var(--nx-rule);
   color: var(--nx-ink-2);
 }
-.nx-rocket-step-name { font-size: calc(20 * var(--nx-u)); font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
-.nx-rocket-step-sub { font-size: calc(19 * var(--nx-u)); margin-top: calc(8 * var(--nx-u)); line-height: 1.3; }
+.nx-rocket-step-name { font-size: max(12px, calc(20 * var(--nx-u))); font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+.nx-rocket-step-sub { font-size: max(12px, calc(19 * var(--nx-u))); margin-top: calc(8 * var(--nx-u)); line-height: 1.3; }
 .nx-rocket-step[data-state='cleared'] { background: var(--w-gold); color: var(--w-ink); border-color: var(--w-gold); box-shadow: var(--w-glow-cleared); }
 .nx-rocket-step[data-state='current'] { background: var(--w-wash-strong); border-color: rgba(255,213,143,.7); color: var(--w-cream); box-shadow: var(--w-glow-current); }
 .nx-rocket-step[data-state='next'] { border: calc(3 * var(--nx-u)) solid var(--nx-accent); color: var(--nx-ink); }
@@ -62,9 +62,9 @@
 .nx-rocket-ask { display: flex; justify-content: space-between; align-items: flex-end; gap: calc(16 * var(--nx-u)); margin-top: calc(18 * var(--nx-u)); }
 .nx-rocket-question { font-size: calc(30 * var(--nx-u)); line-height: 1.2; font-weight: 800; margin: 0; }
 /* ORDER 320 — ledtrådarna från stegen före och gästens replik i steg 2 (306b A5, A6). */
-.nx-rocket-clues { list-style: none; margin: 0 0 calc(8 * var(--nx-u)); padding: 0; font-size: calc(17 * var(--nx-u)); opacity: .85; }
+.nx-rocket-clues { list-style: none; margin: 0 0 calc(8 * var(--nx-u)); padding: 0; font-size: max(12px, calc(17 * var(--nx-u))); opacity: .85; }
 .nx-rocket-clues li[data-unclear='true'] { font-style: italic; opacity: .7; }
-.nx-rocket-guest-line { margin: 0 0 calc(10 * var(--nx-u)); font-size: calc(20 * var(--nx-u)); font-style: italic; line-height: 1.3; }
+.nx-rocket-guest-line { margin: 0 0 calc(10 * var(--nx-u)); font-size: max(12px, calc(20 * var(--nx-u))); font-style: italic; line-height: 1.3; }
 .nx-rocket-count-num {
   font-size: calc(96 * var(--nx-u)); line-height: 0.9; font-weight: 800;
   font-variant-numeric: tabular-nums; color: var(--nx-ink); min-width: 2ch; text-align: right;
@@ -94,7 +94,7 @@
   width: calc(36 * var(--nx-u)); height: calc(36 * var(--nx-u));
   background: var(--w-ink); color: var(--w-paper); font-size: max(12px, calc(19 * var(--nx-u))); font-weight: 800; border-radius: 999px;
 }
-.nx-rocket-tag { font-size: calc(18 * var(--nx-u)); font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; }
+.nx-rocket-tag { font-size: max(12px, calc(18 * var(--nx-u))); font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; }
 .nx-rocket-option:disabled { cursor: default; }
 /* ORDER 290 — rätt och fel (Designs leverans 2026-09-30, WARM_RIGHT_WRONG):
    rätt är grönt med mörk text och raden lyfter 5 px och sjunker tillbaka;
@@ -144,14 +144,14 @@
 .nx-verdict[data-kind='wrong'] { background: #e0533f; color: #2a1c13; }
 .nx-rocket-band-foot { margin-top: calc(10 * var(--nx-u)); padding-top: calc(8 * var(--nx-u)); border-top: 1px dashed rgba(42,28,19,.25); font-weight: 700; font-size: max(12px, calc(16 * var(--nx-u))); color: #6b5443; }
 @keyframes nx-band-in { from { opacity: 0; transform: translateY(2vh); } to { opacity: 1; transform: none; } }
-.nx-rocket-band-text { font-size: calc(24 * var(--nx-u)); line-height: 1.3; font-weight: 800; margin: calc(8 * var(--nx-u)) 0 0; }
+.nx-rocket-band-text { font-size: max(12px, calc(24 * var(--nx-u))); line-height: 1.3; font-weight: 800; margin: calc(8 * var(--nx-u)) 0 0; }
 
 .nx-rocket-foot {
   margin-top: auto;
   margin-left: calc(-32 * var(--nx-u)); margin-right: calc(-32 * var(--nx-u));
   padding: calc(22 * var(--nx-u)) calc(32 * var(--nx-u)) calc(24 * var(--nx-u));
   border-top: 1px solid var(--nx-rule);
-  font-size: calc(20 * var(--nx-u)); line-height: 1.4; color: var(--nx-ink-2);
+  font-size: max(12px, calc(20 * var(--nx-u))); line-height: 1.4; color: var(--nx-ink-2);
   display: flex; justify-content: space-between; align-items: baseline; gap: calc(24 * var(--nx-u));
 }
 .nx-rocket-keys { color: var(--nx-ink); font-weight: 800; white-space: nowrap; }
@@ -180,9 +180,9 @@
 .nx-meters-note {
   margin-top: calc(18 * var(--nx-u)); padding-top: calc(14 * var(--nx-u));
   border-top: max(1px, calc(1 * var(--nx-u))) solid var(--nx-rule);
-  font-size: calc(20 * var(--nx-u)); line-height: 1.4; color: var(--nx-ink-2);
+  font-size: max(12px, calc(20 * var(--nx-u))); line-height: 1.4; color: var(--nx-ink-2);
 }
-.nx-meters[data-emph='true'] .nx-meters-note { color: var(--nx-ink); font-weight: 700; font-size: calc(22 * var(--nx-u)); }
+.nx-meters[data-emph='true'] .nx-meters-note { color: var(--nx-ink); font-weight: 700; font-size: max(12px, calc(22 * var(--nx-u))); }
 
 /* ------------------------------------------------------------------ */
 /* Raden i rummet (IncidentOutcomeBubble)                               */
@@ -194,10 +194,10 @@
   max-width: calc(520 * var(--nx-u));
   padding: calc(10 * var(--nx-u)) calc(14 * var(--nx-u));
   background: var(--w-wash-strong); color: var(--nx-ink);
-  font-size: calc(24 * var(--nx-u)); line-height: 1.3; font-weight: 800;
+  font-size: max(12px, calc(24 * var(--nx-u))); line-height: 1.3; font-weight: 800;
 }
 .nx-room-label--wrong { background: var(--nx-ground); color: var(--nx-ink); border: calc(3 * var(--nx-u)) dashed var(--nx-ink); }
-.nx-room-label .nx-label { font-size: calc(20 * var(--nx-u)); display: block; margin-bottom: calc(4 * var(--nx-u)); }
+.nx-room-label .nx-label { font-size: max(12px, calc(20 * var(--nx-u))); display: block; margin-bottom: calc(4 * var(--nx-u)); }
 .nx-room-leader { width: calc(3 * var(--nx-u)); height: calc(110 * var(--nx-u)); background: var(--nx-ink); }
 
 /* ------------------------------------------------------------------ */
@@ -228,22 +228,22 @@
 }
 .nx-lesson-also { margin-top: calc(32 * var(--nx-u)); padding-top: calc(24 * var(--nx-u)); border-top: max(1px, calc(1 * var(--nx-u))) solid var(--nx-rule); }
 .nx-lesson-also + .nx-lesson-also { margin-top: calc(16 * var(--nx-u)); }
-.nx-lesson-also p { font-size: calc(24 * var(--nx-u)); line-height: 1.45; color: var(--nx-ink-2); margin: calc(10 * var(--nx-u)) 0 0; }
+.nx-lesson-also p { font-size: max(12px, calc(24 * var(--nx-u))); line-height: 1.45; color: var(--nx-ink-2); margin: calc(10 * var(--nx-u)) 0 0; }
 
 .nx-grid { width: 100%; border-collapse: collapse; }
-.nx-grid th { text-align: left; font-size: calc(16 * var(--nx-u)); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 0 0 calc(14 * var(--nx-u)); border-bottom: 1px solid var(--nx-rule); }
+.nx-grid th { text-align: left; font-size: max(12px, calc(16 * var(--nx-u))); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 0 0 calc(14 * var(--nx-u)); border-bottom: 1px solid var(--nx-rule); }
 .nx-grid td { padding: calc(14 * var(--nx-u)) 0; border-bottom: max(1px, calc(1 * var(--nx-u))) solid var(--nx-rule); }
 .nx-grid td.nx-grid-title { font-size: calc(26 * var(--nx-u)); font-weight: 800; padding-right: calc(16 * var(--nx-u)); }
 .nx-grid tr[data-lesson='true'] td { background: var(--w-wash-strong); }
 .nx-grid td.nx-grid-cell { width: calc(124 * var(--nx-u)); padding-left: calc(6 * var(--nx-u)); }
 .nx-cell {
   display: flex; align-items: center; padding-left: calc(18 * var(--nx-u));
-  height: calc(56 * var(--nx-u)); font-size: calc(24 * var(--nx-u)); font-weight: 800;
+  height: calc(56 * var(--nx-u)); font-size: max(12px, calc(24 * var(--nx-u))); font-weight: 800;
   border: var(--nx-line) solid var(--nx-rule); color: var(--nx-ink-2);
 }
 .nx-cell[data-cell='cleared'] { background: var(--w-gold); color: var(--w-ink); border-color: var(--w-gold); border-radius: 999px; }
 .nx-cell[data-cell='failed'] { border: calc(3 * var(--nx-u)) dashed var(--nx-ink); color: var(--nx-ink); }
-.nx-grid-legend { display: flex; flex-wrap: wrap; gap: calc(22 * var(--nx-u)); margin-top: calc(22 * var(--nx-u)); font-size: calc(20 * var(--nx-u)); color: var(--nx-ink-2); }
+.nx-grid-legend { display: flex; flex-wrap: wrap; gap: calc(22 * var(--nx-u)); margin-top: calc(22 * var(--nx-u)); font-size: max(12px, calc(20 * var(--nx-u))); color: var(--nx-ink-2); }
 .nx-grid-summary { margin-top: calc(28 * var(--nx-u)); padding: calc(26 * var(--nx-u)) calc(22 * var(--nx-u)); background: var(--w-wash-strong); color: var(--nx-ink); border-radius: var(--nx-radius-card); font-size: max(12px, calc(22 * var(--nx-u))); line-height: 1.45; }
 
 .nx-story-lead { font-size: calc(34 * var(--nx-u)); line-height: 1.35; max-width: calc(1260 * var(--nx-u)); margin: calc(36 * var(--nx-u)) 0 0; }
@@ -274,7 +274,7 @@
 .nx-stranded .nx-heading { margin-top: calc(22 * var(--nx-u)); }
 .nx-stranded-body { font-size: calc(28 * var(--nx-u)); line-height: 1.45; margin: calc(26 * var(--nx-u)) 0 0; }
 .nx-stranded-rows { list-style: none; margin: calc(24 * var(--nx-u)) 0 calc(28 * var(--nx-u)); padding: 0; border-top: 1px solid var(--nx-rule); }
-.nx-stranded-rows li { display: grid; grid-template-columns: calc(52 * var(--nx-u)) 1fr; align-items: start; padding: calc(16 * var(--nx-u)) 0; border-bottom: max(1px, calc(1 * var(--nx-u))) solid var(--nx-rule); font-size: calc(24 * var(--nx-u)); line-height: 1.45; }
+.nx-stranded-rows li { display: grid; grid-template-columns: calc(52 * var(--nx-u)) 1fr; align-items: start; padding: calc(16 * var(--nx-u)) 0; border-bottom: max(1px, calc(1 * var(--nx-u))) solid var(--nx-rule); font-size: max(12px, calc(24 * var(--nx-u))); line-height: 1.45; }
 .nx-stranded-rows svg { width: calc(30 * var(--nx-u)); height: calc(30 * var(--nx-u)); margin-top: calc(4 * var(--nx-u)); }
 
 /* ------------------------------------------------------------------ */
@@ -296,7 +296,7 @@
   pointer-events: auto;
 }
 .nx-feed-head { display: flex; justify-content: space-between; align-items: baseline; padding: calc(20 * var(--nx-u)) calc(22 * var(--nx-u)); border-bottom: 1px solid var(--nx-rule); }
-.nx-feed-key { display: flex; gap: calc(18 * var(--nx-u)); font-size: calc(15 * var(--nx-u)); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+.nx-feed-key { display: flex; gap: calc(18 * var(--nx-u)); font-size: max(12px, calc(15 * var(--nx-u))); font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
 .nx-feed-rows { flex: 1; overflow: hidden; }
 .nx-feed-row {
   display: grid;
@@ -305,7 +305,7 @@
   gap: calc(12 * var(--nx-u));
   padding: calc(10 * var(--nx-u)) calc(22 * var(--nx-u));
   border-bottom: 1px solid var(--nx-rule);
-  font-size: calc(19 * var(--nx-u));
+  font-size: max(12px, calc(19 * var(--nx-u)));
 }
 .nx-feed-row[data-fresh='true'] { animation: nx-feed-in 900ms ease-out; }
 @keyframes nx-feed-in {
@@ -316,7 +316,7 @@
 .nx-feed-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .nx-feed-amount { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .nx-feed-tonight { padding: calc(14 * var(--nx-u)) calc(22 * var(--nx-u)); border-top: 1px solid var(--nx-rule); }
-.nx-feed-tonight-row { display: flex; justify-content: space-between; padding-top: calc(6 * var(--nx-u)); font-size: calc(19 * var(--nx-u)); font-weight: 700; }
+.nx-feed-tonight-row { display: flex; justify-content: space-between; padding-top: calc(6 * var(--nx-u)); font-size: max(12px, calc(19 * var(--nx-u))); font-weight: 700; }
 .nx-feed-back { display: flex; align-items: center; justify-content: space-between; gap: calc(16 * var(--nx-u)); padding: calc(14 * var(--nx-u)) calc(22 * var(--nx-u)); border-top: 1px solid var(--nx-rule); }
 .nx-feed-back .nx-btn { width: auto; min-width: calc(260 * var(--nx-u)); flex-shrink: 0; }
 /* ORDER 300 §6 — knapptexten radbryts inte. */
@@ -331,8 +331,8 @@
 .nx-back-level { display: flex; flex-direction: column; align-items: flex-start; gap: calc(4 * var(--nx-u)); padding: calc(12 * var(--nx-u)); border: 1px solid var(--nx-rule); background: var(--nx-ground); color: var(--nx-ink); cursor: pointer; text-align: left; }
 .nx-back-level[data-chosen='true'] { background: var(--w-paper); color: var(--w-ink); }
 .nx-back-level[data-allowed='false'] { opacity: 0.45; }
-.nx-back-level-name { font-weight: 800; font-size: calc(20 * var(--nx-u)); }
-.nx-back-level-odds { font-size: calc(16 * var(--nx-u)); }
+.nx-back-level-name { font-weight: 800; font-size: max(12px, calc(20 * var(--nx-u))); }
+.nx-back-level-odds { font-size: max(12px, calc(16 * var(--nx-u))); }
 .nx-back-lock { margin-top: calc(12 * var(--nx-u)); width: 100%; }
 .nx-back-lock[data-ready='false'] { opacity: 0.45; }
 
@@ -346,7 +346,7 @@
 .nx-waste-truck { display: flex; align-items: center; gap: calc(20 * var(--nx-u)); padding: calc(20 * var(--nx-u)) calc(30 * var(--nx-u)); border-bottom: 1px solid var(--nx-rule); animation: nx-truck-in 1400ms cubic-bezier(.2,.9,.3,1); }
 .nx-waste-truck[data-still='true'] { animation: none; }
 @keyframes nx-truck-in { from { transform: translateX(60%); opacity: 0; } to { transform: none; opacity: 1; } }
-.nx-waste-row { display: grid; grid-template-columns: 1.2fr 1.5fr 0.6fr 0.7fr; gap: calc(16 * var(--nx-u)); align-items: center; padding: calc(18 * var(--nx-u)) calc(30 * var(--nx-u)); border-bottom: 1px solid var(--nx-rule); font-size: calc(20 * var(--nx-u)); }
+.nx-waste-row { display: grid; grid-template-columns: 1.2fr 1.5fr 0.6fr 0.7fr; gap: calc(16 * var(--nx-u)); align-items: center; padding: calc(18 * var(--nx-u)) calc(30 * var(--nx-u)); border-bottom: 1px solid var(--nx-rule); font-size: max(12px, calc(20 * var(--nx-u))); }
 .nx-waste-total { border-top: 1px solid var(--nx-rule); border-bottom: none; }
 .nx-waste-side { display: grid; gap: calc(20 * var(--nx-u)); }
 .nx-waste-box { padding: calc(24 * var(--nx-u)) calc(28 * var(--nx-u)); }
@@ -578,7 +578,7 @@ body:has(.nx-rocket) .nx-hud-tools { display: none; }
 .nx-rocket-stake {
   margin: calc(12 * var(--nx-u)) 0 0; padding: calc(10 * var(--nx-u)) calc(14 * var(--nx-u));
   border-left: calc(6 * var(--nx-u)) solid var(--w-candle); background: rgba(232, 178, 58, 0.10);
-  font-size: calc(24 * var(--nx-u)); font-weight: 800; line-height: 1.3; color: var(--nx-ink);
+  font-size: max(12px, calc(24 * var(--nx-u))); font-weight: 800; line-height: 1.3; color: var(--nx-ink);
 }
 .nx-band-amount { display: flex; align-items: baseline; gap: calc(12 * var(--nx-u)); margin-top: calc(10 * var(--nx-u)); }
 .nx-band-amount strong { font-size: calc(36 * var(--nx-u)); }
@@ -1036,3 +1036,19 @@ body[data-level='room'] .nx-rival-band[data-state='before'] .nx-rival-calm { dis
 /* ORDER 323 §2 — kvällens skärmar som låter HUD:en stå kvar (resultatet, sopbilen, Byn i kväll) börjar
  * under HUD:ens nederkant (--nx-hud-bottom, HudBottom.tsx): i 1024 × 600 låg klockan över "Vad kvällen gav". */
 .nx-screen.nx-result-screen, .nx-screen.nx-compare-screen, .nx-screen.nx-waste-screen { padding-top: max(calc(160 * var(--nx-u)), calc(var(--nx-hud-bottom, 0px) + 12px)); }
+
+/* ORDER 324 B (Anders 2026-10-10) — små fönster (1180 × 660, 1024 × 600):
+   panelflikarna får inte ligga över kameraknapparna, och stämningsmätaren
+   inte över fartknapparna. Under 1280 px bredd står flikarna utan
+   tangenttipset (ikonerna har sina etiketter vid hovring och tangenterna
+   1–3 gäller som förut), och stämningsmätaren blir smalare. */
+@media (max-width: 1279px) {
+  .nx-tabs { padding-right: calc(6 * var(--nx-u)); }
+  .nx-tabs .nx-tabs-keys { display: none; }
+  /* Raden uppe till vänster slutar före fartknapparna och menyn (de står till höger, omkring
+     130 px breda i de små fönstren); stämningsmätaren tar det som blir över, minst 120 px. Kassan
+     är bredare under raketen (raden I den här takten), så en fast bredd räcker inte. */
+  .gb-topleft { right: calc(72 * var(--nx-u) + 150px); }
+  .gb-topleft > .nx-hud-stack { flex: none; }
+  .nx-mood-meter.nx-mood-panel { flex: 0 1 max(200px, calc(300 * var(--nx-u))); width: auto; min-width: 120px; }
+}

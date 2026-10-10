@@ -110,7 +110,7 @@
       "body": "The evening is warm. The whites are at 10 degrees in the fridge, but the rosés that just arrived are at 24 degrees. The first guests want rosé.",
       "guestLine": {
         "a": "“Something cold and fresh, rosé if you have it. We've walked in the sun all day.”",
-        "b": "“We've cycled all the way from the next village. Have you got rosé, really cold?”"
+        "b": "“We've cycled all the way from Hjulsjö. Have you got rosé, really cold?”"
       },
       "steps": [
         {
@@ -608,7 +608,7 @@
             },
             "c": {
               "label": "Something of their own to drink meanwhile",
-              "explanation": "Thoughtful, but a glass of their own is still sitting on the side."
+              "explanation": "Thoughtful, but a glass of their own still leaves them on the sidelines."
             },
             "d": {
               "label": "Not to take part",
@@ -1307,7 +1307,7 @@
               "explanation": "It does no harm, but the guest already knows what they cannot eat. The one who needs to know is the kitchen."
             },
             "d": {
-              "label": "The head waiter after service, when it is quiet",
+              "label": "The maître d’ after service, when it is quiet",
               "explanation": "By then the food has already been cooked and served. The information comes too late to be of use."
             }
           },
@@ -1845,7 +1845,7 @@
             },
             "c": {
               "label": "Send the person home straight away",
-              "explanation": "That may be right for a deep cut, but a small wound can be dressed so the person switches tasks and stays. The team gets thin."
+              "explanation": "That may be right for a deep cut, but a small wound can be dressed so the person switches tasks and stays. Sending them home leaves the team short-handed."
             }
           },
           "fail": {
@@ -1926,7 +1926,7 @@
             }
           },
           "fail": {
-            "outcome": "The answer does not match the label. The guest writes a long line."
+            "outcome": "The answer does not match the label. The guest writes at length."
           }
         },
         {
@@ -2507,7 +2507,7 @@
               "explanation": "It protects the party but does not solve the problem: the guest is still drunk and still at the bar."
             },
             "c": {
-              "label": "Walk over calmly, talk aside and help them leave in a taxi",
+              "label": "Walk over calmly, take them aside and help them leave in a taxi",
               "explanation": "Calm and privacy take the heat out of a fight. A taxi means the guest gets home safely. Responsibility for a drunk guest does not end at the door."
             }
           },
@@ -2701,7 +2701,7 @@
       "title": "The birthday",
       "body": "The host in lounge A waves discreetly to Per and whispers that it is Karin's birthday tonight. She knows nothing.",
       "guestLine": {
-        "a": "The host whispers: “She knows nothing, and she loves to sing.” In lounge B two guests sit in a business conversation.",
+        "a": "The host whispers: “She knows nothing, and she loves to sing.” In lounge B two guests are deep in a business discussion.",
         "b": "The host whispers: “We want to sing to her!” In lounge B a couple who have just got their main course talk quietly."
       },
       "steps": [
@@ -2756,7 +2756,7 @@
           "question": "What do you do?",
           "options": {
             "a": {
-              "label": "Give the kitchen everything it needs, and ask the party to wait with the song.",
+              "label": "Give the kitchen everything it needs, and ask the party to hold off on the song.",
               "explanation": "The kitchen gets the right word, but the neighbours may sit for a long time, and then there is no song for Karin."
             },
             "b": {
@@ -3420,7 +3420,7 @@
       "body": "{gäst} at table {bord} orders an older Barolo, the 2008 vintage. When {personal} tilts the bottle towards the light, there is sediment.",
       "guestLine": {
         "a": "“We bought this when our daughter was born. We've kept it for fifteen years.”",
-        "b": "“This is our wedding vintage. It's fifteen years ago today.”"
+        "b": "“This is our wedding vintage. We were married fifteen years ago today.”"
       },
       "steps": [
         {

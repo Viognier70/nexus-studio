@@ -18,5 +18,5 @@ export const D8_STRINGS = {
   'why.wrong.serveFirst': { sv: 'Att servera innan vinet är karafferat ger gästerna satsen i glaset. Flaskan visas först, och serveringen kommer sist.', en: 'Serving before the wine is decanted puts the sediment in the glass. The bottle is shown first, and serving comes last.' },
   'timeout.verdict': { sv: 'Tiden ute: {name} tar över', en: 'Time up: {name} takes over' },
   'timeout.lock': { sv: 'Tiden ute', en: 'Time up' },
-  'cost.short': { sv: 'Kassan räcker inte', en: 'Not enough in the till' }
+  'cost.short': { sv: 'Kassan räcker inte', en: 'Not enough cash' }
 };

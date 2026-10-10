@@ -36,7 +36,7 @@ export const EVENT_STRINGS = {
   'event.bday.a2_2': { sv: "Tänds vid luckan, bärs lågt och sakta i fri gång", en: "Lit at the hatch, carried low and slowly, path clear" },
   'event.bday.a2_3': { sv: "Tänds vid luckan och bärs högt över gästerna", en: "Lit at the hatch and carried high above the guests" },
   'event.bday.a2_4': { sv: "Genom barens stråk, den kortaste vägen till loungen", en: "Along the walkway by the bar, the shortest way to the lounge" },
-  'event.bday.why2': { sv: "Öppen låga bland gäster kräver fri väg, lågt grepp och lugnt tempo.", en: "An open flame among guests needs a clear path, a low grip and a calm pace." },
+  'event.bday.why2': { sv: "Öppen låga bland gäster kräver fri väg, lågt grepp och lugnt tempo.", en: "An open flame among guests needs a clear path, a low hold and a calm pace." },
   'event.bday.ok2': { sv: "Nu kommer den!", en: "Here it comes!" },
   'event.bday.q3': { sv: "I lounge B sitter två gäster i ett affärssamtal och vill ha lugn. Sällskapet vill sjunga. Vad gör du?", en: "In lounge B two guests are in a business meeting and want quiet. The party wants to sing. What do you do?" },
   'event.bday.a3_1': { sv: "Ber sällskapet vänta tills grannarna har gått", en: "Asks the party to wait until the neighbours leave" },
@@ -50,17 +50,17 @@ export const EVENT_STRINGS = {
   'event.bday.fail': { sv: "Jag tar hand om det.", en: "I’ll take care of it." },
 
   // ---------- 2 · Vasen på pulten ----------
-  'event.vase.title': { sv: "Vasen på pulten", en: "The vase on the desk" },
+  'event.vase.title': { sv: "Vasen på pulten", en: "The vase on the host stand" },
   'event.vase.role': { sv: "Servitören · entrén", en: "Waiter · the entrance" },
-  'event.vase.moment': { sv: "En gäst i rullstol kommer in mellan värdpulten och klädhängaren. Handen på hjulet tar i pulten, och vasen går i golvet.", en: "A guest in a wheelchair comes in between the host’s desk and the coat rail. A hand on the wheel catches the desk, and the vase smashes on the floor." },
-  'event.vase.caption': { sv: "Vasen faller från pulten", en: "The vase falls from the desk" },
+  'event.vase.moment': { sv: "En gäst i rullstol kommer in mellan värdpulten och klädhängaren. Handen på hjulet tar i pulten, och vasen går i golvet.", en: "A guest in a wheelchair comes in between the host stand and the coat rail. A hand on the wheel catches the host stand, and the vase smashes on the floor." },
+  'event.vase.caption': { sv: "Vasen faller från pulten", en: "The vase falls from the host stand" },
   'event.vase.say.welcome': { sv: "Välkomna! Ert bord står längst in.", en: "Welcome! Your table is at the far end." },
   'event.vase.say.oops': { sv: "Oj! Förlåt!", en: "Oh! I’m so sorry!" },
   'event.vase.q1': { sv: "Vad är risken just nu?", en: "What is the risk right now?" },
-  'event.vase.a1_1': { sv: "Att gästen har skadat handen mot pulten", en: "That the guest has hurt a hand on the desk" },
+  'event.vase.a1_1': { sv: "Att gästen har skadat handen mot pulten", en: "That the guest has hurt a hand on the host stand" },
   'event.vase.a1_2': { sv: "Att entrén blockeras för nästa sällskap", en: "That the entrance is blocked for the next party" },
   'event.vase.a1_3': { sv: "Glassplitter och vatten där gäster går in", en: "Broken glass and water where guests walk in" },
-  'event.vase.a1_4': { sv: "Att vattnet förstör bokningsboken på pulten", en: "That the water ruins the booking book on the desk" },
+  'event.vase.a1_4': { sv: "Att vattnet förstör bokningsboken på pulten", en: "That the water ruins the booking book on the host stand" },
   'event.vase.why1': { sv: "Glas och vatten i entrén är en risk för alla som går in, också för gästen i rullstolen. Hur gästen mår frågar du i nästa steg.", en: "Glass and water in the entrance are a hazard for everyone coming in, including the guest in the wheelchair. You ask how the guest is in the next step." },
   'event.vase.ok1': { sv: "Stanna där, det är glas på golvet.", en: "Stay there, there’s glass on the floor." },
   'event.vase.q2': { sv: "Hur tar du hand om det?", en: "How do you deal with it?" },
@@ -80,8 +80,8 @@ export const EVENT_STRINGS = {
   'event.vase.near3_4': { sv: "Respektfullt, men felet står kvar i entrén till nästa gäst.", en: "Respectful, but the fault is still there in the entrance for the next guest." },
   'event.vase.ok3': { sv: "Vasen stod fel. Vi flyttar den nu.", en: "The vase was in the wrong place. We’ll move it now." },
   'event.vase.fail': { sv: "Jag tar hand om det.", en: "I’ll take care of it." },
-  'evening.event.vase': { sv: "Vasen på pulten", en: "The vase on the desk" },
-  'evening.event.vase.line': { sv: "Vasen och pulten flyttades, och sällskapet stannade.", en: "The vase and the desk were moved, and the party stayed." },
+  'evening.event.vase': { sv: "Vasen på pulten", en: "The vase on the host stand" },
+  'evening.event.vase.line': { sv: "Vasen och pulten flyttades, och sällskapet stannade.", en: "The vase and the host stand were moved, and the party stayed." },
 
   // ---------- 3 · Gästen som vinglar ----------
   'event.drunk.title': { sv: "Gästen som vinglar", en: "The unsteady guest" },
@@ -224,7 +224,7 @@ export const EVENT_STRINGS = {
   // ---------- Ersätter i leverans 1 (nexusStrings.varm.ts), eftersom händelserna nu spelas i vinbaren ----------
   'lesson.rocket.3.who': { sv: "Hovmästaren · lounge A", en: "Maître d’ · lounge A" },
   'lesson.when': { sv: "Kl. {time} i {place}", en: "{time} in {place}" },
-  'lesson.principle': { sv: "Öppen låga bland gäster kräver fri väg, lågt grepp och lugnt tempo.", en: "An open flame among guests needs a clear path, a low grip and a calm pace." },
+  'lesson.principle': { sv: "Öppen låga bland gäster kräver fri väg, lågt grepp och lugnt tempo.", en: "An open flame among guests needs a clear path, a low hold and a calm pace." },
   'lesson.story': { sv: "Sara sprang med tårtan för att ljusen inte skulle hinna brinna ned. En gäst klev ned från en barstol framför henne, och ett ljus föll på loungebordet. Per tog över.", en: "Sara ran with the cake so the candles wouldn’t burn down. A guest stepped off a bar stool in front of her, and a candle fell on the lounge table. Per took over." },
   'lesson.yours.text': { sv: "Fort, så att ljusen inte hinner brinna ned", en: "Quickly, so the candles don’t have time to burn down" },
   'lesson.held.text': { sv: "Tänds vid luckan, bärs lågt och sakta i fri gång", en: "Lit at the hatch, carried low and slowly, path clear" }

@@ -60,7 +60,7 @@
      "options": {
       "a": {
        "label": "Roll the awning fully out, move a table under it, serve in lidded trays.",
-       "explanation": "Shelter for the guests and lids for the food. It keeps both the warmth and the evening."
+       "explanation": "Shelter for the guests and lids for the food. It saves both the heat and the evening."
       },
       "b": {
        "label": "Serve in lidded trays, but leave the tables out in the rain.",
@@ -294,7 +294,7 @@
     "outcome": "Nils asks everyone to wait. The queue gets shorter for the wrong reason."
    },
    "staffTexts": {
-    "success": "Nils restarts the terminal and says “Swish is fine!”",
+    "success": "Nils restarts the terminal and says “We take Swish!”",
     "fail": "Nils asks everyone to wait. The queue gets shorter for the wrong reason."
    }
   },
@@ -311,7 +311,7 @@
      "clue": "Analysis: The sausages are just enough for the queue, no more.",
      "options": {
       "a": {
-       "label": "Just. Six take one sausage, three take two, that makes twelve.",
+       "label": "Only just. Six take one sausage, three take two, that makes twelve.",
        "explanation": "9 people, 3 of whom take two sausages: 6 + 6 = 12. It's just enough, but not for a single guest more."
       },
       "b": {
@@ -581,7 +581,7 @@
    "halfGrip": {
     "analysis": "The margin held, but the regular got no reason to pay more.",
     "outcomeAnalysis": "The regular glances at the grill truck on the way out.",
-    "experience": "The regular stayed, but each sausage now earns almost half as much.",
+    "experience": "The regular stayed, but each sausage now earns only just over half as much.",
     "outcomeExperience": "The till fills more slowly that evening."
    },
    "success": {

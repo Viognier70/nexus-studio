@@ -86,7 +86,7 @@
       "prompt": "En stamgäst på Bryggan tar med en flaska Chambolle-Musigny 2005 (Premier Cru, 20 år gammal). Han vill att du ska hantera den professionellt. Vad är rätt hantering av en gammal fin Bourgogne?",
       "options": [
         "Dekanteras i minst 2 timmar för maximal syresättning",
-        "Stå upprätt 24h i rumstemperatur innan service, sedan öppna och servera direkt — gammal fin Bourgogne är känslig och kollapsar vid lång dekantering",
+        "Låt flaskan stå upprätt ett dygn, svalt. Öppna sedan och servera direkt — gammal fin Bourgogne är känslig och kollapsar vid lång dekantering",
         "Serveras direkt ur källartemperatur (10°C)",
         "Skakas lätt för att väcka sedimentet"
       ],
@@ -200,7 +200,7 @@
         "Vinet är troligen korksmakat (TCA — trikloranisol) — tacka nej artigt och be om en ny flaska eller ett annat vin. Korksmak förstör alla aromkvaliteter",
         "Doften är en typisk karaktär för den aktuella druvsorten"
       ],
-      "explanation": "Crichton-Fock (tidigare Herdenstam) beskriver att erfarna sommelierer kan göra omdömet på sekunder — 'redan innan det får en gestalt'. TCA-korksmak är den vanligaste felaktigheten och känns igen som en fuktig, mustig, unken ton. Att snabbt identifiera och hantera detta är kärnhantverk."
+      "explanation": "Crichton-Fock (tidigare Herdenstam) beskriver att erfarna sommelierer kan göra omdömet på sekunder — 'redan innan det får en gestalt'. TCA-korksmak är den vanligaste felaktigheten och känns igen som en fuktig, möglig, unken ton. Att snabbt identifiera och hantera detta är kärnhantverk."
     },
     "somm-v8": {
       "prompt": "En gäst på Qvarnen undrar varför hennes favorit-Sauvignon Blanc smakar 'plattare' när hon dricker det till sin gräddsås jämfört med ostron. Vad är den vetenskapliga förklaringen?",

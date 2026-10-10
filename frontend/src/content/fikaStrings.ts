@@ -105,7 +105,7 @@ const DILEMMA_TEXT: Record<string, DilemmaText> = {
     },
     explanation: {
       sv: 'Stamgästens värde för kassan vägdes mot Elins trygghet och arbetsgivarens ansvar för arbetsmiljön. Att flytta Elin skyddar henne men lämpar över problemet på Sara. Att skriva upp är bra, men Elin behöver stöd nu.',
-      en: 'The regular’s value to the till was weighed against Elin’s safety and the employer’s responsibility for the working environment. Moving Elin protects her but hands the problem to Sara. Writing it down is good, but Elin needs support now.'
+      en: 'The regular’s value to the takings was weighed against Elin’s safety and the employer’s responsibility for the working environment. Moving Elin protects her but hands the problem to Sara. Writing it down is good, but Elin needs support now.'
     },
     legalNote: {
       sv: 'Arbetsmiljölagen och Arbetsmiljöverkets föreskrifter (AFS 2023:2) kräver att arbetsgivaren förebygger kränkande särbehandling och har rutiner för hur den hanteras, också när den kommer från en gäst.',
@@ -165,7 +165,7 @@ const DILEMMA_TEXT: Record<string, DilemmaText> = {
   'fika-diskaren': {
     question: {
       sv: 'Linnea, vår nya diskare, är långsam, och vi får vänta på glas hela kvällen. Jag vill inte gå till dig och klaga bakom hennes rygg, men det påverkar mig. Vad ska jag göra?',
-      en: 'Linnea, our new dishwasher, is slow, and we wait for glasses all evening. I don’t want to come to you and complain behind her back, but it affects me. What should I do?'
+      en: 'Linnea, our new kitchen porter, is slow, and we wait for glasses all evening. I don’t want to come to you and complain behind her back, but it affects me. What should I do?'
     },
     options: {
       A: { sv: 'Säg det till henne själv, vänligt och konkret: vad du behöver och när. Vill du kan vi prata alla tre. Och jag ser över om hon har fått lära sig rutinen.', en: 'Tell her yourself, kindly and specifically: what you need and when. If you like, the three of us can talk. And I’ll check whether she has been taught the routine.' },
@@ -248,8 +248,8 @@ const DILEMMA_TEXT: Record<string, DilemmaText> = {
       C: { sv: 'Nästa gång frågar du mig innan du grillar något som legat varmt.', en: 'Next time, ask me before you grill anything that has been warm.' }
     },
     explanation: {
-      sv: 'Svinnet vägdes mot gästernas säkerhet. Att korven blir varm på grillen tar inte bort allt som hunnit växa medan den låg varm. En vagn i solen behöver en rutin för kylan, inte en person som ska minnas att fråga.',
-      en: 'The waste was weighed against the guests’ safety. Heating the sausage on the grill does not undo everything that grew while it lay warm. A truck in the sun needs a routine for keeping things cold, not one person who has to remember to ask.'
+      sv: 'Svinnet vägdes mot gästernas säkerhet. Värmen på grillen dödar många bakterier, men en del hinner bilda gifter som inte förstörs av värme. En vagn i solen behöver en rutin för kylan, inte en person som ska minnas att fråga.',
+      en: 'The waste was weighed against the guests’ safety. The heat of the grill kills many bacteria, but some have time to form toxins that heat does not destroy. A truck in the sun needs a routine for keeping things cold, not one person who has to remember to ask.'
     },
     legalNote: {
       sv: 'Livsmedelslagen och EU:s förordning om livsmedelshygien kräver att företagaren har en egenkontroll som håller varorna i rätt temperatur, också i en vagn.',
@@ -273,17 +273,17 @@ const DILEMMA_TEXT: Record<string, DilemmaText> = {
   },
   'fika-vagn-dricksen': {
     question: {
-      sv: 'Det låg mycket i dricksburken i kväll. Förra veckan lade du den i kassan. Är dricksen till vagnen eller till oss som står i luckan?',
-      en: 'There was a lot in the tip jar tonight. Last week you put it in the till. Are the tips for the truck or for us at the hatch?'
+      sv: 'Det låg mycket i dricksburken i kväll. Vi stod båda i luckan. Ska du som äger vagnen ha del av den?',
+      en: 'There was a lot in the tip jar tonight. We were both at the hatch. Should you, as the owner of the truck, have a share of it?'
     },
     options: {
-      A: { sv: 'Dricksen delas lika mellan oss som jobbade i kväll, och vi säger det högt, så att alla vet hur det går till.', en: 'The tips are split equally between those of us who worked tonight, and we say so out loud, so everyone knows how it works.' },
-      B: { sv: 'Den går till vagnen. Det är vagnens gäster.', en: 'It goes to the truck. They are the truck’s customers.' },
-      C: { sv: 'Ta du den i kväll, du slet mest.', en: 'You take it tonight, you worked hardest.' }
+      A: { sv: 'Dricksen är er. Jag tar ut min lön ur vagnen, inte ur burken. Och vi bestämmer regeln nu, så att den gäller varje kväll.', en: 'The tips are yours. I take my pay out of the truck, not out of the jar. And we settle the rule now, so that it holds every evening.' },
+      B: { sv: 'Den går in i kassan. Det är vagnens gäster.', en: 'It goes into the takings. They are the truck’s customers.' },
+      C: { sv: 'Vi delar lika i kväll, så ser vi sen.', en: 'We split it equally tonight, and see after that.' }
     },
     explanation: {
-      sv: 'Vad som är rättvist vägdes mot att regeln är känd i förväg. En regel som alla känner till skyddar mot misstankar, också när summan är liten. Att ge den som slet mest kan kännas generöst men gör nästa kväll oklar.',
-      en: 'What is fair was weighed against a rule that is known in advance. A rule everyone knows protects against suspicion, even when the sum is small. Giving it to whoever worked hardest can feel generous but leaves the next evening unclear.'
+      sv: 'Dricksen är gästernas tack till dem som serverar. När ägaren tar del av den blir det otydligt vad den är till för. En regel som alla känner till i förväg skyddar mot misstankar, också när summan är liten.',
+      en: 'Tips are the guests’ thanks to the people who serve them. When the owner takes a share, it becomes unclear what they are for. A rule everyone knows in advance protects against suspicion, even when the sum is small.'
     }
   },
   'fika-vagn-benen': {
@@ -311,7 +311,7 @@ const DILEMMA_TEXT: Record<string, DilemmaText> = {
       en: 'When the card reader played up, I told two customers they could pay by Swish or leave. One of them got annoyed. Nowhere does it say how you can pay at our truck.'
     },
     options: {
-      A: { sv: 'Vi sätter upp en skylt om hur man kan betala, och har en reserv när tekniken krånglar, en andra läsare eller att de får betala nästa gång.', en: 'We put up a sign saying how you can pay, and keep a fallback for when the technology fails: a second reader, or letting people pay next time.' },
+      A: { sv: 'Vi sätter upp en skylt om hur man kan betala, och har en reserv när tekniken krånglar: Swish och en andra läsare.', en: 'We put up a sign saying how you can pay, and keep a fallback for when the technology fails: Swish and a second reader.' },
       B: { sv: 'Den som inte kan betala får ingen mat.', en: 'If you can’t pay, you don’t get food.' },
       C: { sv: 'När läsaren krånglar bjuder vi.', en: 'When the reader plays up, it’s on the house.' }
     },
@@ -336,11 +336,11 @@ export const FIKA_TEXT = {
   // Rubrikens nivå, mjukt och utan rött (BESLUT del 1, fråga 1).
   grade: {
     sv: { well: 'Väl grundat', partly: 'Delvis grundat', weakly: 'Svagt grundat' } as Record<string, string>,
-    en: { well: 'Well founded', partly: 'Partly founded', weakly: 'Weakly founded' } as Record<string, string>
+    en: { well: 'Well grounded', partly: 'Partly grounded', weakly: 'Weakly grounded' } as Record<string, string>
   },
   // Följderna efter svaret.
-  wellbeingUp: { sv: 'Laget trivs bättre.', en: 'The team feels better.' },
-  wellbeingDown: { sv: 'Laget trivs sämre.', en: 'The team feels worse.' },
+  wellbeingUp: { sv: 'Laget trivs bättre.', en: 'The team’s morale rises.' },
+  wellbeingDown: { sv: 'Laget trivs sämre.', en: 'The team’s morale drops.' },
   loyaltyUp: { sv: (name: string) => `${name} litar mer på dig.`, en: (name: string) => `${name} trusts you more.` },
   loyaltyDown: { sv: (name: string) => `${name} litar mindre på dig.`, en: (name: string) => `${name} trusts you less.` },
   credits: {
@@ -365,7 +365,7 @@ export const FIKA_TEXT = {
   },
   roles: {
     sv: { host: 'hovmästare', server: 'servitör', sommelier: 'sommelier', bartender: 'bartender', cook: 'kock', dishwasher: 'diskare', assistant: 'medhjälpare i vagnen' } as Record<string, string>,
-    en: { host: 'head waiter', server: 'waiter', sommelier: 'sommelier', bartender: 'bartender', cook: 'chef', dishwasher: 'dishwasher', assistant: 'assistant in the truck' } as Record<string, string>
+    en: { host: 'maître d’', server: 'waiter', sommelier: 'sommelier', bartender: 'bartender', cook: 'chef', dishwasher: 'kitchen porter', assistant: 'assistant in the truck' } as Record<string, string>
   },
   // Lagarna i dilemmana (content/fika/dilemmas.ts legal.laws), visas bara när
   // dilemmat är granskat.

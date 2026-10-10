@@ -600,7 +600,7 @@ Veckoavräkningen visas som söndagsnumret av en lokaltidning i Grythyttan. Den 
 
 ### Språk och målgrupp
 
-*Beslut 2026-10-10 (Anders, efter ORDER 323):* **spelet startar på svenska.** Engelska är ett val i menyn; webbläsarens språk följs inte. Varje spelartext finns på både svenska och engelska. Det ersätter beskrivningen nedan att spelet är på engelska.
+*Beslut 2026-10-10 (Anders, efter provspelet 2026-10-09):* **spelet startar på svenska.** Engelska är ett val i menyn; webbläsarens språk följs inte. Varje spelartext finns på både svenska och engelska. Det ersätter beskrivningen nedan att spelet är på engelska.
 
 *Ersatt 2026-10-10:* *Beslut 2026-09-28 (Vision Owner, efter provspel):* allt i spelet är på engelska, både text och repliker. Det ersätter beslutet om svenska nedan. Frågor och händelser skrivs fortfarande med spelartext och metadata separerade. Gusto.science-utkasten behålls på engelska och översätts inte.
 

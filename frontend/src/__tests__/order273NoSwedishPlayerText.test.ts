@@ -31,6 +31,8 @@ const ALLOWED = [
   'Björken', 'Prästgatans krog', 'Bergsmansöl', 'Torgets vinkällare', 'prästgatans', 'bergsmansöl', 'vinkällare',
   // ORDER 297 — byns krogar (Designs Byn i kvällsljus).
   'Sjöboden',
+  // ORDER 324 (BESLUT_GRANSKNING_323) — byn gästerna cyklar från i vb02 (ortnamnet står kvar, regel 7).
+  'Hjulsjö',
   // ORDER 313 §1 — mentorn Intendent Åsa (egennamn).
   'Intendent Åsa', 'Åsa',
   // ORDER 312b — gatan leveransbilen stannar på (kartans namn, inte spelartext).

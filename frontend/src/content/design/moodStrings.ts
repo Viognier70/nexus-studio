@@ -64,7 +64,7 @@ export const MOOD_STRINGS: Record<string, { sv: string; en: string }> = {
   'mood.ch.cq.inWrong': { sv: 'Kameran går rakt in till 7 m', en: 'The camera moves straight in to 7 m' },
   'mood.why.cq.inWrong': { sv: 'Ingen båge och lite högre. Spelaren ser vad svaret ledde till.', en: 'No arc, slightly higher. The player sees what the answer led to.' },
   'mood.ch.bday.gestRight': { sv: 'Sällskapet skrattar och skålar, grannarna lutar sig fram', en: 'The party laughs and toasts; the neighbours lean in' },
-  'mood.why.bday.gestRight': { sv: 'Elin bjuder grannarna på fördrinken, så de blir en del av festen i stället för att störas av den.', en: 'Elin brings the neighbours the aperitif, so they join the celebration instead of being disturbed by it.' },
+  'mood.why.bday.gestRight': { sv: 'Elin bjuder grannarna på fördrinken, så de blir en del av festen i stället för att störas av den.', en: 'Elin treats the neighbours to an aperitif, so they join the celebration instead of being disturbed by it.' },
   'mood.ch.bday.gestWrong': { sv: 'Sällskapet sjunger, grannarna lägger armarna i kors', en: 'The party sings; the neighbours fold their arms' },
   'mood.why.bday.gestWrong': { sv: 'Musiken går upp. Ett bord blir gladare och två bord blir missnöjda, så rummet sjunker.', en: 'The music goes up. One table gets happier and two tables get unhappy, so the room drops.' },
   'mood.ch.drunk.gestRight': { sv: 'Grannarna vid baren nickar', en: 'The neighbours at the bar nod' },

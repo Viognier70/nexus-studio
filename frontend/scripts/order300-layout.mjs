@@ -19,7 +19,8 @@
 //   - minFontPx: den minsta teckenstorleken bland synlig text (getComputedStyle),
 //     mot golvet MIN_FONT_PX;
 //   - overlaps: HUD:ens paneler som ligger på varandra (ORDER 303 G), när ingen helskärm är öppen;
-//   - shelfHidden: paviljongerna i morgonens lista som inte syns utan att listan rullas (§3);
+//   - shelfHidden: paviljongerna i morgonens lista som inte går att nå, inte heller genom att listan
+//     rullas (ORDER 324 B; förut ORDER 300 §3: som inte syns utan att listan rullas, nu shelfBelowEdge);
 //   - clipped: knappar vars text radbryts eller skärs (scrollWidth > clientWidth
 //     eller två rader), bland dem som anges per skärm;
 //   - covered (ORDER 318): rubriker och etiketter på en öppen skärm (.nx-screen)
@@ -96,12 +97,35 @@ async function probe(page, buttons) {
         if (el.scrollWidth > el.clientWidth + 1 || wraps) clipped.push({ el: name(el), text: el.innerText.trim().slice(0, 40) });
       }
     }
-    // ORDER 300 §3 — alla paviljongerna syns utan att listan rullas.
+    // ORDER 300 §3 — paviljongerna i morgonens lista.
     const shelf = [...document.querySelectorAll('[data-testid^=shelf-]')];
-    const shelfHidden = shelf.filter((el) => {
+    // ORDER 324 B (Anders 2026-10-10: "Morgonens lista rullar så att allt kan nås") — förut (ORDER 300 §3)
+    // skulle alla paviljonger synas utan att listan rullas. Nu räknas en rad som dold bara om den inte
+    // går att nå: den står i en lista som rullar (overflow auto/scroll) och vars ruta ligger i fönstret,
+    // eller, utan en sådan lista, inom fönstret; raden rullas fram och ska då stå helt i listans ruta.
+    // shelfBelowEdge redovisar raderna som kräver rullning.
+    const scrollerOf = (el) => {
+      const sc = el.closest('.nxs-list-scroll');
+      if (!sc || !/(auto|scroll)/.test(getComputedStyle(sc).overflowY)) return null;
+      return sc;
+    };
+    const shelfBelowEdge = shelf.filter((el) => {
       const r = el.getBoundingClientRect();
       const box = (el.closest('.nxs-list-scroll') ?? document.body).getBoundingClientRect();
       return !(r.top >= box.top - 0.5 && r.bottom <= box.bottom + 0.5 && r.bottom <= H);
+    }).map((el) => el.getAttribute('data-testid'));
+    const shelfHidden = shelf.filter((el) => {
+      const sc = scrollerOf(el);
+      if (!sc) { const r = el.getBoundingClientRect(); return r.top < 0 || r.bottom > H + 0.5; }
+      const b = sc.getBoundingClientRect();
+      if (b.top < -0.5 || b.bottom > H + 0.5 || b.height < 30) return true;
+      // Rulla listan till raden och se att den då står helt i listans ruta; rullningen återställs.
+      const prev = sc.scrollTop;
+      el.scrollIntoView({ block: 'nearest' });
+      const r = el.getBoundingClientRect();
+      const seen = r.top >= b.top - 0.5 && r.bottom <= b.bottom + 0.5 && r.bottom <= H + 0.5;
+      sc.scrollTop = prev;
+      return !seen;
     }).map((el) => el.getAttribute('data-testid'));
     // ORDER 303 G — panelerna får aldrig ligga ovanpå varandra (HUD:ens
     // paneler, när ingen helskärm är öppen). Par som skär varandra mer än
@@ -135,7 +159,7 @@ async function probe(page, buttons) {
         }
       }
     }
-    return { pageScroll, scrollers, shelfRows: shelf.length, shelfHidden, overlaps, covered, screenScroll: scrollers.filter((s) => s.screen).map((s) => s.el), minFontPx: minFont === Infinity ? null : +minFont.toFixed(1), minFontAt, clipped };
+    return { pageScroll, scrollers, shelfRows: shelf.length, shelfHidden, shelfBelowEdge, overlaps, covered, screenScroll: scrollers.filter((s) => s.screen).map((s) => s.el), minFontPx: minFont === Infinity ? null : +minFont.toFixed(1), minFontAt, clipped };
   }, [SCREEN_SHARE, buttons]);
 }
 
