@@ -100,23 +100,16 @@ export function drawMoodSymbol(ctx: CanvasRenderingContext2D, id: MoodId, x: num
 }
 
 // ---------- ansiktena -----------------------------------------------------
-// Fem uttryck med ögon, bryn och mun på huvudets framsida (figureFace.ts). De tänds först när kameran
-// är nära: från 9 m mellan kameran och huvudet tonas de in, och vid 7 m är de fullt synliga.
-// Vid 7 m är huvudet 32 px högt i 1280 × 720 och 40 px i 1440 × 900. Raketens 10–14 m och spelets
-// 24 m visar aldrig ansikten; där bär gesterna och symbolerna stämningen.
+// Fem uttryck på huvudets framsida (figureFace.ts). ORDER 325 (Designs D11): två skal, nära och långt, så att
+// ansiktena syns också vid Krogen; gränserna står i balance.ts FACE_LOD. D1:s gräns (in från 9 m, helt vid 7 m)
+// gäller inte längre.
 export const FACE = {
-  fadeStartM: 9, fullM: 7,
   /** Personalen har alltid 'content'. Uttrycken är gästernas. */
   staffMood: 'content' as MoodId,
   /** Ett nytt uttryck byts in på 120 ms, samtidigt som gesten börjar. */
   swapMs: 120,
   ink: '#2a1c13'
 };
-
-export function faceOpacity(cameraToHeadM: number): number {
-  const k = (FACE.fadeStartM - cameraToHeadM) / (FACE.fadeStartM - FACE.fullM);
-  return Math.max(0, Math.min(1, k));
-}
 
 // ---------- mätaren -------------------------------------------------------
 // ”Stämningen i rummet”, i HUD:ens översta rad till höger om kassan. Ett spår i fem steg med en

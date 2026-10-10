@@ -51,6 +51,12 @@ import { STREET_FIGURE, STREET_SKIN, streetGroupOf, streetHeadGeometry, streetLo
 import { advanceGait, composeLeg, easeMoving, gaitBob, legSwing, streetLegGeometry } from './streetGait';
 import { clearStreetWalkers, publishStreetWalkers, walkerNear } from '../streetPresence';
 import { routePace, routeStops, TRAFFIC_STOPS, type RouteStop } from '../trafficStops';
+// ORDER 325 §3 — gatans gångsätt (Designs D11 §5): riggarna närmast kameran.
+import { STREET_RIGS, StreetRigs, streetGaitFor, streetGaitSpeed, type StreetGaitKind, type StreetRigCandidate } from './streetGaits';
+import { GESTURE_BALANCE } from '../../../sim/balance';
+import { eveningProgress } from '../../../sim/clock';
+import { truckRaining } from '../../../sim/truckLife';
+import { CLIPS } from '../figureClips';
 
 type Vec2 = [number, number];
 type WalkerKind = PoolType | 'social' | 'billionaire' | 'tourist';
@@ -96,14 +102,15 @@ const ABREAST_M = 0.62;
 const ROW_M = 0.95;
 const PAUSE_CHANCE = 0.35;
 const PAUSE_MIN: [number, number] = [0.6, 1.8];
-const MENU_CHANCE = 0.3;
-const MENU_NEAR_M = 9;
+// ORDER 325 — sannolikheten och avståndet för att stanna vid en meny står i balance.ts GESTURE_BALANCE
+// (stopLookP, stopLookRadiusM; förut MENU_CHANCE 0,3 och MENU_NEAR_M 9 här).
 const GATHER_MIN = 0.9;
 // Före 19.00 tätnar det mot krogarna: sällskapen ger sig av upp till
 // EARLY_LEAVE_MIN spelminuter tidigare, och den som är framme före sin tid
 // väntar utanför dörren (tittar på menyn) tills det är dags.
 const EARLY_LEAVE_MIN = 30;
-type PauseKind = 'point' | 'talk' | 'menu';
+// ORDER 325 — 'greet': två ur byn som möts hälsar (D11 meetKnown).
+type PauseKind = 'point' | 'talk' | 'menu' | 'greet';
 
 const TYPE_COLOUR: Record<WalkerKind, string> = {
   student: WARM.guest.student,
@@ -163,6 +170,11 @@ interface Walker {
   // ORDER 323 §6 — gången (streetGait.ts): fasen och 0 står / 1 går.
   gait?: number;
   gaitMoving?: number;
+  // ORDER 325 §3 — gångsättet (streetGaits.ts), när pausen började (spelminuter), och hälsningen.
+  gaitKind?: StreetGaitKind;
+  pauseFrom?: number | null;
+  greeted?: boolean;
+  greetSecond?: boolean;
 }
 
 interface Car {
@@ -362,6 +374,8 @@ export function VillageLife() {
     lastHeat: 0
   });
 
+  // ORDER 325 §3 — gatans riggar med D11:s gångsätt.
+  const streetRigs = useMemo(() => new StreetRigs(), []);
   const meshes = useMemo(() => {
     const figures = makeInstanced(streetTorsoGeometry());
     // ORDER 323 §6 — benen är två instanser per figur, vänster och höger, som svingar när figuren går.
@@ -415,9 +429,9 @@ export function VillageLife() {
     // ORDER 297 — gästflödets band finns inte i Designs leverans Byn i kvällsljus;
     // där bär sällskapens lyktor flödet. Banden ritas inte längre.
     heat.visible = false;
-    root.add(figures, legsL, legsR, heads, ...Object.values(signs), markers, rings, cars, bus, heat, cores, patches);
+    root.add(figures, legsL, legsR, heads, ...Object.values(signs), markers, rings, cars, bus, heat, cores, patches, streetRigs.group);
     return { figures, legsL, legsR, heads, signs, markers, rings, cars, bus, heat, cores, patches };
-  }, [root]);
+  }, [root, streetRigs]);
 
   useEffect(() => () => {
     root.traverse((o) => {
@@ -540,6 +554,31 @@ export function VillageLife() {
       }
     }
 
+    // ORDER 325 §3 (D11 meetKnown) — två ur byn som går förbi varandra nära kameran stannar och hälsar
+    // (street.greet), med sannolikheten greetP inom greetRadiusM; samma par hälsar samma kväll likadant.
+    if (actualRef.current.distance < STREET_RIGS.untilM) {
+      const fc = actualRef.current.focus;
+      const near: Array<{ w: Walker; x: number; z: number }> = [];
+      for (const w of L.walkers) {
+        if (w.arrived || w.eatUntil !== null || w.pauseUntil != null || w.gatherUntil != null || w.standAt || w.greeted || w.homeward) continue;
+        if (w.group !== 'villager' || (w.gaitKind ?? 'calm') === 'hurried') continue;
+        const q = walkerPoint(w.route, w.offsets, w.s, w.side ?? 1);
+        if (Math.hypot(q.x - fc.x, q.z - fc.z) < STREET_RIGS.radiusM) near.push({ w, x: q.x, z: q.z });
+      }
+      const greetMin = (CLIPS['street.greet'].seconds.normal + STREET_RIGS.greetLagS) * GAME_MINUTES_PER_SIM_SECOND;
+      for (let i = 0; i < near.length; i++) for (let j = i + 1; j < near.length; j++) {
+        const a = near[i], b = near[j];
+        if (a.w.greeted || b.w.greeted || Math.hypot(a.x - b.x, a.z - b.z) > GESTURE_BALANCE.greetRadiusM) continue;
+        const pair = a.w.key < b.w.key ? `${a.w.key}|${b.w.key}` : `${b.w.key}|${a.w.key}`;
+        a.w.greeted = true; b.w.greeted = true;
+        if (hashKey(s.seed ?? 0, `${pair}|greet`) >= GESTURE_BALANCE.greetP) continue;
+        for (const [m, o, second] of [[a, b, false], [b, a, true]] as const) {
+          m.w.pauseUntil = now + greetMin; m.w.pauseKind = 'greet'; m.w.pauseFrom = now; m.w.greetSecond = second;
+          m.w.look = Math.atan2(o.x - m.x, o.z - m.z);
+        }
+      }
+    }
+
     // Gå, köra, äta vid luckan.
     for (const w of L.walkers) {
       if (w.arrived) continue;
@@ -553,17 +592,19 @@ export function VillageLife() {
         w.pauseUntil = null;
         w.pauseKind = null;
         w.look = null;
+        w.pauseFrom = null;
       }
       if (w.gatherUntil != null && now < w.gatherUntil) continue;
       const before = pointAlong(w.route, w.s);
       const nextPause = w.pauses?.[0];
-      w.s += dGameMin * WALK_M_PER_GAME_MIN * w.pace;
+      w.s += dGameMin * WALK_M_PER_GAME_MIN * w.pace * streetGaitSpeed(w.gaitKind ?? 'calm');
       if (nextPause && !w.homeward && w.s >= nextPause.s) {
         w.s = nextPause.s;
         w.pauses!.shift();
         w.pauseUntil = now + nextPause.minutes;
         w.pauseKind = nextPause.kind;
         w.look = nextPause.look;
+        w.pauseFrom = now;
       }
       const at = pointAlong(w.route, w.s);
       addHeat(L, before, at, w.n * dGameMin);
@@ -728,8 +769,8 @@ export function VillageLife() {
       let acc = 0;
       for (let i = 1; i < route.length; i++) {
         const seg = Math.hypot(route[i][0] - route[i - 1][0], route[i][1] - route[i - 1][1]);
-        if (Math.hypot(route[i][0] - d[0], route[i][1] - d[1]) < MENU_NEAR_M && acc + seg < length - MENU_NEAR_M) {
-          if (r() < MENU_CHANCE) pauses.push({ s: acc + seg, minutes: PAUSE_MIN[0] + r() * (PAUSE_MIN[1] - PAUSE_MIN[0]), kind: 'menu', look: Math.atan2(d[0] - route[i][0], d[1] - route[i][1]) });
+        if (Math.hypot(route[i][0] - d[0], route[i][1] - d[1]) < GESTURE_BALANCE.stopLookRadiusM && acc + seg < length - GESTURE_BALANCE.stopLookRadiusM) {
+          if (r() < GESTURE_BALANCE.stopLookP) pauses.push({ s: acc + seg, minutes: PAUSE_MIN[0] + r() * (PAUSE_MIN[1] - PAUSE_MIN[0]), kind: 'menu', look: Math.atan2(d[0] - route[i][0], d[1] - route[i][1]) });
           break;
         }
         acc += seg;
@@ -744,8 +785,10 @@ export function VillageLife() {
     const seed = simRef.current.seed ?? 0;
     const group = streetGroupOf(p.type, p.key, seed, p.venueId === PLAYER_VENUE, conceptTonight(simRef.current));
     const variant = hashKey(seed, `${p.key}|look`) < 0.5 ? 0 : 1;
+    // ORDER 325 §3 — gångsättet ur nyckeln, kvällens förlopp och regnet; farten följer gångsättet.
+    const gaitKind = streetGaitFor(p.key, p.type, p.n, seed, eveningProgress(simRef.current), truckRaining(simRef.current));
     L.walkers.push({
-      group, variant,
+      group, variant, gaitKind,
       key: p.key, type: p.type, n: p.n, venueId: p.venueId, route, length, s: startOffset,
       pace: TYPE_PACE[p.type] * (1 - PACE_SPREAD + 2 * PACE_SPREAD * r()), eatUntil: null, standAt: null,
       side: r() < 0.5 ? -1 : 1, offsets: sidewalkOffsets(route), pauses, pauseUntil: null, pauseKind: null, look: null, gatherUntil: null, wordAway, dueAt: p.at,
@@ -809,6 +852,10 @@ export function VillageLife() {
     const kd = Math.max(0.7, Math.min(2.4, dist / 150));
     const showMarkers = lantern > 0.01;
     const showFigures = dist < BLEND.figuresUntil;
+    // ORDER 325 §3 — gatans riggar (streetGaits.ts) närmare än STREET_RIGS.untilM, när figurerna syns.
+    const rigsOn = showFigures && scale > 0.01 && dist < STREET_RIGS.untilM;
+    const focus = actualRef.current.focus;
+    const rigCands: StreetRigCandidate[] = [];
     // ORDER 302c — mätningen under lyktorna (lampProbe.ts), bara när skriptet ber om den.
     const probe: ProbeFigure[] | null = showFigures && lampProbeRequested() ? [] : null;
     (markers.material as THREE.MeshBasicMaterial).opacity = 0.4 * lantern;
@@ -849,6 +896,7 @@ export function VillageLife() {
         let face = h;
         if (w.pauseKind === 'talk' && w.n > 1) face = Math.atan2(p.x - x, p.z - z);
         else if (w.pauseKind === 'menu' || w.pauseKind === 'point') face = w.look ?? Math.atan2(Math.cos(h) * side, -Math.sin(h) * side);
+        else if (w.pauseKind === 'greet' && k === 0) face = w.look ?? h;
         const phase = (w.gait ?? 0) + k * 0.27;
         const moving = w.gaitMoving ?? 0;
         const fs = scale * (w.type === 'billionaire' ? 1.1 : 1);
@@ -869,6 +917,15 @@ export function VillageLife() {
         legsR.setColorAt(fi, tmpLook);
         presence[fi * 2] = x;
         presence[fi * 2 + 1] = z;
+        // ORDER 325 §3 — kandidat till riggen: nära kameran och dess mål.
+        if (rigsOn && Math.hypot(x - focus.x, z - focus.z) < STREET_RIGS.radiusM) {
+          const sinceS = w.pauseFrom != null ? Math.max(0, now - w.pauseFrom) / GAME_MINUTES_PER_SIM_SECOND : 0;
+          const stop: StreetRigCandidate['stop'] = w.pauseUntil == null ? null
+            : w.pauseKind === 'greet' ? (k === 0 ? { kind: 'greet', sinceS, second: !!w.greetSecond } : null)
+            : w.pauseKind === 'menu' || w.pauseKind === 'point' ? { kind: 'look', yaw: 0, sinceS }
+            : w.pauseKind === 'talk' && w.n > 1 ? { kind: 'talk', sinceS: sinceS + k * 0.7 } : null;
+          rigCands.push({ id: `${w.key}#${k}`, instance: fi, x, z, groundY: 0.05, yaw: face, scale: fs, body: look.body, limb: look.limb, phase, moving, kind: w.gaitKind ?? 'calm', stop, lead: k === 0 });
+        }
         heads.setMatrixAt(fi, tmp.m);
         sign.setMatrixAt(si[group], tmp.m);
         sign.setColorAt(si[group], tmpLook.set(look.accent));
@@ -915,6 +972,13 @@ export function VillageLife() {
       }
     }
     if (probe) addProbeFigures(gl, scene, camera, probe, [figures, legsL, legsR, heads, ...GROUP_IDS.map((g) => signs[g])]);
+    // ORDER 325 §3 — de närmaste ritas med riggen och gångsättet; deras instanser (kropp, ben, huvud) döljs.
+    rigCands.sort((a, b) => Math.hypot(a.x - focus.x, a.z - focus.z) - Math.hypot(b.x - focus.x, b.z - focus.z));
+    const rigged = rigCands.slice(0, STREET_RIGS.max);
+    tmp.m.makeScale(0, 0, 0);
+    for (const c of rigged) for (const mesh of [figures, legsL, legsR, heads]) mesh.setMatrixAt(c.instance, tmp.m);
+    streetRigs.draw(rigged, now / GAME_MINUTES_PER_SIM_SECOND);
+    if (typeof document !== 'undefined' && rigsOn) document.body.dataset.streetGaits = JSON.stringify(streetRigs.lastCounts);
     // ORDER 323 §6 — de gående på gatan, för bilarna vid övergångsställena.
     publishStreetWalkers('life', presence, showFigures ? fi : 0);
     for (const mesh of [figures, legsL, legsR, heads]) {

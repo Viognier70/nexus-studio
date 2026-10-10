@@ -1,0 +1,167 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "errors": [],
+  "places": {
+    "vinbaren": [
+      {
+        "size": "1280×720",
+        "atZ": {
+          "camDistance": 24,
+          "camTarget": 24,
+          "camFov": 42,
+          "level": "room",
+          "samples": 12,
+          "withFaces": 12,
+          "heads": 8,
+          "headMinM": 20.61,
+          "headMedianM": 26.41,
+          "headMaxM": 28.01,
+          "nearShown": 0,
+          "farShown": 8
+        },
+        "at10": {
+          "camDistance": 10,
+          "camTarget": 10,
+          "camFov": 42,
+          "level": "room",
+          "samples": 12,
+          "withFaces": 12,
+          "heads": 9,
+          "headMinM": 6.78,
+          "headMedianM": 12.53,
+          "headMaxM": 14.91,
+          "nearShown": 3,
+          "farShown": 6
+        }
+      },
+      {
+        "size": "1024×600",
+        "atZ": {
+          "camDistance": 24,
+          "camTarget": 24,
+          "camFov": 42,
+          "level": "room",
+          "samples": 12,
+          "withFaces": 12,
+          "heads": 8,
+          "headMinM": 20.61,
+          "headMedianM": 26.41,
+          "headMaxM": 28.01,
+          "nearShown": 0,
+          "farShown": 8
+        },
+        "at10": {
+          "camDistance": 10,
+          "camTarget": 10,
+          "camFov": 42,
+          "level": "room",
+          "samples": 12,
+          "withFaces": 12,
+          "heads": 9,
+          "headMinM": 6.76,
+          "headMedianM": 12.52,
+          "headMaxM": 14.89,
+          "nearShown": 3,
+          "farShown": 6
+        }
+      }
+    ],
+    "bistron": [
+      {
+        "size": "1280×720",
+        "atZ": {
+          "camDistance": 24,
+          "camTarget": 24,
+          "camFov": 42,
+          "level": "room",
+          "samples": 12,
+          "withFaces": 12,
+          "heads": 8,
+          "headMinM": 20.44,
+          "headMedianM": 24.38,
+          "headMaxM": 25.42,
+          "nearShown": 0,
+          "farShown": 8
+        }
+      }
+    ],
+    "vagnen": [
+      {
+        "size": "1280×720",
+        "atZ": {
+          "camDistance": 12,
+          "camTarget": 12,
+          "camFov": 42,
+          "level": "room",
+          "samples": 12,
+          "withFaces": 12,
+          "heads": 27,
+          "headMinM": 8.92,
+          "headMedianM": 11.45,
+          "headMaxM": 41.43,
+          "nearShown": 10,
+          "farShown": 17
+        },
+        "at10": {
+          "camDistance": 10,
+          "camTarget": 10,
+          "camFov": 42,
+          "level": "room",
+          "samples": 12,
+          "withFaces": 12,
+          "heads": 29,
+          "headMinM": 6.98,
+          "headMedianM": 9.83,
+          "headMaxM": 41.85,
+          "nearShown": 18,
+          "farShown": 11
+        }
+      },
+      {
+        "size": "1024×600",
+        "atZ": {
+          "camDistance": 12,
+          "camTarget": 12,
+          "camFov": 42,
+          "level": "room",
+          "samples": 12,
+          "withFaces": 12,
+          "heads": 24,
+          "headMinM": 8.89,
+          "headMedianM": 11.78,
+          "headMaxM": 48.46,
+          "nearShown": 9,
+          "farShown": 15
+        },
+        "at10": {
+          "camDistance": 10,
+          "camTarget": 10,
+          "camFov": 42,
+          "level": "room",
+          "samples": 12,
+          "withFaces": 12,
+          "heads": 28,
+          "headMinM": 7.01,
+          "headMedianM": 9.76,
+          "headMaxM": 42.16,
+          "nearShown": 17,
+          "farShown": 11
+        }
+      }
+    ]
+  },
+  "street": {
+    "camDistance": 42,
+    "level": "street",
+    "gaitsSeen": {
+      "calm": 11,
+      "child": 3,
+      "childWalk": 1,
+      "stopLook": 7,
+      "dog": 2,
+      "greet": 2
+    }
+  },
+  "streetSamples": 64
+}

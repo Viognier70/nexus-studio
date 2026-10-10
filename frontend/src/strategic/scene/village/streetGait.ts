@@ -7,7 +7,8 @@
 // räknas ur sträckan figuren gått (fasen = meter / steglängd), så att fötterna
 // följer marken; står figuren still står benen raka.
 //
-// Ansikten och gester kommer från Design (D11) och byggs in i en senare order.
+// ORDER 325 — Designs D11: de närmaste ritas med riggen och gatans sex gångsätt (streetGaits.ts); de här
+// instanserna gäller för resten.
 
 import * as THREE from 'three';
 

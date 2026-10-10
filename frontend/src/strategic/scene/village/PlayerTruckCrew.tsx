@@ -31,6 +31,13 @@
 // still har armarna i kors. I regnet går en del med paraply. Medhjälparen går ut och tänder marschallerna och
 // städar borden (torchRound.ts), och luckan står tom så länge. Platsen i övrigt: TruckLife.tsx.
 
+//
+// ORDER 325 (Designs D11 §4, gestureMap.ts) — ansiktena (figureFace.ts) på gästerna och besättningen, efter gästens
+// stämning och gesten; och vagnens gester stående: vid luckan vinkar gästen (guest.waveStand) när medhjälparen är ute,
+// och grillaren lyssnar med lutat huvud (staff.listenTilt); i kön en axelryckning när korven tar slut (ft11, soldOut);
+// den nyfikna som fick "nästan" rycker på axlarna (halfGrip); vid ståborden första tuggan och en nick
+// (guest.nodFirstBiteStand), och prat och skratt när fler står vid samma bord (guest.leanTalkStand, guest.laughStand).
+
 import { useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
@@ -60,6 +67,11 @@ import { CURIOUS_SPOTS, MENU_BOARD } from '../truckProps';
 import { TRUCK_GUESTS, TruckGuestFlow, childKey, toWorld, type OtherBody, type TruckFrame, type TruckWalker } from './truckGuestFlow';
 import { truckCameraState } from './truckCamera';
 import { CuriousMarker, type CuriousMarkerState } from './CuriousMarker';
+import { attachFace, type FaceHandle } from '../figureFace';
+import { FaceProbe } from '../faceProbe';
+import { FACE, type MoodId } from '../guestMood';
+import { guestMoodValue, moodOf } from '../../../sim/guestMood';
+import { GESTURE_BALANCE, MOOD_BALANCE } from '../../../sim/balance';
 
 const FLOOR_Y_M = 0.5;
 const QUEUE_STRESSED = 4;
@@ -75,6 +87,9 @@ const STEP_UP_M = 0.6;
 /** ORDER 319b del 2 — barnet bredvid en nyfiken: en gästfigur i 0,62 av en vuxens längd (omkring 1,05 m,
  *  en femåring). */
 const CHILD_SCALE = 0.62;
+/** ORDER 325 (D11 §4) — grillaren vänder huvudet och bålen mot luckan när hen lyssnar (staff.listenTilt, ctx.yaw);
+ *  gästen vid luckan vinkar en gång per waveEveryS; i kön rycker de på axlarna förskjutet per plats. */
+const TRUCK_GESTURE = { grillTurnYaw: 1.3, waveEveryS: 4, shrugEveryS: 5, shrugOffsetPerSpotS: 0.8 } as const;
 /** Figurens höjd vid prövningen mot kamerans bild: fötterna och huvudet. */
 const FIGURE_TOP_M = 1.7;
 /** ORDER 319c — medhjälparens runda i scenen följer simuleringen, och tar igen den när den har kommit efter. */
@@ -133,7 +148,9 @@ export function PlayerTruckCrew() {
     regularGroup.add(regular.root);
     // Kontrollskriptet (scripts/order315b-2-check.mjs) läser besättningens läge härifrån.
     if (typeof window !== 'undefined') (window as unknown as { __nxTruckCrew?: unknown }).__nxTruckCrew = { g, grill: grill.root, hatch: hatch.root, guests: guestsGroup };
-    return { g, grill, hatch, guestsGroup, lighterProp, breaths, regular, regularGroup };
+    // ORDER 325 — besättningens ansikten (alltid nöjda, FACE.staffMood).
+    const crewFaces = [attachFace(grill, FACE.staffMood), attachFace(hatch, FACE.staffMood)];
+    return { g, grill, hatch, guestsGroup, lighterProp, breaths, regular, regularGroup, crewFaces };
   }, [at]);
   // En figur per gäst, med gästens kläder; figurerna återanvänds per klädindex.
   const rigs = useRef({ live: new Map<string, FigureRig>(), free: new Map<number, FigureRig[]>(), children: new Map<string, FigureRig>(), freeChildren: [] as FigureRig[] });
@@ -168,6 +185,10 @@ export function PlayerTruckCrew() {
   const beckon = useRef<{ at: number; guestId: string; line: number } | null>(null);
   const marker = useRef<CuriousMarkerState>({ seq: null, x: 0, z: 0, y: 0, settledGuest: null, beckon: null });
   const queueSince = useRef(new Map<string, number>());
+  // ORDER 325 — ett ansikte per gästfigur (figurerna återanvänds, ansiktet följer med figuren).
+  const faces = useRef(new WeakMap<FigureRig, FaceHandle>());
+  // ORDER 325 §2 — avståndet till huvudena vid vagnen för mätningen (faceProbe.ts).
+  const faceProbe = useMemo(() => new FaceProbe('faceDistTruck'), []);
   useFrame((state, delta) => {
     // Taket och markisen efter kamerans avstånd (vagnen ritas av VillageVenues).
     const trailer = scene.getObjectByName('playerTrailer');
@@ -220,7 +241,10 @@ export function PlayerTruckCrew() {
       // ORDER 320 — grillaren tar korv ur lådan när den håller på att ta slut (ft11), och vänder vegokorven
       // med vegotången med jämna mellanrum (D10 staff.switchTongs, staff.turnVeg).
       const vegCycle = t % VEG_EVERY_S, sw = CLIPS['staff.switchTongs'].seconds.normal, tv = CLIPS['staff.turnVeg'].seconds.normal;
-      if (live(sit.stock)) applyPose(crew.grill, sampleClip('staff.takeFromBox', t % CLIPS['staff.takeFromBox'].seconds.normal, 'normal').pose);
+      // ORDER 325 (D11 guestSpeaks) — medhjälparen är ute och en gäst vinkar vid luckan: grillaren vänder sig och lyssnar.
+      const hatchWaiting = !!truckOf(sim).errand && [...flow.walkers.values()].some((w) => w.settled && w.spot?.pose === 'order');
+      if (hatchWaiting) applyPose(crew.grill, sampleClip('staff.listenTilt', t, 'normal', { yaw: TRUCK_GESTURE.grillTurnYaw }).pose);
+      else if (live(sit.stock)) applyPose(crew.grill, sampleClip('staff.takeFromBox', t % CLIPS['staff.takeFromBox'].seconds.normal, 'normal').pose);
       else if (vegCycle < sw) applyPose(crew.grill, sampleClip('staff.switchTongs', vegCycle, 'normal').pose);
       else if (vegCycle < sw + tv) applyPose(crew.grill, sampleClip('staff.turnVeg', vegCycle - sw, 'normal').pose);
       else if (vegCycle < sw * 2 + tv) applyPose(crew.grill, sampleClip('staff.switchTongs', vegCycle - sw - tv, 'normal').pose);
@@ -269,6 +293,7 @@ export function PlayerTruckCrew() {
         ? (raining ? sampleClip('truck.serveLidded', since * CLIPS['truck.serveLidded'].seconds.normal / serveLen, 'normal').pose : sampleClip('truck.hatchServe', since, tempo, { stress, hand: 'L' }).pose)
         : sampleClip('truck.wipeCounter', t, tempo, { stress }).pose);
     }
+    for (const f of crew.crewFaces) f.update(camera);
 
     // ORDER 320 — stamgästen vid vår vagn när Grillvagnen har satt upp sin skylt (ft13): var sjätte sekund en klunk
     // (fika.sipCup), och efter en sekund vänder hen sig mot skylten och skålar (guest.toastCup).
@@ -356,6 +381,11 @@ export function PlayerTruckCrew() {
     m.seq = null;
     breath.current.forEach((b) => { b.visible = false; });
     let breaths = 0;
+    // ORDER 325 — gästernas stämning (ansiktet) och hur många som står vid samma ståbord (prat och skratt).
+    const simGuests = new Map(sim.guests.map((g) => [g.id, g] as const));
+    const atTable = new Map<string, number>();
+    for (const w of flow.walkers.values()) if (w.settled && w.spot?.pose === 'eat' && w.spot.key) { const k = w.spot.key.split('-')[0]; atTable.set(k, (atTable.get(k) ?? 0) + 1); }
+    const errandOut = !!truckOf(sim).errand;
     for (const w of flow.walkers.values()) {
       const r = R.live.get(w.id);
       if (!r) continue;
@@ -370,8 +400,14 @@ export function PlayerTruckCrew() {
       const qs = queueSince.current;
       if (inQueue && !qs.has(w.id)) qs.set(w.id, t);
       if (!inQueue) qs.delete(w.id);
+      const sg = simGuests.get(w.id);
+      const mood: MoodId = sg ? moodOf(guestMoodValue(sg, sim.day.roomMoodLift ?? 0)) : 'content';
+      let face = faces.current.get(r);
+      if (!face) { face = attachFace(r, mood); faces.current.set(r, face); }
       if (w.curious && w.curious.stage !== 'walkOn' && cur?.seq === w.curious.seq) {
-        poseCurious(r, w, p, cur, t, at, cold);
+        const gm = poseCurious(r, w, p, cur, t, at, cold);
+        face.set(gm ?? 'waiting');
+        faceProbe.add(face.update(camera), isTruck && r.root.visible);
         m.seq = cur.seq;
         m.x = r.root.position.x; m.z = r.root.position.z; m.y = r.root.position.y;
         continue;
@@ -381,9 +417,17 @@ export function PlayerTruckCrew() {
       // steg åt sidan för hunden; gästen vid luckan försöker betala med kortet; kön står tätt med armarna in i regnet.
       const atTableA = eating && !!w.spot?.key?.startsWith('A-');
       const sp = situationPose(w, atTableA, sit, raining, t);
+      let gestureMood: MoodId | null = null;
       if (sp) { r.root.position.set(p[0], w.spot?.y ?? 0, p[1]); r.root.rotation.y = w.spot?.yaw ?? w.yaw; applyPose(r, sampleClip(sp.clip, sp.u, 'normal', { yaw: sp.yaw }).pose); }
-      else if (eating) poseEater(r, w, p, t, flow.clock - w.settledAt, h, cold, kits, kits.kitFor(w.id, h, w.spot!.key!, cold));
-      else poseWalker(r, w, p, t, waiting > QUEUE_STRESSED, w.id === pointing ? THEATRE.rocketIntroSeconds.askPointMenu - (active?.introLeft ?? 0) : null, hatchAt, inQueue ? t - qs.get(w.id)! : null, flow.clock - w.outcomeAt, cold, umbrellaOn(w, raining, h));
+      else if (eating) gestureMood = poseEater(r, w, p, t, flow.clock - w.settledAt, h, cold, kits, kits.kitFor(w.id, h, w.spot!.key!, cold), { value: sg ? guestMoodValue(sg, sim.day.roomMoodLift ?? 0) : MOOD_BALANCE.threshold.content, mates: atTable.get(w.spot!.key!.split('-')[0]) ?? 1 });
+      else {
+        poseWalker(r, w, p, t, waiting > QUEUE_STRESSED, w.id === pointing ? THEATRE.rocketIntroSeconds.askPointMenu - (active?.introLeft ?? 0) : null, hatchAt, inQueue ? t - qs.get(w.id)! : null, flow.clock - w.outcomeAt, cold, umbrellaOn(w, raining, h));
+        // ORDER 325 (D11) — stående gester ovanpå: vinka vid luckan när medhjälparen är ute (readyToOrder), en
+        // axelryckning i kön när korven tar slut (soldOut).
+        gestureMood = truckGesture(r, w, t, errandOut, live(sit.stock), pointing === w.id, cold);
+      }
+      face.set(gestureMood ?? mood);
+      faceProbe.add(face.update(camera), isTruck && r.root.visible);
       // Maten i händerna på väg till platsen och till sopkorgen; inget efter att servetten är slängd.
       kits.carry(r, w, h, flow.clock - w.outcomeAt, cold, t);
       // Paraply i regnet för den som går utanför markisen (Designs umbrellas.share).
@@ -403,6 +447,7 @@ export function PlayerTruckCrew() {
         if (!cur) { m.x = r.root.position.x; m.z = r.root.position.z; m.y = r.root.position.y; }
       }
     }
+    faceProbe.flush();
     if (cq?.last?.outcome !== 'join' || !flow.walkers.has(cq.last.guestId ?? '')) m.settledGuest = null;
     const b = beckon.current;
     m.beckon = b && t >= b.at && t < b.at + CURIOUS.hatchLineSeconds ? { line: b.line, x: hatchWorld[0], z: hatchWorld[1] } : null;
@@ -463,7 +508,7 @@ function addRoot(r: FigureRig, root: readonly number[]): void {
  * skylten, läser, luktar och pekar mot röken, tittar på klockan och tvekar (Designs ordning). Kortet
  * öppet: tvekar. Nästan: tvekar, tittar på klockan och tvekar igen.
  */
-function poseCurious(r: FigureRig, w: TruckWalker, p: [number, number], cur: CuriousGuest, t: number, at: TruckFrame, cold: boolean): void {
+function poseCurious(r: FigureRig, w: TruckWalker, p: [number, number], cur: CuriousGuest, t: number, at: TruckFrame, cold: boolean): MoodId | null {
   r.root.position.set(p[0], 0, p[1]);
   const read = toWorld(at, CURIOUS_SPOTS.readSpot[0], CURIOUS_SPOTS.readSpot[1]);
   const sign = toWorld(at, MENU_BOARD.at[0], MENU_BOARD.at[1]);
@@ -476,7 +521,7 @@ function poseCurious(r: FigureRig, w: TruckWalker, p: [number, number], cur: Cur
     const stride = w.walkedM / TRUCK_GUESTS.strideM;
     const yaw = yawTo(w.x, w.z, w.yaw, smoke[0], smoke[1]);
     applyPose(r, phase === 'slowDown' ? sampleClip('guest.slowDown', cur.real, 'normal', { phase: stride, yaw }).pose : poseWalk(stride));
-    return;
+    return null;
   }
   r.root.rotation.y = facingSign;
   const queueEnd = toWorld(at, TRUCK_LAYOUT.queue.line[TRUCK_LAYOUT.queue.line.length - 1][0], TRUCK_LAYOUT.queue.line[TRUCK_LAYOUT.queue.line.length - 1][1]);
@@ -491,10 +536,12 @@ function poseCurious(r: FigureRig, w: TruckWalker, p: [number, number], cur: Cur
     cold
   };
   let clip: string, u: number;
+  let mood: MoodId | null = null;
   if (cur.answer && cur.okLeft !== null) {
+    // ORDER 325 (D11 halfGrip) — "nästan" på frågekortet: tvekar, rycker på axlarna (förut klockan) och tvekar igen.
     const k = CURIOUS.okHoldSeconds - cur.okLeft;
-    const h1 = CLIPS['guest.hesitate'].seconds.normal, cw = CLIPS['guest.checkWatchStand'].seconds.normal;
-    if (k < h1) { clip = 'guest.hesitate'; u = k; } else if (k < h1 + cw) { clip = 'guest.checkWatchStand'; u = k - h1; } else { clip = 'guest.hesitate'; u = k - h1 - cw; }
+    const h1 = CLIPS['guest.hesitate'].seconds.normal, cw = CLIPS['guest.shrugStand'].seconds.normal;
+    if (k < h1) { clip = 'guest.hesitate'; u = k; } else if (k < h1 + cw) { clip = 'guest.shrugStand'; u = k - h1; mood = 'waiting'; } else { clip = 'guest.hesitate'; u = k - h1 - cw; }
   } else if (cur.card || phase === 'hesitate') { clip = 'guest.hesitate'; u = cur.card ? t : cur.real - (P.slowDown + P.toSign + P.read + P.smell + P.watch); }
   else if (phase === 'read') { clip = 'guest.readSign'; u = cur.real - P.slowDown - P.toSign; }
   else if (phase === 'smell') { clip = 'guest.smellPoint'; u = cur.real - P.slowDown - P.toSign - P.read; }
@@ -504,6 +551,25 @@ function poseCurious(r: FigureRig, w: TruckWalker, p: [number, number], cur: Cur
   const smp = sampleClip(clip, u, 'normal', { ...ctx, yaw });
   applyPose(r, smp.pose);
   addRoot(r, smp.root);
+  return mood;
+}
+
+/** ORDER 325 (D11 §4) — de stående gesterna vid luckan och i kön, ovanpå poseWalker. Ger stämningen gesten visar
+ *  (ansiktet följer gesten), eller null när ingen gest spelas. */
+function truckGesture(r: FigureRig, w: TruckWalker, t: number, errandOut: boolean, soldOut: boolean, pointing: boolean, cold: boolean): MoodId | null {
+  if (!w.settled || w.holdS > 0 || pointing || !w.spot) return null;
+  const G = TRUCK_GESTURE;
+  if (w.spot.pose === 'order' && errandOut) {
+    // readyToOrder vid luckan: medhjälparen är ute, gästen vinkar in mot grillaren.
+    const len = CLIPS['guest.waveStand'].seconds.normal, k = t % G.waveEveryS;
+    if (k < len) { applyPose(r, sampleClip('guest.waveStand', k, 'normal', { yaw: 0 }).pose); return 'content'; }
+    return null;
+  }
+  if (w.spot.pose === 'queue' && soldOut) {
+    const len = CLIPS['guest.shrugStand'].seconds.normal, k = (t + (w.spot.index ?? 0) * G.shrugOffsetPerSpotS) % G.shrugEveryS;
+    if (k < len) { applyPose(r, sampleClip('guest.shrugStand', k, 'normal', { cold }).pose); return 'waiting'; }
+  }
+  return null;
 }
 
 /** Figurens läge och pose: går, står i kön, beställer (pekar i en situation), hämtar eller äter.
@@ -606,7 +672,8 @@ function poseRound(rig: FigureRig, rp: RoundPose, torches: boolean): void {
   rig.root.position.set(rp.at[0], inside ? FLOOR_Y_M : onDeck(rp.at[0], rp.at[1]) ? DECK_TOP_M : 0, rp.at[1]);
   rig.root.rotation.y = rp.yaw;
   if (rp.act === 'light') applyPose(rig, sampleClip('staff.lightTorch', rp.u, 'normal').pose);
-  else if (rp.act === 'wipe') applyPose(rig, sampleClip('staff.wipeTable', rp.u, 'normal').pose);
+  // ORDER 325 (D11 tableLeft) — Designs avtorkning vid ståbordet (1,05 m, ctx.high); rundans tid som förut.
+  else if (rp.act === 'wipe') applyPose(rig, sampleClip('waiter.wipeTable', rp.u, 'normal', { high: true }).pose);
   else if (torches) applyPose(rig, sampleClip('staff.walkLighter', 0, 'normal', { phase: rp.u / TRUCK_GUESTS.strideM }).pose);
   else applyPose(rig, poseWalk(rp.u / TRUCK_GUESTS.strideM));
 }
@@ -790,7 +857,7 @@ class EatKits {
 /** Den som äter: tre varv med korven (eller gaffeln), dricker, torkar sig med servetten och står kvar. Runt
  *  värmaren värmer gästen händerna mellan tuggorna. På bänken sittande. Blåser servetten iväg griper gästen
  *  efter den (TRUCK_SIGNALS.grab). */
-function poseEater(r: FigureRig, w: TruckWalker, p: [number, number], t: number, since: number, h: number, cold: boolean, kits: EatKits, kit: EatKit): void {
+function poseEater(r: FigureRig, w: TruckWalker, p: [number, number], t: number, since: number, h: number, cold: boolean, kits: EatKits, kit: EatKit, g: { value: number; mates: number }): MoodId | null {
   const s = w.spot!;
   r.root.position.set(p[0], s.y, p[1]);
   r.root.rotation.y = s.yaw;
@@ -799,11 +866,27 @@ function poseEater(r: FigureRig, w: TruckWalker, p: [number, number], t: number,
   const grab = TRUCK_SIGNALS.grab.get(w.id);
   const grabLen = CLIPS['guest.grabNapkin'].seconds.normal;
   const clip = now.seg === 'eat' ? (kit.kind === 'bun' ? 'guest.eatBun' : 'guest.eatPlate') : now.seg === 'drink' ? 'guest.drink' : now.seg === 'wipe' ? 'guest.wipeNapkin' : now.seg === 'warm' ? 'guest.warmHands' : null;
+  // ORDER 325 (D11 firstBite, firstBiteGreat) — den första tuggan vid ståbordet med en nick, när stämningen är nöjd eller
+  // glad (glad i stressat tempo: tre nickar och ett lyft). Talking och joke: när fler står vid samma bord pratar och
+  // skrattar de mellan tuggorna (guest.leanTalkStand, guest.laughStand för den som är glad).
+  const bite = CLIPS['guest.nodFirstBiteStand'].seconds;
+  const glad = g.value >= MOOD_BALANCE.threshold.delighted, pleased = g.value >= MOOD_BALANCE.threshold.content;
+  const biteTempo: TempoId = glad ? 'stressed' : 'normal';
+  let mood: MoodId | null = null;
   if (grab !== undefined && t - grab >= 0 && t - grab < grabLen) applyPose(r, sampleClip('guest.grabNapkin', t - grab, 'normal', ctx).pose);
-  else if (clip) applyPose(r, sampleClip(clip, now.u, 'normal', ctx).pose);
-  else applyPose(r, sampleClip(s.seated ? 'guest.seatedIdle' : 'guest.standBar', t + (h % 7), 'calm', ctx).pose);
+  else if (!s.seated && pleased && since < Math.min(bite[biteTempo], GESTURE_BALANCE.firstBiteWithinS)) {
+    applyPose(r, sampleClip('guest.nodFirstBiteStand', since, biteTempo, ctx).pose);
+    mood = glad ? 'delighted' : 'content';
+  } else if (clip) applyPose(r, sampleClip(clip, now.u, 'normal', ctx).pose);
+  else if (!s.seated && g.mates >= 2 && pleased) {
+    const talk = glad && (h >>> 2) % 2 === 0 ? 'guest.laughStand' : 'guest.leanTalkStand';
+    const tempo: TempoId = glad ? 'stressed' : 'normal';
+    applyPose(r, sampleClip(talk, (t + (h % 7)) % CLIPS[talk].seconds[tempo], tempo, ctx).pose);
+    mood = glad ? 'delighted' : 'content';
+  } else applyPose(r, sampleClip(s.seated ? 'guest.seatedIdle' : 'guest.standBar', t + (h % 7), 'calm', ctx).pose);
   // Föremålen efter posen (handens läge).
   kits.pose(kit, r, w, since);
+  return mood;
 }
 
 /** ORDER 320 — klippet för en gäst i en av situationerna vid vagnen (Designs D10), eller null. */

@@ -145,6 +145,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_321_RAPPORT.md`: ORDER 321 — Provspelsläge: ?prov, börja direkt i foodtrucken, vinbaren eller bistron (rapport).
 - `ORDER_322_RAPPORT.md`: ORDER 322 — Efter provspel 2026-10-09: kvitt eller dubbelt, provspelets namn och Följd, listan över byns skillnader mot kartan och rättningen efter Anders beslut, etiketterna och vägändarna, uppfarten vid Länsmansgården och etiketterna i alla zoomnivåer (rapport, del A, B och C).
 - `ORDER_323_RAPPORT.md`: ORDER 323 — Efter provspel 2026-10-09 kväll: språket, korten som inte får plats, kvitt eller dubbelt, fönstren, fikat per plats, gatorna, Byn i kväll och felöversättningarna, provspelets namn, föremålen på borden och panelerna vid Krogen (rapport).
+- `ORDER_325_RAPPORT.md`: ORDER 325 — Ansikten och gester (Designs D11): ansiktena nära och på avstånd, de nya klippen och kartan, kamerans avstånd vid Krogen (Z) och gränserna i balance.ts, gatans sex gångsätt, kontrollbilderna (rapport).
 - `ORDER_324_RAPPORT.md`: ORDER 324 — Beslut om FÖR_GRANSKNING_323.md i spelet (svenska och engelska), ft06 steg 2 för Claude, somm-h7, och layouten i 1180 × 660 och 1024 × 600 (rapport); 324b: ft06 svar A, lagtexterna granskade, layoutkontrollen på engelska.
 - `ORDER_RECONSTRUCTION_004_005_019_020.md`: ORDER_RECONSTRUCTION_004_005_019_020 — Evidence record for four sprint orders.
 - `ORDER_REGISTRY.md`: ORDER REGISTRY.
@@ -576,6 +577,13 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `rattelse-leverans-1/nexusStrings.varm.ts`: nyckelfilen för leverans 1 med platshållare i stället för tal (ersätter `nexus-leverans-2026-09-29-varma-designsystemet/nexusStrings.varm.ts`).
 - `prototyp/Teaterns grund - prototyp.html` (läses, monteras inte).
 - 15 bilder (15 .png) i `bilder/`: bl.a. `vinbar-02-upp-pa-barstolen.png`, `vinbar-03-ned-i-loungen.png`, `sitsen-barstol-02-foten-pa-ringen.png`, `tempo-04-lounge-lugn-normal-stressad.png`.
+
+## documentation/leveranser/nexus-leverans-2026-10-10-d11-ansikten-och-gester/
+
+- `LEVERANSNOT.md`: D11: ansiktsuttryck och gester (Claude Design 2026-10-10), inbyggd i ORDER 325.
+- 7 tillhörande filer (kod, data) (6 .ts, 1 .js): `d11Clips.ts`, `d11Strings.ts`, `figureClips.ts`, `figureFace.ts`, `figureRig.ts`, `gestureMap.ts`, `d11Manus.js`.
+- `prototyp/D11 - Ansikten och gester.html`: prototypen med sex skärmar.
+- `kontrollbilder/1280x720/`, `kontrollbilder/1440x900/`: 45 kontrollbilder per storlek.
 
 ## documentation/orders/
 
