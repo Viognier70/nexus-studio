@@ -935,7 +935,7 @@ export const FOODTRUCK = {
   // går längs kön, tar beställningarna och säger hur lång väntan är (fika-vagn-kon svar A). Beställningen tar så här
   // stor del av tiden de kvällarna (service.ts), så att kön går fortare. Rundan längs kön (village/queueWalk.ts):
   // gångfarten, stunden vid varje gäst och avståndet ut från kön, i meter och sekunder.
-  extraHandOrderTime: 0.7,
+  extraHandOrderTime: 0.9,
   queueWalk: { speedMps: 1.2, takeS: 3, outM: 0.6 },
   // ORDER 315c — 7 → 4,5: 0,85 tjänar omkring 11 000 kr i veckan (förslaget: 12 000) och ryktet
   // håller sig när kön inte är längre än två hinner med (harness, reports/order315c/).
