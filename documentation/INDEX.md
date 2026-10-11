@@ -148,6 +148,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_326_RAPPORT.md`: ORDER 326 — Vinbarens 29 äldre situationer i den nya formen (306c), att söka personalens blick (D11 del 2), det nära ansiktet vid vagnen och ft06 på engelska (rapport).
 - `ORDER_327_RAPPORT.md`: ORDER 327 — halvt grepp bara när gästen och maten är säkra (vb14, vb21), signalerna för blick → hand → vinkning och blickkontakten, och spelartyperna utan och med 306c (rapport).
 - `ORDER_328_RAPPORT.md`: ORDER 328 — tallriken dukas av, vagnen svarar från luckan, en nick per steg och en omstart, regeln A12, vb35-c, och felsökningen av 0,6-raderna (ORDER 323 §5, fikat) (rapport).
+- `ORDER_329_RAPPORT.md`: ORDER 329 — fikat vid vagnen: sju nya dilemman, vanligt fika, mätningen före och efter (rapport).
 - `ORDER_325_RAPPORT.md`: ORDER 325 — Ansikten och gester (Designs D11): ansiktena nära och på avstånd, de nya klippen och kartan, kamerans avstånd vid Krogen (Z) och gränserna i balance.ts, gatans sex gångsätt, kontrollbilderna (rapport).
 - `ORDER_324_RAPPORT.md`: ORDER 324 — Beslut om FÖR_GRANSKNING_323.md i spelet (svenska och engelska), ft06 steg 2 för Claude, somm-h7, och layouten i 1180 × 660 och 1024 × 600 (rapport); 324b: ft06 svar A, lagtexterna granskade, layoutkontrollen på engelska.
 - `ORDER_RECONSTRUCTION_004_005_019_020.md`: ORDER_RECONSTRUCTION_004_005_019_020 — Evidence record for four sprint orders.
@@ -206,6 +207,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `BESLUT_GRANSKNING_323.md`: Beslut om FÖR_GRANSKNING_323.md (Claude med Anders 2026-10-10), infört i ORDER 324.
 - `SITUATIONER_306c_OMG1.md`: ORDER 306c, omgång 1 — sju av vinbarens äldre situationer i formen analys → upplevelse → handling (Claude 2026-10-10), inbyggd i ORDER 326.
 - `SITUATIONER_306c_OMG2-4.md`: ORDER 306c, omgång 2–4 — vinbarens 22 sista äldre situationer i formen, med reglerna för Code (Claude 2026-10-11), inbyggd i ORDER 326.
+- `FIKA_VAGNEN_329.md`: underlaget till ORDER 329, sju nya dilemman vid vagnen.
 - `FÖR_GRANSKNING_323.md`: För granskning efter ORDER 323 — vagnens fem fikadilemman (svenska, svar, nivåer, förklaringar, lagtexter) och listan över termval, onaturlig engelska och svenska fel.
 - `ORDER_304_UTKAST/`: utkastet till frågebanken per vara och utrustning, 90 frågor (`UTKAST_FRAGOR.md` för granskning, JSON i spelets format).
 - `M9_MEDGANG_REPORT_ORDER_089.md`: M9 — Medgången: rapportgrind (ORDER 089).

@@ -319,6 +319,124 @@ const DILEMMA_TEXT: Record<string, DilemmaText> = {
       sv: 'Gästen vägdes mot kassan. Det som står på skylten i förväg undviker grälet vid luckan, och en reserv gör att ett fel i tekniken inte blir ett fel mot gästen. Att bjuda varje gång blir dyrt och säger inget om nästa gång.',
       en: 'The customer was weighed against the takings. What the sign says in advance avoids the argument at the hatch, and a fallback means a fault in the technology doesn’t become a fault against the customer. Treating everyone every time gets expensive and says nothing about next time.'
     }
+  },
+  // ORDER 329 — de sju nya vid vagnen (documentation/blueprints/FIKA_VAGNEN_329.md). Svenskan som i filen, engelskan Codes (brittisk).
+  'fika-vagn-allergin': {
+    question: {
+      sv: 'En mamma frågade om korven innehåller mjölk. Jag sa nej, men egentligen visste jag inte.',
+      en: 'A mum asked whether the sausage contains milk. I said no, but I didn’t really know.'
+    },
+    options: {
+      A: { sv: 'Vi sätter upp en lista i luckan över allergenerna i varje rätt. Och den som inte vet säger: jag tar reda på det.', en: 'We put up a list in the hatch of the allergens in every dish. And anyone who doesn’t know says: I’ll find out.' },
+      B: { sv: 'Säg nej. De flesta frågar bara för säkerhets skull.', en: 'Say no. Most people only ask to be on the safe side.' },
+      C: { sv: 'Skicka dem till mig när någon frågar om allergier.', en: 'Send them to me when someone asks about allergies.' }
+    },
+    explanation: {
+      sv: 'Farten vid luckan vägdes mot gästens säkerhet. Ett gissat nej kan göra ett barn sjukt. En lista som alla kan läsa gör att svaret inte hänger på vem som står i luckan.',
+      en: 'Speed at the hatch was weighed against the customer’s safety. A guessed no can make a child ill. A list that everyone can read means the answer doesn’t depend on who is standing in the hatch.'
+    },
+    legalNote: {
+      sv: 'EU:s förordning om livsmedelsinformation kräver att uppgifter om allergener finns tillgängliga också för mat som inte är förpackad, till exempel i en vagn.',
+      en: 'The EU regulation on food information requires allergen information to be available for food that isn’t pre-packed too, for example from a truck.'
+    }
+  },
+  'fika-vagn-regnet': {
+    question: {
+      sv: 'Vi stod i regnet i två timmar och sålde sex korvar. Varför stängde vi inte?',
+      en: 'We stood in the rain for two hours and sold six sausages. Why didn’t we close?'
+    },
+    options: {
+      A: { sv: 'Vi bestämmer i förväg när vi stänger en regnig kväll, och vad som händer med varorna då. Och vi skaffar ett tak över kön.', en: 'We decide in advance when we close on a rainy evening, and what happens to the stock then. And we get a cover over the queue.' },
+      B: { sv: 'Det står på skylten att vi har öppet till nio.', en: 'The sign says we are open until nine.' },
+      C: { sv: 'Nästa gång får du bestämma själv.', en: 'Next time you can decide for yourself.' }
+    },
+    explanation: {
+      sv: 'Kvällens kassa vägdes mot det laget orkar. En regel som är bestämd i förväg gör att ingen behöver gissa vad chefen vill. Att lämna beslutet till Nils utan en ram lägger ansvaret på fel person.',
+      en: 'The evening’s takings were weighed against what the team can cope with. A rule decided in advance means nobody has to guess what the boss wants. Leaving the decision to Nils without a framework puts the responsibility on the wrong person.'
+    }
+  },
+  'fika-vagn-ursprunget': {
+    question: {
+      sv: 'En gäst frågade var korven kommer ifrån, och jag kunde inte svara. Jag vill kunna mer än att vända korv.',
+      en: 'A customer asked where the sausage comes from, and I couldn’t answer. I want to know more than how to turn sausages.'
+    },
+    options: {
+      A: { sv: 'Följ med till slakteriet nästa gång vi hämtar, och läs på i Måltidsbiblioteket. Sedan är det du som berättar för gästerna.', en: 'Come along to the butcher’s next time we collect, and read up in the Meal Library. Then you’re the one who tells the customers.' },
+      B: { sv: 'Säg att den är svensk. Det räcker för de flesta.', en: 'Say it’s Swedish. That’s enough for most people.' },
+      C: { sv: 'Visa dem skylten.', en: 'Show them the sign.' }
+    },
+    explanation: {
+      sv: 'Tiden det tar vägdes mot vad Nils vill bli. Den som kan berätta om varan säljer den bättre och stannar längre i jobbet. Ett svar som bara låter rätt kan bli fel inför en gäst som vet mer.',
+      en: 'The time it takes was weighed against what Nils wants to become. Someone who can talk about the produce sells it better and stays longer in the job. An answer that only sounds right can turn out wrong in front of a customer who knows more.'
+    }
+  },
+  'fika-vagn-getingen': {
+    question: {
+      sv: 'Jag blev stucken i handen när jag torkade senapsflaskan. Den svullnade, men jag jobbade på.',
+      en: 'I got stung on the hand while wiping the mustard bottle. It swelled up, but I kept working.'
+    },
+    options: {
+      A: { sv: 'Säg till direkt nästa gång. Vi har en låda för första hjälpen i vagnen och vet var närmaste vårdcentral finns. Och senapen står under lock.', en: 'Tell me straight away next time. We keep a first-aid box in the truck and know where the nearest health centre is. And the mustard stays under a lid.' },
+      B: { sv: 'Ett getingstick, det överlever man.', en: 'A wasp sting, you’ll live.' },
+      C: { sv: 'Ta ledigt i morgon.', en: 'Take tomorrow off.' }
+    },
+    explanation: {
+      sv: 'Kvällens drift vägdes mot hur Nils mådde. Ett stick är oftast ofarligt, men den som svullnar mycket eller får svårt att andas behöver vård direkt. Att säga till ska vara självklart, och första hjälpen ska finnas på plats innan den behövs.',
+      en: 'Keeping the evening running was weighed against how Nils felt. A sting is usually harmless, but anyone who swells up badly or finds it hard to breathe needs care at once. Speaking up should go without saying, and first aid should be in place before it is needed.'
+    },
+    legalNote: {
+      sv: 'Arbetsmiljölagen kräver att arbetsgivaren ordnar första hjälpen och förebygger ohälsa, också i en vagn.',
+      en: 'The Work Environment Act requires the employer to arrange first aid and prevent ill health, in a truck too.'
+    }
+  },
+  'fika-vagn-hunden': {
+    question: {
+      sv: 'En gäst blev rädd för hunden som någon band vid vagnen, och gick. Hundägaren sa att vi är utomhus och att man får ha hund här.',
+      en: 'A customer was frightened of the dog someone had tied up by the truck, and left. The dog’s owner said we’re outdoors and dogs are allowed here.'
+    },
+    options: {
+      A: { sv: 'Vi gör en plats för hundar en bit från luckan, med en vattenskål, och säger det vänligt till alla. Då får båda plats.', en: 'We make a spot for dogs a little way from the hatch, with a water bowl, and tell everyone kindly. Then there is room for both.' },
+      B: { sv: 'Vem som står i kön är inte vårt problem.', en: 'Who stands in the queue isn’t our problem.' },
+      C: { sv: 'Inga hundar vid vagnen alls.', en: 'No dogs by the truck at all.' }
+    },
+    explanation: {
+      sv: 'En gäst vägdes mot en annan. Ett förbud stöter bort alla som har hund, och att inte göra något stöter bort den som är rädd. En plats för hundar är en lösning som båda kan leva med.',
+      en: 'One customer was weighed against another. A ban pushes away everyone with a dog, and doing nothing pushes away the one who is afraid. A spot for dogs is a solution both can live with.'
+    }
+  },
+  'fika-vagn-nyanstalld': {
+    question: {
+      sv: 'Den nya fick stå i luckan direkt utan att veta något. Jag hann inte visa henne någonting.',
+      en: 'The new starter had to stand in the hatch straight away without knowing anything. I didn’t have time to show her a thing.'
+    },
+    options: {
+      A: { sv: 'Hon går bredvid dig de första kvällarna, och vi skriver det viktigaste på en lapp i vagnen: kylan, kassan och allergenerna.', en: 'She works alongside you for the first few evenings, and we write the essentials on a note in the truck: the chilling, the till and the allergens.' },
+      B: { sv: 'Hon lär sig när hon står där.', en: 'She’ll learn by standing there.' },
+      C: { sv: 'Visa henne när det är lugnt.', en: 'Show her when it’s quiet.' }
+    },
+    explanation: {
+      sv: 'Kostnaden för en extra hand vägdes mot misstagen hon annars gör. Den som går bredvid lär sig det som inte syns, och lappen finns kvar när ingen hinner förklara. Lugna stunder kommer sällan i en vagn.',
+      en: 'The cost of an extra pair of hands was weighed against the mistakes she would otherwise make. Someone who works alongside learns what can’t be seen, and the note is still there when nobody has time to explain. Quiet moments rarely come in a truck.'
+    }
+  },
+  'fika-vagn-handskarna': {
+    question: {
+      sv: 'Vi hade inte skurit löken när vi öppnade. Jag skar mellan beställningarna, med samma handskar som jag tog betalt med.',
+      en: 'We hadn’t cut the onions when we opened. I cut them between orders, wearing the same gloves I took payment with.'
+    },
+    options: {
+      A: { sv: 'Allt förbereds innan luckan öppnar, och den som tar betalt rör inte maten. Måste vi byta byter vi handskar och tvättar händerna.', en: 'Everything is prepared before the hatch opens, and whoever takes payment doesn’t touch the food. If we have to swap, we change gloves and wash our hands.' },
+      B: { sv: 'Handskarna skyddar ju.', en: 'The gloves protect it, though.' },
+      C: { sv: 'De kvällar vi inte hinner stryker vi löken från menyn.', en: 'On evenings when we don’t have time, we take the onions off the menu.' }
+    },
+    explanation: {
+      sv: 'Takten vid luckan vägdes mot hygienen. Handskar som rört pengar är lika smutsiga som händer som rört pengar. Med förberedelser före öppning och fasta roller behöver ingen välja mellan fart och renlighet.',
+      en: 'The pace at the hatch was weighed against hygiene. Gloves that have touched money are as dirty as hands that have touched money. With preparation before opening and fixed roles, nobody has to choose between speed and cleanliness.'
+    },
+    legalNote: {
+      sv: 'EU:s förordning om livsmedelshygien kräver att den som hanterar livsmedel håller god personlig hygien och skyddar maten mot förorening.',
+      en: 'The EU regulation on food hygiene requires anyone handling food to maintain good personal hygiene and to protect the food from contamination.'
+    }
   }
 };
 
@@ -332,6 +450,9 @@ export const FIKA_TEXT = {
   choose: { sv: 'Vad svarar du?', en: 'What do you say?' },
   goHome: { sv: 'Gå hem', en: 'Go home' },
   wentHome: { sv: 'Chefen hade inte tid i kväll.', en: 'The boss had no time tonight.' },
+  // ORDER 329 B — vanligt fika, utan dilemma: en rad, vagnen med Nils, vinbaren och bistron med laget.
+  plainTruck: { sv: 'Nils och du tar en kopp efter stängning.', en: 'You and Nils have a cup of coffee after closing.' },
+  plainWine: { sv: 'Laget tar en kopp efter stängning.', en: 'The team have a cup of coffee after closing.' },
   next: { sv: 'Vidare', en: 'Continue' },
   // Rubrikens nivå, mjukt och utan rött (BESLUT del 1, fråga 1).
   grade: {

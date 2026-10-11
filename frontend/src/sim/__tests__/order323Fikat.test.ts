@@ -78,7 +78,8 @@ describe('ORDER 323 §5 — fikat följer platsen', () => {
 
   it('vagnens dilemman: text på svenska och engelska, och inget om bokningar, bord eller ett fullt rum', () => {
     const truck = DILEMMAS.filter((d) => d.places.includes('truck'));
-    expect(truck.length).toBe(5);
+    // ORDER 329 — fem från ORDER 323 och sju nya (FIKA_VAGNEN_329.md).
+    expect(truck.length).toBe(12);
     for (const lang of ['sv', 'en'] as const) {
       const f = pickLang(TABLE, lang).fika;
       for (const d of truck) {

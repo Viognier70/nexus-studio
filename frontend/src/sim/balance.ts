@@ -2183,6 +2183,8 @@ export const FIKA = {
   credits: { well: 3, partly: 1, weakly: 0 },
   // "Gå hem": hela laget −1 i trivsel.
   goHomeWellbeing: -1,
+  // ORDER 329 B — vanligt fika: passar inget dilemma kvällen sitter laget ändå en stund. Hela laget +1 i trivsel.
+  plainWellbeing: 1,
   // Samma dilemma tidigast efter två veckor (BESLUT del 1, fråga 2).
   repeatAfterDays: 14,
   // Utlösarna (sim/fika.ts triggerHolds). Orken och trivseln satta efter vad
