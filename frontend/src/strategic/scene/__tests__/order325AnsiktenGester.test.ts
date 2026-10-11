@@ -6,6 +6,7 @@ import { CLIPS, sampleClip } from '../figureClips';
 import { FACE_D11, faceLodOpacity } from '../figureFace';
 import { GESTURE_BALANCE as MAP_BALANCE, MOOD_MAP, SITUATIONS, pickGesture } from '../gestureMap';
 import { MoodGestures } from '../moodGestures';
+import { wantStep } from '../wantSignals';
 import { staffClipFor } from '../theatreClips';
 import { FACE_LOD, GESTURE_BALANCE, MOOD_BALANCE } from '../../../sim/balance';
 import { GAIT_CLIP, streetGaitFor, streetGaitSpeed } from '../village/streetGaits';
@@ -83,7 +84,9 @@ describe('ORDER 325 — kartan', () => {
 });
 
 describe('ORDER 325 — gesterna i vinbaren följer kartan', () => {
-  const info = (state: 'seated' | 'dining', since: number, party = 2) => ({ state, stateSinceS: since, partyId: 'p1', partySize: party });
+  // ORDER 327 B — stegen läser regissörens signal (wantSignals.ts): beställningen från waitWatchS efter att sällskapet satt sig.
+  const order = (since: number) => ({ kind: 'order' as const, since: GESTURE_BALANCE.waitWatchS, step: wantStep({ kind: 'order', since: GESTURE_BALANCE.waitWatchS, ackAt: null, ackBy: null }, since) });
+  const info = (state: 'seated' | 'dining', since: number, party = 2) => ({ state, stateSinceS: since, partyId: 'p1', partySize: party, want: state === 'seated' ? order(since) : null });
   const content = (MOOD_BALANCE.threshold.content + MOOD_BALANCE.threshold.delighted) / 2;
 
   // ORDER 326 — väntan börjar nu med blicken (guest.seekEye, stegen i order326Blicken.test.ts).

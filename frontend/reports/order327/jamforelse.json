@@ -1,0 +1,717 @@
+{
+  "definition": "utan306c = main 272327c9 med vinbar.meta.json och vinbar.text.*.json från 9020fa65 (före ORDER 326); med306c = main 272327c9. order320/order326 = reports/order320/efter40 och reports/order326/efter40. 40 frön per rad. closed = stängda säsonger, meanCashEnd = medelkassan vid säsongens slut (kr), reachedVinbar/reachedBistro = säsonger som nådde steget, vinbarWeekMedian/bistroWeekMedian = medianveckan dit, starEarned = säsonger med stjärna, finalStepDiffers = frön där säsongens sista steg skiljer mellan utan306c och med306c.",
+  "rows": {
+    "koncept-bistro-0.85": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 97749,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 35,
+        "bistroWeekMedian": 4,
+        "starEarned": 30
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 103815,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 38,
+        "bistroWeekMedian": 4,
+        "starEarned": 35
+      },
+      "utan306c": {
+        "closed": 0,
+        "meanCashEnd": 95261,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 36,
+        "bistroWeekMedian": 4,
+        "starEarned": 31
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 103815,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 38,
+        "bistroWeekMedian": 4,
+        "starEarned": 35
+      },
+      "finalStepDiffers": [
+        13,
+        21,
+        22,
+        25,
+        26,
+        38
+      ]
+    },
+    "koncept-enkel-0.6": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 149439,
+        "reachedVinbar": 7,
+        "vinbarWeekMedian": 4,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 155584,
+        "reachedVinbar": 3,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 2,
+        "bistroWeekMedian": 8,
+        "starEarned": 1
+      },
+      "utan306c": {
+        "closed": 0,
+        "meanCashEnd": 155898,
+        "reachedVinbar": 3,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 155584,
+        "reachedVinbar": 3,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 2,
+        "bistroWeekMedian": 8,
+        "starEarned": 1
+      },
+      "finalStepDiffers": [
+        16,
+        24
+      ]
+    },
+    "koncept-enkel-0.85": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 63094,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "starEarned": 39
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 66375,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "starEarned": 38
+      },
+      "utan306c": {
+        "closed": 0,
+        "meanCashEnd": 63751,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "starEarned": 38
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 66375,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "starEarned": 38
+      },
+      "finalStepDiffers": []
+    },
+    "koncept-soigne-0.6": {
+      "order320": {
+        "closed": 5,
+        "meanCashEnd": 127670,
+        "reachedVinbar": 7,
+        "vinbarWeekMedian": 4,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "order326": {
+        "closed": 3,
+        "meanCashEnd": 140398,
+        "reachedVinbar": 3,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "utan306c": {
+        "closed": 3,
+        "meanCashEnd": 141579,
+        "reachedVinbar": 3,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "med306c": {
+        "closed": 3,
+        "meanCashEnd": 140398,
+        "reachedVinbar": 3,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "finalStepDiffers": []
+    },
+    "koncept-soigne-0.85": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 232075,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 3,
+        "starEarned": 39
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 298371,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 3,
+        "starEarned": 39
+      },
+      "utan306c": {
+        "closed": 0,
+        "meanCashEnd": 255809,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "starEarned": 38
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 298371,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 3,
+        "starEarned": 39
+      },
+      "finalStepDiffers": []
+    },
+    "stjarna-0.6": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 144464,
+        "reachedVinbar": 7,
+        "vinbarWeekMedian": 4,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 155770,
+        "reachedVinbar": 3,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 1,
+        "bistroWeekMedian": 4,
+        "starEarned": 1
+      },
+      "utan306c": {
+        "closed": 1,
+        "meanCashEnd": 152456,
+        "reachedVinbar": 3,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 155770,
+        "reachedVinbar": 3,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 1,
+        "bistroWeekMedian": 4,
+        "starEarned": 1
+      },
+      "finalStepDiffers": [
+        16
+      ]
+    },
+    "stjarna-0.75": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 88359,
+        "reachedVinbar": 37,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 12,
+        "bistroWeekMedian": 7,
+        "starEarned": 5
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 104360,
+        "reachedVinbar": 35,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 25,
+        "bistroWeekMedian": 5,
+        "starEarned": 18
+      },
+      "utan306c": {
+        "closed": 0,
+        "meanCashEnd": 95072,
+        "reachedVinbar": 35,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 5,
+        "starEarned": 13
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 104360,
+        "reachedVinbar": 35,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 25,
+        "bistroWeekMedian": 5,
+        "starEarned": 18
+      },
+      "finalStepDiffers": [
+        2,
+        16,
+        17,
+        22,
+        24,
+        25,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        35,
+        36,
+        37
+      ]
+    },
+    "stjarna-0.85": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 97749,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 35,
+        "bistroWeekMedian": 4,
+        "starEarned": 30
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 103815,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 38,
+        "bistroWeekMedian": 4,
+        "starEarned": 35
+      },
+      "utan306c": {
+        "closed": 0,
+        "meanCashEnd": 95261,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 36,
+        "bistroWeekMedian": 4,
+        "starEarned": 31
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 103815,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 38,
+        "bistroWeekMedian": 4,
+        "starEarned": 35
+      },
+      "finalStepDiffers": [
+        13,
+        21,
+        22,
+        25,
+        26,
+        38
+      ]
+    },
+    "trappa-forsiktig": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 91587,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 33,
+        "bistroWeekMedian": 6,
+        "starEarned": 22
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 92700,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 38,
+        "bistroWeekMedian": 6,
+        "starEarned": 22
+      },
+      "utan306c": {
+        "closed": 0,
+        "meanCashEnd": 92231,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 34,
+        "bistroWeekMedian": 6,
+        "starEarned": 19
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 92700,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 3,
+        "reachedBistro": 38,
+        "bistroWeekMedian": 6,
+        "starEarned": 22
+      },
+      "finalStepDiffers": [
+        2,
+        4,
+        7,
+        20,
+        21,
+        26,
+        31,
+        40
+      ]
+    },
+    "trappa-halva": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 114278,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 114196,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "utan306c": {
+        "closed": 0,
+        "meanCashEnd": 114196,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 114196,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "finalStepDiffers": []
+    },
+    "trappa-halvbra": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 95328,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 97796,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "utan306c": {
+        "closed": 0,
+        "meanCashEnd": 97796,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 97796,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "finalStepDiffers": []
+    },
+    "trappa-ignorerar": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 119642,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 118964,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "utan306c": {
+        "closed": 0,
+        "meanCashEnd": 118964,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 118964,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "finalStepDiffers": []
+    },
+    "trappa-ignorerarUtbildad": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 119702,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 119280,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "utan306c": {
+        "closed": 0,
+        "meanCashEnd": 119280,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 119280,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "finalStepDiffers": []
+    },
+    "trappa-klok": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 60428,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 59002,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      },
+      "utan306c": {
+        "closed": 0,
+        "meanCashEnd": 54794,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 39,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 59002,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      },
+      "finalStepDiffers": [
+        40
+      ]
+    },
+    "trappa-mentorn": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 41111,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 39,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 37690,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 39,
+        "bistroWeekMedian": 5,
+        "starEarned": 0
+      },
+      "utan306c": {
+        "closed": 0,
+        "meanCashEnd": 36942,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 39,
+        "bistroWeekMedian": 5,
+        "starEarned": 0
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 37690,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 39,
+        "bistroWeekMedian": 5,
+        "starEarned": 0
+      },
+      "finalStepDiffers": [
+        1,
+        24
+      ]
+    },
+    "trappa-rimlig": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 31965,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 29249,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "utan306c": {
+        "closed": 0,
+        "meanCashEnd": 27851,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 29249,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "finalStepDiffers": []
+    },
+    "trappa-slarvig": {
+      "order320": {
+        "closed": 0,
+        "meanCashEnd": 126133,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "order326": {
+        "closed": 0,
+        "meanCashEnd": 127272,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "utan306c": {
+        "closed": 0,
+        "meanCashEnd": 127272,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "med306c": {
+        "closed": 0,
+        "meanCashEnd": 127272,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "finalStepDiffers": []
+    }
+  }
+}

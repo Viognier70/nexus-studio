@@ -1371,12 +1371,6 @@
           }
         }
       ],
-      "halfGrip": {
-        "analysis": "The bread was safe, but the kitchen knew nothing about the coeliac disease.",
-        "experience": "The guest felt seen, but the bread lay among sourdough crumbs.",
-        "outcomeAnalysis": "The next dish arrives with croutons.",
-        "outcomeExperience": "The guest looks at the basket and leaves the bread untouched."
-      },
       "success": {
         "outcome": "The guest gets gluten-free crackers with the cheese and says thank you."
       },
@@ -2024,9 +2018,7 @@
       ],
       "halfGrip": {
         "analysis": "The wound and the surface were handled, but the team lost a person.",
-        "experience": "{personal} was looked after, but the surface wasn't sanitised.",
-        "outcomeAnalysis": "Two people run between the same stations.",
-        "outcomeExperience": "The next plate is set out on the same counter."
+        "outcomeAnalysis": "Two people run between the same stations."
       },
       "success": {
         "outcome": "The hand is dressed, the surface sanitised, and {personal} takes the till for the rest of the evening."

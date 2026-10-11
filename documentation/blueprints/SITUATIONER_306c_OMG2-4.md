@@ -14,7 +14,7 @@ Skrivet av Claude 2026-10-11, utifrån spelets texter på main (bff029c). Anders
 
 1. **Följder:** steg 1 och steg 3 får de gamla stegens följder. Steg 2 påverkar bara stämningen och ryktet.
 2. **Kedjorna står kvar** på svaret som anges.
-3. **Halvt grepp ges aldrig i frågor om liv, hälsa och livsmedelssäkerhet.** I vb15, vb27 och vb28 har steg 3 därför bara helt grepp och fel. Regel A4 i 306b säger "minst ett helt grepp", så det är tillåtet.
+3. **Halvt grepp bara när gästen och maten faktiskt är säkra (A3, ORDER 327).** Det som saknas i ett halvt grepp får bara vara omsorg, kommunikation eller dokumentation. Saknas något som gör gästen eller maten osäker är svaret fel. I vb15, vb27 och vb28 har steg 3 därför bara helt grepp och fel, och i vb21 är svar 3 fel (ytan saneras inte). Regel A4 i 306b säger "minst ett helt grepp", så det är tillåtet.
 4. **Svar efter variant (vb31):** vilket svar som är helt grepp beror på vilken variant som spelas (`gripByVariant`). Varianten väljs efter kvällens läge, middag eller efter middag, som i dag.
 5. **vb35 (tillsynen)** har steg 1 och 2 gemensamma, och fyra varianter av steg 3 (a–d). Det gamla steget 2 ("Vad visar du dem?") utgår.
 6. **Platshållare:** i vb33, vb34, vb35 och vb36 ersätts alla platshållartexter ("Jag tar hand om det.", "Per tar över.", "Risk för erinran" och upprepade förklaringar) med texterna nedan.
@@ -176,11 +176,10 @@ Vad behöver {personal}?
 **Steg 3:**
 1. **[H]** Plåster och handske, sanera ytan, flytta hen till kassan och säg det till laget. *Såret är täckt, ytan är ren, och alla vet vem som gör vad.*
 2. **[A]** Plåster och handske, sanera ytan, och skicka hem hen direkt. *Hygienen är rätt, men laget blir tunt, och hen känner sig bortskickad.*
-3. **[U]** Låt hen vila i personalrummet och ta själv platsen, utan att sanera ytan. *Omtanken är rätt, men ytan där såret blödde används igen.*
+3. **[F]** Låt hen vila i personalrummet och ta själv platsen, utan att sanera ytan. *Omtanken är rätt, men ytan där såret blödde används igen.* (ORDER 327: förut [U].)
 4. **[F]** Sätt på ett plåster och låt hen fortsätta på sin plats, eftersom hen vill. *Ett plåster utan handske vid öppen mat räcker inte.*
 
 - *Halvt grepp mot analysen:* Såret och ytan sköttes, men laget tappade en person. *I rummet:* Två personer springer mellan samma stationer.
-- *Halvt grepp mot upplevelsen:* {personal} blev omhändertagen, men ytan sanerades inte. *I rummet:* Nästa tallrik läggs upp på samma bänk.
 - *Klarad:* Handen är omlagd, ytan sanerad, och {personal} tar kassan resten av kvällen.
 - *Personalen lyckas:* Per lägger om handen, sanerar bänken och tar över platsen.
 - *Personalen misslyckas:* Ingen tar hand om såret, och {personal} fortsätter arbeta.

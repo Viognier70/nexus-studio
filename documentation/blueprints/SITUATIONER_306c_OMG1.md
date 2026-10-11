@@ -21,6 +21,7 @@ Formen är densamma som i 306b: analys (episteme) → upplevelse (phronesis) →
 - **Följder:** steg 1 och steg 3 får de gamla stegens följder. Steg 2 påverkar bara stämningen och ryktet.
 - **Kedjorna står kvar** på svaret som anges.
 - **Kontroller:** längdtestet (±0,1) och testet för gissaren ska hålla.
+- **Halvt grepp bara när gästen och maten faktiskt är säkra (A3, ORDER 327).** Det som saknas i ett halvt grepp får bara vara omsorg, kommunikation eller dokumentation. Saknas något som gör gästen eller maten osäker är svaret fel. Därför är svar 2 och 3 i vb14 fel. vb06 är oförändrad.
 - **Engelskan** översätter Code. Anders granskar svenskan.
 - **Märkningen ⚖** (vb06, vb10 och vb14) betyder att texten är dold tills den har granskats.
 
@@ -188,12 +189,10 @@ Vad söker gästen?
 
 **Steg 3 · Handling**
 1. **[H]** Glutenfritt bröd på ren bräda, i egen korg, och säg till köket direkt. *Rena redskap och en egen korg håller smulorna borta, och köket vet innan nästa rätt lagas.*
-2. **[A]** Glutenfritt bröd på ren bräda i egen korg, men köket får inte veta. *Brödet är säkert, men gluten kan finnas i såser, frityr och krutonger i nästa rätt.*
-3. **[U]** Säg att köket fixar något fint, och lägg glutenfritt i den vanliga korgen. *Gästen känner sig omhändertagen, men smulorna från surdegen ligger kvar i korgen.*
+2. **[F]** Glutenfritt bröd på ren bräda i egen korg, men köket får inte veta. *Brödet är säkert, men gluten kan finnas i såser, frityr och krutonger i nästa rätt.* (ORDER 327: förut [A].)
+3. **[F]** Säg att köket fixar något fint, och lägg glutenfritt i den vanliga korgen. *Gästen känner sig omhändertagen, men smulorna från surdegen ligger kvar i korgen.* (ORDER 327: förut [U].)
 4. **[F]** Säg att surdegen går bra, jäsningen tar bort det mesta. (Leder till `vb27-allergireaktion`.) *Det är en vanlig myt. För den som har celiaki skadar även små mängder.*
 
-- *Halvt grepp mot analysen:* Brödet var säkert, men köket visste inget om celiakin. *I rummet:* Nästa rätt kommer med krutonger.
-- *Halvt grepp mot upplevelsen:* Gästen kände sig sedd, men brödet låg bland smulor av surdeg. *I rummet:* Gästen ser på korgen och lämnar brödet orört.
 - *Klarad:* Gästen får glutenfria kex till osten och tackar.
 - *Personalen lyckas:* Sara tar fram glutenfritt bröd på ren bräda och går till köket.
 - *Personalen misslyckas:* Personalen svarar att det nog går bra.

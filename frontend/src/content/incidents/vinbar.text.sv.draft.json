@@ -1371,12 +1371,6 @@
           }
         }
       ],
-      "halfGrip": {
-        "analysis": "Brödet var säkert, men köket visste inget om celiakin.",
-        "experience": "Gästen kände sig sedd, men brödet låg bland smulor av surdeg.",
-        "outcomeAnalysis": "Nästa rätt kommer med krutonger.",
-        "outcomeExperience": "Gästen ser på korgen och lämnar brödet orört."
-      },
       "success": {
         "outcome": "Gästen får glutenfria kex till osten och tackar."
       },
@@ -2024,9 +2018,7 @@
       ],
       "halfGrip": {
         "analysis": "Såret och ytan sköttes, men laget tappade en person.",
-        "experience": "{personal} blev omhändertagen, men ytan sanerades inte.",
-        "outcomeAnalysis": "Två personer springer mellan samma stationer.",
-        "outcomeExperience": "Nästa tallrik läggs upp på samma bänk."
+        "outcomeAnalysis": "Två personer springer mellan samma stationer."
       },
       "success": {
         "outcome": "Handen är omlagd, ytan sanerad, och {personal} tar kassan resten av kvällen."

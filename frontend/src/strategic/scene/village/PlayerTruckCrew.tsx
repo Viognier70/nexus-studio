@@ -71,7 +71,9 @@ import { attachFace, type FaceHandle } from '../figureFace';
 import { FaceProbe } from '../faceProbe';
 import { FACE, type MoodId } from '../guestMood';
 import { guestMoodValue, moodOf } from '../../../sim/guestMood';
-import { GESTURE_BALANCE, MOOD_BALANCE } from '../../../sim/balance';
+import { GESTURE_BALANCE, GUESTS, MOOD_BALANCE } from '../../../sim/balance';
+import { profileFor } from '../../simulation/guestOrders';
+import { SEEK_MAX_YAW, eyeContact, stepWant, wantStep, wantsHatch, type StaffGlance, type WantTrack } from '../wantSignals';
 
 const FLOOR_Y_M = 0.5;
 const QUEUE_STRESSED = 4;
@@ -177,6 +179,9 @@ export function PlayerTruckCrew() {
   // ORDER 319c — medhjälparens runda (följer simuleringens errand), maten i händerna och paraplyerna.
   const round = useRef<{ kind: 'torches' | 'clear' | null; elapsed: number }>({ kind: null, elapsed: 0 });
   const assistantOut = useRef<[number, number] | null>(null);
+  // ORDER 327 B — medhjälparen på rundan som blickkontakt (världens ram), och stegen per gäst vid ståborden.
+  const assistantGlance = useRef<StaffGlance | null>(null);
+  const hatchWants = useRef(new Map<string, WantTrack>());
   const regularAt = useRef<[number, number] | null>(null);
   const breath = useRef(crew.breaths);
   const kits = useMemo(() => { const k = new EatKits(crew.guestsGroup); k.frame = at; return k; }, [crew, at]);
@@ -269,11 +274,14 @@ export function PlayerTruckCrew() {
         const rp = errand.kind === 'torches' ? torchRoundPose(rs.elapsed, errand.total) : clearRoundPose(errand.table, rs.elapsed, errand.total);
         poseRound(crew.hatch, rp, errand.kind === 'torches');
         assistantOut.current = rp.at;
+        const aw = toWorld(at, rp.at[0], rp.at[1]);
+        assistantGlance.current = { key: 'hatch', x: aw[0], z: aw[1], facing: rp.yaw + at.rotationY, walking: rp.act === 'walk', visible: true };
         lighterProp.group.visible = errand.kind === 'torches';
         if (errand.kind === 'torches') updateHeld(lighterProp);
       } else if (round.current.kind) {
         round.current.kind = null;
         assistantOut.current = null;
+        assistantGlance.current = null;
         lighterProp.group.visible = false;
         crew.hatch.root.position.set(TRUCK_LAYOUT.stations.hatch[0], FLOOR_Y_M, TRUCK_LAYOUT.stations.hatch[1]);
         crew.hatch.root.rotation.y = 0;
@@ -419,7 +427,19 @@ export function PlayerTruckCrew() {
       const sp = situationPose(w, atTableA, sit, raining, t);
       let gestureMood: MoodId | null = null;
       if (sp) { r.root.position.set(p[0], w.spot?.y ?? 0, p[1]); r.root.rotation.y = w.spot?.yaw ?? w.yaw; applyPose(r, sampleClip(sp.clip, sp.u, 'normal', { yaw: sp.yaw }).pose); }
-      else if (eating) gestureMood = poseEater(r, w, p, t, flow.clock - w.settledAt, h, cold, kits, kits.kitFor(w.id, h, w.spot!.key!, cold), { value: sg ? guestMoodValue(sg, sim.day.roomMoodLift ?? 0) : MOOD_BALANCE.threshold.content, mates: atTable.get(w.spot!.key!.split('-')[0]) ?? 1 });
+      else if (eating) {
+        const kit = kits.kitFor(w.id, h, w.spot!.key!, cold);
+        // ORDER 327 B (wantsHatch) — vid ståbordet, ätit klart och pengar kvar: blicken mot luckan, handen,
+        // vinkningen; blickkontakt med medhjälparen som går förbi på rundan (wantSignals.ts).
+        const hw = hatchWantNow(w, sg, kit, flow.clock, sim.seed ?? 0);
+        const contact = hw && assistantGlance.current ? eyeContact([assistantGlance.current], { x: p[0], z: p[1] }) : null;
+        const track = stepWant(hatchWants.current.get(w.id) ?? null, hw, flow.clock, contact);
+        if (track) hatchWants.current.set(w.id, track); else hatchWants.current.delete(w.id);
+        const step = track ? wantStep(track, flow.clock) : null;
+        gestureMood = step
+          ? poseHatchWant(r, w, p, step, flow.clock - track!.since, flow.clock - (track!.ackAt ?? 0), flow.clock - w.settledAt, hatchWorld, cold, kits, kit)
+          : poseEater(r, w, p, t, flow.clock - w.settledAt, h, cold, kits, kit, { value: sg ? guestMoodValue(sg, sim.day.roomMoodLift ?? 0) : MOOD_BALANCE.threshold.content, mates: atTable.get(w.spot!.key!.split('-')[0]) ?? 1 });
+      }
       else {
         poseWalker(r, w, p, t, waiting > QUEUE_STRESSED, w.id === pointing ? THEATRE.rocketIntroSeconds.askPointMenu - (active?.introLeft ?? 0) : null, hatchAt, inQueue ? t - qs.get(w.id)! : null, flow.clock - w.outcomeAt, cold, umbrellaOn(w, raining, h));
         // ORDER 325 (D11) — stående gester ovanpå: vinka vid luckan när medhjälparen är ute (readyToOrder), en
@@ -582,6 +602,33 @@ function truckGesture(r: FigureRig, w: TruckWalker, t: number, errandOut: boolea
   return null;
 }
 
+/** ORDER 327 B — vill gästen vid ståbordet ha något från luckan, och sedan när (flödets klocka)? */
+function hatchWantNow(w: TruckWalker, sg: { id: string; partyId?: string; guestType?: import('../../types').GuestType } | undefined, kit: EatKit, clock: number, seed: number): { kind: 'hatch'; since: number } | null {
+  const s = w.spot;
+  if (!s || s.seated || !sg || !/^[ABC]-/.test(s.key ?? '')) return null;
+  const doneAt = w.settledAt + eatTotalS(kit);
+  const wallet = GUESTS.walletSek[profileFor(seed, sg).wallet];
+  return wantsHatch(true, clock >= doneAt, wallet) ? { kind: 'hatch', since: doneAt } : null;
+}
+
+/** ORDER 327 B — stegen stående vid ståbordet: blicken mot luckan, handen, vinkningen, eller nicken. */
+function poseHatchWant(r: FigureRig, w: TruckWalker, p: [number, number], step: 'eye' | 'hand' | 'wave' | 'nod', sinceS: number, sinceAckS: number, settledS: number, hatchWorld: [number, number], cold: boolean, kits: EatKits, kit: EatKit): MoodId {
+  const s = w.spot!;
+  r.root.position.set(p[0], s.y, p[1]);
+  r.root.rotation.y = s.yaw;
+  let a = Math.atan2(hatchWorld[0] - p[0], hatchWorld[1] - p[1]) - s.yaw;
+  while (a > Math.PI) a -= 2 * Math.PI;
+  while (a < -Math.PI) a += 2 * Math.PI;
+  const yaw = Math.max(-SEEK_MAX_YAW, Math.min(SEEK_MAX_YAW, a));
+  const [clip, u, mood]: [string, number, MoodId] = step === 'nod' ? ['guest.nodApproveStand', sinceAckS, 'content']
+    : step === 'eye' ? ['guest.seekEyeStand', sinceS % CLIPS['guest.seekEyeStand'].seconds.normal, 'waiting']
+    : step === 'hand' ? ['guest.waveStand', (sinceS - GESTURE_BALANCE.seekEyeS) % CLIPS['guest.waveStand'].seconds.normal, 'content']
+    : ['guest.waveWaiterStand', sinceS % CLIPS['guest.waveWaiterStand'].seconds.normal, 'impatient'];
+  applyPose(r, sampleClip(clip, u, 'normal', { yaw, cold }).pose);
+  kits.pose(kit, r, w, settledS);
+  return mood;
+}
+
 /** Figurens läge och pose: går, står i kön, beställer (pekar i en situation), hämtar eller äter.
  *  ORDER 319b: ritas där trängseln ställer den (`p`); i kön en blick på klockan efter en stund
  *  (`queued`, sekunder i kön); den nyfikna som just svarat vänder sig mot luckan eller skakar på huvudet. */
@@ -703,13 +750,32 @@ interface EatKit {
 }
 
 /** Var i ordningen gästen är: segmentet och sekunderna in i det. */
-type EatSeg = 'eat' | 'drink' | 'wipe' | 'warm' | 'done';
+export type EatSeg = 'eat' | 'drink' | 'wipe' | 'warm' | 'done';
 
-function eatSchedule(kit: EatKit, since: number): { seg: EatSeg; u: number; bites: number; total: number } {
-  const eat = CLIPS[kit.kind === 'bun' ? 'guest.eatBun' : 'guest.eatPlate'].seconds.normal;
-  const heater = kit.key.startsWith('heat');
+/** Ätordningen för korv i bröd eller med mos, vid värmaren eller inte: segmenten och deras längd. */
+export function eatOrderFor(kind: 'bun' | 'plate', heater: boolean): { seq: EatSeg[]; len: (x: EatSeg) => number } {
+  const eat = CLIPS[kind === 'bun' ? 'guest.eatBun' : 'guest.eatPlate'].seconds.normal;
   const seq: EatSeg[] = heater ? ['eat', 'eat', 'warm', 'eat', 'drink', 'wipe'] : ['eat', 'eat', 'eat', 'drink', 'wipe'];
   const len = (x: EatSeg) => (x === 'eat' ? eat : x === 'drink' ? CLIPS['guest.drink'].seconds.normal : x === 'wipe' ? CLIPS['guest.wipeNapkin'].seconds.normal : CLIPS['guest.warmHands'].seconds.normal);
+  return { seq, len };
+}
+
+function eatOrder(kit: EatKit): { seq: EatSeg[]; len: (x: EatSeg) => number } {
+  return eatOrderFor(kit.kind, kit.key.startsWith('heat'));
+}
+
+/** ORDER 327 B — sekunder i ätordningen innan gästen har ätit klart (segmentet 'done'). */
+export function eatTotalSFor(kind: 'bun' | 'plate', heater: boolean): number {
+  const { seq, len } = eatOrderFor(kind, heater);
+  return seq.reduce((s, x) => s + len(x), 0);
+}
+
+function eatTotalS(kit: EatKit): number {
+  return eatTotalSFor(kit.kind, kit.key.startsWith('heat'));
+}
+
+function eatSchedule(kit: EatKit, since: number): { seg: EatSeg; u: number; bites: number; total: number } {
+  const { seq, len } = eatOrder(kit);
   const total = seq.filter((x) => x === 'eat').length;
   let t = Math.max(0, since), bites = 0;
   for (const x of seq) {

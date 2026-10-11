@@ -122,6 +122,7 @@ import { MoodSymbolLayer, type MoodGroup } from './moodSymbols';
 import { attachFace, type FaceHandle } from './figureFace';
 import { FaceProbe } from './faceProbe';
 import { MoodGestures } from './moodGestures';
+import { SEEK_MAX_YAW } from './wantSignals';
 import { FACE_STEP, scriptFaceMood } from './scriptFaces';
 import { guestMoodValue, moodOf } from '../../sim/guestMood';
 import { CONSEQUENCE, FACE, MOOD_SYMBOL } from './guestMood';
@@ -207,7 +208,6 @@ export const WINE_BAR_GUEST_POOL = 48;
 
 /** ORDER 326 (D11 (46), GESTURE_RULES.seekEyeTarget) — gästen som söker blicken vänder huvudet mot den närmaste i
  *  personalen som syns (förra bildrutans plats), annars mot baren. Vinkeln i gästens ram, radianer; aldrig mot kameran. */
-const SEEK_MAX_YAW = 1.3;
 const SEEK_BAR = { x: (WINE_BAR_PLAN.bar.x0 + WINE_BAR_PLAN.bar.x1) / 2, z: (WINE_BAR_PLAN.bar.z0 + WINE_BAR_PLAN.bar.z1) / 2 };
 function seekEyeYaw(guest: FigureRig, staff: readonly FigureRig[]): number {
   const g = guest.root.position;
@@ -934,7 +934,8 @@ export function WineBarFigures({ room, mood }: Props) {
       if (walkSample === sample && sample.seated && !isFigure && simGuest) {
         const partySize = simGuest.partyId ? s.guests.reduce((n, g) => n + (g.partyId === simGuest.partyId ? 1 : 0), 0) : 1;
         gesture = cast.moodGestures.sample(i, sample.guestId, clip ? cast.stage.guestClipId(i) : null, guestMoodValue(simGuest, s.day.roomMoodLift ?? 0), s.simTime, seatKind, s.day.consequence, s.seed ?? 0,
-          { state: simGuest.state, stateSinceS: s.simTime - simGuest.stateTime, partyId: simGuest.partyId ?? null, partySize, seekYaw: seekEyeYaw(rig, cast.staffRigs) });
+          // ORDER 327 B — stegen läser regissörens signal (beställningen, glaset, notan och blickkontakten).
+          { state: simGuest.state, stateSinceS: s.simTime - simGuest.stateTime, partyId: simGuest.partyId ?? null, partySize, seekYaw: seekEyeYaw(rig, cast.staffRigs), want: sample.guestId ? cast.director.wantOf(sample.guestId, t) : null });
       } else {
         cast.moodGestures.reset(i);
       }

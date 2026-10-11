@@ -732,6 +732,16 @@ export const GESTURE_BALANCE = {
   waitWatchS: 20,
   watchEveryS: 20,
   waitWaveS: 40,
+  // ORDER 327 B — signalerna för stegen (scene/wantSignals.ts) och blickkontakten. Spelets tid: en halv spelminut
+  // per sekund, så glaset räcker 20 spelminuter. Blickkontakt: personal som går förbi inom eyeContactM med ansiktet
+  // mot bordet (inom eyeContactConeRad); den ska vara framme inom eyeContactComeS, annars börjar stegen om.
+  glassEmptyS: 40,
+  /** X: tallriken undan och glaset tomt så här länge, så vill gästen ha notan. */
+  billAfterEmptyS: 20,
+  eyeContactM: 4,
+  eyeContactConeRad: 0.6,
+  /** Y: efter blickkontakten är personalen framme inom så här många sekunder, annars börjar stegen om. */
+  eyeContactComeS: 15,
   moodGestureEveryS: 36,
   moodGestureJitter: 12,
   gestureCooldownS: 6,

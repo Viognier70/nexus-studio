@@ -10,6 +10,10 @@
 //         den närmaste i personalen, annars mot baren: GestureGuestInfo.seekYaw), efter seekEyeS till kommer handen
 //         upp (guest.waveStaff) och från waitWaveS den stora vinkningen (guest.waveWaiter). Stegen stannar när
 //         personalen kommer till bordet (tillståndet byts). Därefter klockan (waitedLong) var watchEveryS.
+//     ORDER 327 B: stegen läser signalen (GestureGuestInfo.want, scene/wantSignals.ts) i stället för Guest.state:
+//         gästen är 'seated' bara 4 s i simuleringen (service.ts) och väntar på beställningen i 'ordering', så
+//         stegen ur ORDER 326 startade aldrig i spelet. Signalerna är beställningen, mer i glaset och notan; vid
+//         blickkontakt nickar gästen (guest.nodApprove) och stegen stannar.
 //     firstBite / firstBiteGreat / dishBelow  rätten har ställts fram (klippet guest.eat börjar): nick, nick som
 //         glad, eller tallriken undan när stämningen är under pushPlateBelow (inget betyg per rätt i simuleringen);
 //     wrongWitnessed  gästen satt vid bordet eller såg ett fel svar (konsekvensögonblicket).
@@ -26,12 +30,16 @@ import { CONSEQUENCE } from './guestMood';
 import { GESTURE_BALANCE, MOOD_BALANCE } from '../../sim/balance';
 import { moodOf, type MoodId } from '../../sim/guestMood';
 import { GESTURE_RULES, MOOD_MAP, MOOD_STRENGTH, SITUATIONS, pickGesture } from './gestureMap';
+import { WANT_SITUATION, type WantKind, type WantStep } from './wantSignals';
 import type { ConsequenceMoment, GuestState } from '../types';
 import { hashKey } from '../util/hash';
 
 const IDLE = 'guest.seatedIdle';
 const EAT = 'guest.eat';
 const SEEK = 'guest.seekEye';
+/** ORDER 327 B — nicken vid blickkontakt (Designs klipp; ingen situation i kartan). */
+const NOD = 'guest.nodApprove';
+const EYE_CONTACT = 'eyeContact';
 /** Stämningens egna gester som kräver någon att prata med (kartans talking och joke). */
 const TALK = new Set(['guest.leanTalk', 'guest.laugh']);
 const BITE = new Set(['firstBite', 'firstBiteGreat', 'dishBelow']);
@@ -46,12 +54,16 @@ export interface GestureGuestInfo {
   /** ORDER 326 — vinkeln från gästens blickriktning till den gästen söker (GESTURE_RULES.seekEyeTarget), radianer.
    *  Aldrig mot kameran (GESTURE_RULES.noCameraGaze). */
   seekYaw?: number;
+  /** ORDER 327 B — vad gästen vill och steget i stegen (wantSignals.ts), eller null. */
+  want?: { kind: WantKind; since: number; step: WantStep | null } | null;
 }
 
 interface Slot {
   guestId: string; mood: MoodId; clip: string | null; situation: string | null; face: MoodId | null;
   tempo: TempoId; startAt: number; nextAt: number; turn: number;
   lastWatchAt: number; waved: boolean; handUp: boolean; ateAt: number | null; biteDone: boolean; lastEnd: number;
+  /** ORDER 327 B — stegen som spelas: när den började, och om nicken är gjord. */
+  wantSince: number; nodded: boolean;
 }
 
 export class MoodGestures {
@@ -86,7 +98,7 @@ export class MoodGestures {
     let slot = this.slots[i];
     const mood = moodOf(value);
     if (!slot || slot.guestId !== guestId) {
-      slot = { guestId, mood, clip: null, situation: null, face: null, tempo: 'normal', startAt: 0, nextAt: simTime + this.gap(seed, guestId, 0), turn: 0, lastWatchAt: -Infinity, waved: false, handUp: false, ateAt: null, biteDone: false, lastEnd: -Infinity };
+      slot = { guestId, mood, clip: null, situation: null, face: null, tempo: 'normal', startAt: 0, nextAt: simTime + this.gap(seed, guestId, 0), turn: 0, lastWatchAt: -Infinity, waved: false, handUp: false, ateAt: null, biteDone: false, lastEnd: -Infinity, wantSince: NaN, nodded: false };
       this.slots[i] = slot;
     }
     const idle = baseClipId === IDLE;
@@ -110,19 +122,24 @@ export class MoodGestures {
       this.begin(slot, value, start, active, info, party);
     } else if (!slot.clip) {
       const active: string[] = [];
-      if (info && info.state === 'seated') {
-        // Stegen: blicken, handen, vinkningen (wantLadder).
-        const t = info.stateSinceS;
-        if (t >= B.waitWaveS && !slot.waved) active.push('waitedTooLong');
-        else if (t >= B.waitWatchS + B.seekEyeS && !slot.handUp) active.push('readyToOrder');
-        else if (t >= B.waitWatchS && !slot.handUp) active.push('wantsOrder');
-        else if (t >= B.waitWatchS && simTime - slot.lastWatchAt >= B.watchEveryS) active.push('waitedLong');
+      const want = info?.want ?? null;
+      if (want && want.since !== slot.wantSince) {
+        // En ny vilja, eller stegen började om: blicken först igen.
+        slot.wantSince = want.since; slot.handUp = false; slot.waved = false; slot.nodded = false; slot.lastWatchAt = -Infinity;
+      }
+      if (want && want.step) {
+        // Stegen: blicken, handen, vinkningen (wantLadder), och nicken vid blickkontakt.
+        if (want.step === 'nod') { if (!slot.nodded) active.push(EYE_CONTACT); }
+        else if (want.step === 'wave' && !slot.waved) active.push('waitedTooLong');
+        else if (want.step === 'hand' && !slot.handUp) active.push('readyToOrder');
+        else if (want.step === 'eye') active.push(WANT_SITUATION[want.kind]);
+        else if (want.step === 'wave' && simTime - slot.lastWatchAt >= B.watchEveryS) active.push('waitedLong');
       }
       if (eating && !slot.biteDone && slot.ateAt !== null && simTime - slot.ateAt < B.firstBiteWithinS) {
         active.push(value >= MOOD_BALANCE.threshold.delighted ? 'firstBiteGreat' : value < B.pushPlateBelow ? 'dishBelow' : 'firstBite');
       }
       const bite = active.some((a) => BITE.has(a));
-      if (active.length && (idle || bite) && partyFree && simTime >= slot.lastEnd + B.gestureCooldownS) this.begin(slot, value, simTime, active, info, party);
+      if (active.length && (idle || bite) && partyFree && (simTime >= slot.lastEnd + B.gestureCooldownS || active.includes(EYE_CONTACT))) this.begin(slot, value, simTime, active, info, party);
       else if (simTime >= slot.nextAt && idle && partyFree) this.begin(slot, value, simTime, [], info, party);
     }
     if (!slot.clip) return null;
@@ -148,7 +165,11 @@ export class MoodGestures {
     let clip: string | null;
     let situation: string | null = null;
     let face: MoodId | null = null;
-    if (active.length) {
+    if (active.includes(EYE_CONTACT)) {
+      clip = NOD;
+      situation = EYE_CONTACT;
+      face = 'content';
+    } else if (active.length) {
       clip = pickGesture({ mood: slot.mood, posture: 'seated', active, index: slot.turn, sinceLastS: Infinity, cooldownS: 0 });
       const sit = SITUATIONS.filter((x) => active.includes(x.id)).sort((a, b) => b.priority - a.priority)[0];
       situation = sit?.id ?? null;
@@ -168,6 +189,7 @@ export class MoodGestures {
     if (situation === 'waitedLong') slot.lastWatchAt = at;
     if (situation === 'waitedTooLong') slot.waved = true;
     if (situation === 'readyToOrder') slot.handUp = true;
+    if (situation === EYE_CONTACT) slot.nodded = true;
     if (situation && BITE.has(situation)) slot.biteDone = true;
     if (party && GESTURE_RULES.onePerParty) this.partyBusy.set(party, at + CLIPS[clip].seconds[slot.tempo] + GESTURE_RULES.staggerS);
   }

@@ -100,7 +100,8 @@ describe('ORDER 271 — en kväll i vinbaren', () => {
     step(134, 170);
 
     const poses = guestPoses.get('g1')!;
-    for (const p of ['arrive', 'sitDown', 'readMenu', 'order', 'drink', 'toast', 'eat', 'askBill', 'pay', 'standUp', 'leaveHappy']) {
+    // ORDER 327 B — notan börjar med stegen blick → hand → vinkning (moodGestures.ts), inte med handen (askBill).
+    for (const p of ['arrive', 'sitDown', 'readMenu', 'order', 'drink', 'toast', 'eat', 'pay', 'standUp', 'leaveHappy']) {
       expect(poses, p).toContain(p);
     }
     // Överlämningen vid baren: bartendern häller vid POUR_SPOT, en servitör hämtar vid PICKUP_BAR.
