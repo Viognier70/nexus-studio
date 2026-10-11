@@ -431,6 +431,8 @@ interface PartyTrack {
   refillTask: Task | null;
   /** ORDER 327 B — vad sällskapet vill och stegen (wantSignals.ts), eller null. */
   want: WantTrack | null;
+  /** ORDER 328 A — avdukningen av tallriken när gästen ätit klart, eller null. */
+  plateClearTask: Task | null;
 }
 
 // #endregion
@@ -813,7 +815,7 @@ export class WineBarDirector {
         key, group, members: [], seatedAt, menuDoneAt: seatedAt + MENU_MIN_S + hash(hIx, 3) * MENU_SPAN_S,
         orderTask: null, drinkDone: false, servedAt: -1, toastAt: -1, foodTask: null,
         billAskAt: -1, billTask: null, cleared: false, visits: [], hIx, ritualsQueued: false,
-        glassAt: -1, refillTask: null, want: null
+        glassAt: -1, refillTask: null, want: null, plateClearTask: null
       };
       this.parties.set(key, p);
     } else if (!p.orderTask && seatedAt > p.seatedAt) {
@@ -842,9 +844,9 @@ export class WineBarDirector {
         pose: 'clear', dur: 3, carryBack: bar ? null : 'dishes', ready: t + 2
       });
       // Det som står på bordet tas av avdukningen.
-      for (const it of this.items) if (it.group === p.group && !it.back && !it.clearTask) it.clearTask = clear;
+      for (const it of this.items) if (it.group === p.group && !it.back && (!it.clearTask || it.clearTask.state === 'cancelled')) it.clearTask = clear;
     } else {
-      for (const it of this.items) if (it.group === p.group && !it.back && !it.clearTask) it.clearTask = { state: 'done', done: t } as Task;
+      for (const it of this.items) if (it.group === p.group && !it.back && (!it.clearTask || it.clearTask.state === 'cancelled')) it.clearTask = { state: 'done', done: t } as Task;
     }
   }
 
@@ -973,10 +975,23 @@ export class WineBarDirector {
     return arrived(p.refillTask) ? null : { kind: 'refill', since: emptyAt };
   }
 
-  /** Sällskapets tallrikar har dukats av (minst en ställdes fram). */
+  /** Tallriken med maten har dukats av (ORDER 328 A: när gästen ätit klart). */
   private platesGone(p: PartyTrack, t: number): boolean {
-    const plates = this.items.filter((it) => it.group === p.group && !it.back && it.item === 'plate' && it.task.party === p);
+    const plates = this.items.filter((it) => !it.back && p.foodTask !== null && it.task === p.foodTask);
     return plates.length > 0 && plates.every((it) => !!it.clearTask && t >= it.clearTask.done);
+  }
+
+  /** ORDER 328 A — gästen har ätit klart (plateEatenS efter att tallriken ställdes fram): servitören dukar av den.
+   *  Personalens uppgift, ingen kostnad. */
+  private clearPlates(p: PartyTrack, t: number): void {
+    const f = p.foodTask;
+    if (p.plateClearTask || !f || f.state !== 'done' || p.billAskAt >= 0 || t < f.done + GESTURE_BALANCE.plateEatenS) return;
+    const g = p.group;
+    p.plateClearTask = this.addTask({
+      party: p, roles: ['server'], target: g.serveAt, facing: g.serveFacing, pose: 'clear', dur: 3, carryBack: 'dishes', ready: t
+    });
+    p.visits.push(p.plateClearTask);
+    for (const it of this.items) if (!it.back && it.task === f && !it.clearTask) it.clearTask = p.plateClearTask;
   }
 
   /** Personalen som den syntes i förra bildrutan: var, ansiktet och om den går. */
@@ -991,6 +1006,7 @@ export class WineBarDirector {
   private advanceWants(t: number): void {
     const glances = this.glances();
     for (const p of this.parties.values()) {
+      this.clearPlates(p, t);
       const want = this.wantNow(p, t);
       const at = p.group.tableAt ?? p.group.serveAt;
       const contact = want ? eyeContact(glances, { x: at[0], z: at[1] }) : null;
@@ -1695,7 +1711,8 @@ export class WineBarDirector {
     if (t < p.toastAt + TOAST_S) { out.pose = 'toast'; out.progress = clamp01((t - p.toastAt) / TOAST_S); return; }
     const block = Math.floor((t - p.toastAt - TOAST_S + (tr.seed % 5)) / ENJOY_BLOCK_S);
     const bar = p.group.kind === 'bar';
-    if (block % 2 === 0) { out.pose = bar ? 'drink' : 'eat'; return; }
+    // ORDER 328 A — när tallriken är avdukad dricker gästen i stället för att äta.
+    if (block % 2 === 0) { out.pose = bar || this.platesGone(p, t) ? 'drink' : 'eat'; return; }
     out.pose = 'talk';
     out.targetYaw = (tr.seed % 2 === 0 ? 1 : -1) * 0.9;
   }

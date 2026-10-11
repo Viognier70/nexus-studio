@@ -13,7 +13,7 @@ import { D11_STRINGS } from '../../../content/design/d11Strings';
 const B = GESTURE_BALANCE;
 const content = (MOOD_BALANCE.threshold.content + MOOD_BALANCE.threshold.delighted) / 2;
 // ORDER 327 B — stegen läser regissörens signal (wantSignals.ts): beställningen från waitWatchS efter att sällskapet satt sig.
-const want = (since: number) => ({ kind: 'order' as const, since: B.waitWatchS, step: wantStep({ kind: 'order', since: B.waitWatchS, ackAt: null, ackBy: null }, since) });
+const want = (since: number) => ({ kind: 'order' as const, since: B.waitWatchS, step: wantStep({ kind: 'order', since: B.waitWatchS, ackAt: null, ackBy: null, nodded: [], restarts: 0 }, since) });
 const info = (since: number, seekYaw = 0.9) => ({ state: 'seated' as const, stateSinceS: since, partyId: 'p', partySize: 2, seekYaw, want: want(since) });
 
 describe('ORDER 326 B — söka personalens blick', () => {

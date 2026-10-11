@@ -182,6 +182,8 @@ export function PlayerTruckCrew() {
   // ORDER 327 B — medhjälparen på rundan som blickkontakt (världens ram), och stegen per gäst vid ståborden.
   const assistantGlance = useRef<StaffGlance | null>(null);
   const hatchWants = useRef(new Map<string, WantTrack>());
+  // ORDER 328 B — svaret från luckan: grillaren eller medhjälparen tittar upp mot gästen, nickar och lyfter handen.
+  const hatchAck = useRef<{ guestId: string; by: 'hatch' | 'grill'; at: number; used: boolean; yaw: number } | null>(null);
   const regularAt = useRef<[number, number] | null>(null);
   const breath = useRef(crew.breaths);
   const kits = useMemo(() => { const k = new EatKits(crew.guestsGroup); k.frame = at; return k; }, [crew, at]);
@@ -248,7 +250,32 @@ export function PlayerTruckCrew() {
       const vegCycle = t % VEG_EVERY_S, sw = CLIPS['staff.switchTongs'].seconds.normal, tv = CLIPS['staff.turnVeg'].seconds.normal;
       // ORDER 325 (D11 guestSpeaks) — medhjälparen är ute och en gäst vinkar vid luckan: grillaren vänder sig och lyssnar.
       const hatchWaiting = !!truckOf(sim).errand && [...flow.walkers.values()].some((w) => w.settled && w.spot?.pose === 'order');
-      if (hatchWaiting) applyPose(crew.grill, sampleClip('staff.listenTilt', t, 'normal', { yaw: TRUCK_GESTURE.grillTurnYaw }).pose);
+      // ORDER 328 B — vem som svarar på en gäst vid ståbordet som söker blicken: medhjälparen när den står vid luckan
+      // och inte serverar, annars grillaren när den inte lyssnar vid luckan eller tar korv ur lådan.
+      const ack = hatchAck.current;
+      if (ack && t - ack.at >= HATCH_ACK_S) hatchAck.current = null;
+      if (!hatchAck.current) {
+        const errandNow = !!truckOf(sim).errand;
+        const servingNow = t - served.current.at < CLIPS['truck.hatchServe'].seconds[tempo];
+        const beckoning = !!beckon.current && t < beckon.current.at + CLIPS['truck.beckon'].seconds.normal;
+        const by: 'hatch' | 'grill' | null = !errandNow && !servingNow && !beckoning && sit.card.phase !== 'active' ? 'hatch'
+          : !hatchWaiting && !live(sit.stock) ? 'grill' : null;
+        for (const [guestId, tr] of hatchWants.current) {
+          const st = wantStep(tr, flow.clock);
+          if (!by || tr.ackAt !== null || !st || st === 'nod' || tr.nodded.includes(st)) continue;
+          const gw = flow.walkers.get(guestId);
+          if (!gw) continue;
+          const gp = flow.shown.get(guestId) ?? [gw.x, gw.z];
+          const from = by === 'hatch' ? hatchWorld : toWorld(at, TRUCK_LAYOUT.stations.grill[0], TRUCK_LAYOUT.stations.grill[1]);
+          const rig = by === 'hatch' ? crew.hatch : crew.grill;
+          const yaw = wrap(Math.atan2(gp[0] - from[0], gp[1] - from[1]) - at.rotationY - rig.root.rotation.y);
+          hatchAck.current = { guestId, by, at: t, used: false, yaw: Math.max(-SEEK_MAX_YAW, Math.min(SEEK_MAX_YAW, yaw)) };
+          break;
+        }
+      }
+      const answering = hatchAck.current;
+      if (answering?.by === 'grill') poseAnswer(crew.grill, t - answering.at, answering.yaw);
+      else if (hatchWaiting) applyPose(crew.grill, sampleClip('staff.listenTilt', t, 'normal', { yaw: TRUCK_GESTURE.grillTurnYaw }).pose);
       else if (live(sit.stock)) applyPose(crew.grill, sampleClip('staff.takeFromBox', t % CLIPS['staff.takeFromBox'].seconds.normal, 'normal').pose);
       else if (vegCycle < sw) applyPose(crew.grill, sampleClip('staff.switchTongs', vegCycle, 'normal').pose);
       else if (vegCycle < sw + tv) applyPose(crew.grill, sampleClip('staff.turnVeg', vegCycle - sw, 'normal').pose);
@@ -286,7 +313,9 @@ export function PlayerTruckCrew() {
         crew.hatch.root.position.set(TRUCK_LAYOUT.stations.hatch[0], FLOOR_Y_M, TRUCK_LAYOUT.stations.hatch[1]);
         crew.hatch.root.rotation.y = 0;
       }
-      if (errand) { /* ute på rundan */ } else if (b && t >= b.at && t < b.at + beckonLen) {
+      if (errand) { /* ute på rundan */ } else if (answering?.by === 'hatch') {
+        poseAnswer(crew.hatch, t - answering.at, answering.yaw);
+      } else if (b && t >= b.at && t < b.at + beckonLen) {
         // Mot gästen, i figurens ram (vänd mot luckan, vagnens +Z).
         const p = bw ? flow.shown.get(bw.id) ?? [bw.x, bw.z] : null;
         const yaw = p ? wrap(Math.atan2(p[0] - hatchWorld[0], p[1] - hatchWorld[1]) - at.rotationY) : 0;
@@ -432,7 +461,11 @@ export function PlayerTruckCrew() {
         // ORDER 327 B (wantsHatch) — vid ståbordet, ätit klart och pengar kvar: blicken mot luckan, handen,
         // vinkningen; blickkontakt med medhjälparen som går förbi på rundan (wantSignals.ts).
         const hw = hatchWantNow(w, sg, kit, flow.clock, sim.seed ?? 0);
-        const contact = hw && assistantGlance.current ? eyeContact([assistantGlance.current], { x: p[0], z: p[1] }) : null;
+        // ORDER 328 B — svaret från luckan räknas som blickkontakt, en gång.
+        const answer = hatchAck.current;
+        const answered = !!hw && !!answer && answer.guestId === w.id && !answer.used;
+        if (answered) answer!.used = true;
+        const contact = answered ? answer!.by : hw && assistantGlance.current ? eyeContact([assistantGlance.current], { x: p[0], z: p[1] }) : null;
         const track = stepWant(hatchWants.current.get(w.id) ?? null, hw, flow.clock, contact);
         if (track) hatchWants.current.set(w.id, track); else hatchWants.current.delete(w.id);
         const step = track ? wantStep(track, flow.clock) : null;
@@ -609,6 +642,15 @@ function hatchWantNow(w: TruckWalker, sg: { id: string; partyId?: string; guestT
   const doneAt = w.settledAt + eatTotalS(kit);
   const wallet = GUESTS.walletSek[profileFor(seed, sg).wallet];
   return wantsHatch(true, clock >= doneAt, wallet) ? { kind: 'hatch', since: doneAt } : null;
+}
+
+/** ORDER 328 B — svaret från luckan: tittar upp mot gästen och nickar (Designs staff.listenTilt, en nick per halvt
+ *  varv), och lyfter handen (staff.halt). Vridningen mot gästen, högst SEEK_MAX_YAW. */
+const HATCH_ACK_NOD_S = CLIPS['staff.listenTilt'].seconds.normal / 4;
+const HATCH_ACK_S = HATCH_ACK_NOD_S + CLIPS['staff.halt'].seconds.normal;
+function poseAnswer(rig: FigureRig, since: number, yaw: number): void {
+  if (since < HATCH_ACK_NOD_S) applyPose(rig, sampleClip('staff.listenTilt', since, 'normal', { yaw }).pose);
+  else applyPose(rig, sampleClip('staff.halt', since - HATCH_ACK_NOD_S, 'normal', { yaw }).pose);
 }
 
 /** ORDER 327 B — stegen stående vid ståbordet: blicken mot luckan, handen, vinkningen, eller nicken. */

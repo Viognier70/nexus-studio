@@ -1,0 +1,210 @@
+{
+  "definition": "En kväll i vinbaren (vecka 2, brons i alla paviljonger, bästa svaret) per frö: spelets rum (createRoom vinbaren) och regissör (createRoomDirector), matade med simuleringens gäster var 0,2 s som i WineBarFigures.tsx. simSeatedSeconds = tiden i Guest.state seated; ladder326Frames = ticks där ORDER 326:s villkor (seated i minst waitWatchS) gällde; per vilja: sällskap, steg som nåddes, blickkontakter (nicken), omstarter och tiden viljan stod (s); bill.whileDining = sällskap som ville ha notan medan simuleringen ännu hade dem i dining (tallriken undan och glaset tomt, ORDER 328 A); nodsPerParty = nickar per sällskap över alla viljor (ORDER 328 C). truck: TRUCK_SEATING.eatSimSeconds mot ätordningen (PlayerTruckCrew eatTotalSFor).",
+  "balance": {
+    "plateEatenS": 50,
+    "eyeContactMaxRestarts": 1,
+    "seekEyeS": 12,
+    "waitWatchS": 20,
+    "waitWaveS": 40,
+    "glassEmptyS": 40,
+    "billAfterEmptyS": 20,
+    "eyeContactM": 4,
+    "eyeContactConeRad": 0.6,
+    "eyeContactComeS": 25
+  },
+  "evenings": [
+    {
+      "seed": 7,
+      "simSeatedSeconds": {
+        "n": 33,
+        "median": 4.2,
+        "max": 4.2
+      },
+      "ladder326Frames": 0,
+      "order": {
+        "parties": 33,
+        "reachedEye": 24,
+        "reachedHand": 13,
+        "reachedWave": 0,
+        "eyeContacts": 46,
+        "restarts": 20,
+        "wantSeconds": {
+          "n": 33,
+          "median": 61,
+          "max": 140.2
+        }
+      },
+      "refill": {
+        "parties": 13,
+        "reachedEye": 11,
+        "reachedHand": 2,
+        "reachedWave": 0,
+        "eyeContacts": 16,
+        "restarts": 10,
+        "wantSeconds": {
+          "n": 13,
+          "median": 29.8,
+          "max": 81.6
+        }
+      },
+      "bill": {
+        "parties": 27,
+        "reachedEye": 21,
+        "reachedHand": 0,
+        "reachedWave": 1,
+        "eyeContacts": 24,
+        "restarts": 0,
+        "wantSeconds": {
+          "n": 27,
+          "median": 8,
+          "max": 8.4
+        },
+        "whileDining": 1
+      },
+      "nodsPerParty": {
+        "parties": 33,
+        "mean": 2.61,
+        "max": 3,
+        "histogram": {
+          "1": 1,
+          "2": 11,
+          "3": 21
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "simSeatedSeconds": {
+        "n": 30,
+        "median": 4.2,
+        "max": 4.2
+      },
+      "ladder326Frames": 0,
+      "order": {
+        "parties": 30,
+        "reachedEye": 22,
+        "reachedHand": 12,
+        "reachedWave": 0,
+        "eyeContacts": 39,
+        "restarts": 16,
+        "wantSeconds": {
+          "n": 30,
+          "median": 57.2,
+          "max": 122.4
+        }
+      },
+      "refill": {
+        "parties": 10,
+        "reachedEye": 9,
+        "reachedHand": 2,
+        "reachedWave": 2,
+        "eyeContacts": 12,
+        "restarts": 6,
+        "wantSeconds": {
+          "n": 10,
+          "median": 48.6,
+          "max": 78.4
+        }
+      },
+      "bill": {
+        "parties": 29,
+        "reachedEye": 21,
+        "reachedHand": 0,
+        "reachedWave": 0,
+        "eyeContacts": 22,
+        "restarts": 0,
+        "wantSeconds": {
+          "n": 29,
+          "median": 8,
+          "max": 8
+        },
+        "whileDining": 0
+      },
+      "nodsPerParty": {
+        "parties": 30,
+        "mean": 2.43,
+        "max": 3,
+        "histogram": {
+          "1": 2,
+          "2": 13,
+          "3": 15
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "simSeatedSeconds": {
+        "n": 36,
+        "median": 4.2,
+        "max": 4.2
+      },
+      "ladder326Frames": 0,
+      "order": {
+        "parties": 36,
+        "reachedEye": 31,
+        "reachedHand": 16,
+        "reachedWave": 1,
+        "eyeContacts": 52,
+        "restarts": 23,
+        "wantSeconds": {
+          "n": 36,
+          "median": 67.8,
+          "max": 140
+        }
+      },
+      "refill": {
+        "parties": 13,
+        "reachedEye": 10,
+        "reachedHand": 1,
+        "reachedWave": 0,
+        "eyeContacts": 17,
+        "restarts": 7,
+        "wantSeconds": {
+          "n": 13,
+          "median": 27.2,
+          "max": 72
+        }
+      },
+      "bill": {
+        "parties": 27,
+        "reachedEye": 20,
+        "reachedHand": 0,
+        "reachedWave": 0,
+        "eyeContacts": 23,
+        "restarts": 0,
+        "wantSeconds": {
+          "n": 27,
+          "median": 8,
+          "max": 8
+        },
+        "whileDining": 0
+      },
+      "nodsPerParty": {
+        "parties": 36,
+        "mean": 2.56,
+        "max": 3,
+        "histogram": {
+          "2": 16,
+          "3": 20
+        }
+      }
+    }
+  ],
+  "truck": {
+    "eatSimSeconds": 18,
+    "eatOrderSeconds": {
+      "bun": 14.600000000000001,
+      "plate": 15.2,
+      "bunHeater": 17,
+      "plateHeater": 17.6
+    },
+    "cheapestSek": 20,
+    "billSek": 95,
+    "walletSek": {
+      "tight": 300,
+      "normal": 520,
+      "generous": 1100,
+      "gold": 8000
+    }
+  }
+}

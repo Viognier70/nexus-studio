@@ -130,6 +130,26 @@ describe('ORDER 271 — en kväll i vinbaren', () => {
     expect(end.find((r) => r.key === 'bartender')!.pose).toBe('pour');
   });
 
+  // ORDER 328 A — tallriken dukas av när gästen ätit klart (GESTURE_BALANCE.plateEatenS efter att den ställts fram),
+  // medan sällskapet sitter kvar; sedan dricker gästen i stället för att äta.
+  it('tallriken dukas av när gästen ätit klart, före notan', () => {
+    const { sim, log, guestPoses, step } = evening();
+    sim.set('g1', 'arriving', 0, { partyId: 'p1' });
+    sim.set('g2', 'arriving', 0, { partyId: 'p1' });
+    step(0, 3);
+    sim.set('g1', 'seated', 3, { seatIndex: 6 });
+    sim.set('g2', 'seated', 3, { seatIndex: 7 });
+    step(3, 7);
+    sim.set('g1', 'ordering', 7); sim.set('g2', 'ordering', 7);
+    step(7, 60);
+    sim.set('g1', 'dining', 60); sim.set('g2', 'dining', 60);
+    step(60, 160);
+    const clears = log.filter((r) => (r.key === 'server' || r.key === 'server2') && r.pose === 'clear');
+    expect(clears.length).toBeGreaterThan(0);
+    expect(Math.min(...clears.map((r) => r.t))).toBeLessThan(160);
+    expect(guestPoses.get('g1')!.has('drink')).toBe(true);
+  });
+
   // ORDER 286a — ägandet av föremålen (Designs leverans 2, LEVERANSNOT §8):
   // ett föremål har högst en ägare i varje bildruta, och den som enligt boken
   // bär något har det i handen. Tallriken hamnar på bordet och tas av avdukningen.

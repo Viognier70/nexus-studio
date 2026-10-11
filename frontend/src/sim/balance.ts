@@ -736,12 +736,16 @@ export const GESTURE_BALANCE = {
   // per sekund, så glaset räcker 20 spelminuter. Blickkontakt: personal som går förbi inom eyeContactM med ansiktet
   // mot bordet (inom eyeContactConeRad); den ska vara framme inom eyeContactComeS, annars börjar stegen om.
   glassEmptyS: 40,
+  /** ORDER 328 A — gästen har ätit klart så här länge efter att tallriken ställdes fram; då dukar servitören av den. */
+  plateEatenS: 50,
   /** X: tallriken undan och glaset tomt så här länge, så vill gästen ha notan. */
   billAfterEmptyS: 20,
   eyeContactM: 4,
   eyeContactConeRad: 0.6,
-  /** Y: efter blickkontakten är personalen framme inom så här många sekunder, annars börjar stegen om. */
-  eyeContactComeS: 15,
+  /** Y: efter blickkontakten är personalen framme inom så här många sekunder, annars börjar stegen om (ORDER 328 C: 25). */
+  eyeContactComeS: 25,
+  /** ORDER 328 C — högst så många omstarter per sällskap och vilja; en nick per steg. */
+  eyeContactMaxRestarts: 1,
   moodGestureEveryS: 36,
   moodGestureJitter: 12,
   gestureCooldownS: 6,

@@ -21,7 +21,7 @@ Formen är densamma som i 306b: analys (episteme) → upplevelse (phronesis) →
 - **Följder:** steg 1 och steg 3 får de gamla stegens följder. Steg 2 påverkar bara stämningen och ryktet.
 - **Kedjorna står kvar** på svaret som anges.
 - **Kontroller:** längdtestet (±0,1) och testet för gissaren ska hålla.
-- **Halvt grepp bara när gästen och maten faktiskt är säkra (A3, ORDER 327).** Det som saknas i ett halvt grepp får bara vara omsorg, kommunikation eller dokumentation. Saknas något som gör gästen eller maten osäker är svaret fel. Därför är svar 2 och 3 i vb14 fel. vb06 är oförändrad.
+- **Halvt grepp bara när gästen och maten faktiskt är säkra (A12; ORDER 327, numret ORDER 328).** Det som saknas i ett halvt grepp får bara vara omsorg, kommunikation eller dokumentation. Saknas något som gör gästen eller maten osäker är svaret fel. Därför är svar 2 och 3 i vb14 fel. vb06 är oförändrad.
 - **Engelskan** översätter Code. Anders granskar svenskan.
 - **Märkningen ⚖** (vb06, vb10 och vb14) betyder att texten är dold tills den har granskats.
 

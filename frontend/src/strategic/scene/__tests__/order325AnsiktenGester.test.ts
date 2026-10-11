@@ -85,7 +85,7 @@ describe('ORDER 325 — kartan', () => {
 
 describe('ORDER 325 — gesterna i vinbaren följer kartan', () => {
   // ORDER 327 B — stegen läser regissörens signal (wantSignals.ts): beställningen från waitWatchS efter att sällskapet satt sig.
-  const order = (since: number) => ({ kind: 'order' as const, since: GESTURE_BALANCE.waitWatchS, step: wantStep({ kind: 'order', since: GESTURE_BALANCE.waitWatchS, ackAt: null, ackBy: null }, since) });
+  const order = (since: number) => ({ kind: 'order' as const, since: GESTURE_BALANCE.waitWatchS, step: wantStep({ kind: 'order', since: GESTURE_BALANCE.waitWatchS, ackAt: null, ackBy: null, nodded: [], restarts: 0 }, since) });
   const info = (state: 'seated' | 'dining', since: number, party = 2) => ({ state, stateSinceS: since, partyId: 'p1', partySize: party, want: state === 'seated' ? order(since) : null });
   const content = (MOOD_BALANCE.threshold.content + MOOD_BALANCE.threshold.delighted) / 2;
 

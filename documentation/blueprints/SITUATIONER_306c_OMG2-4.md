@@ -14,7 +14,7 @@ Skrivet av Claude 2026-10-11, utifrån spelets texter på main (bff029c). Anders
 
 1. **Följder:** steg 1 och steg 3 får de gamla stegens följder. Steg 2 påverkar bara stämningen och ryktet.
 2. **Kedjorna står kvar** på svaret som anges.
-3. **Halvt grepp bara när gästen och maten faktiskt är säkra (A3, ORDER 327).** Det som saknas i ett halvt grepp får bara vara omsorg, kommunikation eller dokumentation. Saknas något som gör gästen eller maten osäker är svaret fel. I vb15, vb27 och vb28 har steg 3 därför bara helt grepp och fel, och i vb21 är svar 3 fel (ytan saneras inte). Regel A4 i 306b säger "minst ett helt grepp", så det är tillåtet.
+3. **Halvt grepp bara när gästen och maten faktiskt är säkra (A12; ORDER 327, numret ORDER 328).** Det som saknas i ett halvt grepp får bara vara omsorg, kommunikation eller dokumentation. Saknas något som gör gästen eller maten osäker är svaret fel. I vb15, vb27 och vb28 har steg 3 därför bara helt grepp och fel, och i vb21 är svar 3 fel (ytan saneras inte). Regel A4 i 306b säger "minst ett helt grepp", så det är tillåtet.
 4. **Svar efter variant (vb31):** vilket svar som är helt grepp beror på vilken variant som spelas (`gripByVariant`). Varianten väljs efter kvällens läge, middag eller efter middag, som i dag.
 5. **vb35 (tillsynen)** har steg 1 och 2 gemensamma, och fyra varianter av steg 3 (a–d). Det gamla steget 2 ("Vad visar du dem?") utgår.
 6. **Platshållare:** i vb33, vb34, vb35 och vb36 ersätts alla platshållartexter ("Jag tar hand om det.", "Per tar över.", "Risk för erinran" och upprepade förklaringar) med texterna nedan.
