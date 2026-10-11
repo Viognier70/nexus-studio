@@ -96,6 +96,8 @@ export interface IncidentOutcomeMeta {
 // Ett svar i ett visst läge: kvaliteten byts.
 export interface IncidentSituationalOption {
   quality: AnswerQuality;
+  // ORDER 326 (306c gripByVariant, vb31) — vilken sida ett halvt grepp håller beror på varianten.
+  grip?: 'analysis' | 'experience';
 }
 
 // ORDER 270 (Vision Owner 2026-09-27) — ett svar i ett steg. `fail`
@@ -110,6 +112,9 @@ export interface StepOptionMeta {
   // ORDER 320 — förklaringen till svaret är lagtext (⚖): den döljs tills situationen är granskad
   // (IncidentMeta.legalText), men svaret och situationen visas.
   legalText?: boolean;
+  // ORDER 326 (306c: "Kedjorna står kvar på svaret som anges") — ett halvt grepp som ändå leder vidare
+  // (vb08 ihopskjutna bord → vb17, vb10 ett sista glas → vb29). Felsvar har sina kedjor i `fail`.
+  triggers?: string[];
   // Läge → annan kvalitet (händelsens `situations`).
   in?: Record<string, IncidentSituationalOption>;
   fail?: IncidentOutcomeMeta;
@@ -187,6 +192,8 @@ export interface IncidentMeta {
   // ORDER 320 (Anders 2026-10-08: "ft-hunden är ⚖, och bara dess lagtext döljs") — situationen visas, men
   // förklaringarna märkta legalText döljs tills den är granskad.
   legalText?: { legalReviewed: boolean };
+  // ORDER 326 (306c vb31) — gästens replik följer kvällens läge i stället för att lottas.
+  lineBySituation?: Record<string, 'a' | 'b'>;
   // ORDER 319a.4 (Anders 2026-10-07) — "Kortet kommer inte ur tomma intet": det som syns innan
   // kortet öppnas (THEATRE.cueSeconds). Krävs i foodtrucken.
   cue?: IncidentCue;
@@ -329,6 +336,7 @@ export function validateIncidentBank(meta: MetaFile, text: TextFile): string[] {
         const ot = st.options[o.id];
         if (!ot?.label || !ot.explanation) { errors.push(`${where}/${o.id}: saknar text`); continue; }
         if (o.fail) errors.push(...outcomeErrors(`${where}/${o.id}/fel`, o.fail, ot.fail, out));
+        out.push(...(o.triggers ?? []));
       }
     });
     errors.push(...outcomeErrors(`${m.id}/klarad`, m.success, t.success, out));
@@ -344,6 +352,12 @@ export function validateIncidentBank(meta: MetaFile, text: TextFile): string[] {
 // Svarets kvalitet i kvällens läge.
 export function optionQuality(o: StepOptionMeta, situation: string | null): AnswerQuality {
   return (situation && o.in?.[situation]?.quality) || o.quality;
+}
+
+/** ORDER 326 (306c gripByVariant) — sidan som ett halvt grepp håller, i kvällens läge. */
+export function optionGrip(o: StepOptionMeta, situation: string | null): 'analysis' | 'experience' | undefined {
+  const s = situation ? o.in?.[situation] : undefined;
+  return s ? s.grip : o.grip;
 }
 
 function build(meta: MetaFile, text: TextFile): Incident[] {
@@ -450,17 +464,18 @@ const FT_BANK_SV = mergeDeliveries(FT_META, FT_SV, '.text.sv.draft.json');
 /** ORDER 319a.3 — foodtruckens samlade filer (för testerna). */
 export const FOODTRUCK_FILES = { meta: FT_BANK_SV.meta, sv: FT_BANK_SV.text, en: FT_BANK_EN.text };
 
+// ORDER 326 — vinbarens ⚖-situationer (306c) är dolda tills de är granskade, som foodtruckens.
 const BANKS: Partial<Record<BusinessClassId, Incident[]>> = {
   foodtruck: build(FT_BANK_EN.meta, FT_BANK_EN.text).filter(legallyCleared),
   vinbar: [
-    ...build(vinbarMeta as unknown as MetaFile, vinbarText as unknown as TextFile),
+    ...build(vinbarMeta as unknown as MetaFile, vinbarText as unknown as TextFile).filter(legallyCleared),
     ...build(menuMeta as unknown as MetaFile, menuText as unknown as TextFile)
   ]
 };
 const BANKS_SV: Partial<Record<BusinessClassId, Incident[]>> = {
   foodtruck: build(FT_BANK_SV.meta, FT_BANK_SV.text).filter(legallyCleared),
   vinbar: [
-    ...build(vinbarMeta as unknown as MetaFile, vinbarTextSv as unknown as TextFile),
+    ...build(vinbarMeta as unknown as MetaFile, vinbarTextSv as unknown as TextFile).filter(legallyCleared),
     ...build(menuMeta as unknown as MetaFile, menuTextSv as unknown as TextFile)
   ]
 };

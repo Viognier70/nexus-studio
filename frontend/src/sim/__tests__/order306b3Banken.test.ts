@@ -51,7 +51,8 @@ describe('ORDER 306b.3 — det längsta svaret i vinbarens bank', () => {
 describe('ORDER 306b.3 — steg 2 tar varken kassa eller ork', () => {
   it('i formen analys → upplevelse → handling, i vinbaren och foodtrucken', () => {
     const all = [vinbarMeta, ftBasMeta, ft320Meta].flatMap((m) => (m as unknown as Meta).incidents.filter((i) => i.form === 'triad'));
-    expect(all.length).toBe(11 + 13);
+    // ORDER 326 — vinbarens alla 40 har formen sedan 306c.
+    expect(all.length).toBe(40 + 13);
     for (const inc of all) {
       const s2 = inc.steps[1];
       for (const e of [s2.fail.effects, ...s2.options.flatMap((o) => (o.fail ? [o.fail.effects] : []))]) {

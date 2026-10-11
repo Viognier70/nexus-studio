@@ -1,6 +1,4 @@
 // d11Strings.ts — D11 ansiktsuttryck och gester. Alla texter som nycklar { sv, en } (brittisk engelska).
-// ORDER 325: Designs fil (documentation/leveranser/nexus-leverans-2026-10-10-d11-ansikten-och-gester/), oförändrad.
-// Situationernas namn (gm.sit.<id>) och varför (gm.why.<id>) hör till kartan, scene/gestureMap.ts.
 export const D11_STRINGS: Record<string, { sv: string; en: string }> = {
   'ui.kicker': { sv: 'D11 · Ansikten och gester', en: 'D11 · Faces and gestures' },
   'ui.title': { sv: 'Läsa gästerna utan symboler', en: 'Reading the guests without symbols' },
@@ -54,6 +52,7 @@ export const D11_STRINGS: Record<string, { sv: string; en: string }> = {
   'ch.g.arms': { sv: 'Korsa armarna', en: 'Cross the arms' }, 'why.g.arms': { sv: 'Missnöjd. Bålen tillbaka från bordet, blicken bort, en suck per varv.', en: 'Displeased. Body back from the table, eyes away, a sigh each cycle.' },
   'ch.g.bite': { sv: 'Nicka efter första smaken', en: 'Nod after the first taste' }, 'why.g.bite': { sv: 'Nöjd: gaffeln till munnen, tugga, två nickar. Glad (stressat tempo): tre nickar och ett lyft.', en: 'Content: fork to the mouth, chew, two nods. Delighted (stressed tempo): three nods and a lift.' },
 
+  'ch.g.seek': { sv: 'Söka personalens blick', en: 'Catch the staff’s eye' }, 'why.g.seek': { sv: 'Väntar. Huvudet vänds först mot servitören eller baren, sedan rak rygg och hakan upp, och blicken hålls kvar. Händerna ligger stilla; handen kommer upp först i nästa steg. Otålig: två små ryck med hakan.', en: 'Waiting. The head turns first towards the server or the bar, then a straight back and chin up, and the gaze held. The hands stay still; the hand goes up only in the next step. Impatient: two small jerks of the chin.' },
   'ch.s.tray': { sv: 'Bära bricka', en: 'Carry a tray' }, 'why.s.tray': { sv: 'Brickan i axelhöjd på vänster hand, glasen på. Två eller fler till samma bord.', en: 'The tray at shoulder height on the left hand, glasses on it. Two or more for the same table.' },
   'ch.s.pour': { sv: 'Hälla upp', en: 'Pour' }, 'why.s.pour': { sv: 'Flaskan tippas 1,9 rad, etiketten mot gästen.', en: 'The bottle tips 1.9 rad, label towards the guest.' },
   'ch.s.wipe': { sv: 'Torka av', en: 'Wipe down' }, 'why.s.wipe': { sv: 'Fram över bordet, två breda svep per varv. Efter att sällskapet gått.', en: 'Over the table, two wide sweeps per cycle. After the party has left.' },
@@ -71,6 +70,7 @@ export const D11_STRINGS: Record<string, { sv: string; en: string }> = {
   'ch.tr.bite': { sv: 'Första tuggan', en: 'The first bite' }, 'why.tr.bite': { sv: 'Nöjd. Handen till munnen, tugga, två nickar.', en: 'Content. Hand to the mouth, chew, two nods.' },
   'ch.tr.wipe': { sv: 'Nils torkar ståbordet', en: 'Nils wipes the high table' }, 'why.tr.wipe': { sv: 'Samma klipp som i vinbaren, för ståbordets 1,05 m.', en: 'The same clip as in the wine bar, for the high table’s 1.05 m.' },
 
+  'ch.tr.seek': { sv: 'Söka grillarens blick', en: 'Catch the griller’s eye' }, 'why.tr.seek': { sv: 'Vid ståbord C: vill ha något från luckan. Samma gest stående.', en: 'At high table C: wants something from the hatch. The same gesture standing.' },
   'ch.st.game': { sv: 'Gatan från 24 m', en: 'The street from 24 m' }, 'why.st.game': { sv: 'Sex som går förbi vagnen. Gångarten säger vem de är.', en: 'Six people passing the truck. The gait says who they are.' },
   'ch.st.street42': { sv: 'Gatans nivå, 42 m', en: 'Street level, 42 m' }, 'why.st.street42': { sv: 'Inga ansikten här. Farten, lutningen och sällskapet läses.', en: 'No faces here. Speed, lean and company read.' },
   'ch.st.calm': { sv: 'Promenera', en: 'Stroll' }, 'why.st.calm': { sv: 'Upprätt, korta armsvängar, blicken längs fasaderna.', en: 'Upright, short arm swings, eyes along the façades.' },
@@ -88,11 +88,15 @@ export const D11_STRINGS: Record<string, { sv: string; en: string }> = {
 
   'gm.read.delighted': { sv: 'Från 24 m: armar över huvudet, öppen mun.', en: 'From 24 m: arms above the head, open mouth.' },
   'gm.read.content': { sv: 'Från 24 m: framåtlutad mot sällskapet, munnen uppåt.', en: 'From 24 m: leaning in towards the party, mouth up.' },
-  'gm.read.waiting': { sv: 'Från 24 m: handleden upp, huvudet vänt mot personalen.', en: 'From 24 m: wrist up, head turned towards the staff.' },
+  'gm.read.waiting': { sv: 'Från 24 m: handleden upp, eller rak rygg med huvudet vänt mot personalen.', en: 'From 24 m: wrist up, or a straight back with the head turned towards the staff.' },
   'gm.read.impatient': { sv: 'Från 24 m: en arm rakt upp, mörka bryn.', en: 'From 24 m: one arm straight up, dark brows.' },
   'gm.read.displeased': { sv: 'Från 24 m: armarna i kors, tillbakalutad, mörka bryn.', en: 'From 24 m: arms crossed, leaning back, dark brows.' },
 
-  'gm.sit.readyToOrder': { sv: 'Redo att beställa, ingen personal i närheten', en: 'Ready to order, no staff nearby' },
+  'gm.sit.wantsOrder': { sv: 'Vill beställa, personalen tittar inte hitåt', en: 'Wants to order, the staff are not looking this way' },
+  'gm.sit.wantsRefill': { sv: 'Vill ha mer i glaset', en: 'Wants a refill' },
+  'gm.sit.wantsBill': { sv: 'Vill betala', en: 'Wants the bill' },
+  'gm.sit.wantsHatch': { sv: 'Vill ha något från luckan', en: 'Wants something from the hatch' },
+  'gm.sit.readyToOrder': { sv: 'Sökt blicken utan att någon sett det', en: 'Tried to catch an eye and nobody noticed' },
   'gm.sit.ordering': { sv: 'Beställningen tas', en: 'The order is being taken' },
   'gm.sit.winePoured': { sv: 'Vinet är upphällt', en: 'The wine has been poured' },
   'gm.sit.firstBite': { sv: 'Första tuggan', en: 'The first bite' },

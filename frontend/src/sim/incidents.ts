@@ -55,6 +55,7 @@ import {
   type AnswerQuality,
   type ArcPhase,
   optionQuality,
+  optionGrip,
   type Incident,
   type IncidentCondition,
   type IncidentCue,
@@ -691,7 +692,8 @@ function openIncident(
     draft.day = { ...draft.day, birthdayPackageSek: SHOP.effects.birthdayPackageSek };
   }
   // ORDER 306b A6 — gästens replik lottas, och samma variant visas inte två gånger i rad.
-  const line = incident.text.guestLine ? pickLine(draft, incident.id, inc.lastLines?.[incident.id]) : undefined;
+  // ORDER 326 (306c vb31) — repliken följer kvällens läge när situationen säger det.
+  const line = incident.text.guestLine ? ((situation && incident.lineBySituation?.[situation]) || pickLine(draft, incident.id, inc.lastLines?.[incident.id])) : undefined;
   const { [incident.id]: _used, ...queuedContext } = inc.queuedContext;
   draft.incidents = {
     ...inc,
@@ -1050,6 +1052,8 @@ function applyOutcome(
   }
   for (const id of outcome.triggers ?? []) {
     if (blocked.includes(id) || inc.fired.includes(id) || queued.includes(id)) continue;
+    // ORDER 326 — en kedja till en situation som inte är med i spelet (⚖, ogranskad) köas inte.
+    if (!incidentById(draft.economy.businessClass, id)) continue;
     const at = draft.simTime + INCIDENTS.chainDelaySimSeconds;
     if (chainsAdded >= INCIDENTS.chainExtraMax || inc.serviceEndsAt === null || at >= inc.serviceEndsAt) continue;
     queued = [...queued, id];
@@ -1349,7 +1353,7 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
   // ORDER 306b A2 — halvt grepp i steg 3 (ett ok-svar i sista steget): klarads följder och
   // potten gånger CONSEQUENCES.halfGrip, med återkopplingen för den sida som höll.
   const half = cleared && quality === 'ok';
-  const halfSide = half ? (option?.grip === 'experience' ? 'experience' : 'analysis') : null;
+  const halfSide = half ? (option && optionGrip(option, active.situation) === 'experience' ? 'experience' : 'analysis') : null;
   let cashSek: number;
   let ongoing: OngoingConsequence | null = null;
   let text: string;
@@ -1362,7 +1366,8 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
     const halfText = halfSide ? incident.text.halfGrip?.[halfSide === 'analysis' ? 'outcomeAnalysis' : 'outcomeExperience'] : undefined;
     // ORDER 306b — två hela grepp (vb18, vb32): utfallet i rummet följer svaret.
     const optionSuccess = option ? step.text.options[option.id]?.success : undefined;
-    cashSek = applyOutcome(draft, incident, incident.success, halfText ? { outcome: halfText } : optionSuccess ? { outcome: optionSuccess } : incident.text.success, half ? CONSEQUENCES.halfGrip : 1, !half).cashSek;
+    const successMeta = half && option?.triggers ? { ...incident.success, triggers: option.triggers } : incident.success;
+    cashSek = applyOutcome(draft, incident, successMeta, halfText ? { outcome: halfText } : optionSuccess ? { outcome: optionSuccess } : incident.text.success, half ? CONSEQUENCES.halfGrip : 1, !half).cashSek;
     text = formatIncidentText(halfText ?? incident.text.success.outcome, ctx);
     credit = (quality === 'best' && !DOUBLE_OR_NOTHING.enabled ? INCIDENTS.bestAnswerCredit : 0) + (incident.success.effects.credit ?? 0);
   } else if (staffCleared) {
@@ -1395,7 +1400,8 @@ export function resolveIncident(draft: SimulationState, optionId: string | null)
   const guestsIn = cleared ? letGuestsIn(draft, INCIDENTS.guestsPerClearedStep + INCIDENTS.guestsOnRocketCleared) : 0;
   if (cleared) raiseTips(draft, ctx, MENU_ROCKETS.tipBonusPerClearedStep + MENU_ROCKETS.tipBonusOnRocketCleared);
   // ORDER 292 — ett fel som köar en följdraket vid samma bord låter gästerna sitta kvar.
-  const chains = cleared || staffCleared ? [] : [...((option?.fail ?? step.fail).triggers ?? []), ...(incident.staff.triggers ?? [])];
+  // ORDER 326 — ett halvt grepp kan leda vidare (306c vb08 och vb10, StepOptionMeta.triggers).
+  const chains = cleared ? (half ? option?.triggers ?? [] : []) : staffCleared ? [] : [...((option?.fail ?? step.fail).triggers ?? []), ...(incident.staff.triggers ?? [])];
   // ORDER 303 E — saknar personalen händelsens kunskapsområde tvekar de: ett
   // fel svar blir ett steg allvarligare, och trivseln sjunker.
   const hesitated = !cleared && !staffCleared && !staffKnows(draft, incidentArea(incident.track));

@@ -577,7 +577,7 @@
      "question": "The evening is over, and there are ten grilled sausages left. What do you do?",
      "options": {
       "a": {
-       "label": "Chills them in the cool box and sells them tomorrow.",
+       "label": "Chill them in the cool box and sell them tomorrow.",
        "explanation": "Hot-held food that is left over should be thrown away. It has already been held hot for hours, and cooling and reheating it adds to the risk."
       },
       "b": {

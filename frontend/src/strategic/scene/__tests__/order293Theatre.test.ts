@@ -2,6 +2,7 @@
 // koreografi: varje manus och variant går att spela i spelets vinbar, alla
 // klipp finns, och ingen figur ligger ned där manuset inte säger det.
 
+import vinbarMetaFile from '../../../content/incidents/vinbar.meta.json';
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
 import { EVENTS } from '../events/handelserManus';
@@ -64,8 +65,12 @@ describe('ORDER 293 — händelsernas manus i vinbaren', () => {
 describe('ORDER 293 — händelserna i raketbanken', () => {
   it('fem händelser, tillsynen i fyra varianter som en familj', () => {
     const bank = incidentBankFor('vinbar');
-    for (const id of ['vb32-fodelsedagen', 'vb33-vasen', 'vb34-vinglar', 'vb36-passet']) expect(bank.some((i) => i.id === id)).toBe(true);
-    const insp = bank.filter((i) => i.family === 'event-inspection');
+    for (const id of ['vb32-fodelsedagen', 'vb33-vasen']) expect(bank.some((i) => i.id === id)).toBe(true);
+    // ORDER 326 — vb34, vb36 och tillsynen är ⚖ och dolda tills de är granskade; de finns i filen.
+    for (const id of ['vb34-vinglar', 'vb36-passet']) expect(bank.some((i) => i.id === id)).toBe(false);
+    const all = (vinbarMetaFile as unknown as { incidents: { id: string; family?: string; when?: { inspection?: string } }[] }).incidents;
+    for (const id of ['vb34-vinglar', 'vb36-passet']) expect(all.some((i) => i.id === id)).toBe(true);
+    const insp = all.filter((i) => i.family === 'event-inspection');
     expect(insp.map((i) => i.when?.inspection).sort()).toEqual(['A', 'B', 'C', 'D']);
   });
 

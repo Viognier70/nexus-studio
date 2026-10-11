@@ -449,12 +449,34 @@
       "track": "kok",
       "arc": "opening",
       "chainOnly": false,
-      "when": {
-        "to": "20:00"
-      },
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": -0.2,
+          "satisfaction": 0.1,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.2,
+          "satisfaction": -0.15,
+          "stamina": -0.05,
+          "reputation": 0
+        },
+        "target": "room",
+        "room": {
+          "leave": 2
+        }
+      },
+      "form": "triad",
+      "when": {
+        "to": "20:00"
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -481,36 +503,6 @@
               "cash": 0,
               "satisfaction": -0.08,
               "stamina": 0,
-              "reputation": 0
-            },
-            "target": "room"
-          }
-        },
-        {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "best"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            },
-            {
-              "id": "d",
-              "quality": "ok"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.08,
-              "stamina": -0.08,
               "reputation": 0
             },
             "target": "room"
@@ -542,17 +534,59 @@
             "target": "room",
             "ongoing": {
               "satisfactionPerMinute": -0.08,
-              "staminaPerMinute": -0.03,
-              "tempoFactor": 1.15,
+              "staminaPerMinute": 0,
+              "tempoFactor": 1,
               "target": "room"
             }
           }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "ok",
+              "grip": "analysis"
+            },
+            {
+              "id": "b",
+              "quality": "ok",
+              "grip": "experience"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "best",
+              "cost": 48
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.08,
+              "stamina": -0.08,
+              "reputation": 0
+            },
+            "target": "room"
+          }
         }
-      ],
+      ]
+    },
+    {
+      "id": "vb05-dj",
+      "track": "kok",
+      "arc": "opening",
+      "chainOnly": false,
+      "needsTable": true,
+      "placeholder": false,
+      "reference": null,
       "success": {
         "effects": {
-          "cash": -0.2,
-          "satisfaction": 0.1,
+          "cash": 0.2,
+          "satisfaction": 0.15,
           "stamina": 0,
           "reputation": 0
         },
@@ -561,38 +595,19 @@
       "staff": {
         "effects": {
           "cash": -0.2,
-          "satisfaction": -0.15,
-          "stamina": -0.05,
+          "satisfaction": -0.1,
+          "stamina": 0,
           "reputation": 0
         },
         "target": "room",
         "room": {
           "leave": 2
         }
-      }
-    },
-    {
-      "id": "vb05-dj",
-      "track": "kok",
-      "arc": "opening",
-      "chainOnly": false,
-      "situations": [
-        {
-          "id": "tidigt",
-          "when": {
-            "to": "21:00"
-          }
-        },
-        {
-          "id": "sent",
-          "when": {
-            "from": "21:00"
-          }
-        }
-      ],
-      "needsTable": true,
-      "placeholder": false,
-      "reference": null,
+      },
+      "form": "triad",
+      "when": {
+        "to": "21:00"
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -621,79 +636,19 @@
           }
         },
         {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "ok"
-            },
-            {
-              "id": "d",
-              "quality": "best"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": -0.2,
-              "satisfaction": -0.05,
-              "stamina": 0,
-              "reputation": 0
-            },
-            "target": "room"
-          }
-        },
-        {
           "axis": "phronesis",
           "options": [
             {
               "id": "a",
-              "quality": "ok",
-              "in": {
-                "sent": {
-                  "quality": "best"
-                }
-              }
+              "quality": "best"
             },
             {
               "id": "b",
-              "quality": "best",
-              "in": {
-                "sent": {
-                  "quality": "wrong"
-                }
-              },
-              "fail": {
-                "effects": {
-                  "cash": 0,
-                  "satisfaction": -0.08,
-                  "stamina": 0,
-                  "reputation": 0
-                },
-                "target": "room",
-                "ongoing": {
-                  "satisfactionPerMinute": -0.06,
-                  "staminaPerMinute": 0,
-                  "tempoFactor": 1,
-                  "target": "room"
-                }
-              }
+              "quality": "ok"
             },
             {
               "id": "c",
-              "quality": "wrong",
-              "in": {
-                "sent": {
-                  "quality": "ok"
-                }
-              }
+              "quality": "wrong"
             }
           ],
           "fail": {
@@ -704,9 +659,6 @@
               "reputation": 0
             },
             "target": "room",
-            "room": {
-              "leave": 2
-            },
             "ongoing": {
               "satisfactionPerMinute": -0.06,
               "staminaPerMinute": 0,
@@ -714,41 +666,83 @@
               "target": "room"
             }
           }
-        }
-      ],
-      "success": {
-        "effects": {
-          "cash": 0.2,
-          "satisfaction": 0.15,
-          "stamina": 0,
-          "reputation": 0
         },
-        "target": "room"
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.2,
-          "satisfaction": -0.1,
-          "stamina": 0,
-          "reputation": 0
-        },
-        "target": "room",
-        "room": {
-          "leave": 2
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "ok",
+              "grip": "experience"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            },
+            {
+              "id": "d",
+              "quality": "ok",
+              "grip": "analysis"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.2,
+              "satisfaction": -0.05,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "room",
+            "room": {
+              "leave": 2
+            }
+          }
         }
-      }
+      ]
     },
     {
       "id": "vb06-kylen",
       "track": "kok",
       "arc": "opening",
       "chainOnly": false,
-      "when": {
-        "to": "20:00"
-      },
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": -0.2,
+          "satisfaction": 0,
+          "stamina": -0.05,
+          "reputation": 0
+        },
+        "target": "room",
+        "prevents": [
+          "vb28-kylen-stannar"
+        ]
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.2,
+          "satisfaction": 0,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "room",
+        "triggers": [
+          "vb28-kylen-stannar"
+        ]
+      },
+      "form": "triad",
+      "when": {
+        "to": "20:00"
+      },
+      "legal": {
+        "legalReviewed": false
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -783,22 +777,52 @@
               "tempoFactor": 1,
               "target": "room"
             }
-          }
+          },
+          "legal": true
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "ok"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": 0,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "room"
+          },
+          "legal": true
         },
         {
           "axis": "techne",
           "options": [
             {
               "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
               "quality": "best"
             },
             {
+              "id": "b",
+              "quality": "ok",
+              "grip": "analysis"
+            },
+            {
               "id": "c",
-              "quality": "ok"
+              "quality": "ok",
+              "grip": "experience"
             },
             {
               "id": "d",
@@ -813,63 +837,10 @@
               "reputation": 0
             },
             "target": "room"
-          }
-        },
-        {
-          "axis": "phronesis",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "ok"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            },
-            {
-              "id": "d",
-              "quality": "best"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": 0,
-              "stamina": 0,
-              "reputation": 0
-            },
-            "target": "room"
-          }
+          },
+          "legal": true
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": -0.2,
-          "satisfaction": 0,
-          "stamina": -0.05,
-          "reputation": 0
-        },
-        "target": "room",
-        "prevents": [
-          "vb28-kylen-stannar"
-        ]
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.2,
-          "satisfaction": 0,
-          "stamina": 0,
-          "reputation": 0
-        },
-        "target": "room",
-        "triggers": [
-          "vb28-kylen-stannar"
-        ]
-      }
+      ]
     },
     {
       "id": "vb07-provningen",
@@ -1019,23 +990,34 @@
       "track": "kok",
       "arc": "rush",
       "chainOnly": false,
-      "situations": [
-        {
-          "id": "fullt",
-          "when": {
-            "minSeated": 14
-          }
-        },
-        {
-          "id": "lugnt",
-          "when": {
-            "maxSeated": 8
-          }
-        }
-      ],
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": 0.8,
+          "satisfaction": 0.05,
+          "stamina": -0.03,
+          "reputation": 0
+        },
+        "target": "room",
+        "room": {
+          "arrive": 5
+        }
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.2,
+          "satisfaction": -0.05,
+          "stamina": 0,
+          "reputation": -1
+        },
+        "target": "room"
+      },
+      "form": "triad",
+      "when": {
+        "minSeated": 9
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -1068,83 +1050,19 @@
           }
         },
         {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "best"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            },
-            {
-              "id": "d",
-              "quality": "ok"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": -0.1,
-              "satisfaction": 0,
-              "stamina": -0.13,
-              "reputation": 0
-            },
-            "target": "room"
-          }
-        },
-        {
           "axis": "phronesis",
           "options": [
             {
               "id": "a",
-              "quality": "ok",
-              "in": {
-                "fullt": {
-                  "quality": "wrong"
-                },
-                "lugnt": {
-                  "quality": "best"
-                }
-              },
-              "fail": {
-                "effects": {
-                  "cash": 0.3,
-                  "satisfaction": -0.1,
-                  "stamina": 0,
-                  "reputation": 0
-                },
-                "target": "room",
-                "room": {
-                  "arrive": 5
-                },
-                "triggers": [
-                  "vb17-glasen"
-                ],
-                "ongoing": {
-                  "satisfactionPerMinute": -0.08,
-                  "staminaPerMinute": -0.04,
-                  "tempoFactor": 1.2,
-                  "target": "room"
-                }
-              }
+              "quality": "ok"
             },
             {
               "id": "b",
-              "quality": "best",
-              "in": {
-                "lugnt": {
-                  "quality": "ok"
-                }
-              }
+              "quality": "wrong"
             },
             {
               "id": "c",
-              "quality": "wrong"
+              "quality": "best"
             }
           ],
           "fail": {
@@ -1156,29 +1074,43 @@
             },
             "target": "room"
           }
-        }
-      ],
-      "success": {
-        "effects": {
-          "cash": 0.8,
-          "satisfaction": 0.05,
-          "stamina": -0.03,
-          "reputation": 0
         },
-        "target": "room",
-        "room": {
-          "arrive": 5
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "ok",
+              "grip": "analysis"
+            },
+            {
+              "id": "b",
+              "quality": "ok",
+              "grip": "experience",
+              "triggers": [
+                "vb17-glasen"
+              ]
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": 0,
+              "stamina": -0.13,
+              "reputation": 0
+            },
+            "target": "room"
+          }
         }
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.2,
-          "satisfaction": -0.05,
-          "stamina": 0,
-          "reputation": -1
-        },
-        "target": "room"
-      }
+      ]
     },
     {
       "id": "vb09-getosten",
@@ -1327,12 +1259,40 @@
       "track": "sommellerie",
       "arc": "rush",
       "chainOnly": false,
-      "when": {
-        "from": "20:30"
-      },
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": -0.2,
+          "satisfaction": 0.02,
+          "stamina": 0,
+          "reputation": 1
+        },
+        "target": "room",
+        "prevents": [
+          "vb29-brak"
+        ]
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.2,
+          "satisfaction": 0,
+          "stamina": 0,
+          "reputation": -1
+        },
+        "target": "room",
+        "triggers": [
+          "vb29-brak"
+        ]
+      },
+      "form": "triad",
+      "when": {
+        "from": "20:30"
+      },
+      "legal": {
+        "legalReviewed": false
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -1385,22 +1345,84 @@
               "tempoFactor": 1.1,
               "target": "room"
             }
-          }
+          },
+          "legal": true
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "ok"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.04,
+              "stamina": 0,
+              "reputation": -1
+            },
+            "target": "room",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": 0,
+              "tempoFactor": 1,
+              "target": "room"
+            }
+          },
+          "legal": true
         },
         {
           "axis": "techne",
           "options": [
             {
               "id": "a",
-              "quality": "wrong"
+              "quality": "ok",
+              "grip": "experience",
+              "triggers": [
+                "vb29-brak"
+              ]
             },
             {
               "id": "b",
-              "quality": "wrong"
+              "quality": "wrong",
+              "fail": {
+                "effects": {
+                  "cash": 0.3,
+                  "satisfaction": 0,
+                  "stamina": 0,
+                  "reputation": -2
+                },
+                "target": "room",
+                "triggers": [
+                  "vb29-brak"
+                ],
+                "ongoing": {
+                  "satisfactionPerMinute": -0.08,
+                  "staminaPerMinute": -0.05,
+                  "tempoFactor": 1.1,
+                  "target": "room"
+                }
+              }
             },
             {
               "id": "c",
-              "quality": "best"
+              "quality": "best",
+              "cost": 6
+            },
+            {
+              "id": "d",
+              "quality": "ok",
+              "grip": "analysis"
             }
           ],
           "fail": {
@@ -1417,87 +1439,10 @@
               "tempoFactor": 1,
               "target": "room"
             }
-          }
-        },
-        {
-          "axis": "phronesis",
-          "options": [
-            {
-              "id": "a",
-              "quality": "best"
-            },
-            {
-              "id": "b",
-              "quality": "wrong",
-              "fail": {
-                "effects": {
-                  "cash": 0.1,
-                  "satisfaction": -0.04,
-                  "stamina": 0,
-                  "reputation": -1
-                },
-                "target": "room",
-                "triggers": [
-                  "vb29-brak"
-                ],
-                "ongoing": {
-                  "satisfactionPerMinute": -0.05,
-                  "staminaPerMinute": -0.03,
-                  "tempoFactor": 1.05,
-                  "target": "room"
-                }
-              }
-            },
-            {
-              "id": "c",
-              "quality": "ok"
-            },
-            {
-              "id": "d",
-              "quality": "wrong"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.04,
-              "stamina": 0,
-              "reputation": -1
-            },
-            "target": "room",
-            "ongoing": {
-              "satisfactionPerMinute": -0.04,
-              "staminaPerMinute": -0.02,
-              "tempoFactor": 1.05,
-              "target": "room"
-            }
-          }
+          },
+          "legal": true
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": -0.2,
-          "satisfaction": 0.02,
-          "stamina": 0,
-          "reputation": 1
-        },
-        "target": "room",
-        "prevents": [
-          "vb29-brak"
-        ]
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.2,
-          "satisfaction": 0,
-          "stamina": 0,
-          "reputation": -1
-        },
-        "target": "room",
-        "triggers": [
-          "vb29-brak"
-        ]
-      }
+      ]
     },
     {
       "id": "vb11-cremant",
@@ -1766,18 +1711,28 @@
       "track": "kok",
       "arc": "rush",
       "chainOnly": false,
-      "situations": [
-        {
-          "id": "lugnt",
-          "when": {
-            "maxWaiting": 0,
-            "maxSeated": 8
-          }
-        }
-      ],
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": 1,
+          "satisfaction": 0,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.2,
+          "satisfaction": -0.05,
+          "stamina": -0.05,
+          "reputation": 0
+        },
+        "target": "room"
+      },
+      "form": "triad",
       "steps": [
         {
           "axis": "episteme",
@@ -1806,43 +1761,51 @@
           }
         },
         {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "ok"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": 0,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "room"
+          }
+        },
+        {
           "axis": "techne",
           "options": [
             {
               "id": "a",
-              "quality": "wrong",
-              "in": {
-                "lugnt": {
-                  "quality": "best"
-                }
-              }
+              "quality": "ok",
+              "grip": "experience"
             },
             {
               "id": "b",
-              "quality": "best",
-              "in": {
-                "lugnt": {
-                  "quality": "ok"
-                }
-              }
+              "quality": "wrong"
             },
             {
               "id": "c",
+              "quality": "best"
+            },
+            {
+              "id": "d",
               "quality": "ok",
-              "in": {
-                "lugnt": {
-                  "quality": "wrong"
-                }
-              },
-              "fail": {
-                "effects": {
-                  "cash": -0.3,
-                  "satisfaction": 0,
-                  "stamina": 0,
-                  "reputation": 0
-                },
-                "target": "room"
-              }
+              "grip": "analysis"
             }
           ],
           "fail": {
@@ -1863,56 +1826,8 @@
               "target": "room"
             }
           }
-        },
-        {
-          "axis": "phronesis",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "ok"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            },
-            {
-              "id": "d",
-              "quality": "best"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": 0,
-              "stamina": 0,
-              "reputation": 0
-            },
-            "target": "room"
-          }
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": 1,
-          "satisfaction": 0,
-          "stamina": 0,
-          "reputation": 0
-        },
-        "target": "room"
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.2,
-          "satisfaction": -0.05,
-          "stamina": -0.05,
-          "reputation": 0
-        },
-        "target": "room"
-      }
+      ]
     },
     {
       "id": "vb14-surdegen",
@@ -1922,6 +1837,31 @@
       "needsTable": true,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": 0.2,
+          "satisfaction": 0.15,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "table",
+        "prevents": [
+          "vb27-allergireaktion"
+        ]
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.2,
+          "satisfaction": -0.1,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "table"
+      },
+      "form": "triad",
+      "legal": {
+        "legalReviewed": false
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -1978,21 +1918,73 @@
               "tempoFactor": 1,
               "target": "table"
             }
-          }
+          },
+          "legal": true
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "ok"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.05,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "table"
+          },
+          "legal": true
         },
         {
           "axis": "techne",
           "options": [
             {
               "id": "a",
-              "quality": "wrong"
+              "quality": "ok",
+              "grip": "analysis"
             },
             {
               "id": "b",
-              "quality": "wrong"
+              "quality": "ok",
+              "grip": "experience"
             },
             {
               "id": "c",
+              "quality": "wrong",
+              "fail": {
+                "effects": {
+                  "cash": -0.2,
+                  "satisfaction": 0,
+                  "stamina": 0,
+                  "reputation": 0
+                },
+                "target": "table",
+                "triggers": [
+                  "vb27-allergireaktion"
+                ],
+                "ongoing": {
+                  "satisfactionPerMinute": 0,
+                  "staminaPerMinute": 0,
+                  "tempoFactor": 1,
+                  "target": "table"
+                }
+              }
+            },
+            {
+              "id": "d",
               "quality": "best"
             }
           ],
@@ -2007,165 +1999,19 @@
             "triggers": [
               "vb27-allergireaktion"
             ]
-          }
-        },
-        {
-          "axis": "phronesis",
-          "options": [
-            {
-              "id": "a",
-              "quality": "best"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "ok"
-            },
-            {
-              "id": "d",
-              "quality": "wrong"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.05,
-              "stamina": 0,
-              "reputation": 0
-            },
-            "target": "table",
-            "triggers": [
-              "vb27-allergireaktion"
-            ]
-          }
+          },
+          "legal": true
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": 0.2,
-          "satisfaction": 0.15,
-          "stamina": 0,
-          "reputation": 0
-        },
-        "target": "table",
-        "prevents": [
-          "vb27-allergireaktion"
-        ]
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.2,
-          "satisfaction": -0.1,
-          "stamina": 0,
-          "reputation": 0
-        },
-        "target": "table"
-      }
+      ]
     },
     {
       "id": "vb15-fisken",
       "track": "kok",
       "arc": "rush",
       "chainOnly": false,
-      "when": {
-        "to": "20:30"
-      },
       "needsTable": false,
       "placeholder": false,
       "reference": null,
-      "steps": [
-        {
-          "axis": "episteme",
-          "options": [
-            {
-              "id": "a",
-              "quality": "best"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": -0.2,
-              "satisfaction": 0,
-              "stamina": 0,
-              "reputation": -1
-            },
-            "target": "room"
-          }
-        },
-        {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "ok"
-            },
-            {
-              "id": "c",
-              "quality": "best"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": -0.4,
-              "satisfaction": 0,
-              "stamina": 0,
-              "reputation": -2
-            },
-            "target": "room",
-            "ongoing": {
-              "satisfactionPerMinute": 0,
-              "staminaPerMinute": -0.03,
-              "tempoFactor": 1,
-              "target": "room"
-            }
-          }
-        },
-        {
-          "axis": "phronesis",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "ok"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            },
-            {
-              "id": "d",
-              "quality": "best"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.05,
-              "stamina": 0,
-              "reputation": -1
-            },
-            "target": "room"
-          }
-        }
-      ],
       "success": {
         "effects": {
           "cash": 0.3,
@@ -2183,22 +2029,44 @@
           "reputation": -1
         },
         "target": "room"
-      }
-    },
-    {
-      "id": "vb16-stamgasten",
-      "track": "kok",
-      "arc": "rush",
-      "chainOnly": false,
-      "when": {
-        "to": "21:00"
       },
-      "needsTable": false,
-      "placeholder": false,
-      "reference": null,
+      "form": "triad",
+      "when": {
+        "to": "20:30"
+      },
+      "legal": {
+        "legalReviewed": false
+      },
       "steps": [
         {
           "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.2,
+              "satisfaction": 0,
+              "stamina": 0,
+              "reputation": -1
+            },
+            "target": "room"
+          },
+          "legal": true
+        },
+        {
+          "axis": "phronesis",
           "options": [
             {
               "id": "a",
@@ -2210,7 +2078,7 @@
             },
             {
               "id": "c",
-              "quality": "wrong"
+              "quality": "ok"
             }
           ],
           "fail": {
@@ -2218,17 +2086,18 @@
               "cash": 0,
               "satisfaction": -0.05,
               "stamina": 0,
-              "reputation": 0
+              "reputation": -1
             },
-            "target": "table"
-          }
+            "target": "room"
+          },
+          "legal": true
         },
         {
           "axis": "techne",
           "options": [
             {
               "id": "a",
-              "quality": "best"
+              "quality": "wrong"
             },
             {
               "id": "b",
@@ -2240,55 +2109,36 @@
             },
             {
               "id": "d",
-              "quality": "ok"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.05,
-              "stamina": 0,
-              "reputation": 0
-            },
-            "target": "table"
-          }
-        },
-        {
-          "axis": "phronesis",
-          "options": [
-            {
-              "id": "a",
-              "quality": "ok"
-            },
-            {
-              "id": "b",
               "quality": "best"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
             }
           ],
           "fail": {
             "effects": {
-              "cash": 0,
-              "satisfaction": -0.15,
+              "cash": -0.4,
+              "satisfaction": 0,
               "stamina": 0,
-              "reputation": -1
+              "reputation": -2
             },
-            "target": "table",
-            "room": {
-              "leave": 1
-            },
+            "target": "room",
             "ongoing": {
-              "satisfactionPerMinute": -0.04,
-              "staminaPerMinute": 0,
+              "satisfactionPerMinute": 0,
+              "staminaPerMinute": -0.03,
               "tempoFactor": 1,
               "target": "room"
             }
-          }
+          },
+          "legal": true
         }
-      ],
+      ]
+    },
+    {
+      "id": "vb16-stamgasten",
+      "track": "kok",
+      "arc": "rush",
+      "chainOnly": false,
+      "needsTable": false,
+      "placeholder": false,
+      "reference": null,
       "success": {
         "effects": {
           "cash": 0.3,
@@ -2309,19 +2159,138 @@
         "room": {
           "leave": 1
         }
-      }
+      },
+      "form": "triad",
+      "when": {
+        "to": "21:00"
+      },
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.05,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "table"
+          }
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "ok"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.15,
+              "stamina": 0,
+              "reputation": -1
+            },
+            "target": "table",
+            "ongoing": {
+              "satisfactionPerMinute": -0.04,
+              "staminaPerMinute": 0,
+              "tempoFactor": 1,
+              "target": "room"
+            }
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "ok",
+              "grip": "analysis"
+            },
+            {
+              "id": "b",
+              "quality": "ok",
+              "grip": "experience"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "best",
+              "cost": 24
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.05,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "table",
+            "room": {
+              "leave": 1
+            }
+          }
+        }
+      ]
     },
     {
       "id": "vb17-glasen",
       "track": "sommellerie",
       "arc": "crisis",
       "chainOnly": false,
-      "when": {
-        "minSeated": 6
-      },
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": 0.1,
+          "stamina": -0.1,
+          "reputation": 0
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.3,
+          "satisfaction": -0.1,
+          "stamina": -0.05,
+          "reputation": 0
+        },
+        "target": "room"
+      },
+      "form": "triad",
+      "when": {
+        "minSeated": 6
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -2350,11 +2319,11 @@
           }
         },
         {
-          "axis": "techne",
+          "axis": "phronesis",
           "options": [
             {
               "id": "a",
-              "quality": "wrong"
+              "quality": "ok"
             },
             {
               "id": "b",
@@ -2362,7 +2331,39 @@
             },
             {
               "id": "c",
-              "quality": "ok"
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.05,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "room"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "ok",
+              "grip": "analysis"
+            },
+            {
+              "id": "b",
+              "quality": "ok",
+              "grip": "experience"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "best"
             }
           ],
           "fail": {
@@ -2380,56 +2381,8 @@
               "target": "room"
             }
           }
-        },
-        {
-          "axis": "phronesis",
-          "options": [
-            {
-              "id": "a",
-              "quality": "ok"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            },
-            {
-              "id": "d",
-              "quality": "best"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.05,
-              "stamina": 0,
-              "reputation": 0
-            },
-            "target": "room"
-          }
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": 0,
-          "satisfaction": 0.1,
-          "stamina": -0.1,
-          "reputation": 0
-        },
-        "target": "room"
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.3,
-          "satisfaction": -0.1,
-          "stamina": -0.05,
-          "reputation": 0
-        },
-        "target": "room"
-      }
+      ]
     },
     {
       "id": "vb18-kavajen",
@@ -2558,17 +2511,31 @@
       "track": "kok",
       "arc": "crisis",
       "chainOnly": false,
-      "situations": [
-        {
-          "id": "sent",
-          "when": {
-            "from": "21:30"
-          }
-        }
-      ],
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": 0.1,
+          "stamina": -0.08,
+          "reputation": 0
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.2,
+          "satisfaction": -0.1,
+          "stamina": -0.1,
+          "reputation": 0
+        },
+        "target": "room",
+        "triggers": [
+          "vb20-notan"
+        ]
+      },
+      "form": "triad",
       "steps": [
         {
           "axis": "episteme",
@@ -2597,16 +2564,11 @@
           }
         },
         {
-          "axis": "techne",
+          "axis": "phronesis",
           "options": [
             {
               "id": "a",
-              "quality": "ok",
-              "in": {
-                "sent": {
-                  "quality": "best"
-                }
-              }
+              "quality": "best"
             },
             {
               "id": "b",
@@ -2614,12 +2576,40 @@
             },
             {
               "id": "c",
+              "quality": "ok"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.08,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "table"
+          }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "ok",
+              "grip": "analysis"
+            },
+            {
+              "id": "b",
+              "quality": "ok",
+              "grip": "experience"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
               "quality": "best",
-              "in": {
-                "sent": {
-                  "quality": "ok"
-                }
-              }
+              "cost": 36
             }
           ],
           "fail": {
@@ -2640,67 +2630,39 @@
               "target": "room"
             }
           }
-        },
-        {
-          "axis": "phronesis",
-          "options": [
-            {
-              "id": "a",
-              "quality": "best"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.08,
-              "stamina": 0,
-              "reputation": 0
-            },
-            "target": "table"
-          }
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": 0,
-          "satisfaction": 0.1,
-          "stamina": -0.08,
-          "reputation": 0
-        },
-        "target": "room"
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.2,
-          "satisfaction": -0.1,
-          "stamina": -0.1,
-          "reputation": 0
-        },
-        "target": "room",
-        "triggers": [
-          "vb20-notan"
-        ]
-      }
+      ]
     },
     {
       "id": "vb20-notan",
       "track": "kok",
       "arc": "crisis",
       "chainOnly": false,
-      "when": {
-        "from": "20:30"
-      },
       "needsTable": true,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": -0.1,
+          "satisfaction": 0.15,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "table"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.2,
+          "satisfaction": -0.1,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "table"
+      },
+      "form": "triad",
+      "when": {
+        "from": "20:30"
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -2733,37 +2695,11 @@
           }
         },
         {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "best"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.1,
-              "stamina": 0,
-              "reputation": 0
-            },
-            "target": "table"
-          }
-        },
-        {
           "axis": "phronesis",
           "options": [
             {
               "id": "a",
-              "quality": "ok"
+              "quality": "wrong"
             },
             {
               "id": "b",
@@ -2771,7 +2707,7 @@
             },
             {
               "id": "c",
-              "quality": "wrong"
+              "quality": "ok"
             }
           ],
           "fail": {
@@ -2782,9 +2718,6 @@
               "reputation": -1
             },
             "target": "table",
-            "room": {
-              "leave": 2
-            },
             "ongoing": {
               "satisfactionPerMinute": -0.06,
               "staminaPerMinute": 0,
@@ -2792,26 +2725,45 @@
               "target": "room"
             }
           }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "ok",
+              "grip": "analysis"
+            },
+            {
+              "id": "b",
+              "quality": "ok",
+              "grip": "experience",
+              "cost": 184
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "best",
+              "cost": 50
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.1,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "table",
+            "room": {
+              "leave": 2
+            }
+          }
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": -0.1,
-          "satisfaction": 0.15,
-          "stamina": 0,
-          "reputation": 0
-        },
-        "target": "table"
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.2,
-          "satisfaction": -0.1,
-          "stamina": 0,
-          "reputation": 0
-        },
-        "target": "table"
-      }
+      ]
     },
     {
       "id": "vb21-skuren-hand",
@@ -2821,6 +2773,28 @@
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": -0.2,
+          "satisfaction": 0.05,
+          "stamina": -0.05,
+          "reputation": 0
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.2,
+          "satisfaction": -0.05,
+          "stamina": -0.12,
+          "reputation": 0
+        },
+        "target": "room"
+      },
+      "form": "triad",
+      "legal": {
+        "legalReviewed": false
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -2846,22 +2820,56 @@
               "reputation": -1
             },
             "target": "room"
-          }
+          },
+          "legal": true
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "ok"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": 0,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "room"
+          },
+          "legal": true
         },
         {
           "axis": "techne",
           "options": [
             {
               "id": "a",
-              "quality": "wrong"
+              "quality": "ok",
+              "grip": "experience"
             },
             {
               "id": "b",
-              "quality": "best"
+              "quality": "wrong"
             },
             {
               "id": "c",
-              "quality": "ok"
+              "quality": "best"
+            },
+            {
+              "id": "d",
+              "quality": "ok",
+              "grip": "analysis"
             }
           ],
           "fail": {
@@ -2878,57 +2886,10 @@
               "tempoFactor": 1.2,
               "target": "room"
             }
-          }
-        },
-        {
-          "axis": "phronesis",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "ok"
-            },
-            {
-              "id": "d",
-              "quality": "best"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": 0,
-              "stamina": 0,
-              "reputation": 0
-            },
-            "target": "room"
-          }
+          },
+          "legal": true
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": -0.2,
-          "satisfaction": 0.05,
-          "stamina": -0.05,
-          "reputation": 0
-        },
-        "target": "room"
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.2,
-          "satisfaction": -0.05,
-          "stamina": -0.12,
-          "reputation": 0
-        },
-        "target": "room"
-      }
+      ]
     },
     {
       "id": "vb22-recensenten",
@@ -2938,6 +2899,25 @@
       "needsTable": true,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": 0.15,
+          "stamina": 0,
+          "reputation": 2
+        },
+        "target": "table"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.2,
+          "satisfaction": -0.05,
+          "stamina": 0,
+          "reputation": -1
+        },
+        "target": "table"
+      },
+      "form": "triad",
       "steps": [
         {
           "axis": "episteme",
@@ -2953,32 +2933,6 @@
             {
               "id": "c",
               "quality": "wrong"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.05,
-              "stamina": 0,
-              "reputation": -1
-            },
-            "target": "table"
-          }
-        },
-        {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "ok"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "best"
             }
           ],
           "fail": {
@@ -3022,26 +2976,40 @@
               "target": "room"
             }
           }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "ok",
+              "grip": "analysis"
+            },
+            {
+              "id": "b",
+              "quality": "ok",
+              "grip": "experience"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.05,
+              "stamina": 0,
+              "reputation": -1
+            },
+            "target": "table"
+          }
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": 0,
-          "satisfaction": 0.15,
-          "stamina": 0,
-          "reputation": 2
-        },
-        "target": "table"
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.2,
-          "satisfaction": -0.05,
-          "stamina": 0,
-          "reputation": -1
-        },
-        "target": "table"
-      }
+      ]
     },
     {
       "id": "vb23-sott",
@@ -3175,13 +3143,32 @@
       "track": "sommellerie",
       "arc": "closing",
       "chainOnly": false,
+      "needsTable": false,
+      "placeholder": false,
+      "reference": null,
+      "success": {
+        "effects": {
+          "cash": 0.3,
+          "satisfaction": 0.15,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "table"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.2,
+          "satisfaction": -0.03,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "table"
+      },
+      "form": "triad",
       "when": {
         "from": "21:30",
         "maxWaiting": 1
       },
-      "needsTable": false,
-      "placeholder": false,
-      "reference": null,
       "steps": [
         {
           "axis": "episteme",
@@ -3216,11 +3203,11 @@
           }
         },
         {
-          "axis": "techne",
+          "axis": "phronesis",
           "options": [
             {
               "id": "a",
-              "quality": "wrong"
+              "quality": "best"
             },
             {
               "id": "b",
@@ -3229,10 +3216,6 @@
             {
               "id": "c",
               "quality": "wrong"
-            },
-            {
-              "id": "d",
-              "quality": "best"
             }
           ],
           "fail": {
@@ -3246,7 +3229,7 @@
           }
         },
         {
-          "axis": "phronesis",
+          "axis": "techne",
           "options": [
             {
               "id": "a",
@@ -3254,10 +3237,16 @@
             },
             {
               "id": "b",
-              "quality": "wrong"
+              "quality": "ok",
+              "grip": "analysis"
             },
             {
               "id": "c",
+              "quality": "ok",
+              "grip": "experience"
+            },
+            {
+              "id": "d",
               "quality": "wrong"
             }
           ],
@@ -3271,12 +3260,21 @@
             "target": "table"
           }
         }
-      ],
+      ]
+    },
+    {
+      "id": "vb25-efter-stangning",
+      "track": "sommellerie",
+      "arc": "closing",
+      "chainOnly": false,
+      "needsTable": false,
+      "placeholder": false,
+      "reference": null,
       "success": {
         "effects": {
-          "cash": 0.3,
-          "satisfaction": 0.15,
-          "stamina": 0,
+          "cash": 0.2,
+          "satisfaction": 0.08,
+          "stamina": -0.03,
           "reputation": 0
         },
         "target": "table"
@@ -3284,24 +3282,19 @@
       "staff": {
         "effects": {
           "cash": -0.2,
-          "satisfaction": -0.03,
-          "stamina": 0,
+          "satisfaction": 0,
+          "stamina": -0.08,
           "reputation": 0
         },
         "target": "table"
-      }
-    },
-    {
-      "id": "vb25-efter-stangning",
-      "track": "sommellerie",
-      "arc": "closing",
-      "chainOnly": false,
+      },
+      "form": "triad",
       "when": {
         "from": "22:15"
       },
-      "needsTable": false,
-      "placeholder": false,
-      "reference": null,
+      "legal": {
+        "legalReviewed": false
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -3327,22 +3320,56 @@
               "reputation": 0
             },
             "target": "table"
-          }
+          },
+          "legal": true
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "ok"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": 0,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "table"
+          },
+          "legal": true
         },
         {
           "axis": "techne",
           "options": [
             {
               "id": "a",
-              "quality": "ok"
+              "quality": "ok",
+              "grip": "experience"
             },
             {
               "id": "b",
-              "quality": "best"
+              "quality": "wrong"
             },
             {
               "id": "c",
-              "quality": "wrong"
+              "quality": "best"
+            },
+            {
+              "id": "d",
+              "quality": "ok",
+              "grip": "analysis"
             }
           ],
           "fail": {
@@ -3353,84 +3380,41 @@
               "reputation": 0
             },
             "target": "table"
-          }
-        },
-        {
-          "axis": "phronesis",
-          "options": [
-            {
-              "id": "a",
-              "quality": "ok"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "wrong",
-              "fail": {
-                "effects": {
-                  "cash": 0,
-                  "satisfaction": 0,
-                  "stamina": 0,
-                  "reputation": 0
-                },
-                "target": "table"
-              }
-            },
-            {
-              "id": "d",
-              "quality": "best"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": 0,
-              "stamina": 0,
-              "reputation": 0
-            },
-            "target": "table",
-            "ongoing": {
-              "satisfactionPerMinute": 0,
-              "staminaPerMinute": -0.08,
-              "tempoFactor": 1.1,
-              "target": "room"
-            }
-          }
+          },
+          "legal": true
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": 0.2,
-          "satisfaction": 0.08,
-          "stamina": -0.03,
-          "reputation": 0
-        },
-        "target": "table"
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.2,
-          "satisfaction": 0,
-          "stamina": -0.08,
-          "reputation": 0
-        },
-        "target": "table"
-      }
+      ]
     },
     {
       "id": "vb26-oppna-flaskor",
       "track": "sommellerie",
       "arc": "closing",
       "chainOnly": false,
-      "when": {
-        "from": "22:00"
-      },
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": 0.35,
+          "satisfaction": 0,
+          "stamina": -0.02,
+          "reputation": 0
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.4,
+          "satisfaction": 0,
+          "stamina": 0,
+          "reputation": 0
+        },
+        "target": "room"
+      },
+      "form": "triad",
+      "when": {
+        "from": "22:00"
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -3463,45 +3447,19 @@
           }
         },
         {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "ok"
-            },
-            {
-              "id": "c",
-              "quality": "best"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": -0.5,
-              "satisfaction": 0,
-              "stamina": 0,
-              "reputation": 0
-            },
-            "target": "room"
-          }
-        },
-        {
           "axis": "phronesis",
           "options": [
             {
               "id": "a",
-              "quality": "best"
-            },
-            {
-              "id": "b",
               "quality": "wrong"
             },
             {
-              "id": "c",
+              "id": "b",
               "quality": "ok"
+            },
+            {
+              "id": "c",
+              "quality": "best"
             }
           ],
           "fail": {
@@ -3513,26 +3471,40 @@
             },
             "target": "room"
           }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "ok",
+              "grip": "analysis"
+            },
+            {
+              "id": "c",
+              "quality": "ok",
+              "grip": "experience"
+            },
+            {
+              "id": "d",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.5,
+              "satisfaction": 0,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "room"
+          }
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": 0.35,
-          "satisfaction": 0,
-          "stamina": -0.02,
-          "reputation": 0
-        },
-        "target": "room"
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.4,
-          "satisfaction": 0,
-          "stamina": 0,
-          "reputation": 0
-        },
-        "target": "room"
-      }
+      ]
     },
     {
       "id": "vb27-allergireaktion",
@@ -3542,6 +3514,28 @@
       "needsTable": true,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": -0.5,
+          "satisfaction": 0.05,
+          "stamina": -0.1,
+          "reputation": 0
+        },
+        "target": "table"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.5,
+          "satisfaction": -0.2,
+          "stamina": -0.1,
+          "reputation": -3
+        },
+        "target": "table"
+      },
+      "form": "triad",
+      "legal": {
+        "legalReviewed": false
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -3567,7 +3561,35 @@
               "reputation": -2
             },
             "target": "table"
-          }
+          },
+          "legal": true
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "ok"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.08,
+              "stamina": 0,
+              "reputation": -2
+            },
+            "target": "table"
+          },
+          "legal": true
         },
         {
           "axis": "techne",
@@ -3578,22 +3600,7 @@
             },
             {
               "id": "b",
-              "quality": "wrong",
-              "fail": {
-                "effects": {
-                  "cash": -0.5,
-                  "satisfaction": -0.15,
-                  "stamina": -0.1,
-                  "reputation": -3
-                },
-                "target": "table",
-                "ongoing": {
-                  "satisfactionPerMinute": -0.1,
-                  "staminaPerMinute": -0.06,
-                  "tempoFactor": 1.1,
-                  "target": "room"
-                }
-              }
+              "quality": "wrong"
             },
             {
               "id": "c",
@@ -3621,57 +3628,10 @@
               "tempoFactor": 1.2,
               "target": "room"
             }
-          }
-        },
-        {
-          "axis": "phronesis",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "best"
-            },
-            {
-              "id": "d",
-              "quality": "ok"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.08,
-              "stamina": 0,
-              "reputation": -2
-            },
-            "target": "table"
-          }
+          },
+          "legal": true
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": -0.5,
-          "satisfaction": 0.05,
-          "stamina": -0.1,
-          "reputation": 0
-        },
-        "target": "table"
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.5,
-          "satisfaction": -0.2,
-          "stamina": -0.1,
-          "reputation": -3
-        },
-        "target": "table"
-      }
+      ]
     },
     {
       "id": "vb28-kylen-stannar",
@@ -3681,6 +3641,28 @@
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": -0.8,
+          "satisfaction": 0.03,
+          "stamina": -0.08,
+          "reputation": 0
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -1,
+          "satisfaction": 0,
+          "stamina": -0.05,
+          "reputation": -1
+        },
+        "target": "room"
+      },
+      "form": "triad",
+      "legal": {
+        "legalReviewed": false
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -3712,48 +3694,23 @@
               "tempoFactor": 1,
               "target": "room"
             }
-          }
-        },
-        {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "best"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "ok"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": -0.2,
-              "satisfaction": 0,
-              "stamina": -0.05,
-              "reputation": -1
-            },
-            "target": "room"
-          }
+          },
+          "legal": true
         },
         {
           "axis": "phronesis",
           "options": [
             {
               "id": "a",
-              "quality": "wrong"
+              "quality": "ok"
             },
             {
               "id": "b",
-              "quality": "best"
+              "quality": "wrong"
             },
             {
               "id": "c",
-              "quality": "ok"
+              "quality": "best"
             }
           ],
           "fail": {
@@ -3764,43 +3721,15 @@
               "reputation": 0
             },
             "target": "room"
-          }
-        }
-      ],
-      "success": {
-        "effects": {
-          "cash": -0.8,
-          "satisfaction": 0.03,
-          "stamina": -0.08,
-          "reputation": 0
+          },
+          "legal": true
         },
-        "target": "room"
-      },
-      "staff": {
-        "effects": {
-          "cash": -1,
-          "satisfaction": 0,
-          "stamina": -0.05,
-          "reputation": -1
-        },
-        "target": "room"
-      }
-    },
-    {
-      "id": "vb29-brak",
-      "track": "sommellerie",
-      "arc": "crisis",
-      "chainOnly": true,
-      "needsTable": false,
-      "placeholder": false,
-      "reference": null,
-      "steps": [
         {
-          "axis": "episteme",
+          "axis": "techne",
           "options": [
             {
               "id": "a",
-              "quality": "wrong"
+              "quality": "best"
             },
             {
               "id": "b",
@@ -3812,87 +3741,30 @@
             },
             {
               "id": "d",
-              "quality": "best"
+              "quality": "wrong"
             }
           ],
           "fail": {
             "effects": {
-              "cash": 0,
-              "satisfaction": -0.1,
+              "cash": -0.2,
+              "satisfaction": 0,
               "stamina": -0.05,
               "reputation": -1
             },
             "target": "room"
-          }
-        },
-        {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "best"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.1,
-              "stamina": -0.15,
-              "reputation": -1
-            },
-            "target": "room",
-            "ongoing": {
-              "satisfactionPerMinute": -0.06,
-              "staminaPerMinute": -0.03,
-              "tempoFactor": 1.05,
-              "target": "room"
-            }
-          }
-        },
-        {
-          "axis": "phronesis",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "ok"
-            },
-            {
-              "id": "c",
-              "quality": "best"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.2,
-              "stamina": 0,
-              "reputation": -2
-            },
-            "target": "room",
-            "room": {
-              "leave": 2
-            },
-            "ongoing": {
-              "satisfactionPerMinute": -0.12,
-              "staminaPerMinute": -0.06,
-              "tempoFactor": 1.1,
-              "target": "room"
-            }
-          }
+          },
+          "legal": true
         }
-      ],
+      ]
+    },
+    {
+      "id": "vb29-brak",
+      "track": "sommellerie",
+      "arc": "crisis",
+      "chainOnly": true,
+      "needsTable": false,
+      "placeholder": false,
+      "reference": null,
       "success": {
         "effects": {
           "cash": -0.2,
@@ -3913,7 +3785,119 @@
         "room": {
           "leave": 2
         }
-      }
+      },
+      "form": "triad",
+      "legal": {
+        "legalReviewed": false
+      },
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.1,
+              "stamina": -0.05,
+              "reputation": -1
+            },
+            "target": "room"
+          },
+          "legal": true
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "ok"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.2,
+              "stamina": 0,
+              "reputation": -2
+            },
+            "target": "room",
+            "ongoing": {
+              "satisfactionPerMinute": -0.12,
+              "staminaPerMinute": 0,
+              "tempoFactor": 1,
+              "target": "room"
+            }
+          },
+          "legal": true
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "ok",
+              "grip": "experience"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            },
+            {
+              "id": "d",
+              "quality": "ok",
+              "grip": "analysis"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.1,
+              "stamina": -0.15,
+              "reputation": -1
+            },
+            "target": "room",
+            "ongoing": {
+              "satisfactionPerMinute": -0.06,
+              "staminaPerMinute": -0.03,
+              "tempoFactor": 1.05,
+              "target": "room"
+            },
+            "room": {
+              "leave": 2
+            }
+          },
+          "legal": true
+        }
+      ]
     },
     {
       "id": "vb30-korkgasten",
@@ -3923,6 +3907,28 @@
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": -0.5,
+          "satisfaction": 0.25,
+          "stamina": 0,
+          "reputation": 1
+        },
+        "target": "table"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.3,
+          "satisfaction": -0.15,
+          "stamina": 0,
+          "reputation": -1
+        },
+        "target": "table",
+        "room": {
+          "leave": 2
+        }
+      },
+      "form": "triad",
       "steps": [
         {
           "axis": "episteme",
@@ -3951,45 +3957,15 @@
           }
         },
         {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "ok"
-            },
-            {
-              "id": "d",
-              "quality": "best"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": -0.1,
-              "satisfaction": -0.1,
-              "stamina": 0,
-              "reputation": -1
-            },
-            "target": "table"
-          }
-        },
-        {
           "axis": "phronesis",
           "options": [
             {
               "id": "a",
-              "quality": "ok"
+              "quality": "best"
             },
             {
               "id": "b",
-              "quality": "best"
+              "quality": "ok"
             },
             {
               "id": "c",
@@ -4004,9 +3980,6 @@
               "reputation": -2
             },
             "target": "table",
-            "room": {
-              "leave": 2
-            },
             "ongoing": {
               "satisfactionPerMinute": -0.08,
               "staminaPerMinute": 0,
@@ -4014,35 +3987,83 @@
               "target": "room"
             }
           }
-        }
-      ],
-      "success": {
-        "effects": {
-          "cash": -0.5,
-          "satisfaction": 0.25,
-          "stamina": 0,
-          "reputation": 1
         },
-        "target": "table"
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.3,
-          "satisfaction": -0.15,
-          "stamina": 0,
-          "reputation": -1
-        },
-        "target": "table",
-        "room": {
-          "leave": 2
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best",
+              "cost": 120
+            },
+            {
+              "id": "c",
+              "quality": "ok",
+              "grip": "analysis"
+            },
+            {
+              "id": "d",
+              "quality": "ok",
+              "grip": "experience",
+              "cost": 120
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.1,
+              "satisfaction": -0.1,
+              "stamina": 0,
+              "reputation": -1
+            },
+            "target": "table",
+            "room": {
+              "leave": 2
+            }
+          }
         }
-      }
+      ]
     },
     {
       "id": "vb31-servetter-och-isen",
       "track": "sommellerie",
       "arc": "rush",
       "chainOnly": false,
+      "needsTable": false,
+      "placeholder": false,
+      "reference": null,
+      "success": {
+        "effects": {
+          "cash": 0.3,
+          "satisfaction": 0.08,
+          "stamina": -0.03,
+          "reputation": 0
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": -0.3,
+          "satisfaction": -0.08,
+          "stamina": -0.05,
+          "reputation": 0
+        },
+        "target": "room",
+        "ongoing": {
+          "satisfactionPerMinute": -0.1,
+          "staminaPerMinute": -0.03,
+          "tempoFactor": 1.25,
+          "target": "room"
+        }
+      },
+      "form": "triad",
+      "lineBySituation": {
+        "middag": "a",
+        "efter-middag": "b"
+      },
       "when": {
         "from": "19:30",
         "to": "22:00"
@@ -4061,9 +4082,6 @@
           }
         }
       ],
-      "needsTable": false,
-      "placeholder": false,
-      "reference": null,
       "steps": [
         {
           "axis": "episteme",
@@ -4092,32 +4110,6 @@
           }
         },
         {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "best"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": -0.45,
-              "satisfaction": -0.03,
-              "stamina": -0.07,
-              "reputation": 0
-            },
-            "target": "room"
-          }
-        },
-        {
           "axis": "phronesis",
           "options": [
             {
@@ -4126,57 +4118,11 @@
             },
             {
               "id": "b",
-              "quality": "wrong",
-              "in": {
-                "middag": {
-                  "quality": "best"
-                }
-              },
-              "fail": {
-                "effects": {
-                  "cash": 0,
-                  "satisfaction": -0.05,
-                  "stamina": 0,
-                  "reputation": 0,
-                  "credit": -1
-                },
-                "target": "room",
-                "ongoing": {
-                  "satisfactionPerMinute": -0.12,
-                  "staminaPerMinute": -0.03,
-                  "tempoFactor": 1.3,
-                  "target": "room"
-                }
-              }
-            },
-            {
-              "id": "c",
               "quality": "wrong"
             },
             {
-              "id": "d",
-              "quality": "best",
-              "in": {
-                "middag": {
-                  "quality": "wrong"
-                }
-              },
-              "fail": {
-                "effects": {
-                  "cash": 0,
-                  "satisfaction": -0.05,
-                  "stamina": 0,
-                  "reputation": 0,
-                  "credit": -1
-                },
-                "target": "room",
-                "ongoing": {
-                  "satisfactionPerMinute": -0.1,
-                  "staminaPerMinute": -0.02,
-                  "tempoFactor": 1.2,
-                  "target": "room"
-                }
-              }
+              "id": "c",
+              "quality": "best"
             }
           ],
           "fail": {
@@ -4189,37 +4135,61 @@
             "target": "room",
             "ongoing": {
               "satisfactionPerMinute": -0.1,
-              "staminaPerMinute": -0.03,
-              "tempoFactor": 1.25,
+              "staminaPerMinute": 0,
+              "tempoFactor": 1,
               "target": "room"
             }
           }
-        }
-      ],
-      "success": {
-        "effects": {
-          "cash": 0.3,
-          "satisfaction": 0.08,
-          "stamina": -0.03,
-          "reputation": 0
         },
-        "target": "room"
-      },
-      "staff": {
-        "effects": {
-          "cash": -0.3,
-          "satisfaction": -0.08,
-          "stamina": -0.05,
-          "reputation": 0
-        },
-        "target": "room",
-        "ongoing": {
-          "satisfactionPerMinute": -0.1,
-          "staminaPerMinute": -0.03,
-          "tempoFactor": 1.25,
-          "target": "room"
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "ok",
+              "grip": "experience",
+              "in": {
+                "middag": {
+                  "quality": "wrong"
+                }
+              }
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "ok",
+              "grip": "analysis",
+              "in": {
+                "middag": {
+                  "quality": "best"
+                }
+              }
+            },
+            {
+              "id": "d",
+              "quality": "best",
+              "in": {
+                "middag": {
+                  "quality": "ok",
+                  "grip": "analysis"
+                }
+              }
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": -0.45,
+              "satisfaction": -0.03,
+              "stamina": -0.07,
+              "reputation": 0
+            },
+            "target": "room"
+          }
         }
-      }
+      ]
     },
     {
       "id": "vb32-fodelsedagen",
@@ -4355,6 +4325,26 @@
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": 0.1,
+          "stamina": 0,
+          "reputation": 0.01
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": -0.1,
+          "stamina": -0.05,
+          "reputation": 0
+        },
+        "target": "room"
+      },
+      "family": "event-vase",
+      "form": "triad",
       "steps": [
         {
           "axis": "episteme",
@@ -4387,41 +4377,11 @@
           }
         },
         {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "best"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            },
-            {
-              "id": "d",
-              "quality": "wrong"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.08,
-              "stamina": -0.08,
-              "reputation": 0
-            },
-            "target": "room"
-          }
-        },
-        {
           "axis": "phronesis",
           "options": [
             {
               "id": "a",
-              "quality": "ok"
+              "quality": "best"
             },
             {
               "id": "b",
@@ -4429,10 +4389,6 @@
             },
             {
               "id": "c",
-              "quality": "best"
-            },
-            {
-              "id": "d",
               "quality": "ok"
             }
           ],
@@ -4446,32 +4402,45 @@
             "target": "room",
             "ongoing": {
               "satisfactionPerMinute": -0.05,
-              "staminaPerMinute": -0.02,
-              "tempoFactor": 1.1,
+              "staminaPerMinute": 0,
+              "tempoFactor": 1,
               "target": "room"
             }
           }
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "ok",
+              "grip": "experience"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            },
+            {
+              "id": "d",
+              "quality": "ok",
+              "grip": "analysis"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.08,
+              "stamina": -0.08,
+              "reputation": 0
+            },
+            "target": "room"
+          }
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": 0,
-          "satisfaction": 0.1,
-          "stamina": 0,
-          "reputation": 0.01
-        },
-        "target": "room"
-      },
-      "staff": {
-        "effects": {
-          "cash": 0,
-          "satisfaction": -0.1,
-          "stamina": -0.05,
-          "reputation": 0
-        },
-        "target": "room"
-      },
-      "family": "event-vase"
+      ]
     },
     {
       "id": "vb34-vinglar",
@@ -4481,6 +4450,29 @@
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": 0.1,
+          "stamina": 0,
+          "reputation": 0.01
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": -0.1,
+          "stamina": -0.05,
+          "reputation": 0
+        },
+        "target": "room"
+      },
+      "family": "event-drunk",
+      "form": "triad",
+      "legal": {
+        "legalReviewed": false
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -4510,37 +4502,8 @@
               "reputation": 0
             },
             "target": "room"
-          }
-        },
-        {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "best"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            },
-            {
-              "id": "d",
-              "quality": "wrong"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.08,
-              "stamina": -0.08,
-              "reputation": 0
-            },
-            "target": "room"
-          }
+          },
+          "legal": true
         },
         {
           "axis": "phronesis",
@@ -4555,10 +4518,6 @@
             },
             {
               "id": "c",
-              "quality": "ok"
-            },
-            {
-              "id": "d",
               "quality": "wrong"
             }
           ],
@@ -4572,32 +4531,47 @@
             "target": "room",
             "ongoing": {
               "satisfactionPerMinute": -0.05,
-              "staminaPerMinute": -0.02,
-              "tempoFactor": 1.1,
+              "staminaPerMinute": 0,
+              "tempoFactor": 1,
               "target": "room"
             }
-          }
+          },
+          "legal": true
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "ok",
+              "grip": "analysis"
+            },
+            {
+              "id": "b",
+              "quality": "ok",
+              "grip": "experience"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.08,
+              "stamina": -0.08,
+              "reputation": 0
+            },
+            "target": "room"
+          },
+          "legal": true
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": 0,
-          "satisfaction": 0.1,
-          "stamina": 0,
-          "reputation": 0.01
-        },
-        "target": "room"
-      },
-      "staff": {
-        "effects": {
-          "cash": 0,
-          "satisfaction": -0.1,
-          "stamina": -0.05,
-          "reputation": 0
-        },
-        "target": "room"
-      },
-      "family": "event-drunk"
+      ]
     },
     {
       "id": "vb36-passet",
@@ -4607,104 +4581,6 @@
       "needsTable": false,
       "placeholder": false,
       "reference": null,
-      "steps": [
-        {
-          "axis": "episteme",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "best"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            },
-            {
-              "id": "d",
-              "quality": "wrong"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.08,
-              "stamina": 0,
-              "reputation": 0
-            },
-            "target": "room"
-          }
-        },
-        {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "best"
-            },
-            {
-              "id": "d",
-              "quality": "wrong"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.08,
-              "stamina": -0.08,
-              "reputation": 0
-            },
-            "target": "room"
-          }
-        },
-        {
-          "axis": "phronesis",
-          "options": [
-            {
-              "id": "a",
-              "quality": "ok"
-            },
-            {
-              "id": "b",
-              "quality": "best"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            },
-            {
-              "id": "d",
-              "quality": "ok"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.15,
-              "stamina": 0,
-              "reputation": 0
-            },
-            "target": "room",
-            "ongoing": {
-              "satisfactionPerMinute": -0.05,
-              "staminaPerMinute": -0.02,
-              "tempoFactor": 1.1,
-              "target": "room"
-            }
-          }
-        }
-      ],
       "success": {
         "effects": {
           "cash": 0,
@@ -4723,7 +4599,110 @@
         },
         "target": "room"
       },
-      "family": "event-kitchen"
+      "family": "event-kitchen",
+      "form": "triad",
+      "legal": {
+        "legalReviewed": false
+      },
+      "steps": [
+        {
+          "axis": "episteme",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            },
+            {
+              "id": "d",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.08,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "room"
+          },
+          "legal": true
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "ok"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.15,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "room",
+            "ongoing": {
+              "satisfactionPerMinute": -0.05,
+              "staminaPerMinute": 0,
+              "tempoFactor": 1,
+              "target": "room"
+            }
+          },
+          "legal": true
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "ok",
+              "grip": "analysis"
+            },
+            {
+              "id": "c",
+              "quality": "ok",
+              "grip": "experience"
+            },
+            {
+              "id": "d",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.08,
+              "stamina": -0.08,
+              "reputation": 0
+            },
+            "target": "room"
+          },
+          "legal": true
+        }
+      ]
     },
     {
       "id": "vb35-tillsynen-a",
@@ -4733,6 +4712,32 @@
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": 0.05,
+          "stamina": 0,
+          "reputation": 0.01
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": -0.05,
+          "stamina": -0.03,
+          "reputation": -0.02
+        },
+        "target": "room"
+      },
+      "family": "event-inspection",
+      "form": "triad",
+      "when": {
+        "inspection": "A"
+      },
+      "legal": {
+        "legalReviewed": false
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -4762,74 +4767,23 @@
               "reputation": 0
             },
             "target": "room"
-          }
-        },
-        {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            },
-            {
-              "id": "d",
-              "quality": "best"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.08,
-              "stamina": -0.08,
-              "reputation": 0
-            },
-            "target": "room"
-          }
+          },
+          "legal": true
         },
         {
           "axis": "phronesis",
           "options": [
             {
               "id": "a",
-              "quality": "wrong",
-              "fail": {
-                "effects": {
-                  "cash": 0,
-                  "satisfaction": -0.05,
-                  "stamina": 0,
-                  "reputation": -0.05
-                },
-                "target": "room"
-              }
+              "quality": "best"
             },
             {
               "id": "b",
-              "quality": "wrong",
-              "fail": {
-                "effects": {
-                  "cash": 0,
-                  "satisfaction": -0.05,
-                  "stamina": 0,
-                  "reputation": -0.02
-                },
-                "target": "room"
-              }
+              "quality": "wrong"
             },
             {
               "id": "c",
               "quality": "ok"
-            },
-            {
-              "id": "d",
-              "quality": "best"
             }
           ],
           "fail": {
@@ -4842,35 +4796,47 @@
             "target": "room",
             "ongoing": {
               "satisfactionPerMinute": -0.05,
-              "staminaPerMinute": -0.02,
-              "tempoFactor": 1.1,
+              "staminaPerMinute": 0,
+              "tempoFactor": 1,
               "target": "room"
             }
-          }
+          },
+          "legal": true
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "wrong"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "ok",
+              "grip": "analysis"
+            },
+            {
+              "id": "d",
+              "quality": "ok",
+              "grip": "experience"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.08,
+              "stamina": -0.08,
+              "reputation": 0
+            },
+            "target": "room"
+          },
+          "legal": true
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": 0,
-          "satisfaction": 0.05,
-          "stamina": 0,
-          "reputation": 0.01
-        },
-        "target": "room"
-      },
-      "staff": {
-        "effects": {
-          "cash": 0,
-          "satisfaction": -0.05,
-          "stamina": -0.03,
-          "reputation": -0.02
-        },
-        "target": "room"
-      },
-      "family": "event-inspection",
-      "when": {
-        "inspection": "A"
-      }
+      ]
     },
     {
       "id": "vb35-tillsynen-b",
@@ -4880,6 +4846,32 @@
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": 0.05,
+          "stamina": 0,
+          "reputation": 0.01
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": -0.05,
+          "stamina": -0.03,
+          "reputation": -0.02
+        },
+        "target": "room"
+      },
+      "family": "event-inspection",
+      "form": "triad",
+      "when": {
+        "inspection": "B"
+      },
+      "legal": {
+        "legalReviewed": false
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -4909,74 +4901,23 @@
               "reputation": 0
             },
             "target": "room"
-          }
-        },
-        {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            },
-            {
-              "id": "d",
-              "quality": "best"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.08,
-              "stamina": -0.08,
-              "reputation": 0
-            },
-            "target": "room"
-          }
+          },
+          "legal": true
         },
         {
           "axis": "phronesis",
           "options": [
             {
               "id": "a",
-              "quality": "wrong",
-              "fail": {
-                "effects": {
-                  "cash": 0,
-                  "satisfaction": -0.05,
-                  "stamina": 0,
-                  "reputation": -0.05
-                },
-                "target": "room"
-              }
+              "quality": "wrong"
             },
             {
               "id": "b",
-              "quality": "best"
-            },
-            {
-              "id": "c",
               "quality": "ok"
             },
             {
-              "id": "d",
-              "quality": "wrong",
-              "fail": {
-                "effects": {
-                  "cash": 0,
-                  "satisfaction": -0.05,
-                  "stamina": 0,
-                  "reputation": -0.05
-                },
-                "target": "room"
-              }
+              "id": "c",
+              "quality": "best"
             }
           ],
           "fail": {
@@ -4989,35 +4930,47 @@
             "target": "room",
             "ongoing": {
               "satisfactionPerMinute": -0.05,
-              "staminaPerMinute": -0.02,
-              "tempoFactor": 1.1,
+              "staminaPerMinute": 0,
+              "tempoFactor": 1,
               "target": "room"
             }
-          }
+          },
+          "legal": true
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "best"
+            },
+            {
+              "id": "b",
+              "quality": "ok",
+              "grip": "analysis"
+            },
+            {
+              "id": "c",
+              "quality": "ok",
+              "grip": "experience"
+            },
+            {
+              "id": "d",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.08,
+              "stamina": -0.08,
+              "reputation": 0
+            },
+            "target": "room"
+          },
+          "legal": true
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": 0,
-          "satisfaction": 0.05,
-          "stamina": 0,
-          "reputation": 0.01
-        },
-        "target": "room"
-      },
-      "staff": {
-        "effects": {
-          "cash": 0,
-          "satisfaction": -0.05,
-          "stamina": -0.03,
-          "reputation": -0.02
-        },
-        "target": "room"
-      },
-      "family": "event-inspection",
-      "when": {
-        "inspection": "B"
-      }
+      ]
     },
     {
       "id": "vb35-tillsynen-c",
@@ -5027,6 +4980,32 @@
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": 0.05,
+          "stamina": 0,
+          "reputation": 0.01
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": -0.05,
+          "stamina": -0.03,
+          "reputation": -0.02
+        },
+        "target": "room"
+      },
+      "family": "event-inspection",
+      "form": "triad",
+      "when": {
+        "inspection": "C"
+      },
+      "legal": {
+        "legalReviewed": false
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -5056,14 +5035,49 @@
               "reputation": 0
             },
             "target": "room"
-          }
+          },
+          "legal": true
+        },
+        {
+          "axis": "phronesis",
+          "options": [
+            {
+              "id": "a",
+              "quality": "ok"
+            },
+            {
+              "id": "b",
+              "quality": "best"
+            },
+            {
+              "id": "c",
+              "quality": "wrong"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.15,
+              "stamina": 0,
+              "reputation": 0
+            },
+            "target": "room",
+            "ongoing": {
+              "satisfactionPerMinute": -0.05,
+              "staminaPerMinute": 0,
+              "tempoFactor": 1,
+              "target": "room"
+            }
+          },
+          "legal": true
         },
         {
           "axis": "techne",
           "options": [
             {
               "id": "a",
-              "quality": "wrong"
+              "quality": "ok",
+              "grip": "analysis"
             },
             {
               "id": "b",
@@ -5086,85 +5100,10 @@
               "reputation": 0
             },
             "target": "room"
-          }
-        },
-        {
-          "axis": "phronesis",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong",
-              "fail": {
-                "effects": {
-                  "cash": 0,
-                  "satisfaction": -0.05,
-                  "stamina": 0,
-                  "reputation": -0.02
-                },
-                "target": "room"
-              }
-            },
-            {
-              "id": "b",
-              "quality": "ok"
-            },
-            {
-              "id": "c",
-              "quality": "wrong",
-              "fail": {
-                "effects": {
-                  "cash": 0,
-                  "satisfaction": -0.05,
-                  "stamina": 0,
-                  "reputation": -0.02
-                },
-                "target": "room"
-              }
-            },
-            {
-              "id": "d",
-              "quality": "best"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.15,
-              "stamina": 0,
-              "reputation": 0
-            },
-            "target": "room",
-            "ongoing": {
-              "satisfactionPerMinute": -0.05,
-              "staminaPerMinute": -0.02,
-              "tempoFactor": 1.1,
-              "target": "room"
-            }
-          }
+          },
+          "legal": true
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": 0,
-          "satisfaction": 0.05,
-          "stamina": 0,
-          "reputation": 0.01
-        },
-        "target": "room"
-      },
-      "staff": {
-        "effects": {
-          "cash": 0,
-          "satisfaction": -0.05,
-          "stamina": -0.03,
-          "reputation": -0.02
-        },
-        "target": "room"
-      },
-      "family": "event-inspection",
-      "when": {
-        "inspection": "C"
-      }
+      ]
     },
     {
       "id": "vb35-tillsynen-d",
@@ -5174,6 +5113,32 @@
       "needsTable": false,
       "placeholder": false,
       "reference": null,
+      "success": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": 0.05,
+          "stamina": 0,
+          "reputation": 0.01
+        },
+        "target": "room"
+      },
+      "staff": {
+        "effects": {
+          "cash": 0,
+          "satisfaction": -0.05,
+          "stamina": -0.03,
+          "reputation": -0.02
+        },
+        "target": "room"
+      },
+      "family": "event-inspection",
+      "form": "triad",
+      "when": {
+        "inspection": "D"
+      },
+      "legal": {
+        "legalReviewed": false
+      },
       "steps": [
         {
           "axis": "episteme",
@@ -5203,73 +5168,22 @@
               "reputation": 0
             },
             "target": "room"
-          }
-        },
-        {
-          "axis": "techne",
-          "options": [
-            {
-              "id": "a",
-              "quality": "wrong"
-            },
-            {
-              "id": "b",
-              "quality": "wrong"
-            },
-            {
-              "id": "c",
-              "quality": "wrong"
-            },
-            {
-              "id": "d",
-              "quality": "best"
-            }
-          ],
-          "fail": {
-            "effects": {
-              "cash": 0,
-              "satisfaction": -0.08,
-              "stamina": -0.08,
-              "reputation": 0
-            },
-            "target": "room"
-          }
+          },
+          "legal": true
         },
         {
           "axis": "phronesis",
           "options": [
             {
               "id": "a",
-              "quality": "wrong",
-              "fail": {
-                "effects": {
-                  "cash": 0,
-                  "satisfaction": -0.05,
-                  "stamina": 0,
-                  "reputation": -0.05
-                },
-                "target": "room"
-              }
-            },
-            {
-              "id": "b",
               "quality": "best"
             },
             {
-              "id": "c",
-              "quality": "wrong",
-              "fail": {
-                "effects": {
-                  "cash": 0,
-                  "satisfaction": -0.05,
-                  "stamina": 0,
-                  "reputation": -0.02
-                },
-                "target": "room"
-              }
+              "id": "b",
+              "quality": "wrong"
             },
             {
-              "id": "d",
+              "id": "c",
               "quality": "ok"
             }
           ],
@@ -5283,35 +5197,47 @@
             "target": "room",
             "ongoing": {
               "satisfactionPerMinute": -0.05,
-              "staminaPerMinute": -0.02,
-              "tempoFactor": 1.1,
+              "staminaPerMinute": 0,
+              "tempoFactor": 1,
               "target": "room"
             }
-          }
+          },
+          "legal": true
+        },
+        {
+          "axis": "techne",
+          "options": [
+            {
+              "id": "a",
+              "quality": "ok",
+              "grip": "experience"
+            },
+            {
+              "id": "b",
+              "quality": "wrong"
+            },
+            {
+              "id": "c",
+              "quality": "best"
+            },
+            {
+              "id": "d",
+              "quality": "ok",
+              "grip": "analysis"
+            }
+          ],
+          "fail": {
+            "effects": {
+              "cash": 0,
+              "satisfaction": -0.08,
+              "stamina": -0.08,
+              "reputation": 0
+            },
+            "target": "room"
+          },
+          "legal": true
         }
-      ],
-      "success": {
-        "effects": {
-          "cash": 0,
-          "satisfaction": 0.05,
-          "stamina": 0,
-          "reputation": 0.01
-        },
-        "target": "room"
-      },
-      "staff": {
-        "effects": {
-          "cash": 0,
-          "satisfaction": -0.05,
-          "stamina": -0.03,
-          "reputation": -0.02
-        },
-        "target": "room"
-      },
-      "family": "event-inspection",
-      "when": {
-        "inspection": "D"
-      }
+      ]
     },
     {
       "id": "vb40-karaffen",

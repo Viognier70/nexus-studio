@@ -4,7 +4,7 @@
 // högst 1,5 gånger det kortaste. Testet rapporterar och fäller inte.
 //
 //   SEEDS=20 WRITE_REPORTS=1 npx vitest run src/strategic/testHarness/__tests__/order306bSpelartyper.test.ts
-// skriver reports/order306b/spelartyper.json och reports/order306b/langd.json.
+// skriver reports/order306b/spelartyper.json och reports/order306b/langd.json (REPORT_DIR=order326 skriver dit).
 
 import { describe, expect, it } from 'vitest';
 import { playDay, setKvittStopAfter, type ScenarioAnswer } from '../weekHarness';
@@ -199,7 +199,8 @@ describe('ORDER 306b A10 — spelartyperna och A4:s längder', () => {
     const { mkdirSync, writeFileSync } = await import('node:fs');
     const { dirname, resolve } = await import('node:path');
     const { fileURLToPath } = await import('node:url');
-    const dir = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports/order306b');
+    // ORDER 326 — REPORT_DIR väljer katalogen (förval order306b).
+    const dir = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports', process.env.REPORT_DIR ?? 'order306b');
     mkdirSync(dir, { recursive: true });
     writeFileSync(resolve(dir, process.env.LANGD_FILE ?? 'langd.json'), JSON.stringify({
       definition: 'A4: svarens längd i ord (mellanslag) i de elva situationerna. overWords: fler än 12 ord i steg 1–2 eller 15 i steg 3; overRatio: i steg 3 längsta / kortaste över 1,5. step3Longest: vinbarens och foodtruckens situationer i formen, med antalet ord i varje svar i steg 3 och om det hela greppet är längst (lika långt räknas). longestIsBest: steg (utom ordningskorten) i de elva där det längsta svaret i tecken är det bästa, mot slumpens väntevärde; oldFormLongestIsBest: detsamma i vinbarens situationer i den gamla formen. bank (306b.3): per del av vinbarens bank, det längsta svaret i ord och tecken som är det bästa, och kvaliteten på gissarens val (längst i tecken) mot slumpens. longestWrong (306b.4): per del, andelen fel bland de längsta svaren (lika långa delar) mot andelen fel bland alla (slumpen), diff = skillnaden; checked: delen ska ligga inom ±0,1 (order306b4.test.ts), strategic/testHarness/longestAnswer.ts. sv: Anders text (vinbar.text.sv.draft.json); en: översättningen (vinbar.text.en.json).',
@@ -239,7 +240,7 @@ describe('ORDER 306b A10 — spelartyperna och A4:s längder', () => {
     const step2 = (vinbarMeta as { incidents: { id: string; form?: string; steps: { fail: { effects: Record<string, number> } }[] }[] }).incidents
       .filter((i) => i.form === 'triad').map((i) => ({ id: i.id, ...i.steps[1].fail.effects }));
     writeFileSync(resolve(dir, 'spelartyper.json'), JSON.stringify({
-      definition: 'Vinbaren, vecka 2 (DAYS dagar), medaljerna PLAYERS.baseline, frö 1..SEEDS, texterna på engelska (spelets förval; gissaren mäter längden i tecken). Spelartyperna: rimlig (bästa svaret), svag (sämsta), gissaren (det längsta alternativet; ordningskorten fyra på måfå), slumpen (ett alternativ på måfå; ordningskorten fyra på måfå), ignorerar (svarar inte), undviker längsta (på måfå bland alternativen som inte är längst i tecken; alla om alla är lika långa; ordningskorten fyra på måfå). stopAfter: kvitt eller dubbelt, stanna efter n klarade steg (0 = gå alltid vidare; weekHarness setKvittStopAfter). resultSek: kassans förändring utan avräkningens påfyllnad och amortering (som order270 week-players). stoppedShare: andel situationer som slutade med att spelaren stannade. triad: de elva situationerna i formen analys → upplevelse → handling (fullGrip/halfGrip: klarade med helt/halvt grepp; wrongLastStep: fel i steg 3; staff: tiden ute; missedOnTheWay: fel i steg 1 eller 2). credits och incidentCashSek: loggens deltas. step2FailEffects: följden av fel i steg 2 (meta, i scenarioenheter).',
+      definition: 'Vinbaren, vecka 2 (DAYS dagar), medaljerna PLAYERS.baseline, frö 1..SEEDS, texterna på engelska (spelets förval; gissaren mäter längden i tecken). Spelartyperna: rimlig (bästa svaret), svag (sämsta), gissaren (det längsta alternativet; ordningskorten fyra på måfå), slumpen (ett alternativ på måfå; ordningskorten fyra på måfå), ignorerar (svarar inte), undviker längsta (på måfå bland alternativen som inte är längst i tecken; alla om alla är lika långa; ordningskorten fyra på måfå). stopAfter: kvitt eller dubbelt, stanna efter n klarade steg (0 = gå alltid vidare; weekHarness setKvittStopAfter). resultSek: kassans förändring utan avräkningens påfyllnad och amortering (som order270 week-players). stoppedShare: andel situationer som slutade med att spelaren stannade. triad: situationerna i formen analys → upplevelse → handling (de elva i 306b; sedan ORDER 326 alla vinbarens som är med i spelet) (fullGrip/halfGrip: klarade med helt/halvt grepp; wrongLastStep: fel i steg 3; staff: tiden ute; missedOnTheWay: fel i steg 1 eller 2). credits och incidentCashSek: loggens deltas. step2FailEffects: följden av fel i steg 2 (meta, i scenarioenheter).',
       seeds, days, table, step2FailEffects: step2, rows
     }, null, 2) + '\n');
   }, 7200000);

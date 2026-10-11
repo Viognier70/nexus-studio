@@ -205,6 +205,25 @@ const GUEST_TOPPINGS: readonly HeadToppingId[] = ['shortCut', 'ruffled', 'grayHa
 /** Så många gäster kan synas samtidigt: platserna och en kö (ORDER 315b del 2: bistrons 31). */
 export const WINE_BAR_GUEST_POOL = 48;
 
+/** ORDER 326 (D11 (46), GESTURE_RULES.seekEyeTarget) — gästen som söker blicken vänder huvudet mot den närmaste i
+ *  personalen som syns (förra bildrutans plats), annars mot baren. Vinkeln i gästens ram, radianer; aldrig mot kameran. */
+const SEEK_MAX_YAW = 1.3;
+const SEEK_BAR = { x: (WINE_BAR_PLAN.bar.x0 + WINE_BAR_PLAN.bar.x1) / 2, z: (WINE_BAR_PLAN.bar.z0 + WINE_BAR_PLAN.bar.z1) / 2 };
+function seekEyeYaw(guest: FigureRig, staff: readonly FigureRig[]): number {
+  const g = guest.root.position;
+  let tx = SEEK_BAR.x, tz = SEEK_BAR.z, best = Infinity;
+  for (const r of staff) {
+    if (!r.root.visible) continue;
+    const d = Math.hypot(r.root.position.x - g.x, r.root.position.z - g.z);
+    if (d < best) { best = d; tx = r.root.position.x; tz = r.root.position.z; }
+  }
+  let a = Math.atan2(tx - g.x, tz - g.z) - guest.root.rotation.y;
+  while (a > Math.PI) a -= 2 * Math.PI;
+  while (a < -Math.PI) a += 2 * Math.PI;
+  // Huvudet och axlarna vrids inte längre än så; den som står bakom gästen söks över axeln.
+  return Math.max(-SEEK_MAX_YAW, Math.min(SEEK_MAX_YAW, a));
+}
+
 /**
  * ORDER 271 — kvällsljuset i vinbaren (FLAGS.lighting: rummet skapar inga
  * ljuskällor, scenen gör det). Fem punktljus, inte ett per ljus eller pendel:
@@ -915,7 +934,7 @@ export function WineBarFigures({ room, mood }: Props) {
       if (walkSample === sample && sample.seated && !isFigure && simGuest) {
         const partySize = simGuest.partyId ? s.guests.reduce((n, g) => n + (g.partyId === simGuest.partyId ? 1 : 0), 0) : 1;
         gesture = cast.moodGestures.sample(i, sample.guestId, clip ? cast.stage.guestClipId(i) : null, guestMoodValue(simGuest, s.day.roomMoodLift ?? 0), s.simTime, seatKind, s.day.consequence, s.seed ?? 0,
-          { state: simGuest.state, stateSinceS: s.simTime - simGuest.stateTime, partyId: simGuest.partyId ?? null, partySize });
+          { state: simGuest.state, stateSinceS: s.simTime - simGuest.stateTime, partyId: simGuest.partyId ?? null, partySize, seekYaw: seekEyeYaw(rig, cast.staffRigs) });
       } else {
         cast.moodGestures.reset(i);
       }

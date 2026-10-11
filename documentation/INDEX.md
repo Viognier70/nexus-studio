@@ -145,6 +145,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_321_RAPPORT.md`: ORDER 321 — Provspelsläge: ?prov, börja direkt i foodtrucken, vinbaren eller bistron (rapport).
 - `ORDER_322_RAPPORT.md`: ORDER 322 — Efter provspel 2026-10-09: kvitt eller dubbelt, provspelets namn och Följd, listan över byns skillnader mot kartan och rättningen efter Anders beslut, etiketterna och vägändarna, uppfarten vid Länsmansgården och etiketterna i alla zoomnivåer (rapport, del A, B och C).
 - `ORDER_323_RAPPORT.md`: ORDER 323 — Efter provspel 2026-10-09 kväll: språket, korten som inte får plats, kvitt eller dubbelt, fönstren, fikat per plats, gatorna, Byn i kväll och felöversättningarna, provspelets namn, föremålen på borden och panelerna vid Krogen (rapport).
+- `ORDER_326_RAPPORT.md`: ORDER 326 — Vinbarens 29 äldre situationer i den nya formen (306c), att söka personalens blick (D11 del 2), det nära ansiktet vid vagnen och ft06 på engelska (rapport).
 - `ORDER_325_RAPPORT.md`: ORDER 325 — Ansikten och gester (Designs D11): ansiktena nära och på avstånd, de nya klippen och kartan, kamerans avstånd vid Krogen (Z) och gränserna i balance.ts, gatans sex gångsätt, kontrollbilderna (rapport).
 - `ORDER_324_RAPPORT.md`: ORDER 324 — Beslut om FÖR_GRANSKNING_323.md i spelet (svenska och engelska), ft06 steg 2 för Claude, somm-h7, och layouten i 1180 × 660 och 1024 × 600 (rapport); 324b: ft06 svar A, lagtexterna granskade, layoutkontrollen på engelska.
 - `ORDER_RECONSTRUCTION_004_005_019_020.md`: ORDER_RECONSTRUCTION_004_005_019_020 — Evidence record for four sprint orders.
@@ -201,6 +202,8 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 
 - `ORDER_304_FORSLAG.md`: ORDER 304 — Konceptet och varukorgen: förslag till datamodell och balans (för beslut, inget byggt).
 - `BESLUT_GRANSKNING_323.md`: Beslut om FÖR_GRANSKNING_323.md (Claude med Anders 2026-10-10), infört i ORDER 324.
+- `SITUATIONER_306c_OMG1.md`: ORDER 306c, omgång 1 — sju av vinbarens äldre situationer i formen analys → upplevelse → handling (Claude 2026-10-10), inbyggd i ORDER 326.
+- `SITUATIONER_306c_OMG2-4.md`: ORDER 306c, omgång 2–4 — vinbarens 22 sista äldre situationer i formen, med reglerna för Code (Claude 2026-10-11), inbyggd i ORDER 326.
 - `FÖR_GRANSKNING_323.md`: För granskning efter ORDER 323 — vagnens fem fikadilemman (svenska, svar, nivåer, förklaringar, lagtexter) och listan över termval, onaturlig engelska och svenska fel.
 - `ORDER_304_UTKAST/`: utkastet till frågebanken per vara och utrustning, 90 frågor (`UTKAST_FRAGOR.md` för granskning, JSON i spelets format).
 - `M9_MEDGANG_REPORT_ORDER_089.md`: M9 — Medgången: rapportgrind (ORDER 089).
@@ -580,10 +583,10 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 
 ## documentation/leveranser/nexus-leverans-2026-10-10-d11-ansikten-och-gester/
 
-- `LEVERANSNOT.md`: D11: ansiktsuttryck och gester (Claude Design 2026-10-10), inbyggd i ORDER 325.
+- `LEVERANSNOT.md`: D11: ansiktsuttryck och gester (Claude Design 2026-10-10, tillägg och omtag 2026-10-11 i (46): att söka personalens blick), inbyggd i ORDER 325 och 326.
 - 7 tillhörande filer (kod, data) (6 .ts, 1 .js): `d11Clips.ts`, `d11Strings.ts`, `figureClips.ts`, `figureFace.ts`, `figureRig.ts`, `gestureMap.ts`, `d11Manus.js`.
 - `prototyp/D11 - Ansikten och gester.html`: prototypen med sex skärmar.
-- `kontrollbilder/1280x720/`, `kontrollbilder/1440x900/`: 45 kontrollbilder per storlek.
+- `kontrollbilder/1280x720/`, `kontrollbilder/1440x900/`: 47 kontrollbilder per storlek.
 
 ## documentation/orders/
 

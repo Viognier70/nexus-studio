@@ -1,0 +1,699 @@
+{
+ "vb04": {
+  "clue1": "Analysis: Both have a promise. The mistake is the restaurant's.",
+  "s2": {
+   "lineA": "One party: \"We booked in May, it's Mum's seventieth.\" The other: \"We have a confirmation too, we've driven from Örebro.\"",
+   "lineB": "One party: \"We've looked forward to this for months.\" The other: \"We only have two hours before our train.\"",
+   "question": "What do the two parties need?",
+   "options": [
+    {"label": "A quick and fair answer for both", "explanation": "Both stand at the door with a promise, and both need to know now."},
+    {"label": "An apology, and that you take time to sort out the mistake", "explanation": "The apology is right, but the inquiry can wait until after the evening."},
+    {"label": "That the most important evening comes first", "explanation": "Both evenings matter to the people having them. It is not for the restaurant to judge."}
+   ],
+   "clue": "Experience: Both are waiting at the door and need an answer now."
+  },
+  "s3": [
+   {"label": "Check the system for who booked first. The others get the bar and a glass.", "explanation": "The book decides, and whoever has to wait gets something for the trouble. A glass costs little and turns a mistake into a good story."},
+   {"label": "Check the system for who booked first, and ask the others to come back later.", "explanation": "The book decides correctly, but the other party is sent away with nothing."},
+   {"label": "Give the table to the celebration, and the others a glass at the bar.", "explanation": "Thoughtful, but the book should decide, not whose evening seems most important."},
+   {"label": "Let both wait while you ring round to find out whose mistake it was.", "explanation": "The guests at the door need a decision now, and a crowded entrance shows across the whole room."}
+  ],
+  "halfAnalysis": {"text": "The book decided correctly, but the other party left with nothing.", "room": "The other party leaves. One of them types something on their phone."},
+  "halfExperience": {"text": "The thought was right, but the table was promised to those who booked first.", "room": "The party that booked first watches the others sit down."},
+  "success": "One party sits down. The other gets glasses at the bar and raises a toast.",
+  "staffSuccess": "Per checks the system, gives the table to those who booked first and treats the others at the bar.",
+  "staffFail": "The staff let both wait, and one of the parties left."
+ },
+ "vb05": {
+  "clue1": "Analysis: Louder music makes the whole room louder.",
+  "s2": {
+   "lineA": "The woman at the table: \"We haven't seen each other in ages. We want to be able to talk.\"",
+   "lineB": "The man at the table, quietly: \"It's our first date. I can't hear what she's saying.\"",
+   "question": "What are the guests looking for?",
+   "options": [
+    {"label": "To be able to talk, without having to move or leave", "explanation": "They came for the conversation. It is the music that should adapt, not them."},
+    {"label": "A table further away from the music", "explanation": "It helps them, but not the room, and not the next couple who sit down."},
+    {"label": "That the music is switched off completely", "explanation": "They asked to hear each other, not for silence. Later in the evening the room needs the music."}
+   ],
+   "clue": "Experience: The guests want to talk, and the room is still half empty."
+  },
+  "s3": [
+   {"label": "Talk to the couple at the table, and ask the DJ to lower it until the room fills.", "explanation": "At the table you hear what the guests hear. A lower volume breaks the spiral where everyone talks louder, and it can go up again when the room wants to dance."},
+   {"label": "Ask the DJ to turn it down a little, and check again in half an hour.", "explanation": "The right step for the room, but the couple get no help now and don't know you have noticed."},
+   {"label": "Move the couple to the far end, away from the speakers.", "explanation": "The couple can talk, but the room stays just as loud, and the next couple meets the same thing."},
+   {"label": "Let the music play, it is part of the concept.", "explanation": "In a half-empty room early in the evening the music disturbs more than it carries."}
+  ],
+  "halfAnalysis": {"text": "The volume came down, but the couple got no help in the moment.", "room": "The couple finish their drinks before the music is lowered."},
+  "halfExperience": {"text": "The couple can talk, but the room is just as loud for everyone else.", "room": "The next couple by the speakers lean across the table."},
+  "success": "The couple are talking again, and the room has the sound level the evening needs.",
+  "staffSuccess": "Sara asks the couple and asks the DJ to turn it down.",
+  "staffFail": "Nobody said anything to the DJ. Two tables left early."
+ },
+ "vb06": {
+  "clue1": "Analysis: Nine degrees is a deviation to be dealt with and written down.",
+  "s2": {
+   "lineA": "The chef: \"We have twenty booked tonight, and the cheese board is what we sell most.\"",
+   "lineB": "Sara: \"Should I keep plating charcuterie, or what?\"",
+   "question": "What does the evening need?",
+   "options": [
+    {"label": "That the team knows where things stand, and the evening can still go on", "explanation": "Everyone working tonight needs the same picture, otherwise someone opens the broken fridge again."},
+    {"label": "That the cheese board and the charcuterie come off completely tonight", "explanation": "Safe, but it costs the evening's best sellers for no reason."},
+    {"label": "That nobody needs to bother, it's already sorted", "explanation": "Nobody knows where the goods are, or what can be sold."}
+   ],
+   "clue": "Experience: The team needs to know where things stand."
+  },
+  "s3": [
+   {"label": "Measure in the food, move it to the other fridge, log the deviation and tell the team.", "explanation": "The measurement shows how warm the food has become, the note shows what was done, and the team knows where everything is."},
+   {"label": "Measure, move and log the deviation, but say nothing to the team.", "explanation": "The goods and the log are in order, but someone searches the wrong fridge in the middle of service."},
+   {"label": "Tell the team and move the goods, but write nothing in the log.", "explanation": "The team knows where things stand, but nothing shows that the deviation was found and dealt with."},
+   {"label": "Write eight degrees in the log and turn the thermostat to its coldest setting.", "explanation": "An adjusted figure is worse than a deviation, and the goods stay in the warmth."}
+  ],
+  "halfAnalysis": {"text": "The goods and the log were handled, but the team didn't know where everything was.", "room": "Sara opens the broken fridge in the middle of service."},
+  "halfExperience": {"text": "The team knew where things stood, but the log says nothing.", "room": "The log lies open on the same page as yesterday."},
+  "success": "The goods are cold in the other fridge. The deviation is in the log with the time and the action.",
+  "staffSuccess": "The chef moves the goods and writes in the log.",
+  "staffFail": "Nobody did anything about the fridge before opening."
+ },
+ "vb08": {
+  "clue1": "Analysis: Five guests are five covers.",
+  "s2": {
+   "lineA": "One of the party: \"We've walked all day. We'll take anything, as long as we can sit together.\"",
+   "lineB": "One of the party: \"We're celebrating Lisa's doctorate! Do you have room for all of us?\"",
+   "question": "What is the party looking for?",
+   "options": [
+    {"label": "To sit together, soon, without having to move on", "explanation": "They are five who want to be five, and they want to stay here."},
+    {"label": "A table straight away, anywhere", "explanation": "They want to sit soon, but they said \"together\"."},
+    {"label": "A straight answer that it's full", "explanation": "They asked for a place, not for a no."}
+   ],
+   "clue": "Experience: The party wants to be together and to stay."
+  },
+  "s3": [
+   {"label": "Check the table plan, and let all five wait at the bar until the six-top is free.", "explanation": "The table plan shows what you can promise and when. All five stay together the whole time, and the room doesn't have to be rearranged."},
+   {"label": "Check the table plan. Four at the four-top and the fifth at the bar.", "explanation": "Everyone gets a place without rearranging the room, but the party is split."},
+   {"label": "Push a four-top and a two-top together in the middle of the room, now.", "explanation": "Everyone sits together, but pushed-together tables in a full room take space, glasses and staff."},
+   {"label": "Say from the door that it's full tonight.", "explanation": "Saying no when there is room costs the evening's takings and gives a bad name."}
+  ],
+  "halfAnalysis": {"text": "Everyone got a place, but the fifth sat alone at the bar.", "room": "One of the party keeps turning round towards the bar."},
+  "halfExperience": {"text": "The party sat together, but the room paid for it.", "room": "The waiters squeeze past the pushed-together tables."},
+  "success": "All five have a place. The party raises a toast, and the room flows on.",
+  "staffSuccess": "Per checks the table plan and asks the party to have a glass at the bar.",
+  "staffFail": "The staff didn't know what they could promise. The party left."
+ },
+ "vb10": {
+  "clue1": "Analysis: No serving at all to a noticeably intoxicated guest.",
+  "s2": {
+   "lineA": "The guest, loudly: \"Come on, I'm a regular! One more bottle, I'm buying for the whole bar.\"",
+   "lineB": "The guest, quietly: \"I've had a rotten week. I just want one more bottle.\"",
+   "question": "What is the guest looking for?",
+   "options": [
+    {"label": "To get the bottle", "explanation": "It is what the guest asks for, but not what they need."},
+    {"label": "Not to lose face in front of the others, and that someone cares", "explanation": "A no can be accepted if it is given with respect. It is the humiliation that starts a fight."},
+    {"label": "To be taken seriously as a regular", "explanation": "That's true, but being a regular gives no right to be served."}
+   ],
+   "clue": "Experience: The guest doesn't want to lose face."
+  },
+  "s3": [
+   {"label": "Say no calmly and close to the guest, give water and food, and offer a taxi.", "explanation": "A quiet no keeps it private, water and food show care, and the taxi gets the guest home safely."},
+   {"label": "Say no clearly across the bar, and tell the guest to go home.", "explanation": "The no is right, but in front of an audience it becomes a fight about not losing face."},
+   {"label": "Give one last glass, with water and bread, to keep things calm.", "explanation": "The care is right, but one last glass is still serving a noticeably intoxicated guest."},
+   {"label": "Serve the bottle, the guest is a regular and usually copes.", "explanation": "Regular or not, the same law applies, and the licence is at stake."}
+  ],
+  "halfAnalysis": {"text": "The no held, but the guest was humiliated in front of the bar.", "room": "The guest leaves and slams the door."},
+  "halfExperience": {"text": "The guest calmed down, but the law was broken.", "room": "The guest orders another glass ten minutes later."},
+  "success": "The guest grumbles, but takes the water, a plate of bread and a taxi home.",
+  "staffSuccess": "Elin calmly says no, puts out water and calls a taxi.",
+  "staffFail": "The staff keep serving the guest at the bar."
+ },
+ "vb14": {
+  "clue1": "Analysis: Sourdough made from wheat, rye or barley contains gluten.",
+  "s2": {
+   "lineA": "The guest: \"I got ill the last time I ate out. I just want to be able to eat bread like everyone else.\"",
+   "lineB": "The guest, hopefully: \"My doctor says no, but sourdough is supposed to be different?\"",
+   "question": "What is the guest looking for?",
+   "options": [
+    {"label": "To hear that the sourdough is fine", "explanation": "The guest hopes so, but a yes would be dangerous."},
+    {"label": "Something safe with the cheese, without any fuss", "explanation": "The guest wants to eat like the others at the table, and not have to worry."},
+    {"label": "An explanation of how gluten and fermentation work", "explanation": "It may be interesting, but the guest wants to eat."}
+   ],
+   "clue": "Experience: The guest wants to eat like everyone else, but safely."
+  },
+  "s3": [
+   {"label": "Gluten-free bread on a clean board, in its own basket, and tell the kitchen at once.", "explanation": "Clean utensils and a separate basket keep the crumbs away, and the kitchen knows before the next dish is cooked."},
+   {"label": "Gluten-free bread on a clean board in its own basket, but the kitchen isn't told.", "explanation": "The bread is safe, but gluten can be in sauces, fried food and croutons in the next dish."},
+   {"label": "Say the kitchen will make something nice, and put gluten-free in the usual basket.", "explanation": "The guest feels looked after, but the sourdough crumbs are still in the basket."},
+   {"label": "Say the sourdough is fine, the fermentation removes most of it.", "explanation": "It is a common myth. For someone with coeliac disease even small amounts do harm."}
+  ],
+  "halfAnalysis": {"text": "The bread was safe, but the kitchen knew nothing about the coeliac disease.", "room": "The next dish arrives with croutons."},
+  "halfExperience": {"text": "The guest felt seen, but the bread lay among sourdough crumbs.", "room": "The guest looks at the basket and leaves the bread untouched."},
+  "success": "The guest gets gluten-free crackers with the cheese and says thank you.",
+  "staffSuccess": "Sara brings out gluten-free bread on a clean board and goes to the kitchen.",
+  "staffFail": "The staff answer that it will probably be fine."
+ },
+ "vb16": {
+  "clue1": "Analysis: The booking is a promise to someone else.",
+  "s2": {
+   "lineA": "The regular: \"Hi! My usual table, right? I've been looking forward to it all week.\"",
+   "lineB": "The regular: \"I've brought my sister tonight. I've told her about the window table.\"",
+   "question": "What is the regular looking for?",
+   "options": [
+    {"label": "To be recognised and to feel at home", "explanation": "It is not the table itself, but being someone here."},
+    {"label": "The window table, whatever it takes", "explanation": "It is what the regular asks for, but what they want is to be seen."},
+    {"label": "To go ahead of other guests", "explanation": "The regular asked for their table, not to jump the queue."}
+   ],
+   "clue": "Experience: The regular wants to be seen."
+  },
+  "s3": [
+   {"label": "Greet them by name, explain that it's booked, and offer a glass.", "explanation": "The name shows they are recognised, honesty keeps the promise to the couple, and the glass makes the no warm."},
+   {"label": "Greet them politely, say the table is booked and show them another.", "explanation": "The booking holds, but the regular is treated like anyone else."},
+   {"label": "Greet them by name and give the regular the window table. The couple will have to move.", "explanation": "The regular is happy, but the couple who booked don't get what they were promised."},
+   {"label": "Check the list first, and then say the table is taken.", "explanation": "The regular stands waiting, and then gets a short no."}
+  ],
+  "halfAnalysis": {"text": "The booking held, but the regular felt like anyone else.", "room": "The regular drinks their glass and leaves early."},
+  "halfExperience": {"text": "The regular got their table, but the couple didn't get theirs.", "room": "The couple who booked look around for the window table."},
+  "success": "The regular sits down at the bar with a glass and smiles.",
+  "staffSuccess": "Per greets them by name and offers a glass at the bar.",
+  "staffFail": "The staff say the table is taken. The regular leaves."
+ },
+ "vb13": {
+  "clue1": "Analysis: A trial cook tests dishes, portions and timings.",
+  "s2": {
+   "lineA": "\"We're twenty from the council. We want to be sure the food holds up.\"",
+   "lineB": "\"Our director has coeliac disease. We want to taste before we decide.\"",
+   "question": "What is the delegation looking for?",
+   "options": [
+    {"label": "Confidence: knowing that the evening will hold", "explanation": "They will answer for the evening in front of others. It is certainty they are buying."},
+    {"label": "To taste it tonight", "explanation": "They asked for it, but a tasting tomorrow gives the same confidence."},
+    {"label": "The lowest price", "explanation": "They didn't mention the price, they mentioned the food."}
+   ],
+   "clue": "Experience: The delegation wants to be sure the evening will hold."
+  },
+  "s3": [
+   {"label": "Take the booking, confirm numbers and allergies, and do the trial cook tomorrow morning.", "explanation": "The booking is secure, the kitchen gets time to do the trial cook well, and the allergies are known from the start."},
+   {"label": "Take the booking and do the trial cook tomorrow, but without asking about allergies.", "explanation": "The plan holds, but the kitchen doesn't know what must be avoided, and the delegation notices."},
+   {"label": "Take the booking and run the new menu tonight.", "explanation": "The delegation gets what it asked for, but changing the menu mid-service causes mistakes on the tickets."},
+   {"label": "Promise everything they ask for, and ask the kitchen afterwards.", "explanation": "A promise the kitchen can't keep becomes a let-down tomorrow."}
+  ],
+  "halfAnalysis": {"text": "The booking was made, but the allergies were forgotten.", "room": "The phone rings again. The delegation is asking about the gluten."},
+  "halfExperience": {"text": "The delegation got to taste, but tonight's guests paid the price.", "room": "Two orders go back to the kitchen."},
+  "success": "The booking is written down, the tasting has a time, and the evening goes on.",
+  "staffSuccess": "Per takes the booking and asks the kitchen for a time tomorrow.",
+  "staffFail": "The staff answer vaguely. The delegation books somewhere else."
+ },
+ "vb15": {
+  "clue1": "Analysis: Nobody knows how long the fish was too warm.",
+  "s2": {
+   "lineA": "The guest: \"We've driven here for your char tartare, everyone talks about it.\"",
+   "lineB": "The guest: \"The tartare, please. My wife has talked about it all week.\"",
+   "question": "What are the guests looking for?",
+   "options": [
+    {"label": "The tartare, whatever it costs", "explanation": "They want a good evening, not a risk."},
+    {"label": "An evening that lives up to what they have heard", "explanation": "It is the experience they came for. The tartare was the way there."},
+    {"label": "To know exactly what happened with the delivery", "explanation": "Honest, but the details may make them worried about the rest of the food."}
+   ],
+   "clue": "Experience: The guests came for something special."
+  },
+  "s3": [
+   {"label": "Take the tartare off, say honestly that the fish wasn't good enough, and suggest the beetroot.", "explanation": "A short, honest answer shows that the kitchen cares about quality, and a suggestion gives the disappointment a new dish to try."},
+   {"label": "Take the tartare off, and just say it has run out for tonight.", "explanation": "The guest is disappointed without getting anything instead."},
+   {"label": "Serve the tartare, the guests have driven here for it.", "explanation": "Raw fish with a broken cold chain and no traceability is a risk the restaurant takes on the guest's behalf."},
+   {"label": "Say the chef is ill tonight.", "explanation": "A lie is unnecessary, and here the truth works in the restaurant's favour."}
+  ],
+  "success": "The board is rewritten. Roast beetroot with chèvre takes the tartare's place, and the guests order it.",
+  "staffSuccess": "The chef takes the tartare off and puts the beetroot forward.",
+  "staffFail": "The kitchen uses the fish without asking."
+ },
+ "vb17": {
+  "clue1": "Analysis: The bowl gathers the aroma. It is the wine glass that makes the wine.",
+  "s2": {
+   "lineA": "A guest at the bar: \"We ordered ten minutes ago. Have you forgotten us?\"",
+   "lineB": "Sara: \"Five orders are waiting, and the tables are looking this way.\"",
+   "question": "What do those who are waiting need?",
+   "options": [
+    {"label": "An answer, and for the wait to be fair", "explanation": "Guests put up with a wait they know about and that goes in turn."},
+    {"label": "The wine straight away, in any glass", "explanation": "They ordered wine at a wine bar. Wine in a water glass says the bar can't cope with its evening."},
+    {"label": "To know why the glasses have run out", "explanation": "An explanation helps a little, but what they need is to know when."}
+   ],
+   "clue": "Experience: Those who are waiting want to know they haven't been forgotten."
+  },
+  "s3": [
+   {"label": "Hand-wash and polish glasses, tell those who are waiting, and serve in turn.", "explanation": "Empty glasses on the tables are the evening's stock, and a short word makes the wait understandable."},
+   {"label": "Hand-wash and polish glasses, and serve in turn without saying anything.", "explanation": "The glasses and the order are right, but anyone waiting without a word thinks they've been forgotten."},
+   {"label": "Tell everyone there will be a wait, and pour the wine into water glasses for now.", "explanation": "The word is right, but wine in water glasses costs the aroma and the reputation."},
+   {"label": "Give the first glasses to those who ordered a whole bottle.", "explanation": "Those who ordered a glass wait longest, and they remember being skipped."}
+  ],
+  "halfAnalysis": {"text": "The glasses were right, but nobody was told anything.", "room": "A table keeps waving for the staff."},
+  "halfExperience": {"text": "Everyone knew what was happening, but the wine came in water glasses.", "room": "Someone at the table photographs the glass."},
+  "success": "Polished glasses go out in the right order, and the queue at the bar moves again.",
+  "staffSuccess": "Sara hand-washes glasses and tells the tables.",
+  "staffFail": "The wine is served in whatever glasses there are."
+ },
+ "vb19": {
+  "clue1": "Analysis: The ticket that came first is cooked first.",
+  "s2": {
+   "lineA": "The guest at the table that has waited longest: \"Excuse me, have you forgotten us?\"",
+   "lineB": "The chef: \"They just keep coming. I can't keep up.\"",
+   "question": "What do the waiting tables need?",
+   "options": [
+    {"label": "An honest answer about the time, and something to keep them going", "explanation": "A wait is easier to bear when you know how long it is."},
+    {"label": "For the food to come as fast as possible, in any order", "explanation": "Then those who have waited longest wait even longer."},
+    {"label": "For someone to calm them down", "explanation": "It helps, but a calming word without an answer doesn't last long."}
+   ],
+   "clue": "Experience: Those who have waited longest need an answer first."
+  },
+  "s3": [
+   {"label": "Tell the tables the honest time, offer bread, and let the kitchen take the tickets in order.", "explanation": "An answer and bread buy time, and the order makes the wait fair."},
+   {"label": "Let the kitchen take the tickets in order, and wait to say anything until the food is ready.", "explanation": "The kitchen works correctly, but the silence makes the wait feel longer."},
+   {"label": "Go to the tables and promise the food will come in five minutes.", "explanation": "The guests calm down for a while, but a promise that isn't kept makes them angrier than the wait."},
+   {"label": "Ask the kitchen to do the simplest dishes first, whichever ticket came first.", "explanation": "The order breaks, the kitchen gets confused, and the right food ends up at the wrong table."}
+  ],
+  "halfAnalysis": {"text": "The kitchen worked in order, but the tables got no answer.", "room": "A table looks at the clock and whispers."},
+  "halfExperience": {"text": "The tables calmed down, but the promise didn't hold.", "room": "Five minutes later no food has come. The guest raises a hand again."},
+  "success": "The tables know how long they are waiting, the bread goes out, and the kitchen calmly works its way through the rail.",
+  "staffSuccess": "Per goes from table to table with an answer and bread.",
+  "staffFail": "Nobody says anything to the tables, and the kitchen takes the tickets as it gets to them."
+ },
+ "vb20": {
+  "clue1": "Analysis: An itemised bill shows the mistake line by line.",
+  "s2": {
+   "lineA": "The guest, loudly: \"Two bottles we never ordered! Are you trying to cheat us?\"",
+   "lineB": "The guest, tight-lipped: \"This is the second time I've had a wrong bill here.\"",
+   "question": "What is the guest looking for?",
+   "options": [
+    {"label": "To be believed, and for it to be corrected at once", "explanation": "The guest doesn't want to leave feeling cheated."},
+    {"label": "To have the whole bill written off", "explanation": "It calms things down, but it is more than the mistake, and the guest didn't ask for it."},
+    {"label": "An explanation of how the till works", "explanation": "An explanation sounds like a defence."}
+   ],
+   "clue": "Experience: The guest wants to be believed."
+  },
+  "s3": [
+   {"label": "Go through the lines with the guest, apologise, correct the till and offer coffee.", "explanation": "The guest sees the mistake found and corrected, and the till matches the payment."},
+   {"label": "Go through the lines, correct the till and print a new bill.", "explanation": "The bill is right, but without an apology the guest is left with their anger."},
+   {"label": "Apologise at once, and write off the whole bill without going through it.", "explanation": "The guest calms down, but the mistake is never found, and the till doesn't add up."},
+   {"label": "Say the bill matches the till and can't be changed.", "explanation": "The till can be wrong. A guest who isn't listened to goes and tells people about it."}
+  ],
+  "halfAnalysis": {"text": "The bill was corrected, but the guest got no apology.", "room": "The guest pays without looking up."},
+  "halfExperience": {"text": "The guest calmed down, but nobody knows where the mistake was.", "room": "The same mistake shows up on the next bill."},
+  "success": "The bill is corrected. The guest calms down and takes the coffee.",
+  "staffSuccess": "Per goes through the bill with the guest and corrects it in the till.",
+  "staffFail": "The guest has to wait for the manager, who never comes."
+ },
+ "vb21": {
+  "clue1": "Analysis: Wounds near food must be covered. Staphylococci thrive in wounds.",
+  "s2": {
+   "lineA": "{personal}: \"It's nothing, I'll grit my teeth. You can't manage without me tonight.\"",
+   "lineB": "{personal}, pale: \"Sorry. I'll just put a plaster on and carry on.\"",
+   "question": "What does {personal} need?",
+   "options": [
+    {"label": "To be looked after, and to stay in the team", "explanation": "They don't want to let the team down. It is possible to take care of both the wound and the will."},
+    {"label": "To carry on exactly as usual", "explanation": "The will is good, but an injured hand near open food is a risk to them and to the guests."},
+    {"label": "To be sent home at once", "explanation": "It may be right with a deep cut, but they want to stay and can."}
+   ],
+   "clue": "Experience: {personal} doesn't want to let the team down."
+  },
+  "s3": [
+   {"label": "Plaster and glove, sanitise the surface, move them to the till and tell the team.", "explanation": "The wound is covered, the surface is clean, and everyone knows who does what."},
+   {"label": "Plaster and glove, sanitise the surface, and send them home at once.", "explanation": "The hygiene is right, but the team gets thin, and they feel sent away."},
+   {"label": "Let them rest in the staff room and take their place yourself, without sanitising the surface.", "explanation": "The care is right, but the surface where the wound bled is used again."},
+   {"label": "Put on a plaster and let them carry on at their station, since they want to.", "explanation": "A plaster without a glove near open food is not enough."}
+  ],
+  "halfAnalysis": {"text": "The wound and the surface were handled, but the team lost a person.", "room": "Two people run between the same stations."},
+  "halfExperience": {"text": "{personal} was looked after, but the surface wasn't sanitised.", "room": "The next plate is set out on the same counter."},
+  "success": "The hand is dressed, the surface sanitised, and {personal} takes the till for the rest of the evening.",
+  "staffSuccess": "Per dresses the hand, sanitises the counter and takes over the station.",
+  "staffFail": "Nobody sees to the wound, and {personal} keeps working."
+ },
+ "vb22": {
+  "clue1": "Analysis: The appellation names an area with its own rules.",
+  "s2": {
+   "lineA": "The guest: \"Who made this wine, and why is it on your list?\"",
+   "lineB": "{personal}, whispering: \"It must be a critic. Should we give them something extra?\"",
+   "question": "What is the guest looking for?",
+   "options": [
+    {"label": "Knowledgeable answers, and the same evening as everyone else", "explanation": "A critic wants to see how the restaurant is, not how it can be for one evening."},
+    {"label": "Extra attention and tasters", "explanation": "Critics notice when they are treated differently, and the neighbouring tables notice too."},
+    {"label": "To be left alone with their notes", "explanation": "Partly, but the guest is asking questions and wants answers."}
+   ],
+   "clue": "Experience: The guest wants to see the restaurant as it is."
+  },
+  "s3": [
+   {"label": "Show the bottle, talk about the area and the producer, and give the same service as to everyone.", "explanation": "A knowledgeable answer makes the origin concrete, and the service holds for every table."},
+   {"label": "Answer the questions carefully, and send a few extra tasters to the table.", "explanation": "The answers are good, but the special treatment shows, to the neighbouring tables too."},
+   {"label": "Give the same service as to everyone, and read out what is on the label.", "explanation": "The right attitude, but the guest can read. A good answer explains what the label means."},
+   {"label": "Guess rather than say you don't know, it sounds more knowledgeable.", "explanation": "A wrong guess shows at once to someone who knows."}
+  ],
+  "halfAnalysis": {"text": "The answers were knowledgeable, but the table was treated differently.", "room": "The neighbouring table looks at the tasters and then at their own glasses."},
+  "halfExperience": {"text": "The service was even, but the answer was thin.", "room": "The guest writes something short and closes the notebook."},
+  "success": "The guest takes notes and smiles at the answer about the wine.",
+  "staffSuccess": "Elin shows the bottle and talks about the producer.",
+  "staffFail": "Everyone gets nervous, and the table is forgotten for a long while."
+ },
+ "vb24": {
+  "body": "Things calm down. {gäst} at the bar asks {personal} what the word terroir on the wine list actually means. Two new guests are just coming in.",
+  "clue1": "Analysis: Terroir is the combined influence of the place.",
+  "s2": {
+   "lineA": "The guest: \"I've read the word a hundred times, but never understood it.\"",
+   "lineB": "The guest: \"My daughter is training to be a sommelier. I want to be able to keep up.\"",
+   "question": "What is the guest looking for?",
+   "options": [
+    {"label": "To understand, with the wine in the glass", "explanation": "The guest wants to grasp it, not just hear a definition."},
+    {"label": "A long explanation", "explanation": "Words help, but it is the comparison in the glass that shows the place."},
+    {"label": "To be recommended the most expensive wine", "explanation": "The price says nothing about the place."}
+   ],
+   "clue": "Experience: The guest wants to understand, and two new guests are waiting."
+  },
+  "s3": [
+   {"label": "Pour the same grape from two places side by side, and welcome the new ones meanwhile.", "explanation": "The same grape means the difference comes from the place, and the guest has something to do while you greet the new ones."},
+   {"label": "Pour the same grape from two places, and stay to finish the conversation.", "explanation": "The comparison is right, but the new guests are left standing without being seen."},
+   {"label": "Say you'll be right back, welcome the new ones, and describe the aroma in words.", "explanation": "Nobody is left standing, but the guest gets nothing to taste."},
+   {"label": "Pour a glass of the most expensive wine, it says it all.", "explanation": "With nothing to compare it with, you can't taste what the place does."}
+  ],
+  "halfAnalysis": {"text": "The guest understood, but the new ones stood waiting.", "room": "The two new guests go out again."},
+  "halfExperience": {"text": "Everyone was seen, but terroir stayed just words.", "room": "The guest nods politely but orders nothing."},
+  "success": "The guest compares the glasses, nods and orders one of the wines.",
+  "staffSuccess": "Elin pours two glasses and welcomes the new guests.",
+  "staffFail": "The guest is told it's hard to explain."
+ },
+ "vb25": {
+  "clue1": "Analysis: The licence sets the limit, not the kitchen.",
+  "s2": {
+   "lineA": "One of the party: \"Please, just one glass. Our friend turns fifty today.\"",
+   "lineB": "Per, tired: \"We've cleaned half the bar. Don't tell me we're opening again.\"",
+   "question": "What does the evening need?",
+   "options": [
+    {"label": "A kind gesture to the guests, and a closing that works for the team", "explanation": "Both are right: the guests want to end well, and the team wants to go home."},
+    {"label": "That the party gets a whole bottle and sits as long as they like", "explanation": "Energy used up tonight is missing tomorrow."},
+    {"label": "A no, it's closed", "explanation": "Right by the opening hours, but it gives a colder name than it needs to."}
+   ],
+   "clue": "Experience: Both the guests and the team need something."
+  },
+  "s3": [
+   {"label": "A glass each from an opened bottle, in clean glasses at the end of the bar.", "explanation": "An opened bottle has to be sold soon anyway, and the cleaning can carry on around the guests."},
+   {"label": "Say kindly that you've closed for the evening, and wish them a good night.", "explanation": "The team gets to go home, but a place that turns guests away at the door loses warmth."},
+   {"label": "A glass each, in glasses from the dish rack that look clean.", "explanation": "The gesture is right, but a glass that looks clean can still have grease and detergent on it."},
+   {"label": "Let them into the dining room and ask the chef to put together a cheese board.", "explanation": "The kitchen has already been cleaned. Starting it again costs more energy than it gives."}
+  ],
+  "halfAnalysis": {"text": "The team got home on time, but the party left disappointed.", "room": "The party walks on down the street, and nobody looks back."},
+  "halfExperience": {"text": "The guests got their glass, but the glasses were smeared.", "room": "A guest wipes the rim of the glass with a napkin."},
+  "success": "Three glasses at the bar. The party says thank you and leaves after half an hour, and the bar is done on time.",
+  "staffSuccess": "Per pours three glasses at the end of the bar and carries on cleaning.",
+  "staffFail": "The party is allowed to stay a long time, and the closing drags on."
+ },
+ "vb26": {
+  "clue1": "Analysis: Oxygen spoils the wine. Cold slows it down.",
+  "s2": {
+   "lineA": "Elin, with her jacket on: \"Shall we just pour them away? I want to go home.\"",
+   "lineB": "Per: \"Yesterday a tired glass went out. The guest put it down after one sip.\"",
+   "question": "What do tonight and tomorrow need?",
+   "options": [
+    {"label": "That the wine is saved, without the team staying late", "explanation": "Doing it right takes five minutes, and it saves the evening's margin."},
+    {"label": "That everything is poured away so that everyone gets home", "explanation": "It pours away money that could be saved."},
+    {"label": "That every bottle is tasted carefully now", "explanation": "It can be done tomorrow, when it is needed."}
+   ],
+   "clue": "Experience: The team wants to go home, and tomorrow the wine should taste good."
+  },
+  "s3": [
+   {"label": "Vacuum-seal, store cool, write the date, and taste before selling by the glass tomorrow.", "explanation": "Vacuum, cold and a date keep the wine for a couple of days, and tasting decides what can be sold."},
+   {"label": "Vacuum-seal, store cool and write the date, and sell by the glass without tasting.", "explanation": "The storage is right, but a wine may have lost more than expected. The guest notices before you do."},
+   {"label": "Put the corks back in on the counter, and let everyone go home at once.", "explanation": "The team gets home, but warmth and oxygen take the fruit out of the wine by tomorrow."},
+   {"label": "Pour away whatever is left, opened bottles don't keep anyway.", "explanation": "A half-full wine often keeps for a couple of days if it is stored correctly."}
+  ],
+  "halfAnalysis": {"text": "The bottles were stored correctly, but nobody tasted them.", "room": "A glass goes out that tastes tired."},
+  "halfExperience": {"text": "Everyone got home, but the wine faded overnight.", "room": "The next evening three bottles are poured away."},
+  "success": "The bottles stand in the wine fridge with a date and a cork, and the next evening they are sold by the glass.",
+  "staffSuccess": "Per vacuum-seals the bottles and writes the date.",
+  "staffFail": "The bottles are left open on the counter overnight."
+ },
+ "vb27": {
+  "clue1": "Analysis: Anaphylaxis can become life-threatening within minutes.",
+  "s2": {
+   "lineA": "The guest's friend: \"She's allergic to nuts! She has a pen in her bag!\"",
+   "lineB": "The guest, weakly: \"It … feels thick in my throat.\"",
+   "question": "What does the guest need?",
+   "options": [
+    {"label": "Help now, and someone to stay with her", "explanation": "Minutes count, and she must not be left alone."},
+    {"label": "To be left in peace for a while", "explanation": "Someone who withdraws can get worse without anyone seeing."},
+    {"label": "For the party to look after her", "explanation": "They can help, but the responsibility to act lies with the restaurant."}
+   ],
+   "clue": "Experience: The guest needs help now, and someone to stay."
+  },
+  "s3": [
+   {"label": "Call 112, help her use the adrenaline pen, stay with her, and ask the kitchen to keep the dish.", "explanation": "112 and adrenaline are what count. Whoever stays sees if she gets worse, and what is kept on the plate shows the kitchen where the mistake was."},
+   {"label": "Give her a glass of water, and wait and see.", "explanation": "Water doesn't help with anaphylaxis."},
+   {"label": "Give her an antihistamine tablet from the first-aid box.", "explanation": "A tablet acts too slowly in a severe reaction."},
+   {"label": "Take her to the staff room, so that she can rest.", "explanation": "It takes time, and nobody sees if she gets worse."}
+  ],
+  "success": "The ambulance is on its way, the guest is breathing more calmly, and the kitchen knows what went wrong.",
+  "staffSuccess": "Per calls 112 and stays with the guest.",
+  "staffFail": "They stand helpless until the guest's party calls 112."
+ },
+ "vb28": {
+  "clue1": "Analysis: Time and temperature in the food decide what can be saved.",
+  "s2": {
+   "lineA": "Sara: \"The guests keep ordering the charcuterie board. What should I say?\"",
+   "lineB": "The chef: \"Should we throw everything out?\"",
+   "question": "What does the evening need?",
+   "options": [
+    {"label": "That the floor knows where things stand before the guests order", "explanation": "A no before the order feels better than a no after."},
+    {"label": "That everything is thrown out, to be on the safe side", "explanation": "Safe, but what has stayed cold can be saved."},
+    {"label": "That it is dealt with after service", "explanation": "By then the goods have been warm all evening."}
+   ],
+   "clue": "Experience: The floor needs to know before the guests choose."
+  },
+  "s3": [
+   {"label": "Measure in the food, move what's cold, discard the rest, tell the floor and log the deviation.", "explanation": "Measuring separates the safe from the unsafe, the floor can steer the guests, and the own-check log shows what happened."},
+   {"label": "Measure, move what's cold and discard the rest, but say nothing to the floor.", "explanation": "The goods are handled correctly, but guest after guest orders charcuterie that isn't there."},
+   {"label": "Tell the floor what's off, and pack everything into the other fridge.", "explanation": "Food that has been too warm shouldn't go in with the rest, and an overfull fridge cools worse."},
+   {"label": "Close the door, and wait for the fridge to start by itself.", "explanation": "Every minute in the warmth makes more of the food unsafe."}
+  ],
+  "success": "The goods are sorted, the menu gets shorter, and the floor knows before the guests order.",
+  "staffSuccess": "The chef measures, sorts and tells Sara.",
+  "staffFail": "They keep serving from the warm fridge."
+ },
+ "vb29": {
+  "clue1": "Analysis: No more alcohol for a noticeably intoxicated guest.",
+  "s2": {
+   "lineA": "The guest, loudly, to the party next to them: \"What are you staring at?\"",
+   "lineB": "The guest, to the bartender: \"Everyone's against me tonight.\"",
+   "question": "What does the bar need?",
+   "options": [
+    {"label": "Calm, and for the guest to leave without losing face", "explanation": "Calm and privacy dampen a quarrel. Humiliation sets it alight."},
+    {"label": "A telling-off the whole room can hear", "explanation": "A telling-off in public makes the quarrel bigger."},
+    {"label": "For the party to be moved to another table", "explanation": "It protects the party, but the guest is still there."}
+   ],
+   "clue": "Experience: The guest must not lose face."
+  },
+  "s3": [
+   {"label": "Put out water, talk calmly with the guest aside, and arrange a taxi.", "explanation": "Water and no alcohol are what the law requires. A calm talk and a taxi get the guest home safely."},
+   {"label": "Take the glass from the guest, and tell them to leave.", "explanation": "The right idea, but a glass taken out of your hand in front of others feels like humiliation."},
+   {"label": "Give one last drink, so that the guest calms down and leaves.", "explanation": "More alcohol doesn't calm a quarrel, and it isn't allowed."},
+   {"label": "Tell the guest loudly to calm down, so the whole room hears.", "explanation": "The guest doesn't want to lose face, and the quarrel grows."}
+  ],
+  "halfAnalysis": {"text": "The law was followed, but the guest was humiliated.", "room": "The guest slaps the bar on the way out."},
+  "halfExperience": {"text": "The guest calmed down for a while, but the law was broken.", "room": "A quarter of an hour later the voices rise again."},
+  "success": "The guest goes outside with you. The taxi comes. The bar calms down.",
+  "staffSuccess": "Elin puts out water and calls a taxi.",
+  "staffFail": "They stand behind the bar and wait. The party next to them leaves."
+ },
+ "vb30": {
+  "clue1": "Analysis: Cork taint (TCA) can't be aired away.",
+  "s2": {
+   "lineA": "The guest, loudly: \"You don't even know your own wine!\"",
+   "lineB": "The guest, audibly to the party: \"This place has no idea.\"",
+   "question": "What is the guest looking for?",
+   "options": [
+    {"label": "For the mistake to be admitted, and put right so everyone sees it", "explanation": "The guest was right from the start and wants it to show."},
+    {"label": "To get the bottle for free", "explanation": "That may be part of it, but what the guest wants is to be put in the right."},
+    {"label": "An explanation that cork taint is the producer's fault", "explanation": "Defending yourself makes the mistake bigger."}
+   ],
+   "clue": "Experience: The guest wants to be put in the right."
+  },
+  "s3": [
+   {"label": "Admit the mistake, open a new bottle at the table, change the glasses and offer it on the house.", "explanation": "The guest sees the bottle is new, the glasses carry no cork taint, and a generous correction turns an unhappy guest into one who comes back."},
+   {"label": "Open a new bottle at the table and change the glasses, and charge as usual.", "explanation": "The exchange is right, but the mistake isn't admitted."},
+   {"label": "Admit the mistake and offer a new bottle on the house, opened at the bar.", "explanation": "The redress is right, but this guest needs to see the exchange."},
+   {"label": "Explain that cork taint is the producer's fault, and that the bottle has to be paid for.", "explanation": "It is the wine bar that should have noticed the fault."}
+  ],
+  "halfAnalysis": {"text": "The wine was put right, but the mistake was never admitted.", "room": "The guest drinks in silence and pays early."},
+  "halfExperience": {"text": "The mistake was admitted, but the guest didn't see the exchange.", "room": "The guest sniffs the new glass suspiciously."},
+  "success": "A new bottle on the house. The guest raises a glass to the staff.",
+  "staffSuccess": "Elin admits the mistake and opens a new bottle at the table.",
+  "staffFail": "They pretend not to hear. The guest pays and leaves with their party."
+ },
+ "vb31": {
+  "clue1": "Analysis: Avec comes with the coffee, after the meal.",
+  "s2": {
+   "lineA": "{personal}: \"Ten tables need resetting for dinner, and we have no napkins.\"",
+   "lineB": "{personal}: \"Everyone wants drinks now, and the ice has run out.\"",
+   "question": "What does the evening need right now?",
+   "options": [
+    {"label": "What the next wave of guests needs first", "explanation": "In a rush you choose what the evening needs now."},
+    {"label": "A bit of both, so nobody goes without", "explanation": "Then nothing is ready when it's needed."},
+    {"label": "To wait until it has calmed down", "explanation": "Then both are missing just when the guests need them."}
+   ],
+   "clue": "Experience: Read what the next wave needs."
+  },
+  "s3": [
+   {"label": "Fold napkins for the tables first. The ice can wait.", "explanation": "At dinner the tables need setting. After dinner the evening turns to drinks, and then the bar stops without ice."},
+   {"label": "Fetch ice in a clean bucket with a scoop. The napkins can wait.", "explanation": "Ice is food. A scoop and a clean bucket keep it clean. After dinner it is the ice that's needed, at dinner the napkins."},
+   {"label": "Scoop ice with a glass, it's quickest, and do the napkins later.", "explanation": "A glass can break in the ice, and a shard can't be seen among the cubes. Then the whole ice well has to be emptied."},
+   {"label": "Split the staff, one on the napkins and one on the ice.", "explanation": "Splitting means nothing is ready when it's needed."}
+  ],
+  "halfAnalysis": {"text": "The work was done right, but in the wrong order for the evening.", "room": "What was needed now is still waiting."},
+  "halfExperience": {"text": "The ice came quickly, but with a glass in the ice well.", "room": "The bartender looks down into the ice and hesitates."},
+  "success": "What the evening needs is ready in time, and the orders go out at a steady pace.",
+  "staffSuccess": "{personal} takes what is needed first.",
+  "staffFail": "They do a bit of both, and the bar is without ice for a long while."
+ },
+ "vb33": {
+  "s1": {
+   "a": {"explanation": "You ask about that in the next step. Right now the glass and the water are a risk to everyone in the entrance."},
+   "b": {"explanation": "The queue can wait a minute. Shards in the entrance can't."},
+   "c": {"explanation": "Glass and water in the entrance are a risk to everyone coming in, wheelchair wheels too."},
+   "d": {"explanation": "The book can be dried. Shards are a risk to people."}
+  },
+  "fail1": "Nobody does anything. The glass lies where the next guest will come in.",
+  "clue1": "Analysis: Shards and water in the entrance are a risk to everyone.",
+  "s2": {
+   "lineA": "The guest, red in the face: \"Sorry, sorry! I'll pay for the vase.\"",
+   "lineB": "The guest's companion: \"This happens everywhere. Maybe we should go home.\"",
+   "question": "What does the guest need?",
+   "options": [
+    {"label": "To hear it wasn't their fault, and to feel welcome", "explanation": "The entrance was too narrow for a wheelchair. The mistake is the restaurant's."},
+    {"label": "To pay for the vase", "explanation": "Taking money confirms that the mistake was the guest's."},
+    {"label": "An apology and a glass on the house", "explanation": "Generous, but without an explanation the guest may think you are treating them because they did wrong."}
+   ],
+   "clue": "Experience: The guest is ashamed, though the mistake was the restaurant's."
+  },
+  "fail2": "The guest sits in silence and looks down at the table.",
+  "s3": [
+   {"label": "Ask how the guest is, sweep up, say the mistake was ours and move the stand.", "explanation": "The person first, then the risk, then the cause. The stand was in the way, and now it isn't."},
+   {"label": "Cordon off, sweep and mop, and then show the way to the table.", "explanation": "The cleaning is right, but nobody says the mistake was the restaurant's, and the guest stays ashamed."},
+   {"label": "Say the mistake was ours and offer the evening on the house, and clean up after them.", "explanation": "The words are right, but the guests roll and walk through the glass before it is swept."},
+   {"label": "Pick up the big shards by hand, and say it could happen to anyone.", "explanation": "Hands get cut on shards, and the blame is put on the guest."}
+  ],
+  "halfAnalysis": {"text": "The entrance was cleaned, but the guest had to carry the blame.", "room": "The guest sits in silence for the rest of the evening."},
+  "halfExperience": {"text": "The guest felt welcome, but the glass lay there too long.", "room": "The wheel crunches over a shard."},
+  "success": "The entrance is clear. The stand is now where a wheelchair can get past, and the guest is at their table.",
+  "staffSuccess": "Per asks how the guest is, sweeps up and moves the stand.",
+  "staffFail": "Per sweeps up, but nobody moves the stand."
+ },
+ "vb34": {
+  "s1": {
+   "a": {"explanation": "Food doesn't change the rule. Someone who is noticeably intoxicated must not be served."},
+   "b": {"explanation": "The ban covers all alcohol, beer and wine too."},
+   "c": {"explanation": "The law forbids serving, not staying. Whether he may stay is up to you, depending on how he is."},
+   "d": {"explanation": "Someone who is noticeably intoxicated must not be served alcohol, whatever the drink."}
+  },
+  "fail1": "Mira pours without thinking.",
+  "clue1": "Analysis: No more alcohol for him.",
+  "s2": {
+   "lineA": "The friends: \"Come on, we're regulars. We'll order for him.\"",
+   "lineB": "The guest, embarrassed: \"Sorry, Sara. I just tripped.\"",
+   "question": "What does the guest need?",
+   "options": [
+    {"label": "To get out of this without being shamed in front of his friends", "explanation": "A no given calmly and in private is taken better."},
+    {"label": "To carry on the evening as usual", "explanation": "That can't happen, and he probably knows it himself."},
+    {"label": "To be asked to leave", "explanation": "It may become necessary, but he has done nothing more than trip."}
+   ],
+   "clue": "Experience: He is ashamed, and his friends want to help in the wrong way."
+  },
+  "fail2": "The friends laugh, and he orders another.",
+  "s3": [
+   {"label": "Calmly refuse more alcohol, give water and food, and note the time.", "explanation": "A calm no protects him, water and food show care, and the time on the note shows you did right."},
+   {"label": "Say no to him and his friends loudly at the bar, and note the time.", "explanation": "The law is followed, but he is humiliated in front of his friends."},
+   {"label": "Let the friends order, but ask them not to give him anything.", "explanation": "Kind, but if the glass is passed on to him you have served him."},
+   {"label": "Let them order, he has only had water after all.", "explanation": "The ban applies whoever does the ordering."}
+  ],
+  "halfAnalysis": {"text": "The law was followed, but he was ashamed in front of his friends.", "room": "The party pays and leaves in silence."},
+  "halfExperience": {"text": "The mood held, but a glass was passed on to him.", "room": "He drinks from his friend's glass."},
+  "success": "He drinks water and eats. Mira writes: refused {klockan}.",
+  "staffSuccess": "Mira calmly says no and puts out water.",
+  "staffFail": "Mira lets the friends order. The glasses are passed on to him."
+ },
+ "vb36": {
+  "s1": {
+   "a": {"explanation": "That isn't enough. Anyone who goes into the kitchen follows the same hygiene rules as the staff."},
+   "b": {"explanation": "The kitchen is a food premises. Anyone going in must wear protective clothing, wash their hands and be accompanied."},
+   "c": {"explanation": "Health is part of it, but clothing, hand-washing and company are needed too."},
+   "d": {"explanation": "It's a sensible time, but not a rule. The rules apply whatever the time."}
+  },
+  "fail1": "She stays at the pass, waiting for an answer.",
+  "clue1": "Analysis: The kitchen is a food premises with the same rules for everyone.",
+  "s2": {
+   "lineA": "The guest: \"I've always wondered what it looks like behind the hatch. Just a quick look?\"",
+   "lineB": "The guest: \"I write about food for Grythyttebladet. May I see how you work?\"",
+   "question": "What is the guest looking for?",
+   "options": [
+    {"label": "To see how the kitchen really works", "explanation": "Curiosity is a gift. It is possible to give her something without breaking the rules."},
+    {"label": "Special treatment", "explanation": "She asked for a look, not for favours."},
+    {"label": "A short look, as quickly as possible", "explanation": "It's what she asked for, but a kitchen in a rush doesn't show itself in a second."}
+   ],
+   "clue": "Experience: The guest is curious about the craft."
+  },
+  "fail2": "She goes back to her table without an answer.",
+  "s3": [
+   {"label": "Give her an apron and a look from the door, and offer a tour after service.", "explanation": "The rules are followed, the kitchen isn't disturbed, and the curiosity gets a real answer."},
+   {"label": "Say kindly that the kitchen doesn't take guests during service.", "explanation": "Safe, but she asked for something you can give."},
+   {"label": "Take her straight in and show all the stations while you cook.", "explanation": "Generous, but without protective clothing and in the middle of the rush."},
+   {"label": "Ask Elin to take special care of her for the rest of the evening.", "explanation": "The same rules for everyone. What you can give extra is time, when the kitchen has time."}
+  ],
+  "halfAnalysis": {"text": "The rules were followed, but she got nothing.", "room": "She looks towards the hatch for the rest of the evening."},
+  "halfExperience": {"text": "She got to see everything, but without protective clothing in the full rush.", "room": "A plate has to wait while the chef shows her round."},
+  "success": "A tour after service? I'd love to!",
+  "staffSuccess": "The chef gives her an apron and a look from the door.",
+  "staffFail": "Nobody answers her. She goes back to her table."
+ },
+ "vb35": {
+  "s1": {
+   "a": {"explanation": "The course is good, but not enough. The name must be registered with the municipality."},
+   "b": {"explanation": "The one pouring doesn't have to be responsible. The responsibility lies with the person who is registered."},
+   "c": {"explanation": "One of them must be on site throughout the serving hours."},
+   "d": {"explanation": "The owner can register others. It is enough for one of them to be on site."}
+  },
+  "fail1": "Nobody knows who is responsible tonight. Per looks around.",
+  "clue1": "Analysis: A registered responsible person must be on site all evening.",
+  "s2": {
+   "lineA": "The case officer: \"We're from the municipality. Carry on as usual, we're just looking.\"",
+   "lineB": "The police officer: \"Routine check. Who is responsible tonight?\"",
+   "question": "What is the inspection looking for?",
+   "options": [
+    {"label": "To see how you work on an ordinary evening", "explanation": "The inspection wants to see everyday work, not a show."},
+    {"label": "To find faults to remark on", "explanation": "They aren't looking for faults, they're checking that the routines hold."},
+    {"label": "To see the papers as quickly as possible", "explanation": "The papers are needed, but it's the work they want to see."}
+   ],
+   "clue": "Experience: The inspection wants to see an ordinary evening."
+  },
+  "fail2": "Per gets nervous and starts tidying the bar.",
+  "s3": {
+   "a": {"question": "The police officer nods towards the guest at the bar who was swaying earlier. What do you do?", "options": [
+    {"label": "Say it as it is: refused at {klockan}, and show the note.", "explanation": "Openness and a written note weigh most with the inspection."},
+    {"label": "Refer them to Mira, who refused him, and let her show the note.", "explanation": "The facts are right, but you are the one responsible, and the answer should come from you."},
+    {"label": "Ask his friends to take him home, before the police ask any more.", "explanation": "Thoughtful towards the guest, but it looks as if you are hiding something."},
+    {"label": "Say he has only drunk water tonight.", "explanation": "The police saw him sway."}
+   ]},
+   "b": {"question": "Two young guests in lounge B order wine from Sara. The case officer looks over.", "options": [
+    {"label": "Ask Sara to ask for ID before she pours.", "explanation": "Whoever serves must be sure the guest is over 18."},
+    {"label": "Ask everyone in the lounge for ID, the older ones too.", "explanation": "Legal, but the older guests feel distrusted."},
+    {"label": "Ask them how old they are, and trust the answer.", "explanation": "Friendly, but an answer is not ID."},
+    {"label": "Trust Sara, she can see if someone is too young.", "explanation": "Age can't be seen for certain."}
+   ]},
+   "c": {"question": "The case officer leafs through the own-check plan: how do the staff know what's in it?", "options": [
+    {"label": "Everyone new goes through it with me, and we review it often.", "explanation": "The own-check plan must be known by everyone who serves, not just exist."},
+    {"label": "Everyone has done the course in responsible alcohol service.", "explanation": "The course is about the law. The own-check plan is your own routines."},
+    {"label": "It's in a binder by the till, where everyone can read it.", "explanation": "Its being there doesn't mean it's known."},
+    {"label": "I wrote it myself, so I answer for it.", "explanation": "It must be known by everyone who serves, not just by you."}
+   ]},
+   "d": {"question": "The case officer wants to order something to eat. The chef has just said the food has run out.", "options": [
+    {"label": "Ask the chef to cook something simple from what is left.", "explanation": "Cooked food must be available to order throughout the serving hours. A simple choice is enough."},
+    {"label": "Say honestly that the food has run out, and pause the alcohol until there is food.", "explanation": "Legal and honest, but the bar loses the evening for no reason."},
+    {"label": "Offer olives and nuts from the bar instead.", "explanation": "A kind gesture, but snacks don't count as food."},
+    {"label": "Say the kitchen closes earlier than the bar tonight.", "explanation": "Food must be available throughout the serving hours."}
+   ]}
+  },
+  "halfAnalysis": {"text": "The answer was right in substance, but not in how it was given.", "room": "The case officer writes something down."},
+  "halfExperience": {"text": "The attitude was friendly, but not by the rules.", "room": "The police officer asks once more."},
+  "success": {"a": "He was refused at {klockan}. Here is the note.", "b": "May I see some ID, please?", "c": "Everyone new goes through it with me.", "d": "The chef is making a simple dish from what's left."},
+  "staffSuccess": "Per shows the licence and answers calmly.",
+  "staffFail": "Per gets nervous and searches for the papers. It goes into the report."
+ }
+}

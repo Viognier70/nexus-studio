@@ -51,7 +51,8 @@ const curious = (): AnswerStep[] => CURIOUS_FILES.meta.questions.map((q) => ({
 
 /** Delarna som ska ligga inom marginalen (checked) och de som bara rapporteras. */
 export const LENGTH_PARTS: { name: string; checked: boolean; steps: () => AnswerStep[] }[] = [
-  { name: 'vinbaren, gamla formen', checked: true, steps: vinbarOld },
+  // ORDER 326 — inga situationer kvar i den gamla formen sedan 306c; delen rapporteras (tom) men prövas inte.
+  { name: 'vinbaren, gamla formen', checked: false, steps: vinbarOld },
   { name: 'vinbaren, nya formen', checked: true, steps: vinbarNew },
   { name: 'menyn', checked: true, steps: menu },
   { name: 'vinbarens bank (de tre ovan)', checked: true, steps: () => [...vinbarOld(), ...vinbarNew(), ...menu()] },
