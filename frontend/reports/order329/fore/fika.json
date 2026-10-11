@@ -1,0 +1,721 @@
+{
+ "definition": "40 frön, foodtrucken i 21 dagar med den rimliga spelaren (weekHarness playDay, ladder never). fikas = dilemman (fika.log), plain = kvällar med vanligt fika (ORDER 329 B), wellbeingEnd = lagets medeltrivsel dag 21, reputation = ryktet dag 21.",
+ "fikasMean": 7.72,
+ "fikasMin": 7,
+ "fikasMax": 8,
+ "plainMean": 0,
+ "wellbeingEndMean": 0.918,
+ "reputationMean": 0.57,
+ "reputationAtLeast05": 26,
+ "seeds": [
+  {
+   "seed": 1,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen"
+   ],
+   "wellbeingEnd": 0.914025,
+   "reputation": 0.6683256626604102
+  },
+  {
+   "seed": 2,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon"
+   ],
+   "wellbeingEnd": 0.914025,
+   "reputation": 0.500084375
+  },
+  {
+   "seed": 3,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen"
+   ],
+   "wellbeingEnd": 0.9359644293749825,
+   "reputation": 0.4740223057778621
+  },
+  {
+   "seed": 4,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.9316782580314552,
+   "reputation": 0.5001687215234375
+  },
+  {
+   "seed": 5,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen"
+   ],
+   "wellbeingEnd": 0.925233221299442,
+   "reputation": 0.7872706805824872
+  },
+  {
+   "seed": 6,
+   "days": 21,
+   "fikas": 7,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.8986051448298168,
+   "reputation": 0.4449044128179231
+  },
+  {
+   "seed": 7,
+   "days": 21,
+   "fikas": 7,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.8939642079161706,
+   "reputation": 0.9999375039062499
+  },
+  {
+   "seed": 8,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.9445842580314552,
+   "reputation": 0.5286210009115943
+  },
+  {
+   "seed": 9,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.9271905340314551,
+   "reputation": 0.41360946137692456
+  },
+  {
+   "seed": 10,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-benen"
+   ],
+   "wellbeingEnd": 0.9295524940314553,
+   "reputation": 0.3501619168021
+  },
+  {
+   "seed": 11,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-benen"
+   ],
+   "wellbeingEnd": 0.9295524940314553,
+   "reputation": 0.500084375
+  },
+  {
+   "seed": 12,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.9295524940314553,
+   "reputation": 0.6358577226249782
+  },
+  {
+   "seed": 13,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon",
+    "fika-vagn-benen"
+   ],
+   "wellbeingEnd": 0.914025,
+   "reputation": 0.39211826064857097
+  },
+  {
+   "seed": 14,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen"
+   ],
+   "wellbeingEnd": 0.9395424940314552,
+   "reputation": 0.500084375
+  },
+  {
+   "seed": 15,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-benen"
+   ],
+   "wellbeingEnd": 0.9316782580314552,
+   "reputation": 0.5001687215234375
+  },
+  {
+   "seed": 16,
+   "days": 21,
+   "fikas": 7,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.8926226212994419,
+   "reputation": 0.49226753590614913
+  },
+  {
+   "seed": 17,
+   "days": 21,
+   "fikas": 7,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.9053609314107343,
+   "reputation": 0.5001687215234375
+  },
+  {
+   "seed": 18,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon"
+   ],
+   "wellbeingEnd": 0.914025,
+   "reputation": 0.3713960999608747
+  },
+  {
+   "seed": 19,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.931360300527699,
+   "reputation": 0.48485675229006053
+  },
+  {
+   "seed": 20,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.925233221299442,
+   "reputation": 0.4298861350957459
+  },
+  {
+   "seed": 21,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.925233221299442,
+   "reputation": 0.3898474690009989
+  },
+  {
+   "seed": 22,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.9316782580314552,
+   "reputation": 0.5001687215234375
+  },
+  {
+   "seed": 23,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.914025,
+   "reputation": 0.6148162755217705
+  },
+  {
+   "seed": 24,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kortet",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen"
+   ],
+   "wellbeingEnd": 0.9271905340314551,
+   "reputation": 0.6289333838624925
+  },
+  {
+   "seed": 25,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.914025,
+   "reputation": 0.9717845434662418
+  },
+  {
+   "seed": 26,
+   "days": 21,
+   "fikas": 7,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.8951024656015597,
+   "reputation": 0.5001687215234375
+  },
+  {
+   "seed": 27,
+   "days": 21,
+   "fikas": 7,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-benen"
+   ],
+   "wellbeingEnd": 0.8870105656015596,
+   "reputation": 0.9785028635712485
+  },
+  {
+   "seed": 28,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen"
+   ],
+   "wellbeingEnd": 0.9316782580314552,
+   "reputation": 0.4079953389805493
+  },
+  {
+   "seed": 29,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.925233221299442,
+   "reputation": 0.9796225835887497
+  },
+  {
+   "seed": 30,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.9271905340314551,
+   "reputation": 0.5539369450816544
+  },
+  {
+   "seed": 31,
+   "days": 21,
+   "fikas": 7,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.9016136212994419,
+   "reputation": 0.4514089902109327
+  },
+  {
+   "seed": 32,
+   "days": 21,
+   "fikas": 7,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon"
+   ],
+   "wellbeingEnd": 0.8891570300788153,
+   "reputation": 0.5140545745697139
+  },
+  {
+   "seed": 33,
+   "days": 21,
+   "fikas": 7,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kortet",
+    "fika-vagn-kon"
+   ],
+   "wellbeingEnd": 0.8870105656015596,
+   "reputation": 0.5804217896758612
+  },
+  {
+   "seed": 34,
+   "days": 21,
+   "fikas": 7,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kon"
+   ],
+   "wellbeingEnd": 0.8870105656015596,
+   "reputation": 0.36593766313360204
+  },
+  {
+   "seed": 35,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kylboxen"
+   ],
+   "wellbeingEnd": 0.9245661340314553,
+   "reputation": 0.39719895720876697
+  },
+  {
+   "seed": 36,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.914025,
+   "reputation": 0.898275818318604
+  },
+  {
+   "seed": 37,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen"
+   ],
+   "wellbeingEnd": 0.9245661340314553,
+   "reputation": 0.5001687215234375
+  },
+  {
+   "seed": 38,
+   "days": 21,
+   "fikas": 7,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kortet",
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.9006069359328911,
+   "reputation": 0.55013497721875
+  },
+  {
+   "seed": 39,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen",
+    "fika-vagn-kon",
+    "fika-vagn-benen",
+    "fika-vagn-kortet"
+   ],
+   "wellbeingEnd": 0.9316782580314552,
+   "reputation": 0.5270207260262451
+  },
+  {
+   "seed": 40,
+   "days": 21,
+   "fikas": 8,
+   "plain": 0,
+   "dilemmas": [
+    "fika-vagn-kylboxen",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-benen",
+    "fika-vagn-kon",
+    "fika-vagn-kortet",
+    "fika-vagn-kylboxen"
+   ],
+   "wellbeingEnd": 0.9416682580314552,
+   "reputation": 0.9999375039062499
+  }
+ ]
+}
