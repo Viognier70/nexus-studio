@@ -1,6 +1,7 @@
-// gestureMap.ts — D11: vilken gest hör till vilken stämning och vilken situation. Leverans 2026-10-10, ORDER 325.
+// gestureMap.ts — D11: vilken gest hör till vilken stämning och vilken situation. Leverans 2026-10-10, ORDER 325;
+// omtaget (46) med att söka personalens blick, ORDER 326.
 // Designs fil, med talen i balance.ts (GESTURE_BALANCE) och MoodId ur guestMood.ts. Det som spelar kartan står i
-// gestureDirector.ts (vinbaren och bistron) och village/PlayerTruckCrew.tsx (vagnen); gatan i village/.
+// moodGestures.ts (vinbaren och bistron) och village/PlayerTruckCrew.tsx (vagnen); gatan i village/.
 // Syftet (Anders 2026-10-09): spelaren läser gästerna utan symboler. Det spelaren ser är ansiktet (figureFace.ts, från
 // 30 m och närmare) och kroppen (figureClips.ts). Kartan säger vad sim-lagret spelar och när.
 // Inga speltal: alla tider och sannolikheter är nycklar i GESTURE_BALANCE, som Code sätter i balance.ts.
@@ -12,7 +13,7 @@ import { GESTURE_BALANCE } from '../../sim/balance';
 export type Place = 'winebar' | 'truck' | 'street';
 export type Posture = 'seated' | 'standing' | 'walking';
 
-/** Nycklarna i balance.ts (ORDER 325 satte talen). */
+/** Nycklarna i balance.ts (ORDER 325 och 326 satte talen). */
 export { GESTURE_BALANCE };
 
 /** Tempot är styrkan (figureClips moodK): lugn = antydd, normal, stressad = tydlig från 24 m. */
@@ -25,8 +26,8 @@ export const MOOD_STRENGTH: Record<MoodId, 'calm' | 'normal' | 'stressed'> = {
 export const MOOD_MAP: Record<MoodId, { face: MoodId; seated: string[]; standing: string[]; reads24m: string }> = {
   delighted: { face: 'delighted', seated: ['guest.laugh', 'guest.cheers', 'guest.leanTalk'], standing: ['guest.laughStand', 'guest.leanTalkStand'], reads24m: 'gm.read.delighted' },
   content: { face: 'content', seated: ['guest.leanTalk', 'guest.nodApprove', 'guest.leanCurious'], standing: ['guest.leanTalkStand', 'guest.nodApproveStand'], reads24m: 'gm.read.content' },
-  waiting: { face: 'waiting', seated: ['guest.checkWatch', 'guest.shrug'], standing: ['guest.checkWatchStand', 'guest.shrugStand'], reads24m: 'gm.read.waiting' },
-  impatient: { face: 'impatient', seated: ['guest.waveWaiter', 'guest.checkWatch'], standing: ['guest.waveWaiterStand', 'guest.checkWatchStand'], reads24m: 'gm.read.impatient' },
+  waiting: { face: 'waiting', seated: ['guest.seekEye', 'guest.checkWatch', 'guest.shrug'], standing: ['guest.seekEyeStand', 'guest.checkWatchStand', 'guest.shrugStand'], reads24m: 'gm.read.waiting' },
+  impatient: { face: 'impatient', seated: ['guest.waveWaiter', 'guest.seekEye', 'guest.checkWatch'], standing: ['guest.waveWaiterStand', 'guest.seekEyeStand', 'guest.checkWatchStand'], reads24m: 'gm.read.impatient' },
   displeased: { face: 'displeased', seated: ['guest.armsCrossed', 'guest.pushPlate'], standing: ['guest.armsCrossedStand'], reads24m: 'gm.read.displeased' }
 };
 
@@ -48,7 +49,12 @@ export interface Situation {
 
 export const SITUATIONS: Situation[] = [
   // ----- gästerna -----
-  { id: 'readyToOrder', places: ['winebar'], who: 'guest', when: 'menyn stängd och ingen personal inom synhåll', clip: 'guest.waveStaff', standing: 'guest.waveStand', mood: 'content', priority: 3 },
+  // Gästen vill något: först blicken (seekEye), sedan handen (waveStaff), sedan den stora vinkningen (waveWaiter). wantLadder.
+  { id: 'wantsOrder', places: ['winebar'], who: 'guest', when: 'menyn stängd, personalen syns men tittar inte hitåt', clip: 'guest.seekEye', mood: 'waiting', priority: 3, repeat: 'tills blickkontakt eller {seekEyeS}' },
+  { id: 'wantsRefill', places: ['winebar'], who: 'guest', when: 'glaset tomt och flaskan slut eller inte vid bordet', clip: 'guest.seekEye', mood: 'waiting', priority: 3 },
+  { id: 'wantsBill', places: ['winebar'], who: 'guest', when: 'ätit klart, notan inte kommen', clip: 'guest.seekEye', mood: 'waiting', priority: 3 },
+  { id: 'wantsHatch', places: ['truck'], who: 'guest', when: 'vid ståbordet och vill ha något från luckan (servett, sås, en till)', clip: 'guest.seekEyeStand', standing: 'guest.seekEyeStand', mood: 'waiting', priority: 3 },
+  { id: 'readyToOrder', places: ['winebar'], who: 'guest', when: 'sökt blicken i {seekEyeS} utan att någon sett det', clip: 'guest.waveStaff', standing: 'guest.waveStand', mood: 'content', priority: 3 },
   { id: 'ordering', places: ['winebar'], who: 'guest', when: 'servitören tar beställningen vid bordet', clip: 'guest.pointMenu', mood: 'content', priority: 4 },
   { id: 'winePoured', places: ['winebar'], who: 'guest', when: 'vinet är upphällt och inte smakat', clip: 'guest.smellWine', mood: null, priority: 4 },
   { id: 'firstBite', places: ['winebar', 'truck'], who: 'guest', when: 'första tuggan efter att rätten ställts fram, stämningen nöjd eller glad', clip: 'guest.nodFirstBite', standing: 'guest.nodFirstBiteStand', mood: 'content', priority: 4 },
@@ -85,12 +91,19 @@ export const GESTURE_RULES = {
   onePerParty: true, staggerS: 0.18,
   /** Medan personalen serverar eller tar beställningen vid bordet: bara de gester som hör till det (ordering, winePoured, firstBite). */
   quietWhileServed: ['ordering', 'winePoured', 'firstBite', 'firstBiteGreat'],
+  /** När gästen vill något: blicken först, sedan handen, sedan den stora vinkningen. Ett steg upp efter {seekEyeS} och {waitWaveS}.
+   *  Får gästen blickkontakt (personalen vänder sig mot bordet, staff.listenTilt eller ett steg mot bordet) stannar stegen. */
+  wantLadder: ['guest.seekEye', 'guest.waveStaff', 'guest.waveWaiter'],
+  /** Blicken söks mot den närmaste i personalen som syns från platsen, annars mot baren (bartenderns plats). */
+  seekEyeTarget: ['nearestStaffInSight', 'bar'],
   /** Ordningen: raketens manus, sedan situationerna efter priority, sist stämningens egna gester (MOOD_MAP). */
   order: ['rocketScript', 'situation', 'mood'],
   /** Gesterna väljs i tur och ordning per gäst (index = gästens nummer), inte slumpvis, så att samma kväll ser likadan ut. */
   deterministic: true,
   /** Vid vagnen spelas den stående varianten (…Stand). I kön: checkWatchStand och armsCrossedStand (D9:s namn är alias). */
-  standingAlias: { 'guest.checkWatch@queue': 'guest.checkWatchStand', 'guest.armsCrossed@queue': 'guest.armsCrossedStand' }
+  standingAlias: { 'guest.checkWatch@queue': 'guest.checkWatchStand', 'guest.armsCrossed@queue': 'guest.armsCrossedStand' },
+  /** Beslut 2026-10-10: gästerna lyfter aldrig blicken mot kameran. Huvudet vänds bara mot något i rummet. */
+  noCameraGaze: true
 };
 
 /** Välj gest för en gäst. state = det sim-lagret vet om gästen just nu. Ger klippets namn eller null. */

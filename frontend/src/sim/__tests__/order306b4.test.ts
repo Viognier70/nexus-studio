@@ -42,10 +42,10 @@ describe('ORDER 306b.4 — phronesis-steget tar varken kassa eller ork', () => {
     expect(checked).toBeGreaterThanOrEqual(40 + 9 + 9 + 13);
   });
 
-  it('i den gamla formen bär techne-steget följden (vb25 efter stängning: flaskan och timmen extra)', () => {
+  it('techne-steget bär följden (vb25 efter stängning: flaskan och timmen extra; sedan ORDER 326 i den nya formen)', () => {
     const vb25 = (vinbarMeta as unknown as Meta).incidents.find((i) => i.id === 'vb25-efter-stangning')!;
     const techne = vb25.steps.find((s) => s.axis === 'techne')!;
-    expect(vb25.steps.map((s) => s.axis)).toEqual(['episteme', 'techne', 'phronesis']);
+    expect(vb25.steps.map((s) => s.axis)).toEqual(['episteme', 'phronesis', 'techne']);
     expect(techne.fail.effects.cash).toBeLessThan(0);
     expect(techne.fail.effects.stamina).toBeLessThan(0);
   });

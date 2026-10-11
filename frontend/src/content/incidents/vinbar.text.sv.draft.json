@@ -309,6 +309,10 @@
     "vb04-dubbelbokning": {
       "title": "Samma bord två gånger",
       "body": "Två sällskap står i dörren med bokning på bord {bord}, samma tid. Båda har fått en bekräftelse.",
+      "guestLine": {
+        "a": "Det ena sällskapet: “Vi bokade i maj, det är mammas sjuttioårsdag.” Det andra: “Vi har också en bekräftelse, vi har kört från Örebro.”",
+        "b": "Det ena sällskapet: “Vi har sett fram emot det här i månader.” Det andra: “Vi har bara två timmar innan tåget går.”"
+      },
       "steps": [
         {
           "question": "Vad är en bekräftad bokning för gästen?",
@@ -332,67 +336,79 @@
           },
           "fail": {
             "outcome": "{personal} säger att det nog blir en lösning. Båda sällskapen ser misstrogna ut."
-          }
-        },
-        {
-          "question": "Hur tar du reda på vilken bokning som kom först?",
-          "options": {
-            "a": {
-              "label": "Öppna båda bokningarna och se när de registrerades",
-              "explanation": "Bokningssystemet visar när varje bokning gjordes. Det ger ett svar på en minut, utan att gästerna behöver argumentera."
-            },
-            "b": {
-              "label": "Fråga sällskapen vem som ringde först",
-              "explanation": "Båda tror att de var först, och nu står de och tävlar inför varandra. Svaret finns i systemet."
-            },
-            "c": {
-              "label": "Låt den som kom först till dörren få bordet",
-              "explanation": "Det säger inget om vem som bokade först. Den som bokade tidigt men kom en minut senare känner sig orättvist behandlad."
-            },
-            "d": {
-              "label": "Be gästerna visa bekräftelsen i telefonen",
-              "explanation": "Mejlen visar ofta när bokningen gjordes, men det tar tid och gör gästerna till bevisförare. Systemet har samma uppgift snabbare."
-            }
           },
-          "fail": {
-            "outcome": "Sällskapen står och jämför sina bekräftelser. Ingen vet vem som har rätt."
-          }
+          "clue": "Analys: Båda har ett löfte. Felet är krogens."
         },
         {
-          "question": "Du vet vem som bokade först. Vad gör du nu?",
+          "question": "Vad behöver de två sällskapen?",
           "options": {
             "a": {
-              "label": "Ge bordet till det största sällskapet",
-              "explanation": "Fler kuvert ger mer i kassan i kväll, men gästen som bokade först känner sig lurad och berättar det för andra."
+              "label": "En ursäkt, och att du tar dig tid att reda ut felet",
+              "explanation": "Ursäkten är rätt, men utredningen kan vänta till efter kvällen."
             },
             "b": {
-              "label": "Be båda sällskapen vänta medan du ringer runt och reder ut felet först",
-              "explanation": "Utredningen kan vänta till efter kvällen. Gästerna i dörren behöver ett beslut nu, och en entré full av väntande gäster syns i hela rummet."
+              "label": "Att den viktigaste kvällen går först",
+              "explanation": "Båda kvällarna är viktiga för dem som har dem. Det är inte krogen som ska döma."
             },
             "c": {
-              "label": "Bordet till den som bokade först; de andra får baren och ett glas",
-              "explanation": "Boken avgör, och den som får vänta ska få något för besväret. Ett glas på huset kostar lite och gör ett fel till en god historia."
+              "label": "Ett snabbt och rättvist besked till båda",
+              "explanation": "Båda står i dörren med ett löfte, och båda behöver veta nu."
             }
           },
           "fail": {
             "outcome": "Båda sällskapen står kvar i entrén. Kön växer bakom dem.",
             "ongoing": "Entrén är full av väntande gäster. Personalen går fram och tillbaka med telefonen."
+          },
+          "clue": "Upplevelse: Båda väntar i dörren och behöver besked nu."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Se i systemet vem som bokade först, och be de andra att komma tillbaka senare.",
+              "explanation": "Boken avgör rätt, men det andra sällskapet skickas iväg utan något."
+            },
+            "b": {
+              "label": "Ge bordet till festen, och de andra ett glas i baren.",
+              "explanation": "Omtänksamt, men det är boken som ska avgöra, inte vems kväll som verkar viktigast."
+            },
+            "c": {
+              "label": "Låt båda vänta medan du ringer runt och reder ut vems felet är.",
+              "explanation": "Gästerna i dörren behöver ett beslut nu, och en full entré syns i hela rummet."
+            },
+            "d": {
+              "label": "Se i systemet vem som bokade först. De andra får baren och ett glas.",
+              "explanation": "Boken avgör, och den som får vänta får något för besväret. Ett glas kostar lite och gör ett fel till en god historia."
+            }
+          },
+          "fail": {
+            "outcome": "Sällskapen står och jämför sina bekräftelser. Ingen vet vem som har rätt."
           }
         }
       ],
+      "halfGrip": {
+        "analysis": "Boken avgjorde rätt, men det andra sällskapet gick utan något.",
+        "experience": "Omtanken var rätt, men bordet var lovat till dem som bokade först.",
+        "outcomeAnalysis": "Det andra sällskapet går. En av dem skriver något i telefonen.",
+        "outcomeExperience": "Sällskapet som bokade först ser på när de andra sätter sig."
+      },
       "success": {
         "outcome": "Det ena sällskapet sätter sig. Det andra får glas i baren och skålar."
       },
       "staff": {
-        "outcome": "Personalen tar över: de lät båda vänta, och det ena sällskapet gick."
+        "outcome": "Personalen lät båda vänta, och det ena sällskapet gick."
+      },
+      "staffTexts": {
+        "success": "Per ser i systemet, ger bordet till dem som bokade först och bjuder de andra i baren.",
+        "fail": "Personalen lät båda vänta, och det ena sällskapet gick."
       }
     },
     "vb05-dj": {
       "title": "Musiken",
       "body": "Klockan är {klockan} och DJ:n har höjt volymen. Ett par vid bord {bord} lutar sig över bordet för att höra varandra.",
-      "situations": {
-        "tidigt": "Rummet är fortfarande halvtomt, och de flesta gäster sitter och äter.",
-        "sent": "Baren har fyllts, och flera gäster står och dansar vid DJ-båset."
+      "guestLine": {
+        "a": "Kvinnan vid bordet: “Vi har inte setts på länge. Vi vill kunna prata.”",
+        "b": "Mannen vid bordet, lågt: “Det är vår första träff. Jag hör inte vad hon säger.”"
       },
       "steps": [
         {
@@ -413,77 +429,80 @@
           },
           "fail": {
             "outcome": "{personal} rycker på axlarna. Paret fortsätter luta sig över bordet."
-          }
-        },
-        {
-          "question": "Hur tar du reda på om volymen är för hög vid borden?",
-          "options": {
-            "a": {
-              "label": "Lyssna från baren där du står",
-              "explanation": "Ljudet är olika i olika delar av rummet. Det som låter lagom vid baren kan vara för högt vid ett bord nära högtalarna."
-            },
-            "b": {
-              "label": "Fråga DJ:n hur det låter i båset",
-              "explanation": "DJ:n hör sina egna medhörningshögtalare, inte det gästerna hör vid borden."
-            },
-            "c": {
-              "label": "Mät med en decibelapp i telefonen",
-              "explanation": "En siffra kan hjälpa, men den säger inte om just de här gästerna kan prata. Samtalet vid bordet är det bästa måttet."
-            },
-            "d": {
-              "label": "Ställ dig vid bordet och prata i vanlig samtalston",
-              "explanation": "Om du måste höja rösten för att höras vid bordet måste gästerna också göra det. Då vet du hur det låter där de sitter."
-            }
           },
-          "fail": {
-            "outcome": "{personal} tycker att det låter bra från baren. Vid bordet hörs ingenting."
-          }
+          "clue": "Analys: Högre musik gör hela rummet högre."
         },
         {
-          "question": "Paret hör inte varandra. Vad gör du nu?",
+          "question": "Vad söker gästerna?",
           "options": {
             "a": {
-              "label": "Flytta paret längst in, bort från högtalarna",
-              "explanation": "Det hjälper ett bord men inte rummet. Nästa par som kommer möter samma problem.",
-              "explanationIn": {
-                "sent": "Sent på kvällen hör musiken till baren. Ett lugnare hörn åt paret ger både dem och dansgolvet deras kväll."
-              }
+              "label": "Att kunna prata, utan att behöva flytta eller gå",
+              "explanation": "De kom för samtalet. Det är musiken som ska anpassa sig, inte de."
             },
             "b": {
-              "label": "Be DJ:n sänka volymen",
-              "explanation": "En vinbar har olika kvällar i samma kväll. Tidigt vill gästerna prata, sent vill de ha stämning. Volymen ska följa rummet.",
-              "explanationIn": {
-                "sent": "Sent på kvällen är musiken det gästerna i baren har kommit för. Att sänka den för ett bord tar kvällen från alla andra."
-              },
-              "fail": {
-                "outcome": "Musiken sjunker. Gästerna vid DJ-båset slutar dansa.",
-                "ongoing": "Dansgolvet tunnas ut. Gästerna i baren ser sig om efter musiken."
-              }
+              "label": "Ett bord längre bort från musiken",
+              "explanation": "Det hjälper dem, men inte rummet, och inte nästa par som sätter sig."
             },
             "c": {
-              "label": "Låt musiken spela",
-              "explanation": "Musiken är en del av konceptet, men i ett halvtomt rum tidigt på kvällen stör den mer än den bär.",
-              "explanationIn": {
-                "sent": "Sent på kvällen bär musiken rummet, men paret vid bordet behöver fortfarande en lösning."
-              }
+              "label": "Att musiken stängs av helt och hållet, resten av kvällen",
+              "explanation": "De bad om att höra varandra, inte om tystnad. Senare på kvällen behöver rummet musiken."
             }
           },
           "fail": {
             "outcome": "Paret dricker upp och går. Ett till bord ber om notan.",
             "ongoing": "Paret vid bordet sitter tysta och ser på klockan."
+          },
+          "clue": "Upplevelse: Gästerna vill prata, och rummet är fortfarande halvtomt."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Flytta paret längst in, bort från högtalarna.",
+              "explanation": "Paret kan prata, men rummet blir lika högt, och nästa par möter samma sak."
+            },
+            "b": {
+              "label": "Låt musiken spela, den är en del av konceptet.",
+              "explanation": "I ett halvtomt rum tidigt på kvällen stör musiken mer än den bär."
+            },
+            "c": {
+              "label": "Prata med paret vid bordet, och be DJ:n sänka tills rummet fyllts.",
+              "explanation": "Vid bordet hör du det gästerna hör. En lägre volym bryter spiralen där alla pratar högre, och den kan höjas igen när rummet vill dansa."
+            },
+            "d": {
+              "label": "Be DJ:n sänka en aning, och gå tillbaka och kolla igen om en halvtimme.",
+              "explanation": "Rätt åtgärd för rummet, men paret får ingen hjälp nu och vet inte att du har märkt något."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} tycker att det låter bra från baren. Vid bordet hörs ingenting."
           }
         }
       ],
+      "halfGrip": {
+        "analysis": "Volymen sänktes, men paret fick ingen hjälp i stunden.",
+        "experience": "Paret kan prata, men rummet är lika högt för alla andra.",
+        "outcomeAnalysis": "Paret dricker upp innan musiken har sänkts.",
+        "outcomeExperience": "Nästa par vid högtalarna lutar sig över bordet."
+      },
       "success": {
         "outcome": "Paret pratar igen, och rummet har den ljudnivå kvällen behöver."
       },
       "staff": {
-        "outcome": "Personalen tar över, men ingen sa något till DJ:n. Två bord gick tidigt."
+        "outcome": "Ingen sa något till DJ:n. Två bord gick tidigt."
+      },
+      "staffTexts": {
+        "success": "Sara frågar paret och ber DJ:n sänka.",
+        "fail": "Ingen sa något till DJ:n. Två bord gick tidigt."
       }
     },
     "vb06-kylen": {
       "title": "Kylen visar nio grader",
       "body": "Vid kvällens första egenkontroll visar kylen med ost och charkuterier 9 grader.",
+      "guestLine": {
+        "a": "Kocken: “Vi har tjugo bokade i kväll, och ostbrickan är det vi säljer mest.”",
+        "b": "Sara: “Ska jag fortsätta lägga upp chark, eller?”"
+      },
       "steps": [
         {
           "question": "Vad betyder nio grader i kylen för ost och chark?",
@@ -504,62 +523,70 @@
           "fail": {
             "outcome": "Kylen surrar. Termometern står kvar på nio.",
             "ongoing": "Kylen surrar. Termometern står kvar på nio grader."
-          }
+          },
+          "clue": "Analys: Nio grader är en avvikelse som ska åtgärdas och skrivas in."
         },
         {
-          "question": "Hur hanterar du avvikelsen i kylen?",
+          "question": "Vad behöver kvällen?",
           "options": {
             "a": {
-              "label": "Skriv 8 grader i pärmen och mät igen i morgon",
-              "explanation": "Egenkontrollen ska visa hur det faktiskt var. En tillrättalagd siffra är värre än en avvikelse, och varorna står kvar i värmen."
+              "label": "Att laget vet vad som gäller, och att kvällen ändå kan gå",
+              "explanation": "Alla som arbetar i kväll behöver samma bild, annars öppnar någon den trasiga kylen igen."
             },
             "b": {
-              "label": "Mät i en vara, flytta till andra kylen, skriv avvikelse och åtgärd",
-              "explanation": "En mätning i varan visar hur varm den blivit. En avvikelse ska dokumenteras med tid och åtgärd; det är vad en inspektör frågar efter först."
+              "label": "Att ostbrickan och charken stryks helt i kväll",
+              "explanation": "Säkert, men det kostar kvällens mest sålda rätter i onödan."
             },
             "c": {
-              "label": "Flytta varorna men vänta med att skriva något",
-              "explanation": "Varorna är räddade, men utan anteckning finns inget som visar att avvikelsen upptäcktes och åtgärdades."
+              "label": "Att ingen behöver bry sig, det är redan löst",
+              "explanation": "Ingen vet var varorna står, eller vad som går att sälja."
+            }
+          },
+          "fail": {
+            "outcome": "{personal} letar efter charken i fel kyl mitt i serveringen."
+          },
+          "clue": "Upplevelse: Laget behöver veta vad som gäller."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Mät i varan, flytta den till andra kylen, skriv avvikelsen och berätta för laget.",
+              "explanation": "Mätningen visar hur varm varan blivit, anteckningen visar vad som gjordes, och laget vet var allt står."
+            },
+            "b": {
+              "label": "Mät, flytta och skriv avvikelsen, men säg inget till laget.",
+              "explanation": "Varorna och pärmen är i ordning, men någon letar i fel kyl mitt i servicen."
+            },
+            "c": {
+              "label": "Berätta för laget och flytta varorna till den andra kylen, men skriv inget i pärmen.",
+              "explanation": "Laget vet vad som gäller, men inget visar att avvikelsen upptäcktes och åtgärdades."
             },
             "d": {
-              "label": "Vrid termostaten till kallaste läget och låt alla varorna stå kvar där de är",
-              "explanation": "Om kylen är trasig hjälper inte termostaten, och varorna blir varmare medan du väntar. Först flyttas varorna, sedan felsöks kylen."
+              "label": "Skriv åtta grader i pärmen och vrid termostaten till kallaste läget.",
+              "explanation": "En tillrättalagd siffra är värre än en avvikelse, och varorna står kvar i värmen."
             }
           },
           "fail": {
             "outcome": "Osten och charken står kvar i den varma kylen. Ingen har skrivit något."
           }
-        },
-        {
-          "question": "Service kan komma först i morgon. Hur kör du kvällen?",
-          "options": {
-            "a": {
-              "label": "Ställ in kvällens leverans i den trasiga kylen som vanligt",
-              "explanation": "Då hamnar nya varor i samma värme. Den trasiga kylen ska stå tom tills den är lagad."
-            },
-            "b": {
-              "label": "Stryk ostbrickan och charken från menyn i kväll",
-              "explanation": "Säkert, men det kostar kvällens mest sålda rätter. Det som ryms i den andra kylen kan säljas som vanligt."
-            },
-            "c": {
-              "label": "Säg inget till kollegorna, det är ju löst",
-              "explanation": "Köket och baren letar på fel ställe och öppnar kanske den trasiga kylen igen. Alla som arbetar i kväll behöver veta."
-            },
-            "d": {
-              "label": "Berätta för köket och baren vad som står var, och sälj det som ryms i andra kylen",
-              "explanation": "Alla vet var varorna finns och vad som går att sälja. Kvällen går vidare, och den trasiga kylen står tom tills service kommer."
-            }
-          },
-          "fail": {
-            "outcome": "{personal} letar efter charken i fel kyl mitt i serveringen."
-          }
         }
       ],
+      "halfGrip": {
+        "analysis": "Varorna och pärmen sköttes, men laget visste inte var allt stod.",
+        "experience": "Laget visste vad som gällde, men pärmen säger ingenting.",
+        "outcomeAnalysis": "Sara öppnar den trasiga kylen mitt i servicen.",
+        "outcomeExperience": "Pärmen ligger öppen på samma sida som i går."
+      },
       "success": {
         "outcome": "Varorna står kallt i den andra kylen. Avvikelsen står i pärmen med tid och åtgärd."
       },
       "staff": {
-        "outcome": "Personalen tar över, men ingen gjorde något åt kylen före öppning."
+        "outcome": "Ingen gjorde något åt kylen före öppning."
+      },
+      "staffTexts": {
+        "success": "Kocken flyttar varorna och skriver i pärmen.",
+        "fail": "Ingen gjorde något åt kylen före öppning."
       }
     },
     "vb07-provningen": {
@@ -669,9 +696,9 @@
     "vb08-sallskap-pa-fem": {
       "title": "Fem utan bokning",
       "body": "Klockan är {klockan}. Ett sällskap på fem står i dörren utan bokning.",
-      "situations": {
-        "fullt": "Rummet är nästan fullt.",
-        "lugnt": "Rummet är lugnt, och flera bord står tomma."
+      "guestLine": {
+        "a": "En i sällskapet: “Vi har gått hela dagen. Vi tar vad som helst, bara vi får sitta tillsammans.”",
+        "b": "En i sällskapet: “Vi firar att Lisa har disputerat! Har ni plats för oss alla?”"
       },
       "steps": [
         {
@@ -696,69 +723,70 @@
           },
           "fail": {
             "outcome": "{personal} räknar bord i stället för platser och blir osäker på vad som går."
-          }
+          },
+          "clue": "Analys: Fem gäster är fem kuvert."
         },
         {
-          "question": "Hur tar du reda på var fem gäster får plats?",
+          "question": "Vad söker sällskapet?",
           "options": {
             "a": {
-              "label": "Se i bordsplanen vilka bord som är lediga eller snart betalar",
-              "explanation": "Bordsplanen visar både lediga bord och vilka sällskap som är på kaffe eller nota. Då vet du vad du kan lova, och när."
+              "label": "Ett bord direkt, var som helst",
+              "explanation": "De vill sitta snart, men de sa \"tillsammans\"."
             },
             "b": {
-              "label": "Gissa från dörren hur fullt det ser ut",
-              "explanation": "Från dörren syns inte vilka bord som är bokade om en kvart. En gissning blir ett löfte som kanske inte håller."
+              "label": "Ett rakt besked om att det är fullt",
+              "explanation": "De frågade efter plats, inte efter ett nej."
             },
             "c": {
-              "label": "Gå runt och fråga gästerna hur länge de stannar",
-              "explanation": "Det stör gästerna och får dem att känna sig ivägkörda. Svaret finns i bordsplanen och i hur långt borden kommit."
+              "label": "Att få plats tillsammans, snart, utan att behöva gå vidare",
+              "explanation": "De är fem som vill vara fem, och de vill stanna här."
+            }
+          },
+          "fail": {
+            "outcome": "Sällskapet går. Två av dem tittar in genom fönstret."
+          },
+          "clue": "Upplevelse: Sällskapet vill vara tillsammans och stanna."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Se i bordsplanen. Fyra vid fyrabordet och den femte vid baren.",
+              "explanation": "Alla får plats utan att rummet byggs om, men sällskapet delas."
+            },
+            "b": {
+              "label": "Skjut ihop ett fyrabord och ett tvåbord mitt i rummet, direkt, så att alla sitter ihop.",
+              "explanation": "Alla sitter tillsammans, men ihopskjutna bord i ett fullt rum tar plats, glas och personal."
+            },
+            "c": {
+              "label": "Säg från dörren att det är fullt i kväll.",
+              "explanation": "Att säga nej när det finns plats kostar kvällens intäkt och ger ett dåligt rykte."
             },
             "d": {
-              "label": "Fråga en kollega som nyss gått runt i rummet",
-              "explanation": "Kollegan vet en del, men inte vilka bokningar som kommer. Bordsplanen ger hela bilden."
+              "label": "Se i bordsplanen, och låt alla fem vänta i baren tills sexbordet blir ledigt.",
+              "explanation": "Bordsplanen visar vad du kan lova och när. Alla fem är tillsammans hela tiden, och rummet behöver inte byggas om."
             }
           },
           "fail": {
             "outcome": "Sällskapet står kvar i dörren medan {personal} ser sig om i rummet."
           }
-        },
-        {
-          "question": "Du vet hur rummet ser ut. Hur tar du emot de fem?",
-          "options": {
-            "a": {
-              "label": "Sätt alla fem vid ett fyrabord och ett tvåbord som ställs ihop",
-              "explanation": "Fem kuvert är välkomna, men ihopskjutna bord i ett fullt rum tar plats, glas och personal. Det märks senare på kvällen.",
-              "explanationIn": {
-                "fullt": "I ett fullt rum tar ihopskjutna bord plats från andra, och personalen hinner inte med. Grannborden får sämre service resten av kvällen.",
-                "lugnt": "När borden står tomma finns det plats att skjuta ihop två bord. Sällskapet sitter samlat, och ingen annan får stå tillbaka."
-              },
-              "fail": {
-                "outcome": "Borden skjuts ihop. Grannbordet får flytta sina stolar.",
-                "ongoing": "Grannborden sitter trångt. Personalen tränger sig fram mellan stolarna."
-              }
-            },
-            "b": {
-              "label": "Fyra vid fyrabordet och den femte vid baren tills ett bord blir ledigt",
-              "explanation": "Alla fem får plats utan att rummet byggs om. Den som väntar i baren får service direkt, och sällskapet samlas när ett bord blir ledigt.",
-              "explanationIn": {
-                "lugnt": "Det fungerar, men i ett lugnt rum finns det plats att låta alla fem sitta tillsammans direkt."
-              }
-            },
-            "c": {
-              "label": "Säg att det är fullt i kväll",
-              "explanation": "Att säga nej till fem gäster när det finns plats kostar kvällens intäkt och ger ett rykte om en krog som inte vill ha folk."
-            }
-          },
-          "fail": {
-            "outcome": "Sällskapet går. Två av dem tittar in genom fönstret."
-          }
         }
       ],
+      "halfGrip": {
+        "analysis": "Alla fick plats, men den femte satt ensam i baren.",
+        "experience": "Sällskapet satt ihop, men rummet fick betala för det.",
+        "outcomeAnalysis": "En i sällskapet vänder sig om mot baren gång på gång.",
+        "outcomeExperience": "Servitörerna tränger sig förbi de ihopskjutna borden."
+      },
       "success": {
         "outcome": "Alla fem har fått plats. Sällskapet skålar, och rummet flyter på."
       },
       "staff": {
-        "outcome": "Personalen tar över, men visste inte vad de fick lova. Sällskapet gick efter en stund."
+        "outcome": "Personalen visste inte vad de kunde lova. Sällskapet gick."
+      },
+      "staffTexts": {
+        "success": "Per ser i bordsplanen och ber sällskapet ta ett glas i baren.",
+        "fail": "Personalen visste inte vad de kunde lova. Sällskapet gick."
       }
     },
     "vb09-getosten": {
@@ -865,6 +893,10 @@
     "vb10-berusad": {
       "title": "En flaska till",
       "body": "En gäst vid baren har druckit mycket, pratar högt och vill ha en flaska till.",
+      "guestLine": {
+        "a": "Gästen, högt: “Kom igen, jag är ju stamgäst! En flaska till, jag bjuder hela baren.”",
+        "b": "Gästen, tyst: “Jag har haft en usel vecka. Jag vill bara ha en flaska till.”"
+      },
       "steps": [
         {
           "question": "Vad säger alkohollagen om en märkbart påverkad gäst?",
@@ -889,64 +921,76 @@
           "fail": {
             "outcome": "Flaskan kommer. Rösten vid baren blir högre.",
             "ongoing": "Rösten vid baren hörs över hela rummet. Gästerna intill flyttar på sig."
-          }
+          },
+          "clue": "Analys: Ingen servering alls till en märkbart påverkad gäst."
         },
         {
-          "question": "Hur säger du nej till gästen vid baren?",
+          "question": "Vad söker gästen?",
           "options": {
             "a": {
-              "label": "Högt över bardisken, så att det blir tydligt",
-              "explanation": "Ett nej inför publik gör gästen generad och arg. Det blir en strid om att inte tappa ansiktet."
+              "label": "Att inte tappa ansiktet inför de andra, och att någon bryr sig",
+              "explanation": "Ett nej kan tas emot om det ges med respekt. Det är förödmjukelsen som skapar bråk."
             },
             "b": {
-              "label": "Säg att flaskan är slut i baren och hoppas att gästen ger sig",
-              "explanation": "Då ber gästen om en annan flaska. Nejet måste gälla servering, inte en viss flaska."
+              "label": "Att bli tagen på allvar som stamgäst",
+              "explanation": "Det stämmer, men att vara stamgäst ger ingen rätt till servering."
             },
             "c": {
-              "label": "Lugnt och nära gästen, med vatten och något att äta",
-              "explanation": "Lågt tonläge och närhet gör nejet privat. Vatten och mat visar att du bryr dig om gästen, inte bara om regeln."
+              "label": "Att få sin flaska",
+              "explanation": "Det är vad gästen ber om, men det är inte vad hen behöver."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen står kvar vid baren och höjer rösten.",
+            "ongoing": "Gästen vid baren hörs över hela rummet."
+          },
+          "clue": "Upplevelse: Gästen vill inte tappa ansiktet."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Ge ett sista glas, med vatten och bröd, så att det blir lugnt.",
+              "explanation": "Omtanken är rätt, men ett sista glas är fortfarande servering till en märkbart påverkad gäst."
+            },
+            "b": {
+              "label": "Servera flaskan, gästen är stamgäst och brukar klara sig.",
+              "explanation": "Stamgäst eller inte gäller samma lag, och serveringstillståndet står på spel.",
+              "fail": {
+                "outcome": "Flaskan kommer. Rösten vid baren blir högre.",
+                "ongoing": "Rösten vid baren hörs över hela rummet. Gästerna intill flyttar på sig."
+              }
+            },
+            "c": {
+              "label": "Säg nej lugnt och nära gästen, ge vatten och mat, och erbjud en taxi.",
+              "explanation": "Ett lågt nej gör det privat, vatten och mat visar omsorg, och taxin tar gästen säkert hem."
+            },
+            "d": {
+              "label": "Säg nej tydligt över bardisken, och be gästen gå hem.",
+              "explanation": "Nejet är rätt, men inför publik blir det en strid om att inte tappa ansiktet."
             }
           },
           "fail": {
             "outcome": "Gästen tar illa upp och börjar diskutera högt.",
             "ongoing": "Gästen vid baren diskuterar med personalen. Grannarna tittar dit."
           }
-        },
-        {
-          "question": "Gästen protesterar och vägrar ge sig. Vad gör du nu?",
-          "options": {
-            "a": {
-              "label": "Stå fast lugnt, ta hjälp av en kollega och erbjud en taxi",
-              "explanation": "Ett nej som håller och en hjälp hem visar omsorg. Två personer lugnar läget bättre än en, och gästen kommer hem säkert."
-            },
-            "b": {
-              "label": "Servera ett sista glas så att det blir lugnt i rummet",
-              "explanation": "Ett sista glas är fortfarande servering till en märkbart påverkad gäst. Det köper några minuter och gör sedan läget värre.",
-              "fail": {
-                "outcome": "Gästen får glaset och vill genast ha ett till.",
-                "ongoing": "Gästen vid baren blir högre för varje glas. Gästerna intill flyttar på sig."
-              }
-            },
-            "c": {
-              "label": "Be gästen gå därifrån direkt, utan att erbjuda någon hjälp att komma hem",
-              "explanation": "Beslutet är rätt, men en berusad gäst ensam ute på gatan är också ditt ansvar. En taxi hade gjort det bättre."
-            },
-            "d": {
-              "label": "Låtsas inte höra och gå till andra gäster",
-              "explanation": "Gästen står kvar och blir allt högre. Problemet växer medan du tittar bort."
-            }
-          },
-          "fail": {
-            "outcome": "Gästen står kvar vid baren och höjer rösten.",
-            "ongoing": "Gästen vid baren hörs över hela rummet."
-          }
         }
       ],
+      "halfGrip": {
+        "analysis": "Nejet höll, men gästen förödmjukades inför baren.",
+        "experience": "Gästen lugnade sig, men lagen bröts.",
+        "outcomeAnalysis": "Gästen går, och smäller i dörren.",
+        "outcomeExperience": "Gästen beställer ett glas till efter tio minuter."
+      },
       "success": {
-        "outcome": "Gästen muttrar men tar vattnet, en tallrik bröd och en taxi hem."
+        "outcome": "Gästen muttrar, men tar vattnet, en tallrik bröd och en taxi hem."
       },
       "staff": {
-        "outcome": "Personalen tar över och fortsätter servera gästen vid baren."
+        "outcome": "Personalen fortsätter servera gästen vid baren."
+      },
+      "staffTexts": {
+        "success": "Elin säger lugnt nej, ställer fram vatten och ringer en taxi.",
+        "fail": "Personalen fortsätter servera gästen vid baren."
       }
     },
     "vb11-cremant": {
@@ -1149,8 +1193,9 @@
     "vb13-delegationen": {
       "title": "Delegationen",
       "body": "Klockan är {klockan}. En delegation ringer och vill boka hela vinbaren i morgon, men vill att köket provlagar den nya menyn redan i kväll så att de kan smaka.",
-      "situations": {
-        "lugnt": "Kvällen är lugn: ingen kö och flera tomma bord."
+      "guestLine": {
+        "a": "“Vi är tjugo från kommunen. Vi vill vara säkra på att maten håller.”",
+        "b": "“Vår direktör har celiaki. Vi vill smaka innan vi bestämmer oss.”"
       },
       "steps": [
         {
@@ -1171,76 +1216,80 @@
           },
           "fail": {
             "outcome": "Du lovar en provlagning utan att veta vad den kräver av köket."
-          }
+          },
+          "clue": "Analys: En provlagning testar rätter, portioner och tider."
         },
         {
-          "question": "Hur lägger du upp bokningen och provlagningen med köket?",
+          "question": "Vad söker delegationen?",
           "options": {
             "a": {
-              "label": "Ta bokningen och kör den nya menyn redan i kväll",
-              "explanation": "Att byta meny mitt i en service stressar köket och ger fel på bongarna. Bokningen är värdefull, men kvällens gäster betalar priset.",
-              "explanationIn": {
-                "lugnt": "En lugn kväll har köket tid att provlaga utan att gästerna märker det. Delegationen får smaka i kväll, och bokningen blir av."
-              }
+              "label": "Trygghet: att veta att kvällen håller",
+              "explanation": "De ska stå för kvällen inför andra. Det är visshet de köper."
             },
             "b": {
-              "label": "Ta bokningen, men provlagningen görs i morgon förmiddag",
-              "explanation": "Bokningen blir av utan att kvällens service rubbas. En provlagning ska göras när köket har tid att göra den bra.",
-              "explanationIn": {
-                "lugnt": "Det fungerar, men en lugn kväll hade köket kunnat provlaga direkt och ge delegationen svar i kväll."
-              }
+              "label": "Att få smaka den nya menyn redan i kväll, innan de bokar",
+              "explanation": "De bad om det, men en provsmakning i morgon ger samma trygghet."
             },
             "c": {
-              "label": "Tacka nej och håll kvällens rytm",
-              "explanation": "Kvällen går lugnt, men en hel bokning går förlorad när det fanns ett sätt att ta den.",
-              "explanationIn": {
-                "lugnt": "En lugn kväll finns det tid att ta både bokningen och provlagningen. Att tacka nej lämnar en hel bokning åt någon annan."
-              },
-              "fail": {
-                "outcome": "Delegationen tackar och lägger på. Bokningen går till någon annan."
-              }
+              "label": "Det lägsta priset",
+              "explanation": "De nämnde inte priset, de nämnde maten."
+            }
+          },
+          "fail": {
+            "outcome": "Delegationen låter tveksam. Bokningen hänger löst."
+          },
+          "clue": "Upplevelse: Delegationen vill vara säker på att kvällen håller."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Ta bokningen och kör den nya menyn redan i kväll.",
+              "explanation": "Delegationen får vad den bad om, men menybytet mitt i servicen ger fel på bongarna."
+            },
+            "b": {
+              "label": "Lova allt de ber om, och fråga köket efteråt.",
+              "explanation": "Ett löfte som köket inte klarar blir ett svek i morgon."
+            },
+            "c": {
+              "label": "Ta bokningen, bekräfta antal och allergier, och provlaga i morgon förmiddag.",
+              "explanation": "Bokningen blir säker, köket får tid att göra provlagningen bra, och allergierna är kända från början."
+            },
+            "d": {
+              "label": "Ta bokningen och provlaga i morgon förmiddag, men utan att fråga om allergier.",
+              "explanation": "Upplägget håller, men köket vet inte vad som måste undvikas, och delegationen märker det."
             }
           },
           "fail": {
             "outcome": "Menyn byts mitt i servicen. Två beställningar får göras om.",
             "ongoing": "Köket byter meny mitt i servicen. Beställningarna står stilla på listen."
           }
-        },
-        {
-          "question": "Vad säger du till delegationen innan ni lägger på?",
-          "options": {
-            "a": {
-              "label": "Lova allt de ber om och fråga köket efteråt",
-              "explanation": "Det du lovar i telefon måste köket klara. Ett löfte som inte håller blir ett svek i morgon."
-            },
-            "b": {
-              "label": "Ta namn och nummer och lova att chefen ringer upp",
-              "explanation": "Det håller dörren öppen, men delegationen får vänta på besked och kan boka någon annanstans under tiden."
-            },
-            "c": {
-              "label": "Be dem ringa tillbaka i morgon när det är lugnare",
-              "explanation": "Ett sällskap som vill boka hela stället ringer gärna nästa ställe på listan i stället."
-            },
-            "d": {
-              "label": "Bekräfta datum, antal, allergier och en tid för provsmakningen",
-              "explanation": "Ett tydligt besked med detaljerna rätt gör bokningen säker. Allergierna behöver köket veta redan till provlagningen."
-            }
-          },
-          "fail": {
-            "outcome": "Delegationen låter tveksam. Bokningen hänger löst."
-          }
         }
       ],
+      "halfGrip": {
+        "analysis": "Bokningen kom på plats, men allergierna glömdes.",
+        "experience": "Delegationen fick smaka, men kvällens gäster betalade priset.",
+        "outcomeAnalysis": "Telefonen ringer igen. Delegationen undrar om glutenet.",
+        "outcomeExperience": "Två beställningar går tillbaka till köket."
+      },
       "success": {
-        "outcome": "Bokningen är skriven, provsmakningen har en tid och kvällen går vidare."
+        "outcome": "Bokningen är skriven, provsmakningen har en tid, och kvällen går vidare."
       },
       "staff": {
-        "outcome": "Personalen tar över men svarar inte tydligt. Delegationen bokar någon annanstans."
+        "outcome": "Personalen svarar otydligt. Delegationen bokar någon annanstans."
+      },
+      "staffTexts": {
+        "success": "Per tar bokningen och ber köket om en tid i morgon.",
+        "fail": "Personalen svarar otydligt. Delegationen bokar någon annanstans."
       }
     },
     "vb14-surdegen": {
       "title": "Surdeg och gluten",
       "body": "{gäst} vid bord {bord} har celiaki och frågar om surdegsbrödet går bra. \"Jäsningen tar väl bort glutenet?\"",
+      "guestLine": {
+        "a": "Gästen: “Jag blev sjuk förra gången jag åt ute. Jag vill bara kunna äta bröd som alla andra.”",
+        "b": "Gästen, hoppfullt: “Min läkare säger nej, men surdeg ska ju vara annorlunda?”"
+      },
       "steps": [
         {
           "question": "Vad gäller för surdegsbröd vid celiaki?",
@@ -1269,63 +1318,83 @@
           "fail": {
             "outcome": "Gästen tar en skiva, tveksamt.",
             "ongoing": "Gästen med celiaki äter en skiva bröd."
-          }
+          },
+          "clue": "Analys: Surdeg på vete, råg eller korn innehåller gluten."
         },
         {
-          "question": "Hur lägger du upp det glutenfria brödet till gästen?",
+          "question": "Vad söker gästen?",
           "options": {
             "a": {
-              "label": "Ta bort surdegen ur korgen och lägg det glutenfria brödet där i stället",
-              "explanation": "Smulor från surdegen ligger kvar i korgen och i servetten. Det räcker för att göra gästen sjuk."
+              "label": "Att få något till osten som är säkert, utan krångel",
+              "explanation": "Gästen vill äta som de andra vid bordet, och slippa oroa sig."
             },
             "b": {
-              "label": "Värm det glutenfria i samma brödrost som surdegen",
-              "explanation": "Brödrosten är full av smulor med gluten. Det glutenfria brödet blir inte längre glutenfritt."
+              "label": "En noggrann förklaring av hur gluten och jäsning fungerar i bröd",
+              "explanation": "Det kan vara intressant, men gästen vill äta."
             },
             "c": {
-              "label": "Tvätta händerna, ren bräda och kniv, egen korg, bär ut det separat",
-              "explanation": "Rena händer, rena redskap och en egen korg håller smulorna borta. Att bära ut det för sig gör att det inte blandas ihop på vägen."
+              "label": "Att få höra att surdegen går bra",
+              "explanation": "Gästen hoppas på det, men ett ja vore farligt."
+            }
+          },
+          "fail": {
+            "outcome": "Nästa rätt går ut från köket utan att någon vet om celiakin."
+          },
+          "clue": "Upplevelse: Gästen vill äta som alla andra, men säkert."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Glutenfritt bröd på ren bräda i egen korg, men köket får inte veta.",
+              "explanation": "Brödet är säkert, men gluten kan finnas i såser, frityr och krutonger i nästa rätt."
+            },
+            "b": {
+              "label": "Säg att köket fixar något fint, och lägg det glutenfria i den vanliga korgen.",
+              "explanation": "Gästen känner sig omhändertagen, men smulorna från surdegen ligger kvar i korgen."
+            },
+            "c": {
+              "label": "Säg att surdegen går bra, jäsningen tar bort det mesta.",
+              "explanation": "Det är en vanlig myt. För den som har celiaki skadar även små mängder.",
+              "fail": {
+                "outcome": "Brödkorgen ställs på bordet.",
+                "ongoing": "Brödkorgen står på bordet hos gästen med celiaki."
+              }
+            },
+            "d": {
+              "label": "Glutenfritt bröd på ren bräda, i egen korg, och säg till köket direkt.",
+              "explanation": "Rena redskap och en egen korg håller smulorna borta, och köket vet innan nästa rätt lagas."
             }
           },
           "fail": {
             "outcome": "Det glutenfria brödet har legat bland smulor av surdeg."
           }
-        },
-        {
-          "question": "Vem berättar du om celiakin för först?",
-          "options": {
-            "a": {
-              "label": "Köket, innan nästa rätt lagas, så att allt till gästen blir glutenfritt",
-              "explanation": "Glutenet kan finnas i såser, frityr och krutonger. Köket behöver veta innan de lagar, inte efteråt."
-            },
-            "b": {
-              "label": "Ingen, gästen säger själv till om något inte passar",
-              "explanation": "Gästen har redan sagt till. Nu är det krogens ansvar att det når köket."
-            },
-            "c": {
-              "label": "Resten av sällskapet, så att ingen av dem råkar bjuda gästen på bröd",
-              "explanation": "Det skadar inte, men gästen vet redan vad hen inte tål. Den som behöver veta är köket."
-            },
-            "d": {
-              "label": "Hovmästaren efter servicen, när det är lugnt",
-              "explanation": "Då är maten redan lagad och serverad. Informationen kommer för sent för att göra nytta."
-            }
-          },
-          "fail": {
-            "outcome": "Nästa rätt går ut från köket utan att någon vet om celiakin."
-          }
         }
       ],
+      "halfGrip": {
+        "analysis": "Brödet var säkert, men köket visste inget om celiakin.",
+        "experience": "Gästen kände sig sedd, men brödet låg bland smulor av surdeg.",
+        "outcomeAnalysis": "Nästa rätt kommer med krutonger.",
+        "outcomeExperience": "Gästen ser på korgen och lämnar brödet orört."
+      },
       "success": {
         "outcome": "Gästen får glutenfria kex till osten och tackar."
       },
       "staff": {
-        "outcome": "Personalen tar över och svarar att det nog går bra."
+        "outcome": "Personalen svarar att det nog går bra."
+      },
+      "staffTexts": {
+        "success": "Sara tar fram glutenfritt bröd på ren bräda och går till köket.",
+        "fail": "Personalen svarar att det nog går bra."
       }
     },
     "vb15-fisken": {
       "title": "Fisken",
       "body": "Leverantören ringer: rödingen till kvällens tartar kom med en bruten kylkedja. Den är troligen fin, men går inte att spåra. Ny fisk kommer på torsdag.",
+      "guestLine": {
+        "a": "Gästen: “Vi har kört hit för er rödingtartar, den är så omtalad.”",
+        "b": "Gästen: “Tartaren, tack. Min fru har pratat om den hela veckan.”"
+      },
       "steps": [
         {
           "question": "Vad betyder en bruten kylkedja för rå fisk?",
@@ -1345,51 +1414,53 @@
           },
           "fail": {
             "outcome": "Du tar lätt på samtalet från leverantören."
-          }
+          },
+          "clue": "Analys: Ingen vet hur länge fisken varit för varm."
         },
         {
-          "question": "Hur gör köket med tartaren i kväll?",
+          "question": "Vad söker gästerna?",
           "options": {
             "a": {
-              "label": "Använd fisken, köket är noga med resten",
-              "explanation": "Rå fisk med bruten kylkedja och utan spårbarhet är en risk krogen tar för gästens räkning. Spårbarhet är ett krav, inte ett önskemål."
+              "label": "Tartaren, vad det än kostar",
+              "explanation": "De vill ha en god kväll, inte en risk."
             },
             "b": {
-              "label": "Stryk tartaren i kväll utan att ersätta den med något annat",
-              "explanation": "Säkert, men menyn blir tunnare, och gästerna som kom för tartaren blir besvikna."
+              "label": "En kväll som lever upp till det de har hört",
+              "explanation": "Det är upplevelsen de kom för. Tartaren var vägen dit."
             },
             "c": {
-              "label": "Stryk tartaren och lyft en rätt på säsongens grönsaker",
-              "explanation": "Fisken utan spårbarhet stannar i kylen, och gästerna får en rätt som bär säsongen. Menyn blir kortare men inte sämre."
+              "label": "Att få veta exakt vad som hände med leveransen av fisken",
+              "explanation": "Ärligt, men detaljerna kan göra dem oroliga för resten av maten."
+            }
+          },
+          "fail": {
+            "outcome": "Gästerna ser besvikna ut och beställer mindre."
+          },
+          "clue": "Upplevelse: Gästerna kom för något särskilt."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Stryk tartaren, och säg bara att den är slut för i kväll.",
+              "explanation": "Gästen blir besviken utan att få något i stället."
+            },
+            "b": {
+              "label": "Servera tartaren som vanligt, gästerna har ju kört hela vägen hit för just den.",
+              "explanation": "Rå fisk med bruten kylkedja och utan spårbarhet är en risk som krogen tar för gästens räkning."
+            },
+            "c": {
+              "label": "Säg att kocken är sjuk i kväll.",
+              "explanation": "En lögn är onödig, och sanningen är här till krogens fördel."
+            },
+            "d": {
+              "label": "Stryk tartaren, säg ärligt att fisken inte höll måttet, och föreslå betorna.",
+              "explanation": "Ett kort och ärligt besked visar att köket bryr sig om kvaliteten, och ett förslag ger besvikelsen en ny rätt att prova."
             }
           },
           "fail": {
             "outcome": "Tartaren går ut. Ingen frågar om fisken.",
             "ongoing": "Tartaren går ut tallrik för tallrik. I köket ser man på varandra."
-          }
-        },
-        {
-          "question": "Gäster som kom för tartaren frågar efter den. Vad säger du?",
-          "options": {
-            "a": {
-              "label": "Säg att kocken är sjuk i kväll",
-              "explanation": "En lögn är lätt att avslöja och onödig. Sanningen är i det här fallet till krogens fördel."
-            },
-            "b": {
-              "label": "Berätta i detalj om leverantörens misstag med kylkedjan",
-              "explanation": "Ärligt, men detaljerna kan göra gästen orolig för resten av maten. Det räcker att säga att fisken inte höll måttet."
-            },
-            "c": {
-              "label": "Säg bara att den är slut för i kväll och gå vidare till nästa bord utan att förklara",
-              "explanation": "Gästen blir besviken och får inget i stället. Du missar chansen att visa varför beslutet var bra."
-            },
-            "d": {
-              "label": "Säg ärligt att fisken inte höll måttet i dag, och föreslå betorna",
-              "explanation": "Ett kort, ärligt besked visar att köket bryr sig om kvaliteten. Ett konkret förslag gör besvikelsen till en ny rätt att prova."
-            }
-          },
-          "fail": {
-            "outcome": "Gästerna ser besvikna ut och beställer mindre."
           }
         }
       ],
@@ -1397,12 +1468,20 @@
         "outcome": "Tavlan skrivs om. Rostade betor med chèvre tar tartarens plats, och gästerna beställer dem."
       },
       "staff": {
-        "outcome": "Personalen tar över. Köket använder fisken utan att fråga."
+        "outcome": "Köket använder fisken utan att fråga."
+      },
+      "staffTexts": {
+        "success": "Kocken stryker tartaren och lyfter betorna.",
+        "fail": "Köket använder fisken utan att fråga."
       }
     },
     "vb16-stamgasten": {
       "title": "Stamgästens bord",
       "body": "En stamgäst kommer in och vill ha sitt vanliga fönsterbord, bord {bord}. Det är bokat för ett par som kommer om en kvart.",
+      "guestLine": {
+        "a": "Stamgästen: “Hej! Mitt vanliga bord, va? Jag har längtat hela veckan.”",
+        "b": "Stamgästen: “Jag tog med min syster i kväll. Jag har berättat om fönsterbordet.”"
+      },
       "steps": [
         {
           "question": "Vem har rätt till ett bokat bord?",
@@ -1422,64 +1501,80 @@
           },
           "fail": {
             "outcome": "Du tvekar vid dörren, och stamgästen märker det."
-          }
-        },
-        {
-          "question": "Hur tar du emot stamgästen i dörren?",
-          "options": {
-            "a": {
-              "label": "Gå fram direkt, hälsa med namn och ta emot jackan",
-              "explanation": "En stamgäst vill bli igenkänd. Namnet och en snabb hälsning visar det innan något annat sägs."
-            },
-            "b": {
-              "label": "Titta i bokningslistan först, för säkerhets skull, och hälsa sedan",
-              "explanation": "Gästen står och väntar medan du tittar ner. Hälsningen ska komma först, listan sedan."
-            },
-            "c": {
-              "label": "Vinka från baren att du kommer strax",
-              "explanation": "En vinkning är bättre än inget, men stamgästen står ensam i dörren och känner sig som vem som helst."
-            },
-            "d": {
-              "label": "Hälsa artigt, som på vilken gäst som helst",
-              "explanation": "Artigt men anonymt. En stamgäst märker när man inte kommer ihåg hen."
-            }
           },
-          "fail": {
-            "outcome": "Stamgästen står en stund i dörren innan någon tar emot."
-          }
+          "clue": "Analys: Bokningen är ett löfte till någon annan."
         },
         {
-          "question": "Fönsterbordet är bokat. Vad gör du nu med stamgästen?",
+          "question": "Vad söker stamgästen?",
           "options": {
             "a": {
-              "label": "Ge stamgästen bordet och flytta paret när de kommer",
-              "explanation": "Stamgästen blir nöjd, men paret som bokade får inte det de bokat. Det flyttar bara problemet."
+              "label": "Att få gå före andra gäster som har bokat",
+              "explanation": "Stamgästen bad om sitt bord, inte om att tränga sig före."
             },
             "b": {
-              "label": "Förklara att det är bokat, erbjud bästa lediga bordet och ett glas",
-              "explanation": "En stamgäst vill känna sig sedd, inte gå före. Ärlighet och en gest gör mer än ett bord som egentligen är någon annans."
+              "label": "Att bli igenkänd och känna sig hemma",
+              "explanation": "Det är inte bordet i sig, utan att vara någon här."
             },
             "c": {
-              "label": "Säg att bordet är upptaget, utan mer",
-              "explanation": "En stamgäst som känner sig avvisad kommer inte tillbaka. Samma nej med en gest hade behållit gästen."
+              "label": "Just fönsterbordet, till varje pris",
+              "explanation": "Det är vad stamgästen ber om, men det hen vill ha är att bli sedd."
             }
           },
           "fail": {
             "outcome": "Stamgästen går.",
             "ongoing": "Stamgästens vanliga plats vid fönstret står tom."
+          },
+          "clue": "Upplevelse: Stamgästen vill bli sedd."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Hälsa artigt, säg att bordet är bokat och visa ett annat.",
+              "explanation": "Bokningen hålls, men stamgästen behandlas som vem som helst."
+            },
+            "b": {
+              "label": "Hälsa med namn och ge stamgästen fönsterbordet. Paret som har bokat får ta ett annat bord.",
+              "explanation": "Stamgästen blir glad, men paret som bokade får inte det de blivit lovade."
+            },
+            "c": {
+              "label": "Titta i listan först, och säg sedan att bordet är upptaget.",
+              "explanation": "Stamgästen står och väntar, och får sedan ett kort nej."
+            },
+            "d": {
+              "label": "Hälsa med namn, förklara att det är bokat, och bjud på ett glas.",
+              "explanation": "Namnet visar att hen är igenkänd, ärligheten håller löftet till paret, och glaset gör nejet varmt."
+            }
+          },
+          "fail": {
+            "outcome": "Stamgästen står en stund i dörren innan någon tar emot."
           }
         }
       ],
+      "halfGrip": {
+        "analysis": "Bokningen hölls, men stamgästen kände sig som vem som helst.",
+        "experience": "Stamgästen fick sitt bord, men paret fick inte sitt.",
+        "outcomeAnalysis": "Stamgästen dricker sitt glas och går tidigt.",
+        "outcomeExperience": "Paret som bokade ser sig om efter fönsterbordet."
+      },
       "success": {
         "outcome": "Stamgästen sätter sig vid baren med ett glas och ler."
       },
       "staff": {
-        "outcome": "Personalen tar över och säger att bordet är upptaget. Stamgästen går."
+        "outcome": "Personalen säger att bordet är upptaget. Stamgästen går."
+      },
+      "staffTexts": {
+        "success": "Per hälsar med namn och bjuder på ett glas vid baren.",
+        "fail": "Personalen säger att bordet är upptaget. Stamgästen går."
       }
     },
     "vb17-glasen": {
       "title": "Glasen tar slut",
       "body": "Klockan är {klockan}. Fem beställningar väntar i baren, och {personal} säger att vinglasen är slut. Diskmaskinen har tjugo minuter kvar.",
+      "guestLine": {
+        "a": "En gäst vid baren: “Vi beställde för tio minuter sedan. Är vi bortglömda?”",
+        "b": "Sara: “Fem beställningar väntar, och borden tittar hit.”"
+      },
       "steps": [
         {
           "question": "Varför har ett vinglas en rundad kupa som smalnar av uppåt?",
@@ -1499,59 +1594,71 @@
           },
           "fail": {
             "outcome": "Beställningarna står still medan personalen letar glas."
-          }
+          },
+          "clue": "Analys: Kupan samlar doften. Det är vinglaset som gör vinet."
         },
         {
-          "question": "Hur får du fram rena vinglas medan diskmaskinen går?",
+          "question": "Vad behöver de som väntar?",
           "options": {
             "a": {
-              "label": "Servera vinet i vattenglas från köket, det märks inte i mörkret och det går fortare",
-              "explanation": "Vin i vattenglas säger att vinbaren inte klarar sin egen kväll. Det sparar tid men kostar rykte, och doften går förlorad."
+              "label": "Att få veta varför glasen är slut",
+              "explanation": "En förklaring hjälper lite, men det de behöver är att veta när."
             },
             "b": {
-              "label": "Plocka tomma glas, handdiska och polera, ta enkla beställningar först",
-              "explanation": "I en rusning handlar det om flödet. Tomma glas på borden är kvällens lager. Handdisk, sköljning och en ren duk ger glas utan fläckar, och enkla beställningar först håller kön i rörelse."
+              "label": "Ett besked, och att väntan blir rättvis",
+              "explanation": "Gäster tål väntan som de vet om och som går i tur och ordning."
             },
             "c": {
-              "label": "Stoppa alla nya beställningar i tio minuter tills det finns rena glas igen",
-              "explanation": "Det ger personalen luft, men gästerna väntar, och kvällens intäkt går förlorad."
+              "label": "Vinet direkt, i vilket glas som helst i baren",
+              "explanation": "De beställde vin på en vinbar. Vin i vattenglas säger att baren inte klarar sin kväll."
+            }
+          },
+          "fail": {
+            "outcome": "Två bord väntar och ser andra få sitt vin först."
+          },
+          "clue": "Upplevelse: De som väntar vill veta att de inte är bortglömda."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Handdiska och polera glas, och servera sedan i tur och ordning utan att säga något.",
+              "explanation": "Glasen och ordningen är rätt, men den som väntar utan besked tror att hen är bortglömd."
+            },
+            "b": {
+              "label": "Säg till alla att det dröjer, och häll vinet i vattenglas så länge.",
+              "explanation": "Beskedet är rätt, men vin i vattenglas kostar doften och ryktet."
+            },
+            "c": {
+              "label": "Ge de första glasen till dem som beställt hel flaska.",
+              "explanation": "De som beställt ett glas får vänta längst, och de minns att de hoppades över."
+            },
+            "d": {
+              "label": "Handdiska och polera glas, säg till de som väntar, och servera i tur och ordning.",
+              "explanation": "Tomma glas på borden är kvällens lager, och ett kort besked gör väntan begriplig."
             }
           },
           "fail": {
             "outcome": "Vinet kommer i vattenglas. Någon vid bord {bord} fotograferar det.",
             "ongoing": "Vin i vattenglas går ut till borden. Gästerna håller upp dem mot ljuset."
           }
-        },
-        {
-          "question": "Glasen kommer tillbaka, men inte till alla fem beställningar på en gång. Vad gör du nu?",
-          "options": {
-            "a": {
-              "label": "Servera i tur och ordning utan att säga något till dem som väntar",
-              "explanation": "Ordningen är rättvis, men den som väntar utan besked tror att hen är bortglömd."
-            },
-            "b": {
-              "label": "Ge de första glasen till stamgästerna vid baren",
-              "explanation": "Stamgäster tål att vänta en stund. De andra ser att någon går före, och det känns orättvist."
-            },
-            "c": {
-              "label": "Ta först de bord som beställt hel flaska, de ger mest",
-              "explanation": "Kvällens intäkt vinner inget på att de som beställt ett glas får vänta längst. Gästerna minns att de hoppades över."
-            },
-            "d": {
-              "label": "Säg till de som väntar att glasen kommer om några minuter, servera sedan i tur och ordning",
-              "explanation": "Ett kort besked gör väntan begriplig, och tur och ordning gör den rättvis. Gäster tål väntan de vet om."
-            }
-          },
-          "fail": {
-            "outcome": "Två bord väntar och ser andra få sitt vin först."
-          }
         }
       ],
+      "halfGrip": {
+        "analysis": "Glasen var rätt, men ingen fick veta något.",
+        "experience": "Alla visste vad som hände, men vinet kom i vattenglas.",
+        "outcomeAnalysis": "Ett bord vinkar efter personal gång på gång.",
+        "outcomeExperience": "Någon vid bordet fotograferar glaset."
+      },
       "success": {
         "outcome": "Polerade glas går ut i rätt ordning, och kön i baren rör sig igen."
       },
       "staff": {
-        "outcome": "Personalen tar över: vinet serveras i de glas som fanns."
+        "outcome": "Vinet serveras i de glas som finns."
+      },
+      "staffTexts": {
+        "success": "Sara handdiskar glas och säger till borden.",
+        "fail": "Vinet serveras i de glas som finns."
       }
     },
     "vb18-kavajen": {
@@ -1652,8 +1759,9 @@
     "vb19-bongarna": {
       "title": "Bongarna hopar sig",
       "body": "Klockan är {klockan} och köket ligger efter. Tolv bongar hänger på listen, och {personal} säger att smårätterna tar tjugo minuter.",
-      "situations": {
-        "sent": "Köket stänger om en dryg timme."
+      "guestLine": {
+        "a": "Gästen vid bordet som väntat längst: “Ursäkta, har ni glömt oss?”",
+        "b": "Kocken: “De bara hänger på. Jag hinner inte.”"
       },
       "steps": [
         {
@@ -1674,66 +1782,80 @@
           },
           "fail": {
             "outcome": "Köket vet inte vilken bong som ska tas först. Tallrikarna blir stående."
-          }
+          },
+          "clue": "Analys: Bongen som kom först lagas först."
         },
         {
-          "question": "Hur får du köket att arbeta sig igenom listen?",
+          "question": "Vad behöver borden som väntar?",
           "options": {
             "a": {
-              "label": "Stryk de mest arbetskrävande rätterna för resten av kvällen",
-              "explanation": "Det lättar trycket, men gäster som redan valt får välja om, och intäkten sjunker.",
-              "explanationIn": {
-                "sent": "När köket snart stänger är det rätt att stryka de rätter som tar längst tid. Gästerna får mat i tid, och köket hinner stänga ordentligt."
-              }
+              "label": "Ett ärligt besked om tiden, och något att hålla dem till dess",
+              "explanation": "Väntan är lättare att bära när man vet hur lång den är."
             },
             "b": {
-              "label": "Pressa köket att ta de enklaste rätterna först, oavsett ordning",
-              "explanation": "Att bryta ordningen skapar förvirring, fel rätter och ett trött kök. De som väntat längst får vänta ännu längre."
+              "label": "Att maten kommer så fort det bara går, i vilken ordning som helst",
+              "explanation": "Då får de som väntat längst vänta ännu längre."
             },
             "c": {
-              "label": "Säg hur länge det tar, bjud på bröd, laga i bongarnas ordning",
-              "explanation": "Gäster tål väntan när de vet hur lång den är. Bröd köper tid, och ordningen på bongarna gör väntan rättvis.",
-              "explanationIn": {
-                "sent": "Sent på kvällen hinner köket inte ikapp med hela menyn innan det stänger. Bröd och besked hjälper, men listen blir inte kortare."
-              }
+              "label": "Att någon lugnar dem",
+              "explanation": "Det hjälper, men ett lugnande ord utan besked håller inte länge."
+            }
+          },
+          "fail": {
+            "outcome": "Bordet vinkar allt ivrigare. Gästerna ser på klockan."
+          },
+          "clue": "Upplevelse: De som väntat längst behöver besked först."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Låt köket ta bongarna i ordning, och vänta med besked tills maten är klar.",
+              "explanation": "Köket arbetar rätt, men tystnaden får väntan att kännas längre."
+            },
+            "b": {
+              "label": "Gå till borden och lova att maten kommer om fem minuter.",
+              "explanation": "Gästerna lugnas en stund, men ett löfte som inte hålls gör dem argare än väntan."
+            },
+            "c": {
+              "label": "Be köket laga de enklaste rätterna först, helt oavsett vilken bong som kom in först på listen.",
+              "explanation": "Ordningen bryts, köket blir förvirrat, och rätt mat hamnar vid fel bord."
+            },
+            "d": {
+              "label": "Säg den ärliga tiden till borden, bjud på bröd, och låt köket ta bongarna i ordning.",
+              "explanation": "Besked och bröd köper tid, och ordningen gör väntan rättvis."
             }
           },
           "fail": {
             "outcome": "Köket hoppar mellan bongarna. Två bord får fel rätt.",
             "ongoing": "Fel rätter går ut och kommer tillbaka. Köket hoppar mellan bongarna."
           }
-        },
-        {
-          "question": "Ett bord har väntat längst och letar med blicken efter någon i personalen. Vad gör du nu?",
-          "options": {
-            "a": {
-              "label": "Gå dit först, ge ett ärligt besked om tiden och ställ fram bröd",
-              "explanation": "Den som väntat längst ska få besked först. Ett ärligt besked och något att äta gör väntan lättare att bära."
-            },
-            "b": {
-              "label": "Vänta med att gå dit tills maten är klar, så du har något att komma med",
-              "explanation": "Tystnad får väntan att kännas längre. Gästen tror att bordet är bortglömt."
-            },
-            "c": {
-              "label": "Lova att maten kommer om fem minuter för att lugna",
-              "explanation": "Ett löfte som inte hålls gör gästen argare än väntan. Säg den tid köket faktiskt har gett."
-            }
-          },
-          "fail": {
-            "outcome": "Bordet vinkar allt ivrigare. Gästerna ser på klockan."
-          }
         }
       ],
+      "halfGrip": {
+        "analysis": "Köket arbetade i ordning, men borden fick inget besked.",
+        "experience": "Borden lugnade sig, men löftet höll inte.",
+        "outcomeAnalysis": "Ett bord ser på klockan och viskar.",
+        "outcomeExperience": "Efter fem minuter har ingen mat kommit. Gästen höjer handen igen."
+      },
       "success": {
         "outcome": "Borden vet hur länge de väntar, brödet går ut, och köket arbetar sig lugnt igenom listen."
       },
       "staff": {
-        "outcome": "Personalen tar över: ingen säger något till borden, och köket tar bongarna som de kommer åt."
+        "outcome": "Ingen säger något till borden, och köket tar bongarna som de kommer åt."
+      },
+      "staffTexts": {
+        "success": "Per går bord för bord med besked och bröd.",
+        "fail": "Ingen säger något till borden, och köket tar bongarna som de kommer åt."
       }
     },
     "vb20-notan": {
       "title": "Fel på notan",
       "body": "{gäst} vid bord {bord} har fått en nota med två flaskor för mycket. Gästen är upprörd och talar högt.",
+      "guestLine": {
+        "a": "Gästen, högt: “Två flaskor vi aldrig beställt! Försöker ni lura oss?”",
+        "b": "Gästen, sammanbitet: “Det är andra gången jag får fel nota här.”"
+      },
       "steps": [
         {
           "question": "Vad gör att gästen kan kontrollera sin nota?",
@@ -1757,60 +1879,80 @@
           },
           "fail": {
             "outcome": "Gästen viftar med notan och kräver att få veta vad den består av."
-          }
-        },
-        {
-          "question": "Hur rättar du notan vid bordet?",
-          "options": {
-            "a": {
-              "label": "Gå igenom raderna med gästen, rätta i kassan och skriv ut ny nota",
-              "explanation": "Gästen ser att felet hittas och rättas. En ny nota ur kassan gör att kassan och betalningen stämmer."
-            },
-            "b": {
-              "label": "Skriv den rätta summan för hand på en ny lapp",
-              "explanation": "En handskriven lapp är inget kvitto, och kassan visar fortfarande fel summa."
-            },
-            "c": {
-              "label": "Dra av beloppet direkt på kortterminalen, utan att ändra något i själva kassan efteråt",
-              "explanation": "Då stämmer inte kassan och betalningen, och gästens kvitto visar fortfarande fel."
-            }
           },
-          "fail": {
-            "outcome": "Gästen står med en nota som fortfarande inte stämmer."
-          }
+          "clue": "Analys: En specificerad nota visar felet rad för rad."
         },
         {
-          "question": "Gästen är upprörd och talar högt. Vad gör du nu?",
+          "question": "Vad söker gästen?",
           "options": {
             "a": {
-              "label": "Stryk hela notan",
-              "explanation": "Det lugnar, men är mer än felet. Ett rättat fel och en gest räcker."
+              "label": "En förklaring av hur kassan fungerar",
+              "explanation": "En förklaring låter som ett försvar."
             },
             "b": {
-              "label": "Be om ursäkt, rätta notan direkt och bjud på kaffe",
-              "explanation": "Ett fel på notan rättas direkt och utan diskussion. Det viktiga är att gästen inte går därifrån med känslan av att bli lurad."
+              "label": "Att bli trodd, och att det rättas direkt",
+              "explanation": "Gästen vill inte gå därifrån med känslan av att ha blivit lurad."
             },
             "c": {
-              "label": "Säg att notan är rätt enligt kassan och att den inte går att ändra",
-              "explanation": "Kassan kan ha fel. En gäst som inte blir lyssnad på går, och berättar om det."
+              "label": "Att få hela notan struken",
+              "explanation": "Det lugnar, men det är mer än felet, och gästen bad inte om det."
             }
           },
           "fail": {
             "outcome": "Gästen betalar ingenting och går, och sällskapet följer med.",
             "ongoing": "Det viskas vid borden om notan som var fel."
+          },
+          "clue": "Upplevelse: Gästen vill bli trodd."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Gå igenom raderna, rätta i kassan och skriv ut en ny nota.",
+              "explanation": "Notan blir rätt, men utan en ursäkt står gästen kvar med sin ilska."
+            },
+            "b": {
+              "label": "Be om ursäkt direkt, och stryk hela notan utan att gå igenom raderna med gästen.",
+              "explanation": "Gästen lugnar sig, men felet hittas aldrig, och kassan stämmer inte."
+            },
+            "c": {
+              "label": "Säg att notan stämmer enligt kassan och inte går att ändra.",
+              "explanation": "Kassan kan ha fel. En gäst som inte blir lyssnad på går och berättar om det."
+            },
+            "d": {
+              "label": "Gå igenom raderna med gästen, be om ursäkt, rätta i kassan och bjud på kaffe.",
+              "explanation": "Gästen ser att felet hittas och rättas, och kassan stämmer med betalningen."
+            }
+          },
+          "fail": {
+            "outcome": "Gästen står med en nota som fortfarande inte stämmer."
           }
         }
       ],
+      "halfGrip": {
+        "analysis": "Notan rättades, men gästen fick ingen ursäkt.",
+        "experience": "Gästen lugnade sig, men ingen vet var felet låg.",
+        "outcomeAnalysis": "Gästen betalar utan att se upp.",
+        "outcomeExperience": "Samma fel syns på nästa nota."
+      },
       "success": {
         "outcome": "Notan rättas. Gästen lugnar sig och tar kaffet."
       },
       "staff": {
-        "outcome": "Personalen tar över: gästen får vänta på chefen, som aldrig kommer."
+        "outcome": "Gästen får vänta på chefen, som aldrig kommer."
+      },
+      "staffTexts": {
+        "success": "Per går igenom notan med gästen och rättar den i kassan.",
+        "fail": "Gästen får vänta på chefen, som aldrig kommer."
       }
     },
     "vb21-skuren-hand": {
       "title": "Skuren hand",
       "body": "{personal} skär sig i handen när en flaska ska öppnas med kniv. Det blöder genom servetten.",
+      "guestLine": {
+        "a": "{personal}: “Det är inget, jag biter ihop. Ni klarar er inte utan mig i kväll.”",
+        "b": "{personal}, blek: “Förlåt. Jag tar bara ett plåster och fortsätter.”"
+      },
       "steps": [
         {
           "question": "Vilken bakterie från sår och hud kan ge matförgiftning?",
@@ -1830,64 +1972,80 @@
           },
           "fail": {
             "outcome": "Ingen förstår varför såret spelar roll. {personal} torkar handen på förklädet."
-          }
+          },
+          "clue": "Analys: Sår vid mat ska täckas. Stafylokocker trivs i sår."
         },
         {
-          "question": "Hur tar du hand om såret och arbetsplatsen?",
+          "question": "Vad behöver {personal}?",
           "options": {
             "a": {
-              "label": "Plåster och fortsätt som vanligt, det är bara ett litet sår och kvällen är full",
-              "explanation": "Ett otäckt sår vid mat är en hygienrisk och ett arbetsmiljöproblem. Det kan kosta mer än en person för en kväll."
+              "label": "Att bli omhändertagen, och att få vara kvar i laget",
+              "explanation": "Hen vill inte svika laget. Det går att ta hand om både såret och viljan."
             },
             "b": {
-              "label": "Plåster och handske, byt uppgift, torka av och sanera ytan",
-              "explanation": "Ett sår vid livsmedel ska täckas med plåster och handske. Den skadade ska inte hantera öppen mat, och ytan ska saneras."
+              "label": "Att få fortsätta precis som vanligt",
+              "explanation": "Viljan är fin, men en skadad hand vid öppen mat är en risk för både hen och gästerna."
             },
             "c": {
-              "label": "Skicka hem personen direkt",
-              "explanation": "Det kan vara rätt vid ett djupt sår, men ett litet sår kan läggas om så att personen byter uppgift och stannar. Laget blir tunt."
+              "label": "Att bli hemskickad direkt",
+              "explanation": "Det kan vara rätt vid ett djupt sår, men hen vill vara kvar och kan vara det."
+            }
+          },
+          "fail": {
+            "outcome": "Laget vet inte vem som gör vad. Två personer gör samma sak."
+          },
+          "clue": "Upplevelse: {personal} vill inte svika laget."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Låt hen vila i personalrummet och ta själv platsen, utan att sanera ytan.",
+              "explanation": "Omtanken är rätt, men ytan där såret blödde används igen."
+            },
+            "b": {
+              "label": "Sätt på ett plåster och låt hen fortsätta på sin plats, eftersom hen själv vill det.",
+              "explanation": "Ett plåster utan handske vid öppen mat räcker inte."
+            },
+            "c": {
+              "label": "Plåster och handske, sanera ytan, flytta hen till kassan och säg det till laget.",
+              "explanation": "Såret är täckt, ytan är ren, och alla vet vem som gör vad."
+            },
+            "d": {
+              "label": "Plåster och handske, sanera ytan, och skicka hem hen direkt.",
+              "explanation": "Hygienen är rätt, men laget blir tunt, och hen känner sig bortskickad."
             }
           },
           "fail": {
             "outcome": "{personal} fortsätter. Plåstret lossnar vid diskhon.",
             "ongoing": "Plåstret lossnar gång på gång. Kocken arbetar med en hand."
           }
-        },
-        {
-          "question": "{personal} vill bita ihop och gå tillbaka till sin plats. Vad gör du nu?",
-          "options": {
-            "a": {
-              "label": "Låt hen gå tillbaka, hen känner sin egen hand bäst",
-              "explanation": "Viljan är fin, men en skadad hand vid öppen mat är en risk för både hen och gästerna. Det är ditt ansvar att säga nej."
-            },
-            "b": {
-              "label": "Be hen fortsätta men i lugnare takt",
-              "explanation": "Takten är inte problemet. Såret ska hållas borta från öppen mat, oavsett tempo."
-            },
-            "c": {
-              "label": "Ta själv över platsen utan att säga något till de andra",
-              "explanation": "Det löser stunden, men laget vet inte vad som ändrats, och du blir kvällens flaskhals."
-            },
-            "d": {
-              "label": "Flytta hen till kassan och fördela om uppgifterna i laget högt och tydligt",
-              "explanation": "Personalen är viktigare än tempot. Ett tydligt besked gör att alla vet vem som gör vad, och ingen öppnar fler flaskor med kniv."
-            }
-          },
-          "fail": {
-            "outcome": "Laget vet inte vem som gör vad. Två personer gör samma sak."
-          }
         }
       ],
+      "halfGrip": {
+        "analysis": "Såret och ytan sköttes, men laget tappade en person.",
+        "experience": "{personal} blev omhändertagen, men ytan sanerades inte.",
+        "outcomeAnalysis": "Två personer springer mellan samma stationer.",
+        "outcomeExperience": "Nästa tallrik läggs upp på samma bänk."
+      },
       "success": {
         "outcome": "Handen är omlagd, ytan sanerad, och {personal} tar kassan resten av kvällen."
       },
       "staff": {
-        "outcome": "Personalen tar över: ingen tar hand om såret, och {personal} fortsätter arbeta."
+        "outcome": "Ingen tar hand om såret, och {personal} fortsätter arbeta."
+      },
+      "staffTexts": {
+        "success": "Per lägger om handen, sanerar bänken och tar över platsen.",
+        "fail": "Ingen tar hand om såret, och {personal} fortsätter arbeta."
       }
     },
     "vb22-recensenten": {
       "title": "Någon antecknar",
       "body": "{gäst} vid bord {bord} antecknar i en liten bok, fotograferar varje rätt och frågar om vinernas ursprung. {personal} viskar att det kanske är en recensent.",
+      "guestLine": {
+        "a": "Gästen: “Vem har gjort det här vinet, och varför står det på er lista?”",
+        "b": "{personal}, viskande: “Det är säkert en recensent. Ska vi ge dem något extra?”"
+      },
       "steps": [
         {
           "question": "Vad anger en ursprungsbeteckning som AOC eller DOCG på en vinetikett?",
@@ -1907,55 +2065,71 @@
           },
           "fail": {
             "outcome": "Gästen antecknar något och ser upp med höjda ögonbryn."
-          }
-        },
-        {
-          "question": "Hur svarar du när gästen frågar var vinet kommer ifrån?",
-          "options": {
-            "a": {
-              "label": "Läs upp det som står på etiketten",
-              "explanation": "Det stämmer, men gästen kan läsa själv. Ett bra svar förklarar vad etiketten betyder."
-            },
-            "b": {
-              "label": "Gissa hellre än att säga att du inte vet, det låter mer kunnigt",
-              "explanation": "En gissning som är fel syns direkt för den som kan. Det är bättre att ta reda på svaret."
-            },
-            "c": {
-              "label": "Visa flaskan, nämn område, druva, producent, och hämta det du inte kan",
-              "explanation": "Flaskan och ett kunnigt svar gör ursprunget konkret. Den som hämtar svaret i stället för att gissa visar att huset tar vinet på allvar."
-            }
           },
-          "fail": {
-            "outcome": "Svaret stämmer inte med etiketten. Gästen skriver en lång rad."
-          }
+          "clue": "Analys: Ursprungsbeteckningen anger ett område med egna regler."
         },
         {
-          "question": "Gästen kan vara en recensent. Vad gör du nu?",
+          "question": "Vad söker gästen?",
           "options": {
             "a": {
-              "label": "Bjud på vinet",
-              "explanation": "En gest, men den gör inte servicen bättre. Recensionen handlar om vad alla gäster får."
+              "label": "Att få vara ifred med sina anteckningar under hela middagen",
+              "explanation": "Delvis, men gästen ställer frågor och vill ha svar."
             },
             "b": {
-              "label": "Ge samma goda service som till alla, och svara noga på frågorna",
-              "explanation": "Den som behandlar recensenten som alla andra har en service som håller för alla. Kunniga svar på frågor är det som syns i recensionen."
+              "label": "Kunniga svar, och samma kväll som alla andra får",
+              "explanation": "Den som recenserar vill se hur krogen är, inte hur den kan vara en kväll."
             },
             "c": {
-              "label": "Ge bordet extra rätter och uppmärksamhet",
-              "explanation": "Recensenter märker när de särbehandlas, och grannborden märker att de inte är lika viktiga. Det skadar mer än det hjälper."
+              "label": "Extra uppmärksamhet och smakprov",
+              "explanation": "Recensenter märker när de särbehandlas, och grannborden märker det också."
             }
           },
           "fail": {
             "outcome": "Bordet får smakprov. Grannborden märker det.",
             "ongoing": "Grannborden ser smakproven gå förbi dem till samma bord."
+          },
+          "clue": "Upplevelse: Gästen vill se krogen som den är."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Svara noga på alla frågorna om vinet, och skicka ut några extra smakprov till bordet.",
+              "explanation": "Svaren är bra, men särbehandlingen syns, också för grannborden."
+            },
+            "b": {
+              "label": "Ge samma service som till alla, och läs upp det som står på etiketten.",
+              "explanation": "Rätt hållning, men gästen kan läsa själv. Ett bra svar förklarar vad etiketten betyder."
+            },
+            "c": {
+              "label": "Gissa hellre än att säga att du inte vet, det låter mer kunnigt.",
+              "explanation": "En gissning som är fel syns direkt för den som kan."
+            },
+            "d": {
+              "label": "Visa flaskan, berätta om område och producent, och ge samma service som till alla.",
+              "explanation": "Ett kunnigt svar gör ursprunget konkret, och servicen håller för alla bord."
+            }
+          },
+          "fail": {
+            "outcome": "Svaret stämmer inte med etiketten. Gästen skriver en lång rad."
           }
         }
       ],
+      "halfGrip": {
+        "analysis": "Svaren var kunniga, men bordet särbehandlades.",
+        "experience": "Servicen var jämn, men svaret blev tunt.",
+        "outcomeAnalysis": "Grannbordet tittar på smakproven och sedan på sina egna glas.",
+        "outcomeExperience": "Gästen skriver något kort och slår igen boken."
+      },
       "success": {
         "outcome": "Gästen antecknar och ler åt svaret om vinet."
       },
       "staff": {
-        "outcome": "Personalen tar över: alla blir nervösa, och bordet glöms en lång stund."
+        "outcome": "Alla blir nervösa, och bordet glöms en lång stund."
+      },
+      "staffTexts": {
+        "success": "Elin visar flaskan och berättar om producenten.",
+        "fail": "Alla blir nervösa, och bordet glöms en lång stund."
       }
     },
     "vb23-sott": {
@@ -2057,7 +2231,11 @@
     },
     "vb24-terroir": {
       "title": "Vad är terroir?",
-      "body": "Det lugnar sig. {gäst} vid baren frågar {personal} vad ordet terroir på vinlistan egentligen betyder.",
+      "body": "Det lugnar sig. {gäst} vid baren frågar {personal} vad ordet terroir på vinlistan egentligen betyder. Två nya gäster kommer just in.",
+      "guestLine": {
+        "a": "Gästen: “Jag har läst ordet hundra gånger, men aldrig förstått det.”",
+        "b": "Gästen: “Min dotter pluggar till sommelier. Jag vill kunna hänga med.”"
+      },
       "steps": [
         {
           "question": "Vad betyder terroir?",
@@ -2078,63 +2256,79 @@
           "fail": {
             "outcome": "Gästen ser tveksam ut.",
             "ongoing": "Gästen vid baren tappar intresset för vinlistan."
-          }
+          },
+          "clue": "Analys: Terroir är platsens samlade inverkan."
         },
         {
-          "question": "Hur låter du gästen smaka på terroir?",
+          "question": "Vad söker gästen?",
           "options": {
             "a": {
-              "label": "Häll upp ett glas av det dyraste vinet på listan",
-              "explanation": "Pris säger inget om plats. Utan något att jämföra med går det inte att smaka vad platsen gör."
+              "label": "Att förstå, med vinet i glaset",
+              "explanation": "Gästen vill begripa, inte bara höra en definition."
             },
             "b": {
-              "label": "Häll upp två viner av olika druvor från olika länder",
-              "explanation": "Skillnaden syns, men gästen kan inte veta om den kommer från druvan eller platsen."
+              "label": "En lång förklaring",
+              "explanation": "Ord hjälper, men det är jämförelsen i glaset som visar platsen."
             },
             "c": {
-              "label": "Beskriv hur jord och sten känns i doften av vinet, så förstår gästen",
-              "explanation": "Ord hjälper, men gästen behöver smaka själv. Det är jämförelsen som visar platsen."
+              "label": "Att få det dyraste vinet på listan rekommenderat",
+              "explanation": "Priset säger inget om platsen."
+            }
+          },
+          "fail": {
+            "outcome": "Någon vid baren blir stående utan att bli sedd."
+          },
+          "clue": "Upplevelse: Gästen vill förstå, och två nya gäster väntar."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Häll samma druva från två platser sida vid sida, och välkomna de nya under tiden.",
+              "explanation": "Samma druva gör att skillnaden kommer från platsen, och gästen har något att göra medan du tar emot de nya."
+            },
+            "b": {
+              "label": "Häll samma druva från två platser, och stanna och prata färdigt.",
+              "explanation": "Jämförelsen är rätt, men de nya gästerna blir stående utan att bli sedda."
+            },
+            "c": {
+              "label": "Säg att du kommer strax, välkomna de nya, och beskriv sedan doften i ord för gästen.",
+              "explanation": "Ingen blir stående, men gästen får ingenting att smaka på."
             },
             "d": {
-              "label": "Häll upp samma druva från två olika platser, sida vid sida",
-              "explanation": "Samma druva i båda glasen gör att skillnaden kommer från platsen. Då smakar gästen vad terroir betyder."
+              "label": "Häll upp ett glas av det dyraste vinet, det säger allt.",
+              "explanation": "Utan något att jämföra med går det inte att smaka vad platsen gör."
             }
           },
           "fail": {
             "outcome": "Gästen smakar men hittar inget att hålla fast vid."
           }
-        },
-        {
-          "question": "Gästen vill veta mer, men två nya gäster kommer fram till baren. Vad gör du nu?",
-          "options": {
-            "a": {
-              "label": "Låt gästen jämföra i lugn och ro, välkomna de nya, kom tillbaka",
-              "explanation": "Gästen har något att göra medan du tar emot de nya. Ingen blir stående, och samtalet kan fortsätta."
-            },
-            "b": {
-              "label": "Stanna och prata färdigt med gästen, de nya gästerna får vänta en stund",
-              "explanation": "En nöjd gäst är inte värd två som väntar utan att bli sedda. Ett kort välkommen tar några sekunder."
-            },
-            "c": {
-              "label": "Avbryt samtalet med ett kort ”jag måste gå”",
-              "explanation": "Gästen blir avsnoppad mitt i sitt intresse. Säg att du kommer tillbaka, och gör det."
-            }
-          },
-          "fail": {
-            "outcome": "Någon vid baren blir stående utan att bli sedd."
-          }
         }
       ],
+      "halfGrip": {
+        "analysis": "Gästen förstod, men de nya stod och väntade.",
+        "experience": "Alla blev sedda, men terroir blev bara ord.",
+        "outcomeAnalysis": "De två nya går ut igen.",
+        "outcomeExperience": "Gästen nickar artigt men beställer inget."
+      },
       "success": {
         "outcome": "Gästen jämför glasen, nickar och beställer ett av vinerna."
       },
       "staff": {
-        "outcome": "Personalen tar över: gästen får höra att det är svårt att förklara."
+        "outcome": "Gästen får höra att det är svårt att förklara."
+      },
+      "staffTexts": {
+        "success": "Elin häller två glas och välkomnar de nya.",
+        "fail": "Gästen får höra att det är svårt att förklara."
       }
     },
     "vb25-efter-stangning": {
       "title": "Efter stängning",
       "body": "Klockan närmar sig elva och köket har stängt. Ett sällskap på tre knackar på och vill ha en sista flaska. Personalen har börjat städa.",
+      "guestLine": {
+        "a": "En i sällskapet: “Snälla, bara ett glas. Vår vän fyller femtio i dag.”",
+        "b": "Per, trött: “Vi har städat halva baren. Säg inte att vi öppnar igen.”"
+      },
       "steps": [
         {
           "question": "Vad avgör hur sent vinbaren får servera alkohol?",
@@ -2154,67 +2348,79 @@
           },
           "fail": {
             "outcome": "Ingen vet säkert vad som gäller. Sällskapet står kvar i dörren medan personalen diskuterar."
-          }
+          },
+          "clue": "Analys: Serveringstillståndet sätter gränsen, inte köket."
         },
         {
-          "question": "Hur serverar du tre glas när baren redan håller på att städas?",
+          "question": "Vad behöver kvällen?",
           "options": {
             "a": {
-              "label": "Öppna en ny flaska så att vinet är så färskt som möjligt för dem",
-              "explanation": "Det går, men då står ännu en öppnad flaska kvar när ni stänger. Ta hellre ur en som redan är öppen."
+              "label": "En vänlig gest till gästerna, och en stängning som håller för laget",
+              "explanation": "Båda har rätt: gästerna vill avsluta fint, och laget vill hem."
             },
             "b": {
-              "label": "Häll ur en öppnad flaska i rena glas vid barens ände",
-              "explanation": "En öppnad flaska ska ändå säljas snart. En ren ände av baren låter städningen fortsätta runt gästerna."
+              "label": "Att sällskapet får en hel flaska och får sitta kvar så länge de vill",
+              "explanation": "Ork som tas i kväll saknas i morgon."
             },
             "c": {
-              "label": "Ta glas från diskbacken som ser rena ut",
-              "explanation": "Ett glas som ser rent ut kan ha fett och diskmedel kvar. Det märks på doften och på gästens läppar."
+              "label": "Ett nej, det är stängt",
+              "explanation": "Rätt enligt öppettiderna, men det ger ett kallare rykte än det behöver."
+            }
+          },
+          "fail": {
+            "outcome": "Flaskan öppnas. Personalen stannar en timme till."
+          },
+          "clue": "Upplevelse: Både gästerna och laget behöver något."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Ett glas var, i glas från diskbacken som ser rena ut.",
+              "explanation": "Gesten är rätt, men ett glas som ser rent ut kan ha fett och diskmedel kvar."
+            },
+            "b": {
+              "label": "Släpp in dem i salen och be kocken fixa en ostbricka.",
+              "explanation": "Köket har redan städats. Att starta det igen kostar mer ork än det ger."
+            },
+            "c": {
+              "label": "Ett glas var ur en öppnad flaska, i rena glas vid barens ände.",
+              "explanation": "En öppnad flaska ska ändå säljas snart, och städningen kan fortsätta runt gästerna."
+            },
+            "d": {
+              "label": "Säg vänligt att ni har stängt för kvällen, och önska dem en fin kväll.",
+              "explanation": "Laget får gå hem, men en krog som vänder bort gäster i dörren tappar värme."
             }
           },
           "fail": {
             "outcome": "Glasen är fläckiga och vinet smakar platt. Sällskapet ser besviket på varandra."
           }
-        },
-        {
-          "question": "Vad gör du med sällskapet som vill ha en sista flaska?",
-          "options": {
-            "a": {
-              "label": "Säg nej, det är stängt",
-              "explanation": "Rätt enligt öppettiderna, men en krog som vänder bort gäster i dörren får ett kallare rykte än den behöver."
-            },
-            "b": {
-              "label": "Öppna igen och servera en hel flaska",
-              "explanation": "Mer intäkt, men personalen är trött och stängningen drar ut. Ork som tas i kväll saknas i morgon."
-            },
-            "c": {
-              "label": "Släpp in dem i salen och be kocken fixa en ostbricka åt hela sällskapet",
-              "explanation": "Köket har redan städats. Att starta det igen för ett sällskap kostar mer ork än det ger.",
-              "fail": {
-                "outcome": "Kocken tar på sig förklädet igen. Köket får städas en gång till."
-              }
-            },
-            "d": {
-              "label": "Erbjud ett glas var i baren och säg vänligt att köket är stängt",
-              "explanation": "En sista gest till gäster som kommer sent ger goda minnen, men personalen har också en kväll att avsluta. Ett glas är en gräns alla förstår."
-            }
-          },
-          "fail": {
-            "outcome": "Flaskan öppnas. Personalen stannar en timme till.",
-            "ongoing": "Personalen står kvar i baren i stället för att stänga."
-          }
         }
       ],
+      "halfGrip": {
+        "analysis": "Laget kom hem i tid, men sällskapet gick besviket.",
+        "experience": "Gästerna fick sitt glas, men glasen var fläckiga.",
+        "outcomeAnalysis": "Sällskapet går vidare längs gatan, och ingen ser tillbaka.",
+        "outcomeExperience": "En gäst torkar glaskanten med servetten."
+      },
       "success": {
         "outcome": "Tre glas i baren. Sällskapet tackar och går efter en halvtimme, och baren blir klar i tid."
       },
       "staff": {
-        "outcome": "Personalen tar över: sällskapet får sitta kvar länge, och stängningen drar ut."
+        "outcome": "Sällskapet får sitta kvar länge, och stängningen drar ut."
+      },
+      "staffTexts": {
+        "success": "Per häller tre glas vid barens ände och fortsätter städa.",
+        "fail": "Sällskapet får sitta kvar länge, och stängningen drar ut."
       }
     },
     "vb26-oppna-flaskor": {
       "title": "Öppna flaskor",
       "body": "Kvällen är slut. Nio öppnade flaskor står kvar, vita och röda, en del halvfulla.",
+      "guestLine": {
+        "a": "Elin, med jackan på: “Ska vi bara hälla ut dem? Jag vill hem.”",
+        "b": "Per: “I går gick ett trött glas ut. Gästen ställde ner det efter en klunk.”"
+      },
       "steps": [
         {
           "question": "Vad är det som främst förstör vinet i en öppnad flaska?",
@@ -2238,59 +2444,79 @@
           },
           "fail": {
             "outcome": "Personalen vet inte vad som ska skyddas. Flaskorna blir stående medan alla väntar på ett beslut."
-          }
+          },
+          "clue": "Analys: Syre förstör vinet. Kyla bromsar det."
         },
         {
-          "question": "Hur tar du hand om flaskorna innan du går hem?",
+          "question": "Vad behöver kvällen och morgondagen?",
           "options": {
             "a": {
-              "label": "Häll ut det som finns kvar, öppnade flaskor håller ändå inte till i morgon",
-              "explanation": "Ett halvfullt vin håller ofta ett par dagar om det förvaras rätt. Att hälla ut det är att hälla ut kvällens marginal."
+              "label": "Att allt hälls ut direkt, så att alla kommer hem i tid",
+              "explanation": "Det häller ut pengar som går att rädda."
             },
             "b": {
-              "label": "Sätt tillbaka korkarna och låt dem stå på disken",
-              "explanation": "Korken hjälper lite, men värmen och syret gör att vinet tappar frukt redan till i morgon."
+              "label": "Att varje flaska provsmakas noga nu",
+              "explanation": "Det kan göras i morgon, när det behövs."
             },
             "c": {
-              "label": "Vakuumförslut alla, ställ dem svalt och skriv datum på etiketterna",
-              "explanation": "Syre förstör vinet dag för dag. Vakuum, kyla och datum gör att vinet kan säljas på glas i ett par dagar och att man vet vad som är färskt."
+              "label": "Att vinet räddas, utan att laget blir kvar länge",
+              "explanation": "Det tar fem minuter att göra rätt, och det sparar kvällens marginal."
+            }
+          },
+          "fail": {
+            "outcome": "Ett glas går ut som smakar trött. Gästen ställer ner det efter en klunk."
+          },
+          "clue": "Upplevelse: Laget vill hem, och i morgon ska vinet vara gott."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Vakuumförslut, ställ svalt, skriv datum, och smaka innan glasförsäljning i morgon.",
+              "explanation": "Vakuum, kyla och datum håller vinet i ett par dagar, och smaken avgör vad som går att sälja."
+            },
+            "b": {
+              "label": "Vakuumförslut, ställ svalt och skriv datum, och sälj sedan på glas utan att smaka först.",
+              "explanation": "Förvaringen är rätt, men ett vin kan ha tappat mer än väntat. Gästen märker det före dig."
+            },
+            "c": {
+              "label": "Sätt tillbaka korkarna på disken, och låt alla gå hem direkt.",
+              "explanation": "Laget kommer hem, men värme och syre tar frukten ur vinet redan till i morgon."
+            },
+            "d": {
+              "label": "Häll ut allt som är kvar, öppnade flaskor håller ändå inte.",
+              "explanation": "Ett halvfullt vin håller ofta ett par dagar om det förvaras rätt."
             }
           },
           "fail": {
             "outcome": "Nio flaskor töms i diskhon."
           }
-        },
-        {
-          "question": "Nästa kväll: vad gör du med flaskorna innan du säljer vin på glas?",
-          "options": {
-            "a": {
-              "label": "Smaka på varje flaska och sälj de äldsta först",
-              "explanation": "Datumet säger hur gammal flaskan är, smaken säger om den går att sälja. Den äldsta först gör att inget blir stående."
-            },
-            "b": {
-              "label": "Sälj på glas utan att smaka, datumet räcker",
-              "explanation": "Ett vin kan ha tappat mer än väntat. Gästen som får ett trött glas märker det före dig."
-            },
-            "c": {
-              "label": "Häll ut allt som stått över natten, för säkerhets skull",
-              "explanation": "Onödigt. Vakuumförslutet och svalt håller vinet ofta ett par dagar. Smaka hellre än att hälla ut."
-            }
-          },
-          "fail": {
-            "outcome": "Ett glas går ut som smakar trött. Gästen ställer ner det efter en klunk."
-          }
         }
       ],
+      "halfGrip": {
+        "analysis": "Flaskorna förvarades rätt, men ingen smakade.",
+        "experience": "Alla kom hem, men vinet tappade över natten.",
+        "outcomeAnalysis": "Ett glas går ut som smakar trött.",
+        "outcomeExperience": "Nästa kväll hälls tre flaskor ut."
+      },
       "success": {
         "outcome": "Flaskorna står i vinkylen med datum och kork, och nästa kväll säljs de på glas."
       },
       "staff": {
-        "outcome": "Personalen tar över: flaskorna lämnas öppna på disken över natten."
+        "outcome": "Flaskorna lämnas öppna på disken över natten."
+      },
+      "staffTexts": {
+        "success": "Per vakuumförsluter flaskorna och skriver datum.",
+        "fail": "Flaskorna lämnas öppna på disken över natten."
       }
     },
     "vb27-allergireaktion": {
       "title": "Allergireaktion",
       "body": "{gäst} vid bord {bord} kliar sig på halsen och har svårt att andas efter några tuggor.",
+      "guestLine": {
+        "a": "Gästens vän: “Hon är allergisk mot nötter! Hon har en penna i väskan!”",
+        "b": "Gästen, svagt: “Det … känns tjockt i halsen.”"
+      },
       "steps": [
         {
           "question": "Vad kallas en svår allergisk reaktion som påverkar andningen?",
@@ -2310,72 +2536,74 @@
           },
           "fail": {
             "outcome": "Personalen tror att det går över. Gästen andas allt tyngre medan sällskapet ser oroligt på."
-          }
+          },
+          "clue": "Analys: Anafylaxi kan bli livshotande på några minuter."
         },
         {
-          "question": "Hur hjälper du gästen just nu?",
+          "question": "Vad behöver gästen?",
           "options": {
             "a": {
-              "label": "Ge ett glas vatten och vänta och se",
-              "explanation": "Vatten hjälper inte vid anafylaxi. Det är minuter som räknas, och det är personalens ansvar att agera."
+              "label": "Hjälp nu, och att någon stannar hos henne",
+              "explanation": "Det är minuter som räknas, och hon ska inte lämnas ensam."
             },
             "b": {
-              "label": "Erbjud en allergitablett från första hjälpen-lådan",
-              "explanation": "En allergitablett verkar för långsamt vid svår reaktion. Adrenalin och 112 är det som gäller.",
-              "fail": {
-                "outcome": "Gästen tar tabletten. Andningen blir inte bättre.",
-                "ongoing": "Gästen andas tungt. Sällskapet ringer runt efter hjälp."
-              }
+              "label": "Att få vara ifred en stund",
+              "explanation": "Den som drar sig undan kan bli sämre utan att någon ser det."
             },
             "c": {
-              "label": "Följ gästen till personalrummet så att hen får vara ifred och vila en stund",
-              "explanation": "Att flytta gästen tar tid och gör att ingen ser om hen blir sämre. Ring 112 och stanna där gästen är."
+              "label": "Att sällskapet tar hand om henne",
+              "explanation": "De kan hjälpa till, men ansvaret att agera ligger på krogen."
+            }
+          },
+          "fail": {
+            "outcome": "Ingen vet vad som gick fel. Köket fortsätter som om inget hänt."
+          },
+          "clue": "Upplevelse: Gästen behöver hjälp nu, och att någon stannar."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Ge ett glas vatten, och vänta och se.",
+              "explanation": "Vatten hjälper inte vid anafylaxi."
+            },
+            "b": {
+              "label": "Ge en allergitablett från första hjälpen-lådan.",
+              "explanation": "En tablett verkar för långsamt vid en svår reaktion."
+            },
+            "c": {
+              "label": "Följ henne bort till personalrummet, så att hon får vila ifred en stund från alla blickar.",
+              "explanation": "Det tar tid och gör att ingen ser om hon blir sämre."
             },
             "d": {
-              "label": "Ring 112, låt gästen ta sin adrenalinpenna och stanna hos gästen",
-              "explanation": "Vid svår allergisk reaktion: ring 112 direkt, hjälp gästen ta sin adrenalinpenna och lämna inte gästen ensam."
+              "label": "Ring 112, hjälp henne ta adrenalinpennan, stanna hos henne, och be köket spara rätten.",
+              "explanation": "112 och adrenalin är det som gäller. Den som stannar ser om hon blir sämre, och det sparade på tallriken visar köket var felet låg."
             }
           },
           "fail": {
             "outcome": "Gästen blir sämre. Sällskapet ringer själva efter hjälp.",
             "ongoing": "Hela rummet ser på bordet där gästen har svårt att andas."
           }
-        },
-        {
-          "question": "Ambulansen har tagit över. Vad gör du nu?",
-          "options": {
-            "a": {
-              "label": "Servera vidare som vanligt och ta upp det med köket i lugn och ro efter stängning",
-              "explanation": "Då kan samma rätt gå ut igen i kväll. Köket måste veta nu vad som hände."
-            },
-            "b": {
-              "label": "Berätta för borden runt om vilken rätt det var",
-              "explanation": "Innan ni vet vad som hände är det en gissning. Lugna rummet kort, men ta reda på fakta i köket först."
-            },
-            "c": {
-              "label": "Spara resten av rätten, fråga köket vad den innehöll, skriv ner vad som hände",
-              "explanation": "Det som finns kvar på tallriken och kökets svar visar var felet låg. En skriftlig redogörelse behövs när gästen eller andra frågar."
-            },
-            "d": {
-              "label": "Stryk rätten från menyn i kväll och gå vidare",
-              "explanation": "Det skyddar resten av kvällen, men utan att ta reda på orsaken kan samma fel hända igen i morgon."
-            }
-          },
-          "fail": {
-            "outcome": "Ingen vet vad som gick fel. Köket fortsätter som om inget hänt."
-          }
         }
       ],
       "success": {
-        "outcome": "Ambulansen är på väg, gästen andas lugnare och köket vet vad som gick fel."
+        "outcome": "Ambulansen är på väg, gästen andas lugnare, och köket vet vad som gick fel."
       },
       "staff": {
-        "outcome": "Personalen tar över: de står handfallna tills gästens sällskap ringer 112."
+        "outcome": "De står handfallna tills gästens sällskap ringer 112."
+      },
+      "staffTexts": {
+        "success": "Per ringer 112 och stannar hos gästen.",
+        "fail": "De står handfallna tills gästens sällskap ringer 112."
       }
     },
     "vb28-kylen-stannar": {
       "title": "Kylen har stannat",
       "body": "Mitt i kvällen: kylen med ost och chark är tyst. Termometern visar 14 grader.",
+      "guestLine": {
+        "a": "Sara: “Gästerna beställer charkbricka hela tiden. Vad ska jag säga?”",
+        "b": "Kocken: “Ska vi slänga allt?”"
+      },
       "steps": [
         {
           "question": "Vad avgör om ost och chark ur en stannad kyl går att använda?",
@@ -2396,59 +2624,73 @@
           "fail": {
             "outcome": "Charken går ut. Ingen märker något i kväll.",
             "ongoing": "Charken från den varma kylen går ut till borden."
-          }
+          },
+          "clue": "Analys: Tid och temperatur i varan avgör vad som kan räddas."
         },
         {
-          "question": "Hur tar du hand om varorna nu?",
+          "question": "Vad behöver kvällen?",
           "options": {
             "a": {
-              "label": "Mät i varorna, flytta de kalla till andra kylen, kassera resten",
-              "explanation": "Termometern i kylen visar luften, inte varan. Mät varorna, rädda det som hållit sig kallt och släng det som inte gjort det."
+              "label": "Att allt slängs, för säkerhets skull",
+              "explanation": "Säkert, men det som hållit sig kallt kan räddas."
             },
             "b": {
-              "label": "Stäng dörren och vänta på att kylen startar igen av sig själv",
-              "explanation": "Varje minut i värmen gör fler varor osäkra. Kylen kanske inte startar alls i kväll."
+              "label": "Att det tas efter servicen",
+              "explanation": "Då har varorna legat varmt hela kvällen."
             },
             "c": {
-              "label": "Packa allt tätt i den andra kylen",
-              "explanation": "Bättre än att vänta, men en överfull kyl kyler sämre, och varor som redan legat för varmt ska inte in bland de andra."
+              "label": "Att salen vet vad som gäller innan gästerna beställer",
+              "explanation": "Ett nej innan beställningen känns bättre än ett nej efter."
+            }
+          },
+          "fail": {
+            "outcome": "Gäst efter gäst beställer chark som inte finns. Servitörerna springer mellan köket och borden."
+          },
+          "clue": "Upplevelse: Salen behöver veta innan gästerna väljer."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Mät i varorna, flytta det kalla, kassera resten, säg till salen och skriv avvikelsen.",
+              "explanation": "Mätningen skiljer det säkra från det osäkra, salen kan styra gästerna, och egenkontrollen visar vad som hände."
+            },
+            "b": {
+              "label": "Mät, flytta det kalla och kassera resten, men säg inget till salen.",
+              "explanation": "Varorna sköts rätt, men gäst efter gäst beställer chark som inte finns."
+            },
+            "c": {
+              "label": "Säg till salen vad som utgår, och packa allt i den andra kylen.",
+              "explanation": "Varor som legat för varmt ska inte in bland de andra, och en överfull kyl kyler sämre."
+            },
+            "d": {
+              "label": "Stäng dörren, och vänta på att kylen startar av sig själv.",
+              "explanation": "Varje minut i värmen gör fler varor osäkra."
             }
           },
           "fail": {
             "outcome": "Varorna blir liggande i den varma kylen medan tiden går."
           }
-        },
-        {
-          "question": "Menyn blir kortare i kväll. Vad gör du nu?",
-          "options": {
-            "a": {
-              "label": "Låt gästerna beställa som vanligt och säg nej när något är slut",
-              "explanation": "Ett nej efter beställningen känns som ett misslyckande för gästen. Säg det innan de väljer."
-            },
-            "b": {
-              "label": "Säg till i salen vilka rätter som utgår och skriv avvikelsen i egenkontrollen",
-              "explanation": "Personalen kan styra gästerna innan de beställer. Egenkontrollen visar i efterhand vad som hände och vad som kasserades."
-            },
-            "c": {
-              "label": "Vänta med att skriva något tills kylen är lagad",
-              "explanation": "Detaljerna glöms fort. Skriv ner tid, temperatur och vad som kasserades medan ni minns det."
-            }
-          },
-          "fail": {
-            "outcome": "Gäst efter gäst beställer chark som inte finns. Servitörerna springer mellan köket och borden."
-          }
         }
       ],
       "success": {
-        "outcome": "Varorna sorteras, menyn blir kortare och salen vet om det innan gästerna beställer."
+        "outcome": "Varorna sorteras, menyn blir kortare, och salen vet om det innan gästerna beställer."
       },
       "staff": {
-        "outcome": "Personalen tar över: de fortsätter servera från den varma kylen."
+        "outcome": "De fortsätter servera från den varma kylen."
+      },
+      "staffTexts": {
+        "success": "Kocken mäter, sorterar och säger till Sara.",
+        "fail": "De fortsätter servera från den varma kylen."
       }
     },
     "vb29-brak": {
       "title": "Bråk vid baren",
       "body": "Gästen vid baren som fått mycket att dricka börjar gräla med ett sällskap intill. Röster höjs.",
+      "guestLine": {
+        "a": "Gästen, högt mot sällskapet intill: “Vad glor ni på?”",
+        "b": "Gästen, till bartendern: “Alla är emot mig i kväll.”"
+      },
       "steps": [
         {
           "question": "Vad gäller för servering till en gäst som är märkbart berusad?",
@@ -2472,61 +2714,81 @@
           },
           "fail": {
             "outcome": "Bartendern fyller på glaset. Gästen blir högre för varje minut."
-          }
+          },
+          "clue": "Analys: Ingen mer alkohol till en märkbart påverkad gäst."
         },
         {
-          "question": "Hur hanterar du gästens glas och vad gästen får dricka?",
+          "question": "Vad behöver baren?",
           "options": {
             "a": {
-              "label": "Servera en sista drink så att gästen lugnar sig och går hem sedan",
-              "explanation": "Mer alkohol lugnar inte ett gräl, och det är inte tillåtet att servera en märkbart berusad gäst."
+              "label": "Lugn, och att gästen kommer därifrån utan att tappa ansiktet",
+              "explanation": "Lugn och avskildhet dämpar ett bråk. Förödmjukelse tänder det."
             },
             "b": {
-              "label": "Servera inget mer alkohol, ställ fram vatten och låt glaset vara",
-              "explanation": "Vatten är en vänlig gest, och ingen alkohol är lagens krav. Att rycka glaset ur handen kan tända bråket."
+              "label": "En tillsägelse som hela rummet hör",
+              "explanation": "En tillsägelse inför publik gör bråket större."
             },
             "c": {
-              "label": "Ta glaset ifrån gästen direkt",
-              "explanation": "Rätt tanke, fel sätt. Ett glas som tas ur handen inför andra känns som en förnedring och kan göra gästen argare."
+              "label": "Att sällskapet flyttas till ett annat bord",
+              "explanation": "Det skyddar sällskapet, men gästen är kvar."
+            }
+          },
+          "fail": {
+            "outcome": "Rösterna höjs mer. Sällskapet intill går.",
+            "ongoing": "Rösterna vid baren höjs. Flera bord ber om notan."
+          },
+          "clue": "Upplevelse: Gästen får inte förlora ansiktet."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Ge en sista drink, så att gästen lugnar sig och går.",
+              "explanation": "Mer alkohol lugnar inte ett gräl, och det är inte tillåtet."
+            },
+            "b": {
+              "label": "Säg högt åt gästen att lugna sig, så att hela rummet hör att du tar det på allvar.",
+              "explanation": "Gästen vill inte förlora ansiktet, och bråket växer."
+            },
+            "c": {
+              "label": "Ställ fram vatten, prata lugnt med gästen avsides, och ordna en taxi.",
+              "explanation": "Vatten och ingen alkohol är lagens krav. Ett lugnt samtal och en taxi tar gästen säkert hem."
+            },
+            "d": {
+              "label": "Ta glaset ifrån gästen, och säg åt hen att gå.",
+              "explanation": "Rätt tanke, men ett glas som tas ur handen inför andra känns som förnedring."
             }
           },
           "fail": {
             "outcome": "Gästen höjer rösten mot bartendern också.",
             "ongoing": "Rösterna vid baren blir högre. Borden runt omkring tittar dit."
           }
-        },
-        {
-          "question": "Vad gör du nu med gästen och sällskapet intill?",
-          "options": {
-            "a": {
-              "label": "Säg högt till gästen att lugna sig, så att alla i rummet hör att du tar det på allvar",
-              "explanation": "En tillsägelse inför publik gör ett bråk större. Gästen vill inte förlora ansiktet."
-            },
-            "b": {
-              "label": "Flytta sällskapet till ett annat bord",
-              "explanation": "Det skyddar sällskapet men löser inte problemet: gästen är fortfarande berusad och kvar i baren."
-            },
-            "c": {
-              "label": "Gå fram lugnt, prata avsides och hjälp gästen därifrån med en taxi",
-              "explanation": "Lugn och avskildhet dämpar ett bråk. En taxi gör att gästen kommer hem säkert. Ansvaret för en berusad gäst slutar inte vid dörren."
-            }
-          },
-          "fail": {
-            "outcome": "Rösterna höjs mer. Sällskapet intill går.",
-            "ongoing": "Rösterna vid baren höjs. Flera bord ber om notan."
-          }
         }
       ],
+      "halfGrip": {
+        "analysis": "Lagen följdes, men gästen förödmjukades.",
+        "experience": "Gästen lugnade sig en stund, men lagen bröts.",
+        "outcomeAnalysis": "Gästen slår handen i disken på väg ut.",
+        "outcomeExperience": "Efter en kvart höjs rösterna igen."
+      },
       "success": {
         "outcome": "Gästen följer med ut. Taxin kommer. Baren lugnar sig."
       },
       "staff": {
-        "outcome": "Personalen tar över: de står bakom disken och väntar. Sällskapet intill går."
+        "outcome": "De står bakom disken och väntar. Sällskapet intill går."
+      },
+      "staffTexts": {
+        "success": "Elin ställer fram vatten och ringer en taxi.",
+        "fail": "De står bakom disken och väntar. Sällskapet intill går."
       }
     },
     "vb30-korkgasten": {
       "title": "Gästen med den korkade flaskan",
       "body": "Gästen som fick den korkade flaskan tidigare vinkar till sig {personal} och säger högt att vinbaren inte kan sitt vin.",
+      "guestLine": {
+        "a": "Gästen, högt: “Ni kan ju inte ert eget vin!”",
+        "b": "Gästen, hörbart till sällskapet: “Det här stället har ingen aning.”"
+      },
       "steps": [
         {
           "question": "Vad är det som ger ett vin korkdoft?",
@@ -2546,59 +2808,71 @@
           },
           "fail": {
             "outcome": "{personal} säger att det bara är lite korksmula. Gästen fnyser."
-          }
-        },
-        {
-          "question": "Hur byter du flaskan vid bordet?",
-          "options": {
-            "a": {
-              "label": "Häll det nya vinet i gästens gamla glas",
-              "explanation": "Doften från det korkade vinet sitter kvar i glaset och följer med in i det nya vinet."
-            },
-            "b": {
-              "label": "Dekantera den första flaskan så att lukten hinner vädras bort innan gästen smakar igen",
-              "explanation": "Korkdoft försvinner inte med luft. Vinet är fel och ska bytas."
-            },
-            "c": {
-              "label": "Öppna den nya flaskan i baren och bär ut två fyllda glas",
-              "explanation": "Vinet blir rätt, men gästen ser inte att flaskan är ny. Just den här gästen behöver se bytet."
-            },
-            "d": {
-              "label": "Visa nya flaskan, öppna den vid bordet, byt glas och låt gästen smaka",
-              "explanation": "Gästen ser att flaskan är ny och får smaka först. Nya glas gör att ingen korkdoft blir kvar."
-            }
           },
-          "fail": {
-            "outcome": "Det nya vinet luktar fortfarande svagt av källare. Gästen skakar på huvudet."
-          }
+          "clue": "Analys: Korkdoft (TCA) går inte att vädra bort."
         },
         {
-          "question": "Gästen är fortfarande sur och hörs i hela rummet. Vad gör du?",
+          "question": "Vad söker gästen?",
           "options": {
             "a": {
-              "label": "Erbjud den nya flaskan till halva priset",
-              "explanation": "Ett halvt steg. Felet är fortfarande inte erkänt."
+              "label": "Att felet erkänns, och rättas så att alla ser det",
+              "explanation": "Gästen hade rätt från början och vill att det märks."
             },
             "b": {
-              "label": "Erkänn felet rakt ut och bjud på den nya flaskan",
-              "explanation": "Ett erkänt fel och en generös rättelse gör en missnöjd gäst till en som kommer tillbaka och berättar om det."
+              "label": "Att få flaskan gratis",
+              "explanation": "Det kan ingå, men det gästen vill ha är upprättelse."
             },
             "c": {
-              "label": "Förklara att korkdoft inte är vinbarens fel utan producentens, och att flaskan ska betalas",
-              "explanation": "Att försvara sig gör felet större. Gästen hade rätt från början, och det är vinbaren som ska ha märkt det."
+              "label": "En förklaring av att korkdefekt alltid är producentens fel, inte krogens",
+              "explanation": "Att försvara sig gör felet större."
             }
           },
           "fail": {
             "outcome": "Gästen reser sig, betalar och går med sitt sällskap.",
             "ongoing": "Sällskapet går, och de andra borden har hört vad som sades."
+          },
+          "clue": "Upplevelse: Gästen vill ha upprättelse."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Förklara att korkdoft alltid är producentens fel och inte vinbarens, och att flaskan ska betalas.",
+              "explanation": "Det är vinbaren som ska ha märkt felet."
+            },
+            "b": {
+              "label": "Erkänn felet, öppna en ny flaska vid bordet, byt glas och bjud på den.",
+              "explanation": "Gästen ser att flaskan är ny, glasen bär ingen korkdoft, och den generösa rättelsen gör en missnöjd gäst till en som kommer tillbaka."
+            },
+            "c": {
+              "label": "Öppna en ny flaska vid bordet och byt glas, och ta betalt som vanligt.",
+              "explanation": "Bytet är rätt, men felet är inte erkänt."
+            },
+            "d": {
+              "label": "Erkänn felet och bjud på en ny flaska, som öppnas i baren.",
+              "explanation": "Upprättelsen är rätt, men just den här gästen behöver se bytet."
+            }
+          },
+          "fail": {
+            "outcome": "Det nya vinet luktar fortfarande svagt av källare. Gästen skakar på huvudet."
           }
         }
       ],
+      "halfGrip": {
+        "analysis": "Vinet blev rätt, men felet erkändes aldrig.",
+        "experience": "Felet erkändes, men gästen såg inte bytet.",
+        "outcomeAnalysis": "Gästen dricker under tystnad och betalar tidigt.",
+        "outcomeExperience": "Gästen luktar misstänksamt på det nya glaset."
+      },
       "success": {
         "outcome": "Ny flaska på huset. Gästen skålar mot personalen."
       },
       "staff": {
-        "outcome": "Personalen tar över: de låtsas inte höra. Gästen betalar och går med sitt sällskap."
+        "outcome": "De låtsas inte höra. Gästen betalar och går med sitt sällskap."
+      },
+      "staffTexts": {
+        "success": "Elin erkänner felet och öppnar en ny flaska vid bordet.",
+        "fail": "De låtsas inte höra. Gästen betalar och går med sitt sällskap."
       }
     },
     "vb31-servetter-och-isen": {
@@ -2607,6 +2881,10 @@
       "situations": {
         "middag": "Borden dukas fortfarande om för middagsgäster, och de flesta beställer mat.",
         "efter-middag": "Middagen är över vid de flesta bord. Kvällen går mot drinkar och avec."
+      },
+      "guestLine": {
+        "a": "{personal}: “Tio bord ska dukas om till middagen, och vi har inga servetter.”",
+        "b": "{personal}: “Alla vill ha drinkar nu, och isen är slut.”"
       },
       "steps": [
         {
@@ -2627,74 +2905,72 @@
           },
           "fail": {
             "outcome": "{personal} vet inte vad gästerna snart kommer att beställa och står still en stund för länge."
-          }
-        },
-        {
-          "question": "Hur fyller du på isen i baren?",
-          "options": {
-            "a": {
-              "label": "Bär isen i en ren hink och ös med isskopa",
-              "explanation": "Is är ett livsmedel. Skopa och ren hink håller den ren, och inget glas kan gå sönder i isbacken."
-            },
-            "b": {
-              "label": "Ös med ett glas, det går fortast",
-              "explanation": "Glaset kan spricka i isen, och en glasskärva syns inte bland isbitarna. Då måste hela isbacken tömmas."
-            },
-            "c": {
-              "label": "Ta isen med händerna om de är nytvättade",
-              "explanation": "Is går rakt ner i gästens glas utan att värmas. Använd alltid skopa, aldrig händerna."
-            }
           },
-          "fail": {
-            "outcome": "Isbacken måste tömmas och fyllas på igen. Baren står stilla medan det görs."
-          }
+          "clue": "Analys: Avec kommer till kaffet, efter maten."
         },
         {
-          "question": "Vad tar {personal} först, servetterna eller isen?",
+          "question": "Vad behöver kvällen just nu?",
           "options": {
             "a": {
-              "label": "Dela personalen: en på vardera",
-              "explanation": "Att dela gör att inget blir klart när det behövs. I en rusning är det bättre att välja det som kvällen behöver nu."
+              "label": "Lite av båda, så att ingen av dem blir helt utan",
+              "explanation": "Då blir inget klart när det behövs."
             },
             "b": {
-              "label": "Bryt tygservetter först",
-              "explanation": "Efter åtta är middagen mest över, och kvällen går mot drinkar. Utan is stannar baren och gästerna får vänta. Servetterna kan brytas i morgon bitti.",
-              "explanationIn": {
-                "middag": "Före åtta dukas borden fortfarande för middag. Servetterna behövs nu; isen kan vänta tills kvällen går mot drinkar."
-              },
-              "fail": {
-                "outcome": "Servetterna ligger vikta i högar. I baren står glasen utan is.",
-                "ongoing": "Isen är slut i baren. Drinkarna står och väntar, och gästerna vid baren tittar efter personalen."
-              }
+              "label": "Att vänta tills det har lugnat sig",
+              "explanation": "Då saknas båda precis när gästerna behöver dem."
             },
             "c": {
-              "label": "Vänta tills vågen lagt sig och ta båda då",
-              "explanation": "Då saknas både servetter och is precis när gästerna behöver dem. Välj det som kvällen behöver först."
-            },
-            "d": {
-              "label": "Hämta is till baren först",
-              "explanation": "Kvällen går mot after dinner-drinkar, och utan is stannar baren. Servetterna kan brytas i morgon bitti innan lunchen; ingen gäst väntar på dem nu.",
-              "explanationIn": {
-                "middag": "Före åtta dukas borden fortfarande för middag, och gästerna som sätter sig behöver servetter nu. Isen kan vänta tills drinkarna tar över senare på kvällen."
-              },
-              "fail": {
-                "outcome": "Isbackarna fylls, men borden står utan servetter.",
-                "ongoing": "Borden står odukade. Nya gäster väntar i entrén medan personalen letar servetter."
-              }
+              "label": "Det som nästa våg av gäster behöver först",
+              "explanation": "I en rusning väljer man det som kvällen behöver nu."
             }
           },
           "fail": {
             "outcome": "Både borden och baren står utan det de behöver när vågen kommer.",
             "ongoing": "Gästerna väntar både på dukade bord och på sina drinkar."
+          },
+          "clue": "Upplevelse: Läs vad nästa våg behöver."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Ös is med ett glas, det går fortast, och ta servetterna sen.",
+              "explanation": "Ett glas kan spricka i isen, och en skärva syns inte bland isbitarna. Då måste hela isbacken tömmas."
+            },
+            "b": {
+              "label": "Dela personalen, en på servetterna och en på isen.",
+              "explanation": "Att dela gör att inget blir klart när det behövs."
+            },
+            "c": {
+              "label": "Bryt servetter till borden först. Isen får vänta.",
+              "explanation": "Vid middag behöver borden dukas. Efter middagen går kvällen mot drinkar, och då stannar baren utan is."
+            },
+            "d": {
+              "label": "Hämta is i ren hink med skopa. Servetterna får vänta.",
+              "explanation": "Is är ett livsmedel. Skopa och ren hink håller den ren. Efter middagen är det isen som behövs, vid middag servetterna."
+            }
+          },
+          "fail": {
+            "outcome": "Isbacken måste tömmas och fyllas på igen. Baren står stilla medan det görs."
           }
         }
       ],
+      "halfGrip": {
+        "analysis": "Arbetet gjordes rätt, men i fel ordning för kvällen.",
+        "experience": "Isen kom fort, men med ett glas i isbacken.",
+        "outcomeAnalysis": "Det som behövdes nu står kvar och väntar.",
+        "outcomeExperience": "Bartendern tittar ner i isen och tvekar."
+      },
       "success": {
-        "outcome": "Det som kvällen behöver står klart i tid, och beställningarna går ut i jämn takt."
+        "outcome": "Det kvällen behöver står klart i tid, och beställningarna går ut i jämn takt."
       },
       "staff": {
-        "outcome": "Personalen tar över: de gör lite av båda, och baren står utan is en lång stund.",
+        "outcome": "De gör lite av båda, och baren står utan is en lång stund.",
         "ongoing": "Isen är slut i baren. Gästerna väntar på sina drinkar."
+      },
+      "staffTexts": {
+        "success": "{personal} tar det som behövs först.",
+        "fail": "De gör lite av båda, och baren står utan is en lång stund."
       }
     },
     "vb32-fodelsedagen": {
@@ -2799,620 +3075,680 @@
     "vb33-vasen": {
       "title": "Vasen på pulten",
       "body": "En gäst i rullstol kommer in mellan värdpulten och klädhängaren. Handen på hjulet tar i pulten, och vasen går i golvet.",
+      "guestLine": {
+        "a": "Gästen, röd i ansiktet: “Förlåt, förlåt! Jag betalar vasen.”",
+        "b": "Gästens sällskap: “Det här händer överallt. Vi kanske ska gå hem.”"
+      },
       "steps": [
         {
           "question": "Vad är risken just nu?",
           "options": {
             "a": {
               "label": "Att gästen har skadat handen mot den vassa pulten",
-              "explanation": "Glas och vatten i entrén är en risk för alla som går in, också för gästen i rullstolen. Hur gästen mår frågar du i nästa steg."
+              "explanation": "Det frågar du i nästa steg. Just nu är glaset och vattnet en risk för alla i entrén."
             },
             "b": {
               "label": "Att entrén blockeras för nästa sällskap",
-              "explanation": "Glas och vatten i entrén är en risk för alla som går in, också för gästen i rullstolen. Hur gästen mår frågar du i nästa steg."
+              "explanation": "Kön kan vänta en minut. Splitter i entrén kan inte det."
             },
             "c": {
               "label": "Glassplitter och vatten där gäster går in",
-              "explanation": "Glas och vatten i entrén är en risk för alla som går in, också för gästen i rullstolen. Hur gästen mår frågar du i nästa steg."
+              "explanation": "Glas och vatten i entrén är en risk för alla som går in, också för rullstolens hjul."
             },
             "d": {
               "label": "Att vattnet förstör bokningsboken på pulten",
-              "explanation": "Glas och vatten i entrén är en risk för alla som går in, också för gästen i rullstolen. Hur gästen mår frågar du i nästa steg."
+              "explanation": "Boken går att torka. Splitter är en risk för människor."
             }
           },
           "fail": {
-            "outcome": "Jag tar hand om det."
-          }
+            "outcome": "Ingen gör något. Glaset ligger kvar där nästa gäst ska gå in."
+          },
+          "clue": "Analys: Splitter och vatten i entrén är en risk för alla."
         },
         {
-          "question": "Hur tar du hand om det?",
+          "question": "Vad behöver gästen?",
           "options": {
             "a": {
-              "label": "Torkar upp vattnet först, så att ingen halkar",
-              "explanation": "Människan först, sedan risken, sedan städningen."
+              "label": "Att få höra att det inte var hens fel, och känna sig välkommen",
+              "explanation": "Entrén var för trång för en rullstol. Felet är krogens."
             },
             "b": {
-              "label": "Frågar hur gästen mår, spärrar av, sopar och torkar",
-              "explanation": "Människan först, sedan risken, sedan städningen."
+              "label": "Att få betala vasen",
+              "explanation": "Att ta emot pengar bekräftar att felet var gästens."
             },
             "c": {
-              "label": "Plockar de stora skärvorna för hand, sedan torkar du",
-              "explanation": "Människan först, sedan risken, sedan städningen."
-            },
-            "d": {
-              "label": "Hämtar borste och skyffel och sopar upp allt direkt, innan någon trampar i det",
-              "explanation": "Människan först, sedan risken, sedan städningen."
-            }
-          },
-          "fail": {
-            "outcome": "Jag tar hand om det."
-          }
-        },
-        {
-          "question": "Gästen skäms och vill gå hem. Vad gör du?",
-          "options": {
-            "a": {
-              "label": "Bjuder sällskapet på kvällen och ber om ursäkt",
+              "label": "En ursäkt och ett bjudglas",
               "explanation": "Generöst, men utan förklaring kan gästen tro att du bjuder för att hen gjorde fel."
-            },
-            "b": {
-              "label": "Säger att det kan hända vem som helst och visar vägen",
-              "explanation": "Entrén var för trång för en rullstol. Felet är vårt, inte gästens. Säg det och rätta till det."
-            },
-            "c": {
-              "label": "Säger att felet var vårt, flyttar vasen och visar vägen",
-              "explanation": "Entrén var för trång för en rullstol. Felet är vårt, inte gästens. Säg det och rätta till det."
-            },
-            "d": {
-              "label": "Respekterar det och bokar ett bord åt dem en annan kväll",
-              "explanation": "Respektfullt, men felet står kvar i entrén till nästa gäst."
             }
           },
           "fail": {
-            "outcome": "Jag tar hand om det.",
-            "ongoing": "Jag tar hand om det."
+            "outcome": "Gästen sitter tyst och ser ner i bordet.",
+            "ongoing": "Gästen i rullstolen sitter tyst vid sitt bord."
+          },
+          "clue": "Upplevelse: Gästen skäms, fast felet var krogens."
+        },
+        {
+          "question": "Vad gör du?",
+          "options": {
+            "a": {
+              "label": "Säg att felet var vårt och bjud på kvällen, och städa efter dem.",
+              "explanation": "Orden är rätt, men gästerna rullar och går genom glaset innan det är sopat."
+            },
+            "b": {
+              "label": "Plocka de stora skärvorna för hand, och säg att det kan hända vem som helst.",
+              "explanation": "Händer skärs på skärvor, och felet läggs på gästen."
+            },
+            "c": {
+              "label": "Fråga hur gästen mår, sopa upp, säg att felet var vårt och flytta pulten.",
+              "explanation": "Människan först, sedan risken, sedan orsaken. Pulten stod i vägen, och nu gör den det inte."
+            },
+            "d": {
+              "label": "Spärra av, sopa och torka, och visa sedan vägen till bordet.",
+              "explanation": "Städningen är rätt, men ingen säger att felet var krogens, och gästen skäms kvar."
+            }
+          },
+          "fail": {
+            "outcome": "Skärvorna ligger kvar i entrén, och gästen tror att felet var hens."
           }
         }
       ],
+      "halfGrip": {
+        "analysis": "Entrén blev ren, men gästen fick bära skulden.",
+        "experience": "Gästen kände sig välkommen, men glaset låg kvar för länge.",
+        "outcomeAnalysis": "Gästen sitter tyst resten av kvällen.",
+        "outcomeExperience": "Hjulet knastrar över en skärva."
+      },
       "success": {
-        "outcome": "Vasen stod fel. Vi flyttar den nu."
+        "outcome": "Entrén är fri. Pulten står nu där en rullstol kommer förbi, och gästen sitter vid sitt bord."
       },
       "staff": {
-        "outcome": "Per tar över."
+        "outcome": "Per sopar upp, men ingen flyttar pulten."
+      },
+      "staffTexts": {
+        "success": "Per frågar hur gästen mår, sopar upp och flyttar pulten.",
+        "fail": "Per sopar upp, men ingen flyttar pulten."
       }
     },
     "vb34-vinglar": {
       "title": "Gästen som vinglar",
       "body": "En gäst glider ned från barstolen, tar ett steg för långt bakåt och går rakt in i Saras bricka.",
+      "guestLine": {
+        "a": "Vännerna: “Kom igen, vi är stamgäster. Vi beställer åt honom.”",
+        "b": "Gästen, generad: “Förlåt, Sara. Jag snubblade bara.”"
+      },
       "steps": [
         {
           "question": "Vad säger alkohollagen om en gäst som är märkbart påverkad?",
           "options": {
             "a": {
               "label": "Han får serveras om han äter något först",
-              "explanation": "Den som är märkbart påverkad får inte serveras alkohol, vilken dryck det än är. Om han får stanna avgör ni efter hur han mår och uppför sig."
+              "explanation": "Mat ändrar inte regeln. Den som är märkbart påverkad får inte serveras."
             },
             "b": {
               "label": "Han får serveras öl, men inte starksprit",
-              "explanation": "Den som är märkbart påverkad får inte serveras alkohol, vilken dryck det än är. Om han får stanna avgör ni efter hur han mår och uppför sig."
+              "explanation": "Förbudet gäller all alkohol, också öl och vin."
             },
             "c": {
               "label": "Han måste lämna lokalen på en gång",
-              "explanation": "Den som är märkbart påverkad får inte serveras alkohol, vilken dryck det än är. Om han får stanna avgör ni efter hur han mår och uppför sig."
+              "explanation": "Lagen förbjuder servering, inte att han är kvar. Om han får stanna avgör ni efter hur han mår."
             },
             "d": {
               "label": "Han får inte serveras mer alkohol",
-              "explanation": "Den som är märkbart påverkad får inte serveras alkohol, vilken dryck det än är. Om han får stanna avgör ni efter hur han mår och uppför sig."
+              "explanation": "Den som är märkbart påverkad får inte serveras alkohol, vilken dryck det än är."
             }
           },
           "fail": {
-            "outcome": "Jag tar det här."
-          }
+            "outcome": "Mira häller upp utan att tänka efter."
+          },
+          "clue": "Analys: Ingen mer alkohol till honom."
         },
         {
-          "question": "Hur säger Mira det till honom?",
+          "question": "Vad behöver gästen?",
           "options": {
             "a": {
-              "label": "Högt nog att vännerna hör det och kan hjälpa till",
-              "explanation": "Ett nej som ges lugnt och enskilt, med något i utbyte, tas emot bättre."
+              "label": "Att bli ombedd att gå",
+              "explanation": "Det kan bli nödvändigt, men han har inte gjort något mer än snubblat."
             },
             "b": {
-              "label": "Lugnt och lågt, och bjuder på vatten och mat",
-              "explanation": "Ett nej som ges lugnt och enskilt, med något i utbyte, tas emot bättre."
+              "label": "Att komma ur det här utan att skämmas inför vännerna",
+              "explanation": "Ett nej som ges lugnt och enskilt tas emot bättre."
             },
             "c": {
-              "label": "Säger att baren stänger snart för kvällen",
-              "explanation": "Ett nej som ges lugnt och enskilt, med något i utbyte, tas emot bättre."
-            },
-            "d": {
-              "label": "Häller upp en lättöl utan att säga något",
-              "explanation": "Ett nej som ges lugnt och enskilt, med något i utbyte, tas emot bättre."
+              "label": "Att få fortsätta kvällen som vanligt",
+              "explanation": "Det går inte, och det vet han nog själv."
             }
           },
           "fail": {
-            "outcome": "Jag tar det här."
-          }
+            "outcome": "Vännerna skrattar, och han beställer en till.",
+            "ongoing": "Vännerna vid baren beställer åt honom."
+          },
+          "clue": "Upplevelse: Han skäms, och vännerna vill hjälpa på fel sätt."
         },
         {
-          "question": "Hans vänner är stamgäster och vill beställa åt honom. Vad gör du?",
+          "question": "Vad gör du?",
           "options": {
             "a": {
-              "label": "Serverar vännerna men ber dem inte ge honom något",
-              "explanation": "Vännerna får serveras, men går glaset vidare till honom har ni serverat honom. Det måste du se."
+              "label": "Säg nej till både honom och vännerna högt vid baren, och skriv sedan upp tiden.",
+              "explanation": "Lagen följs, men han förödmjukas inför sina vänner."
             },
             "b": {
-              "label": "Säger nej, skriver upp tiden och erbjuder en taxi",
-              "explanation": "Förbudet gäller oavsett vem som beställer. Att skriva upp tiden visar att ni gjort rätt."
+              "label": "Låt vännerna beställa, men be dem att inte ge honom något.",
+              "explanation": "Vänligt, men går glaset vidare till honom har ni serverat honom."
             },
             "c": {
-              "label": "Säger nej och ber hela sällskapet gå för kvällen",
-              "explanation": "Tydligt, men vännerna har inte gjort något fel, och ni förlorar stamgäster."
+              "label": "Låt dem beställa, han har ju bara fått vatten.",
+              "explanation": "Förbudet gäller oavsett vem som beställer."
             },
             "d": {
-              "label": "Låter dem beställa, han har ju bara fått vatten",
-              "explanation": "Förbudet gäller oavsett vem som beställer. Att skriva upp tiden visar att ni gjort rätt."
+              "label": "Säg lugnt nej till mer alkohol, ge vatten och mat, och skriv upp tiden.",
+              "explanation": "Ett lugnt nej skyddar honom, vatten och mat visar omsorg, och tiden på lappen visar att ni gjort rätt."
             }
           },
           "fail": {
-            "outcome": "Jag tar det här.",
-            "ongoing": "Jag tar det här."
+            "outcome": "Glasen går vidare till honom, och han blir högre vid baren."
           }
         }
       ],
+      "halfGrip": {
+        "analysis": "Lagen följdes, men han skämdes inför vännerna.",
+        "experience": "Stämningen höll, men ett glas gick vidare till honom.",
+        "outcomeAnalysis": "Sällskapet betalar och går under tystnad.",
+        "outcomeExperience": "Han dricker ur vännens glas."
+      },
       "success": {
-        "outcome": "Jag skriver upp det: nekad {klockan}."
+        "outcome": "Han dricker vatten och äter. Mira skriver: nekad {klockan}."
       },
       "staff": {
-        "outcome": "Per tar över."
+        "outcome": "Mira låter vännerna beställa. Glasen går vidare till honom."
+      },
+      "staffTexts": {
+        "success": "Mira säger lugnt nej och ställer fram vatten.",
+        "fail": "Mira låter vännerna beställa. Glasen går vidare till honom."
       }
     },
     "vb36-passet": {
       "title": "Gästen vid passet",
       "body": "En gäst reser sig från lounge A och går rakt mot köket. Vid passluckan frågar hon om hon får titta in.",
+      "guestLine": {
+        "a": "Gästen: “Jag har alltid undrat hur det ser ut bakom luckan. Bara en snabb titt?”",
+        "b": "Gästen: “Jag skriver om mat i Grythyttebladet. Får jag se hur ni arbetar?”"
+      },
       "steps": [
         {
           "question": "Vad gäller när en gäst vill in i ett restaurangkök?",
           "options": {
             "a": {
               "label": "Att hon inte rör något och håller sig vid dörren",
-              "explanation": "Köket är en livsmedelslokal. Den som går in följer samma hygienregler som personalen."
+              "explanation": "Det räcker inte. Den som går in i köket följer samma hygienregler som personalen."
             },
             "b": {
               "label": "Skyddskläder, handtvätt och att någon följer med",
-              "explanation": "Köket är en livsmedelslokal. Den som går in följer samma hygienregler som personalen."
+              "explanation": "Köket är en livsmedelslokal. Den som går in ska ha skyddskläder, tvätta händerna och ha sällskap."
             },
             "c": {
               "label": "Att hon inte är sjuk, resten svarar kocken för",
-              "explanation": "Köket är en livsmedelslokal. Den som går in följer samma hygienregler som personalen."
+              "explanation": "Hälsan är en del, men kläder, handtvätt och sällskap behövs också."
             },
             "d": {
               "label": "Att det bara går när köket inte lagar mat",
-              "explanation": "Köket är en livsmedelslokal. Den som går in följer samma hygienregler som personalen."
+              "explanation": "Det är en klok tid, men ingen regel. Reglerna gäller oavsett tid."
             }
           },
           "fail": {
-            "outcome": "Vi tar det efter servicen."
-          }
+            "outcome": "Hon står kvar vid passet och väntar på svar."
+          },
+          "clue": "Analys: Köket är en livsmedelslokal med samma regler för alla."
         },
         {
-          "question": "Hur gör du det mitt i rusningen?",
+          "question": "Vad söker gästen?",
           "options": {
             "a": {
-              "label": "Ber Sara visa henne runt medan du lagar klart",
-              "explanation": "Ett kort och tryggt ja slår både ett nej och ett kök i oordning."
+              "label": "Särbehandling",
+              "explanation": "Hon bad om en titt, inte om förmåner."
             },
             "b": {
-              "label": "Tar in henne direkt och visar stationerna",
-              "explanation": "Ett kort och tryggt ja slår både ett nej och ett kök i oordning."
+              "label": "En kort titt, så fort som möjligt, medan köket arbetar",
+              "explanation": "Det är vad hon bad om, men ett kök i rusning visar inte sig självt på en sekund."
             },
             "c": {
-              "label": "Ber henne vänta och visar från dörren, i förkläde",
-              "explanation": "Ett kort och tryggt ja slår både ett nej och ett kök i oordning."
-            },
-            "d": {
-              "label": "Säger vänligt att köket inte tar emot några gäster i kväll",
-              "explanation": "Ett kort och tryggt ja slår både ett nej och ett kök i oordning."
+              "label": "Att få se hur köket arbetar på riktigt",
+              "explanation": "Nyfikenheten är en gåva. Det går att ge henne något utan att bryta reglerna."
             }
           },
           "fail": {
-            "outcome": "Vi tar det efter servicen."
-          }
+            "outcome": "Hon går tillbaka till bordet utan svar.",
+            "ongoing": "Gästen tittar mot passet gång på gång."
+          },
+          "clue": "Upplevelse: Gästen är nyfiken på hantverket."
         },
         {
-          "question": "Du känner igen henne: hon skriver om mat i Grythyttebladet. Vad gör du?",
+          "question": "Vad gör du?",
           "options": {
             "a": {
-              "label": "Behandlar henne som alla andra och säger inget om det",
-              "explanation": "Rättvist, men hon bad om något ni kan ge. Att inte svara på det är också ett nej."
+              "label": "Ge henne ett förkläde och en titt från dörren, och erbjud en rundtur efter servicen.",
+              "explanation": "Reglerna följs, köket störs inte, och nyfikenheten får ett riktigt svar."
             },
             "b": {
-              "label": "Erbjuder en rundtur efter servicen och en smakbit nu",
-              "explanation": "Samma regler för alla. Det du kan ge extra är tid, när köket har tid."
+              "label": "Säg vänligt att köket inte tar emot gäster under servicen.",
+              "explanation": "Säkert, men hon bad om något ni kan ge."
             },
             "c": {
-              "label": "Ber Elin ta särskild hand om henne resten av kvällen",
-              "explanation": "Samma regler för alla. Det du kan ge extra är tid, när köket har tid."
+              "label": "Ta in henne direkt och visa alla stationerna medan ni lagar mat.",
+              "explanation": "Generöst, men utan skyddskläder och mitt i rusningen."
             },
             "d": {
-              "label": "Ber henne komma tillbaka en lugnare kväll för en visning",
-              "explanation": "Rimligt, men hon är här i kväll. Kom hon inte tillbaka, blev det inget."
+              "label": "Be Elin ta särskild hand om henne resten av kvällen, så att hon känner sig speciell.",
+              "explanation": "Samma regler för alla. Det du kan ge extra är tid, när köket har tid."
             }
           },
           "fail": {
-            "outcome": "Vi tar det efter servicen.",
-            "ongoing": "Vi tar det efter servicen."
+            "outcome": "Gästen står kvar vid passet medan köket arbetar runt henne."
           }
         }
       ],
+      "halfGrip": {
+        "analysis": "Reglerna följdes, men hon fick inget.",
+        "experience": "Hon fick se allt, men utan skyddskläder i full rusning.",
+        "outcomeAnalysis": "Hon tittar mot luckan resten av kvällen.",
+        "outcomeExperience": "En tallrik får vänta medan kocken visar."
+      },
       "success": {
         "outcome": "En rundtur efter servicen? Gärna!"
       },
       "staff": {
-        "outcome": "Per tar över."
+        "outcome": "Ingen svarar henne. Hon går tillbaka till sitt bord."
+      },
+      "staffTexts": {
+        "success": "Kocken ger henne ett förkläde och en titt från dörren.",
+        "fail": "Ingen svarar henne. Hon går tillbaka till sitt bord."
       }
     },
     "vb35-tillsynen-a": {
       "title": "Tillsynen",
       "body": "Två gäster vid ståbordet har inte rört sina glas på en stund. Nu visar de var sin legitimation för Per.",
+      "guestLine": {
+        "a": "Handläggaren: “Vi är från kommunen. Fortsätt som vanligt, vi tittar bara.”",
+        "b": "Polisen: “Rutinkontroll. Vem är ansvarig i kväll?”"
+      },
       "steps": [
         {
           "question": "Vem ska finnas på plats under hela serveringstiden?",
           "options": {
             "a": {
               "label": "Någon som har gått kursen i ansvarsfull alkoholservering",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Kursen är bra, men räcker inte. Namnet ska stå anmält hos kommunen."
             },
             "b": {
               "label": "Bartendern, eftersom det är hon som häller upp",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Den som häller upp behöver inte vara ansvarig. Ansvaret ligger på den som är anmäld."
             },
             "c": {
               "label": "Tillståndshavaren eller en anmäld serveringsansvarig",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Någon av dem ska finnas på plats under hela serveringstiden."
             },
             "d": {
               "label": "Krögaren själv, varje kväll serveringen pågår",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Krögaren kan anmäla andra. Det räcker att en av dem är på plats."
             }
           },
           "fail": {
-            "outcome": "Risk för erinran"
-          }
+            "outcome": "Ingen vet vem som är ansvarig i kväll. Per ser sig om."
+          },
+          "clue": "Analys: En anmäld ansvarig ska vara på plats hela kvällen."
         },
         {
-          "question": "Vad visar du dem?",
+          "question": "Vad söker tillsynen?",
           "options": {
             "a": {
-              "label": "Tillståndet och personalliggaren för kvällen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+              "label": "Att se hur ni arbetar en vanlig kväll",
+              "explanation": "Tillsynen vill se vardagen, inte en uppvisning."
             },
             "b": {
-              "label": "Kassarapporten och kvittona från kvällen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+              "label": "Att hitta fel som de kan anmärka på i rapporten",
+              "explanation": "De letar inte efter fel, de kontrollerar att rutinerna håller."
             },
             "c": {
-              "label": "Tillståndet och kursintygen för hela personalen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
-            },
-            "d": {
-              "label": "Tillståndet, ansvarslistan och egenkontrollen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+              "label": "Att få se papperen så fort som möjligt",
+              "explanation": "Papperen behövs, men det är arbetet de vill se."
             }
           },
           "fail": {
-            "outcome": "Risk för erinran"
-          }
+            "outcome": "Per blir nervös och börjar städa i baren.",
+            "ongoing": "Tillsynen antecknar medan Per städar i baren."
+          },
+          "clue": "Upplevelse: Tillsynen vill se en vanlig kväll."
         },
         {
-          "question": "Polisen nickar mot gästen vid baren som vinglade tidigare. Vad säger du?",
+          "question": "Polisen nickar mot gästen vid baren som vinglade tidigare. Vad gör du?",
           "options": {
             "a": {
-              "label": "Säger att han bara har druckit vatten i kväll",
-              "explanation": "Öppenhet och en anteckning väger tyngst inför tillsynen.",
-              "fail": {
-                "outcome": "Risk för varning"
-              }
+              "label": "Säg att han bara har druckit vatten i kväll.",
+              "explanation": "Polisen har sett honom vingla."
             },
             "b": {
-              "label": "Ber vännerna ta med honom hem innan de frågar",
-              "explanation": "Öppenhet och en anteckning väger tyngst inför tillsynen.",
-              "fail": {
-                "outcome": "Risk för erinran"
-              }
-            },
-            "c": {
-              "label": "Hänvisar till Mira, som var den som nekade honom i kväll",
-              "explanation": "Mira vet mest, men det är du som är serveringsansvarig. Svaret ska komma från dig."
-            },
-            "d": {
-              "label": "Säger som det är: nekad {klockan}, och visar lappen",
+              "label": "Säg som det är: nekad {klockan}, och visa anteckningen.",
               "explanation": "Öppenhet och en anteckning väger tyngst inför tillsynen."
+            },
+            "c": {
+              "label": "Hänvisa till Mira, som nekade honom, och låt henne visa lappen.",
+              "explanation": "Fakta stämmer, men det är du som är ansvarig, och svaret ska komma från dig."
+            },
+            "d": {
+              "label": "Be vännerna ta med honom hem, innan polisen frågar mer.",
+              "explanation": "Omtänksamt mot gästen, men det ser ut som att du gömmer något."
             }
           },
           "fail": {
-            "outcome": "Risk för erinran",
-            "ongoing": "Anmärkning i rapporten, ingen påföljd"
+            "outcome": "Tillsynen skriver en anmärkning i rapporten."
           }
         }
       ],
+      "halfGrip": {
+        "analysis": "Svaret var rätt i sak, men inte hur det gavs.",
+        "experience": "Hållningen var vänlig, men inte enligt reglerna.",
+        "outcomeAnalysis": "Handläggaren antecknar något.",
+        "outcomeExperience": "Polisen frågar en gång till."
+      },
       "success": {
         "outcome": "Han nekades {klockan}. Här är lappen."
       },
       "staff": {
-        "outcome": "Vi skriver in det i rapporten."
+        "outcome": "Per blir nervös och letar efter papperen. Det skrivs in i rapporten."
+      },
+      "staffTexts": {
+        "success": "Per visar tillståndet och svarar lugnt.",
+        "fail": "Per blir nervös och letar efter papperen. Det skrivs in i rapporten."
       }
     },
     "vb35-tillsynen-b": {
       "title": "Tillsynen",
       "body": "Två gäster vid ståbordet har inte rört sina glas på en stund. Nu visar de var sin legitimation för Per.",
+      "guestLine": {
+        "a": "Handläggaren: “Vi är från kommunen. Fortsätt som vanligt, vi tittar bara.”",
+        "b": "Polisen: “Rutinkontroll. Vem är ansvarig i kväll?”"
+      },
       "steps": [
         {
           "question": "Vem ska finnas på plats under hela serveringstiden?",
           "options": {
             "a": {
               "label": "Någon som har gått kursen i ansvarsfull alkoholservering",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Kursen är bra, men räcker inte. Namnet ska stå anmält hos kommunen."
             },
             "b": {
               "label": "Bartendern, eftersom det är hon som häller upp",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Den som häller upp behöver inte vara ansvarig. Ansvaret ligger på den som är anmäld."
             },
             "c": {
               "label": "Tillståndshavaren eller en anmäld serveringsansvarig",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Någon av dem ska finnas på plats under hela serveringstiden."
             },
             "d": {
               "label": "Krögaren själv, varje kväll serveringen pågår",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Krögaren kan anmäla andra. Det räcker att en av dem är på plats."
             }
           },
           "fail": {
-            "outcome": "Risk för erinran"
-          }
+            "outcome": "Ingen vet vem som är ansvarig i kväll. Per ser sig om."
+          },
+          "clue": "Analys: En anmäld ansvarig ska vara på plats hela kvällen."
         },
         {
-          "question": "Vad visar du dem?",
+          "question": "Vad söker tillsynen?",
           "options": {
             "a": {
-              "label": "Tillståndet och personalliggaren för kvällen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+              "label": "Att hitta fel som de kan anmärka på i rapporten",
+              "explanation": "De letar inte efter fel, de kontrollerar att rutinerna håller."
             },
             "b": {
-              "label": "Kassarapporten och kvittona från kvällen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+              "label": "Att få se papperen så fort som möjligt",
+              "explanation": "Papperen behövs, men det är arbetet de vill se."
             },
             "c": {
-              "label": "Tillståndet och kursintygen för hela personalen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
-            },
-            "d": {
-              "label": "Tillståndet, ansvarslistan och egenkontrollen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+              "label": "Att se hur ni arbetar en vanlig kväll",
+              "explanation": "Tillsynen vill se vardagen, inte en uppvisning."
             }
           },
           "fail": {
-            "outcome": "Risk för erinran"
-          }
+            "outcome": "Per blir nervös och börjar städa i baren.",
+            "ongoing": "Tillsynen antecknar medan Per städar i baren."
+          },
+          "clue": "Upplevelse: Tillsynen vill se en vanlig kväll."
         },
         {
-          "question": "Två unga gäster i lounge B beställer vin av Sara. Handläggaren tittar dit. Vad gör du?",
+          "question": "Två unga gäster i lounge B beställer vin av Sara. Handläggaren tittar dit.",
           "options": {
             "a": {
-              "label": "Frågar dem hur gamla de är och litar på svaret",
-              "explanation": "Den som serverar ska vara säker på att gästen har fyllt 18. Är du osäker, be om legitimation.",
-              "fail": {
-                "outcome": "Risk för varning"
-              }
+              "label": "Be Sara be om legitimation innan hon häller.",
+              "explanation": "Den som serverar ska vara säker på att gästen har fyllt 18."
             },
             "b": {
-              "label": "Ber Sara be om legitimation innan hon häller",
-              "explanation": "Den som serverar ska vara säker på att gästen har fyllt 18. Är du osäker, be om legitimation."
+              "label": "Be om legitimation av alla i loungen, också de äldre.",
+              "explanation": "Lagligt, men de äldre gästerna känner sig misstrodda."
             },
             "c": {
-              "label": "Ber om legitimation av alla i loungen, äldre också",
-              "explanation": "Lagligt och säkert, men de äldre gästerna känner sig misstrodda. Fråga dem det gäller."
+              "label": "Fråga dem hur gamla de är, och lita på svaret.",
+              "explanation": "Vänligt, men ett svar är ingen legitimation."
             },
             "d": {
-              "label": "Litar på Sara, hon ser om någon är för ung",
-              "explanation": "Den som serverar ska vara säker på att gästen har fyllt 18. Är du osäker, be om legitimation.",
-              "fail": {
-                "outcome": "Risk för varning"
-              }
+              "label": "Lita på Sara, hon ser om någon är för ung.",
+              "explanation": "Ålder syns inte säkert."
             }
           },
           "fail": {
-            "outcome": "Risk för erinran",
-            "ongoing": "Anmärkning i rapporten, ingen påföljd"
+            "outcome": "Tillsynen skriver en anmärkning i rapporten."
           }
         }
       ],
+      "halfGrip": {
+        "analysis": "Svaret var rätt i sak, men inte hur det gavs.",
+        "experience": "Hållningen var vänlig, men inte enligt reglerna.",
+        "outcomeAnalysis": "Handläggaren antecknar något.",
+        "outcomeExperience": "Polisen frågar en gång till."
+      },
       "success": {
         "outcome": "Får jag se legitimation, tack?"
       },
       "staff": {
-        "outcome": "Vi skriver in det i rapporten."
+        "outcome": "Per blir nervös och letar efter papperen. Det skrivs in i rapporten."
+      },
+      "staffTexts": {
+        "success": "Per visar tillståndet och svarar lugnt.",
+        "fail": "Per blir nervös och letar efter papperen. Det skrivs in i rapporten."
       }
     },
     "vb35-tillsynen-c": {
       "title": "Tillsynen",
       "body": "Två gäster vid ståbordet har inte rört sina glas på en stund. Nu visar de var sin legitimation för Per.",
+      "guestLine": {
+        "a": "Handläggaren: “Vi är från kommunen. Fortsätt som vanligt, vi tittar bara.”",
+        "b": "Polisen: “Rutinkontroll. Vem är ansvarig i kväll?”"
+      },
       "steps": [
         {
           "question": "Vem ska finnas på plats under hela serveringstiden?",
           "options": {
             "a": {
               "label": "Någon som har gått kursen i ansvarsfull alkoholservering",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Kursen är bra, men räcker inte. Namnet ska stå anmält hos kommunen."
             },
             "b": {
               "label": "Bartendern, eftersom det är hon som häller upp",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Den som häller upp behöver inte vara ansvarig. Ansvaret ligger på den som är anmäld."
             },
             "c": {
               "label": "Tillståndshavaren eller en anmäld serveringsansvarig",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Någon av dem ska finnas på plats under hela serveringstiden."
             },
             "d": {
               "label": "Krögaren själv, varje kväll serveringen pågår",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Krögaren kan anmäla andra. Det räcker att en av dem är på plats."
             }
           },
           "fail": {
-            "outcome": "Risk för erinran"
-          }
+            "outcome": "Ingen vet vem som är ansvarig i kväll. Per ser sig om."
+          },
+          "clue": "Analys: En anmäld ansvarig ska vara på plats hela kvällen."
         },
         {
-          "question": "Vad visar du dem?",
+          "question": "Vad söker tillsynen?",
           "options": {
             "a": {
-              "label": "Tillståndet och personalliggaren för kvällen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+              "label": "Att få se papperen så fort som möjligt",
+              "explanation": "Papperen behövs, men det är arbetet de vill se."
             },
             "b": {
-              "label": "Kassarapporten och kvittona från kvällen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+              "label": "Att se hur ni arbetar en vanlig kväll",
+              "explanation": "Tillsynen vill se vardagen, inte en uppvisning."
             },
             "c": {
-              "label": "Tillståndet och kursintygen för hela personalen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
-            },
-            "d": {
-              "label": "Tillståndet, ansvarslistan och egenkontrollen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+              "label": "Att hitta fel som de kan anmärka på i rapporten",
+              "explanation": "De letar inte efter fel, de kontrollerar att rutinerna håller."
             }
           },
           "fail": {
-            "outcome": "Risk för erinran"
-          }
+            "outcome": "Per blir nervös och börjar städa i baren.",
+            "ongoing": "Tillsynen antecknar medan Per städar i baren."
+          },
+          "clue": "Upplevelse: Tillsynen vill se en vanlig kväll."
         },
         {
-          "question": "Handläggaren bläddrar i egenkontrollen och frågar hur personalen vet vad som står i den. Vad svarar du?",
+          "question": "Handläggaren bläddrar i egenkontrollen: hur vet personalen vad som står i den?",
           "options": {
             "a": {
-              "label": "Den ligger i en pärm vid kassan, där alla kan läsa den",
-              "explanation": "Egenkontrollen ska vara känd av alla som serverar, inte bara finnas i en pärm.",
-              "fail": {
-                "outcome": "Risk för erinran"
-              }
+              "label": "Alla har gått kursen i ansvarsfull alkoholservering.",
+              "explanation": "Kursen handlar om lagen. Egenkontrollen är era egna rutiner."
             },
             "b": {
-              "label": "Alla har gått kursen i ansvarsfull servering",
-              "explanation": "Kursen är bra, men den handlar om lagen. Er egenkontroll är era egna rutiner."
+              "label": "Den ligger i en pärm vid kassan, där alla kan läsa den när de vill.",
+              "explanation": "Att den finns betyder inte att den är känd."
             },
             "c": {
-              "label": "Jag skrev den själv, så jag svarar för den",
-              "explanation": "Egenkontrollen ska vara känd av alla som serverar, inte bara finnas i en pärm.",
-              "fail": {
-                "outcome": "Risk för erinran"
-              }
+              "label": "Jag skrev den själv, så jag svarar för den.",
+              "explanation": "Den ska vara känd av alla som serverar, inte bara av dig."
             },
             "d": {
-              "label": "Alla nya går igenom den, och vi ser över den ofta",
-              "explanation": "Egenkontrollen ska vara känd av alla som serverar, inte bara finnas i en pärm."
+              "label": "Alla nya går igenom den med mig, och vi ser över den ofta.",
+              "explanation": "Egenkontrollen ska vara känd av alla som serverar, inte bara finnas."
             }
           },
           "fail": {
-            "outcome": "Risk för erinran",
-            "ongoing": "Anmärkning i rapporten, ingen påföljd"
+            "outcome": "Tillsynen skriver en anmärkning i rapporten."
           }
         }
       ],
+      "halfGrip": {
+        "analysis": "Svaret var rätt i sak, men inte hur det gavs.",
+        "experience": "Hållningen var vänlig, men inte enligt reglerna.",
+        "outcomeAnalysis": "Handläggaren antecknar något.",
+        "outcomeExperience": "Polisen frågar en gång till."
+      },
       "success": {
         "outcome": "Alla nya går igenom den med mig."
       },
       "staff": {
-        "outcome": "Vi skriver in det i rapporten."
+        "outcome": "Per blir nervös och letar efter papperen. Det skrivs in i rapporten."
+      },
+      "staffTexts": {
+        "success": "Per visar tillståndet och svarar lugnt.",
+        "fail": "Per blir nervös och letar efter papperen. Det skrivs in i rapporten."
       }
     },
     "vb35-tillsynen-d": {
       "title": "Tillsynen",
       "body": "Två gäster vid ståbordet har inte rört sina glas på en stund. Nu visar de var sin legitimation för Per.",
+      "guestLine": {
+        "a": "Handläggaren: “Vi är från kommunen. Fortsätt som vanligt, vi tittar bara.”",
+        "b": "Polisen: “Rutinkontroll. Vem är ansvarig i kväll?”"
+      },
       "steps": [
         {
           "question": "Vem ska finnas på plats under hela serveringstiden?",
           "options": {
             "a": {
               "label": "Någon som har gått kursen i ansvarsfull alkoholservering",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Kursen är bra, men räcker inte. Namnet ska stå anmält hos kommunen."
             },
             "b": {
               "label": "Bartendern, eftersom det är hon som häller upp",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Den som häller upp behöver inte vara ansvarig. Ansvaret ligger på den som är anmäld."
             },
             "c": {
               "label": "Tillståndshavaren eller en anmäld serveringsansvarig",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Någon av dem ska finnas på plats under hela serveringstiden."
             },
             "d": {
               "label": "Krögaren själv, varje kväll serveringen pågår",
-              "explanation": "Tillståndshavaren eller en anmäld serveringsansvarig ska finnas på plats hela serveringstiden. En kurs räcker inte, namnet ska stå på listan hos kommunen."
+              "explanation": "Krögaren kan anmäla andra. Det räcker att en av dem är på plats."
             }
           },
           "fail": {
-            "outcome": "Risk för erinran"
-          }
+            "outcome": "Ingen vet vem som är ansvarig i kväll. Per ser sig om."
+          },
+          "clue": "Analys: En anmäld ansvarig ska vara på plats hela kvällen."
         },
         {
-          "question": "Vad visar du dem?",
+          "question": "Vad söker tillsynen?",
           "options": {
             "a": {
-              "label": "Tillståndet och personalliggaren för kvällen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+              "label": "Att se hur ni arbetar en vanlig kväll",
+              "explanation": "Tillsynen vill se vardagen, inte en uppvisning."
             },
             "b": {
-              "label": "Kassarapporten och kvittona från kvällen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+              "label": "Att hitta fel som de kan anmärka på i rapporten",
+              "explanation": "De letar inte efter fel, de kontrollerar att rutinerna håller."
             },
             "c": {
-              "label": "Tillståndet och kursintygen för hela personalen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
-            },
-            "d": {
-              "label": "Tillståndet, ansvarslistan och egenkontrollen",
-              "explanation": "Tillsynen gäller tillståndet och hur ni följer det: vem som är ansvarig och hur ni arbetar enligt egenkontrollen."
+              "label": "Att få se papperen så fort som möjligt",
+              "explanation": "Papperen behövs, men det är arbetet de vill se."
             }
           },
           "fail": {
-            "outcome": "Risk för erinran"
-          }
+            "outcome": "Per blir nervös och börjar städa i baren.",
+            "ongoing": "Tillsynen antecknar medan Per städar i baren."
+          },
+          "clue": "Upplevelse: Tillsynen vill se en vanlig kväll."
         },
         {
-          "question": "Handläggaren vill beställa något att äta. Kocken har just sagt att maten är slut. Vad gör du?",
+          "question": "Handläggaren vill beställa något att äta. Kocken har just sagt att maten är slut.",
           "options": {
             "a": {
-              "label": "Säger att köket stänger tidigare än baren i kväll",
-              "explanation": "Lagad mat ska gå att beställa under hela serveringstiden. Ett enkelt utbud räcker, men snacks räknas inte.",
-              "fail": {
-                "outcome": "Risk för varning"
-              }
+              "label": "Bjud på oliver och nötter från baren i stället.",
+              "explanation": "En vänlig gest, men snacks räknas inte som mat."
             },
             "b": {
-              "label": "Ber kocken laga något enkelt av det som finns kvar",
-              "explanation": "Lagad mat ska gå att beställa under hela serveringstiden. Ett enkelt utbud räcker, men snacks räknas inte."
+              "label": "Säg att köket stänger tidigare än baren i kväll.",
+              "explanation": "Mat ska finnas under hela serveringstiden."
             },
             "c": {
-              "label": "Bjuder på oliver och nötter från baren i stället",
-              "explanation": "Lagad mat ska gå att beställa under hela serveringstiden. Ett enkelt utbud räcker, men snacks räknas inte.",
-              "fail": {
-                "outcome": "Risk för erinran"
-              }
+              "label": "Be kocken laga något enkelt av det som finns kvar.",
+              "explanation": "Lagad mat ska gå att beställa under hela serveringstiden. Ett enkelt utbud räcker."
             },
             "d": {
-              "label": "Är ärlig och pausar alkoholen tills det finns mat",
-              "explanation": "Lagligt och ärligt, men baren tappar kvällen. Köket kan nästan alltid laga något enkelt."
+              "label": "Säg ärligt att maten är slut, och pausa alkoholen tills det finns mat.",
+              "explanation": "Lagligt och ärligt, men baren tappar kvällen i onödan."
             }
           },
           "fail": {
-            "outcome": "Risk för erinran",
-            "ongoing": "Anmärkning i rapporten, ingen påföljd"
+            "outcome": "Tillsynen skriver en anmärkning i rapporten."
           }
         }
       ],
+      "halfGrip": {
+        "analysis": "Svaret var rätt i sak, men inte hur det gavs.",
+        "experience": "Hållningen var vänlig, men inte enligt reglerna.",
+        "outcomeAnalysis": "Handläggaren antecknar något.",
+        "outcomeExperience": "Polisen frågar en gång till."
+      },
       "success": {
         "outcome": "Kocken gör en enkel rätt av det som finns."
       },
       "staff": {
-        "outcome": "Vi skriver in det i rapporten."
+        "outcome": "Per blir nervös och letar efter papperen. Det skrivs in i rapporten."
+      },
+      "staffTexts": {
+        "success": "Per visar tillståndet och svarar lugnt.",
+        "fail": "Per blir nervös och letar efter papperen. Det skrivs in i rapporten."
       }
     },
     "vb40-karaffen": {

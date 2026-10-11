@@ -67,7 +67,9 @@ export const GUEST_GESTURES = [
   { clip: 'guest.pushPlate', seat: 'twoC1', lk: 'g9', key: 'push', plate: true },
   { clip: 'guest.shrug', seat: 'twoC2', lk: 'g8', key: 'shrug' },
   { clip: 'guest.armsCrossed', seat: 'loungeA3', lk: 'g7', key: 'arms' },
-  { clip: 'guest.nodFirstBite', seat: 'loungeB2', lk: 'g1', key: 'bite', cutlery: true }
+  { clip: 'guest.nodFirstBite', seat: 'loungeB2', lk: 'g1', key: 'bite', cutlery: true },
+  // Tillägg 2026-10-10: söka personalens blick. Mot Sara, inte mot kameran.
+  { clip: 'guest.seekEye', seat: 'loungeA2', lk: 'sara', key: 'seek' }
 ];
 const TWO = { twoA1: -4.78, twoA2: -3.62, twoB1: -2.68, twoB2: -1.52, twoC1: -0.58, twoC2: 0.58 };
 export function guests(C, tempo) {
@@ -171,9 +173,11 @@ export function truck(C) {
     a1: stand('medel', 1.0, aW, Math.PI / 2, rep('guest.leanTalkStand', 0.6, 'a2', { idleFace: Math.PI / 2 }).map((s) => ({ ...s, face: Math.PI / 2 }))),
     a2: stand('social', 0.94, aE, -Math.PI / 2, rep('guest.laughStand', 2.4, 'a1', { idleFace: -Math.PI / 2, tempo: 'stressed', rest: 1.8 }).map((s) => ({ ...s, face: -Math.PI / 2 }))),
     b1: stand('kappa', 0.98, bS, Math.PI, rep('guest.nodFirstBiteStand', 0.8, null, { idleFace: Math.PI, rest: 1.6 }).map((s) => ({ ...s, face: Math.PI }))),
-    b2: stand('medel3', 1.03, bW, Math.PI / 2, rep('guest.nodApproveStand', 2.6, 'b1', { idleFace: Math.PI / 2, rest: 2 }).map((s) => ({ ...s, face: Math.PI / 2 })))
+    b2: stand('medel3', 1.03, bW, Math.PI / 2, rep('guest.nodApproveStand', 2.6, 'b1', { idleFace: Math.PI / 2, rest: 2 }).map((s) => ({ ...s, face: Math.PI / 2 }))),
+    // Tillägg 2026-10-10: vid ståbord C, vill ha något från luckan och söker grillarens blick.
+    c1: stand('hog', 1.01, [Cc[0] + 0.55, Cc[1]], -Math.PI / 2, rep('guest.seekEyeStand', 1.0, 'grill', { idleFace: -Math.PI / 2, rest: 1.4 }).map((s) => ({ ...s, face: -Math.PI / 2 })))
   };
-  const faces = { h1: 'content', q1: 'waiting', q2: 'displeased', q3: 'waiting', a1: 'content', a2: 'delighted', b1: 'content', b2: 'content' };
+  const faces = { h1: 'content', q1: 'waiting', q2: 'displeased', q3: 'waiting', a1: 'content', a2: 'delighted', b1: 'content', b2: 'content', c1: 'waiting' };
   return {
     set: 'studio', pieces: studioPieces(), outdoor: 'truck', tempo: 'normal', end: D, props, actors, effects: [], light: 'evening',
     anchors: Object.fromEntries(Object.keys(faces).map((id) => [id, { actor: id }])), initialFaces: faces,
@@ -183,7 +187,7 @@ export function truck(C) {
       chapters: [{ t: 0, key: 'tr.game', game: true }, { t: 0, key: 'tr.hatch', focus: 'h1', clip: 'guest.waveStand', at: 1.6 }, { t: 0, key: 'tr.listen', focus: 'grill', clip: 'staff.listenTilt', at: 6 },
         { t: 0, key: 'tr.watch', focus: 'q1', clip: 'guest.checkWatchStand', at: 2.2 }, { t: 0, key: 'tr.arms', focus: 'q2', clip: 'guest.armsCrossedStand', at: 4 }, { t: 0, key: 'tr.shrug', focus: 'q3', clip: 'guest.shrugStand', at: 3 },
         { t: 0, key: 'tr.talk', focus: 'a1', clip: 'guest.leanTalkStand', at: 2 }, { t: 0, key: 'tr.laugh', focus: 'a2', clip: 'guest.laughStand', at: 3.4 },
-        { t: 0, key: 'tr.bite', focus: 'b1', clip: 'guest.nodFirstBiteStand', at: 3.4 }, { t: 0, key: 'tr.wipe', focus: 'nils', clip: 'waiter.wipeTable', at: 2 }]
+        { t: 0, key: 'tr.bite', focus: 'b1', clip: 'guest.nodFirstBiteStand', at: 3.4 }, { t: 0, key: 'tr.wipe', focus: 'nils', clip: 'waiter.wipeTable', at: 2 }, { t: 0, key: 'tr.seek', focus: 'c1', clip: 'guest.seekEyeStand', at: 2.2 }]
     }
   };
 }
@@ -238,7 +242,7 @@ export function moodRoom(C, mood, mapMoods) {
     const use = clip === 'guest.pushPlate' && TWO[seat] == null ? 'guest.armsCrossed' : clip;
     const start = 0.4 + ((pi * 3 + k) % 7) * 0.45;
     const tempo = mood === 'content' ? 'normal' : mood === 'waiting' ? 'normal' : 'stressed';
-    actors[id] = { kind: 'guest', look: LOOKS_G[(n - 1) % LOOKS_G.length], hm: 0.94 + (n % 5) * 0.03, pos: [0, 0], steps: [{ clip: 'guest.seatedIdle', until: start, seat }, ...repeat(C, use, start, D, party.length > 1 ? partner : 'sara', { tempo, ev, rest: mood === 'displeased' ? 0.6 : 2.0 })] };
+    actors[id] = { kind: 'guest', look: LOOKS_G[(n - 1) % LOOKS_G.length], hm: 0.94 + (n % 5) * 0.03, pos: [0, 0], steps: [{ clip: 'guest.seatedIdle', until: start, seat }, ...repeat(C, use, start, D, use === 'guest.seekEye' || party.length < 2 ? 'sara' : partner, { tempo, ev, rest: mood === 'displeased' ? 0.6 : 2.0 })] };
     faces[id] = mood;
   }));
   actors.sara = { kind: 'staff', look: 'servitor', pos: [3.6, -3.25], yaw: -Math.PI / 2, steps: [{ clip: 'staff.walk', path: [[-2.6, -3.25]] }, { clip: 'staff.idle', until: D, look: 'm1' }] };

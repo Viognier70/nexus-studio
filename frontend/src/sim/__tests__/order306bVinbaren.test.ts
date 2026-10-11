@@ -46,8 +46,9 @@ function openAt(id: string, step: number): SimulationState {
 
 describe('ORDER 306b — de elva situationerna', () => {
   it('tio ersatta och Karaffen ny, alla i formen analys → upplevelse → handling', () => {
-    const triad = incidentBankFor('vinbar').filter((i) => i.form === 'triad').map((i) => i.id).sort();
-    expect(triad).toEqual([...NEW].sort());
+    // ORDER 326 — sedan 306c har alla vinbarens situationer formen; de elva är kvar i den.
+    const triad = incidentBankFor('vinbar').filter((i) => i.form === 'triad').map((i) => i.id);
+    for (const id of NEW) expect(triad).toContain(id);
   });
 
   it('steg 3 har minst ett helt grepp, och halvt grepp har sin sida (A4)', () => {

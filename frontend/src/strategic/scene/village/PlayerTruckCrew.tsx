@@ -424,7 +424,7 @@ export function PlayerTruckCrew() {
         poseWalker(r, w, p, t, waiting > QUEUE_STRESSED, w.id === pointing ? THEATRE.rocketIntroSeconds.askPointMenu - (active?.introLeft ?? 0) : null, hatchAt, inQueue ? t - qs.get(w.id)! : null, flow.clock - w.outcomeAt, cold, umbrellaOn(w, raining, h));
         // ORDER 325 (D11) — stående gester ovanpå: vinka vid luckan när medhjälparen är ute (readyToOrder), en
         // axelryckning i kön när korven tar slut (soldOut).
-        gestureMood = truckGesture(r, w, t, errandOut, live(sit.stock), pointing === w.id, cold);
+        gestureMood = truckGesture(r, w, t, errandOut, live(sit.stock), pointing === w.id, cold, flow.clock - w.settledAt);
       }
       face.set(gestureMood ?? mood);
       faceProbe.add(face.update(camera), isTruck && r.root.visible);
@@ -556,13 +556,23 @@ function poseCurious(r: FigureRig, w: TruckWalker, p: [number, number], cur: Cur
 
 /** ORDER 325 (D11 §4) — de stående gesterna vid luckan och i kön, ovanpå poseWalker. Ger stämningen gesten visar
  *  (ansiktet följer gesten), eller null när ingen gest spelas. */
-function truckGesture(r: FigureRig, w: TruckWalker, t: number, errandOut: boolean, soldOut: boolean, pointing: boolean, cold: boolean): MoodId | null {
+function truckGesture(r: FigureRig, w: TruckWalker, t: number, errandOut: boolean, soldOut: boolean, pointing: boolean, cold: boolean, atSpotS: number): MoodId | null {
   if (!w.settled || w.holdS > 0 || pointing || !w.spot) return null;
   const G = TRUCK_GESTURE;
   if (w.spot.pose === 'order' && errandOut) {
-    // readyToOrder vid luckan: medhjälparen är ute, gästen vinkar in mot grillaren.
-    const len = CLIPS['guest.waveStand'].seconds.normal, k = t % G.waveEveryS;
-    if (k < len) { applyPose(r, sampleClip('guest.waveStand', k, 'normal', { yaw: 0 }).pose); return 'content'; }
+    // ORDER 326 (D11 (46), GESTURE_RULES.wantLadder) — vid luckan när medhjälparen är ute: gästen söker först
+    // grillarens blick in genom luckan (guest.seekEyeStand, rakt fram), räcker upp handen efter seekEyeS
+    // (guest.waveStand, readyToOrder) och vinkar stort från waitWaveS (guest.waveWaiterStand). Tiden räknas från att
+    // gästen ställt sig vid luckan.
+    const B = GESTURE_BALANCE;
+    if (atSpotS < B.seekEyeS) {
+      const len = CLIPS['guest.seekEyeStand'].seconds.normal;
+      applyPose(r, sampleClip('guest.seekEyeStand', atSpotS % len, 'normal', { yaw: 0, cold }).pose);
+      return 'waiting';
+    }
+    const [clip, mood]: [string, MoodId] = atSpotS < B.waitWaveS ? ['guest.waveStand', 'content'] : ['guest.waveWaiterStand', 'impatient'];
+    const len = CLIPS[clip].seconds.normal, k = t % G.waveEveryS;
+    if (k < len) { applyPose(r, sampleClip(clip, k, 'normal', { yaw: 0 }).pose); return mood; }
     return null;
   }
   if (w.spot.pose === 'queue' && soldOut) {

@@ -29,12 +29,13 @@ describe('ORDER 325 — ansiktena', () => {
     for (const d of [20.4, 24, 26.4, 28.1]) expect(faceLodOpacity(d)).toEqual({ near: 0, far: 1 });
   });
 
-  it('vid vagnen (12 m) och på 10 m tonar skalen över i varandra; under 9 m bara det nära, från 42 m inget', () => {
-    expect(faceLodOpacity(7)).toEqual({ near: 1, far: 0 });
-    const mid = faceLodOpacity(10.5);
+  // ORDER 326 C — vid vagnen (huvudena 9–12 m bort vid Z) syns det nära ansiktet helt, utan övertoning.
+  it('vid vagnen (9–12 m) och på 10 m bara det nära ansiktet; övertoningen 14–17 m; från 42 m inget', () => {
+    for (const d of [7, 8.9, 10, 11.8, 12, 13.9]) expect(faceLodOpacity(d)).toEqual({ near: 1, far: 0 });
+    const mid = faceLodOpacity(15.5);
     expect(mid.near).toBeGreaterThan(0);
     expect(mid.far).toBeGreaterThan(0);
-    expect(faceLodOpacity(13)).toEqual({ near: 0, far: 1 });
+    expect(faceLodOpacity(17.5)).toEqual({ near: 0, far: 1 });
     expect(faceLodOpacity(42)).toEqual({ near: 0, far: 0 });
   });
 });
@@ -76,7 +77,8 @@ describe('ORDER 325 — kartan', () => {
   it('pickGesture: situationen med högst prioritet går före stämningen, stående vid vagnen', () => {
     expect(pickGesture({ mood: 'content', posture: 'seated', active: ['talking', 'wrongWitnessed'], index: 0, sinceLastS: 99, cooldownS: 6 })).toBe('guest.armsCrossed');
     expect(pickGesture({ mood: 'content', posture: 'standing', active: ['halfGrip'], index: 0, sinceLastS: 99, cooldownS: 6 })).toBe('guest.shrugStand');
-    expect(pickGesture({ mood: 'waiting', posture: 'seated', active: [], index: 1, sinceLastS: 99, cooldownS: 6 })).toBe('guest.shrug');
+    // ORDER 326 — väntar: blicken, klockan, axelryckningen.
+    expect(pickGesture({ mood: 'waiting', posture: 'seated', active: [], index: 2, sinceLastS: 99, cooldownS: 6 })).toBe('guest.shrug');
   });
 });
 
@@ -84,11 +86,12 @@ describe('ORDER 325 — gesterna i vinbaren följer kartan', () => {
   const info = (state: 'seated' | 'dining', since: number, party = 2) => ({ state, stateSinceS: since, partyId: 'p1', partySize: party });
   const content = (MOOD_BALANCE.threshold.content + MOOD_BALANCE.threshold.delighted) / 2;
 
-  it('väntat waitWatchS utan att ha beställt: klockan; efter waitWaveS: vinkar', () => {
+  // ORDER 326 — väntan börjar nu med blicken (guest.seekEye, stegen i order326Blicken.test.ts).
+  it('väntat waitWatchS utan att ha beställt: söker blicken; efter waitWaveS: vinkar', () => {
     const g = new MoodGestures(1);
     g.sample(0, 'a', 'guest.seatedIdle', content, 0, 'chair', null, 1, info('seated', 0));
     const w = g.sample(0, 'a', 'guest.seatedIdle', content, GESTURE_BALANCE.waitWatchS, 'chair', null, 1, info('seated', GESTURE_BALANCE.waitWatchS));
-    expect(w?.id).toBe('guest.checkWatch');
+    expect(w?.id).toBe('guest.seekEye');
     expect(g.faceFor(0)).toBe('waiting');
     const h = new MoodGestures(1);
     h.sample(0, 'a', 'guest.seatedIdle', content, 0, 'chair', null, 1, info('seated', 0));

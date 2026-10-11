@@ -55,8 +55,8 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-// ORDER 306b — vb09 har den nya formen; den gamla ordningen prövas med vb10.
-const ID = 'vb10-berusad';
+// ORDER 326 — vinbarens situationer har alla den nya formen (306c); den gamla ordningen prövas med menyns mn01.
+const ID = 'mn01-veltliner';
 const TICK = { type: 'TICK', dt: 0.2 } as const;
 function tick(s: SimulationState, n: number): SimulationState {
   for (let i = 0; i < n; i++) s = reducer(s, TICK);

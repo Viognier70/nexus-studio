@@ -3130,6 +3130,32 @@ reg(def({
   root: function (u) { return [0, 0.32 * ramp(u, 0.36, 0.52), 0]; }
 }));
 
+// ----- tillägg 2026-10-10: söka personalens blick -----
+// Beslut 2026-10-10: gästerna lyfter inte blicken mot kameran. I stället finns en gest där gästen vill något och söker
+// blicken hos servitören eller baren (ctx.yaw mot den hen söker). Det är första steget innan handen kommer upp:
+// guest.seekEye → guest.waveStaff → guest.waveWaiter (GESTURE_RULES.wantLadder). Händerna rör sig inte alls, så att
+// gesten inte läses som en vinkning. Från 24 m syns rak rygg, ett huvud som är vänt bort från sällskapet och en haka som är uppe.
+reg(def({
+  id: 'guest.seekEye', group: 'guest', roles: ['guest'], loop: false, travel: false, base: 3.2, mood: 'waiting',
+  from: 'seated', to: 'seated', needs: 'chair', holds: {}, ends: {}, events: [],
+  next: ['guest.seatedIdle', 'guest.seekEye', 'guest.waveStaff', 'guest.waveWaiter', 'guest.checkWatch'],
+  pose: function (u, c) {
+    // Huvudet vänds först mot den hen söker (u 0,04–0,20), sedan rätas ryggen och hakan lyfts (från u 0,16), och blicken
+    // hålls kvar. Händerna ligger kvar där de var: handen kommer upp först i nästa steg (guest.waveStaff, wantLadder).
+    // Otålig (stressat tempo): två små ryck med hakan medan blicken hålls.
+    // Omtag 2026-10-11: den lyfta högra handen syntes före huvudvridningen och lästes som en halv vinkning.
+    const k = moodK(c), b = base(c, true);
+    const look = win(u, 0.04, 0.92, 0.16), up = win(u, 0.16, 0.88, 0.12);
+    const jerk = (c.stress ?? 0.3) > 0.7 ? 0.1 * (bell(u, 0.48, 0.05) + bell(u, 0.64, 0.05)) : 0;
+    return breathe(withYaw(P(b, {
+      lift: 0.016 * k * up,
+      torso: { pitch: (b.torso?.pitch ?? 0) - 0.09 * up },
+      head: { pitch: 0.04 - 0.3 * k * up - jerk }
+    }), (c.yaw ?? 0) * 0.3 * look, (c.yaw ?? 0) * 1.0 * look), c.t ?? 0);
+  }
+}));
+standing('guest.seekEye', 'guest.seekEyeStand', { next: ['staff.idle', 'guest.seekEyeStand', 'guest.waveStand', 'guest.waveWaiterStand', 'guest.walk'] });
+
 // ---------- uppspelning -----------------------------------------------
 
 export function clipSeconds(id: string, tempo: TempoId): number {

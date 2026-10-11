@@ -92,7 +92,8 @@ describe('ORDER 324b — ft06-stangningen', () => {
     const sv = step('sv');
     const en = step('en');
     expect(sv.a.label).toBe('Kyler ner dem i kylboxen och säljer dem i morgon.');
-    expect(en.a.label).toBe('Chills them in the cool box and sells them tomorrow.');
+    // ORDER 326 D — imperativ, som de andra svaren.
+    expect(en.a.label).toBe('Chill them in the cool box and sell them tomorrow.');
     expect(sv.a.explanation).toBe('Varmhållen mat som blir över ska kastas. Den har redan stått varm i timmar, och att kyla och värma den igen ökar risken.');
     expect(en.a.explanation).toBe('Hot-held food that is left over should be thrown away. It has already been held hot for hours, and cooling and reheating it adds to the risk.');
     expect(sv.d.explanation).toBe('Korven har stått varm i timmar. Den blir inte säker igen av att ligga i sin förpackning.');

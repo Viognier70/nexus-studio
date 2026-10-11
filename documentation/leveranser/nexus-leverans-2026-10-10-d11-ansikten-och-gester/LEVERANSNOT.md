@@ -1,6 +1,6 @@
 # D11: ansiktsuttryck och gester
 
-**Leverans** 2026-10-10 · **Till** Claude Code · **Från** Claude Design · **Beställning** `uploads/BRIEF_DESIGN_D11_ANSIKTEN_OCH_GESTER.md` (Anders 2026-10-09) · **Byggs in** i en senare order. ORDER 323 §6 (gångrörelse i byn, bilarnas körning) påverkas inte.
+**Leverans** 2026-10-10, tillägg samma dag (§7), omtag 2026-10-11 (§7) · **Till** Claude Code · **Från** Claude Design · **Beställning** `uploads/BRIEF_DESIGN_D11_ANSIKTEN_OCH_GESTER.md` (Anders 2026-10-09) · **Byggs in** i en senare order. ORDER 323 §6 (gångrörelse i byn, bilarnas körning) påverkas inte.
 
 Syftet är att spelaren ska kunna läsa gästerna (phronesis) utan symboler. Leveransen gäller vinbaren och foodtrucken. Kontrollbilderna finns i 1440 × 900 och 1280 × 720, och det står ingen text i bilderna. All text är nycklar `{ sv, en }`. Inga speltal: tider och sannolikheter är nycklar i `GESTURE_BALANCE` (balance.ts).
 
@@ -25,14 +25,14 @@ En stor del av briefen fanns sedan tidigare. D11 bygger på det och ändrar det 
 | Fil | Vad |
 |---|---|
 | `figureFace.ts` | **Ersätter D1:s.** Två skal (nära och långt) med samma fem uttryck i kantig form. API:t är detsamma: `attachFace`, `set`, `update` och `faceCanvas`. `update` ger nu `{ near, far, distM }`. |
-| `figureClips.ts` | Hela filen med avsnittet D11 sist: 23 nya klipp. |
+| `figureClips.ts` | Hela filen med avsnittet D11 sist: 25 nya klipp (23 och de två i tillägget). |
 | `d11Clips.ts` | Utdrag av avsnittet D11, så att det går att läsa för sig. Samma kod som i `figureClips.ts`. |
 | `figureRig.ts` | `PoseHead.roll`: huvudet på sned. Ändrat i `applyPose` och `blendPose`, men ingen ny nod. |
-| `gestureMap.ts` | **Ny.** Kartan: stämningens egna gester, 25 situationer, reglerna, `pickGesture()` och nycklarna i balance.ts. |
+| `gestureMap.ts` | **Ny.** Kartan: stämningens egna gester, 29 situationer, reglerna, `pickGesture()` och nycklarna i balance.ts. |
 | `d11Manus.js` | Tidslinjerna för prototypen (samma format som `stamningManus.js`) och vagnens och gatans platser (`TRUCK_SET`). |
-| `d11Strings.ts` | 167 nycklar. |
+| `d11Strings.ts` | 175 nycklar. |
 | `prototyp/D11 - Ansikten och gester.html` | Prototypen med sex skärmar. Symbolerna är av från början och kan slås på. Luppen visar huvudena i skärmens egna pixlar. |
-| `kontrollbilder/1440x900/`, `kontrollbilder/1280x720/` | 45 kontrollbilder per storlek. |
+| `kontrollbilder/1440x900/`, `kontrollbilder/1280x720/` | 47 kontrollbilder per storlek. |
 
 ## 1. Ansiktena på krogens nivå
 
@@ -117,7 +117,7 @@ Hunden i prototypen är en enkel modell med måtten 0,62 × 0,24 m och mankhöjd
 
 - **`MOOD_MAP`:** för varje stämning finns ansiktet, de sittande och de stående gesterna, och vad som läses från 24 m. Gesterna väljs i tur och ordning per gäst, inte slumpvis.
 - **`MOOD_STRENGTH`:** tempot per stämning. Glad, otålig och missnöjd har stressat tempo, så att de syns från 24 m.
-- **`SITUATIONS`:** 25 situationer med utlösare, klipp, stående variant, stämning och prioritet. Några exempel:
+- **`SITUATIONS`:** 29 situationer med utlösare, klipp, stående variant, stämning och prioritet. Några exempel:
   - Gästen tittar på klockan efter `{waitWatchS}` utan kontakt, och vinkar efter `{waitWaveS}` om personalen syns.
   - Första tuggan ger en nick.
   - En rätt under `{pushPlateBelow}` skjuts undan.
@@ -148,11 +148,36 @@ I bild 41–45 är hela rummet i en stämning åt gången, från spelets kamera 
 | 24–32 | Luckan, grillaren, kön (tre bilder), ståborden (tre bilder) och Nils som torkar |
 | 33–34 | Gatan från 24 m och från gatans nivå, 42 m |
 | 35–40 | Lugn, brådskande, med barn, med hund, stanna och titta, hälsa |
-| 41–45 | Kartan: glad, nöjd, väntar, otålig och missnöjd från 24 m, utan symboler |
+| 41–45 | Kartan: glad, nöjd, väntar, otålig och missnöjd från 24 m, utan symboler. 43 och 44 är tagna om, så att de visar blicken. |
+| 46 | Söka personalens blick i vinbaren, på 10 m (lounge A, mot Sara) |
+| 47 | Söka grillarens blick vid ståbord C, på 10 m |
+
+Bild 05 och 23 är också tagna om, med den nya gästen i bilden. Bild 05, 23, 43, 44, 46 och 47 är tagna om igen 2026-10-11, med händerna stilla.
+
+## 7. Tillägg samma dag: svaren på granskningen
+
+**Beslut 2026-10-10:**
+
+1. Regeln om 9 m ersätts av det förenklade ansiktet på avstånd (§1).
+2. Inga gäster lyfter blicken mot kameran (`GESTURE_RULES.noCameraGaze`). I stället finns en ny gest: att söka personalens blick.
+3. Code tar reda på kamerans verkliga avstånd vid Krogen (Z) och sätter gränserna i balance.ts.
+
+**Söka personalens blick** (`guest.seekEye`, och `guest.seekEyeStand` vid vagnen):
+
+- Huvudet vänds först mot servitören eller baren (`ctx.yaw`, hela vinkeln, u 0,04–0,20). Sedan rätas ryggen och hakan lyfts (0,3 rad, från u 0,16). Blicken hålls kvar i 3,2 s.
+- **Omtag 2026-10-11:** händerna ligger kvar där de var under hela gesten. Förut lyftes höger hand från bordet, och den syntes före huvudvridningen och lästes som en halv vinkning. Handen kommer upp först i nästa steg (`guest.waveStaff`), som i `wantLadder`. Bålen följer huvudet med 0,3 av vinkeln (förut 0,4), så att det är huvudet som vrids.
+- När gästen är otålig (stressat tempo) rycker hakan två gånger medan blicken hålls.
+- Från 24 m syns en rak rygg och ett huvud som är vänt bort från sällskapet.
+- Gesten hör till stämningarna väntar och otålig (`MOOD_MAP`), och till fyra nya situationer där gästen vill något:
+  - `wantsOrder`: vill beställa, men personalen tittar inte hitåt
+  - `wantsRefill`: vill ha mer i glaset
+  - `wantsBill`: vill betala
+  - `wantsHatch`: vid ståbordet, vill ha något från luckan
+- **Stegen** (`GESTURE_RULES.wantLadder`): blicken först, efter `{seekEyeS}` handen (`guest.waveStaff`), och efter `{waitWaveS}` den stora vinkningen (`guest.waveWaiter`). Får gästen blickkontakt stannar stegen. Blickkontakt betyder att personalen vänder sig mot bordet, lyssnar med lutat huvud eller tar ett steg mot bordet. `readyToOrder` är nu andra steget, efter blicken.
+- Blicken söks mot den närmaste i personalen som syns från platsen, annars mot baren (`seekEyeTarget`).
+
+**Ansiktets gränser:** `FACE_LOD_BALANCE` i `figureFace.ts` har sex nycklar som Code sätter i balance.ts. Så länge de är null gäller prototypens värden: nära under 9–12 m, långt 9–42 m. Det långa ansiktet ska vara helt synligt på krogens avstånd (`farFullFromM` under det och `farFadeFromM` över det).
 
 ## Öppet
 
-1. **D1:s regel ersätts:** ansiktena syns nu till 42 m, inte bara under 9 m. Det långa ansiktet ligger över hårfästet. Det märks inte från 12 m och längre bort, men är ett avsteg från riggen.
-2. **Ansikten mot kameran:** om fler ansikten ska synas från 24 m kan sittande gäster lyfta blicken 0,15 rad när kameran är längre bort än 12 m. Det är inte gjort. Ska det göras?
-3. **Talen:** nycklarna i `GESTURE_BALANCE` sätter Code i balance.ts.
-4. **Krogen (Z):** tolkat som krogens nivå, 24 m. Om Z är en zoomtangent till ett annat avstånd behöver `FACE_D11.far` justeras.
+1. **Talen:** nycklarna i `GESTURE_BALANCE` (nu med `seekEyeS`) och `FACE_LOD_BALANCE` sätter Code i balance.ts.

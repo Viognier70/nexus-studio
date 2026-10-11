@@ -1,5 +1,5 @@
 // figureFace.ts (D11) — ansiktena, kantiga och läsbara på krogens nivå. Leverans 2026-10-10, ersätter D1:s figureFace.ts.
-// D1 tände ansiktena först under 9 m. D11 (Anders 2026-10-09): ansiktena ska synas vid Krogen, 24 m, så att spelaren
+// D1 tände ansiktena först under 9 m; beslut 2026-10-10: den regeln ersätts av det förenklade ansiktet på avstånd. D11 (Anders 2026-10-09): ansiktena ska synas vid Krogen, 24 m, så att spelaren
 // läser gästerna utan symboler. Huvudet förstoras inte (beslut 2026-10-03). I stället finns två skal med samma
 // fem uttryck i samma kantiga form (raka streck, fyrkantiga ögon, inga rundade ändar):
 //   near  under 12 m: ögon, bryn och mun på D1:s plats, tunna streck.
@@ -22,7 +22,7 @@ export type FaceLod = 'near' | 'far';
 
 export const FACE_D11 = {
   ink: '#2a1c13',
-  /** Avstånd kamera → huvud i meter. */
+  /** Avstånd kamera → huvud i meter. Prototypens värden; balance.ts går före (FACE_LOD_BALANCE). */
   near: { fullUntilM: 9, goneAtM: 12 },
   far: { fromM: 9, fullFromM: 12, fadeFromM: 30, goneAtM: 42 },
   /** Ett nytt uttryck byts in samtidigt som gesten börjar. */
@@ -36,9 +36,18 @@ export const FACE_D11 = {
   canvas: { w: 160, h: 128 }
 };
 
+/** Beslut 2026-10-10: Code mäter kamerans verkliga avstånd vid Krogen (Z) och sätter gränserna i balance.ts.
+ *  null = prototypens värden i FACE_D11 gäller. far.fullFromM bör ligga under krogens avstånd och far.fadeFromM över det. */
+export const FACE_LOD_BALANCE = {
+  nearFullUntilM: null as number | null, nearGoneAtM: null as number | null,
+  farFromM: null as number | null, farFullFromM: null as number | null, farFadeFromM: null as number | null, farGoneAtM: null as number | null
+};
+
 /** Hur synligt varje skal är på ett visst avstånd. */
 export function faceLodOpacity(distM: number): { near: number; far: number } {
-  const N = FACE_D11.near, F = FACE_D11.far;
+  const B = FACE_LOD_BALANCE;
+  const N = { fullUntilM: B.nearFullUntilM ?? FACE_D11.near.fullUntilM, goneAtM: B.nearGoneAtM ?? FACE_D11.near.goneAtM };
+  const F = { fromM: B.farFromM ?? FACE_D11.far.fromM, fullFromM: B.farFullFromM ?? FACE_D11.far.fullFromM, fadeFromM: B.farFadeFromM ?? FACE_D11.far.fadeFromM, goneAtM: B.farGoneAtM ?? FACE_D11.far.goneAtM };
   const k = (a: number, b: number, d: number) => Math.max(0, Math.min(1, (d - a) / (b - a)));
   const near = 1 - k(N.fullUntilM, N.goneAtM, distM);
   const far = k(F.fromM, F.fullFromM, distM) * (1 - k(F.fadeFromM, F.goneAtM, distM));

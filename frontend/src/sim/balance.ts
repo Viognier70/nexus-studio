@@ -708,10 +708,13 @@ export const MOOD_BALANCE = {
 // hårfästet) tonas in från far.fromM, är helt från far.fullFromM och tonas ut mellan far.fadeFromM och
 // far.goneAtM. Avstånden vid Krogen (Z) i vinbaren, bistron och vid vagnen är mätta i spelet
 // (frontend/reports/order325/kamera.json, scripts/order325-kamera.mjs) och står i ORDER_325_RAPPORT.md.
+// ORDER 326 C (Anders 2026-10-11: "Vagnen: visa det nära ansiktet helt vid Z (12 m), utan övertoning") — det nära
+// skalet helt till 14 m (huvudena vid vagnen 9–12 m från kameran), övertoningen 14–17 m; vinbarens och bistrons
+// huvuden vid Z (20–28 m) visar det långa helt som förut.
 export const FACE_LOD = {
   section: 'Servicen > Gästerna',
-  near: { fullUntilM: 9, goneAtM: 12 },
-  far: { fromM: 9, fullFromM: 12, fadeFromM: 30, goneAtM: 42 },
+  near: { fullUntilM: 14, goneAtM: 17 },
+  far: { fromM: 14, fullFromM: 17, fadeFromM: 30, goneAtM: 42 },
   swapMs: 120
 } as const;
 
@@ -722,6 +725,10 @@ export const FACE_LOD = {
 // samma skala (MOOD_BALANCE.threshold, otålig 0,4). Gatans andelar och avstånd gäller de som går i byn.
 export const GESTURE_BALANCE = {
   section: 'Servicen > Gästerna',
+  // ORDER 326 (D11 (46), GESTURE_RULES.wantLadder) — gästen som vill beställa söker först personalens blick
+  // (guest.seekEye) från waitWatchS, räcker upp handen (guest.waveStaff) efter seekEyeS till och vinkar stort
+  // (guest.waveWaiter) från waitWaveS. Sekunder i spelets tid.
+  seekEyeS: 12,
   waitWatchS: 20,
   watchEveryS: 20,
   waitWaveS: 40,

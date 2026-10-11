@@ -9,7 +9,7 @@ import { makeNewGameState } from '../../strategic/simulation/model';
 import { changeClass } from '../economy';
 import { firstDayOfWeek, calendarFor } from '../calendar';
 import { DOUBLE_OR_NOTHING, INCIDENTS } from '../balance';
-import { incidentBankFor, incidentById, optionQuality, validateIncidentBank } from '../incidentBank';
+import { incidentBankFor, incidentById, optionGrip, optionQuality, validateIncidentBank } from '../incidentBank';
 import { arcFor, clockMinutes, formatIncidentText, incidentsTonight, rankedStepOption } from '../incidents';
 import vinbarMeta from '../../content/incidents/vinbar.meta.json';
 import vinbarText from '../../content/incidents/vinbar.text.sv.draft.json';
@@ -83,8 +83,11 @@ describe('ORDER 270 — händelsebanken som raketer', () => {
   // ORDER 279 — och nio raketer om kvällens meny och dryckeslista.
   // ORDER 293 — Designs fem händelser (leverans 3), tillsynen i fyra varianter: 39.
   // ORDER 306b — och karaffen (vb40): 40.
-  it('40 raketer för vinbaren (30 utkast, servetterna och isen, Designs händelser och karaffen) och 9 om menyn, som data, utan fel', () => {
-    expect(bank).toHaveLength(40 + 9);
+  // ORDER 326 — de femton ⚖-situationerna i 306c (vb06, vb10, vb14, vb15, vb21, vb25, vb27, vb28, vb29, vb34, vb35 a–d
+  // och vb36) är dolda tills de är granskade: 25 i spelet.
+  it('40 raketer för vinbaren (30 utkast, servetterna och isen, Designs händelser och karaffen) och 9 om menyn, som data, utan fel; ⚖ dolda', () => {
+    expect((vinbarMeta as { incidents: unknown[] }).incidents).toHaveLength(40);
+    expect(bank).toHaveLength(40 - 15 + 9);
     expect(validateIncidentBank(vinbarMeta as never, vinbarText as never)).toEqual([]);
     expect(validateIncidentBank(menuMeta as never, menuText as never)).toEqual([]);
   });
@@ -131,7 +134,9 @@ describe('ORDER 270 — händelsebanken som raketer', () => {
   });
 
   it('scenarierna vid dörren har flyttat in som händelser', () => {
-    for (const id of ['vb08-sallskap-pa-fem', 'vb13-delegationen', 'vb15-fisken']) expect(incidentById('vinbar', id)).toBeDefined();
+    // ORDER 326 — vb15 är ⚖ och dold tills den är granskad.
+    for (const id of ['vb08-sallskap-pa-fem', 'vb13-delegationen']) expect(incidentById('vinbar', id)).toBeDefined();
+    expect(incidentById('vinbar', 'vb15-fisken')).toBeUndefined();
   });
 
   it('platshållarna fylls ur kvällens sammanhang', () => {
@@ -177,8 +182,11 @@ describe('ORDER 270 — kvällens båge', () => {
 });
 
 describe('ORDER 270 — en raket', () => {
-  // ORDER 306b — vb09 har den nya formen; den gamla prövas med vb10 (bästa b, c, a).
-  const OLD = 'vb10-berusad';
+  // ORDER 326 — vinbarens alla situationer har den nya formen (306c); stegen prövas med vb22 (analys,
+  // upplevelse, handling). Svaren hämtas efter kvaliteten.
+  const OLD = 'vb22-recensenten';
+  const best = (k: number) => incidentById('vinbar', OLD)!.steps[k].options.find((o) => o.quality === 'best')!.id;
+  const wrong = (k: number) => incidentById('vinbar', OLD)!.steps[k].options.find((o) => o.quality === 'wrong')!.id;
   // Vision Owner 2026-09-29 (efter rapporterna om felen och kvällens resultat):
   // episteme 20 s, techne 20 s och phronesis 30 s. Byggs med ORDER 287a.
   it('tiderna står i balance.ts: 20, 20 och 30 s', () => {
@@ -197,24 +205,24 @@ describe('ORDER 270 — en raket', () => {
     // Brons i Stensöta och Kalastorget, ingen medalj i Måltidsbiblioteket.
     const s0 = openNow(wineBarService(), OLD);
     expect(s0.incidents.active!.secondsTotal).toBe(INCIDENTS.stepSeconds.episteme);
-    const s1 = ans(s0, 'b');
+    const s1 = ans(s0, best(0));
     expect(s1.incidents.active).toMatchObject({ id: OLD, step: 1 });
     // ORDER 306b A3 — tiden följer stegets plats: 20, 30 och 30 s.
     expect(s1.incidents.active!.secondsTotal).toBe(INCIDENTS.stepSecondsByIndex[1] + INCIDENTS.extraSecondsPerMedalStep);
     // ORDER 305b — krediten ligger i potten tills den tas.
     expect(s1.incidents.active!.pot?.credits.episteme).toBe(INCIDENTS.bestAnswerCredit);
     expect(s1.knowledgeCredits.episteme).toBe(s0.knowledgeCredits.episteme);
-    const s2 = ans(s1, 'c');
+    const s2 = ans(s1, best(1));
     expect(s2.incidents.active).toMatchObject({ id: OLD, step: 2 });
     expect(s2.incidents.active!.secondsTotal).toBe(INCIDENTS.stepSecondsByIndex[2] + INCIDENTS.extraSecondsPerMedalStep);
-    // ORDER 306b A2 — potten 1 → 3 → 7, stegets tillskott på stegets axel (vinbarens gamla ordning
-    // episteme, techne, phronesis: 1, +2, +4).
-    expect(s2.incidents.active!.pot?.credits.techne).toBe(2);
-    const done = ans(s2, 'a');
+    // ORDER 306b A2 — potten 1 → 3 → 7, stegets tillskott på stegets axel (ordningen episteme, phronesis,
+    // techne: 1, +2, +4).
+    expect(s2.incidents.active!.pot?.credits.phronesis).toBe(2);
+    const done = ans(s2, best(2));
     expect(done.incidents.active).toBeNull();
     expect(done.knowledgeCredits.episteme - s0.knowledgeCredits.episteme).toBe(1);
-    expect(done.knowledgeCredits.techne - s0.knowledgeCredits.techne).toBe(2);
-    expect(done.knowledgeCredits.phronesis - s0.knowledgeCredits.phronesis).toBe(4);
+    expect(done.knowledgeCredits.phronesis - s0.knowledgeCredits.phronesis).toBe(2);
+    expect(done.knowledgeCredits.techne - s0.knowledgeCredits.techne).toBe(4);
     void DOUBLE_OR_NOTHING;
     expect(done.incidents.lastOutcome?.text).toBe(incidentById('vinbar', OLD)!.text.success.outcome);
     expect(done.incidents.log.at(-1)).toMatchObject({ id: OLD, step: null, quality: 'best' });
@@ -225,17 +233,16 @@ describe('ORDER 270 — en raket', () => {
   // nästa steg öppnas med ledtråden "(oklart)". Fel i sista steget avslutar med personalen.
   it('fel svar i steg 1: stegets följd, potten nollas, och situationen fortsätter till steg 2', () => {
     const s = openNow(wineBarService(), OLD);
-    const after = answerAndWait(s, 'c');
+    const after = answerAndWait(s, wrong(0));
     expect(after.incidents.active).toMatchObject({ id: OLD, step: 1, pot: null, choosing: false, unclear: [0] });
     const inc = incidentById('vinbar', OLD)!;
-    expect(after.eventStream.at(-1)?.text).toContain((inc.steps[0].text.options.c.fail ?? inc.steps[0].text.fail).outcome.slice(0, 20));
+    expect(after.eventStream.at(-1)?.text).toContain(inc.steps[0].text.fail.outcome.slice(0, 20));
     expect(after.knowledgeCredits.episteme).toBe(s.knowledgeCredits.episteme);
     // Fel i sista steget: stegets följd och personalen tar över, situationen är slut.
-    const end = answerAndWait(goOn(answerAndWait(after, 'c')), 'b');
+    const end = answerAndWait(goOn(answerAndWait(after, best(1))), wrong(2));
     expect(end.incidents.active).toBeNull();
-    expect(end.incidents.log.at(-1)).toMatchObject({ id: OLD, step: 2, optionId: 'b', quality: 'wrong', missed: [{ step: 0, optionId: 'c' }] });
-    expect(end.incidents.lastOutcome?.text).toContain('The staff take over');
-    // vb10:s följder har kassa åt båda hållen (baren säljer); kassans riktning prövas inte här.
+    expect(end.incidents.log.at(-1)).toMatchObject({ id: OLD, step: 2, optionId: wrong(2), quality: 'wrong', missed: [{ step: 0, optionId: wrong(0) }] });
+    expect(end.incidents.lastOutcome?.text).toContain(inc.text.staffTexts!.fail!.slice(0, 20));
   });
 
   it('personalen tar över färre steg ju längre raketen kom', () => {
@@ -247,8 +254,8 @@ describe('ORDER 270 — en raket', () => {
 
   it('utan svar på ett steg beslutar personalen själv: sämre utfall och −1 kredit på stegets axel', () => {
     let s = openNow(wineBarService(), OLD);
-    s = goOn(ans(s, 'b'));
-    s = { ...s, knowledgeCredits: { ...s.knowledgeCredits, techne: 3 }, knowledgeTracks: { ...s.knowledgeTracks, techne: { ...s.knowledgeTracks.techne, untagged: 3 } } };
+    s = goOn(ans(s, best(0)));
+    s = { ...s, knowledgeCredits: { ...s.knowledgeCredits, phronesis: 3 }, knowledgeTracks: { ...s.knowledgeTracks, phronesis: { ...s.knowledgeTracks.phronesis, untagged: 3 } } };
     // ORDER 314: under situationen går spelet i 1×, så en tick är 0,2 s i verkligheten.
     // ORDER 271: först visas det förra svaret i revealSeconds.
     const ticks = Math.ceil((s.incidents.active!.secondsTotal + (s.incidents.active!.revealLeft ?? 0)) / 0.2);
@@ -257,12 +264,13 @@ describe('ORDER 270 — en raket', () => {
     const after = tick(before, 3);
     expect(after.incidents.active?.id).not.toBe(OLD);
     expect(after.incidents.log.find((r) => r.id === OLD)).toMatchObject({ step: 1, optionId: null, quality: 'staff' });
-    expect(tracks(after, 'techne')).toBe(tracks(before, 'techne') - INCIDENTS.timeoutCreditPenalty);
+    expect(tracks(after, 'phronesis')).toBe(tracks(before, 'phronesis') - INCIDENTS.timeoutCreditPenalty);
   });
 
   it('medaljer i stegets paviljong ger mer tid på just det steget och stryker ett fel alternativ', () => {
-    const plain = answerAndWait(openNow(wineBarService(0, { stensota: 'brons' }), OLD), 'b');
-    const silver = answerAndWait(openNow(wineBarService(0, { stensota: 'silver' }), OLD), 'b');
+    // Steg 2 är upplevelsen (phronesis): Kalastorget.
+    const plain = answerAndWait(openNow(wineBarService(0, { kalastorget: 'brons' }), OLD), best(0));
+    const silver = answerAndWait(openNow(wineBarService(0, { kalastorget: 'silver' }), OLD), best(0));
     expect(plain.incidents.active!.step).toBe(1);
     expect(plain.incidents.active!.struck).toEqual([]);
     expect(silver.incidents.active!.secondsTotal).toBe(plain.incidents.active!.secondsTotal + INCIDENTS.extraSecondsPerMedalStep);
@@ -272,28 +280,32 @@ describe('ORDER 270 — en raket', () => {
     // Ett struket alternativ går inte att välja.
     expect(reducer(silver, { type: 'ANSWER_INCIDENT', optionId: struck })).toBe(silver);
     // Episteme-steget har ingen medalj i Måltidsbiblioteket: ingen extra tid.
-    const lib = openNow(wineBarService(0, { stensota: 'silver' }), OLD);
+    const lib = openNow(wineBarService(0, { kalastorget: 'silver' }), OLD);
     expect(lib.incidents.active!.secondsTotal).toBe(INCIDENTS.stepSeconds.episteme);
     const libBronze = openNow(wineBarService(0, { maltidbiblioteket: 'brons' }), OLD);
     expect(libBronze.incidents.active!.secondsTotal).toBe(INCIDENTS.stepSeconds.episteme + INCIDENTS.extraSecondsPerMedalStep);
   });
 
   it('ett fel kan utlösa en senare raket samma kväll, och en klarad raket förhindra den', () => {
-    const s = openNow(wineBarService(), 'vb03-notallergi');
-    const passed = ans(s, 'a');
-    // ORDER 306b — kedjan ligger på det nya fel-svaret i steg 3 (d).
-    const bad = ans(ans(passed, 'c'), 'd');
-    expect(bad.incidents.active).toBeNull();
-    expect(bad.incidents.queued).toContain('vb27-allergireaktion');
-    let later = bad;
-    for (let i = 0; i < 2000 && later.incidents.active?.id !== 'vb27-allergireaktion' && later.day.period === 'dinner'; i++) {
+    // ORDER 326 — vb27 är ⚖ och dold: kedjan från vb03 köas inte. Kedjan prövas med vb01 → vb30.
+    const k = openNow(wineBarService(), 'vb01-korken');
+    const kBad = ans(ans(ans(k, 'c'), 'b'), 'd');
+    expect(kBad.incidents.active).toBeNull();
+    expect(kBad.incidents.queued).toContain('vb30-korkgasten');
+    let later = kBad;
+    for (let i = 0; i < 2000 && later.incidents.active?.id !== 'vb30-korkgasten' && later.day.period === 'dinner'; i++) {
       if (later.incidents.active) later = answer(later);
       later = reducer(later, TICK);
     }
-    expect(later.incidents.active?.id).toBe('vb27-allergireaktion');
+    expect(later.incidents.active?.id).toBe('vb30-korkgasten');
     expect(later.incidents.active?.chained).toBe(true);
     // Samma bord som valet gällde.
-    expect(later.incidents.active?.context.table).toBe(s.incidents.active!.context.table);
+    expect(later.incidents.active?.context.table).toBe(k.incidents.active!.context.table);
+
+    const s = openNow(wineBarService(), 'vb03-notallergi');
+    const passed = ans(s, 'a');
+    const bad = ans(ans(passed, 'c'), 'd');
+    expect(bad.incidents.queued).not.toContain('vb27-allergireaktion');
 
     let good = s;
     for (const id of ['a', 'c', 'a']) good = ans(good, id);
@@ -315,9 +327,12 @@ describe('ORDER 270 — en raket', () => {
 
 describe('ORDER 270 — kvällens lärdom', () => {
   it('förklarar steget där raketen föll', () => {
-    // ORDER 306b — vb12 har den nya formen; lärdomen prövas med vb10.
-    let s = openNow(wineBarService(), 'vb10-berusad');
-    s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: 'a' });
+    // ORDER 326 — lärdomen prövas med vb22 (fel i steg 1).
+    const id = 'vb22-recensenten';
+    const wrong0 = incidentById('vinbar', id)!.steps[0].options.find((o) => o.quality === 'wrong')!.id;
+    const best0 = incidentById('vinbar', id)!.steps[0].options.find((o) => o.quality === 'best')!.id;
+    let s = openNow(wineBarService(), id);
+    s = reducer(s, { type: 'ANSWER_INCIDENT', optionId: wrong0 });
     for (let i = 0; i < 20000 && s.day.period === 'dinner'; i++) {
       if (s.incidents.active) s = answer(s);
       s = reducer(s, TICK);
@@ -325,11 +340,11 @@ describe('ORDER 270 — kvällens lärdom', () => {
     expect(s.day.period).toBe('evening');
     const lesson = s.incidents.lesson!;
     // ORDER 306b A1 — situationen fortsatte och klarades, och lärdomen förklarar felet på vägen.
-    expect(lesson.map((l) => l.incidentId)).toEqual(['vb10-berusad']);
+    expect(lesson.map((l) => l.incidentId)).toEqual([id]);
     expect(lesson[0].stepAxis).toBe('episteme');
-    expect(lesson[0].question).toBe(incidentById('vinbar', 'vb10-berusad')!.steps[0].text.question);
-    expect(lesson[0].chosen).toContain('A glass is fine');
-    expect(lesson[0].better).toContain(incidentById('vinbar', 'vb10-berusad')!.steps[0].text.options.b.label.slice(0, 12));
+    expect(lesson[0].question).toBe(incidentById('vinbar', id)!.steps[0].text.question);
+    expect(lesson[0].chosen).toContain(incidentById('vinbar', id)!.steps[0].text.options[wrong0].label.slice(0, 12));
+    expect(lesson[0].better).toContain(incidentById('vinbar', id)!.steps[0].text.options[best0].label.slice(0, 12));
     expect(s.incidents.lessonEvenings).toBe(1);
     const next = tick(reducer(s, { type: 'END_EVENING' }), 5);
     expect(next.day.period).toBe('morning');
@@ -403,11 +418,16 @@ describe('ORDER 270 — tillägg efter provspel 2026-09-27', () => {
   it('rätt svar beror på kvällens läge: isen efter åtta, servetterna före', () => {
     const inc = incidentById('vinbar', 'vb31-servetter-och-isen')!;
     const step = inc.steps[2];
-    const q = (sit: string, id: string) => optionQuality(step.options.find((o) => o.id === id)!, sit);
-    expect(q('efter-middag', 'd')).toBe('best');
-    expect(q('efter-middag', 'b')).toBe('wrong');
-    expect(q('middag', 'b')).toBe('best');
-    expect(q('middag', 'd')).toBe('wrong');
+    // ORDER 326 (306c gripByVariant): servetterna först är helt grepp vid middag och halvt efter, isen tvärtom.
+    const label = (id: string) => incidentById('vinbar', 'vb31-servetter-och-isen')!.steps[2].text.options[id].label;
+    const by = (start: string) => step.options.find((o) => label(o.id).startsWith(start))!;
+    const q = (sit: string, o: (typeof step.options)[number]) => optionQuality(o, sit);
+    const napkins = by('Fold napkins'), ice = by('Fetch ice');
+    expect(q('efter-middag', ice)).toBe('best');
+    expect(q('efter-middag', napkins)).toBe('ok');
+    expect(q('middag', napkins)).toBe('best');
+    expect(q('middag', ice)).toBe('ok');
+    expect(optionGrip(ice, 'middag')).toBe('analysis');
     // I spelet: klockan avgör läget.
     let s = wineBarService();
     s = tick(s, 700);
@@ -574,11 +594,13 @@ describe('ORDER 271 — svaret i stunden och vem som tar över', () => {
   it('vid fel tar den ordinarie personalen i rollen över en stund', async () => {
     const { takeoverActive } = await import('../incidents');
     // ORDER 306b A1 — personalen tar över när situationen faller i sista steget.
-    // ORDER 306b — vb09 har den nya formen; den gamla prövas med vb10 (bästa b, c, a).
-    const s = openNow(wineBarService(), 'vb10-berusad');
-    const after = answerAndWait(goOn(answerAndWait(goOn(answerAndWait(s, 'b')), 'c')), 'b');
+    // ORDER 326 — prövas med vb22 (alla vinbarens situationer har den nya formen).
+    const inc = incidentById('vinbar', 'vb22-recensenten')!;
+    const q = (k: number, x: string) => inc.steps[k].options.find((o) => o.quality === x)!.id;
+    const s = openNow(wineBarService(), inc.id);
+    const after = answerAndWait(goOn(answerAndWait(goOn(answerAndWait(s, q(0, 'best'))), q(1, 'best'))), q(2, 'wrong'));
     const o = after.incidents.lastOutcome!;
-    expect(o.reveal).toMatchObject({ step: 2, optionId: 'b', correctId: 'a', cleared: false });
+    expect(o.reveal).toMatchObject({ step: 2, optionId: q(2, 'wrong'), correctId: q(2, 'best'), cleared: false });
     expect(o.takeover?.role).toBeDefined();
     expect(takeoverActive(after)).not.toBeNull();
     expect(takeoverActive(tick(after, Math.ceil(INCIDENTS.takeoverSimSeconds / 0.2) + 2))).toBeNull();
