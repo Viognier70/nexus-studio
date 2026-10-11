@@ -1,0 +1,18 @@
+// ORDER 328 F — mätningen av fikat i foodtrucken (reports/order328/fika.json). Kördes som src/__probe/fika.test.ts i
+// tillfälliga worktrees på 0ba2c48d, en gång som den är och en gång med raden 'if (!place || !dl.places.includes(place)) return false;'
+// i sim/fika.ts eligibleDilemmas bortkopplad. Sparad här som text; den hör till den gamla committen och körs inte i sviten.
+import { it } from 'vitest';
+import { writeFileSync } from 'fs';
+import { playDay, startInFoodtruck } from '../strategic/testHarness/weekHarness';
+it('fika i foodtrucken', () => {
+  const rows: unknown[] = [];
+  for (let seed = 1; seed <= 40; seed++) {
+    let s = startInFoodtruck(seed);
+    const start = s.day.dayNumber;
+    for (let d = 0; d < 21 && s.economy.businessClass === 'foodtruck'; d++) s = playDay(s, { ladder: 'never' }).state;
+    const log = (s.fika?.log ?? []) as Array<{ day: number; dilemmaId: string; grade?: string | null }>;
+    const ws = s.staff.map((m) => m.wellbeing ?? null);
+    rows.push({ seed, days: s.day.dayNumber - start, fikas: log.length, dilemmas: log.map((e) => e.dilemmaId), wellbeingEnd: ws, reputation: s.reputation });
+  }
+  writeFileSync('/private/tmp/claude-501/-Users-acf-dev-nexus-studio/cb32475c-67bb-427e-a869-262f6f4ac804/scratchpad/fika-med.json', JSON.stringify(rows));
+}, 3600000);

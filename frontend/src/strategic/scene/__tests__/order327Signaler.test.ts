@@ -1,7 +1,8 @@
 // ORDER 327 (Anders 2026-10-11) — A. halvt grepp bara när gästen och maten är säkra (vb14, vb21; vb06 oförändrad);
 // B. signalerna för stegen blick → hand → vinkning (wantSignals.ts): mer i glaset, notan, något från luckan, och
 // blickkontakten. Mätningen i en kväll i vinbaren med spelets rum och regissör, matade med simuleringen tick för
-// tick som i WineBarFigures.tsx, skriver reports/order327/signaler.json (WRITE_REPORTS=1).
+// tick som i WineBarFigures.tsx, skriver reports/order327/signaler.json (WRITE_REPORTS=1; REPORT_DIR=order328 skriver dit).
+// ORDER 328 C — en nick per steg, högst en omstart, Y = 25 s; mätningen räknar nickarna per sällskap.
 
 import { mkdirSync, writeFileSync } from 'fs';
 import { dirname, resolve } from 'path';
@@ -63,7 +64,7 @@ describe('ORDER 327 A — halvt grepp bara när gästen och maten är säkra', (
 });
 
 describe('ORDER 327 B — stegen och blickkontakten (wantSignals.ts)', () => {
-  const track = (kind: WantKind, since: number) => ({ kind, since, ackAt: null, ackBy: null });
+  const track = (kind: WantKind, since: number) => ({ kind, since, ackAt: null, ackBy: null, nodded: [], restarts: 0 });
 
   it('stegen från att viljan började: blicken, handen efter seekEyeS, vinkningen från waitWaveS − waitWatchS', () => {
     const w = track('refill', 100);
@@ -95,10 +96,21 @@ describe('ORDER 327 B — stegen och blickkontakten (wantSignals.ts)', () => {
     expect([w.ackAt, w.ackBy, wantStep(w, 14), wantStep(w, 14 + NOD_S + 0.01)]).toEqual([14, 'server', 'nod', null]);
     w = stepWant(w, { kind: 'order', since: 10 }, 14 + B.eyeContactComeS, null)!;
     expect(w.ackAt).toBe(14);
-    w = stepWant(w, { kind: 'order', since: 10 }, 14 + B.eyeContactComeS + 0.1, null)!;
-    expect([w.ackAt, w.since, wantStep(w, w.since)]).toEqual([null, 14 + B.eyeContactComeS + 0.1, 'eye']);
+    const r1 = 14 + B.eyeContactComeS + 0.1;
+    w = stepWant(w, { kind: 'order', since: 10 }, r1, null)!;
+    expect([w.ackAt, w.since, wantStep(w, w.since), w.restarts]).toEqual([null, r1, 'eye', 1]);
+    // ORDER 328 C — en nick per steg: i blicken har gästen redan nickat, så stegen går vidare till handen.
+    w = stepWant(w, { kind: 'order', since: 10 }, r1 + 1, 'server2')!;
+    expect(w.ackAt).toBeNull();
+    const hand = r1 + B.seekEyeS + 0.1;
+    w = stepWant(w, { kind: 'order', since: 10 }, hand, 'server2')!;
+    expect([w.ackAt, w.nodded]).toEqual([hand, ['eye', 'hand']]);
+    // Högst en omstart: efter Y står stegen stilla tills personalen är framme.
+    w = stepWant(w, { kind: 'order', since: 10 }, hand + B.eyeContactComeS + 5, null)!;
+    expect([w.ackAt, w.restarts, wantStep(w, hand + B.eyeContactComeS + 5)]).toEqual([hand, 1, null]);
+    expect(B.eyeContactComeS).toBe(25);
     // Personalen är framme: viljan är borta.
-    expect(stepWant(w, null, 40, null)).toBeNull();
+    expect(stepWant(w, null, 90, null)).toBeNull();
   });
 
   it('gesterna: blicken efter viljan, nicken vid blickkontakt (guest.nodApprove), och stegen om från blicken', () => {
@@ -140,7 +152,7 @@ function evening(seed: number) {
   let ladder326 = 0;
   const since = new Map<string, [string, number]>();
   // Per sällskap och vilja: stegen som nåddes, blickkontakten och om stegen började om.
-  const seen = new Map<string, { kind: WantKind; steps: Set<string>; acks: number; restarts: number; from: number; to: number; lastSince: number }>();
+  const seen = new Map<string, { kind: WantKind; party: string; steps: Set<string>; acks: number; restarts: number; from: number; to: number; lastSince: number; whileDining: boolean }>();
   for (let i = 0; i < 40000 && s.day.period !== 'evening' && s.day.period !== 'morning'; i++) {
     const a = s.incidents.active;
     if (a?.choosing) s = reducer(s, { type: 'INCIDENT_GO' });
@@ -156,7 +168,8 @@ function evening(seed: number) {
       if (!w) continue;
       const key = `${g.partyId ?? g.id}|${w.kind}`;
       let r = seen.get(key);
-      if (!r) { r = { kind: w.kind, steps: new Set(), acks: 0, restarts: 0, from: s.simTime, to: s.simTime, lastSince: w.since }; seen.set(key, r); }
+      if (!r) { r = { kind: w.kind, party: g.partyId ?? g.id, steps: new Set(), acks: 0, restarts: 0, from: s.simTime, to: s.simTime, lastSince: w.since, whileDining: false }; seen.set(key, r); }
+      if (w.kind === 'bill' && g.state === 'dining') r.whileDining = true;
       if (w.since !== r.lastSince) { r.restarts++; r.lastSince = w.since; }
       if (w.step) { if (w.step === 'nod' && !r.steps.has(`nod@${w.since}`)) { r.acks++; r.steps.add(`nod@${w.since}`); } r.steps.add(w.step); }
       r.to = s.simTime;
@@ -186,7 +199,12 @@ describe('ORDER 327 B — mätningen: en kväll i vinbaren med spelets rum och r
           wantSeconds: q(r.map((x) => x.to - x.from))
         };
       };
-      return { seed, simSeatedSeconds: q(seatedS), ladder326Frames: ladder326, order: stat('order'), refill: stat('refill'), bill: stat('bill') };
+      // ORDER 328 C — nickarna per sällskap (alla viljor), och notan medan gästen ännu äter (tallriken undan, A).
+      const perParty = new Map<string, number>();
+      for (const r of rows) perParty.set(r.party, (perParty.get(r.party) ?? 0) + r.acks);
+      const nods = [...perParty.values()];
+      const nodsPerParty = { parties: nods.length, mean: +(nods.reduce((a, b) => a + b, 0) / Math.max(1, nods.length)).toFixed(2), max: Math.max(0, ...nods), histogram: nods.reduce<Record<string, number>>((h, n) => { h[n] = (h[n] ?? 0) + 1; return h; }, {}) };
+      return { seed, simSeatedSeconds: q(seatedS), ladder326Frames: ladder326, order: stat('order'), refill: stat('refill'), bill: { ...stat('bill'), whileDining: by('bill').filter((x) => x.whileDining).length }, nodsPerParty };
     });
     for (const o of out) {
       expect(o.simSeatedSeconds.max!).toBeLessThan(B.waitWatchS);
@@ -194,6 +212,9 @@ describe('ORDER 327 B — mätningen: en kväll i vinbaren med spelets rum och r
       expect(o.order.parties).toBeGreaterThan(0);
       expect(o.refill.parties).toBeGreaterThan(0);
       expect(o.bill.parties).toBeGreaterThan(0);
+      // ORDER 328 C — högst en omstart per sällskap och vilja.
+      expect(o.order.restarts).toBeLessThanOrEqual(o.order.parties);
+      expect(o.refill.restarts).toBeLessThanOrEqual(o.refill.parties);
     }
     expect(out.some((o) => o.refill.reachedHand > 0 || o.refill.eyeContacts > 0)).toBe(true);
     const truck = {
@@ -202,11 +223,11 @@ describe('ORDER 327 B — mätningen: en kväll i vinbaren med spelets rum och r
       cheapestSek: TRUCK_CHEAPEST_SEK, billSek: FOODTRUCK.billSek, walletSek: GUESTS.walletSek
     };
     if (process.env.WRITE_REPORTS) {
-      const dir = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports/order327');
+      const dir = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports', process.env.REPORT_DIR ?? 'order327');
       mkdirSync(dir, { recursive: true });
       writeFileSync(resolve(dir, 'signaler.json'), JSON.stringify({
-        definition: 'En kväll i vinbaren (vecka 2, brons i alla paviljonger, bästa svaret) per frö: spelets rum (createRoom vinbaren) och regissör (createRoomDirector), matade med simuleringens gäster var 0,2 s som i WineBarFigures.tsx. simSeatedSeconds = tiden i Guest.state seated; ladder326Frames = ticks där ORDER 326:s villkor (seated i minst waitWatchS) gällde; per vilja: sällskap, steg som nåddes, blickkontakter (nicken), omstarter och tiden viljan stod (s). truck: TRUCK_SEATING.eatSimSeconds mot ätordningen (PlayerTruckCrew eatTotalSFor).',
-        balance: { seekEyeS: B.seekEyeS, waitWatchS: B.waitWatchS, waitWaveS: B.waitWaveS, glassEmptyS: B.glassEmptyS, billAfterEmptyS: B.billAfterEmptyS, eyeContactM: B.eyeContactM, eyeContactConeRad: B.eyeContactConeRad, eyeContactComeS: B.eyeContactComeS },
+        definition: 'En kväll i vinbaren (vecka 2, brons i alla paviljonger, bästa svaret) per frö: spelets rum (createRoom vinbaren) och regissör (createRoomDirector), matade med simuleringens gäster var 0,2 s som i WineBarFigures.tsx. simSeatedSeconds = tiden i Guest.state seated; ladder326Frames = ticks där ORDER 326:s villkor (seated i minst waitWatchS) gällde; per vilja: sällskap, steg som nåddes, blickkontakter (nicken), omstarter och tiden viljan stod (s); bill.whileDining = sällskap som ville ha notan medan simuleringen ännu hade dem i dining (tallriken undan och glaset tomt, ORDER 328 A); nodsPerParty = nickar per sällskap över alla viljor (ORDER 328 C). truck: TRUCK_SEATING.eatSimSeconds mot ätordningen (PlayerTruckCrew eatTotalSFor).',
+        balance: { plateEatenS: B.plateEatenS, eyeContactMaxRestarts: B.eyeContactMaxRestarts, seekEyeS: B.seekEyeS, waitWatchS: B.waitWatchS, waitWaveS: B.waitWaveS, glassEmptyS: B.glassEmptyS, billAfterEmptyS: B.billAfterEmptyS, eyeContactM: B.eyeContactM, eyeContactConeRad: B.eyeContactConeRad, eyeContactComeS: B.eyeContactComeS },
         evenings: out, truck
       }, null, 2));
     }

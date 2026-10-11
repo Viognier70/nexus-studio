@@ -3631,9 +3631,7 @@
       ],
       "halfGrip": {
         "analysis": "The answer was right in substance, but not in how it was given.",
-        "experience": "The attitude was friendly, but not by the rules.",
-        "outcomeAnalysis": "The case officer writes something down.",
-        "outcomeExperience": "The police officer asks once more."
+        "outcomeAnalysis": "The case officer writes something down."
       },
       "success": {
         "outcome": "Everyone new goes through it with me."

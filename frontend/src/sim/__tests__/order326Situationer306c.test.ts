@@ -42,10 +42,10 @@ describe('ORDER 326 A — de 29 i formen analys → upplevelse → handling', ()
         expect(x.guestLine?.b, id).toMatch(/“.+”/);
         expect(x.steps[0].clue, id).toMatch(t === SV ? /^Analys: / : /^Analysis: /);
         expect(x.steps[1].clue, id).toMatch(t === SV ? /^Upplevelse: / : /^Experience: /);
-        // ORDER 327 A: varje sida som steg 3 ger halvt grepp har sina två texter (vb31 efter variant).
-        for (const g of new Set(m.steps[2].options.map((o) => o.grip).filter(Boolean))) {
-          for (const k of g === 'analysis' ? ['analysis', 'outcomeAnalysis'] : ['experience', 'outcomeExperience']) expect(x.halfGrip?.[k], `${id} ${k}`).toBeTruthy();
-        }
+        // ORDER 327 A och 328 E: texterna för halvt grepp finns för de sidor som steg 3 ger, och bara för dem (vb31 efter variant).
+        const sides = new Set(m.steps[2].options.map((o) => o.grip).filter(Boolean));
+        const expected = [...sides].flatMap((g) => (g === 'analysis' ? ['analysis', 'outcomeAnalysis'] : ['experience', 'outcomeExperience'])).sort();
+        if (id !== 'vb31-servetter-och-isen') expect([id, Object.keys(x.halfGrip ?? {}).sort()]).toEqual([id, expected]);
         expect(x.staffTexts?.success && x.staffTexts?.fail).toBeTruthy();
       }
     }

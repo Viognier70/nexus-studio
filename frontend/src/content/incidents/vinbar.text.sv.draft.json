@@ -3631,9 +3631,7 @@
       ],
       "halfGrip": {
         "analysis": "Svaret var rätt i sak, men inte hur det gavs.",
-        "experience": "Hållningen var vänlig, men inte enligt reglerna.",
-        "outcomeAnalysis": "Handläggaren antecknar något.",
-        "outcomeExperience": "Polisen frågar en gång till."
+        "outcomeAnalysis": "Handläggaren antecknar något."
       },
       "success": {
         "outcome": "Alla nya går igenom den med mig."

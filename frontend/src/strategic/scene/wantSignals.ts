@@ -18,6 +18,8 @@
 // Blickkontakt: går någon i personalen förbi inom eyeContactM från bordet, med ansiktet mot det (inom
 // eyeContactConeRad), stannar stegen. Gästen nickar (guest.nodApprove), och personalen ska vara framme inom
 // eyeContactComeS; annars börjar stegen om.
+// ORDER 328 C — en nick per steg (blicken, handen, vinkningen) och högst eyeContactMaxRestarts omstarter per
+// sällskap och vilja. Efter den sista omstarten står stegen stilla efter nicken tills personalen är framme.
 
 import { FOODTRUCK, GESTURE_BALANCE, TRUCK_MENU } from '../../sim/balance';
 import { CLIPS } from './figureClips';
@@ -40,6 +42,9 @@ export interface WantTrack {
   ackAt: number | null;
   /** Vem i personalen gästen fick kontakt med. */
   ackBy: string | null;
+  /** ORDER 328 C — stegen gästen redan har nickat i, och omstarterna hittills. */
+  nodded: WantStep[];
+  restarts: number;
 }
 
 /** Ett ögonblick i personalen: var, vart ansiktet pekar (rotation kring y, atan2(dx, dz)) och om den går. */
@@ -88,14 +93,17 @@ export function eyeContact(staff: readonly StaffGlance[], at: { x: number; z: nu
  */
 export function stepWant(prev: WantTrack | null, want: { kind: WantKind; since: number } | null, t: number, contact: string | null): WantTrack | null {
   if (!want) return null;
-  if (!prev || prev.kind !== want.kind) prev = { kind: want.kind, since: want.since, ackAt: null, ackBy: null };
+  if (!prev || prev.kind !== want.kind) prev = { kind: want.kind, since: want.since, ackAt: null, ackBy: null, nodded: [], restarts: 0 };
   if (prev.ackAt === null) {
     const step = wantStep(prev, t);
-    if (contact && step && step !== 'nod') return { ...prev, ackAt: t, ackBy: contact };
+    // En nick per steg: har gästen redan nickat i det här steget går stegen vidare.
+    if (contact && step && step !== 'nod' && !prev.nodded.includes(step)) return { ...prev, ackAt: t, ackBy: contact, nodded: [...prev.nodded, step] };
     return prev;
   }
-  // Personalen kom inte fram i tid: stegen börjar om med blicken.
-  if (t > prev.ackAt + GESTURE_BALANCE.eyeContactComeS) return { kind: prev.kind, since: t, ackAt: null, ackBy: null };
+  // Personalen kom inte fram i tid: stegen börjar om med blicken, högst eyeContactMaxRestarts gånger.
+  if (t > prev.ackAt + GESTURE_BALANCE.eyeContactComeS && prev.restarts < GESTURE_BALANCE.eyeContactMaxRestarts) {
+    return { ...prev, since: t, ackAt: null, ackBy: null, restarts: prev.restarts + 1 };
+  }
   return prev;
 }
 
