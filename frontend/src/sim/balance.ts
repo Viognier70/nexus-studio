@@ -2338,3 +2338,7 @@ export const NEXT_DAY = {
   bookingsPerClearedRocket: 2,
   bookingsLostPerFailedRocket: 1
 } as const;
+
+// ORDER 330 H — leveransbilens fart: andel av turen per simsekund (förut inbyggt i reducer.ts, ORDER 042). Scenens tur
+// efter morgonens inköp (DeliveryVan.tsx) kör i samma fart.
+export const DELIVERY = { section: 'Byn', progressPerSecond: 0.08 } as const;

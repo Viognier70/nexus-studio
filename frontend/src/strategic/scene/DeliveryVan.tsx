@@ -26,7 +26,7 @@ import * as THREE from 'three';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import { useSimState } from '../simulation/SimulationProvider';
 import { playerTruckPlacement } from '../content/villagePlaces';
-import { THEATRE } from '../../sim/balance';
+import { DELIVERY, THEATRE } from '../../sim/balance';
 import { alongPath, pathLength, truckDeliveryPath } from './village/truckDelivery';
 
 // ORDER 319a.4 — leveransen till spelarens vagn (förvarningen 'delivery'): bilen kör ut i den här
@@ -82,6 +82,9 @@ function progressOpacity(progress: number): number {
   return 1;
 }
 
+/** ORDER 330 H — inköpets tur: samma fart som simuleringens leverans (balance.ts DELIVERY), i skärmens tid. */
+const PURCHASE_TRIP_PER_S = DELIVERY.progressPerSecond;
+
 export function DeliveryVan() {
   const layout = usePlayerBusinessInterior();
   const sim = useSimState();
@@ -92,6 +95,9 @@ export function DeliveryVan() {
   // ORDER 319a.4 — bilens resa till vagnen: in under förvarningen, parkerad under situationen, ut efter.
   const truckTrip = useRef<{ path: [number, number][]; length: number; s: number; phase: 'in' | 'parked' | 'out'; incidentId: string } | null>(null);
   const view = useMemo(() => ({ f: new THREE.Frustum(), m: new THREE.Matrix4(), p: new THREE.Vector3() }), []);
+  // ORDER 330 H — grundregeln: morgonens inköp syns. När spelaren har köpt något i dag kör bilen en tur till krogen
+  // (bara i scenen; simuleringens leveranscykel och dess slump rörs inte). En tur per dag.
+  const purchaseTrip = useRef<{ day: number; progress: number } | null>(null);
 
   // Geometry is stable across renders; only position/opacity change per
   // frame. Group holds two boxes (body + cab) so the shape reads as a
@@ -137,7 +143,15 @@ export function DeliveryVan() {
       for (const mat of [bodyMatRef.current, cabMatRef.current]) if (mat && mat.opacity !== 1) { mat.opacity = 1; mat.transparent = false; mat.needsUpdate = true; }
       return;
     }
-    const d = sim.delivery;
+    let d: { active: boolean; progress: number } = sim.delivery;
+    if (!d.active && sim.day.stockBoughtToday) {
+      let pt = purchaseTrip.current;
+      if (!pt || pt.day !== sim.day.dayNumber) pt = purchaseTrip.current = { day: sim.day.dayNumber, progress: 0 };
+      if (pt.progress < 1) {
+        pt.progress = Math.min(1, pt.progress + PURCHASE_TRIP_PER_S * Math.min(0.1, delta));
+        d = { active: pt.progress < 1, progress: pt.progress };
+      }
+    }
     if (!d.active) {
       g.visible = false;
       return;

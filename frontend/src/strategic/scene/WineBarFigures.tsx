@@ -142,7 +142,7 @@ import { play } from '../ui/sound/sound';
 import { createStaffMark, disposeStaffMark, updateStaffMark, type StaffMark } from './staffMarks';
 import { seatKindFromRoom, type ClipSample } from './figureClips';
 import type { GuestType } from '../types';
-import { THEATRE } from '../../sim/balance';
+import { EVENING_ECONOMY, THEATRE } from '../../sim/balance';
 import type { ActiveIncident } from '../../sim/incidents';
 import { strings } from '../../content/strings';
 import { TheatreCaption } from '../ui/TheatreCaption';
@@ -194,7 +194,7 @@ const DJ_MUSIC_FROM_MIN = 21 * 60;
 // Båsets kantljus när DJ:n spelar (rummets helgnivå, wineBarRoom).
 const DJ_GLOW_ON = 1.4;
 // ORDER 294b — manusens personal (Designs handelserManus.js) mot rummets roller.
-const SCRIPT_ACTOR_OF: Record<StaffKey, string> = { host: 'per', server: 'sara', server2: '-', sommelier: 'elin', bartender: 'mira', cook: 'cook', dish: 'dish1' };
+const SCRIPT_ACTOR_OF: Record<StaffKey, string> = { host: 'per', server: 'sara', server2: '-', sommelier: 'elin', bartender: 'mira', cook: 'cook', dish: 'dish1', extra: '-' };
 const THEATRE_LOW_CLIPS = new Set(['staff.kneelTalk', 'staff.sweep', 'staff.wipeFloor', 'guest.slip', 'staff.smother', 'guest.wheel', 'guest.wheelRoll', 'guest.wheelTurn', 'guest.wheelToTable', 'bar.stockFridge', 'staff.carryCrate']);
 
 // ORDER 292b — figurmätningen var femtonde bildruta.
@@ -247,6 +247,8 @@ export const WINE_BAR_LIGHTS = {
 export const SEATED_HIP_Y = FIGURE.hipY - (poseSeated(0).hipDrop ?? 0);
 
 const STAFF_COLOUR: Record<StaffKey, string> = {
+  // ORDER 330 H — den extra bär servitörens kläder.
+  extra: STAFF_UNIFORMS.server,
   server: STAFF_UNIFORMS.server,
   server2: STAFF_UNIFORMS.server,
   bartender: STAFF_UNIFORMS.bartender,
@@ -771,7 +773,14 @@ export function WineBarFigures({ room, mood }: Props) {
       unhappyThreshold: UNHAPPY_THRESHOLD,
       takeover: to && s.simTime < to.until ? to : null,
       // ORDER 293 — före dörrarna: mise en place.
-      prep: beforeDoors(s)
+      prep: beforeDoors(s),
+      // ORDER 330 H — grundregeln: den extra syns när spelaren har valt den. Den extra handen vid förberedelsen,
+      // springaren (satsningen) och byråns lärling under servicen.
+      extraStaff: beforeDoors(s)
+        ? (s.day.prepHand ? 'prep' : null)
+        : (s.day.period === 'lunch' || s.day.period === 'dinner')
+          ? ((s.day.pickedActivityIds ?? []).includes(EVENING_ECONOMY.runnerActivityId) ? 'runner' : s.team.members.some((m) => m.isAgency) ? 'agency' : null)
+          : null
     });
 
     // Samma tonband som InteriorGuests: figurerna syns när kameran är nära.
