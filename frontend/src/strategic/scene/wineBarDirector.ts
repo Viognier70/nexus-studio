@@ -49,7 +49,8 @@ import {
 import { WINE_BAR_PLAN, doorPath } from './wineBarRoom';
 import { staffTempo, waitStateFor, WAIT_THRESHOLDS } from './figureActs';
 import { IDLE_RULE } from './serviceScore';
-import { QUEUE_MOOD } from '../../sim/balance';
+import { GESTURE_BALANCE, QUEUE_MOOD } from '../../sim/balance';
+import { eyeContact, stepWant, wantStep, type StaffGlance, type WantKind, type WantStep, type WantTrack } from './wantSignals';
 import { clipSeconds, SEAT_KINDS, seatKindFromRoom } from './figureClips';
 
 // #region typer
@@ -349,6 +350,8 @@ interface Task {
   onDone?: (t: number) => void;
   /** Segmenten uppgiften lade till, så ett övertagande kan ta bort dem. */
   firstSeg: number;
+  /** ORDER 327 B — gästen har fått blickkontakt: uppgiften tas före de andra. */
+  priority?: boolean;
 }
 
 interface ActorTrack {
@@ -422,6 +425,12 @@ interface PartyTrack {
   hIx: number;
   /** ORDER 293 — bröd och vatten (och fördrinken i loungen) är ställda. */
   ritualsQueued: boolean;
+  /** ORDER 327 B — då glaset fylldes senast (serveringen eller påfyllningen), annars −1. */
+  glassAt: number;
+  /** ORDER 327 B — påfyllningen på väg, eller null. */
+  refillTask: Task | null;
+  /** ORDER 327 B — vad sällskapet vill och stegen (wantSignals.ts), eller null. */
+  want: WantTrack | null;
 }
 
 // #endregion
@@ -538,6 +547,7 @@ export class WineBarDirector {
     this.completeTasks(t);
     this.pruneItems(t);
     this.handleTakeover(input);
+    this.advanceWants(t);
     this.assignPending(t);
     this.advanceQueue(t);
     this.miseEnPlace(t, !!input.prep);
@@ -802,7 +812,8 @@ export class WineBarDirector {
       p = {
         key, group, members: [], seatedAt, menuDoneAt: seatedAt + MENU_MIN_S + hash(hIx, 3) * MENU_SPAN_S,
         orderTask: null, drinkDone: false, servedAt: -1, toastAt: -1, foodTask: null,
-        billAskAt: -1, billTask: null, cleared: false, visits: [], hIx, ritualsQueued: false
+        billAskAt: -1, billTask: null, cleared: false, visits: [], hIx, ritualsQueued: false,
+        glassAt: -1, refillTask: null, want: null
       };
       this.parties.set(key, p);
     } else if (!p.orderTask && seatedAt > p.seatedAt) {
@@ -908,6 +919,7 @@ export class WineBarDirector {
     const served = (done: number) => {
       p.drinkDone = true;
       p.servedAt = done;
+      p.glassAt = done;
       p.toastAt = done + 4 + hash(p.hIx, 5) * 6;
       if (g.kind !== 'bar') {
         // Smårätter från passet: köket lägger upp, servitören bär.
@@ -938,6 +950,86 @@ export class WineBarDirector {
         }
       });
     }
+  }
+
+  // ---------- ORDER 327 B: signalerna för stegen ----------
+
+  /** Vad sällskapet vill vid tiden t och sedan när (wantSignals.ts), eller null. */
+  private wantNow(p: PartyTrack, t: number): { kind: WantKind; since: number } | null {
+    const B = GESTURE_BALANCE;
+    const arrived = (k: Task | null) => !!k && (k.state === 'done' || (k.state === 'assigned' && t >= k.arrive));
+    // Notan: gästen har ätit klart (simuleringens dining är slut).
+    if (p.billAskAt >= 0) return arrived(p.billTask) ? null : { kind: 'bill', since: p.billAskAt };
+    const landed = p.members.length > 0 && p.members.every((m) => m.mode === 'seated' && t >= m.sitT0 + sitSeconds(m.seat));
+    if (!landed) return null;
+    // Beställningen: från waitWatchS efter att sällskapet satt sig, tills servitören är vid bordet.
+    if (!arrived(p.orderTask)) return { kind: 'order', since: p.seatedAt + B.waitWatchS };
+    if (!p.drinkDone || p.glassAt < 0) return null;
+    // Glaset är tomt och gästen sitter kvar.
+    const emptyAt = p.glassAt + B.glassEmptyS;
+    if (t < emptyAt) return null;
+    // Tallriken är undan och glaset har varit tomt i mer än billAfterEmptyS: notan.
+    if (this.platesGone(p, t) && t >= emptyAt + B.billAfterEmptyS) return { kind: 'bill', since: emptyAt + B.billAfterEmptyS };
+    return arrived(p.refillTask) ? null : { kind: 'refill', since: emptyAt };
+  }
+
+  /** Sällskapets tallrikar har dukats av (minst en ställdes fram). */
+  private platesGone(p: PartyTrack, t: number): boolean {
+    const plates = this.items.filter((it) => it.group === p.group && !it.back && it.item === 'plate' && it.task.party === p);
+    return plates.length > 0 && plates.every((it) => !!it.clearTask && t >= it.clearTask.done);
+  }
+
+  /** Personalen som den syntes i förra bildrutan: var, ansiktet och om den går. */
+  private glances(): StaffGlance[] {
+    return this.actors.map((a, i) => {
+      const s = this.staffSamples[i];
+      return { key: a.key, x: s.x, z: s.z, facing: s.facing, walking: s.pose === 'walk' || s.pose === 'serveWalk', visible: s.visible };
+    });
+  }
+
+  /** Stegen för varje sällskap, blickkontakten och det den ger i personalens rutt. */
+  private advanceWants(t: number): void {
+    const glances = this.glances();
+    for (const p of this.parties.values()) {
+      const want = this.wantNow(p, t);
+      const at = p.group.tableAt ?? p.group.serveAt;
+      const contact = want ? eyeContact(glances, { x: at[0], z: at[1] }) : null;
+      const before = p.want?.ackAt ?? null;
+      p.want = stepWant(p.want, want, t, contact);
+      if (!p.want) continue;
+      const step = wantStep(p.want, t);
+      // Glaset fylls när någon har sett gästen: blickkontakt eller handen uppe.
+      if (p.want.kind === 'refill' && !p.refillTask && (p.want.ackAt !== null || step === 'hand' || step === 'wave')) this.refill(p, t);
+      if (p.want.ackAt !== null && p.want.ackAt !== before) this.hurry(p, t);
+    }
+  }
+
+  /** Blickkontakt: det sällskapet väntar på tas före de andra uppgifterna. */
+  private hurry(p: PartyTrack, t: number): void {
+    const kind = p.want?.kind;
+    const task = kind === 'order' ? p.orderTask : kind === 'bill' ? p.billTask : kind === 'refill' ? p.refillTask : null;
+    if (!task || task.state !== 'pending') return;
+    task.priority = true;
+    task.ready = Math.min(task.ready, t);
+  }
+
+  /** Påfyllningen: bartendern vid baren, sommeliern i loungen (flaskan står där), servitören vid borden. Inget
+   *  nytt föremål och ingen kostnad. */
+  private refill(p: PartyTrack, t: number): void {
+    const g = p.group;
+    const role: StaffRoleKey = g.kind === 'bar' ? 'bartender' : g.kind === 'lounge' ? 'sommelier' : 'server';
+    p.refillTask = this.addTask({
+      party: p, roles: [role], target: g.serveAt, facing: g.serveFacing, pose: 'pour', dur: 4, ready: t,
+      priority: p.want?.ackAt !== null,
+      onDone: (done) => { p.glassAt = done; p.refillTask = null; }
+    });
+    p.visits.push(p.refillTask);
+  }
+
+  /** ORDER 327 B — vad sällskapet med gästen vill och steget i stegen, för gesterna (moodGestures.ts). */
+  wantOf(guestId: string, t: number): { kind: WantKind; since: number; step: WantStep | null } | null {
+    const w = this.tracks.get(guestId)?.party?.want;
+    return w ? { kind: w.kind, since: w.since, step: wantStep(w, t) } : null;
   }
 
   // ---------- personalen ----------
@@ -1048,7 +1140,8 @@ export class WineBarDirector {
 
   private assignPending(t: number): void {
     if (this.pending.length === 0) return;
-    this.pending.sort((a, b) => a.ready - b.ready);
+    // ORDER 327 B — det gästen fått blickkontakt om går före.
+    this.pending.sort((a, b) => Number(!!b.priority) - Number(!!a.priority) || a.ready - b.ready);
     const keep: Task[] = [];
     for (const k of this.pending) {
       if (k.ready > t) { keep.push(k); continue; }
@@ -1572,11 +1665,12 @@ export class WineBarDirector {
 
     // Notan.
     if (p.billAskAt >= 0) {
-      if (t < p.billAskAt + ASK_BILL_S) { out.pose = 'askBill'; out.progress = clamp01((t - p.billAskAt) / ASK_BILL_S); return; }
+      // ORDER 327 B — gästen ber om notan med stegen blick → hand → vinkning (wantSignals.ts, moodGestures.ts),
+      // inte längre med handen direkt (askBill).
       const b = p.billTask;
       if (atTable(b)) { out.pose = 'pay'; out.progress = clamp01((t - b!.arrive) / (b!.done - b!.arrive)); out.targetYaw = 0.7; tr.leavingSince = -Infinity; return; }
       if (b && b.state === 'done') { out.pose = 'talk'; out.targetYaw = 0.9; return; }
-      waitFor(p.billAskAt + ASK_BILL_S);
+      waitFor(p.billAskAt);
       return;
     }
 
@@ -1594,6 +1688,9 @@ export class WineBarDirector {
     for (const v of p.visits) if (atTable(v)) { out.pose = 'waitCalm'; out.targetYaw = 0.6; return; }
 
     if (!p.drinkDone) { out.pose = 'talk'; out.targetYaw = 0.9; return; }
+    // ORDER 327 B — glaset är tomt (mer i glaset, eller notan när tallriken är undan): gästen sitter still och
+    // söker blicken (moodGestures.ts spelar stegen ovanpå).
+    if (p.want && (p.want.kind === 'refill' || p.want.kind === 'bill')) { out.pose = 'waitCalm'; out.targetYaw = 0.6; return; }
     if (t < p.toastAt) { out.pose = 'drink'; return; }
     if (t < p.toastAt + TOAST_S) { out.pose = 'toast'; out.progress = clamp01((t - p.toastAt) / TOAST_S); return; }
     const block = Math.floor((t - p.toastAt - TOAST_S + (tr.seed % 5)) / ENJOY_BLOCK_S);

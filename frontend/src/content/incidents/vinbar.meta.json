@@ -1953,13 +1953,11 @@
           "options": [
             {
               "id": "a",
-              "quality": "ok",
-              "grip": "analysis"
+              "quality": "wrong"
             },
             {
               "id": "b",
-              "quality": "ok",
-              "grip": "experience"
+              "quality": "wrong"
             },
             {
               "id": "c",
@@ -2855,8 +2853,7 @@
           "options": [
             {
               "id": "a",
-              "quality": "ok",
-              "grip": "experience"
+              "quality": "wrong"
             },
             {
               "id": "b",

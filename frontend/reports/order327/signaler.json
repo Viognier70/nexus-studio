@@ -1,0 +1,176 @@
+{
+  "definition": "En kväll i vinbaren (vecka 2, brons i alla paviljonger, bästa svaret) per frö: spelets rum (createRoom vinbaren) och regissör (createRoomDirector), matade med simuleringens gäster var 0,2 s som i WineBarFigures.tsx. simSeatedSeconds = tiden i Guest.state seated; ladder326Frames = ticks där ORDER 326:s villkor (seated i minst waitWatchS) gällde; per vilja: sällskap, steg som nåddes, blickkontakter (nicken), omstarter och tiden viljan stod (s). truck: TRUCK_SEATING.eatSimSeconds mot ätordningen (PlayerTruckCrew eatTotalSFor).",
+  "balance": {
+    "seekEyeS": 12,
+    "waitWatchS": 20,
+    "waitWaveS": 40,
+    "glassEmptyS": 40,
+    "billAfterEmptyS": 20,
+    "eyeContactM": 4,
+    "eyeContactConeRad": 0.6,
+    "eyeContactComeS": 15
+  },
+  "evenings": [
+    {
+      "seed": 7,
+      "simSeatedSeconds": {
+        "n": 33,
+        "median": 4.2,
+        "max": 4.2
+      },
+      "ladder326Frames": 0,
+      "order": {
+        "parties": 33,
+        "reachedEye": 25,
+        "reachedHand": 1,
+        "reachedWave": 0,
+        "eyeContacts": 95,
+        "restarts": 68,
+        "wantSeconds": {
+          "n": 33,
+          "median": 61,
+          "max": 140.2
+        }
+      },
+      "refill": {
+        "parties": 13,
+        "reachedEye": 12,
+        "reachedHand": 0,
+        "reachedWave": 0,
+        "eyeContacts": 28,
+        "restarts": 15,
+        "wantSeconds": {
+          "n": 13,
+          "median": 29.8,
+          "max": 81.6
+        }
+      },
+      "bill": {
+        "parties": 27,
+        "reachedEye": 21,
+        "reachedHand": 0,
+        "reachedWave": 1,
+        "eyeContacts": 24,
+        "restarts": 0,
+        "wantSeconds": {
+          "n": 27,
+          "median": 8,
+          "max": 8.4
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "simSeatedSeconds": {
+        "n": 30,
+        "median": 4.2,
+        "max": 4.2
+      },
+      "ladder326Frames": 0,
+      "order": {
+        "parties": 30,
+        "reachedEye": 22,
+        "reachedHand": 3,
+        "reachedWave": 0,
+        "eyeContacts": 81,
+        "restarts": 59,
+        "wantSeconds": {
+          "n": 30,
+          "median": 57.2,
+          "max": 122.4
+        }
+      },
+      "refill": {
+        "parties": 10,
+        "reachedEye": 10,
+        "reachedHand": 0,
+        "reachedWave": 0,
+        "eyeContacts": 20,
+        "restarts": 13,
+        "wantSeconds": {
+          "n": 10,
+          "median": 48.6,
+          "max": 78.4
+        }
+      },
+      "bill": {
+        "parties": 29,
+        "reachedEye": 21,
+        "reachedHand": 0,
+        "reachedWave": 0,
+        "eyeContacts": 22,
+        "restarts": 0,
+        "wantSeconds": {
+          "n": 29,
+          "median": 8,
+          "max": 8
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "simSeatedSeconds": {
+        "n": 36,
+        "median": 4.2,
+        "max": 4.2
+      },
+      "ladder326Frames": 0,
+      "order": {
+        "parties": 36,
+        "reachedEye": 31,
+        "reachedHand": 2,
+        "reachedWave": 1,
+        "eyeContacts": 109,
+        "restarts": 77,
+        "wantSeconds": {
+          "n": 36,
+          "median": 67.8,
+          "max": 140
+        }
+      },
+      "refill": {
+        "parties": 13,
+        "reachedEye": 12,
+        "reachedHand": 0,
+        "reachedWave": 0,
+        "eyeContacts": 27,
+        "restarts": 14,
+        "wantSeconds": {
+          "n": 13,
+          "median": 27.2,
+          "max": 72
+        }
+      },
+      "bill": {
+        "parties": 27,
+        "reachedEye": 20,
+        "reachedHand": 0,
+        "reachedWave": 0,
+        "eyeContacts": 23,
+        "restarts": 0,
+        "wantSeconds": {
+          "n": 27,
+          "median": 8,
+          "max": 8
+        }
+      }
+    }
+  ],
+  "truck": {
+    "eatSimSeconds": 18,
+    "eatOrderSeconds": {
+      "bun": 14.600000000000001,
+      "plate": 15.2,
+      "bunHeater": 17,
+      "plateHeater": 17.6
+    },
+    "cheapestSek": 20,
+    "billSek": 95,
+    "walletSek": {
+      "tight": 300,
+      "normal": 520,
+      "generous": 1100,
+      "gold": 8000
+    }
+  }
+}

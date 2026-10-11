@@ -6,12 +6,15 @@ import { describe, expect, it } from 'vitest';
 import { CLIPS, sampleClip } from '../figureClips';
 import { GESTURE_RULES, MOOD_MAP, SITUATIONS } from '../gestureMap';
 import { MoodGestures } from '../moodGestures';
+import { wantStep } from '../wantSignals';
 import { GESTURE_BALANCE, MOOD_BALANCE } from '../../../sim/balance';
 import { D11_STRINGS } from '../../../content/design/d11Strings';
 
 const B = GESTURE_BALANCE;
 const content = (MOOD_BALANCE.threshold.content + MOOD_BALANCE.threshold.delighted) / 2;
-const info = (since: number, seekYaw = 0.9) => ({ state: 'seated' as const, stateSinceS: since, partyId: 'p', partySize: 2, seekYaw });
+// ORDER 327 B — stegen läser regissörens signal (wantSignals.ts): beställningen från waitWatchS efter att sällskapet satt sig.
+const want = (since: number) => ({ kind: 'order' as const, since: B.waitWatchS, step: wantStep({ kind: 'order', since: B.waitWatchS, ackAt: null, ackBy: null }, since) });
+const info = (since: number, seekYaw = 0.9) => ({ state: 'seated' as const, stateSinceS: since, partyId: 'p', partySize: 2, seekYaw, want: want(since) });
 
 describe('ORDER 326 B — söka personalens blick', () => {
   it('klippen finns, sittande och stående, och kartan har stegen och regeln om kameran', () => {
