@@ -1,0 +1,412 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "sizes": [
+    "1280×720",
+    "1024×600",
+    "1920×1080"
+  ],
+  "screenShare": 0.6,
+  "minFontPx": 12,
+  "screens": {
+    "oppningen": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "speakerOverlaps": [],
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.7,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "speakerOverlaps": [],
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [
+            "shelf-empty-gastronomiskateatern"
+          ],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
+          "clipped": []
+        },
+        {
+          "size": "1920×1080",
+          "ok": true,
+          "htmlLang": "sv",
+          "speakerOverlaps": [],
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 20.5,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
+          "clipped": []
+        }
+      ]
+    },
+    "regelkortet": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "speakerOverlaps": [],
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 677,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "speakerOverlaps": [],
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.08,
+              "over": 590,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-list-scroll.nxs-shelf-list",
+              "share": 0.08,
+              "over": 17,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [
+            "shelf-empty-gastronomiskateatern"
+          ],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        },
+        {
+          "size": "1920×1080",
+          "ok": true,
+          "htmlLang": "sv",
+          "speakerOverlaps": [],
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 999,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 20,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        }
+      ]
+    },
+    "mentorn": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "speakerOverlaps": [],
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 677,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        },
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "speakerOverlaps": [],
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.08,
+              "over": 590,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-list-scroll.nxs-shelf-list",
+              "share": 0.08,
+              "over": 17,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [
+            "shelf-empty-gastronomiskateatern"
+          ],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        },
+        {
+          "size": "1920×1080",
+          "ok": true,
+          "htmlLang": "sv",
+          "speakerOverlaps": [],
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 999,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 20,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        }
+      ]
+    },
+    "morgonen-dag1": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "speakerOverlaps": [],
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 677,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-sender-sub: Campus",
+          "clipped": []
+        },
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "speakerOverlaps": [],
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.08,
+              "over": 590,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-list-scroll.nxs-shelf-list",
+              "share": 0.08,
+              "over": 17,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [
+            "shelf-empty-gastronomiskateatern"
+          ],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-label: Kassa",
+          "clipped": []
+        },
+        {
+          "size": "1920×1080",
+          "ok": true,
+          "htmlLang": "sv",
+          "speakerOverlaps": [],
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 999,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "span.nx-sender-sub: Campus",
+          "clipped": []
+        }
+      ]
+    },
+    "banken-dag1": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "speakerOverlaps": [],
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 677,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "div.nx-label.nx-accent-text: Måndag · dag 1 · banken",
+          "clipped": []
+        },
+        {
+          "size": "1024×600",
+          "ok": true,
+          "htmlLang": "sv",
+          "speakerOverlaps": [],
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.08,
+              "over": 590,
+              "screen": false
+            },
+            {
+              "el": "div.nxs-list-scroll.nxs-shelf-list",
+              "share": 0.08,
+              "over": 17,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [
+            "shelf-empty-gastronomiskateatern"
+          ],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 12,
+          "minFontAt": "div.nx-label.nx-accent-text: Måndag · dag 1 · banken",
+          "clipped": []
+        },
+        {
+          "size": "1920×1080",
+          "ok": true,
+          "htmlLang": "sv",
+          "speakerOverlaps": [],
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 999,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 20,
+          "minFontAt": "div.nx-label.nx-accent-text: Måndag · dag 1 · banken",
+          "clipped": []
+        }
+      ]
+    }
+  },
+  "errors": []
+}

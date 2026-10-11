@@ -110,7 +110,8 @@ describe('ORDER 313 §3 — varje meddelande har en avsändare', () => {
       ['strategic/ui/VillageNotice.tsx', 'byn'],
       ['strategic/knowledge/ui/MaltidensHusDialog.tsx', 'house']
     ];
-    for (const [file, sender] of where) expect(read(file), file).toContain(`<SenderTag sender="${sender}" />`);
+    // ORDER 330 A — märket står också som talarrad (SpeakerLine) eller med klass (MentorPanel i smalt fönster).
+    for (const [file, sender] of where) expect(read(file), file).toMatch(new RegExp(`<(SenderTag|SpeakerLine) sender="${sender}"`));
     expect(pickLang(TABLE, 'sv').senders).toEqual({ asa: 'Åsa', bank: 'Banken', per: 'Per', byn: 'Byn', house: 'Måltidens hus' });
   });
 });

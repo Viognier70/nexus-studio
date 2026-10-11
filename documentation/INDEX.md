@@ -149,6 +149,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_327_RAPPORT.md`: ORDER 327 — halvt grepp bara när gästen och maten är säkra (vb14, vb21), signalerna för blick → hand → vinkning och blickkontakten, och spelartyperna utan och med 306c (rapport).
 - `ORDER_328_RAPPORT.md`: ORDER 328 — tallriken dukas av, vagnen svarar från luckan, en nick per steg och en omstart, regeln A12, vb35-c, och felsökningen av 0,6-raderna (ORDER 323 §5, fikat) (rapport).
 - `ORDER_329_RAPPORT.md`: ORDER 329 — fikat vid vagnen: sju nya dilemman, vanligt fika, mätningen före och efter (rapport).
+- `ORDER_330_RAPPORT.md`: ORDER 330 — talarmärket i inledningen, bankens diagnos dag 1, grundregeln, Jonas vid vagnen och genomgången av spelarens val (rapport).
 - `ORDER_325_RAPPORT.md`: ORDER 325 — Ansikten och gester (Designs D11): ansiktena nära och på avstånd, de nya klippen och kartan, kamerans avstånd vid Krogen (Z) och gränserna i balance.ts, gatans sex gångsätt, kontrollbilderna (rapport).
 - `ORDER_324_RAPPORT.md`: ORDER 324 — Beslut om FÖR_GRANSKNING_323.md i spelet (svenska och engelska), ft06 steg 2 för Claude, somm-h7, och layouten i 1180 × 660 och 1024 × 600 (rapport); 324b: ft06 svar A, lagtexterna granskade, layoutkontrollen på engelska.
 - `ORDER_RECONSTRUCTION_004_005_019_020.md`: ORDER_RECONSTRUCTION_004_005_019_020 — Evidence record for four sprint orders.
@@ -371,6 +372,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 
 - `NEXUS_SPELDESIGN_V1.md`: Nexus – speldesign version 1.
 - `ORDER_100_VISION.md`: ORDER 100 — Nexus Studio Game Design Constitution.
+- `KVARTEREN_KONKURRENSEN_SPELLAGEN.md`: Kvarteren, konkurrensen och spellägena — Vision Owner 2026-10-11, riktningen för nästa stora steg (bakgrund; inget byggt ur den än).
 - `SPELSLINGAN_SCHEMAT.md`: Spelslingan — schemat.
 - `UTKAST_SEX_VERKSAMHETSKLASSER.md`: Sex verksamhetsklasser och kunskapsprogressionen.
 - `UTKAST_VERKSAMHETSKLASSER.md`: Utkast — Verksamhetsklasser och uppgradering.
