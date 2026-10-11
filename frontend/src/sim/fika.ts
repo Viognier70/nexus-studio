@@ -14,6 +14,10 @@
 //
 // Valet av dilemma läser inte simuleringens slump (rngState), så att resten
 // av kvällen och harnessens tal inte flyttas av fikat.
+//
+// ORDER 329 B — vanligt fika: passar inget dilemma kvällen sitter laget ändå
+// en stund efter stängning. Ingen fråga, en rad text, och hela laget
+// FIKA.plainWellbeing i trivsel (fika.plain). Gäller vagnen och vinbaren.
 
 import type { SimulationState, StaffMember } from '../strategic/types';
 import { DILEMMAS, FIKA_PEOPLE, STAFF_ROLE_OF, dilemmaById, fikaPlaceOf, type Dilemma, type DilemmaGrade, type DilemmaOptionId, type DilemmaTrigger, type FikaPerson } from '../content/fika/dilemmas';
@@ -59,6 +63,8 @@ export interface FikaState {
   loyalty: Partial<Record<FikaPerson, number>>;
   inspectionRiskUntilDay?: number | null;
   suggested?: string[];
+  /** ORDER 329 B — kvällen då laget fikade utan dilemma. */
+  plain?: { day: number } | null;
 }
 
 export function fikaOf(state: Pick<SimulationState, 'fika'>): FikaState {
@@ -117,13 +123,20 @@ export function planFika(draft: SimulationState): void {
   }
   const pool = eligibleDilemmas(draft);
   if (pool.length === 0) {
-    draft.fika = { ...fika, tonight: null };
+    // ORDER 329 B — vanligt fika: ingen fråga, hela laget lite gladare.
+    draft.staff = withWellbeing(draft.staff, FIKA.plainWellbeing, null, 0);
+    draft.fika = { ...fika, tonight: null, plain: { day: draft.day.dayNumber } };
     return;
   }
   const r = hashKey(draft.seed ?? 0, `${draft.day.dayNumber}|fika`);
   const dilemma = pool[Math.min(pool.length - 1, Math.floor(r * pool.length))];
   const previous = [...fika.log].reverse().find((e) => e.dilemmaId === dilemma.id) ?? null;
   draft.fika = { ...fika, tonight: { day: draft.day.dayNumber, dilemmaId: dilemma.id, answer: null, previous } };
+}
+
+/** ORDER 329 B — fikade laget i kväll utan dilemma? */
+export function plainFikaTonight(state: Pick<SimulationState, 'fika' | 'day'>): boolean {
+  return state.fika?.plain?.day === state.day.dayNumber;
 }
 
 /** Står ett dilemma obesvarat i kväll? */

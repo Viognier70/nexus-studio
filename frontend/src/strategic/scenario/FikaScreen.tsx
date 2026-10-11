@@ -14,12 +14,38 @@ import { strings } from '../../content/strings';
 import { t as tt, type StringKey } from '../../content/nexusStrings';
 import { useLanguage } from '../../content/language';
 import { dilemmaById, type DilemmaOptionId } from '../../content/fika/dilemmas';
-import { fikaTonight } from '../../sim/fika';
+import { fikaTonight, plainFikaTonight } from '../../sim/fika';
 import type { SimulationState } from '../types';
 import { NxButton, NxLabel, NxScreen } from '../ui/system/components';
 import { useSimDispatch } from '../simulation/SimulationProvider';
 import '../ui/service/service.css';
 import './fika.css';
+
+// ORDER 329 B — vanligt fika: ingen fråga, en rad och trivseln, sedan vidare.
+export function PlainFikaScreen({ sim, onContinue }: { sim: SimulationState; onContinue: () => void }) {
+  const f = strings.fika;
+  if (!plainFikaTonight(sim)) return null;
+  const line = sim.economy.businessClass === 'foodtruck' ? f.plainTruck : f.plainWine;
+  return (
+    <NxScreen testId="evening-bar" label={f.label} className="nx-fika-overlay">
+      <div className="nx-evening nx-fika" data-testid="screen-fika-plain">
+        <header className="nx-evening-head">
+          <div><NxLabel>{f.label}</NxLabel></div>
+        </header>
+        <div className="nx-evening-scroll">
+          <div className="nx-paper nx-lesson-paper nx-fika-paper">
+            <p className="nx-fika-question" data-testid="fika-plain-line">{line}</p>
+            <ul className="nx-fika-effects" data-testid="fika-effects"><li>{f.wellbeingUp}</li></ul>
+          </div>
+        </div>
+        <footer className="nx-evening-foot">
+          <span />
+          <div><NxButton testId="fika-continue" onClick={onContinue} autoFocus>{f.next}</NxButton></div>
+        </footer>
+      </div>
+    </NxScreen>
+  );
+}
 
 // ORDER 315b del 2 — märkena ur Designs dilemmaGrades.ts GRADE_STYLE.
 const GRADE_MARK: Record<string, string> = { well: '✓', partly: '½', weakly: '○' };

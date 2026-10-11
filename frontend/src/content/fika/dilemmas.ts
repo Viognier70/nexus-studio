@@ -257,6 +257,78 @@ export const DILEMMAS: readonly Dilemma[] = [
       { id: 'B', grade: 'weakly' },
       { id: 'C', grade: 'partly' }
     ]
+  },
+  // ORDER 329 (Anders 2026-10-11, documentation/blueprints/FIKA_VAGNEN_329.md) — sju nya dilemman vid vagnen, så att
+  // vagnen har tolv som vinbaren. Nils frågar; A väl, B svagt, C delvis grundat. ⚖: legalReviewed false.
+  {
+    id: 'fika-vagn-allergin', theme: 'food-safety', asker: 'assistant', places: TRUCK,
+    triggers: [{ kind: 'incident', ids: ['ft05-allergin'] }],
+    legal: unreviewed('EU 1169/2011'),
+    options: [
+      { id: 'A', grade: 'well', economy: [{ kind: 'suggestAbility', id: 'allergen' }] },
+      { id: 'B', grade: 'weakly' },
+      { id: 'C', grade: 'partly' }
+    ]
+  },
+  {
+    id: 'fika-vagn-regnet', theme: 'communication', asker: 'assistant', places: TRUCK,
+    triggers: [{ kind: 'incident', ids: ['ft08-regnet'] }],
+    legal: null,
+    options: [
+      { id: 'A', grade: 'well' },
+      { id: 'B', grade: 'weakly' },
+      { id: 'C', grade: 'partly' }
+    ]
+  },
+  {
+    id: 'fika-vagn-ursprunget', theme: 'feedback', asker: 'assistant', places: TRUCK,
+    triggers: [{ kind: 'incident', ids: ['ft07-ursprunget'] }],
+    legal: null,
+    options: [
+      { id: 'A', grade: 'well' },
+      { id: 'B', grade: 'weakly' },
+      { id: 'C', grade: 'partly' }
+    ]
+  },
+  {
+    id: 'fika-vagn-getingen', theme: 'work-environment', asker: 'assistant', places: TRUCK,
+    triggers: [{ kind: 'incident', ids: ['ft09-getingen'] }],
+    legal: unreviewed('SFS 1977:1160'),
+    options: [
+      { id: 'A', grade: 'well' },
+      { id: 'B', grade: 'weakly' },
+      { id: 'C', grade: 'partly' }
+    ]
+  },
+  {
+    id: 'fika-vagn-hunden', theme: 'service', asker: 'assistant', places: TRUCK,
+    triggers: [{ kind: 'incident', ids: ['ft12-hunden'] }],
+    legal: null,
+    options: [
+      { id: 'A', grade: 'well' },
+      { id: 'B', grade: 'weakly' },
+      { id: 'C', grade: 'partly' }
+    ]
+  },
+  {
+    id: 'fika-vagn-nyanstalld', theme: 'communication', asker: 'assistant', places: TRUCK,
+    triggers: [{ kind: 'teamChanged' }],
+    legal: null,
+    options: [
+      { id: 'A', grade: 'well', economy: [{ kind: 'cost', key: 'extraHandSek' }] },
+      { id: 'B', grade: 'weakly' },
+      { id: 'C', grade: 'partly' }
+    ]
+  },
+  {
+    id: 'fika-vagn-handskarna', theme: 'food-safety', asker: 'assistant', places: TRUCK,
+    triggers: [{ kind: 'prepBacklog' }, { kind: 'incident', ids: ['ft03-rullen'] }],
+    legal: unreviewed('EG 852/2004'),
+    options: [
+      { id: 'A', grade: 'well' },
+      { id: 'B', grade: 'weakly' },
+      { id: 'C', grade: 'partly' }
+    ]
   }
 ];
 

@@ -35,8 +35,8 @@ import '../ui/service/service.css';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { CompareScreen, eveningVillage } from './CompareScreen';
 import { ShopScreen } from '../ui/host/ShopScreen';
-import { FikaScreen } from './FikaScreen';
-import { fikaTonight } from '../../sim/fika';
+import { FikaScreen, PlainFikaScreen } from './FikaScreen';
+import { fikaTonight, plainFikaTonight } from '../../sim/fika';
 import { offerAtDoorTonight } from '../../sim/ladder';
 import { OwnerOfferScreen } from './OwnerOfferScreen';
 
@@ -290,7 +290,8 @@ export function EveningBar() {
   // butiken, sist före morgonen.
   const hasCompare = eveningVillage(sim) !== null;
   // ORDER 316 — fikat efter berättelsen, när kvällen har ett dilemma.
-  const hasFika = fikaTonight(sim) !== null;
+  // ORDER 329 B — eller ett vanligt fika utan dilemma.
+  const hasFika = fikaTonight(sim) !== null || plainFikaTonight(sim);
   const afterFika = guard(() => go(hasCompare ? 'compare' : 'shop'));
   // ORDER 315b del 2 — Åsas erbjudande vid dörren i fikats ställe (D7).
   const hasOffer = offerAtDoorTonight(sim) !== null || step === 'offer';
@@ -308,6 +309,7 @@ export function EveningBar() {
     return <OwnerOfferScreen sim={sim} onContinue={afterFika} />;
   }
   if (step === 'fika' && hasFika) {
+    if (fikaTonight(sim) === null) return <PlainFikaScreen sim={sim} onContinue={afterFika} />;
     return <FikaScreen sim={sim} onContinue={afterFika} />;
   }
   // ORDER 288 — kvällen i byn (J1); ORDER 296 — efter berättelsen, före butiken.
