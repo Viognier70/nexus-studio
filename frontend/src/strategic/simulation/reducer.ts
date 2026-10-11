@@ -4,7 +4,7 @@ import { buildMorningReview } from '../../sim/morningReview';
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
 import { EQUIPMENT_IDS, GOODS_SUPPLIER_IDS, reputationByTier, equipmentOpened, equipmentOwned, equipmentSpec, equipmentUnlocked, supplierOwned, supplierPrice, supplierUnlocked, type EquipmentId, type GoodsSupplierId } from '../../sim/goods';
-import { CONCEPT, CONSEQUENCES, FOODTRUCK, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
+import { CONCEPT, CONSEQUENCES, DELIVERY, FOODTRUCK, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, closeIncidents, countDown, isIncidentOpen, lockAnswer, lockIncidentRow, maybeOpenIncident, planIncidents, resolveIncident, setIncidentRow, settlePendingAnswer, timeoutAnswer, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
@@ -2725,7 +2725,7 @@ function advanceTick(state: SimulationState): SimulationState {
     p.progress = (p.progress + p.speed * tickSeconds) % 1;
   }
   if (draft.delivery.active) {
-    draft.delivery.progress += 0.08 * tickSeconds;
+    draft.delivery.progress += DELIVERY.progressPerSecond * tickSeconds;
     if (draft.delivery.progress >= 1) {
       draft.delivery.active = false;
       draft.delivery.progress = 0;

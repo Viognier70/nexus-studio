@@ -1,5 +1,5 @@
 import { slowFactor } from '../../sim/staffCondition';
-import { EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, MOOD_BALANCE, SHOP, SITTING, TRUCK_SEATING } from '../../sim/balance';
+import { EVENING_ECONOMY, FOODTRUCK, GAME_MINUTES_PER_SIM_SECOND, MOOD_BALANCE, SHOP, SITTING, TRUCK_SEATING } from '../../sim/balance';
 import { abilityActive } from '../../sim/shop';
 import { helpTaskTime } from '../../sim/hostZones';
 import { clockMinutes as clockNowMinutes } from '../../sim/clock';
@@ -1346,6 +1346,8 @@ function beginStaffTask(
   const runner = (state.day.pickedActivityIds ?? []).includes(EVENING_ECONOMY.runnerActivityId) ? EVENING_ECONOMY.runnerTableTaskTime : 1;
   // ORDER 296 — snabbare pass: maten kommer ut fortare.
   const pass = type === 'order' && abilityActive(state, 'fastPass') ? SHOP.effects.fastPassOrderTime : 1;
+  // ORDER 330 G — vid vagnen med den extra handen tar Nils beställningarna längs kön: luckan går fortare.
+  const queueWalk = type === 'order' && state.economy?.businessClass === 'foodtruck' && state.day.prepHand ? FOODTRUCK.extraHandOrderTime : 1;
   // ORDER 296 — hovmästaren flyttade personal dit det brinner.
   const help = helpTaskTime(state, state.guests.find((g) => g.id === targetGuestId)?.seatIndex);
   // ORDER 214 (C2 §4) — staff-rollens praktiska kompetens skalar duration.
@@ -1354,7 +1356,7 @@ function beginStaffTask(
     type,
     state.capitals.values.social,
     roleCompetence(state.team, staff.role),
-    runner * pass * help * backlogTaskTime(state) * staffTempoFactor(state) *
+    runner * pass * queueWalk * help * backlogTaskTime(state) * staffTempoFactor(state) *
     // ORDER 270 — följden av ett fel val kan göra personalen långsammare
     // tills nästa händelse (läses här för att undvika en importcirkel).
     (state.incidents?.ongoing?.tempoFactor ?? 1) *

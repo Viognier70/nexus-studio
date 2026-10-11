@@ -6,7 +6,11 @@
 // (glyfen på sin platta med kant); Åsa har sitt porträtt; personalen (BESLUT
 // 2026-10-07 del 4 punkt 7) har initialen i rollringens färg och raden
 // "namn, roll", till exempel "Sara, servitör".
+// ORDER 330 A (Anders 2026-10-11) — talarmärket i inledningen och i bankens samtal: porträttet (eller ikonen)
+// överst, namnet och rollen under det, aldrig i det (`stacked`). Repliken står till höger om märket med fast
+// mellanrum i en egen kolumn (`SpeakerLine`), så att de inte kan överlappa.
 
+import type { ReactNode } from 'react';
 import { t as tt, type StringKey } from '../../content/nexusStrings';
 import { useLanguage } from '../../content/language';
 import { strings } from '../../content/strings';
@@ -34,7 +38,7 @@ function Badge({ id }: { id: SenderId }) {
   );
 }
 
-export function SenderTag({ sender, className, staff }: { sender: Sender; className?: string; staff?: StaffSender }) {
+export function SenderTag({ sender, className, staff, stacked }: { sender: Sender; className?: string; staff?: StaffSender; stacked?: boolean }) {
   const lang = useLanguage();
   const id = D6_ID[sender];
   const spec = SENDERS[id];
@@ -42,17 +46,28 @@ export function SenderTag({ sender, className, staff }: { sender: Sender; classN
     const name = strings.fika.people[staff.person] ?? '';
     const role = strings.fika.roles[staff.person] ?? '';
     return (
-      <span className={`nx-sender nx-sender-staff ${className ?? ''}`} data-testid="sender" data-sender="staff" data-person={staff.person}>
+      <span className={`nx-sender nx-sender-staff${stacked ? ' nx-sender-stacked' : ''} ${className ?? ''}`} data-testid="sender" data-sender="staff" data-person={staff.person}>
         <span className="nx-sender-initial" style={{ borderColor: ROLE_RING[staff.ring] }} aria-hidden>{(name || role).charAt(0).toUpperCase()}</span>
         <span className="nx-sender-name">{name ? tt(lang, 'sender.staff' as StringKey, { name, role }) : role.charAt(0).toUpperCase() + role.slice(1)}</span>
       </span>
     );
   }
   return (
-    <span className={`nx-sender ${className ?? ''}`} data-testid="sender" data-sender={sender}>
+    <span className={`nx-sender${stacked ? ' nx-sender-stacked' : ''} ${className ?? ''}`} data-testid="sender" data-sender={sender}>
       {sender === 'asa' ? <AsaPortrait className="nx-sender-portrait" /> : <Badge id={id} />}
       <span className="nx-sender-name">{tt(lang, spec.nameKey as StringKey)}</span>
       {spec.subKey && <span className="nx-sender-sub">{tt(lang, spec.subKey as StringKey)}</span>}
     </span>
+  );
+}
+
+/** ORDER 330 A — en replik med talarmärket: märket (bilden, namnet och rollen under) i en egen kolumn till vänster,
+ *  repliken till höger med fast mellanrum (screens.css .nx-speaker-line). */
+export function SpeakerLine({ sender, staff, children, testId, className }: { sender: Sender; staff?: StaffSender; children: ReactNode; testId?: string; className?: string }) {
+  return (
+    <div className={`nx-speaker-line ${className ?? ''}`} data-testid={testId ?? 'speaker-line'} data-sender={sender}>
+      <SenderTag sender={sender} staff={staff} stacked />
+      <div className="nx-speaker-text" data-testid="speaker-text">{children}</div>
+    </div>
   );
 }

@@ -1,0 +1,218 @@
+{
+  "definition": "Första kvällen i foodtrucken (startInFoodtruck, playDay, ladder never), frö 1–10, utan och med den extra handen (HIRE_PREP_HAND på morgonen, 800 kr). bills = kvällens notor, walked = gäster som gick ur kön, meanWaitS = medeltiden från att gästen ställde sig i kön till att maten räcktes ut (simsekunder), maxQueue = den längsta kön.",
+  "extraHandOrderTime": 0.9,
+  "summary": {
+    "utan": {
+      "bills": 490,
+      "walked": 0,
+      "meanWaitS": 52.4
+    },
+    "med": {
+      "bills": 500,
+      "walked": 0,
+      "meanWaitS": 46.9
+    }
+  },
+  "rows": [
+    {
+      "seed": 1,
+      "hand": false,
+      "guests": 59,
+      "bills": 51,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 58,
+      "served": 58
+    },
+    {
+      "seed": 1,
+      "hand": true,
+      "guests": 59,
+      "bills": 52,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 54.5,
+      "served": 58
+    },
+    {
+      "seed": 2,
+      "hand": false,
+      "guests": 46,
+      "bills": 46,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 58.3,
+      "served": 46
+    },
+    {
+      "seed": 2,
+      "hand": true,
+      "guests": 46,
+      "bills": 46,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 53.4,
+      "served": 46
+    },
+    {
+      "seed": 3,
+      "hand": false,
+      "guests": 58,
+      "bills": 56,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 91.9,
+      "served": 58
+    },
+    {
+      "seed": 3,
+      "hand": true,
+      "guests": 59,
+      "bills": 59,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 75.6,
+      "served": 59
+    },
+    {
+      "seed": 4,
+      "hand": false,
+      "guests": 55,
+      "bills": 55,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 62.6,
+      "served": 55
+    },
+    {
+      "seed": 4,
+      "hand": true,
+      "guests": 56,
+      "bills": 56,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 58.9,
+      "served": 56
+    },
+    {
+      "seed": 5,
+      "hand": false,
+      "guests": 55,
+      "bills": 54,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 65.8,
+      "served": 55
+    },
+    {
+      "seed": 5,
+      "hand": true,
+      "guests": 56,
+      "bills": 56,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 61.9,
+      "served": 56
+    },
+    {
+      "seed": 6,
+      "hand": false,
+      "guests": 59,
+      "bills": 45,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 46.4,
+      "served": 59
+    },
+    {
+      "seed": 6,
+      "hand": true,
+      "guests": 58,
+      "bills": 46,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 37.5,
+      "served": 58
+    },
+    {
+      "seed": 7,
+      "hand": false,
+      "guests": 60,
+      "bills": 49,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 44.4,
+      "served": 60
+    },
+    {
+      "seed": 7,
+      "hand": true,
+      "guests": 60,
+      "bills": 50,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 41,
+      "served": 60
+    },
+    {
+      "seed": 8,
+      "hand": false,
+      "guests": 47,
+      "bills": 41,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 22.5,
+      "served": 41
+    },
+    {
+      "seed": 8,
+      "hand": true,
+      "guests": 47,
+      "bills": 41,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 20.4,
+      "served": 41
+    },
+    {
+      "seed": 9,
+      "hand": false,
+      "guests": 48,
+      "bills": 48,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 36.8,
+      "served": 48
+    },
+    {
+      "seed": 9,
+      "hand": true,
+      "guests": 48,
+      "bills": 48,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 32.1,
+      "served": 48
+    },
+    {
+      "seed": 10,
+      "hand": false,
+      "guests": 48,
+      "bills": 45,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 36.8,
+      "served": 48
+    },
+    {
+      "seed": 10,
+      "hand": true,
+      "guests": 48,
+      "bills": 46,
+      "walked": 0,
+      "maxQueue": 1,
+      "meanWaitS": 34.1,
+      "served": 48
+    }
+  ]
+}

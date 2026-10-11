@@ -36,8 +36,8 @@ class FakeSim {
   drop(id: string) { this.guests = this.guests.filter((g) => g.id !== id); }
 }
 
-function frame(t: number, sim: FakeSim, takeover: TakeoverInput | null = null): FrameInput {
-  return { t, guests: sim.guests, patienceSeconds: 60, giveUpSatisfaction: 0.35, unhappyThreshold: 0.65, takeover };
+function frame(t: number, sim: FakeSim, takeover: TakeoverInput | null = null, extraStaff: FrameInput['extraStaff'] = null): FrameInput {
+  return { t, guests: sim.guests, patienceSeconds: 60, giveUpSatisfaction: 0.35, unhappyThreshold: 0.65, takeover, extraStaff };
 }
 
 const near = (a: { x: number; z: number }, p: [number, number], r = 0.15) => Math.hypot(a.x - p[0], a.z - p[1]) < r;
@@ -68,9 +68,9 @@ describe('ORDER 271 — en kväll i vinbaren', () => {
     const sim = new FakeSim();
     const log: { t: number; key: StaffKey; pose: string; x: number; z: number; stress: number }[] = [];
     const guestPoses = new Map<string, Set<string>>();
-    const step = (t0: number, t1: number, takeover: TakeoverInput | null = null) => {
+    const step = (t0: number, t1: number, takeover: TakeoverInput | null = null, extraStaff: FrameInput['extraStaff'] = null) => {
       for (let t = t0; t < t1; t += 0.1) {
-        d.update(frame(t, sim, takeover));
+        d.update(frame(t, sim, takeover, extraStaff));
         d.staffSamples.forEach((s, i) => log.push({ t, key: (['server', 'server2', 'bartender', 'sommelier', 'cook', 'dish'] as StaffKey[])[i], pose: s.pose, x: s.x, z: s.z, stress: s.stress }));
         d.guestSamples.forEach((s) => { if (s.visible && s.guestId) { const set = guestPoses.get(s.guestId) ?? new Set(); set.add(s.pose); guestPoses.set(s.guestId, set); } });
       }
@@ -128,6 +128,24 @@ describe('ORDER 271 — en kväll i vinbaren', () => {
     // Personalen hemma igen när det är lugnt.
     const end = log.filter((r) => r.t > 169);
     expect(end.find((r) => r.key === 'bartender')!.pose).toBe('pour');
+  });
+
+  // ORDER 330 H — grundregeln: den extra (springaren, byråns lärling) syns och tar uppgifter bara när den är vald.
+  it('den extra: osynlig utan val; med springaren i tjänst syns den och tar uppgifter vid borden', () => {
+    for (const extra of [null, 'runner'] as const) {
+      const { d, sim, step } = evening();
+      const ix = d.actors.findIndex((a) => a.key === 'extra');
+      let seen = false, busy = false;
+      const watch = (t0: number, t1: number) => { for (let t = t0; t < t1; t += 0.5) { step(t, t + 0.5, null, extra); seen ||= d.staffSamples[ix].visible; busy ||= d.staffTask('extra', t + 0.5) !== null; } };
+      for (let g = 0; g < 6; g++) sim.set(`g${g}`, 'arriving', 0, { partyId: `p${g >> 1}` });
+      watch(0, 3);
+      for (let g = 0; g < 6; g++) sim.set(`g${g}`, 'seated', 3, { seatIndex: 2 + g });
+      watch(3, 7);
+      for (let g = 0; g < 6; g++) sim.set(`g${g}`, 'ordering', 7);
+      watch(7, 60);
+      expect([extra, seen]).toEqual([extra, extra !== null]);
+      expect([extra, busy]).toEqual([extra, extra !== null]);
+    }
   });
 
   // ORDER 328 A — tallriken dukas av när gästen ätit klart (GESTURE_BALANCE.plateEatenS efter att den ställts fram),

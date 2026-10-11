@@ -1,0 +1,117 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "sizes": [
+    "1280×720"
+  ],
+  "screenShare": 0.6,
+  "minFontPx": 12,
+  "screens": {
+    "oppningen": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.7,
+          "minFontAt": "span.nx-opening-place: Grythyttan",
+          "clipped": []
+        }
+      ]
+    },
+    "regelkortet": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 677,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "div.nx-label.nx-accent-text: Spelets regler",
+          "clipped": []
+        }
+      ]
+    },
+    "mentorn": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 677,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "screen-M1: Måndag · Campus · Vecka 1 av 8",
+          "clipped": []
+        }
+      ]
+    },
+    "morgonen-dag1": {
+      "ok": true,
+      "rows": [
+        {
+          "size": "1280×720",
+          "ok": true,
+          "htmlLang": "sv",
+          "pageScroll": false,
+          "scrollers": [
+            {
+              "el": "morning-activities-scroll",
+              "share": 0.09,
+              "over": 677,
+              "screen": false
+            }
+          ],
+          "shelfRows": 5,
+          "shelfHidden": [],
+          "shelfBelowEdge": [],
+          "overlaps": [],
+          "covered": [],
+          "screenScroll": [],
+          "minFontPx": 13.3,
+          "minFontAt": "span.nx-label: Kassa",
+          "clipped": []
+        }
+      ]
+    }
+  },
+  "errors": []
+}

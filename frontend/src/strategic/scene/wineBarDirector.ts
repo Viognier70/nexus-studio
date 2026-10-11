@@ -55,12 +55,13 @@ import { clipSeconds, SEAT_KINDS, seatKindFromRoom } from './figureClips';
 
 // #region typer
 
-export type StaffKey = 'server' | 'server2' | 'bartender' | 'sommelier' | 'cook' | 'dish' | 'host';
+export type StaffKey = 'server' | 'server2' | 'bartender' | 'sommelier' | 'cook' | 'dish' | 'host' | 'extra';
 export type StaffRoleKey = 'server' | 'bartender' | 'sommelier' | 'cook' | 'dish' | 'host';
 
 /** Designs personal i vinbaren (paket 6 §1) plus köket. Ordningen är poolens. */
 // ORDER 293 — Per, hovmästaren, sist så att de andras platser i listan står kvar.
-export const STAFF_KEYS: readonly StaffKey[] = ['server', 'server2', 'bartender', 'sommelier', 'cook', 'dish', 'host'];
+// ORDER 330 H — den extra sist: syns bara när spelaren har valt den (FrameInput.extraStaff).
+export const STAFF_KEYS: readonly StaffKey[] = ['server', 'server2', 'bartender', 'sommelier', 'cook', 'dish', 'host', 'extra'];
 
 /**
  * Simuleringens fyra roller mot vinbarens personal, för övertagandet (FRAGOR
@@ -206,6 +207,9 @@ export interface FrameInput {
   takeover: TakeoverInput | null;
   /** ORDER 293 — före dörrarna: mise en place (LEVERANSNOT §6). */
   prep?: boolean;
+  /** ORDER 330 H — den extra i tjänst (grundregeln: varje val syns): springaren eller byråns lärling under servicen,
+   *  den extra handen vid förberedelsen före dörrarna. null: inte i kväll. */
+  extraStaff?: 'runner' | 'agency' | 'prep' | null;
 }
 
 // #endregion
@@ -375,6 +379,8 @@ interface ActorTrack {
   /** ORDER 293 — när nästa lilla stund får börja (personalens små stunder). */
   fillerAt?: number;
   fillerIx?: number;
+  /** ORDER 330 H — inte i tjänst i kväll: syns inte och tar inga uppgifter (den extra). */
+  off?: boolean;
 }
 
 type GuestMode = 'queue' | 'toSeat' | 'seated' | 'standing' | 'out' | 'hidden';
@@ -515,8 +521,11 @@ export class WineBarDirector {
       mk('dish', 'dish', 'dish', 'dish'),
       // ORDER 293 — Per bakom värdpulten, vänd mot dörren; läser bokningarna
       // mellan gästerna (host.checkBook).
-      mk('host', 'host', 'host', 'checkBook')
+      mk('host', 'host', 'host', 'checkBook'),
+      // ORDER 330 H — den extra: en servitör till, i tjänst bara när spelaren har valt det (FrameInput.extraStaff).
+      mk('extra', 'server', 'server', 'idle', [CORR_X, -3.2], Math.PI / 2)
     ];
+    this.actors[this.actors.length - 1].off = true;
     for (const a of this.actors) a.base = { home: [a.home[0], a.home[1]], facing: a.homeFacing, pose: a.idlePose };
     this.staffSamples = this.actors.map(() => emptySample());
   }
@@ -543,6 +552,10 @@ export class WineBarDirector {
     if (t < this.lastT - 1) this.reset();
     const dt = this.lastT === -Infinity ? 0 : Math.max(0, t - this.lastT);
     this.lastT = t;
+
+    // ORDER 330 H — den extra går i och ur tjänst; den som har uppgifter kvar gör klart dem först.
+    const extra = this.actors.find((a) => a.key === 'extra');
+    if (extra) { const on = !!input.extraStaff; if (on) extra.off = false; else if (extra.tasks.length === 0) extra.off = true; }
 
     this.readGuests(input);
     this.advanceParties(input);
@@ -1192,7 +1205,7 @@ export class WineBarDirector {
     if (task.needsCook && cook.awayUntil > t) return false; // kocken är vid ett bord (§49)
     let best: { a: ActorTrack; start: number; origin: Vec2; legs: Vec2[][]; arrive: number; speed: number; atPickup: number } | null = null;
     for (const a of this.actors) {
-      if (!task.roles.includes(a.role)) continue;
+      if (!task.roles.includes(a.role) || a.off) continue;
       const interrupt = this.homewardAt(a, t);
       const origin: Vec2 = interrupt ? this.actorPos(a, t) : [a.pos[0], a.pos[1]];
       const freeAt = interrupt ? t : Math.max(a.free, t);
@@ -1295,7 +1308,9 @@ export class WineBarDirector {
       server: { id: 'setTables', pose: 'setTable' },
       server2: { id: 'polish', pose: 'polishGlass' },
       sommelier: { id: 'fridge', pose: 'stockFridge' },
-      bartender: { id: 'polish', pose: 'polishGlass' }
+      bartender: { id: 'polish', pose: 'polishGlass' },
+      // ORDER 330 H — den extra handen dukar med servitören före dörrarna.
+      extra: { id: 'setTables', pose: 'setTable' }
     };
     if (prep) {
       for (const a of this.actors) {
@@ -1303,7 +1318,7 @@ export class WineBarDirector {
         const at = m ? spot(m.id) : undefined;
         if (!m || !at) continue;
         // Två på samma plats står bredvid varandra.
-        const side = a.key === 'server2' ? 0.7 : 0;
+        const side = a.key === 'server2' ? 0.7 : a.key === 'extra' ? -0.7 : 0;
         a.home = [at.local[0] + side, at.local[1]];
         a.homeFacing = at.facing;
         a.idlePose = m.pose;
@@ -1362,7 +1377,7 @@ export class WineBarDirector {
   private smallMoments(t: number, prep: boolean): void {
     if (prep) return;
     for (const a of this.actors) {
-      if (a.role !== 'server' && a.role !== 'sommelier') continue;
+      if (a.off || (a.role !== 'server' && a.role !== 'sommelier')) continue;
       if (a.tasks.length > 0 || a.free > t) continue;
       if (this.pending.some((k) => k.roles.includes(a.role) && k.ready <= t + 3)) continue;
       if ((a.fillerAt ?? -Infinity) > t) continue;
@@ -1386,7 +1401,7 @@ export class WineBarDirector {
 
   private sendIdleHome(t: number): void {
     for (const a of this.actors) {
-      if (a.free > t || a.tasks.length > 0) continue;
+      if (a.off || a.free > t || a.tasks.length > 0) continue;
       if (Math.hypot(a.pos[0] - a.home[0], a.pos[1] - a.home[1]) < 0.05) continue;
       if (this.pending.some((k) => k.roles.includes(a.role) && k.ready <= t + 3)) continue;
       const from = a.pos;
@@ -1519,7 +1534,7 @@ export class WineBarDirector {
   }
 
   private sampleStaff(a: ActorTrack, t: number, out: FigureSample): void {
-    out.visible = true;
+    out.visible = !a.off;
     out.guestId = null;
     out.seated = false;
     out.targetYaw = 0;

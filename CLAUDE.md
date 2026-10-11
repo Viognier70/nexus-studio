@@ -8,6 +8,14 @@ Detta dokument styr hur Claude Code arbetar i det här repot. Läs det i början
 
 **Nexus Studio** är ett spelutvecklingsprojekt (AAA-ambition) i pre-produktion. Nuvarande fokus är **Vertical Slice 001** — den spelbara öppningen av *Nexus (Grythyttan — The Origin)*: bussankomst, första NPC-dialogen, promenad till registreringsbordet vid Sevillapaviljongen.
 
+## Grundregel: varje val syns
+
+**Allt spelaren väljer som påverkar spelet ska alltid synas i spelet.** Spelaren ska förstå sina beslut genom att se följderna. Ett val som bara ändrar ett värde utan att något syns räknas som ett fel. (Anders 2026-10-11, ORDER 330 F; står också i konstitutionen, `documentation/foundation/vision/ORDER_100_VISION.md` > EVERY CHOICE IS SEEN.)
+
+- Ett nytt val byggs med sin synliga form: vem eller vad som syns, var och när.
+- Kan formen inte byggas med befintliga figurer och föremål beställs den av Design, och valet redovisas som ofullständigt tills den finns.
+- Genomgången av alla val står i `documentation/architecture/ORDER_330_RAPPORT.md` (H).
+
 ## Roller och arbetsflöde
 
 - **Projektledning (ChatGPT + ägaren):** äger *vad* och *varför* — vision, prioritering, feature-beslut. Beslut skrivs som markdown i `documentation/`.

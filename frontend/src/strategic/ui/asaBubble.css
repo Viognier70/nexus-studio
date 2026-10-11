@@ -10,6 +10,10 @@
 }
 .nx-asa-col { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .nx-asa-who { display: inline-flex; align-self: flex-start; align-items: baseline; gap: 10px; padding: 4px 12px; border-radius: 10px; background: rgba(44, 30, 21, 0.95); box-shadow: 0 0 0 1px rgba(217, 180, 118, 0.6); }
+/* ORDER 330 A — porträttet med namnet och rollen under, i en egen kolumn; repliken till höger med bubblans mellanrum. */
+.nx-asa-speaker { flex: 0 0 auto; width: max(120px, 15vh); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.nx-asa-speaker .nx-asa-who { align-self: stretch; flex-direction: column; align-items: center; gap: 2px; text-align: center; padding: 4px 8px; }
+.nx-asa-speaker .nx-asa-name { font-size: max(16px, 2.2vh); overflow-wrap: anywhere; }
 .nx-asa-name { font-family: var(--w-font-heading, 'Young Serif', serif); color: #e9c46a; font-size: max(20px, 2.9vh); }
 .nx-asa-from { font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #f4e6cc; opacity: 0.85; }
 .nx-asa-paper {
