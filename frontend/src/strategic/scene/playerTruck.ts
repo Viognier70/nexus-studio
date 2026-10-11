@@ -78,7 +78,9 @@ export const TRUCK_PITCH_TORGET = {
 /** Besättning: en vid grillen, en vid luckan. Med en person går hon mellan stationerna (poseHatchServe). */
 export const TRUCK_CREW = {
   grill: { station: 'grill', uniform: '#425646', apron: '#e6e0d0', clips: ['truck.grill', 'cook.toPass'] },
-  hatch: { station: 'hatch', uniform: '#5e4d55', clips: ['truck.hatchServe', 'truck.wipeCounter'] }
+  hatch: { station: 'hatch', uniform: '#5e4d55', clips: ['truck.hatchServe', 'truck.wipeCounter'] },
+  // ORDER 330 G — Jonas, den extra handen, vid grillen; kockens färger från vinbaren.
+  extra: { station: 'grill', uniform: '#3f4a57', clips: ['truck.grill'] }
 };
 
 /** Nivån visas med knappar på skylten (venueTier.ts). Vagnen börjar på Enkel. */

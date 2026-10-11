@@ -13,7 +13,7 @@ import { useLanguage } from '../../content/language';
 import { canTakeOffer, currentOffer } from '../../sim/ladder';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { useReviewPending } from './MorningReviewLine';
-import { SenderTag } from './SenderTag';
+import { SpeakerLine } from './SenderTag';
 import { NxButton } from './system/components';
 import './ladder.css';
 import { DinVag } from './DinVag';
@@ -42,9 +42,11 @@ export function LadderOfferCard({ hidden }: { hidden?: boolean }) {
   return (
     <div className="nx-ladder-backdrop" data-testid="ladder-offer-backdrop">
       <section className="nx-paper nx-ladder-offer" role="dialog" aria-label={title} data-testid="ladder-offer" data-to={offer.to}>
-        <SenderTag sender="asa" />
-        <h2 className="nx-heading" style={{ margin: '0.4em 0' }}>{title}</h2>
-        <p className="nx-body" data-testid="ladder-line">{l.line[offer.to]}</p>
+        {/* ORDER 330 A — Åsa med porträttet, namnet och rollen under, och repliken till höger. */}
+        <SpeakerLine sender="asa">
+          <h2 className="nx-heading" style={{ margin: '0 0 0.4em' }}>{title}</h2>
+          <p className="nx-body" data-testid="ladder-line">{l.line[offer.to]}</p>
+        </SpeakerLine>
         <p className="nx-small" data-testid="ladder-price">{offer.to === 'foodtruck' ? l.truckPrice : l.price(kr(offer.depositSek), kr(offer.loanSek))}</p>
         {can === 'cash' && <p className="nx-small" data-testid="ladder-cash-short">{l.cashShort(kr(offer.depositSek))}</p>}
         <p className="nx-small" style={{ opacity: 0.8 }}>{l.notYetNote}</p>

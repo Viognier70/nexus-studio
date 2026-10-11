@@ -29,11 +29,12 @@ import { TeamPanel } from '../business/TeamPanel';
 import { InvestmentPanel } from '../business/InvestmentPanel';
 import { ScaleDownPanel } from '../business/ScaleDownPanel';
 import { calendarFor } from '../../sim/calendar';
-import { SEASON } from '../../sim/balance';
+import { MISE_EN_PLACE, SEASON } from '../../sim/balance';
+import { formatSek } from '../ui/CashCounter';
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import { scheduleSlotsUsed } from '../knowledge/pavilionVisit';
 import { MedalShelf } from '../knowledge/ui/MedalShelf';
-import { bankBelowZeroWarning, settlementInWords, shownInWords } from '../economy/BankDialog';
+import { bankBelowZeroWarning, bankDiagnosisInWords, settlementInWords } from '../economy/BankDialog';
 import { stockForecast } from '../../sim/stockForecast';
 import { eventsSince } from '../../sim/serviceEvents';
 import { numberWord } from '../simulation/eveningAccount';
@@ -49,7 +50,7 @@ import { NxIcon, ACTIVITY_ICON, PAVILION_ICON } from '../ui/screens/icons';
 import { useMentor } from '../ui/screens/mentor';
 import '../ui/screens/screens.css';
 import { useOpenGuard } from '../ui/OpenGuard';
-import { SenderTag } from '../ui/SenderTag';
+import { SenderTag, SpeakerLine } from '../ui/SenderTag';
 import { DinVagButton } from '../ui/LadderOfferCard';
 import { ladderStep } from '../../sim/ladderStep';
 import { refitProgress } from '../../sim/ladder';
@@ -289,14 +290,13 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
           {/* ORDER 300 §3 — mentorns rad står här, inte i bottenraden över listan. */}
           {mentorLine && (
             <div className="nxs-dark-box nxs-mentor-box" data-testid="mentor-line" data-step={mentor.step ?? undefined}>
-              <div style={{ flex: 1 }}>
-                <SenderTag sender="asa" />
-                <div className="nx-label nx-accent-text">{strings.introduction.mentor}</div>
-                <p className="nx-small nxs-mt-8"><span className="nxs-quote-mark">{mentorLine}</span></p>
+              {/* ORDER 330 A — porträttet, namnet och rollen under, repliken till höger (namnet står inte två gånger). */}
+              <SpeakerLine sender="asa" className="nxs-flex-1">
+                <p className="nx-small"><span className="nxs-quote-mark">{mentorLine}</span></p>
                 {mentor.step === 'farewell' && (
                   <div className="nxs-mt-8"><NxButton kind="quiet" testId="mentor-close" onClick={mentor.closeFarewell}>{strings.introduction.farewellClose}</NxButton></div>
                 )}
-              </div>
+              </SpeakerLine>
             </div>
           )}
           {business !== null ? (
@@ -326,6 +326,11 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
                 <div className="nxs-dark-box nxs-mt-24" data-testid="truck-menu" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
                   <div className="nx-label" style={{ color: 'inherit' }}>{strings.ladder.truckMenuLabel}</div>
                   <p className="nx-body">{strings.ladder.truckMenu}</p>
+                  {/* ORDER 330 G — den extra handen vid vagnen: Jonas vid grillen och Nils längs kön (sim/miseEnPlace.ts,
+                      service.ts FOODTRUCK.extraHandOrderTime). */}
+                  {period === 'morning' && (sim.day.prepHand
+                    ? <p className="nx-small" style={{ fontWeight: 700 }} data-testid="prep-hand-hired">{tt(lang, 'prep.handHiredTruck')}</p>
+                    : <div><button type="button" className="nx-btn nx-btn-quiet" style={{ width: 'auto' }} data-testid="prep-hand" onClick={() => dispatch({ type: 'HIRE_PREP_HAND' })}>{tt(lang, 'prep.handTruck', { price: formatSek(MISE_EN_PLACE.extraHandCostSek) })}</button></div>)}
                   {/* ORDER 319c — kvällens väder vid vagnen, synligt på morgonen (sim/truckLife.ts). */}
                   {cal.isServiceDay && (
                     <p className="nx-body" data-testid="truck-forecast" data-weather={truckOf(sim).weather}>
@@ -345,8 +350,9 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
             </>
           ) : (
             <div className="nxs-dark-box" data-testid="morning-bank-note">
-              <NxIcon name="bank" size={36} />
-              <div><SenderTag sender="bank" /><p className="nx-body">{shownInWords(sim.medals)}</p></div>
+              {/* ORDER 330 A och C — banken med sin ikon, namnet och rollen under; dag 1 innan spelaren har gjort något
+                  bankens egen diagnos (bankDayOne). */}
+              <SpeakerLine sender="bank" className="nxs-flex-1"><p className="nx-small" data-testid="morning-bank-line">{bankDiagnosisInWords(sim)}</p></SpeakerLine>
             </div>
           )}
           {/* ORDER 315b del 2 — ombyggnaden (Designs D7 bistroRefit.ts REFIT_PHASES): stängt, och var bygget står. */}

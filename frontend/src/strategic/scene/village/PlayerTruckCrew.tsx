@@ -62,6 +62,10 @@ import { TRUCK_WEATHER } from '../truckWeather';
 import { TruckLife, TRUCK_SIGNALS } from './TruckLife';
 import { RIVAL_YAW, TruckSituationsScene } from './TruckSituationsScene';
 import { clearRoundPose, torchRoundPose, type RoundPose } from './torchRound';
+import { newQueueWalk, stepQueueWalk, type Vec2 as QueueVec2 } from './queueWalk';
+
+/** ORDER 330 G — där Nils står när kön är tom de kvällar Jonas grillar: vid luckans västra sida, utanför vagnen. */
+const QUEUE_WALK_HOME: QueueVec2 = [TRUCK_LAYOUT.queue.order[0] - 0.9, TRUCK_LAYOUT.queue.order[1] + 0.5];
 import { curiousPhase, curiousTalkable, type CuriousGuest } from '../../../sim/curious';
 import { CURIOUS_SPOTS, MENU_BOARD } from '../truckProps';
 import { TRUCK_GUESTS, TruckGuestFlow, childKey, toWorld, type OtherBody, type TruckFrame, type TruckWalker } from './truckGuestFlow';
@@ -123,6 +127,9 @@ export function PlayerTruckCrew() {
   const crew = useMemo(() => {
     const grill = createFigureRig({ variant: 'staff', garmentColour: TRUCK_CREW.grill.uniform });
     const hatch = createFigureRig({ variant: 'staff', garmentColour: TRUCK_CREW.hatch.uniform });
+    // ORDER 330 G — Jonas, den extra handen, vid grillen de kvällar han är inne (dold annars).
+    const jonas = createFigureRig({ variant: 'staff', garmentColour: TRUCK_CREW.extra.uniform });
+    jonas.root.visible = false;
     const g = new THREE.Group();
     g.name = 'playerTruckCrew';
     g.position.set(at.x, 0, at.z);
@@ -131,7 +138,9 @@ export function PlayerTruckCrew() {
     grill.root.position.set(TRUCK_LAYOUT.stations.grill[0], FLOOR_Y_M, TRUCK_LAYOUT.stations.grill[1]);
     grill.root.rotation.y = Math.PI;
     hatch.root.position.set(TRUCK_LAYOUT.stations.hatch[0], FLOOR_Y_M, TRUCK_LAYOUT.stations.hatch[1]);
-    g.add(grill.root, hatch.root);
+    jonas.root.position.set(TRUCK_LAYOUT.stations.grill[0], FLOOR_Y_M, TRUCK_LAYOUT.stations.grill[1]);
+    jonas.root.rotation.y = Math.PI;
+    g.add(grill.root, hatch.root, jonas.root);
     // Gästerna i byns ram: de går in från gatorna och ut igen.
     const guestsGroup = new THREE.Group();
     guestsGroup.name = 'playerTruckGuests';
@@ -149,10 +158,10 @@ export function PlayerTruckCrew() {
     regularGroup.name = 'rivalRegular';
     regularGroup.add(regular.root);
     // Kontrollskriptet (scripts/order315b-2-check.mjs) läser besättningens läge härifrån.
-    if (typeof window !== 'undefined') (window as unknown as { __nxTruckCrew?: unknown }).__nxTruckCrew = { g, grill: grill.root, hatch: hatch.root, guests: guestsGroup };
+    if (typeof window !== 'undefined') (window as unknown as { __nxTruckCrew?: unknown }).__nxTruckCrew = { g, grill: grill.root, hatch: hatch.root, jonas: jonas.root, guests: guestsGroup };
     // ORDER 325 — besättningens ansikten (alltid nöjda, FACE.staffMood).
-    const crewFaces = [attachFace(grill, FACE.staffMood), attachFace(hatch, FACE.staffMood)];
-    return { g, grill, hatch, guestsGroup, lighterProp, breaths, regular, regularGroup, crewFaces };
+    const crewFaces = [attachFace(grill, FACE.staffMood), attachFace(hatch, FACE.staffMood), attachFace(jonas, FACE.staffMood)];
+    return { g, grill, hatch, jonas, guestsGroup, lighterProp, breaths, regular, regularGroup, crewFaces };
   }, [at]);
   // En figur per gäst, med gästens kläder; figurerna återanvänds per klädindex.
   const rigs = useRef({ live: new Map<string, FigureRig>(), free: new Map<number, FigureRig[]>(), children: new Map<string, FigureRig>(), freeChildren: [] as FigureRig[] });
@@ -162,7 +171,7 @@ export function PlayerTruckCrew() {
     return false;
   }, GUEST_GARMENTS.length), [at, frustum]);
   useEffect(() => () => {
-    [crew.grill, crew.hatch].forEach((r) => r.materials.forEach((m) => m.dispose()));
+    [crew.grill, crew.hatch, crew.jonas].forEach((r) => r.materials.forEach((m) => m.dispose()));
     const all = [...rigs.current.live.values(), ...[...rigs.current.free.values()].flat()];
     all.forEach((r) => r.materials.forEach((m) => m.dispose()));
   }, [crew]);
@@ -179,10 +188,14 @@ export function PlayerTruckCrew() {
   // ORDER 319c — medhjälparens runda (följer simuleringens errand), maten i händerna och paraplyerna.
   const round = useRef<{ kind: 'torches' | 'clear' | null; elapsed: number }>({ kind: null, elapsed: 0 });
   const assistantOut = useRef<[number, number] | null>(null);
+  const queueWalkStride = useRef(0);
   // ORDER 327 B — medhjälparen på rundan som blickkontakt (världens ram), och stegen per gäst vid ståborden.
   const assistantGlance = useRef<StaffGlance | null>(null);
   const hatchWants = useRef(new Map<string, WantTrack>());
   // ORDER 328 B — svaret från luckan: grillaren eller medhjälparen tittar upp mot gästen, nickar och lyfter handen.
+  // ORDER 330 G — kvällar med Jonas: om besättningen står bytt, och Nils runda längs kön.
+  const crewSwapped = useRef(false);
+  const queueWalk = useRef(newQueueWalk(QUEUE_WALK_HOME));
   const hatchAck = useRef<{ guestId: string; by: 'hatch' | 'grill'; at: number; used: boolean; yaw: number } | null>(null);
   const regularAt = useRef<[number, number] | null>(null);
   const breath = useRef(crew.breaths);
@@ -245,6 +258,17 @@ export function PlayerTruckCrew() {
     const tempo: TempoId = waiting > QUEUE_STRESSED ? 'stressed' : waiting > QUEUE_CALM ? 'normal' : 'calm';
     const stress = tempo === 'stressed' ? 1 : tempo === 'normal' ? 0.5 : 0;
     if (crew.g.visible) {
+      // ORDER 330 G — den extra handen (HIRE_PREP_HAND): Jonas vid grillen, grillaren i luckan, Nils längs kön.
+      const extra = isTruck && !!sim.day.prepHand;
+      crew.jonas.root.visible = extra;
+      if (extra !== crewSwapped.current) {
+        crewSwapped.current = extra;
+        const G = TRUCK_LAYOUT.stations.grill, H = TRUCK_LAYOUT.stations.hatch;
+        if (extra) { crew.grill.root.position.set(H[0], FLOOR_Y_M, H[1]); crew.grill.root.rotation.y = 0; queueWalk.current = newQueueWalk(QUEUE_WALK_HOME); }
+        else { crew.grill.root.position.set(G[0], FLOOR_Y_M, G[1]); crew.grill.root.rotation.y = Math.PI; crew.hatch.root.position.set(H[0], FLOOR_Y_M, H[1]); crew.hatch.root.rotation.y = 0; assistantOut.current = null; assistantGlance.current = null; }
+      }
+      const grillRig = extra ? crew.jonas : crew.grill;
+      const hatchRig = extra ? crew.grill : crew.hatch;
       // ORDER 320 — grillaren tar korv ur lådan när den håller på att ta slut (ft11), och vänder vegokorven
       // med vegotången med jämna mellanrum (D10 staff.switchTongs, staff.turnVeg).
       const vegCycle = t % VEG_EVERY_S, sw = CLIPS['staff.switchTongs'].seconds.normal, tv = CLIPS['staff.turnVeg'].seconds.normal;
@@ -267,20 +291,20 @@ export function PlayerTruckCrew() {
           if (!gw) continue;
           const gp = flow.shown.get(guestId) ?? [gw.x, gw.z];
           const from = by === 'hatch' ? hatchWorld : toWorld(at, TRUCK_LAYOUT.stations.grill[0], TRUCK_LAYOUT.stations.grill[1]);
-          const rig = by === 'hatch' ? crew.hatch : crew.grill;
+          const rig = by === 'hatch' ? hatchRig : grillRig;
           const yaw = wrap(Math.atan2(gp[0] - from[0], gp[1] - from[1]) - at.rotationY - rig.root.rotation.y);
           hatchAck.current = { guestId, by, at: t, used: false, yaw: Math.max(-SEEK_MAX_YAW, Math.min(SEEK_MAX_YAW, yaw)) };
           break;
         }
       }
       const answering = hatchAck.current;
-      if (answering?.by === 'grill') poseAnswer(crew.grill, t - answering.at, answering.yaw);
-      else if (hatchWaiting) applyPose(crew.grill, sampleClip('staff.listenTilt', t, 'normal', { yaw: TRUCK_GESTURE.grillTurnYaw }).pose);
-      else if (live(sit.stock)) applyPose(crew.grill, sampleClip('staff.takeFromBox', t % CLIPS['staff.takeFromBox'].seconds.normal, 'normal').pose);
-      else if (vegCycle < sw) applyPose(crew.grill, sampleClip('staff.switchTongs', vegCycle, 'normal').pose);
-      else if (vegCycle < sw + tv) applyPose(crew.grill, sampleClip('staff.turnVeg', vegCycle - sw, 'normal').pose);
-      else if (vegCycle < sw * 2 + tv) applyPose(crew.grill, sampleClip('staff.switchTongs', vegCycle - sw - tv, 'normal').pose);
-      else applyPose(crew.grill, sampleClip('truck.grill', t, tempo, { stress }).pose);
+      if (answering?.by === 'grill') poseAnswer(grillRig, t - answering.at, answering.yaw);
+      else if (hatchWaiting) applyPose(grillRig, sampleClip('staff.listenTilt', t, 'normal', { yaw: TRUCK_GESTURE.grillTurnYaw }).pose);
+      else if (live(sit.stock)) applyPose(grillRig, sampleClip('staff.takeFromBox', t % CLIPS['staff.takeFromBox'].seconds.normal, 'normal').pose);
+      else if (vegCycle < sw) applyPose(grillRig, sampleClip('staff.switchTongs', vegCycle, 'normal').pose);
+      else if (vegCycle < sw + tv) applyPose(grillRig, sampleClip('staff.turnVeg', vegCycle - sw, 'normal').pose);
+      else if (vegCycle < sw * 2 + tv) applyPose(grillRig, sampleClip('staff.switchTongs', vegCycle - sw - tv, 'normal').pose);
+      else applyPose(grillRig, sampleClip('truck.grill', t, tempo, { stress }).pose);
       // En gäst som fått sin mat (dagens notor) ger ett varv truck.hatchServe.
       const bills = sim.day.billsTonight ?? 0;
       if (served.current.count < 0) served.current.count = bills;
@@ -310,22 +334,36 @@ export function PlayerTruckCrew() {
         assistantOut.current = null;
         assistantGlance.current = null;
         lighterProp.group.visible = false;
-        crew.hatch.root.position.set(TRUCK_LAYOUT.stations.hatch[0], FLOOR_Y_M, TRUCK_LAYOUT.stations.hatch[1]);
-        crew.hatch.root.rotation.y = 0;
+        if (!extra) {
+          crew.hatch.root.position.set(TRUCK_LAYOUT.stations.hatch[0], FLOOR_Y_M, TRUCK_LAYOUT.stations.hatch[1]);
+          crew.hatch.root.rotation.y = 0;
+        }
       }
-      if (errand) { /* ute på rundan */ } else if (answering?.by === 'hatch') {
-        poseAnswer(crew.hatch, t - answering.at, answering.yaw);
+      if (extra && !errand) {
+        // ORDER 330 G — Nils går från gäst till gäst i kön och tar beställningarna (village/queueWalk.ts).
+        const spots = [...flow.walkers.values()].filter((w) => w.settled && w.spot?.pose === 'queue').map((w) => TRUCK_LAYOUT.queue.line[Math.min(w.spot!.index ?? 0, TRUCK_LAYOUT.queue.line.length - 1)]).sort((a, b) => b[0] - a[0]);
+        const qp = stepQueueWalk(queueWalk.current, Math.min(MAX_DT_S, delta) * effectiveSpeed(sim), spots, QUEUE_WALK_HOME, queueWalkStride.current);
+        if (qp.act === 'walk') queueWalkStride.current = qp.u;
+        crew.hatch.root.position.set(qp.at[0], onDeck(qp.at[0], qp.at[1]) ? DECK_TOP_M : 0, qp.at[1]);
+        crew.hatch.root.rotation.y = qp.yaw;
+        applyPose(crew.hatch, qp.act === 'walk' ? poseWalk(qp.u / TRUCK_GUESTS.strideM) : qp.act === 'take' ? sampleClip('staff.write', qp.u, 'normal').pose : sampleClip('staff.idle', t, 'calm').pose);
+        assistantOut.current = qp.at;
+        const nw = toWorld(at, qp.at[0], qp.at[1]);
+        assistantGlance.current = { key: 'hatch', x: nw[0], z: nw[1], facing: qp.yaw + at.rotationY, walking: qp.act === 'walk', visible: true };
+      }
+      if (errand && !extra) { /* ute på rundan */ } else if (answering?.by === 'hatch') {
+        poseAnswer(hatchRig, t - answering.at, answering.yaw);
       } else if (b && t >= b.at && t < b.at + beckonLen) {
         // Mot gästen, i figurens ram (vänd mot luckan, vagnens +Z).
         const p = bw ? flow.shown.get(bw.id) ?? [bw.x, bw.z] : null;
         const yaw = p ? wrap(Math.atan2(p[0] - hatchWorld[0], p[1] - hatchWorld[1]) - at.rotationY) : 0;
-        applyPose(crew.hatch, sampleClip('truck.beckon', t - b.at, 'normal', { yaw }).pose);
+        applyPose(hatchRig, sampleClip('truck.beckon', t - b.at, 'normal', { yaw }).pose);
       } else if (sit.card.phase === 'active') {
         // ORDER 320 — kortläsaren (ft10): medhjälparen lutar sig ut och trycker på läsaren.
-        applyPose(crew.hatch, sampleClip('staff.checkTerminal', t % CLIPS['staff.checkTerminal'].seconds.normal, 'normal').pose);
+        applyPose(hatchRig, sampleClip('staff.checkTerminal', t % CLIPS['staff.checkTerminal'].seconds.normal, 'normal').pose);
       } else if (sit.card.phase === 'done' && sit.card.quality === 'best' && sim.simTime - sit.card.at < CLIPS['staff.pointSwish'].seconds.normal * 2) {
-        applyPose(crew.hatch, sampleClip('staff.pointSwish', sim.simTime - sit.card.at, 'normal').pose);
-      } else applyPose(crew.hatch, since < serveLen
+        applyPose(hatchRig, sampleClip('staff.pointSwish', sim.simTime - sit.card.at, 'normal').pose);
+      } else applyPose(hatchRig, since < serveLen
         // ORDER 320 — i regnet stängs locket på tråget innan det räcks ut (D10 truck.serveLidded).
         ? (raining ? sampleClip('truck.serveLidded', since * CLIPS['truck.serveLidded'].seconds.normal / serveLen, 'normal').pose : sampleClip('truck.hatchServe', since, tempo, { stress, hand: 'L' }).pose)
         : sampleClip('truck.wipeCounter', t, tempo, { stress }).pose);

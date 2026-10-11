@@ -168,10 +168,13 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
             <p className="nx-small" style={{ margin: `${u(6)} 0 0` }}>{prep.backlogMin > 0 ? tt(lang, 'prep.backlog', { n: prep.backlogMin }) : tt(lang, 'prep.ready')}</p>
             {!prep.extraHand ? (
               <button type="button" className="nx-btn nx-btn-quiet" style={{ width: 'auto', marginTop: u(8) }} data-testid="prep-hand" onClick={() => dispatch({ type: 'HIRE_PREP_HAND' })}>
-                {tt(lang, 'prep.hand', { price: formatSek(MISE_EN_PLACE.extraHandCostSek), n: MISE_EN_PLACE.extraHandMin })}
+                {/* ORDER 330 G — vid vagnen syns valet: Jonas vid grillen och Nils längs kön. */}
+                {sim.economy.businessClass === 'foodtruck'
+                  ? tt(lang, 'prep.handTruck', { price: formatSek(MISE_EN_PLACE.extraHandCostSek) })
+                  : tt(lang, 'prep.hand', { price: formatSek(MISE_EN_PLACE.extraHandCostSek), n: MISE_EN_PLACE.extraHandMin })}
               </button>
             ) : (
-              <p className="nx-small" style={{ margin: `${u(6)} 0 0`, fontWeight: 700 }} data-testid="prep-hand-hired">{tt(lang, 'prep.handHired')}</p>
+              <p className="nx-small" style={{ margin: `${u(6)} 0 0`, fontWeight: 700 }} data-testid="prep-hand-hired">{tt(lang, sim.economy.businessClass === 'foodtruck' ? 'prep.handHiredTruck' : 'prep.handHired')}</p>
             )}
           </div>
           <div className="nxs-buy-block">

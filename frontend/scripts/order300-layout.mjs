@@ -34,6 +34,10 @@
 // ORDER 324b §3 — LAYOUT_LANG=en kör kontrollen på engelska (språket i menyn, nexus.lang); förvalet är
 // svenska, som spelet startar på.
 //
+// ORDER 330 D — inledningen (öppningen, mentorn, morgonen dag 1) och bankens samtal dag 1 (`banken-dag1`), och
+// mätningen speakerOverlaps: talarmärket ([data-testid=speaker-tag] eller .nx-sender-stacked) får inte ligga på
+// repliken ([data-testid=speaker-text]) i samma talarrad, och bilden inte på namnet och rollen.
+//
 //   [REPORT_ORDER=order300] [SKIP_BUILD=1] [LAYOUT_SIZES=1280x720,...] [LAYOUT_LANG=sv|en] node scripts/order300-layout.mjs
 
 import { spawn } from 'node:child_process';
@@ -163,7 +167,36 @@ async function probe(page, buttons) {
         }
       }
     }
-    return { pageScroll, scrollers, shelfRows: shelf.length, shelfHidden, shelfBelowEdge, overlaps, covered, screenScroll: scrollers.filter((s) => s.screen).map((s) => s.el), minFontPx: minFont === Infinity ? null : +minFont.toFixed(1), minFontAt, clipped };
+    // ORDER 330 D — talarmärket mot repliken, och märkets bild mot namnet och rollen.
+    const speakerOverlaps = [];
+    const hit = (a, b) => a.width > 0 && b.width > 0 && a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5;
+    const rectOf = (el) => { const rs = [el, ...el.querySelectorAll('*')].filter(visibleEl).map((x) => x.getBoundingClientRect()); if (!rs.length) return { left: 0, right: 0, top: 0, bottom: 0, width: 0 }; const l = Math.min(...rs.map((r) => r.left)), r = Math.max(...rs.map((x) => x.right)), t = Math.min(...rs.map((x) => x.top)), b = Math.max(...rs.map((x) => x.bottom)); return { left: l, right: r, top: t, bottom: b, width: r - l }; };
+    for (const text of document.querySelectorAll('[data-testid=speaker-text]')) {
+      if (!visibleEl(text)) continue;
+      const host = text.parentElement;
+      const tag = host && [...host.children].find((c) => c !== text && (c.matches('[data-testid=speaker-tag], .nx-sender-stacked, .nxs-mentor-portrait') || c.querySelector('[data-testid=speaker-tag]')));
+      if (!tag || !visibleEl(tag)) continue;
+      if (hit(rectOf(tag), text.getBoundingClientRect())) speakerOverlaps.push({ el: name(host), what: 'tag-text' });
+      // Repliken får inte skymmas av något utanför talarraden (t.ex. bottenraden): sista radens början och slut.
+      const tr = text.getBoundingClientRect();
+      for (const [x, y] of [[tr.left + 6, tr.bottom - 6], [tr.right - 6, tr.bottom - 6]]) {
+        if (x < 0 || y < 0 || x >= W || y >= H) { speakerOverlaps.push({ el: name(host), what: 'text-outside' }); break; }
+        const top = document.elementFromPoint(x, y);
+        if (top && !host.contains(top) && !top.contains(host)) {
+          // En talarrad bakom en öppen dialog (regelkortet, mentorn, banken) ska skymmas; den räknas inte.
+          const modal = top.closest('[role=dialog], [aria-modal=true], .nx-screen, .nxs-mentor-screen, [data-testid=rules-card]');
+          if (modal && !modal.contains(host)) break;
+          speakerOverlaps.push({ el: name(host), what: 'text-covered', by: name(top) }); break;
+        }
+      }
+    }
+    for (const tag of document.querySelectorAll('.nx-sender-stacked, [data-testid=speaker-tag]')) {
+      if (!visibleEl(tag)) continue;
+      const img = tag.querySelector('.nx-sender-badge, .nx-sender-portrait, .nx-sender-initial, .nx-asa-portrait');
+      if (!img || !visibleEl(img)) continue;
+      for (const t of tag.querySelectorAll('.nx-sender-name, .nx-sender-sub, .nx-asa-name, .nx-asa-from')) if (visibleEl(t) && hit(img.getBoundingClientRect(), t.getBoundingClientRect())) speakerOverlaps.push({ el: name(tag), what: 'image-name' });
+    }
+    return { speakerOverlaps, pageScroll, scrollers, shelfRows: shelf.length, shelfHidden, shelfBelowEdge, overlaps, covered, screenScroll: scrollers.filter((s) => s.screen).map((s) => s.el), minFontPx: minFont === Infinity ? null : +minFont.toFixed(1), minFontAt, clipped };
   }, [SCREEN_SHARE, buttons]);
 }
 
@@ -176,7 +209,7 @@ async function measure(page, name, buttons = []) {
     const p = await probe(page, buttons);
     // ORDER 324b — språket som faktiskt visas (main.tsx sätter <html lang> ur det valda språket).
     const htmlLang = await page.evaluate(() => document.documentElement.lang);
-    const ok = htmlLang === LANG && !p.pageScroll && p.overlaps.length === 0 && p.covered.length === 0 && p.shelfHidden.length === 0 && p.screenScroll.length === 0 && (p.minFontPx ?? 99) >= MIN_FONT_PX && p.clipped.length === 0;
+    const ok = htmlLang === LANG && p.speakerOverlaps.length === 0 && !p.pageScroll && p.overlaps.length === 0 && p.covered.length === 0 && p.shelfHidden.length === 0 && p.screenScroll.length === 0 && (p.minFontPx ?? 99) >= MIN_FONT_PX && p.clipped.length === 0;
     rows.push({ size: `${w}×${h}`, ok, htmlLang, ...p });
     await page.screenshot({ path: resolve(OUT, `layout-${name}-${w}x${h}.png`) });
   }
@@ -202,7 +235,8 @@ try {
     await page.waitForSelector('[data-testid=start-screen]', { timeout: 120000 });
     await delay(800);
     await measure(page, 'start', ['[data-testid=new-game]']);
-    await page.click('[data-testid=new-game]');
+    // ORDER 330 D — klicket startar spelet och laddar världen; vänta inte på det efteråt (det gav tidsgränsen).
+    await page.click('[data-testid=new-game]', { noWaitAfter: true, timeout: 60000 });
     await page.waitForSelector('[data-testid=register-screen]');
     await page.fill('[data-testid=register-name]', 'Anders');
     await measure(page, 'registrering', ['[data-testid=register-sign]', '[data-testid=register-skip]', '[data-testid=register-research-yes]', '[data-testid=register-research-no]']);
@@ -224,6 +258,15 @@ try {
     await page.waitForSelector('[data-testid=day-action-bar]', { timeout: 30000 }).catch(() => {});
     await delay(1200);
     await measure(page, 'morgonen-dag1', ['[data-testid=schedule-slots]']);
+    // ORDER 330 D — bankens samtal dag 1, innan spelaren har gjort något.
+    if (await page.$('[data-testid=open-bank]')) {
+      await page.click('[data-testid=open-bank]');
+      await page.waitForSelector('[data-testid=bank-dialog]', { timeout: 10000 }).catch(() => {});
+      await delay(600);
+      await measure(page, 'banken-dag1', ['[data-testid=close-bank]']);
+      await page.click('[data-testid=close-bank]').catch(() => {});
+      await delay(400);
+    }
     await page.click('[data-testid=menu-button]');
     await page.click('[data-testid=menu-rules]');
     await page.waitForSelector('[data-testid=rules-page]');
@@ -237,7 +280,7 @@ try {
     const { ctx, page } = await newPage(true);
     await page.goto(`${URL}/`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('[data-testid=start-screen]', { timeout: 120000 });
-    await page.click('[data-testid=continue-saved]');
+    await page.click('[data-testid=continue-saved]', { noWaitAfter: true, timeout: 60000 });
     await page.waitForSelector('[data-testid=load-slot-1]', { timeout: 30000 }).then(() => page.click('[data-testid=load-slot-1]')).catch(() => {});
     await page.waitForSelector('[data-testid=day-action-bar]', { timeout: 60000 });
     await delay(1500);

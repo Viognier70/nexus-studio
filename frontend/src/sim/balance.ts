@@ -931,6 +931,12 @@ export const FOODTRUCK = {
   // vinbaren vecka 2–3.
   offerMinEvenings: 10,
   halfGripCounts: 0.5,
+  // ORDER 330 G (Anders 2026-10-11) — den extra handen vid vagnen (HIRE_PREP_HAND): Jonas står vid grillen och Nils
+  // går längs kön, tar beställningarna och säger hur lång väntan är (fika-vagn-kon svar A). Beställningen tar så här
+  // stor del av tiden de kvällarna (service.ts), så att kön går fortare. Rundan längs kön (village/queueWalk.ts):
+  // gångfarten, stunden vid varje gäst och avståndet ut från kön, i meter och sekunder.
+  extraHandOrderTime: 0.7,
+  queueWalk: { speedMps: 1.2, takeS: 3, outM: 0.6 },
   // ORDER 315c — 7 → 4,5: 0,85 tjänar omkring 11 000 kr i veckan (förslaget: 12 000) och ryktet
   // håller sig när kön inte är längre än två hinner med (harness, reports/order315c/).
   guestCapFactor: 4.5,

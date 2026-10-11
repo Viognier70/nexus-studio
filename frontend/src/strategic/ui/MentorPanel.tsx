@@ -21,6 +21,8 @@ import { MENTOR_STEPS, useMentor } from './screens/mentor';
 import { AsaBubble, AsaPortrait } from './AsaBubble';
 import './screens/screens.css';
 import { SenderTag } from './SenderTag';
+import { t as tt, type StringKey } from '../../content/nexusStrings';
+import { useLanguage } from '../../content/language';
 
 const t = strings.introduction;
 const s = strings.screens;
@@ -35,6 +37,7 @@ export function MentorPanel() {
   const sim = useSimState();
   const dispatch = useSimDispatch();
   const mentor = useMentor();
+  const lang = useLanguage();
   if (!mentor.showScreen || mentor.step === null || mentor.line === null) return null;
 
   // ORDER 313 §2 — Åsa när satsningarna öppnas (efter första provet).
@@ -61,10 +64,17 @@ export function MentorPanel() {
         {strings.calendar.weekdays[cal.weekday]} · {s.mentor.campus} · {strings.calendar.week(cal.week, SEASON.weeks)}
       </div>
       {/* ORDER 317 — Designs porträtt av Åsa (D6) i stället för monogrammet. */}
-      <div className="nxs-mentor-portrait nx-asa-m1" data-testid="portrait-mentor"><AsaPortrait /></div>
-      <div className="nxs-mentor-dialog">
+      {/* ORDER 330 A — namnet och rollen under porträttet, inte i ett märke ovanför repliken. */}
+      <div className="nxs-mentor-portrait nx-asa-m1" data-testid="portrait-mentor">
+        <AsaPortrait />
+        <div className="nxs-mentor-who" data-testid="speaker-tag">
+          <span className="nx-sender-name" data-testid="sender" data-sender="asa">{tt(lang, 'sender.asa' as StringKey)}</span>
+          <span className="nx-sender-sub">{tt(lang, 'sender.asa.sub' as StringKey)}</span>
+        </div>
+      </div>
+      <div className="nxs-mentor-dialog" data-testid="speaker-text">
         <div className="nxs-row-between">
-          <SenderTag sender="asa" />
+          <SenderTag sender="asa" className="nxs-mentor-narrow-tag" />
           <div className="nx-label nx-accent-text">{s.mentor.label}</div>
           <div className="nxs-dots" aria-label={s.mentor.stepOf(mentor.index ?? 1, MENTOR_STEPS.length)} role="img">
             {MENTOR_STEPS.map((st, i) => (

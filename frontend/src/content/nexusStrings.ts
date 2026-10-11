@@ -273,6 +273,9 @@ export const STRINGS = {
   'prep.backlog': { sv: '{n} minuter görs efter öppning, och gästerna får vänta längre tills det är klart.', en: '{n} minutes are done after opening, and the guests wait longer until it is finished.' },
   'prep.hand': { sv: 'Ta in en extra hand · {price} · +{n} min', en: 'Bring in an extra pair of hands · {price} · +{n} min' },
   'prep.handHired': { sv: 'En extra hand förbereder med laget.', en: 'An extra pair of hands is prepping with the team.' },
+  // ORDER 330 G — vid vagnen är den extra handen Jonas: han grillar, och Nils tar beställningarna längs kön.
+  'prep.handTruck': { sv: 'Ta in Jonas vid grillen · {price} · Nils tar beställningar i kön', en: 'Bring in Jonas at the grill · {price} · Nils takes orders in the queue' },
+  'prep.handHiredTruck': { sv: 'Jonas står vid grillen i kväll, och Nils går längs kön och tar beställningarna.', en: 'Jonas is at the grill tonight, and Nils walks the queue taking orders.' },
   'risk.closed.again': { sv: 'Börja om', en: 'Start again' },
   // ORDER 296 — Designs leverans hovmästaren och butiken (hostShopStrings.ts,
   // 128 nycklar). role.* heter shop.role.* här: role.sommelier finns redan
@@ -1375,6 +1378,11 @@ export const TABLE = {
     shownNothing: {
       sv: 'Du har inte visat något i Måltidens hus ännu.',
       en: 'You have not shown anything in the House of the Meal yet.'
+    },
+    // ORDER 330 C — bankens diagnos dag 1, när spelaren inte har gjort något ännu.
+    bankDayOne: {
+      sv: 'Du har inte börjat än. När du har visat vad du kan i Måltidens hus, till exempel med en medalj, kan vi prata om lån.',
+      en: 'You haven’t started yet. Once you have shown what you can do in the House of the Meal, with a medal for example, we can talk about a loan.'
     },
     missing: {
       sv: (cls: string, req: string) => `För ${cls} saknas ${req}.`,

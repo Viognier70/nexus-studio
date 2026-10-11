@@ -17,12 +17,15 @@ export function AsaBubble({ line, onNext, testId, step, nextTestId }: { line: st
   const lang = useLanguage();
   return (
     <div className="nx nx-asa-bubble" role="status" data-testid={testId ?? 'mentor'} data-step={step}>
-      <AsaPortrait />
-      <div className="nx-asa-col">
+      {/* ORDER 330 A — namnet och rollen under porträttet, repliken till höger. */}
+      <div className="nx-asa-speaker" data-testid="speaker-tag">
+        <AsaPortrait />
         <div className="nx-asa-who">
           <span className="nx-asa-name" data-testid="sender" data-sender="asa">{tt(lang, 'asa.name')}</span>
           <span className="nx-asa-from">{tt(lang, 'asa.from')}</span>
         </div>
+      </div>
+      <div className="nx-asa-col" data-testid="speaker-text">
         <div className="nx-asa-paper">
           <p className="nx-asa-line" data-testid="asa-line">{line}</p>
           <button type="button" className="nx-asa-next" data-testid={nextTestId} onClick={onNext}>{tt(lang, 'asa.next')}</button>

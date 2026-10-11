@@ -491,3 +491,33 @@ body:has(.nx-stake) .nx-status-legend { max-height: calc(64.5vh - 4.7vh - 96px -
 .nxs-refit-phases { list-style: none; margin: 8px 0 0; padding: 0; display: flex; gap: 8px; flex-wrap: wrap; }
 .nxs-refit-phases li { padding: 2px 10px; border-radius: 999px; border: 1.5px dashed rgba(244, 230, 204, 0.5); font-size: max(12px, calc(14 * var(--nx-u))); }
 .nxs-refit-phases li[data-done='true'] { border-style: solid; border-color: var(--w-gold, #e8b93a); background: rgba(232, 185, 58, 0.18); }
+
+/* ORDER 330 A — talarmärket: bilden överst, namnet och rollen under, aldrig i den. Repliken till höger med fast
+ * mellanrum i en egen kolumn; märkets kolumn bryter långa namn i stället för att flyta in i repliken. */
+.nx-speaker-line {
+  display: grid; grid-template-columns: var(--nx-speaker-col, max(104px, 14vh)) minmax(0, 1fr);
+  column-gap: var(--nx-speaker-gap, max(16px, 2.2vh)); align-items: start;
+}
+.nx-speaker-text { min-width: 0; }
+.nx-speaker-text > :first-child { margin-top: 0; }
+.nx-sender.nx-sender-stacked {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; max-width: 100%;
+  padding: 0; border: 0; border-radius: 0; background: none; margin: 0; vertical-align: top;
+}
+.nx-sender-stacked .nx-sender-badge, .nx-sender-stacked .nx-sender-initial { width: max(40px, 5.5vh); height: max(40px, 5.5vh); }
+.nx-sender-stacked .nx-sender-portrait { width: max(40px, 5.5vh) !important; height: max(40px, 5.5vh) !important; }
+.nx-sender-stacked .nx-sender-name, .nx-sender-stacked .nx-sender-sub { display: block; max-width: 100%; overflow-wrap: anywhere; line-height: 1.2; }
+.nx-sender-stacked .nx-sender-name { margin-top: 2px; }
+.nxs-flex-1 { flex: 1 1 auto; min-width: 0; }
+.nxs-say-bank { padding: calc(18 * var(--nx-u)) 0; --nx-speaker-col: calc(170 * var(--nx-u)); }
+/* ORDER 330 A — M1: Åsas namn och roll under porträttet; märket i dialogen bara när porträttet är dolt (smal skärm). */
+.nxs-mentor-portrait.nx-asa-m1 { flex-direction: column; gap: calc(20 * var(--nx-u)); }
+.nxs-mentor-portrait.nx-asa-m1 .nx-asa-portrait { width: min(100%, 44vh); height: min(100%, 44vh); }
+.nxs-mentor-who { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--w-cream, #f4e6cc); text-align: center; }
+.nxs-mentor-who .nx-sender-name { font-size: max(18px, 2.6vh); }
+.nxs-mentor-narrow-tag { display: none !important; }
+@media (max-width: 760px) { .nxs-mentor-narrow-tag { display: inline-flex !important; } }
+/* ORDER 330 A — i morgonens smala kort (Åsa och banken) en smalare kolumn för märket, så att repliken får plats. */
+.nxs-morning-right .nx-speaker-line { --nx-speaker-col: max(84px, 11vh); --nx-speaker-gap: max(12px, 1.6vh); }
+.nxs-morning-right .nx-sender-stacked .nx-sender-name { font-size: max(13px, 1.9vh); }
+.nxs-morning-right .nx-sender-stacked .nx-sender-sub { font-size: 12px; }

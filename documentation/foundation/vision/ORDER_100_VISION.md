@@ -403,6 +403,16 @@ The simulation creates problems.
 Knowledge solves them.
 Not the opposite.
 
+## EVERY CHOICE IS SEEN
+
+*Added by the Vision Owner, Anders 2026-10-11 (ORDER 330 F).*
+
+Everything the player chooses that affects the game is always visible in the game.
+The player understands their decisions by seeing the consequences.
+A choice that only changes a value, with nothing to be seen, is a fault.
+
+*Svenska:* Allt spelaren väljer som påverkar spelet ska alltid synas i spelet. Spelaren ska förstå sina beslut genom att se följderna. Ett val som bara ändrar ett värde utan att något syns räknas som ett fel.
+
 ## SUSTAINABILITY
 
 Economic.

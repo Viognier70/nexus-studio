@@ -25,7 +25,7 @@ import { CLASS_ICON, NxIcon, PAVILION_ICON } from '../ui/screens/icons';
 import { MedalDisc } from '../ui/screens/MedalDisc';
 import '../ui/screens/screens.css';
 import { getLanguage, numberLocale } from '../../content/language';
-import { SenderTag } from '../ui/SenderTag';
+import { SpeakerLine } from '../ui/SenderTag';
 
 const e = strings.economy;
 
@@ -65,6 +65,17 @@ function requirementInWords(req: MedalRequirement): string {
   return `${e.reqLevelIn(level, where)}${including}`;
 }
 
+/** ORDER 330 C — dag 1, innan spelaren har gjort något: ingen verksamhet, ingen medalj, inget övningsbesök och
+ *  inget prov. Då har banken en egen diagnos (bankDayOne); senare dagar gäller den vanliga. */
+export function bankNothingYet(sim: Pick<SimulationState, 'day' | 'medals' | 'economy' | 'introduction' | 'examsTaken'>): boolean {
+  return sim.day.dayNumber === 1 && !sim.economy.businessClass && !Object.values(sim.medals).some(Boolean) && !sim.introduction?.practiced && !(sim.examsTaken ?? 0);
+}
+
+/** Bankens diagnos i ord: dag 1 innan spelaren har gjort något bankDayOne, annars medaljerna (shownInWords). */
+export function bankDiagnosisInWords(sim: Pick<SimulationState, 'day' | 'medals' | 'economy' | 'introduction' | 'examsTaken'>): string {
+  return bankNothingYet(sim) ? e.bankDayOne : shownInWords(sim.medals);
+}
+
 export function shownInWords(medals: SimulationState['medals']): string {
   const held = ALL_PAVILIONS.filter((p) => medals[p]);
   if (held.length === 0) return e.shownNothing;
@@ -102,9 +113,11 @@ const sb = strings.screens.bank;
 const SEEN_ORDER: readonly PavilionKey[] = ['maltidbiblioteket', 'stensota', 'metodkoket', 'kalastorget', 'gastronomiskateatern'];
 
 function Say({ who, children, you }: { who: string; children: React.ReactNode; you?: boolean }) {
+  // ORDER 330 A — banken talar med talarmärket (ikonen, namnet och rollen under) och repliken till höger.
+  if (!you) return <SpeakerLine sender="bank" className="nxs-say-bank"><p className="nx-body">{children}</p></SpeakerLine>;
   return (
-    <div className="nxs-say" data-you={you ? 'true' : undefined}>
-      {you ? <div className="nx-label">{who}</div> : <SenderTag sender="bank" />}
+    <div className="nxs-say" data-you="true">
+      <div className="nx-label">{who}</div>
       <p className="nx-body">{children}</p>
     </div>
   );
@@ -178,9 +191,11 @@ export function BankDialog({ open, onClose }: Props) {
     <div className="nxs-diag" data-testid="bank-diagnosis-box">
       <div className="nx-label">{sb.diagnosis}</div>
       <p data-testid="bank-diagnosis">
-        {current ? e.bankCurrent(e.classesDefinite[current]) : e.bankNone}{' '}
-        {shownInWords(sim.medals)}{' '}
-        {!anyMedal && !current ? e.bankNoLoan : ''}
+        {bankNothingYet(sim) ? e.bankDayOne : <>
+          {current ? e.bankCurrent(e.classesDefinite[current]) : e.bankNone}{' '}
+          {shownInWords(sim.medals)}{' '}
+          {!anyMedal && !current ? e.bankNoLoan : ''}
+        </>}
       </p>
     </div>
   );
