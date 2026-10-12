@@ -963,6 +963,8 @@ export interface DayState {
   // ORDER 296 — mise en place efter inköpen (sim/miseEnPlace.ts): den extra
   // handen på morgonen, och behovet, det som hanns och eftersläpet (spelminuter).
   prepHand?: boolean;
+  /** ORDER 331 C — det värden bjöd på eller sålde in (sim/hostPins.ts), till scenen: bärs till bordet. */
+  hostCarries?: { id: string; guestIds: string[]; carry: 'glass' | 'plate' }[];
   /** ORDER 331 B — den extra handen kommer från fikats svar (redan betald). */
   prepHandFromFika?: boolean;
   prepNeedMin?: number;

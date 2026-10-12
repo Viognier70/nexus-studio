@@ -13,7 +13,15 @@
 // frågebanken (ORDER 306); tills dess står vagnarna parkerade.
 
 import * as THREE from 'three';
-import { createEquipment, EQUIPMENT, type EquipmentHandle, type EquipmentId } from './equipment';
+import { cartPose, createEquipment, EQUIPMENT, type EquipmentHandle, type EquipmentId } from './equipment';
+import type { CartId, DirectorPose } from './wineBarDirector';
+
+/** ORDER 331 C — vagnen just nu ur regissören (WineBarDirector.cartAt), eller null när den står parkerad. */
+export type CartNow = { x: number; z: number; facing: number; pose: DirectorPose; progress: number; walking: boolean } | null;
+const CARTS: readonly CartId[] = ['cheeseCart', 'flambeCart', 'avecCart'];
+/** Vagnen bredvid den som arbetar vid bordet (m åt höger), och hur fort den visade vagnen följer (1/s). */
+const CART_SIDE_M = 0.62;
+const CART_FOLLOW_RATE = 8;
 import type { EquipmentId as GameEquipmentId } from '../../sim/goods';
 
 export const D5_EQUIPMENT_OF: Record<GameEquipmentId, EquipmentId> = {
@@ -62,6 +70,41 @@ export class RoomEquipment {
     }
     for (const [id, h] of this.items) if (!want.includes(id)) h.group.visible = false;
     return want;
+  }
+
+  /**
+   * ORDER 331 C — vagnarna i bruk (grundregeln): den som skjuter har vagnen framför sig (cartPose), vid bordet står
+   * den bredvid; annars på sin plats. Det visade läget följer mjukt, så att vagnen inte hoppar när den tas.
+   * Kupan lyfts och osten skärs i cheese.cut, lågan tar sig i flambe.pour.
+   */
+  followCarts(at: (id: CartId) => CartNow, dt: number, t: number): void {
+    const k = 1 - Math.exp(-CART_FOLLOW_RATE * Math.max(0, dt));
+    for (const id of CARTS) {
+      const h = this.items.get(id);
+      if (!h || !h.group.visible) continue;
+      const c = at(id);
+      const home = EQUIPMENT[id].home;
+      const want = !c ? { x: home.at[0], z: home.at[1], yaw: home.yaw }
+        : c.walking ? cartPose(id, c.x, c.z, c.facing)
+          : { x: c.x + Math.cos(c.facing) * CART_SIDE_M, z: c.z - Math.sin(c.facing) * CART_SIDE_M, yaw: c.facing };
+      const g = h.group;
+      g.position.x += (want.x - g.position.x) * k;
+      g.position.z += (want.z - g.position.z) * k;
+      let dy = want.yaw - g.rotation.y;
+      while (dy > Math.PI) dy -= 2 * Math.PI;
+      while (dy < -Math.PI) dy += 2 * Math.PI;
+      g.rotation.y += dy * k;
+      const cutting = !!c && c.pose === 'cheeseCut';
+      h.setCloche?.(cutting ? Math.min(1, c!.progress * 4, (1 - c!.progress) * 4) : 0);
+      h.setCut?.(cutting ? c!.progress : 0);
+      h.setFlame?.(c && c.pose === 'flambePour' ? Math.sin(Math.PI * c.progress) : 0, t);
+    }
+  }
+
+  /** ORDER 331 C — vagnens läge i rummet (för testerna och kontrollen). */
+  cartPlace(id: CartId): { x: number; z: number; yaw: number } | null {
+    const h = this.items.get(id);
+    return h ? { x: h.group.position.x, z: h.group.position.z, yaw: h.group.rotation.y } : null;
   }
 
   shown(): EquipmentId[] {

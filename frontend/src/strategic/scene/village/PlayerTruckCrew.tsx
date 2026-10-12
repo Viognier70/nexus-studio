@@ -58,6 +58,7 @@ import { RIVAL_SIGN } from '../truckPropsD10';
 import { createProp, holdProp, placeProp, updateHeld, type PropHandle, type PropId } from '../tableware';
 import { DECK_TOP_M, onDeck } from '../playerTruck';
 import { TRUCK_PROPS } from '../truckProps';
+import { truckCrewShown } from '../choicesShown';
 import { TRUCK_WEATHER } from '../truckWeather';
 import { TruckLife, TRUCK_SIGNALS } from './TruckLife';
 import { RIVAL_YAW, TruckSituationsScene } from './TruckSituationsScene';
@@ -259,8 +260,12 @@ export function PlayerTruckCrew() {
     const stress = tempo === 'stressed' ? 1 : tempo === 'normal' ? 0.5 : 0;
     if (crew.g.visible) {
       // ORDER 330 G — den extra handen (HIRE_PREP_HAND): Jonas vid grillen, grillaren i luckan, Nils längs kön.
-      const extra = isTruck && !!sim.day.prepHand;
+      // ORDER 331 C — laget: en anställd utöver vagnens lag är Jonas vid grillen varje kväll; den som slutat syns inte.
+      const team = truckCrewShown(sim.team);
+      const extra = isTruck && (!!sim.day.prepHand || team.jonas);
       crew.jonas.root.visible = extra;
+      crew.grill.root.visible = team.grill;
+      crew.hatch.root.visible = team.hatch;
       if (extra !== crewSwapped.current) {
         crewSwapped.current = extra;
         const G = TRUCK_LAYOUT.stations.grill, H = TRUCK_LAYOUT.stations.hatch;

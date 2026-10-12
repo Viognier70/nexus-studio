@@ -19,7 +19,9 @@ export const ROLE_OF: Record<StaffKey, StaffRole> = {
   // ORDER 293 — Per, hovmästaren (Designs leverans 3 och vardagens koreografi).
   host: 'host',
   // ORDER 330 H — den extra i vinbaren och bistron (springaren, byråns lärling, den extra handen).
-  extra: 'waiter'
+  extra: 'waiter',
+  // ORDER 331 C — den andra kocken (gästkocken, eller en kock till i laget).
+  cook2: 'cook'
 };
 
 export interface StaffMark {

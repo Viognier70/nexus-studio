@@ -70,6 +70,14 @@ export function staffClipFor(s: FigureSample, key: StaffKey): string | null {
     // ORDER 325 (D11 tableLeft) — avtorkningen av ett tomt bord före nästa sällskap, Designs nya klipp.
     case 'wipeTable': return 'waiter.wipeTable';
     case 'chat': return 'staff.chat';
+    // ORDER 331 C — grundregeln: morgonens satsningar och utrustningen i bruk (Designs klipp ur D5 och leverans 3).
+    case 'brief': return 'host.point';
+    case 'listen': return 'staff.listen';
+    case 'carryCrate': return 'staff.carryCrate';
+    case 'pushCart': return 'trolley.push';
+    case 'cheeseCut': return 'cheese.cut';
+    case 'flambePour': return 'flambe.pour';
+    case 'presentCart': return 'trolley.present';
     default: return null;
   }
 }
