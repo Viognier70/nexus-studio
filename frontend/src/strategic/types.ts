@@ -963,6 +963,10 @@ export interface DayState {
   // ORDER 296 — mise en place efter inköpen (sim/miseEnPlace.ts): den extra
   // handen på morgonen, och behovet, det som hanns och eftersläpet (spelminuter).
   prepHand?: boolean;
+  /** ORDER 331 C — det värden bjöd på eller sålde in (sim/hostPins.ts), till scenen: bärs till bordet. */
+  hostCarries?: { id: string; guestIds: string[]; carry: 'glass' | 'plate' }[];
+  /** ORDER 331 B — den extra handen kommer från fikats svar (redan betald). */
+  prepHandFromFika?: boolean;
   prepNeedMin?: number;
   prepCapacityMin?: number;
   prepBacklogMin?: number;
@@ -1835,6 +1839,8 @@ export interface SimulationState {
   scaleDown: {
     menuShortenedFrom: IngredientTier | null;
     wineListReduced: boolean;
+    /** ORDER 331 A — välkomstdrinken innan vinlistan tunnades, så att återställningen ger tillbaka den. */
+    welcomeDrinkBefore?: boolean;
     closedLunch: boolean;
     closedDinner: boolean;
   };
@@ -2022,7 +2028,8 @@ export type SimAction =
   //     the pre-shorten value on state.scaleDown.menuShortenedFrom;
   //     dispatching again restores from that stash.
   //   THIN_WINE_LIST toggles state.scaleDown.wineListReduced and turns
-  //     policies.welcomeDrink off when engaging (restoring on off).
+  //     policies.welcomeDrink off when engaging; restoring gives back the
+  //     value it had before (ORDER 331 A, scaleDown.welcomeDrinkBefore).
   //   CLOSE_SERVICE with service='lunch'|'dinner' toggles the
   //     corresponding closed flag; reducer refuses OPEN_SERVICE while
   //     the flag is set.

@@ -161,6 +161,8 @@ export function seatPartyNow(draft: SimulationState, key: string, seats?: readon
 export function comp(draft: SimulationState, key: string, what: 'glass' | 'coffee'): void {
   const party = partyOf(draft, key).filter((g) => g.state !== 'leaving' && g.state !== 'declined');
   if (party.length === 0) return;
+  // ORDER 331 C — grundregeln: glaset eller kaffet bärs till bordet (scenen läser day.hostCarries).
+  carried(draft, `comp|${key}|${what}|${draft.simTime}`, party.map((g) => g.id), 'glass');
   if (what === 'glass') {
     for (const g of party) if ((draft.day.platesRemaining[HOST.glassDishId] ?? 0) > 0) { takeFromStock(draft, HOST.glassDishId, draft.simTime); lift([g], HOST.compGlassSatisfaction); }
   } else {
@@ -175,12 +177,20 @@ export function comp(draft: SimulationState, key: string, what: 'glass' | 'coffe
 export function upsell(draft: SimulationState, key: string, what: 'dessert' | 'wine'): number {
   const party = partyOf(draft, key).filter((g) => SEATED.has(g.state));
   let sek = 0;
+  const yes: string[] = [];
   party.forEach((g, i) => {
     if (roll(draft, `${key}|${what}|${i}`) >= HOST.upsellChance) { lift([g], HOST.upsellDeclineSatisfaction); return; }
     const ids = what === 'dessert' ? HOST.dessertDishIds : [HOST.glassDishId];
-    for (const id of ids) { const got = sell(draft, id); if (got > 0) { sek += got; break; } }
+    for (const id of ids) { const got = sell(draft, id); if (got > 0) { sek += got; yes.push(g.id); break; } }
   });
+  // ORDER 331 C — det som såldes in bärs till bordet: efterrätten på en tallrik, glaset.
+  if (yes.length > 0) carried(draft, `upsell|${key}|${what}|${draft.simTime}`, yes, what === 'dessert' ? 'plate' : 'glass');
   return sek;
+}
+
+/** ORDER 331 C — det värden bjöd på eller sålde in, till scenen (bärs till bordet). Läses inte av simuleringen. */
+function carried(draft: SimulationState, id: string, guestIds: string[], carry: 'glass' | 'plate'): void {
+  draft.day = { ...draft.day, hostCarries: [...(draft.day.hostCarries ?? []), { id, guestIds, carry }] };
 }
 
 // Flytta personal dit det brinner: uppgifterna i zonen går fortare en stund,

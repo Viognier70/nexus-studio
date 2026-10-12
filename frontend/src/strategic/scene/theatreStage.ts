@@ -30,7 +30,8 @@ import { conditionClip, type ConditionInput } from './conditionClips';
 
 const LEDGER_PROP: Record<LedgerEntry['item'], PropId> = { plate: 'plate', dishes: 'plate', glass: 'wineGlass', bottle: 'wineBottle' };
 // Det som följer klippets händer (inte ägarboken): kort, block, mapp, servett, bestick, bricka.
-const HAND_PROPS = new Set<PropId>(['menu', 'pad', 'billFolder', 'napkin', 'fork', 'knife', 'tray']);
+// ORDER 331 C — lådan med de lokala råvarorna (staff.carryCrate).
+const HAND_PROPS = new Set<PropId>(['menu', 'pad', 'billFolder', 'napkin', 'fork', 'knife', 'tray', 'crate']);
 type Vec2 = [number, number];
 const TABLE_INSET = 0.45;
 // ORDER 313 §8 — flaskorna på bardisken (rummets lokala meter: barens östra

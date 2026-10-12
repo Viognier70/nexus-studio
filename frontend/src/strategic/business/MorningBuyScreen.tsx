@@ -174,7 +174,7 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
                   : tt(lang, 'prep.hand', { price: formatSek(MISE_EN_PLACE.extraHandCostSek), n: MISE_EN_PLACE.extraHandMin })}
               </button>
             ) : (
-              <p className="nx-small" style={{ margin: `${u(6)} 0 0`, fontWeight: 700 }} data-testid="prep-hand-hired">{tt(lang, sim.economy.businessClass === 'foodtruck' ? 'prep.handHiredTruck' : 'prep.handHired')}</p>
+              <p className="nx-small" style={{ margin: `${u(6)} 0 0`, fontWeight: 700 }} data-testid="prep-hand-hired">{tt(lang, sim.economy.businessClass === 'foodtruck' ? (sim.day.prepHandFromFika ? 'prep.handFromFikaTruck' : 'prep.handHiredTruck') : (sim.day.prepHandFromFika ? 'prep.handFromFika' : 'prep.handHired'))}</p>
             )}
           </div>
           <div className="nxs-buy-block">

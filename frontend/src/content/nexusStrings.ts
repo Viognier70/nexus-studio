@@ -275,6 +275,9 @@ export const STRINGS = {
   'prep.handHired': { sv: 'En extra hand förbereder med laget.', en: 'An extra pair of hands is prepping with the team.' },
   // ORDER 330 G — vid vagnen är den extra handen Jonas: han grillar, och Nils tar beställningarna längs kön.
   'prep.handTruck': { sv: 'Ta in Jonas vid grillen · {price} · Nils tar beställningar i kön', en: 'Bring in Jonas at the grill · {price} · Nils takes orders in the queue' },
+  // ORDER 331 B — den extra handen från fikats svar, redan betald.
+  'prep.handFromFika': { sv: 'En extra hand förbereder med laget i kväll, som ni bestämde vid fikat.', en: 'An extra pair of hands is prepping with the team tonight, as agreed over coffee.' },
+  'prep.handFromFikaTruck': { sv: 'Jonas står vid grillen i kväll, som ni bestämde vid fikat, och Nils går längs kön och tar beställningarna.', en: 'Jonas is at the grill tonight, as agreed over coffee, and Nils walks the queue taking orders.' },
   'prep.handHiredTruck': { sv: 'Jonas står vid grillen i kväll, och Nils går längs kön och tar beställningarna.', en: 'Jonas is at the grill tonight, and Nils walks the queue taking orders.' },
   'risk.closed.again': { sv: 'Börja om', en: 'Start again' },
   // ORDER 296 — Designs leverans hovmästaren och butiken (hostShopStrings.ts,

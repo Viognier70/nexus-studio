@@ -144,7 +144,8 @@ export function DeliveryVan() {
       return;
     }
     let d: { active: boolean; progress: number } = sim.delivery;
-    if (!d.active && sim.day.stockBoughtToday) {
+    // ORDER 331 C — också de lokala råvarorna (satsningen local-sourcing): bilen kör till krogen.
+    if (!d.active && (sim.day.stockBoughtToday || (sim.day.pickedActivityIds ?? []).includes('local-sourcing'))) {
       let pt = purchaseTrip.current;
       if (!pt || pt.day !== sim.day.dayNumber) pt = purchaseTrip.current = { day: sim.day.dayNumber, progress: 0 };
       if (pt.progress < 1) {

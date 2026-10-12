@@ -38,6 +38,7 @@ import { WellbeingLayer, type WellbeingItem } from './wellbeingLayer';
 import { withStreetFloorOnTree } from './village/streetFigureLight';
 import { applyStreetBlend, beyondDoorMat, dressAllGroups, disposeDressed, showGroup, stepStreetBlend, streetShare, HEAD_SIGNS, type DressedRig } from './guestLooks';
 import { GUEST_GROUPS } from './guestGroups';
+import { crewShown, equipmentUsesOf, morningShowsOf } from './choicesShown';
 import { RoomEquipment } from './roomEquipment';
 import { PersonalSpace, type MassKind, type SpaceBody } from './personalSpace';
 import { hesitationElapsed } from './conditionClips';
@@ -194,7 +195,7 @@ const DJ_MUSIC_FROM_MIN = 21 * 60;
 // Båsets kantljus när DJ:n spelar (rummets helgnivå, wineBarRoom).
 const DJ_GLOW_ON = 1.4;
 // ORDER 294b — manusens personal (Designs handelserManus.js) mot rummets roller.
-const SCRIPT_ACTOR_OF: Record<StaffKey, string> = { host: 'per', server: 'sara', server2: '-', sommelier: 'elin', bartender: 'mira', cook: 'cook', dish: 'dish1', extra: '-' };
+const SCRIPT_ACTOR_OF: Record<StaffKey, string> = { host: 'per', server: 'sara', server2: '-', sommelier: 'elin', bartender: 'mira', cook: 'cook', dish: 'dish1', extra: '-', cook2: '-' };
 const THEATRE_LOW_CLIPS = new Set(['staff.kneelTalk', 'staff.sweep', 'staff.wipeFloor', 'guest.slip', 'staff.smother', 'guest.wheel', 'guest.wheelRoll', 'guest.wheelTurn', 'guest.wheelToTable', 'bar.stockFridge', 'staff.carryCrate']);
 
 // ORDER 292b — figurmätningen var femtonde bildruta.
@@ -249,6 +250,8 @@ export const SEATED_HIP_Y = FIGURE.hipY - (poseSeated(0).hipDrop ?? 0);
 const STAFF_COLOUR: Record<StaffKey, string> = {
   // ORDER 330 H — den extra bär servitörens kläder.
   extra: STAFF_UNIFORMS.server,
+  // ORDER 331 C — den andra kocken bär kökets kläder (gästkockens egen uniform är beställd av Design, D14).
+  cook2: STAFF_UNIFORMS.kitchen,
   server: STAFF_UNIFORMS.server,
   server2: STAFF_UNIFORMS.server,
   bartender: STAFF_UNIFORMS.bartender,
@@ -780,8 +783,15 @@ export function WineBarFigures({ room, mood }: Props) {
         ? (s.day.prepHand ? 'prep' : null)
         : (s.day.period === 'lunch' || s.day.period === 'dinner')
           ? ((s.day.pickedActivityIds ?? []).includes(EVENING_ECONOMY.runnerActivityId) ? 'runner' : s.team.members.some((m) => m.isAgency) ? 'agency' : null)
-          : null
+          : null,
+      // ORDER 331 C — grundregeln: laget, morgonens satsningar, värdens bjudning och utrustningen i bruk (choicesShown.ts).
+      crew: crewShown(s.team),
+      morning: morningShowsOf(s.day.pickedActivityIds),
+      hostCarries: s.day.hostCarries ?? [],
+      equipmentUses: equipmentUsesOf(s)
     });
+    // ORDER 331 C — vagnarna följer den som skjuter dem och står bredvid vid bordet; kupan, osten och lågan efter klippet.
+    equipmentRef.current?.followCarts((id) => cast.director.cartAt(id), Math.min(delta, 0.1) * speed, t);
 
     // Samma tonband som InteriorGuests: figurerna syns när kameran är nära.
     const dist = actualRef.current.distance;

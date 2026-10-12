@@ -1,0 +1,58 @@
+{
+  "definition": "Node utan webbläsare (vitest, environment node). Spelarens flöde från början, i foodtrucken (startInFoodtruck, playDay, ladder never), frö 1–5, 14 dagar. identicalRaw = två körningar med samma frö ger exakt samma slutliga tillstånd (JSON). deterministic = samma, när lagmedlemmarnas id (Math.random i team.ts) inte räknas. roundTrip = tillståndet skickat som JSON varje morgon ger samma slut. stateBytes = JSON.stringify(state).length på morgonen (tecken). msPerDay = väggtid per dag (playDay), ms.",
+  "seeds": 5,
+  "days": 14,
+  "allIdenticalRaw": false,
+  "allDeterministic": true,
+  "allRoundTrip": true,
+  "stateBytesMean": 43473,
+  "stateBytesMax": 65133,
+  "msPerDayMean": 85,
+  "rows": [
+    {
+      "seed": 1,
+      "identicalRaw": false,
+      "deterministic": true,
+      "roundTrip": true,
+      "stateBytesMean": 43340,
+      "stateBytesMax": 62715,
+      "msPerDayMean": 113
+    },
+    {
+      "seed": 2,
+      "identicalRaw": false,
+      "deterministic": true,
+      "roundTrip": true,
+      "stateBytesMean": 43800,
+      "stateBytesMax": 64026,
+      "msPerDayMean": 80
+    },
+    {
+      "seed": 3,
+      "identicalRaw": false,
+      "deterministic": true,
+      "roundTrip": true,
+      "stateBytesMean": 43781,
+      "stateBytesMax": 65133,
+      "msPerDayMean": 83
+    },
+    {
+      "seed": 4,
+      "identicalRaw": false,
+      "deterministic": true,
+      "roundTrip": true,
+      "stateBytesMean": 42910,
+      "stateBytesMax": 62981,
+      "msPerDayMean": 70
+    },
+    {
+      "seed": 5,
+      "identicalRaw": false,
+      "deterministic": true,
+      "roundTrip": true,
+      "stateBytesMean": 43536,
+      "stateBytesMax": 63944,
+      "msPerDayMean": 80
+    }
+  ]
+}

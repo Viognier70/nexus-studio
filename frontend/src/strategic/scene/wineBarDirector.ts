@@ -52,16 +52,21 @@ import { IDLE_RULE } from './serviceScore';
 import { GESTURE_BALANCE, QUEUE_MOOD } from '../../sim/balance';
 import { eyeContact, stepWant, wantStep, type StaffGlance, type WantKind, type WantStep, type WantTrack } from './wantSignals';
 import { clipSeconds, SEAT_KINDS, seatKindFromRoom } from './figureClips';
+import { EQUIPMENT, type EquipmentId } from './equipment';
 
 // #region typer
 
-export type StaffKey = 'server' | 'server2' | 'bartender' | 'sommelier' | 'cook' | 'dish' | 'host' | 'extra';
+export type StaffKey = 'server' | 'server2' | 'bartender' | 'sommelier' | 'cook' | 'dish' | 'host' | 'extra' | 'cook2';
 export type StaffRoleKey = 'server' | 'bartender' | 'sommelier' | 'cook' | 'dish' | 'host';
 
 /** Designs personal i vinbaren (paket 6 §1) plus köket. Ordningen är poolens. */
 // ORDER 293 — Per, hovmästaren, sist så att de andras platser i listan står kvar.
 // ORDER 330 H — den extra sist: syns bara när spelaren har valt den (FrameInput.extraStaff).
-export const STAFF_KEYS: readonly StaffKey[] = ['server', 'server2', 'bartender', 'sommelier', 'cook', 'dish', 'host', 'extra'];
+// ORDER 331 C — den andra kocken sist (gästkocken, eller en kock till i laget): syns bara då.
+export const STAFF_KEYS: readonly StaffKey[] = ['server', 'server2', 'bartender', 'sommelier', 'cook', 'dish', 'host', 'extra', 'cook2'];
+
+/** ORDER 331 C — vagnarna som skjuts till bordet (D5 equipment.ts). */
+export type CartId = 'cheeseCart' | 'flambeCart' | 'avecCart';
 
 /**
  * Simuleringens fyra roller mot vinbarens personal, för övertagandet (FRAGOR
@@ -109,7 +114,16 @@ export type DirectorPose =
   | 'holdDoor'
   | 'checkTable'
   | 'wipeTable'
-  | 'chat';
+  | 'chat'
+  // ORDER 331 C — grundregeln: morgonens satsningar (genomgången, provningen, lådorna från bilen) och
+  // utrustningen som används (vagnarna och vinkylen).
+  | 'brief'
+  | 'listen'
+  | 'carryCrate'
+  | 'pushCart'
+  | 'cheeseCut'
+  | 'flambePour'
+  | 'presentCart';
 
 export interface FigureSample {
   visible: boolean;
@@ -129,6 +143,8 @@ export interface FigureSample {
   /** Sittande variant av väntan och skålen. */
   seated: boolean;
   carrying: 'glass' | 'plate' | 'bottle' | 'dishes' | null;
+  /** ORDER 331 C — vagnen figuren skjuter eller arbetar vid, annars null (saknas: null). */
+  cart?: CartId | null;
   /** Sim-gästens id i den här platsen i poolen, annars null. */
   guestId: string | null;
 }
@@ -210,6 +226,26 @@ export interface FrameInput {
   /** ORDER 330 H — den extra i tjänst (grundregeln: varje val syns): springaren eller byråns lärling under servicen,
    *  den extra handen vid förberedelsen före dörrarna. null: inte i kväll. */
   extraStaff?: 'runner' | 'agency' | 'prep' | null;
+  /** ORDER 331 C — laget (anställa och avskeda syns): de i personalen som inte finns i laget, och de som har
+   *  anställts utöver klassens lag ('extra' en servitör till, 'cook2' en kock till). En som går ur laget medan
+   *  rummet syns går ut genom dörren; en som kommer in går in genom den. */
+  crew?: { off: readonly StaffKey[]; hired: readonly StaffKey[] };
+  /** ORDER 331 C — morgonens satsningar, före dörrarna och (gästkocken) hela kvällen. */
+  morning?: readonly MorningShow[];
+  /** ORDER 331 C — värdens bjudning och det som säljs in (HOST_COMP, HOST_UPSELL): vad som bärs till vem. Id:t är unikt. */
+  hostCarries?: readonly { id: string; guestIds: readonly string[]; carry: 'glass' | 'plate' }[];
+  /** ORDER 331 C — utrustningen i bruk: vinkylen när vin serveras, ostvagnen när ost säljs, flamberingsvagnen
+   *  vid efterrätten och avecvagnen när bordet stannar för avec. Id:t är unikt. */
+  equipmentUses?: readonly EquipmentUse[];
+}
+
+/** ORDER 331 C — satsningarna som syns före dörrarna (strategic/simulation/activities.ts). */
+export type MorningShow = 'briefing' | 'tasting' | 'guestChef' | 'local' | 'compost';
+
+export interface EquipmentUse {
+  id: string;
+  kind: 'fridge' | 'cheese' | 'flambe' | 'avec';
+  guestIds: readonly string[];
 }
 
 // #endregion
@@ -250,6 +286,17 @@ const WELCOME_S = 3;
 const CARRY_WHILE_HOLDING: readonly DirectorPose[] = ['serve', 'setBread', 'serveAperitif'];
 const RITUAL_S = { bread: 2.2, water: 2.6, aperitif: 2.5, menus: 2.4, filler: 3.2, fillerGap: 4, door: 4 };
 const HOST_IN_M = 1;
+// ORDER 331 C — morgonens satsningar före dörrarna (sekunder i scenen; förberedelsen är PREP_DURATION_SEC 120 s):
+// genomgången och provningen i en ring runt den som leder, lådorna från dörren till passet, komposten vid disken.
+const MORNING_SHOW_S = { briefingS: 14, tastingS: 14, compostS: 10, gapS: 2, ringM: 1.1, crates: 2, crateSetS: 1.4 };
+// ORDER 331 C — vagnarna vid bordet: när maten har kommit (s efter serveringen) och hur länge arbetet vid bordet tar.
+const EQUIPMENT_USE = { afterServedS: 20, workS: { cheese: 4.5, flambe: 3.6, avec: 3.2, fridge: 4 } };
+
+/** ORDER 331 C — platsen framför utrustningen (där den som hämtar står), D5 equipment.ts hemplatsen + längdaxeln. */
+function equipmentFront(id: EquipmentId): Vec2 {
+  const e = EQUIPMENT[id], L = e.size[1], yaw = e.home.yaw, d = L / 2 + 0.5;
+  return [e.home.at[0] + Math.sin(yaw) * d, e.home.at[1] + Math.cos(yaw) * d];
+}
 /** Passet: servitörens sida (serviceFlow CORR_X) och kockens sida. */
 // ORDER 317 — passet, köksdörren och flaskan ur rummets plan (WINE_BAR_PLAN).
 export const PASS_FLOOR: Vec2 = [CORR_X, WINE_BAR_PLAN.pass.z];
@@ -330,6 +377,8 @@ interface Seg {
   /** Gång hem, som kan avbrytas av nästa uppgift. */
   homeward?: boolean;
   stride?: number;
+  /** ORDER 331 C — vagnen som skjuts under segmentet. */
+  cart?: CartId;
 }
 
 interface Task {
@@ -356,6 +405,10 @@ interface Task {
   firstSeg: number;
   /** ORDER 327 B — gästen har fått blickkontakt: uppgiften tas före de andra. */
   priority?: boolean;
+  /** ORDER 331 C — vagnen hämtas vid pickup (dess handtag), skjuts till bordet och tillbaka. */
+  cart?: CartId;
+  /** ORDER 331 C — gången från pickup till målet (lådorna från bilen: staff.carryCrate). */
+  walkPose?: DirectorPose;
 }
 
 interface ActorTrack {
@@ -381,6 +434,8 @@ interface ActorTrack {
   fillerIx?: number;
   /** ORDER 330 H — inte i tjänst i kväll: syns inte och tar inga uppgifter (den extra). */
   off?: boolean;
+  /** ORDER 331 C — går ut genom dörren och är borta från den här tiden (uppsägningen). */
+  leavingUntil?: number;
 }
 
 type GuestMode = 'queue' | 'toSeat' | 'seated' | 'standing' | 'out' | 'hidden';
@@ -523,9 +578,11 @@ export class WineBarDirector {
       // mellan gästerna (host.checkBook).
       mk('host', 'host', 'host', 'checkBook'),
       // ORDER 330 H — den extra: en servitör till, i tjänst bara när spelaren har valt det (FrameInput.extraStaff).
-      mk('extra', 'server', 'server', 'idle', [CORR_X, -3.2], Math.PI / 2)
+      mk('extra', 'server', 'server', 'idle', [CORR_X, -3.2], Math.PI / 2),
+      // ORDER 331 C — den andra kocken vid kallskänken: gästkocken (satsningen) eller en kock till i laget.
+      mk('cook2', 'cook', 'cookCold', 'cook')
     ];
-    this.actors[this.actors.length - 1].off = true;
+    for (const a of this.actors) if (a.key === 'extra' || a.key === 'cook2') a.off = true;
     for (const a of this.actors) a.base = { home: [a.home[0], a.home[1]], facing: a.homeFacing, pose: a.idlePose };
     this.staffSamples = this.actors.map(() => emptySample());
   }
@@ -554,8 +611,8 @@ export class WineBarDirector {
     this.lastT = t;
 
     // ORDER 330 H — den extra går i och ur tjänst; den som har uppgifter kvar gör klart dem först.
-    const extra = this.actors.find((a) => a.key === 'extra');
-    if (extra) { const on = !!input.extraStaff; if (on) extra.off = false; else if (extra.tasks.length === 0) extra.off = true; }
+    // ORDER 331 C — laget: den som slutat syns inte, den som anställts syns hela tiden (crew).
+    this.updateCrew(input, t);
 
     this.readGuests(input);
     this.advanceParties(input);
@@ -566,6 +623,9 @@ export class WineBarDirector {
     this.assignPending(t);
     this.advanceQueue(t);
     this.miseEnPlace(t, !!input.prep);
+    this.morningShows(t, input);
+    this.hostCarries(t, input);
+    this.equipmentUses(t, input);
     this.hostAtDoor(t, input);
     this.smallMoments(t, !!input.prep);
     this.sendIdleHome(t);
@@ -1201,11 +1261,12 @@ export class WineBarDirector {
 
   /** serviceFlow.assign i realtid: den i rollen som kan vara framme först tar uppgiften. */
   private assign(task: Task, t: number): boolean {
-    const cook = this.actors.find((a) => a.key === 'cook')!;
+    // ORDER 331 C — den kock som finns i laget lägger upp (kocken, annars den andra kocken).
+    const cook = this.actors.find((a) => a.role === 'cook' && !a.off && a.leavingUntil === undefined) ?? this.actors.find((a) => a.key === 'cook')!;
     if (task.needsCook && cook.awayUntil > t) return false; // kocken är vid ett bord (§49)
     let best: { a: ActorTrack; start: number; origin: Vec2; legs: Vec2[][]; arrive: number; speed: number; atPickup: number } | null = null;
     for (const a of this.actors) {
-      if (!task.roles.includes(a.role) || a.off) continue;
+      if (!task.roles.includes(a.role) || a.off || a.leavingUntil !== undefined) continue;
       const interrupt = this.homewardAt(a, t);
       const origin: Vec2 = interrupt ? this.actorPos(a, t) : [a.pos[0], a.pos[1]];
       const freeAt = interrupt ? t : Math.max(a.free, t);
@@ -1246,7 +1307,8 @@ export class WineBarDirector {
       a.segs.push({ t0: tt, t1: tt + hold, kind: 'hold', at: pickup, facing: Math.PI / 2, pose: 'serve', envelope: true });
       tt += hold;
       const d1 = pathLen(best.legs[1]) / best.speed;
-      a.segs.push({ t0: tt, t1: tt + d1, kind: 'walk', path: best.legs[1], len: pathLen(best.legs[1]), pose: 'serveWalk', carrying: task.carry ?? null, stride });
+      // ORDER 331 C — med vagnen: skjuter den från handtaget till bordet.
+      a.segs.push({ t0: tt, t1: tt + d1, kind: 'walk', path: best.legs[1], len: pathLen(best.legs[1]), pose: task.cart ? 'pushCart' : task.walkPose ?? 'serveWalk', carrying: task.carry ?? null, stride, ...(task.cart ? { cart: task.cart } : {}) });
       tt += d1;
     } else {
       const d0 = pathLen(best.legs[0]) / best.speed;
@@ -1254,10 +1316,17 @@ export class WineBarDirector {
       tt += d0;
     }
     task.arrive = tt;
-    a.segs.push({ t0: tt, t1: tt + task.dur, kind: 'hold', at: target, facing: task.facing, pose: task.pose, envelope: true, targetYaw: 0, carrying: CARRY_WHILE_HOLDING.includes(task.pose) ? task.carry ?? null : null });
+    a.segs.push({ t0: tt, t1: tt + task.dur, kind: 'hold', at: target, facing: task.facing, pose: task.pose, envelope: true, targetYaw: 0, carrying: CARRY_WHILE_HOLDING.includes(task.pose) ? task.carry ?? null : null, ...(task.cart ? { cart: task.cart } : {}) });
     tt += task.dur;
     task.done = tt;
-    if (task.carryBack) {
+    if (task.cart && pickup) {
+      // ORDER 331 C — vagnen tillbaka till sin plats.
+      const back = staffRoute(target, pickup);
+      const db = pathLen(back) / best.speed;
+      a.segs.push({ t0: tt, t1: tt + db, kind: 'walk', path: back, len: pathLen(back), pose: 'pushCart', carrying: null, stride, cart: task.cart });
+      tt += db;
+      a.pos = [pickup[0], pickup[1]];
+    } else if (task.carryBack) {
       const toPass = staffRoute(target, PASS_FLOOR);
       const dp = pathLen(toPass) / best.speed;
       a.segs.push({ t0: tt, t1: tt + dp, kind: 'walk', path: toPass, len: pathLen(toPass), pose: 'serveWalk', carrying: task.carryBack, stride });
@@ -1377,7 +1446,7 @@ export class WineBarDirector {
   private smallMoments(t: number, prep: boolean): void {
     if (prep) return;
     for (const a of this.actors) {
-      if (a.off || (a.role !== 'server' && a.role !== 'sommelier')) continue;
+      if (a.off || a.leavingUntil !== undefined || (a.role !== 'server' && a.role !== 'sommelier')) continue;
       if (a.tasks.length > 0 || a.free > t) continue;
       if (this.pending.some((k) => k.roles.includes(a.role) && k.ready <= t + 3)) continue;
       if ((a.fillerAt ?? -Infinity) > t) continue;
@@ -1399,9 +1468,175 @@ export class WineBarDirector {
     }
   }
 
+  // ---------- ORDER 331 C: grundregeln, varje val syns ----------
+
+  private crewInit = false;
+
+  /**
+   * Laget mot personalen i rummet. De som inte finns i laget syns inte (off); den som slutar medan rummet syns går
+   * ut genom dörren först. Den extra (330 H: springaren, byråns lärling, den extra handen) och den andra kocken
+   * (gästkocken) är med i kväll, eller hela tiden när de har anställts (crew.hired). Den som börjar går in genom dörren.
+   */
+  private updateCrew(input: FrameInput, t: number): void {
+    const off = new Set(input.crew?.off ?? []);
+    const on = new Set(input.crew?.hired ?? []);
+    if (input.extraStaff) on.add('extra');
+    if ((input.morning ?? []).includes('guestChef')) on.add('cook2');
+    const first = !this.crewInit;
+    this.crewInit = true;
+    const door: Vec2 = [this.room.entrance[0] - HOST_IN_M, this.room.entrance[1]];
+    for (const a of this.actors) {
+      const optional = a.key === 'extra' || a.key === 'cook2';
+      const want = optional ? on.has(a.key) && !off.has(a.key) : !off.has(a.key);
+      if (want) {
+        if (a.off) {
+          a.off = false; a.leavingUntil = undefined;
+          // Kommer in genom dörren (sendIdleHome går hem till stationen).
+          if (!first) { a.pos = [door[0], door[1]]; a.segs.length = 0; a.cursor = 0; a.free = t; }
+        } else if (a.leavingUntil !== undefined) {
+          a.leavingUntil = undefined;
+        }
+        continue;
+      }
+      if (a.off) continue;
+      // De extra går ur tjänst när uppgifterna är gjorda (330 H); den som slutar går ut genom dörren.
+      if (optional && !off.has(a.key)) { if (a.tasks.length === 0) a.off = true; continue; }
+      if (first) { a.off = true; continue; }
+      if (a.leavingUntil === undefined) {
+        // Uppgifterna går tillbaka till de andra i rollen.
+        for (const k of a.tasks) { k.state = 'pending'; k.actor = null; k.arrive = Infinity; k.done = Infinity; this.pending.push(k); }
+        a.tasks = [];
+        const from = this.truncate(a, t);
+        const out = staffRoute(from, door).concat([[this.opts.spawn[0], this.opts.spawn[1]] as Vec2]);
+        const d = pathLen(out) / staffTempo(0).walkSpeed;
+        a.segs.push({ t0: t, t1: t + d, kind: 'walk', path: out, len: pathLen(out), pose: 'walk' });
+        a.free = t + d;
+        a.pos = [this.opts.spawn[0], this.opts.spawn[1]];
+        a.leavingUntil = t + d;
+      } else if (t >= a.leavingUntil) {
+        a.off = true;
+      }
+    }
+  }
+
+  private morningDone = new Set<MorningShow>();
+
+  /**
+   * Morgonens satsningar före dörrarna (scenen efter mise en place-planen):
+   * - utbilda salen: Per går igenom kvällen vid småborden (host.point), servitörerna lyssnar (staff.listen);
+   * - vinprovningen: sommeliern häller vid baren (somm.pour), bartendern och servitörerna lyssnar;
+   * - de lokala råvarorna: diskaren bär in lådorna från dörren till köket (staff.carryCrate);
+   * - komposten: Per och diskaren går igenom flödet vid disken (host.point, staff.listen).
+   * Gästkocken står vid kallskänken hela kvällen (updateCrew, cook2).
+   */
+  private morningShows(t: number, input: FrameInput): void {
+    if (!input.prep) { if (this.morningDone.size > 0 && t > this.lastPrepEnd + 1) this.morningDone.clear(); return; }
+    this.lastPrepEnd = t;
+    const shows = input.morning ?? [];
+    const spots = this.opts.miseSpots ?? [];
+    const spot = (id: string) => spots.find((m) => m.id === id)?.local;
+    const facingTo = (from: Vec2, to: Vec2) => Math.atan2(to[0] - from[0], to[1] - from[1]);
+    const S = MORNING_SHOW_S;
+    let ready = t;
+    const circle = (centre: Vec2, lead: StaffRoleKey, leadPose: DirectorPose, others: StaffKey[], dur: number, carry?: FigureSample['carrying']) => {
+      this.addTask({ party: null, roles: [lead], target: centre, facing: facingTo(centre, [centre[0] + 1, centre[1]]), pose: leadPose, dur, ready, ...(carry ? { carry } : {}) });
+      others.forEach((k, i) => {
+        const a = this.actors.find((x) => x.key === k);
+        if (!a || a.off) return;
+        const ang = (i - (others.length - 1) / 2) * 0.7;
+        const at: Vec2 = [centre[0] + Math.cos(ang) * S.ringM, centre[1] + Math.sin(ang) * S.ringM];
+        this.addTask({ party: null, roles: [a.role], target: at, facing: facingTo(at, centre), pose: 'listen', dur, ready });
+      });
+    };
+    for (const show of shows) {
+      if (this.morningDone.has(show)) continue;
+      this.morningDone.add(show);
+      if (show === 'briefing') {
+        const c = spot('setTables') ?? [CORR_X - 1, 0];
+        circle(c, 'host', 'brief', ['server', 'server2', 'extra'], S.briefingS);
+        ready += S.briefingS + S.gapS;
+      } else if (show === 'tasting') {
+        circle(POUR_SPOT, 'sommelier', 'pour', ['bartender', 'server', 'server2'], S.tastingS, 'bottle');
+        ready += S.tastingS + S.gapS;
+      } else if (show === 'local') {
+        const door: Vec2 = [this.room.entrance[0] - HOST_IN_M, this.room.entrance[1]];
+        for (let i = 0; i < S.crates; i++) {
+          this.addTask({ party: null, roles: ['dish'], target: PASS_FLOOR, facing: Math.PI / 2, pose: 'serve', walkPose: 'carryCrate', dur: S.crateSetS, pickup: door, pickupHold: 0.6, ready: t + i * 0.5 });
+        }
+      } else if (show === 'compost') {
+        const dish = this.actors.find((x) => x.key === 'dish');
+        const c: Vec2 = dish ? [dish.home[0], dish.home[1]] : PASS_FLOOR;
+        const at: Vec2 = [c[0] + S.ringM, c[1]];
+        this.addTask({ party: null, roles: ['host'], target: at, facing: facingTo(at, c), pose: 'brief', dur: S.compostS, ready });
+        ready += S.compostS + S.gapS;
+      }
+    }
+  }
+  private lastPrepEnd = -Infinity;
+
+  private carried = new Set<string>();
+
+  /** Värdens bjudning och det som säljs in: glaset (eller kaffet) eller tallriken bärs till sällskapets bord. */
+  private hostCarries(t: number, input: FrameInput): void {
+    for (const c of input.hostCarries ?? []) {
+      if (this.carried.has(c.id)) continue;
+      const p = this.partyOf(c.guestIds);
+      if (!p) continue;
+      this.carried.add(c.id);
+      const g = p.group;
+      if (c.carry === 'glass') {
+        p.visits.push(this.addTask({ party: p, roles: g.kind === 'bar' ? ['bartender'] : ['server'], target: g.serveAt, facing: g.serveFacing, pose: g.kind === 'bar' ? 'pour' : 'serve', dur: 2.5, carry: 'glass', ...(g.kind === 'bar' ? {} : { pickup: PICKUP_BAR, pickupHold: 0.8 }), ready: t, priority: true }));
+      } else {
+        p.visits.push(this.addTask({ party: p, roles: ['server'], target: g.serveAt, facing: g.serveFacing, pose: 'serve', dur: 2.5, carry: 'plate', pickup: PASS_FLOOR, pickupHold: 1.0, needsCook: true, ready: t, priority: true }));
+      }
+    }
+  }
+
+  private used = new Set<string>();
+
+  /**
+   * Utrustningen i bruk (det simuleringen räknar med): vinkylen när vin serveras (sommeliern hämtar flaskan ur
+   * kylen), ostvagnen när ost säljs (vagnen till bordet, cheese.cut), flamberingsvagnen vid efterrätten
+   * (flambe.pour) och avecvagnen när bordet stannar för avec (trolley.present).
+   */
+  private equipmentUses(t: number, input: FrameInput): void {
+    for (const u of input.equipmentUses ?? []) {
+      if (this.used.has(u.id)) continue;
+      const p = this.partyOf(u.guestIds);
+      if (!p) continue;
+      const g = p.group;
+      if (u.kind === 'fridge') {
+        this.used.add(u.id);
+        p.visits.push(this.addTask({ party: p, roles: ['sommelier'], target: g.serveAt, facing: g.serveFacing, pose: 'present', dur: 4, carry: 'bottle', pickup: equipmentFront('wineFridge'), pickupHold: 1.2, ready: t + 1 }));
+        continue;
+      }
+      // Vagnarna: när sällskapet har fått maten (eller genast för avec).
+      if (u.kind !== 'avec' && !(p.drinkDone && p.servedAt >= 0 && t >= p.servedAt + EQUIPMENT_USE.afterServedS)) continue;
+      this.used.add(u.id);
+      const cart: CartId = u.kind === 'cheese' ? 'cheeseCart' : u.kind === 'flambe' ? 'flambeCart' : 'avecCart';
+      const pose: DirectorPose = u.kind === 'cheese' ? 'cheeseCut' : u.kind === 'flambe' ? 'flambePour' : 'presentCart';
+      const roles: StaffRoleKey[] = u.kind === 'flambe' ? ['host', 'server'] : ['server'];
+      p.visits.push(this.addTask({ party: p, roles, target: g.serveAt, facing: g.serveFacing, pose, dur: EQUIPMENT_USE.workS[u.kind], pickup: equipmentFront(cart), pickupHold: 0.8, cart, ready: t }));
+    }
+  }
+
+  private partyOf(guestIds: readonly string[]): PartyTrack | null {
+    for (const p of this.parties.values()) if (p.billAskAt < 0 && p.members.some((m) => guestIds.includes(m.id))) return p;
+    return null;
+  }
+
+  /** ORDER 331 C — vagnen just nu: den som skjuter den eller arbetar vid den (FigureSample.cart), annars parkerad. */
+  cartAt(cart: CartId): { x: number; z: number; facing: number; pose: DirectorPose; progress: number; walking: boolean } | null {
+    // (roomEquipment.ts CartNow)
+    for (const smp of this.staffSamples) {
+      if (smp.visible && smp.cart === cart) return { x: smp.x, z: smp.z, facing: smp.facing, pose: smp.pose, progress: smp.progress, walking: smp.pose === 'pushCart' };
+    }
+    return null;
+  }
+
   private sendIdleHome(t: number): void {
     for (const a of this.actors) {
-      if (a.off || a.free > t || a.tasks.length > 0) continue;
+      if (a.off || a.leavingUntil !== undefined || a.free > t || a.tasks.length > 0) continue;
       if (Math.hypot(a.pos[0] - a.home[0], a.pos[1] - a.home[1]) < 0.05) continue;
       if (this.pending.some((k) => k.roles.includes(a.role) && k.ready <= t + 3)) continue;
       const from = a.pos;
@@ -1535,6 +1770,7 @@ export class WineBarDirector {
 
   private sampleStaff(a: ActorTrack, t: number, out: FigureSample): void {
     out.visible = !a.off;
+    out.cart = null;
     out.guestId = null;
     out.seated = false;
     out.targetYaw = 0;
@@ -1559,6 +1795,7 @@ export class WineBarDirector {
         out.phase = (u * len) / (STRIDE_M * (s.stride ?? 1));
         out.progress = u;
         out.carrying = s.carrying ?? null;
+        out.cart = s.cart ?? null;
         if (s.stressed) out.stress = 1;
         return;
       }
@@ -1578,6 +1815,7 @@ export class WineBarDirector {
       out.progress = s.envelope && s.t1 > s.t0 ? clamp01((t - s.t0) / (s.t1 - s.t0)) : 0;
       out.targetYaw = s.targetYaw ?? 0;
       out.carrying = s.carrying ?? null;
+      out.cart = s.cart ?? null;
       if (s.stressed) out.stress = 1;
       return;
     }
@@ -1761,6 +1999,6 @@ function doneTask(): Task {
 function emptySample(): FigureSample {
   return {
     visible: false, x: 0, z: 0, y: 0, facing: 0, pose: 'hidden', phase: 0, progress: 0, targetYaw: 0,
-    stress: 0, seated: false, carrying: null, guestId: null
+    stress: 0, seated: false, carrying: null, cart: null, guestId: null
   };
 }

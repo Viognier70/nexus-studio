@@ -469,6 +469,11 @@ export const FIKA_TEXT = {
     en: (n: number) => `${n === 1 ? 'One credit' : `${n} credits`} in Phronesis.`
   },
   costSek: { sv: (sek: string) => `Det kostar ${sek} kr.`, en: (sek: string) => `It costs ${sek} SEK.` },
+  // ORDER 331 B — svaret som kostar för en extra hand.
+  extraHand: {
+    sv: (n: number, truck: boolean) => truck ? `Jonas står vid grillen de ${n === 2 ? 'två' : n} närmaste kvällarna, och Nils tar beställningarna i kön.` : `En extra hand är med i laget de ${n === 2 ? 'två' : n} närmaste kvällarna.`,
+    en: (n: number, truck: boolean) => truck ? `Jonas is at the grill for the next ${n === 2 ? 'two' : n} evenings, and Nils takes orders in the queue.` : `An extra pair of hands joins the team for the next ${n === 2 ? 'two' : n} evenings.`
+  },
   inspectionRisk: { sv: 'Risken för tillsyn är högre de närmaste kvällarna.', en: 'An inspection is more likely over the next few evenings.' },
   quitRisk: { sv: (name: string) => `${name} funderar på att sluta.`, en: (name: string) => `${name} is thinking of leaving.` },
   suggestAbility: { sv: (name: string) => `${name} finns i butiken.`, en: (name: string) => `${name} is in the shop.` },

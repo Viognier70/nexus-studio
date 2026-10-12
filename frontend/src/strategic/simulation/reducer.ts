@@ -209,7 +209,7 @@ import {
 } from './constants';
 import { decayMoodLift } from '../../sim/guestMood';
 // ORDER 316 — fikat efter stängning.
-import { answerFika, goHomeFika, planFika } from '../../sim/fika';
+import { answerFika, applyFikaHand, goHomeFika, planFika } from '../../sim/fika';
 // ORDER 315a — karriärstegen.
 import { conceptTonight } from './guestTypes';
 import { declineOffer, ladderBillFactor, offerAtClose, offerAtNight, refitClosedToday, takeOffer } from '../../sim/ladder';
@@ -1260,14 +1260,21 @@ function shortenMenuAction(state: SimulationState): SimulationState {
 function thinWineListAction(state: SimulationState): SimulationState {
   if (state.day.period !== 'morning') return state;
   const currentlyReduced = state.scaleDown.wineListReduced;
+  // ORDER 331 A — reducing turns welcomeDrink off and remembers what it was; restoring gives back that value
+  // (förut slogs den alltid på, fast den är avstängd från början, model.ts). Slogs den på medan listan var tunn
+  // (walk-in-of-five B) står den kvar.
+  if (currentlyReduced) {
+    const { welcomeDrinkBefore, ...rest } = state.scaleDown;
+    return {
+      ...state,
+      policies: { ...state.policies, welcomeDrink: state.policies.welcomeDrink || (welcomeDrinkBefore ?? false) },
+      scaleDown: { ...rest, wineListReduced: false }
+    };
+  }
   return {
     ...state,
-    policies: {
-      ...state.policies,
-      // Restoring? Turn welcomeDrink back on. Reducing? Turn it off.
-      welcomeDrink: currentlyReduced ? true : false
-    },
-    scaleDown: { ...state.scaleDown, wineListReduced: !currentlyReduced }
+    policies: { ...state.policies, welcomeDrink: false },
+    scaleDown: { ...state.scaleDown, wineListReduced: true, welcomeDrinkBefore: state.policies.welcomeDrink }
   };
 }
 
@@ -2390,6 +2397,8 @@ export function tickDayTransitions(state: SimulationState): SimulationState {
       nextForDay.day = { ...nextForDay.day, pickedActivityIds: [] };
       // ORDER 266 — självläkning, inspektion och samtal från banken.
       onNewMorning(nextForDay, state.economy.warning);
+      // ORDER 331 B — den extra handen som fikats svar betalade.
+      applyFikaHand(nextForDay);
       // ORDER 303 E — natten: orken vilar upp sig, trivseln följer dricksen och kurserna.
       nextForDay.staff = staffNight(state, nextForDay);
       // ORDER 303 C — Recensioner i morse: gårdagens kväll och nattens ändring.
