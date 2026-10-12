@@ -250,7 +250,7 @@ export const SEATED_HIP_Y = FIGURE.hipY - (poseSeated(0).hipDrop ?? 0);
 const STAFF_COLOUR: Record<StaffKey, string> = {
   // ORDER 330 H — den extra bär servitörens kläder.
   extra: STAFF_UNIFORMS.server,
-  // ORDER 331 C — den andra kocken bär kökets kläder (gästkockens egen uniform är beställd av Design, D13).
+  // ORDER 331 C — den andra kocken bär kökets kläder (gästkockens egen uniform är beställd av Design, D14).
   cook2: STAFF_UNIFORMS.kitchen,
   server: STAFF_UNIFORMS.server,
   server2: STAFF_UNIFORMS.server,
