@@ -55,6 +55,8 @@ export interface FikaOutcome {
   inspectionRisk: boolean;
   quitRisk: boolean;
   suggestAbility: string | null;
+  /** ORDER 331 B — kvällarna med en extra hand som svaret gav (0 om inga). */
+  extraHandEvenings?: number;
 }
 
 export interface FikaState {
@@ -63,6 +65,8 @@ export interface FikaState {
   loyalty: Partial<Record<FikaPerson, number>>;
   inspectionRiskUntilDay?: number | null;
   suggested?: string[];
+  /** ORDER 331 B — kvällar med service kvar då den extra handen från fikat är med. */
+  extraHandEveningsLeft?: number;
   /** ORDER 329 B — kvällen då laget fikade utan dilemma. */
   plain?: { day: number } | null;
 }
@@ -185,6 +189,7 @@ export function answerFika(draft: SimulationState, optionId: DilemmaOptionId): F
   const inspectionRisk = econ.some((e) => e.kind === 'inspectionRisk');
   const costSek = econ.reduce((a, e) => a + (e.kind === 'cost' ? FIKA.economy[e.key] : 0), 0);
   const suggest = econ.find((e) => e.kind === 'suggestAbility');
+  const extraHand = econ.some((e) => e.kind === 'cost' && e.key === 'extraHandSek');
   const outcome: FikaOutcome = {
     grade: g,
     wellbeingPoints: FIKA.wellbeing[g],
@@ -193,7 +198,8 @@ export function answerFika(draft: SimulationState, optionId: DilemmaOptionId): F
     costSek,
     inspectionRisk,
     quitRisk,
-    suggestAbility: suggest && suggest.kind === 'suggestAbility' ? suggest.id : null
+    suggestAbility: suggest && suggest.kind === 'suggestAbility' ? suggest.id : null,
+    ...(extraHand ? { extraHandEvenings: FIKA.economy.extraHandEvenings } : {})
   };
   const askerRole = STAFF_ROLE_OF[dilemma.asker] ?? null;
   draft.staff = withWellbeing(draft.staff, FIKA.wellbeing[g], askerRole, FIKA.wellbeing[g]);
@@ -205,9 +211,24 @@ export function answerFika(draft: SimulationState, optionId: DilemmaOptionId): F
     tonight: { ...t, answer: optionId, outcome },
     log: [...fika.log, entry],
     inspectionRiskUntilDay: inspectionRisk ? draft.day.dayNumber + FIKA.economy.inspectionEvenings : fika.inspectionRiskUntilDay ?? null,
-    suggested: outcome.suggestAbility ? [...new Set([...(fika.suggested ?? []), outcome.suggestAbility])] : fika.suggested
+    suggested: outcome.suggestAbility ? [...new Set([...(fika.suggested ?? []), outcome.suggestAbility])] : fika.suggested,
+    ...(extraHand ? { extraHandEveningsLeft: FIKA.economy.extraHandEvenings } : {})
   };
   return outcome;
+}
+
+/**
+ * ORDER 331 B — den nya morgonen: står en extra hand kvar från fikat och är det en
+ * dag med service, är den med i dag (day.prepHand, som HIRE_PREP_HAND, och syns
+ * likadant: en extra i laget i vinbaren och bistron, Jonas vid grillen och Nils
+ * längs kön vid vagnen). Kostnaden drogs vid fikat, så inget dras här.
+ */
+export function applyFikaHand(draft: SimulationState): void {
+  const fika = draft.fika;
+  const left = fika?.extraHandEveningsLeft ?? 0;
+  if (!fika || left <= 0 || !calendarFor(draft.day.dayNumber).isServiceDay) return;
+  draft.day = { ...draft.day, prepHand: true, prepHandFromFika: true };
+  draft.fika = { ...fika, extraHandEveningsLeft: left - 1 };
 }
 
 /** "Gå hem": inget svar, hela laget tappar lite trivsel. */

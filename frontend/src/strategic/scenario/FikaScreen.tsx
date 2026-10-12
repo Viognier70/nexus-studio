@@ -129,6 +129,7 @@ export function FikaScreen({ sim, onContinue }: { sim: SimulationState; onContin
                 {outcome.askerLoyaltyPoints !== 0 && <li>{outcome.askerLoyaltyPoints > 0 ? f.loyaltyUp(name) : f.loyaltyDown(name)}</li>}
                 {outcome.quitRisk && <li>{f.quitRisk(name)}</li>}
                 {outcome.costSek > 0 && <li>{f.costSek(kr(outcome.costSek))}</li>}
+                {(outcome.extraHandEvenings ?? 0) > 0 && <li data-testid="fika-extra-hand">{f.extraHand(outcome.extraHandEvenings!, sim.economy.businessClass === 'foodtruck')}</li>}
                 {outcome.inspectionRisk && <li>{f.inspectionRisk}</li>}
                 {outcome.suggestAbility && <li>{f.suggestAbility(tt(lang, `ab.${outcome.suggestAbility}.name` as StringKey))}</li>}
                 {outcome.credits > 0 && <li>{f.credits(outcome.credits)}</li>}

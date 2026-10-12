@@ -329,7 +329,7 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
                   {/* ORDER 330 G — den extra handen vid vagnen: Jonas vid grillen och Nils längs kön (sim/miseEnPlace.ts,
                       service.ts FOODTRUCK.extraHandOrderTime). */}
                   {period === 'morning' && (sim.day.prepHand
-                    ? <p className="nx-small" style={{ fontWeight: 700 }} data-testid="prep-hand-hired">{tt(lang, 'prep.handHiredTruck')}</p>
+                    ? <p className="nx-small" style={{ fontWeight: 700 }} data-testid="prep-hand-hired">{tt(lang, sim.day.prepHandFromFika ? 'prep.handFromFikaTruck' : 'prep.handHiredTruck')}</p>
                     : <div><button type="button" className="nx-btn nx-btn-quiet" style={{ width: 'auto' }} data-testid="prep-hand" onClick={() => dispatch({ type: 'HIRE_PREP_HAND' })}>{tt(lang, 'prep.handTruck', { price: formatSek(MISE_EN_PLACE.extraHandCostSek) })}</button></div>)}
                   {/* ORDER 319c — kvällens väder vid vagnen, synligt på morgonen (sim/truckLife.ts). */}
                   {cal.isServiceDay && (

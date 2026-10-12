@@ -2206,6 +2206,10 @@ export const FIKA = {
     discardGoodsSek: 900,
     discardSomeGoodsSek: 600,
     extraHandSek: 500,
+    // ORDER 331 B — svaret som kostar för en extra hand ger den extra handen de
+    // närmaste kvällarna med service ("de första kvällarna"): samma som
+    // HIRE_PREP_HAND (day.prepHand), betald av fikats kostnad.
+    extraHandEvenings: 2,
     // Tillsynen kommer oftare de närmaste kvällarna: andelen av kvällens
     // situationer som blir tillsynen när den kan komma.
     inspectionEvenings: 3,
