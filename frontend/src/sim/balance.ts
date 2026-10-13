@@ -1222,13 +1222,11 @@ export const TRUCK_WEATHER = {
 // som i kön, och går efter QUEUE.patienceSimSeconds gånger patienceRain om hen är missnöjd (service.ts). Står fler än
 // leaveAt i regnet går den sista i kön. Utan ryktets och moralens slag: hen gick ur regnet. Förut (ORDER 319c–331) gjorde
 // regnet i kön ingenting: bara footfall.rain 0,8 och curiousGap.rain 1,5.
-// Valda tal ur provet (ledarens order 2026-10-13; frö 1–8, regn hela kvällen, en kväll, spelarens flöde
-// startInFoodtruck → START_SERVICE → tickUntil; notorna day.billsTonight, de som gick day.truckRainLeavers, kassan efter
-// kvällen; rapporten till ledaren, provet src/__scratch332__/rain.test.ts raderat efteråt):
-//   utan verkan 55,75 notor, 19 523 kr | 0,85/8: 51,00 → med markis 52,75 (+442 kr) | 0,85/6: 50,62 → 51,62 (+365 kr)
-//   0,8/8: 53,00 → 52,38 (+326 kr) | 0,75/10: 51,50 → 52,75 (+388 kr), 15,25 → 13,50 som gick.
-// 0,75/10 kostar 7,6 % av notorna en regnkväll utan markis (högst ~8 %, säsongsraderna ska inte stänga fler) och ger
-// markisen den tydligaste vinsten bland de inställningar som håller den gränsen (0,85/8 ger mer men kostar 8,5 %).
+// Valda tal ur provet strategic/testHarness/__tests__/order332Regn.test.ts (REGN_SEEDS=8), som skriver
+// reports/order332/regn.json: en regnkväll i spelarens flöde per frö, utan och med markisen, för sex inställningar.
+// rows[].kostnadUtanMarkis.billsShare är kostnaden utan markis mot "utan verkan", rows[].markisensVinst.endCash
+// markisens vinst i kronor. 0,75/10 håller kostnaden under ~8 % av notorna (säsongsraderna ska inte stänga fler) och
+// ger markisen den tydligaste vinsten bland de inställningar som håller den gränsen; 0,85/8 ger mer men kostar mer.
 // Högre patienceRain och högre leaveAt är mildare.
 export const RAIN_QUEUE_BALANCE = {
   section: 'Servicen',
