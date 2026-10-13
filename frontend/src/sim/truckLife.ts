@@ -117,12 +117,21 @@ export function truckRaining(state: SimulationState): boolean {
   return t.weather === 'rain' && t.rainFromE !== null && e !== null && e >= t.rainFromE;
 }
 
+/** ORDER 332 C — kön vid luckan som den ritas (scene/village/truckGuestFlow.ts spots läser samma funktion): den första
+ *  som beställer står vid luckan, de andra som beställer står först i kön i gästlistans ordning (luckan tar dem i den
+ *  ordningen, service.ts), och efter dem de som väntar i waitingIds. Ger kön utan den vid luckan. */
+export function truckQueueLine(guests: readonly { id: string; state: string }[], waitingIds: readonly string[]): string[] {
+  const ordering = guests.filter((g) => g.state === 'ordering').map((g) => g.id);
+  const waiting = new Set(guests.filter((g) => g.state === 'waiting').map((g) => g.id));
+  return [...ordering.slice(1), ...waitingIds.filter((id) => waiting.has(id))];
+}
+
 /** ORDER 332 C (Designs D13) — står gästen i kön vid vagnen i regnet, utan tak? Den som beställer och de första i kön
  *  står under luckans skiva, och med markisen sex till (scene/truckRain.ts RAIN_QUEUE, samma tabell som scenen ritar).
- *  Platsen i kön är platsen i waitingIds (truckGuestFlow.ts ställer kön i samma ordning). */
+ *  Platsen i kön är platsen i truckQueueLine, samma ordning som scenen ställer kön i. */
 export function rainExposedInQueue(state: SimulationState, guestId: string): boolean {
   if (!truckRaining(state)) return false;
-  const i = state.waitingIds.indexOf(guestId);
+  const i = truckQueueLine(state.guests, state.waitingIds).indexOf(guestId);
   return i >= rainQueueDryInLine(queueAwningOwned(state));
 }
 
@@ -135,9 +144,9 @@ export function rainQueuePatience(state: SimulationState, guestId: string): numb
  *  eller null. */
 export function rainQueueLeaver(state: SimulationState): string | null {
   if (!truckRaining(state)) return null;
-  const waiting = state.waitingIds.filter((id) => state.guests.find((g) => g.id === id)?.state === 'waiting');
-  const exposed = waiting.length - rainQueueDryInLine(queueAwningOwned(state));
-  return exposed > RAIN_QUEUE_BALANCE.leaveAt ? waiting[waiting.length - 1] : null;
+  const line = truckQueueLine(state.guests, state.waitingIds);
+  const exposed = line.length - rainQueueDryInLine(queueAwningOwned(state));
+  return exposed > RAIN_QUEUE_BALANCE.leaveAt ? line[line.length - 1] : null;
 }
 
 /** Gästflödet vid vagnen i kväll, gånger ankomsterna (arrivals.ts arrivalAttraction). */

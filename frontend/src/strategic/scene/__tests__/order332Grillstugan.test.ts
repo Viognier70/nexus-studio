@@ -3,13 +3,12 @@
 // rivalernas vagnar utanför spelarens vagn och kö, och tålamodet i kön i regnet i simuleringen.
 
 import { describe, expect, it } from 'vitest';
-import { playMorning, startInFoodtruck } from '../../testHarness/weekHarness';
+import { playMorning, startInFoodtruck, tickUntil } from '../../testHarness/weekHarness';
 import { reducer } from '../../simulation/reducer';
-import { makeGuest } from '../../simulation/model';
 import { firstDayOfWeek } from '../../../sim/calendar';
 import { EQUIPMENT, RAIN_QUEUE_BALANCE, TRUCK_WEATHER, VILLAGE } from '../../../sim/balance';
 import { equipmentForBusiness, queueAwningOwned } from '../../../sim/goods';
-import { rainExposedInQueue, rainQueueLeaver, rainQueuePatience, truckOf, truckRaining, type TruckDayState } from '../../../sim/truckLife';
+import { rainExposedInQueue, rainQueuePatience, truckOf, truckQueueLine, truckRaining, type TruckDayState } from '../../../sim/truckLife';
 import { TRUCK_SPOT_IDS, spotToWorld, truckSpotPlacement } from '../../../sim/districts';
 import { applyStuganState, makePlayerTrailer, stuganOf, stuganStateFor, TRUCK_LAYOUT } from '../playerTruck';
 import { STUGAN, shelterTop, stuganShelters } from '../grillstugan';
@@ -27,7 +26,6 @@ import { grillTruckAtTorget } from '../../../sim/truckSituations';
 import type { SimulationState } from '../../types';
 
 type V = [number, number];
-const TICK = { type: 'TICK', dt: 0.2 } as const;
 
 function evening(seed = 1): SimulationState {
   return reducer(playMorning(startInFoodtruck(seed, firstDayOfWeek(1)), { scenarioAnswer: 'best', ladder: 'never' }), { type: 'START_SERVICE' });
@@ -39,11 +37,6 @@ function raining(s: SimulationState): SimulationState {
 }
 function withAwning(s: SimulationState, on: boolean): SimulationState {
   return { ...s, equipment: on ? ['queueAwning'] : [] };
-}
-/** Fyll kön med n väntande gäster (de enda i kön). */
-function withQueue(s: SimulationState, n: number): SimulationState {
-  const guests = Array.from({ length: n }, () => ({ ...makeGuest(s.simTime), state: 'waiting' as const, stateTime: s.simTime }));
-  return { ...s, guests: [...s.guests.filter((g) => g.state !== 'waiting'), ...guests], waitingIds: guests.map((g) => g.id) };
 }
 
 describe('ORDER 332 C — Grillstugan och markisen', () => {
@@ -180,38 +173,57 @@ describe('ORDER 332 G — Grillvagnens skylt (ft13) bara när spelarens vagn st�
   });
 });
 
-describe('ORDER 332 C — kön i regnet i simuleringen (RAIN_QUEUE_BALANCE)', () => {
-  it('utan markis: den första i kön står torrt, de andra har patienceRain av tålamodet; med markis sex torra', () => {
-    const s = withQueue(raining(evening()), 8);
-    expect(truckRaining(s)).toBe(true);
-    const ids = s.waitingIds;
-    expect(rainExposedInQueue(s, ids[0])).toBe(false);
-    expect(rainQueuePatience(s, ids[1])).toBe(RAIN_QUEUE_BALANCE.patienceRain);
-    const a = withAwning(s, true);
-    for (let i = 0; i < 6; i++) expect(rainQueuePatience(a, ids[i])).toBe(1);
-    expect(rainQueuePatience(a, ids[6])).toBe(RAIN_QUEUE_BALANCE.patienceRain);
-    // Torrt väder: inget.
-    const dry = { ...s, day: { ...s.day, truck: { ...truckOf(s), weather: 'sun' as const, rainFromE: null } } };
-    expect(rainQueuePatience(dry, ids[3])).toBe(1);
+describe('ORDER 332 C — kön i regnet i simuleringen, i spelarens flöde (RAIN_QUEUE_BALANCE)', () => {
+  /** En regnkväll vid vagnen från start: väder regn från kvällens början, med eller utan markisen. */
+  function rainyEvening(seed: number, awning: boolean): SimulationState {
+    let s = startInFoodtruck(seed, firstDayOfWeek(2) + 4);
+    s = withAwning(s, awning);
+    s = playMorning(s, { scenarioAnswer: 'best', ladder: 'never' });
+    s = raining(s);
+    return reducer(s, { type: 'START_SERVICE' });
+  }
+  /** Kör kvällen och samla kön som den ritas (truckQueueLine) och de som gick ur kön i regnet. */
+  function run(seed: number, awning: boolean, maxTicks = 1500) {
+    let s = rainyEvening(seed, awning), ticks = 0, maxLine = 0, sawExposed = false, checked = false;
+    s = tickUntil(s, (x) => x.day.period !== 'dinner' || ticks >= maxTicks, 'best', undefined, undefined, (x) => {
+      ticks++;
+      const line = truckQueueLine(x.guests, x.waitingIds);
+      maxLine = Math.max(maxLine, line.length);
+      const dry = rainQueueDryInLine(awning);
+      if (line.length > dry && !checked) {
+        checked = true;
+        // Samma ordning som scenen: de som beställer (utom den vid luckan) först, och regnet från platsen dry.
+        expect(line.every((id) => ['ordering', 'waiting'].includes(x.guests.find((g) => g.id === id)!.state))).toBe(true);
+        expect(rainExposedInQueue(x, line[dry - 1] ?? '')).toBe(false);
+        expect(rainQueuePatience(x, line[dry])).toBe(RAIN_QUEUE_BALANCE.patienceRain);
+      }
+      if (line.some((id) => rainExposedInQueue(x, id))) sawExposed = true;
+      return x;
+    });
+    return { s, maxLine, sawExposed, leavers: s.day.truckRainLeavers ?? 0 };
+  }
+
+  it('utan markis: kön i regnet blir högst en torr och leaveAt + 1 med paraply, och de som går ur regnet räknas', () => {
+    expect(truckRaining(rainyEvening(1, false))).toBe(true);
+    const r = run(1, false);
+    expect(r.sawExposed).toBe(true);
+    expect(r.maxLine).toBeLessThanOrEqual(rainQueueDryInLine(false) + RAIN_QUEUE_BALANCE.leaveAt + 1);
+    expect(r.leavers).toBeGreaterThan(0);
   });
 
-  it('nöjdheten sjunker fortare för den som står i regnet, och den sista går när fler än leaveAt står i regnet', () => {
-    const s = withQueue(raining(evening()), RAIN_QUEUE_BALANCE.leaveAt + 2);
-    const ids = s.waitingIds;
-    expect(rainQueueLeaver(s)).toBe(ids[ids.length - 1]);
-    expect(rainQueueLeaver(withAwning(s, true))).toBeNull();
-    const after = (x: SimulationState) => reducer(x, TICK);
-    const sat = (x: SimulationState, id: string) => x.guests.find((g) => g.id === id)!.satisfaction;
-    const wet = after(s), dryUnder = after(withAwning(s, true));
-    const id = ids[2], before = sat(s, id);
-    if (wet.guests.find((g) => g.id === id)?.state === 'waiting' && dryUnder.guests.find((g) => g.id === id)?.state === 'waiting') {
-      expect(before - sat(wet, id)).toBeGreaterThan(before - sat(dryUnder, id));
-    }
-    expect(wet.guests.find((g) => g.id === ids[ids.length - 1])!.state).toBe('leaving');
-    expect(dryUnder.guests.find((g) => g.id === ids[ids.length - 1])!.state).toBe('waiting');
-    // Med en kort kö i regnet går ingen (leaveAt).
-    const short = withQueue(raining(evening()), RAIN_QUEUE_BALANCE.leaveAt);
-    expect(rainQueueLeaver(short)).toBeNull();
+  it('med markis står sex till torrt: kön får vara längre innan någon går', () => {
+    const r = run(1, true);
+    expect(r.maxLine).toBeGreaterThan(rainQueueDryInLine(false) + RAIN_QUEUE_BALANCE.leaveAt + 1);
+    expect(r.maxLine).toBeLessThanOrEqual(rainQueueDryInLine(true) + RAIN_QUEUE_BALANCE.leaveAt + 1);
+  });
+
+  it('torrt väder: ingen går ur kön för regnet', () => {
+    let s = startInFoodtruck(1, firstDayOfWeek(2) + 4);
+    s = reducer(playMorning(s, { scenarioAnswer: 'best', ladder: 'never' }), { type: 'START_SERVICE' });
+    s = { ...s, day: { ...s.day, truck: { ...truckOf(s), weather: 'sun', rainFromE: null } } };
+    let ticks = 0;
+    s = tickUntil(s, (x) => x.day.period !== 'dinner' || ticks++ >= 600);
+    expect(s.day.truckRainLeavers ?? 0).toBe(0);
     expect(TRUCK_WEATHER.footfall.rain).toBeLessThan(1);
   });
 });

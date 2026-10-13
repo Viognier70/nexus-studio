@@ -31,7 +31,7 @@ import {
 import { valueQuotaSatisfactionDelta } from './valueQuota';
 import { applyMissingMepHit, consumeMepForOneGuest } from './mepConsumption';
 import { spreadDeparture } from '../../sim/guestMood';
-import { finishTruckEating, rainQueueLeaver, rainQueuePatience, startTruckEating, truckAssistantAway, useTruckSausages } from '../../sim/truckLife';
+import { finishTruckEating, rainQueueLeaver, rainQueuePatience, startTruckEating, truckAssistantAway, truckRaining, useTruckSausages } from '../../sim/truckLife';
 
 const TICK_SECONDS = 0.2;
 
@@ -544,8 +544,28 @@ export function tickGuests(state: SimulationState) {
         guest.stateTime = now;
         moveGuest(guest, { x: 0, z: 8 });
         settleSocialGuest(state, guest, true);
+        state.day.truckRainLeavers = (state.day.truckRainLeavers ?? 0) + 1;
       }
       continue;
+    }
+
+    // ORDER 332 C — kön vid foodtruckens lucka är gästerna som beställer (truckQueueLine): i regnet utan tak över sig
+    // (markisen, luckans skiva) sjunker nöjdheten som i kön, 1/patienceRain gånger så fort, och efter
+    // queuePatienceSeconds × patienceRain går den som är missnöjd; står fler än leaveAt i regnet går den sista
+    // (sim/truckLife.ts, balance.ts RAIN_QUEUE_BALANCE). Utan ryktets och moralens slag: hen gick ur regnet.
+    if (guest.state === 'ordering' && state.economy?.businessClass === 'foodtruck' && truckRaining(state)) {
+      const p = rainQueuePatience(state, guest.id);
+      if (p < 1) {
+        guest.satisfaction = Math.max(0, guest.satisfaction - (WAITING_SAT_DROP_PER_SEC * TICK_SECONDS) / p);
+        if ((now - guest.stateTime > queuePatienceSeconds(state) * p && guest.satisfaction < giveUpSatisfaction(state)) || rainQueueLeaver(state) === guest.id) {
+          guest.state = 'leaving';
+          guest.stateTime = now;
+          moveGuest(guest, { x: 0, z: 8 });
+          settleSocialGuest(state, guest, true);
+          state.day.truckRainLeavers = (state.day.truckRainLeavers ?? 0) + 1;
+          continue;
+        }
+      }
     }
 
     if (guest.state === 'seated' && now - guest.stateTime > 4) {

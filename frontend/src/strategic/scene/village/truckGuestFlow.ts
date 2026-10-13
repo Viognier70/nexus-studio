@@ -26,6 +26,7 @@ import { nearestNode, routeBetween, walkNetwork } from '../../content/villageNet
 import { villageSources } from '../../content/villagePlaces';
 import { CURIOUS, FOODTRUCK } from '../../../sim/balance';
 import { rainQueue } from '../truckRain';
+import { truckQueueLine } from '../../../sim/truckLife';
 import type { CuriousState } from '../../../sim/curious';
 import { CLIPS } from '../figureClips';
 import type { GuestState } from '../../types';
@@ -239,8 +240,8 @@ export class TruckGuestFlow {
     // Den som beställer står vid luckan; fler än en (sällan) ställer sig först i kön.
     ordering.slice(0, 1).forEach((g) => out.set(g.id, at(q.order[0], q.order[1], Math.PI, 0, 'order', 0)));
     collecting.forEach((g, i) => out.set(g.id, at(q.collect[0] + i * 0.6, q.collect[1] + i * 0.3, Math.PI, 0, 'collect', i)));
-    const byId = new Map(guests.map((g) => [g.id, g]));
-    const line = [...ordering.slice(1).map((g) => g.id), ...waitingIds.filter((id) => byId.get(id)?.state === 'waiting')];
+    // ORDER 332 C — kön i samma ordning som simuleringen räknar regnet på (sim/truckLife.ts truckQueueLine).
+    const line = truckQueueLine(guests, waitingIds);
     const lineAt = (i: number): Vec2 => queueLineAt(q, i);
     line.forEach((id, i) => { const p = lineAt(i); out.set(id, at(p[0], p[1], Math.PI / 2, 0, 'queue', i)); });
     // De som kommer går mot köns slut.

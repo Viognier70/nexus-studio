@@ -1215,19 +1215,25 @@ export const TRUCK_WEATHER = {
   village: { sunMinTempC: 16, windMinMS: 8, coolMaxTempC: 9 }
 } as const;
 
-// ORDER 332 C (Designs D13 truckRain.js RAIN_QUEUE_BALANCE) — kön vid vagnen i regn. Utan markisen står den som
-// beställer och en till torrt under luckans skiva (scene/truckRain.ts RAIN_QUEUE.withoutAwning.sheltered); med
-// markisen sex till (withAwning). Den som står i regnet (sim/truckLife.ts rainExposedInQueue) har patienceRain av
-// tålamodet torrt: QUEUE.patienceSimSeconds gånger patienceRain innan hen kan ge upp, och nöjdheten sjunker 1/patienceRain
-// gånger så fort i kön. Står fler än leaveAt i regnet går den sista i kön (utan ryktets och moralens slag: hen gav inte
-// upp efter en lång väntan, hen såg kön i regnet). Förut (ORDER 319c–331) gjorde regnet i kön ingenting: bara
-// footfall.rain 0,8 och curiousGap.rain 1,5. Valda tal, måttliga: tålamodet 60 → 42 spelsekunder, och kön i regn högst
-// en torr och fyra med paraply (D13 ritar tre). Justera patienceRain (högre = mildare) och leaveAt (högre = mildare)
-// om säsongskörningen visar fler stängda säsonger.
+// ORDER 332 C (Designs D13 truckRain.js RAIN_QUEUE_BALANCE) — kön vid vagnen i regn. Kön är gästerna som beställer vid
+// luckan i den ordning scenen ritar dem (sim/truckLife.ts truckQueueLine). Utan markisen står den som beställer och en
+// till torrt under luckans skiva (scene/truckRain.ts RAIN_QUEUE.withoutAwning.sheltered); med markisen sex till
+// (withAwning). Den som står i regnet (truckLife.ts rainExposedInQueue) tappar nöjdheten 1/patienceRain gånger så fort
+// som i kön, och går efter QUEUE.patienceSimSeconds gånger patienceRain om hen är missnöjd (service.ts). Står fler än
+// leaveAt i regnet går den sista i kön. Utan ryktets och moralens slag: hen gick ur regnet. Förut (ORDER 319c–331) gjorde
+// regnet i kön ingenting: bara footfall.rain 0,8 och curiousGap.rain 1,5.
+// Valda tal ur provet (ledarens order 2026-10-13; frö 1–8, regn hela kvällen, en kväll, spelarens flöde
+// startInFoodtruck → START_SERVICE → tickUntil; notorna day.billsTonight, de som gick day.truckRainLeavers, kassan efter
+// kvällen; rapporten till ledaren, provet src/__scratch332__/rain.test.ts raderat efteråt):
+//   utan verkan 55,75 notor, 19 523 kr | 0,85/8: 51,00 → med markis 52,75 (+442 kr) | 0,85/6: 50,62 → 51,62 (+365 kr)
+//   0,8/8: 53,00 → 52,38 (+326 kr) | 0,75/10: 51,50 → 52,75 (+388 kr), 15,25 → 13,50 som gick.
+// 0,75/10 kostar 7,6 % av notorna en regnkväll utan markis (högst ~8 %, säsongsraderna ska inte stänga fler) och ger
+// markisen den tydligaste vinsten bland de inställningar som håller den gränsen (0,85/8 ger mer men kostar 8,5 %).
+// Högre patienceRain och högre leaveAt är mildare.
 export const RAIN_QUEUE_BALANCE = {
   section: 'Servicen',
-  patienceRain: 0.7,
-  leaveAt: 4
+  patienceRain: 0.75,
+  leaveAt: 10
 } as const;
 
 // ORDER 319c (ORDRAR_319_D9.md punkt 1 och 3, Designs D9 EAT_FLOW) — de som äter vid vagnen. Gästen
