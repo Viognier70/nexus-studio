@@ -25,6 +25,7 @@ import { createRoom } from '../businessRoom';
 import { computePlayerBusinessInterior } from '../../business/interiorLayout';
 import { createRoomDirector } from '../WineBarFigures';
 import { MoodGestures } from '../moodGestures';
+import { CLIPS } from '../figureClips';
 import { eatTotalSFor } from '../village/PlayerTruckCrew';
 import { NOD_S, TRUCK_CHEAPEST_SEK, eyeContact, situationFor, stepWant, wantStep, wantsHatch, type StaffGlance, type WantKind } from '../wantSignals';
 import type { WineBarRoom } from '../wineBarRoom';
@@ -118,11 +119,14 @@ describe('ORDER 327 B — stegen och blickkontakten (wantSignals.ts)', () => {
     const g = new MoodGestures(1);
     const info = (since: number, step: ReturnType<typeof wantStep>) => ({ state: 'dining' as const, stateSinceS: 0, partyId: 'p', partySize: 2, seekYaw: 0.4, want: { kind: 'refill' as const, since, step } });
     g.sample(0, 'a', 'guest.seatedIdle', content, 0, 'chair', null, 1, info(50, null));
-    expect(g.sample(0, 'a', 'guest.seatedIdle', content, 50, 'chair', null, 1, info(50, 'eye'))?.id).toBe('guest.seekEye');
+    expect(g.sample(0, 'a', 'guest.seatedIdle', content, 50, 'chair', null, 1, info(50, 'eye'))?.base).toBe('guest.seekEye');
     expect(g.situationOf(0)).toBe('wantsRefill');
     // Mitt i blicken kommer kontakten: när klippet är slut nickar gästen, utan att vänta ut paustiden.
-    g.sample(0, 'a', 'guest.seatedIdle', content, 53.3, 'chair', null, 1, info(50, 'nod'));
-    expect(g.sample(0, 'a', 'guest.seatedIdle', content, 53.4, 'chair', null, 1, info(50, 'nod'))?.id).toBe('guest.nodApprove');
+    // ORDER 332 B — tempot kommer ur intensiteten (D12 INTENSITY): gästen som just börjat söka blicken gör det svagt,
+    // i lugnt tempo, så klippet är slut efter seconds.calm.
+    const end = 50 + CLIPS['guest.seekEye'].seconds.calm;
+    g.sample(0, 'a', 'guest.seatedIdle', content, end + 0.1, 'chair', null, 1, info(50, 'nod'));
+    expect(g.sample(0, 'a', 'guest.seatedIdle', content, end + 0.3, 'chair', null, 1, info(50, 'nod'))?.base).toBe('guest.nodApprove');
     expect(g.faceFor(0)).toBe('content');
   });
 

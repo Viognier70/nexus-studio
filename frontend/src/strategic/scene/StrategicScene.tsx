@@ -52,6 +52,7 @@ import { StreetTrees } from './StreetTrees';
 import { TorgetPlaza } from './TorgetPlaza';
 import { StreetLamps } from './village/StreetLamps';
 import { VillageVenues } from './village/VillageVenues';
+import { DistrictLabels } from './village/DistrictLabels';
 import { VillageLife } from './village/VillageLife';
 import { StreetArrivals } from './village/StreetArrivals';
 import { VillageWindows } from './village/VillageWindows';
@@ -166,6 +167,8 @@ export const StrategicScene = memo(function StrategicScene({ onSelect, selectedI
         {/* ORDER 297 — byns fönster i kvällsljuset (Designs Byn i kvällsljus). */}
         <group name="part:VillageWindows"><VillageWindows /></group>
         <group name="part:VillageVenues"><VillageVenues /></group>
+        {/* ORDER 332 D — kvarterens namn på nivån Byn (Designs D15). */}
+        <group name="part:DistrictLabels"><DistrictLabels /></group>
         <group name="part:VillageLife"><VillageLife /></group>
         <group name="part:StreetArrivals"><StreetArrivals /></group>
         <group name="part:LandmarkGatherers"><LandmarkGatherers /></group>

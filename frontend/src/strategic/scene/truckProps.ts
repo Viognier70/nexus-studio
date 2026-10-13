@@ -32,7 +32,10 @@ export const TRUCK_PROPS = {
   standTable: { at: { A: [3.9, 1.2] as Vec2, B: [5.4, 1.2] as Vec2, C: [4.65, 2.9] as Vec2 }, top: { diameter: 0.68, height: 1.1 }, base: { diameter: 0.5 }, column: 0.06, colour: { top: '#7d6a52', base: '#26221f' }, holder: 'napkinHolder i mitten, vriden 0,3 rad' },
   bench: { centre: [5.75, 2.75] as Vec2, length: 1.4, depth: 0.42, seatHeight: 0.45, back: false, along: 'Z', facing: '−X (väster, mot borden)', seats: [[5.8, 2.42], [5.8, 3.08]] as Vec2[], colour: '#7d6a52', legs: '#3a3029' },
   torch: {
-    at: [[-1.9, 3.05], [-4.7, 3.05], [2.45, 3.95], [4.6, 4.05], [6.75, 4.0], [6.6, 1.0]] as Vec2[],
+    // ORDER 332 C — marschall 2 flyttad från D9:s [−4,7; 3,05] till [−4,25; 3,1]: där stod den 0,14 m från markisens
+    // stolpe [−4,6; 2,95] (D13 STUGAN.awning.posts). Nu 0,38 m från stolpen och utanför den nyfiknas väg till kön
+    // (order319cPlatsen.test.ts); medhjälparen tänder den från samma ställe (TORCH_ROUTE standAt [−4,25; 3,45]).
+    at: [[-1.9, 3.05], [-4.25, 3.1], [2.45, 3.95], [4.6, 4.05], [6.75, 4.0], [6.6, 1.0]] as Vec2[],
     candle: { diameter: 0.1, height: 0.08, colour: '#c9b48a' }, holder: { height: 0.75, cup: 0.13, colour: '#26221f' },
     flame: { height: 0.12, colour: '#ffaa46', core: '#ffe9b8', flicker: '13 och 29 Hz, ±15 %', windLeanM: 0.09 },
     light: { radius: 1.8, colour: '#ffa850', intensity: 0.34 }, litFrom: 'truckEvening.ts TORCHES'

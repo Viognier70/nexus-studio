@@ -16,6 +16,7 @@
 
 import type { PavilionId } from '../strategic/knowledge/pavilions';
 import type { KnowledgeAxis, StaffRole } from '../strategic/types';
+import type { DistrictId, TruckSpotId } from './districts';
 
 // Medaljnivåer i stigande ordning. Index + 1 = antal medaljsteg
 // (Ekonomin > Marknaden: "brons är ett steg och platina fyra").
@@ -365,6 +366,132 @@ export const VILLAGE = {
   bus: { tourists: 30, announceMinute: 1185, arriveMinute: 1215, weekdays: ['fri', 'sat'] as readonly Weekday[], starsExponent: 2, partySizes: [3, 5] as readonly [number, number], type: 'middle' as const },
   // Hur länge aviseringen syns, i spelsekunder.
   noticeSimSeconds: 24
+} as const;
+
+// ORDER 332 D–G — kvarteren (Kvarteren, konkurrensen och spellägena, etapp 1; beslut i avsnitt 7, Anders 2026-10-12).
+// Spelarens krog ligger på Torget, och Torgets tal är dagens (punkt 7): Torget har alla faktorer 1 och byns
+// blandning (VILLAGE.poolMix), så att mätningarna står sig. De andra kvarteren är avvikelser från Torget.
+// I etapp 1 står bara foodtrucken i de andra kvarteren (lokalerna kommer i ORDER 333). Rivalerna i VILLAGE.rivals
+// är byns krogar och delas av alla kvarter tills de blir AI-krogar per kvarter i etapp 2 (punkt 4).
+//
+// Så väljer gästen (avsnitt 2): vikten för en krog är smaken × stjärnorna × priset × kvaliteten (sim/village.ts).
+//   - Plånboken bestämmer vikten för priset: priceExponent × walletPriceK, och gränsen gästen helst betalar
+//     (VILLAGE.priceComfortSek) × walletComfortK. Notan vid vagnen följer kvarterets gäster (doorMix, GUEST_TYPES).
+//   - Kräsenheten bestämmer vikten för kvaliteten: exp(pickiness × (kvaliteten − qualityRef)). Torget 0 (dagens
+//     modell, där kvaliteten bara syns genom ryktet och stjärnorna). starK skalar stjärnornas vikt (sjön låg).
+//   - quality: vad kvarterets gäster läser som kvalitet. 'whole' = rätten, vinet och servicen (qualityFood,
+//     qualityDrink, qualityService i rummet; Gästgivaregården väger helheten). 'medals' = medaljerna och proven
+//     från Måltidens hus (medaljstegen; Campus väger det som går att visa inom ämnet).
+//   - Rivalernas kvalitet efter nivån (rivalQuality).
+// pool: kvarterets gäster mot Torgets en vanlig dag (före veckodagen, som WEEK.guestFactor redan bär).
+export const DISTRICTS = {
+  section: 'Ekonomin > Byn',
+  qualityRef: 0.5,
+  rivalQuality: { enkel: 0.35, bistro: 0.55, soigne: 0.8 } as Record<'enkel' | 'bistro' | 'soigne', number>,
+  // Säsongen i simuleringen är sommaren: vecka 1 midsommar, vecka 8 kräftskivan (HOLIDAYS). Terminen börjar
+  // vecka 8 (uppropet); sommarkurserna på campus ger några studenter före det. Sjön är öppen veckorna 1–6.
+  termWeeks: [8] as readonly number[],
+  // Konferensdagarna på campus (kurs- och konferensdagar), veckor och dagar.
+  conference: { weeks: [2, 4, 6, 7] as readonly number[], days: ['tue', 'wed', 'thu'] as readonly Weekday[] },
+  // Marknadsdagarna är torgets bästa dagar (punkt 5): högtiderna med turister (HOLIDAYS.demand 'tourists',
+  // Grythyttedagarna). Torget har dem redan i kalenderns gästfaktor; de andra kvarteren tappar gäster till torget.
+  marketDemand: ['tourists'] as readonly string[],
+  list: {
+    torget: {
+      pool: 1, doorMix: null, walletPriceK: 1, walletComfortK: 1, pickiness: 0, starK: 1, quality: 'whole',
+      weekday: null, outOfTermK: 1, termK: 1, seasonByWeek: null, marketK: 1, conferenceK: 1, weatherK: null, openWeeks: null
+    },
+    student: {
+      // Studenter och unga: liten plånbok, låg till medel kräsenhet, terminstid, vardagar och AW.
+      pool: 0.8, doorMix: { student: 0.75, middle: 0.25, high: 0 }, walletPriceK: 1.6, walletComfortK: 0.85, pickiness: 0, starK: 1, quality: 'whole',
+      weekday: { mon: 1.1, tue: 1.1, wed: 1.15, thu: 1.25, fri: 0.95, sat: 0.7, sun: 0 }, outOfTermK: 0.45, termK: 1.15, seasonByWeek: null, marketK: 0.85, conferenceK: 1, weatherK: null, openWeeks: null
+    },
+    gastgivaregarden: {
+      // Kulturturister och hotellets gäster: stor plånbok, hög kräsenhet (helheten), sommaren och helgen.
+      pool: 0.55, doorMix: { student: 0.05, middle: 0.4, high: 0.55 }, walletPriceK: 0.5, walletComfortK: 1.5, pickiness: 3, starK: 1.3, quality: 'whole',
+      weekday: { mon: 0.9, tue: 0.9, wed: 0.95, thu: 1, fri: 1.15, sat: 1.25, sun: 0 }, outOfTermK: 1, termK: 1, seasonByWeek: [1.25, 1.3, 1.3, 1.3, 1.25, 1.15, 1, 0.95], marketK: 0.9, conferenceK: 1.1, weatherK: null, openWeeks: null
+    },
+    campus: {
+      // Lärare, konferenser och besökare: medel till stor plånbok, hög kräsenhet inom ämnet (medaljerna och proven).
+      pool: 0.5, doorMix: { student: 0.2, middle: 0.35, high: 0.45 }, walletPriceK: 0.8, walletComfortK: 1.2, pickiness: 3, starK: 1, quality: 'medals',
+      weekday: { mon: 1.2, tue: 1.25, wed: 1.25, thu: 1.2, fri: 0.85, sat: 0.4, sun: 0 }, outOfTermK: 0.85, termK: 1.15, seasonByWeek: null, marketK: 0.9, conferenceK: 1.9, weatherK: null, openWeeks: null
+    },
+    sjon: {
+      // Familjer, badgäster och båtfolk: medel plånbok, låg kräsenhet. Sommardagar och fint väder (avsnitt 7 punkt 2);
+      // nästan tom en regnig vardag. Stängd efter vecka 6.
+      pool: 0.45, doorMix: { student: 0.1, middle: 0.75, high: 0.15 }, walletPriceK: 1, walletComfortK: 1, pickiness: 0, starK: 0.6, quality: 'whole',
+      weekday: { mon: 0.7, tue: 0.75, wed: 0.8, thu: 0.9, fri: 1.2, sat: 1.6, sun: 0 }, outOfTermK: 1, termK: 1, seasonByWeek: [1.3, 1.4, 1.4, 1.35, 1.25, 1.05, 0, 0], marketK: 0.9, conferenceK: 1, weatherK: { sun: 1.3, rain: 0.35, wind: 0.7, cool: 0.6 }, openWeeks: [1, 2, 3, 4, 5, 6] as readonly number[]
+    }
+  } as Record<DistrictId, DistrictSpec>,
+  // Foodtruckens platser: avgiften per kväll vagnen står där. Torget ingår i veckans tillstånd
+  // (FOODTRUCK.pitchFeeWeeklySek), så Torgets tal är dagens.
+  truckSpotFeeSek: { torget: 0, prastgatan: 150, gastgivaregarden: 350, campus: 250, sjon: 300 } as Record<TruckSpotId, number>
+} as const;
+
+export interface DistrictSpec {
+  pool: number;
+  doorMix: { student: number; middle: number; high: number } | null;
+  walletPriceK: number;
+  walletComfortK: number;
+  pickiness: number;
+  starK: number;
+  quality: 'whole' | 'medals';
+  weekday: Record<Weekday, number> | null;
+  outOfTermK: number;
+  termK: number;
+  seasonByWeek: readonly number[] | null;
+  marketK: number;
+  conferenceK: number;
+  /** Vädret vid vagnen (TRUCK_WEATHER) gånger kvarterets gäster, utöver TRUCK_WEATHER.footfall. null = 1. */
+  weatherK: Record<'sun' | 'rain' | 'wind' | 'cool', number> | null;
+  openWeeks: readonly number[] | null;
+}
+
+// ORDER 332 D — gästerna på gatan per kvarter (avsnitt 7: "olika gäster på gatorna"; Designs D15 §3, förslag).
+// Bara det som syns: vilka gående som går i ett kvarter och hur de rör sig (scene/village/districtStreet.ts,
+// scene/OsmPedestrians.tsx; avsnittet i speldesignen är Byn). Simuleringens gäster per krog (VILLAGE, DISTRICTS) ändras inte.
+//   mix: andelarna per kvarter (D15 STREET_MIX, oförändrade). family = en vuxen bybo och ett barn hand i hand (D12).
+//   parties: antalet sällskap per kvarter i kvarterets eget lager av gående, utöver byns gående (OsmPedestrians,
+//     som också tar kvarterets andelar där de går). Sjön har bara sitt eget lager, med antalet ur lake.
+//   lake: Sjöns två lägen (D15 LAKE_MODES). walkers = gående på stigen (D15 talet, personer). Läget är
+//     sommarhelgen när sjön är öppen (DISTRICTS.list.sjon.openWeeks), dagen är en av busyWeekdays och det inte
+//     regnar vid vagnen; annars höstvardagen.
+//   style: hur de rör sig (D15 d15Manus.js streetWalkers): farten i m/s per grupp, var fjärde student har bråttom,
+//     studenterna i grupper om upp till tre, gourmeterna och konferensfolket i par, turisterna stannar och tittar.
+export type StreetGroupKey = 'villager' | 'student' | 'tourist' | 'business' | 'gourmet' | 'family';
+export const DISTRICT_STREET = {
+  section: 'Ekonomin > Byn',
+  source: 'Designs D15 kvarterPlatser.js STREET_MIX och LAKE_MODES, d15Manus.js streetWalkers (förslag)',
+  mix: {
+    torget: { villager: 0.4, tourist: 0.2, student: 0.2, business: 0.1, gourmet: 0.1 },
+    student: { student: 0.75, villager: 0.25 },
+    gastgivaregarden: { tourist: 0.55, gourmet: 0.35, villager: 0.1 },
+    campus: { business: 0.6, tourist: 0.2, student: 0.2 },
+    sjon: { family: 0.55, villager: 0.3, tourist: 0.15 }
+  } as Record<DistrictId, Partial<Record<StreetGroupKey, number>>>,
+  // Personer i kvarterets eget lager (D15: sju till nio per plats inom 30 m; här för hela kvarteret).
+  walkers: { torget: 10, student: 14, gastgivaregarden: 10, campus: 12, sjon: 0 } as Record<DistrictId, number>,
+  lake: {
+    autumnWeekday: { walkers: 2 },
+    summerWeekend: { walkers: 9 },
+    busyWeekdays: ['fri', 'sat'] as readonly Weekday[]
+  },
+  style: {
+    speedMps: { villager: 0.85, student: 0.9, tourist: 0.72, business: 0.85, gourmet: 0.85, family: 0.7 } as Record<StreetGroupKey, number>,
+    studentHurriedShare: 0.25,
+    studentHurriedMps: 1.35,
+    partySize: { villager: 1, student: 3, tourist: 1, business: 2, gourmet: 2, family: 2 } as Record<StreetGroupKey, number>,
+    // Turisterna stannar och tittar: en paus mitt på vägen var touristStopEveryS, touristStopS lång.
+    touristStopEveryS: [8, 16] as readonly [number, number],
+    touristStopS: [3, 6] as readonly [number, number],
+    // Sällskapet går abreastM isär (D15 d15Manus.js). Familjen hand i hand: barnet childSideM bredvid den vuxna och
+    // childAheadM före, så att händerna möts (D12 d12Manus.js CHILD_SIDE, CHILD_AHEAD), och childSizeK av den
+    // vuxnas storlek (D12 hm 0,58).
+    abreastM: 0.72,
+    childSideM: 0.81,
+    childAheadM: 0.1,
+    childSizeK: 0.58
+  }
 } as const;
 
 export const MARKET = {
@@ -764,6 +891,64 @@ export const GESTURE_BALANCE = {
   streetSpeed: { calm: 0.85, hurried: 1.45, child: 0.7, dog: 0.9 }
 } as const;
 
+// ORDER 332 B (Designs D12 gestureMap.ts, figureFace.ts och figureLife.ts, leverans 2026-10-11; LEVERANSNOT §2–3 och
+// Öppet 1: "Talen … sätter Code i balance.ts") — levande figurer: temperamentet, de tre intensiteterna, svaren,
+// livet i vila, varianternas vänsterhand och ansiktets övergångar. Prototypens värden. De är ställda mot kamerans
+// uppmätta avstånd (frontend/reports/order325/kamera.json, places.vinbaren[].atZ.headMinM/headMaxM och
+// places.vagnen[].atZ): vid vagnen visas det nära ansiktet (FACE_LOD.near), där blicken och övergångarna ritas; i
+// vinbaren och bistron visas det långa ansiktet med samma former och samma övergångar. Inget av talen beror av
+// avståndet (gesternas storlek är vinklar, ansiktets former är dukens px i båda skalen), så prototypens värden gäller.
+// Sekunder i figurernas klocka (simtid, en sekund per sekund i normal fart).
+export const FIGURE_LIFE = {
+  section: 'Servicen > Gästerna',
+  /** Temperamentet (D12 TEMPERAMENT): gestens storlek (amp, figureLife.scalePose), ansiktets intensitet (faceK),
+   *  övergången (faceTransS, inom face.transitionS), svarstiden (reactDelayS), svaret på ett skämt (jokeReply) och livet i
+   *  vila (sekunder mellan blinkningar och blickar, blickens vinkel i radianer, hur länge den hålls, huvudets drift i
+   *  radianer, tyngdbytet för den som står). */
+  temperament: {
+    calm: { amp: 0.8, faceK: 0.85, faceTransS: 0.5, reactDelayS: 0.45, jokeReply: 'guest.chuckle', blinkEveryS: [3.0, 5.4], glanceEveryS: [3.4, 6.0], glanceYaw: 0.3, glanceHoldS: [1.0, 1.8], drift: 0.035, shiftEveryS: [6, 9] },
+    lively: { amp: 1.3, faceK: 1.15, faceTransS: 0.3, reactDelayS: 0.25, jokeReply: 'guest.laugh', blinkEveryS: [2.0, 3.8], glanceEveryS: [1.6, 3.2], glanceYaw: 0.5, glanceHoldS: [0.5, 1.1], drift: 0.06, shiftEveryS: [3, 5] },
+    reserved: { amp: 0.6, faceK: 0.7, faceTransS: 0.6, reactDelayS: 0.6, jokeReply: 'guest.smileTurn', blinkEveryS: [3.2, 6.0], glanceEveryS: [4.0, 7.0], glanceYaw: 0.2, glanceHoldS: [0.8, 1.4], drift: 0.022, shiftEveryS: [7, 10] }
+  },
+  /** Andelen av varje temperament per gästgrupp (D12 TEMPERAMENT_BALANCE.share). null = lika många av varje, som i
+   *  prototypen; Design och Anders har inte gett grupperna egna andelar. */
+  temperamentShare: {
+    student: null as { calm: number; lively: number; reserved: number } | null,
+    villager: null as { calm: number; lively: number; reserved: number } | null,
+    tourist: null as { calm: number; lively: number; reserved: number } | null,
+    gourmet: null as { calm: number; lively: number; reserved: number } | null,
+    business: null as { calm: number; lively: number; reserved: number } | null
+  },
+  /** De tre nivåerna (D12 INTENSITY): klippets tempo och gestens storlek ovanpå temperamentet. */
+  intensity: {
+    weak: { tempo: 'calm', amp: 0.8 },
+    clear: { tempo: 'normal', amp: 1.0 },
+    strong: { tempo: 'stressed', amp: 1.2 }
+  },
+  /** Ansiktets intensitet (D12 FACE_INTENSITY och INTENSITY.faceK, samma tal): hur långt från det vilande ansiktet.
+   *  Tydlig = D11:s ritning, stark går förbi den. */
+  faceIntensity: { weak: 0.5, clear: 1.0, strong: 1.3 },
+  /** Nivån ur trycket 0..1 (D12 INTENSITY_BALANCE): under weakBelow svag, från strongFrom stark. */
+  intensityBounds: { weakBelow: 0.34, strongFrom: 0.67 },
+  /** Svaren (D12 REACTION_BALANCE): var i guest.tellJoke poängen kommer (klippets u), hur långt isär leendet sprider sig
+   *  (sekunder per plats), och hur nära personalen går förbi för att nicka (meter). */
+  reaction: { punchU: 0.64, spreadS: 0.35, passNodRadiusM: 1.4 },
+  /** Livet i vila (D12 LIFE_RULES): dämpningen under en gest, blicken (ögonen först, huvudet efter till headShare av
+   *  vinkeln), en blinkning var blinkOnGlance:e blick och var doubleBlinkEvery:e blinkning dubbel. */
+  life: { busyK: 0.3, eyesFirstS: 0.06, headFollowS: 0.3, headShare: 0.6, blinkOnGlance: 3, doubleBlinkEvery: 7 },
+  /** Varianterna (D12 VARIANT_RULES.leftHandShare): andelen gäster som gör enhandsgesterna med vänster hand. */
+  leftHandShare: 0.2,
+  /** Ansiktet (D12 FACE_D12): övergångens ram, blinkningens stängning och öppning, och blickens förskjutning i dukens
+   *  px för det nära och det långa skalet. */
+  face: { transitionS: { min: 0.3, max: 0.6, default: 0.45 }, blinkS: { close: 0.05, open: 0.09 }, gazePx: { near: 9, far: 14 } },
+  /** Spelet (ORDER 332 B): livets schema byggs i fönster om så här många sekunder ur figurens frö, så att en lång kväll
+   *  inte bygger hela schemat från noll; blickar som inte hinner klart före fönstrets slut tas bort. */
+  windowS: 60,
+  /** Spelet (ORDER 332 B): vid vagnens ståbord turas de som står vid samma bord om att prata, ett varv så här många
+   *  sekunder (berättelsen 3,8 s, svaren och småskrattet efter, och en paus); D12:s manus har turerna i följd. */
+  conversationTurnS: 9
+} as const;
+
 export const DOWNGRADE = {
   section: 'Ekonomin > Nedgradering',
   consecutiveNegativeDayEnds: 3, // "under minus veckogolvet vid tre dagsavslut i rad"
@@ -1028,6 +1213,21 @@ export const TRUCK_WEATHER = {
   curiousGap: { sun: 0.8, rain: 1.5, wind: 1.1, cool: 1 },
   rainFromE: [0.15, 0.5] as readonly [number, number],
   village: { sunMinTempC: 16, windMinMS: 8, coolMaxTempC: 9 }
+} as const;
+
+// ORDER 332 C (Designs D13 truckRain.js RAIN_QUEUE_BALANCE) — kön vid vagnen i regn. Utan markisen står den som
+// beställer och en till torrt under luckans skiva (scene/truckRain.ts RAIN_QUEUE.withoutAwning.sheltered); med
+// markisen sex till (withAwning). Den som står i regnet (sim/truckLife.ts rainExposedInQueue) har patienceRain av
+// tålamodet torrt: QUEUE.patienceSimSeconds gånger patienceRain innan hen kan ge upp, och nöjdheten sjunker 1/patienceRain
+// gånger så fort i kön. Står fler än leaveAt i regnet går den sista i kön (utan ryktets och moralens slag: hen gav inte
+// upp efter en lång väntan, hen såg kön i regnet). Förut (ORDER 319c–331) gjorde regnet i kön ingenting: bara
+// footfall.rain 0,8 och curiousGap.rain 1,5. Valda tal, måttliga: tålamodet 60 → 42 spelsekunder, och kön i regn högst
+// en torr och fyra med paraply (D13 ritar tre). Justera patienceRain (högre = mildare) och leaveAt (högre = mildare)
+// om säsongskörningen visar fler stängda säsonger.
+export const RAIN_QUEUE_BALANCE = {
+  section: 'Servicen',
+  patienceRain: 0.7,
+  leaveAt: 4
 } as const;
 
 // ORDER 319c (ORDRAR_319_D9.md punkt 1 och 3, Designs D9 EAT_FLOW) — de som äter vid vagnen. Gästen
@@ -2019,7 +2219,16 @@ export const EQUIPMENT = {
   flamberingsvagn: { tier: 'soigne', priceSek: 12000, pavilion: 'metodkoket', medal: 'silver', credits: 40 },
   ostvagn: { tier: 'bistro', priceSek: 9000, pavilion: 'kalastorget', medal: 'silver', credits: 30 },
   avecvagn: { tier: 'bistro', priceSek: 8000, pavilion: 'stensota', medal: 'silver', credits: 30, avecShare: 0.2 },
-  humidor: { tier: 'soigne', priceSek: 14000, pavilion: 'stensota', medal: 'guld', credits: 60 }
+  humidor: { tier: 'soigne', priceSek: 14000, pavilion: 'stensota', medal: 'guld', credits: 60 },
+  // ORDER 332 C (Designs D13 STUGAN.awning.item) — markisen över kön vid foodtruckens vagn, Grillstugan. Bara i
+  // foodtruckens butik (truck). Syns på vagnen när den är köpt; i regn står kön torrt under den (scene/truckRain.ts
+  // RAIN_QUEUE, RAIN_QUEUE_BALANCE nedan). Pris: foodtrucken tjänar omkring 11 000 kr i veckan (FOODTRUCK.guestCapFactor)
+  // och platsen kostar 1 500 kr i veckan; 4 500 kr är tre veckors platsavgift, under hälften av en veckas vinst och
+  // billigare än vinbarens billigaste utrustning (avecvagnen, 8 000 kr). Regnet kommer ungefär var femte kväll
+  // (TRUCK_WEATHER.weights.rain). Kravet: brons i Kalastorget, paviljongen för kön och gästernas tålamod
+  // (knowledgeInService.ts queuePatienceSeconds), och 10 krediter (hälften av vinkylens 20). tier enkel: räknas inte i
+  // varukorgens nivå (goods.ts basketLevel hoppar över vagnens utrustning).
+  queueAwning: { tier: 'enkel', priceSek: 4500, pavilion: 'kalastorget', medal: 'brons', credits: 10, truck: true }
 } as const;
 
 // ORDER 290 — kvällens ekonomi (Vision Owner 2026-09-30, provspel):

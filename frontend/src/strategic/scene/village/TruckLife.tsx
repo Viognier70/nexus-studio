@@ -22,7 +22,9 @@ import { eveningProgress } from '../../../sim/clock';
 import { TRUCK_TABLES, truckOf, truckRaining, type TruckTable } from '../../../sim/truckLife';
 import { useSimDispatch, useSimState } from '../../simulation/SimulationProvider';
 import { TruckMenuCard } from '../../ui/curious/TruckMenuCard';
-import { DECK_TOP_M, TRUCK_COLOURS, TRUCK_LAYOUT, onDeck } from '../playerTruck';
+import { CHIMNEY_TOP_M, DECK_TOP_M, TRUCK_LAYOUT, onDeck, stuganStateFor } from '../playerTruck';
+import { STUGAN, flapEdge, shelterTop, stuganShelters } from '../grillstugan';
+import { DRIPS, PUDDLES } from '../truckRain';
 import { MENU_BOARD, TRUCK_PROPS } from '../truckProps';
 import { LIGHTS_K, TRUCK_LIGHTS } from '../truckEvening';
 import { TRUCK_WEATHER } from '../truckWeather';
@@ -41,18 +43,12 @@ export const TRUCK_SIGNALS = {
 const smooth = (x: number) => { const k = Math.max(0, Math.min(1, x)); return k * k * (3 - 2 * k); };
 const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
 
-/** Markisen i regn (Designs rain.awning): hela vagnens längd och 0,6 m längre ut. */
-const RAIN_AWNING = TRUCK_WEATHER.rain.awning;
 /** Regnstrecken runt vagnen: så många, i en låda så här stor (meter), fallande så här fort. */
 const RAIN = { count: 420, box: [26, 9, 22] as [number, number, number], speedMps: 9, lengthM: 0.38 };
-/** Pölarna på torget framför vagnen (Designs puddles 6), i vagnens ram. */
-const PUDDLES: [number, number, number][] = [[-3.1, 5.6, 0.7], [0.4, 6.4, 0.9], [3.5, 5.3, 0.6], [-6.2, 4.1, 0.8], [6.9, 5.8, 0.75], [1.6, 3.6, 0.45]];
 /** Servetterna i blåsten: högst så många i luften. */
 const NAPKINS_MAX = 10;
 /** Röken: puffarna som finns samtidigt. */
 const SMOKE_MAX = 32;
-/** Skorstenens topp (playerTruck.ts: taket 2,6 m och skorstenen 0,7 m). */
-const CHIMNEY_TOP_M = 3.3;
 
 function glowDisc(radius: number, colour: string): THREE.Mesh {
   const tex = glowTexture();
@@ -125,19 +121,14 @@ export function TruckLife({ at }: { at: TruckFrame }) {
     const hatchGlow = glowDisc(hg.radius, hg.colour);
     hatchGlow.position.set(hg.at[0], 0.03, hg.at[1]);
     g.add(hatchGlow);
-    // Markisen utfälld i regn.
-    const awning = new THREE.Mesh(new THREE.BoxGeometry(RAIN_AWNING.x1 - RAIN_AWNING.x0, 0.04, RAIN_AWNING.z1 - RAIN_AWNING.z0), new THREE.MeshStandardMaterial({ color: TRUCK_COLOURS.awning, roughness: 0.7 }));
-    awning.position.set((RAIN_AWNING.x0 + RAIN_AWNING.x1) / 2, TRUCK_LAYOUT.awning.height - 0.08, (RAIN_AWNING.z0 + RAIN_AWNING.z1) / 2);
-    awning.rotation.x = 0.12;
-    awning.name = 'awningRain';
-    awning.castShadow = true;
-    g.add(awning);
-    // Pölarna.
+    // ORDER 332 C — D9:s markis som fälldes ut i regn är borta: Grillstugans markis är ett tillval (grillstugan.ts),
+    // och kön står under den eller med paraply (truckRain.ts RAIN_QUEUE). Pölarna är D13:s (PUDDLES).
     const puddleMat = new THREE.MeshBasicMaterial({ color: '#28344a', transparent: true, opacity: 0.35, depthWrite: false });
-    const puddles = PUDDLES.map(([x, z, r]) => {
-      const p = new THREE.Mesh(new THREE.CircleGeometry(r, 20), puddleMat);
+    const puddles = PUDDLES.map(([x, z, a, b, rot]) => {
+      const p = new THREE.Mesh(new THREE.CircleGeometry(1, 20), puddleMat);
       p.rotation.x = -Math.PI / 2;
-      p.scale.set(1.4, 1, 1);
+      p.rotation.z = rot;
+      p.scale.set(a, b, 1);
       p.position.set(x, 0.025, z);
       g.add(p);
       return p;
@@ -155,6 +146,15 @@ export function TruckLife({ at }: { at: TruckFrame }) {
     const rain = new THREE.LineSegments(rainGeo, new THREE.LineBasicMaterial({ color: '#c9d4e2', transparent: true, opacity: 0.3, depthWrite: false }));
     rain.frustumCulled = false;
     g.add(rain);
+    // ORDER 332 C (D13) — dropparna från luckans skiva och markisens kant; markisens bara när den är köpt.
+    const fe = flapEdge(), A = STUGAN.awning;
+    const edges = [{ x0: STUGAN.hatch.x0 - 0.1, x1: STUGAN.hatch.x1 + 0.1, z: fe.z + 0.02, y: fe.y - 0.18, awning: false }, { x0: A.x0, x1: A.x1, z: A.z1 + 0.03, y: A.yOut - 0.18, awning: true }];
+    const drips = edges.flatMap((e) => { const n = Math.round((e.x1 - e.x0) * DRIPS.perM); return Array.from({ length: n }, (_, i) => ({ x: e.x0 + ((i + 0.5) * (e.x1 - e.x0)) / n, z: e.z, y: e.y, p: Math.abs(Math.sin(i * 12.9898 + e.x0) * 43758.5453) % 1, awning: e.awning })); });
+    const dripGeo = new THREE.BufferGeometry();
+    dripGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(drips.length * 6), 3));
+    const dripLines = new THREE.LineSegments(dripGeo, new THREE.LineBasicMaterial({ color: '#dbe5f0', transparent: true, opacity: 0.6, depthWrite: false }));
+    dripLines.frustumCulled = false;
+    g.add(dripLines);
     // Röken.
     const smokeTex = glowTexture();
     const puffs: Puff[] = Array.from({ length: SMOKE_MAX }, () => {
@@ -180,7 +180,7 @@ export function TruckLife({ at }: { at: TruckFrame }) {
       g.add(w);
       return w;
     });
-    return { g, torches, heaterGlow, burner, hatchGlow, awning, puddles, rain, seeds, puffs, napkins, weights };
+    return { g, torches, heaterGlow, burner, hatchGlow, puddles, rain, seeds, puffs, napkins, weights, drips, dripLines };
   }, []);
 
   useEffect(() => () => {
@@ -225,6 +225,7 @@ export function TruckLife({ at }: { at: TruckFrame }) {
     // Luckan och ljusslingan tonar in med kvällen.
     (parts.hatchGlow.material as THREE.MeshBasicMaterial).opacity = 0.3 * (0.3 + 0.7 * k);
     const trailer = scene.getObjectByName('playerTrailer');
+    const awningOn = stuganStateFor(sim).awning;
     const sway = wind ? TRUCK_WEATHER.wind.stringLights.swayM * Math.sin(t * 2 * Math.PI * TRUCK_WEATHER.wind.stringLights.hz) : 0;
     trailer?.traverse((o) => {
       const m = o as THREE.Mesh;
@@ -253,7 +254,6 @@ export function TruckLife({ at }: { at: TruckFrame }) {
         o.rotation.x = -1.1 * open;
       }
     });
-    parts.awning.visible = raining;
     parts.puddles.forEach((p) => { p.visible = raining; });
     parts.weights.forEach((w) => { w.visible = wind; });
     // Regnstrecken faller i en låda runt vagnen.
@@ -261,14 +261,24 @@ export function TruckLife({ at }: { at: TruckFrame }) {
     if (raining) {
       const arr = (parts.rain.geometry.getAttribute('position') as THREE.BufferAttribute).array as Float32Array;
       const [bx, by, bz] = RAIN.box;
+      // ORDER 332 C (D13 stuganShelters) — regnet slutar på taket, luckans skiva, kylskåpet, menyns tak och markisen.
+      const shelters = stuganShelters(awningOn);
       for (let i = 0; i < RAIN.count; i++) {
         const sx = parts.seeds[i * 3], sy = parts.seeds[i * 3 + 1], sz = parts.seeds[i * 3 + 2];
         const x = (Math.abs(sx) - 0.5) * bx, z = (Math.abs(sz) - 0.5) * bz + 2;
-        const y = by - ((t * RAIN.speedMps + Math.abs(sy) * by) % by);
+        const floor = shelterTop(x, z, shelters), h = by - floor;
+        const y = floor + h - ((t * RAIN.speedMps + Math.abs(sy) * h) % h);
         arr.set([x, y, z, x - 0.04, y + RAIN.lengthM, z], i * 6);
       }
       (parts.rain.geometry.getAttribute('position') as THREE.BufferAttribute).needsUpdate = true;
+      const dp = parts.dripLines.geometry.getAttribute('position') as THREE.BufferAttribute, da = dp.array as Float32Array;
+      parts.drips.forEach((d, i) => {
+        const on = !d.awning || awningOn, u = (t * DRIPS.speedMps / d.y + d.p) % 1, y = on ? d.y * (1 - u * u) : -1;
+        da.set([d.x, y, d.z, d.x, y + 0.07, d.z], i * 6);
+      });
+      dp.needsUpdate = true;
     }
+    parts.dripLines.visible = raining;
     // Röken ur skorstenen, efter vädret.
     const sm = TRUCK_WEATHER[weather].smoke;
     const P = TRUCK_PROPS.smoke;

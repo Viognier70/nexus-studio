@@ -20,12 +20,12 @@
 
 import { DECK_TOP_M, TRUCK_LAYOUT, onDeck } from '../playerTruck';
 import { CURIOUS_SPOTS, EAT_SPOTS, TRUCK_PROPS, WALKWAY, binPath, eatPath, leavePath } from '../truckProps';
-import { TRUCK_WEATHER } from '../truckWeather';
 import { QUEUE_TIGHT } from '../truckPropsD10';
 import { PersonalSpace, keepRightShare, rightOf, yieldFactor, KEEP_RIGHT, PERSONAL_SPACE, type MassKind } from '../personalSpace';
 import { nearestNode, routeBetween, walkNetwork } from '../../content/villageNetwork';
 import { villageSources } from '../../content/villagePlaces';
-import { CURIOUS } from '../../../sim/balance';
+import { CURIOUS, FOODTRUCK } from '../../../sim/balance';
+import { rainQueue } from '../truckRain';
 import type { CuriousState } from '../../../sim/curious';
 import { CLIPS } from '../figureClips';
 import type { GuestState } from '../../types';
@@ -67,7 +67,25 @@ export interface Spot {
 export interface FlowGuest { id: string; state: GuestState; truckSpot?: string; truckLitter?: boolean }
 
 /** ORDER 319c — vädret vid vagnen just nu: regnet flyttar kön in under markisen (Designs truckWeather.ts rain.queue). */
-export interface FlowWeather { raining: boolean; tight?: boolean }
+export interface FlowWeather { raining: boolean; tight?: boolean; awning?: boolean }
+
+/** ORDER 332 C — kön som gäller just nu, i vagnens ram: torrt D7/D9:s kö; i regn Designs D13 (truckRain.ts RAIN_QUEUE)
+ *  med eller utan markisen; efter regnets situation tätt (D10 QUEUE_TIGHT). `pitchM` är avståndet när kön är längre
+ *  än platserna, `helperOutM` hur långt utanför kön medhjälparen går (queueWalk.ts). */
+export interface QueueInForce { order: Vec2; collect: Vec2; line: Vec2[]; pitchM: number; helperOutM: number; helperUmbrella: boolean }
+export function queueInForce(weather: FlowWeather): QueueInForce {
+  if (!weather.raining) return { ...TRUCK_LAYOUT.queue, pitchM: TRUCK_GUESTS.lineStepM, helperOutM: FOODTRUCK.queueWalk.outM, helperUmbrella: false };
+  const r = rainQueue(!!weather.awning);
+  const outM = r.helperZ - r.line[r.line.length - 1][1];
+  if (weather.tight) { const q = QUEUE_TIGHT as unknown as { order: Vec2; collect: Vec2; line: Vec2[] }; return { ...q, pitchM: TRUCK_GUESTS.lineStepM, helperOutM: outM, helperUmbrella: r.helperUmbrella }; }
+  return { order: r.order, collect: r.collect, line: r.line, pitchM: TRUCK_GUESTS.lineStepM, helperOutM: outM, helperUmbrella: r.helperUmbrella };
+}
+
+/** Platsen `i` i kön (vagnens ram); längre köer fortsätter västerut med pitchM. */
+export function queueLineAt(q: QueueInForce, i: number): Vec2 {
+  const last = q.line[q.line.length - 1];
+  return i < q.line.length ? q.line[i] : [last[0] - (i - q.line.length + 1) * q.pitchM, last[1]];
+}
 
 /** ORDER 319b — en nyfiken förbipasserande (sim/curious.ts). */
 export interface CuriousWalk {
@@ -214,7 +232,8 @@ export class TruckGuestFlow {
     };
     // ORDER 319c — i regnet står kön under markisen (Designs truckWeather.ts rain.queue); de fyra första står torrt.
     // ORDER 320 — efter regnets situation står kön tätt under markisen (Designs D10 QUEUE_TIGHT, 0,55 m isär).
-    const q = weather.raining && weather.tight ? QUEUE_TIGHT as unknown as { order: Vec2; collect: Vec2; line: Vec2[] } : weather.raining ? TRUCK_WEATHER.rain.queue as { order: Vec2; collect: Vec2; line: Vec2[] } : TRUCK_LAYOUT.queue;
+    // ORDER 332 C — i regn Designs D13: med markisen sex under den, utan den en under luckans skiva och sedan paraplyer.
+    const q = queueInForce(weather);
     const ordering = guests.filter((g) => g.state === 'ordering');
     const collecting = guests.filter((g) => g.state === 'serving' || g.state === 'paying');
     // Den som beställer står vid luckan; fler än en (sällan) ställer sig först i kön.
@@ -222,7 +241,7 @@ export class TruckGuestFlow {
     collecting.forEach((g, i) => out.set(g.id, at(q.collect[0] + i * 0.6, q.collect[1] + i * 0.3, Math.PI, 0, 'collect', i)));
     const byId = new Map(guests.map((g) => [g.id, g]));
     const line = [...ordering.slice(1).map((g) => g.id), ...waitingIds.filter((id) => byId.get(id)?.state === 'waiting')];
-    const lineAt = (i: number): Vec2 => (i < q.line.length ? q.line[i] : [q.line[q.line.length - 1][0] - (i - q.line.length + 1) * TRUCK_GUESTS.lineStepM, q.line[q.line.length - 1][1]]);
+    const lineAt = (i: number): Vec2 => queueLineAt(q, i);
     line.forEach((id, i) => { const p = lineAt(i); out.set(id, at(p[0], p[1], Math.PI / 2, 0, 'queue', i)); });
     // De som kommer går mot köns slut.
     let tail = line.length;

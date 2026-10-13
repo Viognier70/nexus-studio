@@ -1984,6 +1984,8 @@ export type SimAction =
   | { type: 'RESTART_SEASON' }
   // ORDER 296 — en extra hand till förberedelsen på morgonen.
   | { type: 'HIRE_PREP_HAND' }
+  // ORDER 332 G — vagnens plats i kväll (sim/districts.ts TRUCK_SPOT_IDS).
+  | { type: 'SET_TRUCK_SPOT'; spot: import('../sim/districts').TruckSpotId }
   // ORDER 296 — butiken: köp en förmåga, lägg i eller ta ur facket.
   | { type: 'SHOP_BUY'; id: string }
   | { type: 'SHOP_SLOT'; id: string; on: boolean }

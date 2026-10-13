@@ -9,14 +9,14 @@
 // öppnas med krediter och köps sedan för kassan. Reglerna i sim/goods.ts.
 
 import { useState } from 'react';
-import { Archive, ArrowRight, Beef, CircleDot, Fish, Flame, GlassWater, Lock, Refrigerator, ShoppingCart, Truck, Wine, type LucideIcon } from 'lucide-react';
+import { Archive, ArrowRight, Beef, CircleDot, Fish, Flame, GlassWater, Lock, Refrigerator, ShoppingCart, Truck, Umbrella, Wine, type LucideIcon } from 'lucide-react';
 import { strings } from '../../../content/strings';
 import { getLanguage, numberLocale } from '../../../content/language';
 import { t as tt, type StringKey } from '../../../content/nexusStrings';
 import { useSimDispatch, useSimState } from '../../simulation/SimulationProvider';
 import { findDish } from '../../simulation/m4Catalogue';
 import {
-  EQUIPMENT_IDS, GOODS_SUPPLIER_IDS, TIERS, conceptOf, equipmentOpened, equipmentSpec, equipmentStone, supplierDishes, supplierPrice,
+  equipmentForBusiness, GOODS_SUPPLIER_IDS, TIERS, conceptOf, equipmentOpened, equipmentSpec, equipmentStone, supplierDishes, supplierPrice,
   supplierSpec, supplierStone, tierOf, type EquipmentId, type GoodsStone, type GoodsSupplierId, type Tier
 } from '../../../sim/goods';
 import { creditsOf } from '../../../sim/shop';
@@ -30,11 +30,11 @@ const medalWord = (m: string) => tt(getLanguage(), (MEDAL_KEY[m] ?? m) as String
 const kr = (n: number) => n.toLocaleString(numberLocale());
 
 const SUPPLIER_ICON: Record<GoodsSupplierId, LucideIcon> = { grossisten: Truck, fiskaren: Fish, vinhandlaren: Wine, ostaffinoren: CircleDot, charkuteristen: Beef };
-const EQUIPMENT_ICON: Record<EquipmentId, LucideIcon> = { vinkyl: Refrigerator, flamberingsvagn: Flame, ostvagn: ShoppingCart, avecvagn: GlassWater, humidor: Archive };
+const EQUIPMENT_ICON: Record<EquipmentId, LucideIcon> = { vinkyl: Refrigerator, flamberingsvagn: Flame, ostvagn: ShoppingCart, avecvagn: GlassWater, humidor: Archive, queueAwning: Umbrella };
 // Frågebankens ämnen som kvällens raketer hämtas ur när saken finns på krogen
 // (frågorna kommer med ORDER 306).
 const SUPPLIER_TOPICS: Record<GoodsSupplierId, string[]> = { grossisten: [], fiskaren: ['fish'], vinhandlaren: ['wine'], ostaffinoren: ['cheese'], charkuteristen: ['charcuterie'] };
-const EQUIPMENT_TOPICS: Record<EquipmentId, string[]> = { vinkyl: ['wine'], flamberingsvagn: ['spirits', 'kitchen'], ostvagn: ['cheese', 'wine'], avecvagn: ['spirits'], humidor: ['cigar'] };
+const EQUIPMENT_TOPICS: Record<EquipmentId, string[]> = { vinkyl: ['wine'], flamberingsvagn: ['spirits', 'kitchen'], ostvagn: ['cheese', 'wine'], avecvagn: ['spirits'], humidor: ['cigar'], queueAwning: [] };
 
 // Klassen ikväll, eller den varukorgen ger om ingen kväll är bokad än.
 export function venueClass(sim: SimulationState): Tier {
@@ -111,7 +111,8 @@ function supplierItems(sim: SimulationState, credits: number): Item[] {
 
 function equipmentItems(sim: SimulationState, credits: number): Item[] {
   const t = strings.shopTabs;
-  return EQUIPMENT_IDS.map((id) => {
+  // ORDER 332 C — foodtrucken ser vagnens utrustning (markisen över kön), de andra rummets.
+  return equipmentForBusiness(sim.economy?.businessClass).map((id) => {
     const spec = equipmentSpec(id);
     return {
       id, icon: EQUIPMENT_ICON[id], name: t.equipment[id]?.name ?? id, note: t.equipment[id]?.note ?? '',
@@ -151,7 +152,7 @@ export function GoodsShop({ kind, onDone }: { kind: 'suppliers' | 'equipment'; o
   return (
     <div className="nx-shop-grid" data-testid={`shop-${kind}`}>
       <section className="nx-shop-goods" aria-label={kind === 'suppliers' ? t.suppliers : t.equipmentTab}>
-        <p className="nx-small nx-shop-list-intro">{kind === 'suppliers' ? t.suppliersIntro : t.equipmentIntro}</p>
+        <p className="nx-small nx-shop-list-intro">{kind === 'suppliers' ? t.suppliersIntro : sim.economy?.businessClass === 'foodtruck' ? t.equipmentIntroTruck : t.equipmentIntro}</p>
         <div className="nx-shop-goods-stones">
           {items.map((i) => {
             const I = i.icon;

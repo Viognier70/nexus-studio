@@ -35,7 +35,8 @@ import { outbuildingFootprintAt, outbuildingPlacementFor } from '../procgen/parc
 import { computePlayerBusinessInterior, playerObb } from '../business/interiorLayout';
 import { deliveryStop } from '../business/deliveryStop';
 import { roomSizeFor } from './businessRoom';
-import { TRUCK_BODY, VENUE_BUILDINGS, playerTruckFootprints, playerTruckPropFootprints, truckPlacement, venueLampPoint, venuePlaces, villageSources } from '../content/villagePlaces';
+import { TRUCK_BODY, VENUE_BUILDINGS, playerTruckFootprints, playerTruckPropFootprints, rivalTruckPlacement, truckPlacement, venueLampPoint, venuePlaces, villageSources } from '../content/villagePlaces';
+import { TRUCK_SPOT_IDS, type TruckSpotId } from '../../sim/districts';
 import { driveNetwork, routeBetween, routeLength, pointAlong } from '../content/villageNetwork';
 import { eligibleRoads, KIND_CONFIG, vehicleLaneOffset, type VehicleKind } from './OsmTraffic';
 import { polylineLength } from '../content/world';
@@ -115,7 +116,7 @@ export function outbuildingFootprint(b: RawBuilding): Vec2Tuple[] | null {
 // Rutnät över husens fot, för bilarnas prov.
 const CELL = 24;
 let footGrid: Map<string, number[]> | null = null;
-function footprintsNear(x: number, z: number, r: number): RenderedFootprint[] {
+export function footprintsNear(x: number, z: number, r: number): RenderedFootprint[] {
   const all = renderedFootprints();
   if (!footGrid) {
     footGrid = new Map();
@@ -402,6 +403,13 @@ export function truckStands(): TruckStand[] {
   return out;
 }
 
+/** ORDER 332 G — rivalens vagn där den står när spelarens vagn står på `playerSpot`. */
+export function rivalFootprint(spot: TruckSpot, k: number, playerSpot: TruckSpotId): Vec2Tuple[] {
+  const at = rivalTruckPlacement(spot, k, playerSpot);
+  const len = TRUCK_BODY.zMax - TRUCK_BODY.zMin;
+  return boxFootprint(at.x, at.z, at.rotationY, TRUCK_BODY.width, len, (TRUCK_BODY.zMax + TRUCK_BODY.zMin) / 2);
+}
+
 function truckFootprint(spot: TruckSpot, k: number): { footprint: Vec2Tuple[]; centre: Vec2Tuple } {
   const at = truckPlacement(spot, k);
   // Lådan: bredd TRUCK_BODY.width, längs lokala z från zMin till zMax.
@@ -430,19 +438,23 @@ export function auditTrucks(): Conflict[] {
     }
   }
   // ORDER 315b del 2 — spelarens släpvagn och trädäcket (playerTruckFootprints):
-  // inte på vägen, inte i ett hus, och inte i rivalernas vagnar på torget (båda
-  // står där samma kväll).
-  const mineFeet = playerTruckFootprints();
-  // ORDER 319c — och föremålen på uteserveringen och vid luckan (Designs D9 truckProps.ts).
-  const parts: (readonly [string, (readonly number[])[]])[] = [['spelarens vagn', mineFeet.body], ['spelarens trädäck', mineFeet.deck], ...playerTruckPropFootprints().map((p) => ['spelarens ' + p.name, p.poly] as const)];
-  for (const [part, poly] of parts) {
-    const footprint = poly.map((p) => pt(p));
-    const centre = pt([poly.reduce((a, p) => a + p[0], 0) / poly.length, poly.reduce((a, p) => a + p[1], 0) / poly.length]);
-    for (const o of roadOverlapsForPolygon(footprint)) if (o.depthM > ON_ROAD_TOLERANCE_M) out.push(overlapConflict('truck-on-road', part, o));
-    const inHouse = footprintsNear(centre[0], centre[1], 8).find((f) => polygonsOverlap(footprint, f.poly));
-    if (inHouse) out.push({ kind: 'truck-in-building', subject: part, at: centre, other: inHouse.id });
-    for (const k of [0, 1]) {
-      if (polygonsOverlap(footprint, truckFootprint('torget', k).footprint)) out.push({ kind: 'truck-in-building', subject: part, at: centre, other: `vagn@torget${k ? '#2' : ''}` });
+  // inte på vägen, inte i ett hus, och inte i rivalernas vagnar (båda står där samma kväll).
+  // ORDER 332 G — på alla fem platserna (sim/districts.ts TRUCK_SPOT_IDS), Grillstugan (STUGAN_BODY), och mot
+  // rivalernas vagnar där de står när spelarens vagn står där (villagePlaces.ts rivalTruckPlacement).
+  for (const spot of TRUCK_SPOT_IDS) {
+    const mineFeet = playerTruckFootprints(spot);
+    const tag = spot === 'torget' ? '' : `@${spot}`;
+    // ORDER 319c — och föremålen på uteserveringen och vid luckan (Designs D9 truckProps.ts).
+    const parts: (readonly [string, (readonly number[])[]])[] = [['spelarens vagn' + tag, mineFeet.body], ['spelarens trädäck' + tag, mineFeet.deck], ...playerTruckPropFootprints(spot).map((p) => ['spelarens ' + p.name + tag, p.poly] as const)];
+    for (const [part, poly] of parts) {
+      const footprint = poly.map((p) => pt(p));
+      const centre = pt([poly.reduce((a, p) => a + p[0], 0) / poly.length, poly.reduce((a, p) => a + p[1], 0) / poly.length]);
+      for (const o of roadOverlapsForPolygon(footprint)) if (o.depthM > ON_ROAD_TOLERANCE_M) out.push(overlapConflict('truck-on-road', part, o));
+      const inHouse = footprintsNear(centre[0], centre[1], 8).find((f) => polygonsOverlap(footprint, f.poly));
+      if (inHouse) out.push({ kind: 'truck-in-building', subject: part, at: centre, other: inHouse.id });
+      for (const rs of VILLAGE.truckSpots) for (const k of [0, 1]) {
+        if (polygonsOverlap(footprint, rivalFootprint(rs, k, spot))) out.push({ kind: 'truck-in-building', subject: part, at: centre, other: `vagn@${rs}${k ? '#2' : ''}` });
+      }
     }
   }
   return out;

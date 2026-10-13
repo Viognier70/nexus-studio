@@ -6,6 +6,8 @@
 // Kassa och krediter byter aldrig plats: här läses medaljer, aldrig
 // krediter, och inget i filen skriver krediter.
 
+import { districtTonight, playerDistrictOf, type TruckSpotId } from './districts';
+import { truckWeatherOf } from './truckLife';
 import { ladderWageFactor, starsPossible } from './ladderStep';
 import { staffSnapshot } from './staffCondition';
 import {
@@ -233,6 +235,8 @@ export interface EconomyState {
   weekCoursesSek?: number;
   // ORDER 296 — risken. Saknas i äldre sparfiler: då har inget hänt än.
   risk?: RiskState;
+  // ORDER 332 G — platsen spelarens foodtruck står på (sim/districts.ts). Saknas: Torget.
+  truckSpot?: TruckSpotId;
 }
 
 export function classSpec(id: BusinessClassId): BusinessClassSpec {
@@ -315,7 +319,9 @@ export function dailyGuestCap(state: SimulationState): number {
   // ORDER 292 — gårdagens svar: bokningar tack vare (eller avbokade), sim/nextDay.ts.
   // ORDER 315b — foodtrucken når förbipasserande vid Torget (FOODTRUCK.guestCapFactor).
   const truck = state.economy.businessClass === 'foodtruck' ? FOODTRUCK.guestCapFactor : 1;
-  return Math.max(0, Math.floor(pool * truck * playerShareTonight(state) * Math.max(0, 1 + buzz + dj + regulars)) + answerBookingsFor(state));
+  // ORDER 332 D — kvarterets gäster mot Torgets i kväll (sim/districts.ts). Torget: 1.
+  const district = districtTonight(playerDistrictOf(state), d, truckWeatherOf(state)).poolFactor;
+  return Math.max(0, Math.floor(pool * truck * district * playerShareTonight(state) * Math.max(0, 1 + buzz + dj + regulars)) + answerBookingsFor(state));
 }
 
 // Nedgraderingskedjan (speldesign > Nedgradering).

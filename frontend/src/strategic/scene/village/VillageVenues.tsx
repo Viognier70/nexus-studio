@@ -30,7 +30,8 @@ import { ladderStep } from '../../../sim/ladderStep';
 import { PATH_KEY } from '../../ui/DinVag';
 import { t as tt, type StringKey } from '../../../content/nexusStrings';
 import { useLanguage } from '../../../content/language';
-import { playerTruckPlacement, truckPlacement, truckSpotPlace, venueLampPoint, venuePlaces } from '../../content/villagePlaces';
+import { playerTruckPlacement, rivalTruckPlacement, truckSpotPlace, venueLampPoint, venuePlaces } from '../../content/villagePlaces';
+import { playerTruckSpotOf } from '../../../sim/districts';
 import { readabilityScale } from '../../util/readability';
 import { subscribeVillageLive, villageLive } from './villageLive';
 import { VenueLabel } from '../../ui/VillageLabels';
@@ -165,6 +166,13 @@ export function VillageVenues() {
   }, [places, root, tex]);
 
   // Vagnarna på kvällens plats.
+  const playerSpot = playerTruckSpotOf(sim);
+  const playerTruckOut = venues.some((o) => o.kind === 'player' && !!o.spot && o.open);
+  // ORDER 332 G — etiketten för spelarens vagn står vid vagnen på kvällens plats (grundregeln: valet syns), inte vid
+  // rivalernas plats på Torget.
+  const playerAt = playerTruckPlacement(playerSpot);
+  const labelPoint = (v: typeof venues[number]): [number, number] | undefined =>
+    v.kind === 'player' && v.spot ? [playerAt.x, playerAt.z] : v.spot ? truckSpotPlace(v.spot).doorPoint : places[v.id]?.centre;
   useEffect(() => {
     // ORDER 315b — spelarens foodtruck (v.spot); del 2: på sin egen plats.
     const onSpot = (o: typeof venues[number]) => o.kind === 'truck' || (o.kind === 'player' && !!o.spot);
@@ -183,11 +191,13 @@ export function VillageVenues() {
       // Två vagnar på samma plats står efter varandra (villagePlaces.ts truckPlacement).
       // ORDER 315b del 2 — spelarens vagn har en egen plats (playerTruckPlacement).
       const same = venues.filter((o) => o.kind === 'truck' && o.spot === v.spot);
-      const at = v.kind === 'player' ? playerTruckPlacement() : truckPlacement(v.spot, same.findIndex((o) => o.id === v.id));
+      // ORDER 332 G — spelarens vagn på kvällens plats (sim/districts.ts playerTruckSpotOf); en rival som annars står i
+      // spelarens kö flyttas (villagePlaces.ts rivalTruckPlacement).
+      const at = v.kind === 'player' ? playerTruckPlacement(playerSpot) : rivalTruckPlacement(v.spot, same.findIndex((o) => o.id === v.id), playerTruckOut ? playerSpot : null);
       truck.position.set(at.x, 0, at.z);
       truck.rotation.y = at.rotationY;
     }
-  }, [venues, root]);
+  }, [venues, root, playerSpot, playerTruckOut]);
 
   useEffect(() => () => {
     for (const t of trucks.current.values()) {
@@ -208,7 +218,7 @@ export function VillageVenues() {
     const placed: Array<{ x0: number; x1: number; y0: number; y1: number }> = [];
     const items = venues.flatMap((v) => {
       const el = labelEls.current.get(v.id);
-      const p = v.spot ? truckSpotPlace(v.spot).doorPoint : places[v.id]?.centre;
+      const p = labelPoint(v);
       if (!el || !p) return [];
       proj.set(p[0], v.spot ? 6 : 14, p[1]).project(camera);
       return [{ el, ours: v.id === PLAYER_VENUE, x: (proj.x * 0.5 + 0.5) * size.width, y: (-proj.y * 0.5 + 0.5) * size.height, w: el.offsetWidth, h: el.offsetHeight }];
@@ -327,7 +337,7 @@ export function VillageVenues() {
         </group>
       )}
       {labelsShown && venues.map((v) => {
-        const p = v.spot ? truckSpotPlace(v.spot).doorPoint : places[v.id]?.centre;
+        const p = labelPoint(v);
         if (!p) return null;
         const guests = v.id === PLAYER_VENUE ? sim.day.arrivalsToday ?? 0 : live.arrived[v.id] ?? 0;
         return (

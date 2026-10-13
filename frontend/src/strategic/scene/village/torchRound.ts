@@ -6,6 +6,18 @@
 // det som blir kvar när tändningarna och avtorkningen är räknade, så att rundan slutar när simuleringen säger.
 
 import { TORCH_ROUTE } from '../torchLighting';
+import { STUGAN } from '../grillstugan';
+
+/** ORDER 332 C — Designs rundor börjar och slutar i D7:s vagn: luckan [0; 0,45], längs luckan [2,05; 0,45] och dörren
+ *  [2,55; 0,6]. I Grillstugan (D13) står medhjälparen vid luckan i STUGAN.stations.hatch och dörren är STUGAN.door. */
+const D7_INSIDE: Record<string, Vec2> = {
+  '0,0.45': [...STUGAN.stations.hatch.pos] as Vec2,
+  '2.05,0.45': [2.05, STUGAN.door[1]],
+  '2.55,0.6': [...STUGAN.door] as Vec2
+};
+function inStugan(pts: Vec2[]): Vec2[] {
+  return pts.map((p) => D7_INSIDE[`${p[0]},${p[1]}`] ?? p);
+}
 import { TRUCK_PROPS } from '../truckProps';
 import { CLIPS } from '../figureClips';
 
@@ -74,7 +86,8 @@ const LIGHT_S = () => CLIPS['staff.lightTorch'].seconds.normal;
 function torchSeq(): (Step | Act)[] {
   const out: (Step | Act)[] = [];
   for (const leg of TORCH_ROUTE.legs) {
-    out.push({ kind: 'walk', pts: leg.walk, len: lengthOf(leg.walk) });
+    const walk = inStugan(leg.walk);
+    out.push({ kind: 'walk', pts: walk, len: lengthOf(walk) });
     if (leg.light !== null && leg.standAt) out.push({ kind: 'light', at: leg.standAt, face: TRUCK_PROPS.torch.at[leg.light], seconds: LIGHT_S(), torch: leg.light });
   }
   return out;
@@ -118,9 +131,8 @@ const WIPE_GAP_M = 0.25;
 
 /** Medhjälparen städar ett bord, `elapsed` sekunder in i en runda på `total` sekunder. */
 export function clearRoundPose(table: 'A' | 'B' | 'C', elapsed: number, total: number): RoundPose {
-  const door = TORCH_ROUTE.door;
   const spot = wipeSpot(table);
-  const out: Vec2[] = [[0, 0.45], [2.05, 0.45], door, spot];
+  const out: Vec2[] = inStugan([[0, 0.45], [2.05, 0.45], TORCH_ROUTE.door, spot]);
   const back = [...out].reverse();
   const wipe = CLIPS['staff.wipeTable'].seconds.normal;
   return play([{ kind: 'walk', pts: out, len: lengthOf(out) }, { kind: 'wipe', at: spot, face: TRUCK_PROPS.standTable.at[table], seconds: wipe }, { kind: 'walk', pts: back, len: lengthOf(back) }], elapsed, total);

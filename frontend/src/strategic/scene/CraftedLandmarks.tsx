@@ -1,4 +1,4 @@
-import { PLAYER_TRUCK_PITCH } from '../content/villagePlaces';
+import { PLAYER_TRUCK_PITCH, inTruckSpotBox } from '../content/villagePlaces';
 import { useMemo, type ReactNode } from 'react';
 import * as THREE from 'three';
 import {
@@ -2456,7 +2456,8 @@ function TorgetLandmark({ landmark }: { landmark: Landmark }) {
       const worldZsouth = landmark.position[1] + offsetZ + treeZ;
       // ORDER 315b del 3 — inget träd i spelarens vagn eller över trädäcket (villagePlaces.ts
       // PLAYER_TRUCK_PITCH): kronan skymde vagnen på krogens nivå.
-      const clearOfTruck = (z: number) => Math.hypot(worldX - PLAYER_TRUCK_PITCH.centre[0] - 1.4, z - PLAYER_TRUCK_PITCH.centre[1] - 1.0) >= 8.5;
+      // ORDER 332 G — och inte i lådan vid någon av foodtruckens fem platser (villagePlaces.ts inTruckSpotBox).
+      const clearOfTruck = (z: number) => Math.hypot(worldX - PLAYER_TRUCK_PITCH.centre[0] - 1.4, z - PLAYER_TRUCK_PITCH.centre[1] - 1.0) >= 8.5 && !inTruckSpotBox(worldX, z, 1.5);
       const nKeep = !nearAnyBuilding(worldX, worldZnorth, null, 1.5) && clearOfTruck(worldZnorth);
       const sKeep = !nearAnyBuilding(worldX, worldZsouth, null, 1.5) && clearOfTruck(worldZsouth);
       if (nKeep) trees.push({ dx, side: 'north' });

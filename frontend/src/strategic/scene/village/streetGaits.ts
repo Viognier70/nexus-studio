@@ -15,7 +15,8 @@
 import * as THREE from 'three';
 import { applyPose, createFigureRig, type FigureRig } from '../figureRig';
 import { sampleClip, CLIPS } from '../figureClips';
-import { GESTURE_BALANCE } from '../../../sim/balance';
+import { DISTRICT_STREET, GESTURE_BALANCE } from '../../../sim/balance';
+import { FigureLives, liveFrame, temperamentForGuest } from '../figureLife';
 import { hashKey } from '../../util/hash';
 import { withStreetFloor } from './streetFigureLight';
 
@@ -35,7 +36,10 @@ export const STREET_RIGS = {
   untilM: 60,
   /** Och inom så här många meter från kamerans mål. */
   radiusM: 45,
-  child: { scale: 0.58, sideM: 0.42, backM: 0.05 },
+  // ORDER 332 D — barnet hand i hand med D12:s avstånd (d12Manus.js CHILD_SIDE 0,81 m bredvid och CHILD_AHEAD 0,10 m
+  // före, så att händerna möts i D12:s street.childWalk), ur balance.ts DISTRICT_STREET.style; förut 0,42 m och
+  // 0,05 m bakom (D11). backM negativ = före.
+  child: { scale: DISTRICT_STREET.style.childSizeK, sideM: DISTRICT_STREET.style.childSideM, backM: -DISTRICT_STREET.style.childAheadM },
   dog: { aheadM: 0.95, rightM: 0.3, length: 0.62, width: 0.24, withers: 0.54, leashM: 1.6, colour: '#6b4a32' },
   /** Hälsningen: den andra börjar 0,25 s efter. */
   greetLagS: 0.25
@@ -109,6 +113,10 @@ export class StreetRigs {
   private slots: Slot[] = [];
   /** Hur många som ritades med rigg senast, per gångsätt och stopp (för kontrollen). */
   lastCounts: Record<string, number> = {};
+  /** ORDER 332 D — D12:s liv i figurerna (figureLife.ts liveFrame): blinkningar, blickar, huvudets drift och
+   *  tyngdbyten ovanpå gångklippen. Gatan har inga ansikten (FACE_LOD), så bara leden. */
+  private readonly lives = new FigureLives();
+  private readonly reducedQuery = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
 
   constructor() {
     this.group.name = 'streetRigs';
@@ -132,6 +140,7 @@ export class StreetRigs {
   /** Ritar kandidaterna (redan valda och sorterade) och gömmer resten av poolen. */
   draw(cands: StreetRigCandidate[], simTime: number): void {
     const counts: Record<string, number> = {};
+    const alive = new Set<string>();
     for (let i = 0; i < cands.length; i++) {
       const c = cands[i];
       const s = this.slot(i);
@@ -171,6 +180,12 @@ export class StreetRigs {
         applyPose(r, sampleClip(clip, 0, 'normal', { phase: c.phase, hand: c.kind === 'child' ? 'L' : 'R' }).pose);
       }
       counts[key] = (counts[key] ?? 0) + 1;
+      // ORDER 332 D — livet ovanpå klippet (D12): i samma bildruta som applyPose. Upptagen under hälsningen och samtalet.
+      const reduced = !!this.reducedQuery?.matches;
+      const standing = !!c.stop || c.moving < 0.5;
+      const busy = c.stop && c.stop.kind !== 'look' ? 1 : 0;
+      liveFrame(r, null, this.lives.of(c.id, temperamentForGuest(c.id, null)), { t: simTime, busy, standing, mood: null, k: 0, reduced });
+      alive.add(c.id);
       // Barnet på den vuxnas vänstra sida, hand i hand; hunden före och åt höger, kopplet från höger hand.
       const withChild = c.lead && c.kind === 'child';
       const withDog = c.lead && c.kind === 'dog';
@@ -182,6 +197,9 @@ export class StreetRigs {
         s.child.root.rotation.y = c.yaw;
         s.child.root.scale.setScalar(STREET_RIGS.child.scale * c.scale);
         applyPose(s.child, c.stop ? sampleClip('staff.idle', simTime, 'calm').pose : sampleClip('street.childWalk', 0, 'normal', { phase: c.phase * 1.3, hand: 'R' }).pose);
+        const childKey = `${c.id}#child`;
+        liveFrame(s.child, null, this.lives.of(childKey, temperamentForGuest(childKey, null)), { t: simTime, busy: 0, standing: !!c.stop || c.moving < 0.5, mood: null, k: 0, reduced: !!this.reducedQuery?.matches });
+        alive.add(childKey);
         counts.childWalk = (counts.childWalk ?? 0) + 1;
       }
       s.dog.visible = withDog;
@@ -211,6 +229,7 @@ export class StreetRigs {
       s.rig.root.visible = false; s.child.root.visible = false; s.dog.visible = false; s.leash.visible = false;
     }
     this.lastCounts = counts;
+    this.lives.keepOnly(alive);
   }
 
   dispose(): void {

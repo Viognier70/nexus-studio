@@ -11,17 +11,32 @@ export type Tier = 'enkel' | 'bistro' | 'soigne';
 export const TIERS: readonly Tier[] = ['enkel', 'bistro', 'soigne'];
 export type GoodsSupplierId = 'grossisten' | 'fiskaren' | 'vinhandlaren' | 'ostaffinoren' | 'charkuteristen';
 export const GOODS_SUPPLIER_IDS: readonly GoodsSupplierId[] = ['grossisten', 'fiskaren', 'vinhandlaren', 'ostaffinoren', 'charkuteristen'];
-export type EquipmentId = 'vinkyl' | 'flamberingsvagn' | 'ostvagn' | 'avecvagn' | 'humidor';
+export type EquipmentId = 'vinkyl' | 'flamberingsvagn' | 'ostvagn' | 'avecvagn' | 'humidor' | 'queueAwning';
 // Tabellerna i balance.ts utan fältet section.
 const SUPPLIER_SPEC = GOODS_SUPPLIERS as unknown as Record<Exclude<GoodsSupplierId, 'grossisten'>, { pavilion: PavilionKey; medal: string; credits: number }>;
-const EQUIPMENT_SPEC = EQUIPMENT as unknown as Record<EquipmentId, { tier: Tier; priceSek: number; pavilion: PavilionKey; medal: string; credits: number; avecShare?: number; satisfaction?: number }>;
+const EQUIPMENT_SPEC = EQUIPMENT as unknown as Record<EquipmentId, { tier: Tier; priceSek: number; pavilion: PavilionKey; medal: string; credits: number; avecShare?: number; satisfaction?: number; truck?: boolean }>;
 export function equipmentSpec(id: EquipmentId) {
   return EQUIPMENT_SPEC[id];
 }
 export function supplierSpec(id: Exclude<GoodsSupplierId, 'grossisten'>) {
   return SUPPLIER_SPEC[id];
 }
-export const EQUIPMENT_IDS: readonly EquipmentId[] = ['vinkyl', 'flamberingsvagn', 'ostvagn', 'avecvagn', 'humidor'];
+export const EQUIPMENT_IDS: readonly EquipmentId[] = ['vinkyl', 'flamberingsvagn', 'ostvagn', 'avecvagn', 'humidor', 'queueAwning'];
+
+/** ORDER 332 C — utrustning till foodtruckens vagn (balance.ts EQUIPMENT truck): finns bara i foodtruckens butik och
+ *  räknas inte i varukorgens nivå. */
+export function truckEquipment(id: EquipmentId): boolean {
+  return !!EQUIPMENT_SPEC[id].truck;
+}
+/** Utrustningen i butikens flik för verksamheten: foodtrucken ser vagnens, de andra rummets. */
+export function equipmentForBusiness(businessClass: string | null | undefined): EquipmentId[] {
+  const truck = businessClass === 'foodtruck';
+  return EQUIPMENT_IDS.filter((id) => truckEquipment(id) === truck);
+}
+/** ORDER 332 C — markisen över kön syns på vagnen när den är köpt (scene/grillstugan.ts setAwning, PlayerTruckCrew.tsx). */
+export function queueAwningOwned(state: Pick<SimulationState, 'equipment'>): boolean {
+  return equipmentOwned(state, 'queueAwning');
+}
 
 // Varans nivå i varukorgen och leverantören. Det billiga och vardagliga är
 // enkelt, baspaketets kött och husets vin bistro, och de sällsynta varorna
@@ -146,7 +161,8 @@ export function basketLevel(state: Pick<SimulationState, 'menu' | 'day' | 'equip
     weighted += v * CONCEPT.tierValue[tierOf(m.dishId)];
   }
   const basket = value > 0 ? weighted / value : CONCEPT.tierValue.bistro;
-  const eq = ownedEquipment(state);
+  // ORDER 332 C — vagnens utrustning (markisen) räknas inte i varukorgens nivå.
+  const eq = ownedEquipment(state).filter((id) => !truckEquipment(id));
   const w = CONCEPT.equipmentWeight;
   const lift = eq.reduce((a, id) => a + CONCEPT.tierValue[EQUIPMENT_SPEC[id].tier], 0);
   return (basket + w * lift) / (1 + w * eq.length);

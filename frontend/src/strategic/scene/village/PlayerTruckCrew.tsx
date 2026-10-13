@@ -6,8 +6,8 @@
 // ORDER 315b del 3 (Anders 2026-10-07: "Foodtrucken på krognivån (Z) ska inte vara den gamla
 // 2D-scenen. Kameran går nära den egna vagnen i 3D, med luckan, grillen, kön, ståbordena och
 // D7:s klipp.") — Krogen (Z), Esc och servicens kamera går till vagnen på 12 m, med luckans sida
-// mot kameran. Taket kapas närmare än 20 m (ROOF_FADE_M, tonat sedan 319a.2) och markisen tonas till
-// hälften närmare än AWNING_FADE_M (D7: "På 12 m tonas markisen till 50 %"). Gästerna står i kön under markisen
+// mot kameran. ORDER 332 C: vagnen är Grillstugan (D13); taket och markisens duk tonar som husens tak
+// (playerTruck.ts applyStuganState, roofAt), och markisen syns bara när den är köpt. Gästerna står i kön
 // (de som väntar, i kön ordning), vid beställningen och hämtplatsen, och äter vid ståborden.
 //
 // ORDER 319a.1 (Anders 2026-10-07) — gästerna går in från byns gator och därifrån igen, en figur
@@ -43,7 +43,9 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { applyPose, createFigureRig, poseWalk, type FigurePose, type FigureRig } from '../figureRig';
 import { CLIPS, sampleClip, type TempoId } from '../figureClips';
-import { TRUCK_CREW, TRUCK_LAYOUT } from '../playerTruck';
+import { FLOOR_Y_M, TRUCK_CREW, TRUCK_LAYOUT, applyStuganState, stuganStateFor } from '../playerTruck';
+import { playerTruckSpotOf } from '../../../sim/districts';
+import { rainQueueSpotSheltered } from '../truckRain';
 import { GUEST_GARMENTS } from '../wineBarRoom';
 import { playerTruckPlacement } from '../../content/villagePlaces';
 import { useSimDispatch, useSimState } from '../../simulation/SimulationProvider';
@@ -69,7 +71,7 @@ import { newQueueWalk, stepQueueWalk, type Vec2 as QueueVec2 } from './queueWalk
 const QUEUE_WALK_HOME: QueueVec2 = [TRUCK_LAYOUT.queue.order[0] - 0.9, TRUCK_LAYOUT.queue.order[1] + 0.5];
 import { curiousPhase, curiousTalkable, type CuriousGuest } from '../../../sim/curious';
 import { CURIOUS_SPOTS, MENU_BOARD } from '../truckProps';
-import { TRUCK_GUESTS, TruckGuestFlow, childKey, toWorld, type OtherBody, type TruckFrame, type TruckWalker } from './truckGuestFlow';
+import { TRUCK_GUESTS, TruckGuestFlow, childKey, queueInForce, queueLineAt, toWorld, type OtherBody, type TruckFrame, type TruckWalker } from './truckGuestFlow';
 import { truckCameraState } from './truckCamera';
 import { CuriousMarker, type CuriousMarkerState } from './CuriousMarker';
 import { attachFace, type FaceHandle } from '../figureFace';
@@ -79,14 +81,15 @@ import { guestMoodValue, moodOf } from '../../../sim/guestMood';
 import { GESTURE_BALANCE, GUESTS, MOOD_BALANCE } from '../../../sim/balance';
 import { profileFor } from '../../simulation/guestOrders';
 import { SEEK_MAX_YAW, eyeContact, stepWant, wantStep, wantsHatch, type StaffGlance, type WantTrack } from '../wantSignals';
+import { FigureLives, ampOf, faceKOf, guestNumber, intensityOfGuest, liveFrame, passNodTarget, scaleClip, temperamentForGuest } from '../figureLife';
+import { TEMPERAMENT, pickVariantApart, type TemperamentId } from '../gestureMap';
+import { conversationAt } from '../moodGestures';
+import { groupOfGuestType } from '../guestLooks';
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion';
 
-const FLOOR_Y_M = 0.5;
 const QUEUE_STRESSED = 4;
 const QUEUE_CALM = 1;
 // Taket kapas närmare än 20 m (D7); ORDER 319a.2 tonar det över 17–23 m.
-const ROOF_FADE_M: readonly [number, number] = [17, 23];
-const AWNING_FADE_M: readonly [number, number] = [12, 16];
-const AWNING_OPACITY = 0.5;
 /** Ett steg i flödet räknas högst så här långt (en flik i bakgrunden ska inte teleportera gästerna). */
 const MAX_DT_S = 0.1;
 /** Gästen kliver upp på trädäcket det sista stycket fram till platsen. */
@@ -113,6 +116,25 @@ const REGULAR_PAUSE_S = 1.0;
 /** Paraplyet hålls rakt upp i höger hand (armen lyft). */
 const UMBRELLA_ARM = { swing: 1.15, lift: 0.18, elbow: 1.55 };
 
+/** ORDER 332 B — samma gäst nickar inte tillbaka igen förrän efter så här många sekunder (Nils går fram och tillbaka). */
+const TRUCK_PASS_NOD_AGAIN_S = 8;
+
+/** ORDER 332 B (Designs D12) — gästens temperament vid vagnen: gestens storlek (temperamentet × intensiteten), numret
+ *  (varianten och handen), klippen grannarna vid bordet redan spelar, och vilket klipp gästen spelade (played). */
+interface TruckLifeCtx { amp: number; number: number; temper: TemperamentId; nearby: string[]; played?: string }
+
+/** sampleClip → scalePose → applyPose för en gest vid vagnen, med variant (A eller B, inte samma som grannen), hand och
+ *  storlek. Ger klippet som spelades. */
+function playGesture(r: FigureRig, clip: string, u: number, tempo: TempoId, ctx: Parameters<typeof sampleClip>[3], lc: TruckLifeCtx, count = 0): string {
+  const v = pickVariantApart(clip, lc.number, count, lc.nearby);
+  const id = CLIPS[v.clip] ? v.clip : clip;
+  const len = CLIPS[id].seconds[tempo];
+  const raw = sampleClip(id, CLIPS[id].loop ? u : Math.min(u, len), tempo, { ...(ctx ?? {}), hand: v.hand });
+  applyPose(r, scaleClip(raw, lc.amp, null).pose);
+  lc.played = id;
+  return id;
+}
+
 /** Synligt bara om vagnen och alla dess föräldrar syns. */
 function shown(o: THREE.Object3D | null | undefined): boolean {
   for (let x = o; x; x = x.parent) if (!x.visible) return false;
@@ -124,7 +146,9 @@ export function PlayerTruckCrew() {
   const dispatch = useSimDispatch();
   const { actualRef } = useCamera();
   const { scene, camera } = useThree();
-  const at = useMemo(() => playerTruckPlacement(), []);
+  // ORDER 332 G — vagnen på kvällens plats (sim/districts.ts); besättningen, gästerna och kameran följer med.
+  const truckSpot = playerTruckSpotOf(sim);
+  const at = useMemo(() => playerTruckPlacement(truckSpot), [truckSpot]);
   const crew = useMemo(() => {
     const grill = createFigureRig({ variant: 'staff', garmentColour: TRUCK_CREW.grill.uniform });
     const hatch = createFigureRig({ variant: 'staff', garmentColour: TRUCK_CREW.hatch.uniform });
@@ -137,10 +161,10 @@ export function PlayerTruckCrew() {
     g.rotation.y = at.rotationY;
     // Grillaren vänd mot gallret (−Z), den vid luckan mot luckan (+Z).
     grill.root.position.set(TRUCK_LAYOUT.stations.grill[0], FLOOR_Y_M, TRUCK_LAYOUT.stations.grill[1]);
-    grill.root.rotation.y = Math.PI;
+    grill.root.rotation.y = TRUCK_LAYOUT.stationYaw.grill;
     hatch.root.position.set(TRUCK_LAYOUT.stations.hatch[0], FLOOR_Y_M, TRUCK_LAYOUT.stations.hatch[1]);
     jonas.root.position.set(TRUCK_LAYOUT.stations.grill[0], FLOOR_Y_M, TRUCK_LAYOUT.stations.grill[1]);
-    jonas.root.rotation.y = Math.PI;
+    jonas.root.rotation.y = TRUCK_LAYOUT.stationYaw.grill;
     g.add(grill.root, hatch.root, jonas.root);
     // Gästerna i byns ram: de går in från gatorna och ut igen.
     const guestsGroup = new THREE.Group();
@@ -210,44 +234,29 @@ export function PlayerTruckCrew() {
   const faces = useRef(new WeakMap<FigureRig, FaceHandle>());
   // ORDER 325 §2 — avståndet till huvudena vid vagnen för mätningen (faceProbe.ts).
   const faceProbe = useMemo(() => new FaceProbe('faceDistTruck'), []);
+  // ORDER 332 B (Designs D12 figureLife.ts) — livet och ansiktenas övergångar per figur, och vem medhjälparen nickat åt
+  // i kön (gästens id → när), så att gästen nickar tillbaka (REACTIONS.passNod).
+  const lives = useRef(new FigureLives());
+  const passNods = useRef(new Map<string, { at: number; from: [number, number] }>());
+  const reducedMotion = usePrefersReducedMotion();
+  const reducedRef = useRef(reducedMotion);
+  reducedRef.current = reducedMotion;
   useFrame((state, delta) => {
-    // Taket och markisen efter kamerans avstånd (vagnen ritas av VillageVenues).
+    // ORDER 332 C — Grillstugans tak och markisens duk tonar som husens tak (roofAt); markisen syns när den är köpt
+    // och vagnen är våt i regnet (playerTruck.ts stuganStateFor, applyStuganState). Vagnen ritas av VillageVenues.
     const trailer = scene.getObjectByName('playerTrailer');
-    if (trailer) {
-      const d = actualRef.current.distance;
-      // ORDER 319a.2 — taket tonas ut över ROOF_FADE_M i stället för att försvinna vid 20 m. Taket
-      // delar material med vagnens kropp (playerTruck.ts m()), så det får en egen kopia först.
-      const k = Math.max(0, Math.min(1, (d - ROOF_FADE_M[0]) / (ROOF_FADE_M[1] - ROOF_FADE_M[0])));
-      for (const name of ['trailerRoof', 'trailerSign', 'trailerChimney']) {
-        const o = trailer.getObjectByName(name) as THREE.Mesh | undefined;
-        if (!o) continue;
-        if (!o.userData.ownMaterial) { o.material = (o.material as THREE.Material).clone(); o.userData.ownMaterial = true; }
-        const mat = o.material as THREE.MeshStandardMaterial;
-        o.visible = k > 0.01;
-        const fade = k < 0.99;
-        if (mat.transparent !== fade) { mat.transparent = fade; mat.needsUpdate = true; }
-        mat.opacity = k;
-        mat.depthWrite = !fade;
-        o.castShadow = k > 0.5;
-      }
-      trailer.traverse((o) => {
-        if (o.name !== 'trailerAwning' && !o.name.startsWith('trailerScallop')) return;
-        const m = (o as THREE.Mesh).material as THREE.MeshStandardMaterial;
-        // ORDER 319a.2 — tonas till AWNING_OPACITY över AWNING_FADE_M (förut ett hopp vid 14 m).
-        const a = Math.max(0, Math.min(1, (d - AWNING_FADE_M[0]) / (AWNING_FADE_M[1] - AWNING_FADE_M[0])));
-        const op = AWNING_OPACITY + (1 - AWNING_OPACITY) * a;
-        const fade = op < 0.99;
-        if (m.transparent !== fade) { m.transparent = fade; m.needsUpdate = true; }
-        m.opacity = op;
-        (o as THREE.Mesh).castShadow = op > 0.75;
-      });
-    }
+    const stuganState = stuganStateFor(sim);
+    applyStuganState(trailer, stuganState, actualRef.current.distance);
     // Personalen står i vagnen när vagnen står på torget.
     crew.g.visible = isTruck && shown(trailer);
     const t = state.clock.elapsedTime;
     // ORDER 319c — vädret vid vagnen i kväll (sim/truckLife.ts).
     const cold = isTruck && truckOf(sim).weather === 'cool';
     const raining = isTruck && truckRaining(sim);
+    // ORDER 332 C — kön i kväll: i regn med eller utan markisen (D13), och tätt efter regnets situation.
+    const flowWeather = { raining, tight: raining && situationTonight(sim, 'ft08-regnet').phase === 'done', awning: stuganState.awning };
+    const queueNow = queueInForce(flowWeather);
+    const helperUmbrella = raining && queueNow.helperUmbrella;
     // ORDER 320 — de sex situationerna (sim/truckSituations.ts): vad figurerna gör (Designs D10).
     const sit = {
       rain: situationTonight(sim, 'ft08-regnet'), wasp: situationTonight(sim, 'ft09-getingen'), card: situationTonight(sim, 'ft10-kortet'),
@@ -270,7 +279,7 @@ export function PlayerTruckCrew() {
         crewSwapped.current = extra;
         const G = TRUCK_LAYOUT.stations.grill, H = TRUCK_LAYOUT.stations.hatch;
         if (extra) { crew.grill.root.position.set(H[0], FLOOR_Y_M, H[1]); crew.grill.root.rotation.y = 0; queueWalk.current = newQueueWalk(QUEUE_WALK_HOME); }
-        else { crew.grill.root.position.set(G[0], FLOOR_Y_M, G[1]); crew.grill.root.rotation.y = Math.PI; crew.hatch.root.position.set(H[0], FLOOR_Y_M, H[1]); crew.hatch.root.rotation.y = 0; assistantOut.current = null; assistantGlance.current = null; }
+        else { crew.grill.root.position.set(G[0], FLOOR_Y_M, G[1]); crew.grill.root.rotation.y = TRUCK_LAYOUT.stationYaw.grill; crew.hatch.root.position.set(H[0], FLOOR_Y_M, H[1]); crew.hatch.root.rotation.y = 0; assistantOut.current = null; assistantGlance.current = null; }
       }
       const grillRig = extra ? crew.jonas : crew.grill;
       const hatchRig = extra ? crew.grill : crew.hatch;
@@ -346,14 +355,27 @@ export function PlayerTruckCrew() {
       }
       if (extra && !errand) {
         // ORDER 330 G — Nils går från gäst till gäst i kön och tar beställningarna (village/queueWalk.ts).
-        const spots = [...flow.walkers.values()].filter((w) => w.settled && w.spot?.pose === 'queue').map((w) => TRUCK_LAYOUT.queue.line[Math.min(w.spot!.index ?? 0, TRUCK_LAYOUT.queue.line.length - 1)]).sort((a, b) => b[0] - a[0]);
-        const qp = stepQueueWalk(queueWalk.current, Math.min(MAX_DT_S, delta) * effectiveSpeed(sim), spots, QUEUE_WALK_HOME, queueWalkStride.current);
+        // ORDER 332 C — kön som gäller (i regn D13: under markisen eller med paraplyer), inte alltid den torra kön.
+        const spots = [...flow.walkers.values()].filter((w) => w.settled && w.spot?.pose === 'queue').map((w) => queueLineAt(queueNow, w.spot!.index ?? 0)).sort((a, b) => b[0] - a[0]);
+        const qp = stepQueueWalk(queueWalk.current, Math.min(MAX_DT_S, delta) * effectiveSpeed(sim), spots, QUEUE_WALK_HOME, queueWalkStride.current, queueNow.helperOutM);
         if (qp.act === 'walk') queueWalkStride.current = qp.u;
         crew.hatch.root.position.set(qp.at[0], onDeck(qp.at[0], qp.at[1]) ? DECK_TOP_M : 0, qp.at[1]);
         crew.hatch.root.rotation.y = qp.yaw;
-        applyPose(crew.hatch, qp.act === 'walk' ? poseWalk(qp.u / TRUCK_GUESTS.strideM) : qp.act === 'take' ? sampleClip('staff.write', qp.u, 'normal').pose : sampleClip('staff.idle', t, 'calm').pose);
-        assistantOut.current = qp.at;
         const nw = toWorld(at, qp.at[0], qp.at[1]);
+        // ORDER 332 B (D12 REACTIONS.passNod, staff.walkNod) — på väg längs kön nickar Nils åt den hen går förbi, och
+        // gästen nickar tillbaka efter sitt temperaments reactDelayS (guest.glanceNodStand nedan).
+        const queued = qp.act === 'walk' ? [...flow.walkers.values()].filter((w) => w.settled && w.spot?.pose === 'queue') : [];
+        const nod = queued.length ? passNodTarget({ x: nw[0], z: nw[1], yaw: qp.yaw + at.rotationY }, queued.map((w) => { const p = flow.shown.get(w.id) ?? [w.x, w.z]; return { x: p[0], z: p[1] }; })) : null;
+        if (nod) {
+          const id = queued[nod.index].id, prev = passNods.current.get(id);
+          if (!prev || t - prev.at > TRUCK_PASS_NOD_AGAIN_S) passNods.current.set(id, { at: t, from: [nw[0], nw[1]] });
+        }
+        // ORDER 332 C (D13) — i regn utan markis går Nils med paraply utanför kön och lyssnar i stället för att skriva.
+        const helperPose = qp.act === 'walk'
+          ? (nod && !reducedRef.current ? sampleClip('staff.walkNod', 0, 'normal', { phase: qp.u / TRUCK_GUESTS.strideM, yaw: nod.yaw }).pose : poseWalk(qp.u / TRUCK_GUESTS.strideM))
+          : qp.act === 'take' && !helperUmbrella ? sampleClip('staff.write', qp.u, 'normal').pose : sampleClip('staff.idle', t, 'calm').pose;
+        applyPose(crew.hatch, helperUmbrella ? { ...helperPose, armR: UMBRELLA_ARM } : helperPose);
+        assistantOut.current = qp.at;
         assistantGlance.current = { key: 'hatch', x: nw[0], z: nw[1], facing: qp.yaw + at.rotationY, walking: qp.act === 'walk', visible: true };
       }
       if (errand && !extra) { /* ute på rundan */ } else if (answering?.by === 'hatch') {
@@ -373,7 +395,14 @@ export function PlayerTruckCrew() {
         ? (raining ? sampleClip('truck.serveLidded', since * CLIPS['truck.serveLidded'].seconds.normal / serveLen, 'normal').pose : sampleClip('truck.hatchServe', since, tempo, { stress, hand: 'L' }).pose)
         : sampleClip('truck.wipeCounter', t, tempo, { stress }).pose);
     }
-    for (const f of crew.crewFaces) f.update(camera);
+    // ORDER 332 C — Nils paraply längs kön (D13 RAIN_QUEUE.withoutAwning: medhjälparen med paraply utanför kön).
+    kits.umbrella(crew.hatch, 'staff:nils', crew.g.visible && crew.hatch.root.visible && helperUmbrella && crewSwapped.current && !truckOf(sim).errand, HELPER_UMBRELLA_HASH);
+    // ORDER 332 B — besättningens liv (lugn, nöjd) efter posen: blinkningar och huvudets små rörelser.
+    [crew.grill, crew.hatch, crew.jonas].forEach((rig, i) => {
+      const f = crew.crewFaces[i];
+      if (crew.g.visible && rig.root.visible) liveFrame(rig, f, lives.current.of(`crew:${i}`, 'calm'), { t, busy: 1, standing: true, mood: FACE.staffMood, k: faceKOf('clear', 'calm'), reduced: reducedRef.current });
+      f.update(camera);
+    });
 
     // ORDER 320 — stamgästen vid vår vagn när Grillvagnen har satt upp sin skylt (ft13): var sjätte sekund en klunk
     // (fika.sipCup), och efter en sekund vänder hen sig mot skylten och skålar (guest.toastCup).
@@ -407,7 +436,7 @@ export function PlayerTruckCrew() {
     if (assistantOut.current) { const p = toWorld(at, assistantOut.current[0], assistantOut.current[1]); others.push({ key: 'staff:hatch', x: p[0], z: p[1] }); }
     // ORDER 320 — stamgästen vid vagnen räknas i trängseln.
     if (regularAt.current) others.push({ key: 'regular', x: regularAt.current[0], z: regularAt.current[1] });
-    const events = flow.update(sim.guests, sim.waitingIds, Math.min(MAX_DT_S, delta) * effectiveSpeed(sim), cq ? { current: cq.current, last: cq.last } : null, { raining, tight: raining && sit.rain.phase === 'done' }, others);
+    const events = flow.update(sim.guests, sim.waitingIds, Math.min(MAX_DT_S, delta) * effectiveSpeed(sim), cq ? { current: cq.current, last: cq.last } : null, flowWeather, others);
     const R = rigs.current;
     for (const e of events) {
       if (e.kind === 'rename') {
@@ -466,6 +495,20 @@ export function PlayerTruckCrew() {
     const atTable = new Map<string, number>();
     for (const w of flow.walkers.values()) if (w.settled && w.spot?.pose === 'eat' && w.spot.key) { const k = w.spot.key.split('-')[0]; atTable.set(k, (atTable.get(k) ?? 0) + 1); }
     const errandOut = !!truckOf(sim).errand;
+    // ORDER 332 B — de som står och pratar vid samma ståbord (samtalet, moodGestures.conversationAt), klippen som redan
+    // spelas vid bordet (grannarna gör inte samma variant), och figurerna som lever den här bildrutan.
+    const talkers = new Map<string, { id: string; temper: TemperamentId; number: number; glad: boolean }[]>();
+    for (const w of flow.walkers.values()) {
+      if (!w.settled || w.spot?.pose !== 'eat' || !w.spot.key || w.spot.seated) continue;
+      const sg = simGuests.get(w.id);
+      const v = sg ? guestMoodValue(sg, sim.day.roomMoodLift ?? 0) : MOOD_BALANCE.threshold.content;
+      if (v < MOOD_BALANCE.threshold.content) continue;
+      const k = w.spot.key.split('-')[0];
+      talkers.set(k, [...(talkers.get(k) ?? []), { id: w.id, temper: temperamentForGuest(w.id, sg?.guestType ? groupOfGuestType(sg.guestType) : null), number: guestNumber(w.id), glad: v >= MOOD_BALANCE.threshold.delighted }]);
+    }
+    for (const list of talkers.values()) list.sort((a, b) => (a.id < b.id ? -1 : 1));
+    const tableClips = new Map<string, string[]>();
+    const lifeKeep = new Set<string>();
     for (const w of flow.walkers.values()) {
       const r = R.live.get(w.id);
       if (!r) continue;
@@ -484,9 +527,18 @@ export function PlayerTruckCrew() {
       const mood: MoodId = sg ? moodOf(guestMoodValue(sg, sim.day.roomMoodLift ?? 0)) : 'content';
       let face = faces.current.get(r);
       if (!face) { face = attachFace(r, mood); faces.current.set(r, face); }
+      // ORDER 332 B (D12) — temperamentet ur gästens nummer och grupp, intensiteten ur trycket (stämningen, eller
+      // väntan i kön mot vinkningens gräns), gestens storlek och ansiktets intensitet.
+      const value = sg ? guestMoodValue(sg, sim.day.roomMoodLift ?? 0) : MOOD_BALANCE.threshold.content;
+      const temper = temperamentForGuest(w.id, sg?.guestType ? groupOfGuestType(sg.guestType) : null);
+      const intensity = intensityOfGuest(value, inQueue ? { s: t - qs.get(w.id)!, waveS: GESTURE_BALANCE.waitWaveS } : null);
+      const lc: TruckLifeCtx = { amp: ampOf(intensity, temper), number: guestNumber(w.id), temper, nearby: [] };
+      const lifeState = lives.current.of(w.id, temper, mood, faceKOf(intensity, temper));
+      lifeKeep.add(w.id);
+      const lifeFrame = (gm: MoodId | null, standing: boolean) => liveFrame(r, face!, lifeState, { t, busy: gm ? 1 : 0, standing, mood: gm ?? mood, k: faceKOf(intensity, temper), reduced: reducedRef.current });
       if (w.curious && w.curious.stage !== 'walkOn' && cur?.seq === w.curious.seq) {
         const gm = poseCurious(r, w, p, cur, t, at, cold);
-        face.set(gm ?? 'waiting');
+        lifeFrame(gm ?? 'waiting', false);
         faceProbe.add(face.update(camera), isTruck && r.root.visible);
         m.seq = cur.seq;
         m.x = r.root.position.x; m.z = r.root.position.z; m.y = r.root.position.y;
@@ -512,22 +564,35 @@ export function PlayerTruckCrew() {
         const track = stepWant(hatchWants.current.get(w.id) ?? null, hw, flow.clock, contact);
         if (track) hatchWants.current.set(w.id, track); else hatchWants.current.delete(w.id);
         const step = track ? wantStep(track, flow.clock) : null;
+        const tableKey = w.spot!.key!.split('-')[0];
+        lc.nearby = tableClips.get(tableKey) ?? [];
         gestureMood = step
-          ? poseHatchWant(r, w, p, step, flow.clock - track!.since, flow.clock - (track!.ackAt ?? 0), flow.clock - w.settledAt, hatchWorld, cold, kits, kit)
-          : poseEater(r, w, p, t, flow.clock - w.settledAt, h, cold, kits, kit, { value: sg ? guestMoodValue(sg, sim.day.roomMoodLift ?? 0) : MOOD_BALANCE.threshold.content, mates: atTable.get(w.spot!.key!.split('-')[0]) ?? 1 });
+          ? poseHatchWant(r, w, p, step, flow.clock - track!.since, flow.clock - (track!.ackAt ?? 0), flow.clock - w.settledAt, hatchWorld, cold, kits, kit, lc)
+          : poseEater(r, w, p, t, flow.clock - w.settledAt, h, cold, kits, kit, { value, mates: atTable.get(tableKey) ?? 1, talkers: talkers.get(tableKey) ?? [], posOf: (id) => { const o = flow.walkers.get(id); return o ? flow.shown.get(id) ?? [o.x, o.z] : null; } }, lc);
+        if (lc.played) tableClips.set(tableKey, [...(tableClips.get(tableKey) ?? []), lc.played]);
       }
       else {
-        poseWalker(r, w, p, t, waiting > QUEUE_STRESSED, w.id === pointing ? THEATRE.rocketIntroSeconds.askPointMenu - (active?.introLeft ?? 0) : null, hatchAt, inQueue ? t - qs.get(w.id)! : null, flow.clock - w.outcomeAt, cold, umbrellaOn(w, raining, h));
+        poseWalker(r, w, p, t, waiting > QUEUE_STRESSED, w.id === pointing ? THEATRE.rocketIntroSeconds.askPointMenu - (active?.introLeft ?? 0) : null, hatchAt, inQueue ? t - qs.get(w.id)! : null, flow.clock - w.outcomeAt, cold, umbrellaOn(w, raining, h, stuganState.awning));
         // ORDER 325 (D11) — stående gester ovanpå: vinka vid luckan när medhjälparen är ute (readyToOrder), en
         // axelryckning i kön när korven tar slut (soldOut).
-        gestureMood = truckGesture(r, w, t, errandOut, live(sit.stock), pointing === w.id, cold, flow.clock - w.settledAt);
+        gestureMood = truckGesture(r, w, t, errandOut, live(sit.stock), pointing === w.id, cold, flow.clock - w.settledAt, lc);
+        // ORDER 332 B (D12 REACTIONS.passNod) — gästen i kön som Nils nickade åt tittar upp och nickar tillbaka.
+        const pn = passNods.current.get(w.id);
+        if (pn && inQueue && !gestureMood) {
+          const k = t - pn.at - TEMPERAMENT[temper].reactDelayS, len = CLIPS['guest.glanceNodStand'].seconds.normal;
+          if (k >= 0 && k < len) {
+            applyPose(r, sampleClip('guest.glanceNodStand', k, 'normal', { yaw: Math.max(-SEEK_MAX_YAW, Math.min(SEEK_MAX_YAW, yawTo(p[0], p[1], r.root.rotation.y, pn.from[0], pn.from[1]))) }).pose);
+            gestureMood = 'content';
+          } else if (k >= len) passNods.current.delete(w.id);
+        }
       }
-      face.set(gestureMood ?? mood);
+      // ORDER 332 B — efter posen: livet och ansiktet som går över (Designs D12 §2).
+      lifeFrame(gestureMood, !!w.settled && !w.spot?.seated);
       faceProbe.add(face.update(camera), isTruck && r.root.visible);
       // Maten i händerna på väg till platsen och till sopkorgen; inget efter att servetten är slängd.
       kits.carry(r, w, h, flow.clock - w.outcomeAt, cold, t);
       // Paraply i regnet för den som går utanför markisen (Designs umbrellas.share).
-      kits.umbrella(r, w.id, umbrellaOn(w, raining, h), h);
+      kits.umbrella(r, w.id, umbrellaOn(w, raining, h, stuganState.awning), h);
       // Andedräkten en sval kväll, för den som står still (Designs cool.breath).
       if (cold && w.settled && breaths < BREATH.pool && ((t + (h % 97) / 37) % TRUCK_WEATHER.cool.breath.everyS) < TRUCK_WEATHER.cool.breath.lifeS) {
         const b = breath.current[breaths++];
@@ -544,6 +609,9 @@ export function PlayerTruckCrew() {
       }
     }
     faceProbe.flush();
+    for (let i = 0; i < crew.crewFaces.length; i++) lifeKeep.add(`crew:${i}`);
+    lives.current.keepOnly(lifeKeep);
+    for (const id of passNods.current.keys()) if (!flow.walkers.has(id)) passNods.current.delete(id);
     if (cq?.last?.outcome !== 'join' || !flow.walkers.has(cq.last.guestId ?? '')) m.settledGuest = null;
     const b = beckon.current;
     m.beckon = b && t >= b.at && t < b.at + CURIOUS.hatchLineSeconds ? { line: b.line, x: hatchWorld[0], z: hatchWorld[1] } : null;
@@ -652,7 +720,7 @@ function poseCurious(r: FigureRig, w: TruckWalker, p: [number, number], cur: Cur
 
 /** ORDER 325 (D11 §4) — de stående gesterna vid luckan och i kön, ovanpå poseWalker. Ger stämningen gesten visar
  *  (ansiktet följer gesten), eller null när ingen gest spelas. */
-function truckGesture(r: FigureRig, w: TruckWalker, t: number, errandOut: boolean, soldOut: boolean, pointing: boolean, cold: boolean, atSpotS: number): MoodId | null {
+function truckGesture(r: FigureRig, w: TruckWalker, t: number, errandOut: boolean, soldOut: boolean, pointing: boolean, cold: boolean, atSpotS: number, lc: TruckLifeCtx): MoodId | null {
   if (!w.settled || w.holdS > 0 || pointing || !w.spot) return null;
   const G = TRUCK_GESTURE;
   if (w.spot.pose === 'order' && errandOut) {
@@ -663,17 +731,18 @@ function truckGesture(r: FigureRig, w: TruckWalker, t: number, errandOut: boolea
     const B = GESTURE_BALANCE;
     if (atSpotS < B.seekEyeS) {
       const len = CLIPS['guest.seekEyeStand'].seconds.normal;
-      applyPose(r, sampleClip('guest.seekEyeStand', atSpotS % len, 'normal', { yaw: 0, cold }).pose);
+      playGesture(r, 'guest.seekEyeStand', atSpotS % len, 'normal', { yaw: 0, cold }, lc);
       return 'waiting';
     }
     const [clip, mood]: [string, MoodId] = atSpotS < B.waitWaveS ? ['guest.waveStand', 'content'] : ['guest.waveWaiterStand', 'impatient'];
+    // ORDER 332 B — varannan vinkning den andra varianten (D12 pickVariant: numret och hur många gånger).
     const len = CLIPS[clip].seconds.normal, k = t % G.waveEveryS;
-    if (k < len) { applyPose(r, sampleClip(clip, k, 'normal', { yaw: 0 }).pose); return mood; }
+    if (k < len) { playGesture(r, clip, k, 'normal', { yaw: 0 }, lc, Math.floor(t / G.waveEveryS)); return mood; }
     return null;
   }
   if (w.spot.pose === 'queue' && soldOut) {
     const len = CLIPS['guest.shrugStand'].seconds.normal, k = (t + (w.spot.index ?? 0) * G.shrugOffsetPerSpotS) % G.shrugEveryS;
-    if (k < len) { applyPose(r, sampleClip('guest.shrugStand', k, 'normal', { cold }).pose); return 'waiting'; }
+    if (k < len) { playGesture(r, 'guest.shrugStand', k, 'normal', { cold }, lc); return 'waiting'; }
   }
   return null;
 }
@@ -697,7 +766,7 @@ function poseAnswer(rig: FigureRig, since: number, yaw: number): void {
 }
 
 /** ORDER 327 B — stegen stående vid ståbordet: blicken mot luckan, handen, vinkningen, eller nicken. */
-function poseHatchWant(r: FigureRig, w: TruckWalker, p: [number, number], step: 'eye' | 'hand' | 'wave' | 'nod', sinceS: number, sinceAckS: number, settledS: number, hatchWorld: [number, number], cold: boolean, kits: EatKits, kit: EatKit): MoodId {
+function poseHatchWant(r: FigureRig, w: TruckWalker, p: [number, number], step: 'eye' | 'hand' | 'wave' | 'nod', sinceS: number, sinceAckS: number, settledS: number, hatchWorld: [number, number], cold: boolean, kits: EatKits, kit: EatKit, lc: TruckLifeCtx): MoodId {
   const s = w.spot!;
   r.root.position.set(p[0], s.y, p[1]);
   r.root.rotation.y = s.yaw;
@@ -709,7 +778,7 @@ function poseHatchWant(r: FigureRig, w: TruckWalker, p: [number, number], step: 
     : step === 'eye' ? ['guest.seekEyeStand', sinceS % CLIPS['guest.seekEyeStand'].seconds.normal, 'waiting']
     : step === 'hand' ? ['guest.waveStand', (sinceS - GESTURE_BALANCE.seekEyeS) % CLIPS['guest.waveStand'].seconds.normal, 'content']
     : ['guest.waveWaiterStand', sinceS % CLIPS['guest.waveWaiterStand'].seconds.normal, 'impatient'];
-  applyPose(r, sampleClip(clip, u, 'normal', { yaw, cold }).pose);
+  playGesture(r, clip, u, 'normal', { yaw, cold }, lc);
   kits.pose(kit, r, w, settledS);
   return mood;
 }
@@ -747,6 +816,11 @@ function poseWalker(r: FigureRig, w: TruckWalker, p: [number, number], t: number
     else applyPose(r, poseWalk(w.walkedM / TRUCK_GUESTS.strideM));
     return;
   }
+  // ORDER 332 C (D13) — i kön i regnet utan tak: paraplyet uppe i höger hand, och kön glesare (RAIN_QUEUE).
+  if (umbrella && w.spot?.pose === 'queue' && pointing === null) {
+    applyPose(r, { ...sampleClip('guest.queueCalm', t + (w.spot.index ?? 0) * 0.7, 'calm').pose, armR: UMBRELLA_ARM });
+    return;
+  }
   if (queued !== null && pointing === null) {
     const q = STREET_QUEUE, cw = CLIPS['guest.checkWatchStand'].seconds.normal;
     const k = queued - q.patienceSeconds - (w.spot?.index ?? 0) * q.offsetPerGuestSeconds;
@@ -780,9 +854,14 @@ function hashId(id: string): number {
 function lerpN(a: number, b: number, k: number): number { return a + (b - a) * k; }
 
 /** Paraply för den som går utanför markisen när det regnar (Designs umbrellas.share). */
-function umbrellaOn(w: TruckWalker, raining: boolean, h: number): boolean {
+function umbrellaOn(w: TruckWalker, raining: boolean, h: number, awning: boolean): boolean {
+  // ORDER 332 C (D13 RAIN_QUEUE) — i kön har alla som inte står under luckans skiva eller markisen paraply uppe.
+  if (raining && w.settled && w.spot?.pose === 'queue') return !rainQueueSpotSheltered(w.spot.index ?? 0, awning);
   return raining && !w.settled && w.holdS <= 0 && !w.binning && !w.curious && ((h >>> 5) % 100) / 100 < TRUCK_WEATHER.rain.umbrellas.share;
 }
+
+/** ORDER 332 C — Nils paraplyfärg (en av Designs färger, tableware.ts umbrella). */
+const HELPER_UMBRELLA_HASH = 0;
 
 /** En halsduk runt halsen, dold tills det är kallt. */
 function withScarf(r: FigureRig): FigureRig {
@@ -1018,7 +1097,7 @@ class EatKits {
 /** Den som äter: tre varv med korven (eller gaffeln), dricker, torkar sig med servetten och står kvar. Runt
  *  värmaren värmer gästen händerna mellan tuggorna. På bänken sittande. Blåser servetten iväg griper gästen
  *  efter den (TRUCK_SIGNALS.grab). */
-function poseEater(r: FigureRig, w: TruckWalker, p: [number, number], t: number, since: number, h: number, cold: boolean, kits: EatKits, kit: EatKit, g: { value: number; mates: number }): MoodId | null {
+function poseEater(r: FigureRig, w: TruckWalker, p: [number, number], t: number, since: number, h: number, cold: boolean, kits: EatKits, kit: EatKit, g: { value: number; mates: number; talkers: { id: string; temper: TemperamentId; number: number; glad: boolean }[]; posOf: (id: string) => [number, number] | null }, lc: TruckLifeCtx): MoodId | null {
   const s = w.spot!;
   r.root.position.set(p[0], s.y, p[1]);
   r.root.rotation.y = s.yaw;
@@ -1036,14 +1115,20 @@ function poseEater(r: FigureRig, w: TruckWalker, p: [number, number], t: number,
   let mood: MoodId | null = null;
   if (grab !== undefined && t - grab >= 0 && t - grab < grabLen) applyPose(r, sampleClip('guest.grabNapkin', t - grab, 'normal', ctx).pose);
   else if (!s.seated && pleased && since < Math.min(bite[biteTempo], GESTURE_BALANCE.firstBiteWithinS)) {
-    applyPose(r, sampleClip('guest.nodFirstBiteStand', since, biteTempo, ctx).pose);
+    playGesture(r, 'guest.nodFirstBiteStand', since, biteTempo, ctx, lc);
     mood = glad ? 'delighted' : 'content';
   } else if (clip) applyPose(r, sampleClip(clip, now.u, 'normal', ctx).pose);
-  else if (!s.seated && g.mates >= 2 && pleased) {
-    const talk = glad && (h >>> 2) % 2 === 0 ? 'guest.laughStand' : 'guest.leanTalkStand';
-    const tempo: TempoId = glad ? 'stressed' : 'normal';
-    applyPose(r, sampleClip(talk, (t + (h % 7)) % CLIPS[talk].seconds[tempo], tempo, ctx).pose);
-    mood = glad ? 'delighted' : 'content';
+  else if (!s.seated && g.mates >= 2 && pleased && g.talkers.length >= 2) {
+    // ORDER 332 B (Designs D12 REACTIONS) — samtalet vid ståbordet: de turas om att prata och de andra lyssnar mot den
+    // som pratar; berättar någon något roligt svarar den närmaste vid poängen, leendet sprider sig och den som berättade
+    // småskrattar tillbaka (moodGestures.conversationAt, en funktion av tiden). Förut pratade alla samtidigt.
+    const c = conversationAt(g.talkers, w.id, t, (h % 997) / 997);
+    if (c) {
+      const at = g.posOf(c.lookAt);
+      const yaw = at ? Math.max(-SEEK_MAX_YAW, Math.min(SEEK_MAX_YAW, yawTo(p[0], p[1], s.yaw, at[0], at[1]))) : 0;
+      playGesture(r, c.clip, c.u, 'normal', { ...ctx, yaw }, lc);
+      mood = c.face.mood;
+    } else applyPose(r, sampleClip('guest.standBar', t + (h % 7), 'calm', ctx).pose);
   } else applyPose(r, sampleClip(s.seated ? 'guest.seatedIdle' : 'guest.standBar', t + (h % 7), 'calm', ctx).pose);
   // Föremålen efter posen (handens läge).
   kits.pose(kit, r, w, since);

@@ -20,7 +20,9 @@
 // Slumpen ur fröet och dagen eller simtiden (hashKey), så att servicens slumpflöde inte flyttas.
 
 import type { Guest, SimulationState, WeatherConditions } from '../strategic/types';
-import { SAUSAGE, TORCH, TRUCK_SEATING, TRUCK_WEATHER } from './balance';
+import { RAIN_QUEUE_BALANCE, SAUSAGE, TORCH, TRUCK_SEATING, TRUCK_WEATHER } from './balance';
+import { queueAwningOwned } from './goods';
+import { rainQueueDryInLine } from '../strategic/scene/truckRain';
 import { eveningProgress } from './clock';
 import { EAT_SPOTS } from '../strategic/scene/truckProps';
 import { hashKey } from '../strategic/util/hash';
@@ -113,6 +115,29 @@ export function truckRaining(state: SimulationState): boolean {
   const t = truckOf(state);
   const e = eveningProgress(state);
   return t.weather === 'rain' && t.rainFromE !== null && e !== null && e >= t.rainFromE;
+}
+
+/** ORDER 332 C (Designs D13) — står gästen i kön vid vagnen i regnet, utan tak? Den som beställer och de första i kön
+ *  står under luckans skiva, och med markisen sex till (scene/truckRain.ts RAIN_QUEUE, samma tabell som scenen ritar).
+ *  Platsen i kön är platsen i waitingIds (truckGuestFlow.ts ställer kön i samma ordning). */
+export function rainExposedInQueue(state: SimulationState, guestId: string): boolean {
+  if (!truckRaining(state)) return false;
+  const i = state.waitingIds.indexOf(guestId);
+  return i >= rainQueueDryInLine(queueAwningOwned(state));
+}
+
+/** ORDER 332 C — tålamodet i kön för den som står i regnet, mot tålamodet torrt (balance.ts RAIN_QUEUE_BALANCE). */
+export function rainQueuePatience(state: SimulationState, guestId: string): number {
+  return rainExposedInQueue(state, guestId) ? RAIN_QUEUE_BALANCE.patienceRain : 1;
+}
+
+/** ORDER 332 C — den sista i kön går när fler än leaveAt står i regnet (balance.ts RAIN_QUEUE_BALANCE). Ger gästens id,
+ *  eller null. */
+export function rainQueueLeaver(state: SimulationState): string | null {
+  if (!truckRaining(state)) return null;
+  const waiting = state.waitingIds.filter((id) => state.guests.find((g) => g.id === id)?.state === 'waiting');
+  const exposed = waiting.length - rainQueueDryInLine(queueAwningOwned(state));
+  return exposed > RAIN_QUEUE_BALANCE.leaveAt ? waiting[waiting.length - 1] : null;
 }
 
 /** Gästflödet vid vagnen i kväll, gånger ankomsterna (arrivals.ts arrivalAttraction). */

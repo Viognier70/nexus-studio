@@ -18,7 +18,9 @@ import { GUEST_GROUPS } from '../scene/guestGroups';
 import { createFigureRig } from '../scene/figureRig';
 import { RoomEquipment, equipmentInRoom, D5_EQUIPMENT_OF } from '../scene/roomEquipment';
 import { EQUIPMENT, createEquipment, type EquipmentHandle, type EquipmentId } from '../scene/equipment';
-import { EQUIPMENT_IDS } from '../../sim/goods';
+import { equipmentForBusiness } from '../../sim/goods';
+// ORDER 332 C — rummets utrustning; vagnens markis står på foodtruckens vagn.
+const EQUIPMENT_IDS = equipmentForBusiness('vinbar') as Exclude<ReturnType<typeof equipmentForBusiness>[number], 'queueAwning'>[];
 import { conditionClip, hesitationElapsed, HESITATE_SECONDS, HESITATOR_OF } from '../scene/conditionClips';
 import { CLIPS, validateClips } from '../scene/figureClips';
 import { makeNewGameState } from '../simulation/model';

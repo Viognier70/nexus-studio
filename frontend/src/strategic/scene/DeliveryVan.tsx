@@ -26,6 +26,7 @@ import * as THREE from 'three';
 import { usePlayerBusinessInterior } from '../business/interiorLayout';
 import { useSimState } from '../simulation/SimulationProvider';
 import { playerTruckPlacement } from '../content/villagePlaces';
+import { playerTruckSpotOf } from '../../sim/districts';
 import { DELIVERY, THEATRE } from '../../sim/balance';
 import { alongPath, pathLength, truckDeliveryPath } from './village/truckDelivery';
 
@@ -122,7 +123,7 @@ export function DeliveryVan() {
         camera.updateMatrixWorld();
         view.f.setFromProjectionMatrix(view.m.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
         const inView = (x: number, z: number) => [0, TRUCK_VAN_TOP_M].some((y) => view.f.containsPoint(view.p.set(x, y, z)));
-        const path = truckDeliveryPath(playerTruckPlacement(), inView);
+        const path = truckDeliveryPath(playerTruckPlacement(playerTruckSpotOf(sim)), inView);
         trip = truckTrip.current = { path, length: pathLength(path), s: 0, phase: 'in', incidentId: a.id };
       }
       if (!trip) { g.visible = false; return; }

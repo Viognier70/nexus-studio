@@ -48,6 +48,7 @@ import { findDish } from '../simulation/m4Catalogue';
 import { NxButton, NxLabel } from '../ui/system/components';
 import { NxIcon, ACTIVITY_ICON, PAVILION_ICON } from '../ui/screens/icons';
 import { useMentor } from '../ui/screens/mentor';
+import { TruckSpotPicker } from '../business/TruckSpotPicker';
 import '../ui/screens/screens.css';
 import { useOpenGuard } from '../ui/OpenGuard';
 import { SenderTag, SpeakerLine } from '../ui/SenderTag';
@@ -324,6 +325,9 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
               ) : sim.economy.businessClass === 'foodtruck' ? (
                 // ORDER 315b — foodtruckens meny vid luckan; varorna köps efter kön.
                 <div className="nxs-dark-box nxs-mt-24" data-testid="truck-menu" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+                  {/* ORDER 332 G — vagnens plats i kväll: fem platser med kvarterets gäster och avgiften (sim/districts.ts).
+                      Valet syns i byn: vagnen och kön står där (scene/village). */}
+                  <TruckSpotPicker />
                   <div className="nx-label" style={{ color: 'inherit' }}>{strings.ladder.truckMenuLabel}</div>
                   <p className="nx-body">{strings.ladder.truckMenu}</p>
                   {/* ORDER 330 G — den extra handen vid vagnen: Jonas vid grillen och Nils längs kön (sim/miseEnPlace.ts,
