@@ -37,6 +37,8 @@ const ALLOWED = [
   'Intendent Åsa', 'Åsa',
   // ORDER 312b — gatan leveransbilen stannar på (kartans namn, inte spelartext).
   'Prästgatan',
+  // ORDER 332 — Gästgivaregården (kvarteret och vagnens plats, Designs D15): ortnamnet står kvar på engelska (regel 7).
+  'Gästgivaregården',
   // ORDER 319b — Designs D9 meny: tunnbröd är rättens namn också på engelska ("Tunnbröd wrap").
   'Tunnbröd',
   // ORDER 301 — avhandlingarnas titlar i Kunskapsgrundens källor (egennamn).
@@ -71,6 +73,8 @@ const NOT_PLAYER_TEXT = [
   /^ui\/theme\/nexusTheme\.warm\.rattfel\.ts$/,
   /^strategic\/scene\/[A-Za-z.]+\.ts$/,
   /^strategic\/content\/(roadRoles|streetProfiles|grythyttan|layout)\.ts$/,
+  // ORDER 332 D — kvarterens gränser: gatornas namn ur kartan och anteckningar om de raka bitarna (visas inte).
+  /^strategic\/content\/districtBorders\.ts$/,
   // ORDER 319b del 2 — de nyfiknas frågebank: valideringens meddelanden, som incidentBank.ts.
   /^sim\/(balance|incidentBank|curiousBank)\.ts$/,
   /^strategic\/knowledge\/(questionBank|questionCoverage|questionTemplates|maltidbiblioteketBrons)\.ts$/,
