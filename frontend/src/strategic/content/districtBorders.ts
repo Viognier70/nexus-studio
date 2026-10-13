@@ -92,7 +92,8 @@ export const DISTRICT_BORDERS: Record<DistrictId, DistrictBorder> = {
       { way: 'w122157685', name: 'Torget', from: J.torgetMid, to: J.torgetSmedsgatan },
       { way: 'w860753012', name: 'Smedsgatan', from: J.torgetSmedsgatan, to: J.kyrkogatanSmedsgatan }
     ],
-    labelAt: [70, -125]
+    // Södra delen av torget: längre norrut ligger namnet under HUD:ens övre rad på nivån Byn (ORDER 332, kontrollen).
+    labelAt: [100, -15]
   },
   student: {
     legs: [
@@ -108,7 +109,8 @@ export const DISTRICT_BORDERS: Record<DistrictId, DistrictBorder> = {
       { way: 'w862853237', name: 'Kolargatan', from: J.kolargatanBend, to: J.kolargatanOstraBerg },
       { way: 'w193810997', name: 'Östra Bergvägen', from: J.kolargatanOstraBerg, to: J.prastgatanOstraBerg }
     ],
-    labelAt: [255, -45]
+    // Söder om Kolargatan, under HUD:ens övre rad på nivån Byn.
+    labelAt: [255, 15]
   },
   gastgivaregarden: {
     legs: [
@@ -125,7 +127,9 @@ export const DISTRICT_BORDERS: Record<DistrictId, DistrictBorder> = {
       { way: 'w193810980', name: 'Hammargatan', from: J.hammargatanSmedsgatan, to: J.hammargatanKyrkbacken },
       { way: 'w860753009', name: 'Kyrkbacken', from: J.hammargatanKyrkbacken, to: J.kyrkogatanSmedsgatan }
     ],
-    labelAt: [45, 120]
+    // Västra delen, mot kyrkan: vid [45, 120] täckte Grillvagnens och Torgkrogens skyltar namnet på nivån Byn
+    // (reports/order332/kontroll/check.json, byn).
+    labelAt: [-20, 150]
   },
   campus: {
     legs: [
@@ -136,7 +140,8 @@ export const DISTRICT_BORDERS: Record<DistrictId, DistrictBorder> = {
       { gap: 'kartans kant', to: [660, -196.15] },
       { gap: 'kartans kant norr om Kärnhuset', to: J.rv244NorthFrame }
     ],
-    labelAt: [520, -150]
+    // Mot Måltidens hus, under HUD:ens övre rad på nivån Byn.
+    labelAt: [560, -40]
   },
   sjon: {
     legs: [

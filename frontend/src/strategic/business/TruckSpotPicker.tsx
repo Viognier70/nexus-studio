@@ -31,7 +31,7 @@ export function TruckSpotPicker() {
   return (
     <div data-testid="truck-spot" data-spot={current} style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
       <div className="nx-label" style={{ color: 'inherit' }}>{tt(lang, 'spot.label')}</div>
-      <div role="radiogroup" aria-label={tt(lang, 'spot.label')} style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+      <div role="radiogroup" aria-label={tt(lang, 'spot.label')} className="nxs-spot-grid">
         {TRUCK_SPOT_IDS.map((id) => {
           const open = truckSpotOpen(id, day);
           const fee = truckSpotFeeSek(id);
@@ -44,11 +44,10 @@ export function TruckSpotPicker() {
               aria-checked={on}
               disabled={!open || !canChoose}
               data-testid={`truck-spot-${id}`}
-              className={on ? 'nx-btn' : 'nx-btn nx-btn-quiet'}
-              style={{ width: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', minHeight: 44 }}
+              className="nxs-spot"
               onClick={() => dispatch({ type: 'SET_TRUCK_SPOT', spot: id })}
             >
-              <span style={{ fontWeight: 700 }}>{tt(lang, `spot.name.${id}` as StringKey)}</span>
+              <span className="nxs-spot-name">{tt(lang, `spot.name.${id}` as StringKey)}</span>
               <span className="nx-small">
                 {!open ? tt(lang, 'spot.closed') : fee > 0 ? tt(lang, 'spot.fee', { price: formatSek(fee) }) : tt(lang, 'spot.feeTorget')}
               </span>
