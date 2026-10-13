@@ -6,9 +6,12 @@
 // 30 m och närmare) och kroppen (figureClips.ts). Kartan säger vad sim-lagret spelar och när.
 // Inga speltal: alla tider och sannolikheter är nycklar i GESTURE_BALANCE, som Code sätter i balance.ts.
 // Texterna (situationernas namn och varför) är nycklar i d11Strings: 'gm.sit.<id>' och 'gm.why.<id>'.
+// ORDER 332 B — Designs D12 (2026-10-11): temperament, intensitet, varianter, svaren (REACTIONS) och livet i vila
+// (LIFE_RULES) längst ned, och pickGesture() som ger klipp, variant, hand, tempo, storlek och ansikte. Talen som Design
+// lämnade som platshållare står i balance.ts FIGURE_LIFE; här läses de därifrån.
 
 import type { MoodId } from './guestMood';
-import { GESTURE_BALANCE } from '../../sim/balance';
+import { FIGURE_LIFE, GESTURE_BALANCE } from '../../sim/balance';
 
 export type Place = 'winebar' | 'truck' | 'street';
 export type Posture = 'seated' | 'standing' | 'walking';
@@ -106,11 +109,123 @@ export const GESTURE_RULES = {
   noCameraGaze: true
 };
 
-/** Välj gest för en gäst. state = det sim-lagret vet om gästen just nu. Ger klippets namn eller null. */
-export function pickGesture(state: { mood: MoodId; posture: Posture; active: string[]; index: number; sinceLastS: number; cooldownS: number }): string | null {
+// ===== D12: temperament, intensitet, varianter och svar (2026-10-11), ORDER 332 B =====
+// Anders 2026-10-11: samma känsla ska se olika ut hos olika personer, varje uttryck ska ha minst tre nivåer, och två gäster
+// ska inte vinka exakt likadant. Uttrycket ska vara svar på något.
+
+export type TemperamentId = 'calm' | 'lively' | 'reserved';
+export type IntensityId = 'weak' | 'clear' | 'strong';
+export const TEMPERAMENTS: readonly TemperamentId[] = ['calm', 'lively', 'reserved'];
+
+export interface Temperament {
+  /** Gestens storlek: avvikelsen från vilan gånger amp (figureLife.scalePose). Benen och sitthöjden skalas inte. */
+  readonly amp: number;
+  /** Ansiktets intensitet gånger faceK (ovanpå INTENSITY.faceK). */
+  readonly faceK: number;
+  /** Hur lång tid ett uttryck tar att gå över i nästa (figureFace, 0,3–0,6 s). */
+  readonly faceTransS: number;
+  /** Hur fort figuren svarar på något (ett skämt, en vinkning, någon som går förbi). */
+  readonly reactDelayS: number;
+  /** Svaret på ett skämt: det klipp temperamentet väljer (REACTIONS.jokeLands). */
+  readonly jokeReply: string;
+  /** Livet i vila (figureLife.lifeTimeline): sekunder mellan blinkningar och blickar, blickens vinkel i radianer,
+   *  hur länge den hålls, huvudets drift i radianer, och hur ofta en stående figur flyttar tyngden. */
+  readonly blinkEveryS: readonly [number, number]; readonly glanceEveryS: readonly [number, number]; readonly glanceYaw: number;
+  readonly glanceHoldS: readonly [number, number]; readonly drift: number; readonly shiftEveryS: readonly [number, number];
+}
+
+/** Talen i balance.ts FIGURE_LIFE.temperament (prototypens). */
+export const TEMPERAMENT: Record<TemperamentId, Temperament> = FIGURE_LIFE.temperament;
+
+export type TemperamentShare = Record<TemperamentId, number>;
+/** Andelen av varje temperament per gästgrupp (guestGroups.ts), balance.ts FIGURE_LIFE.temperamentShare. null = lika många. */
+export const TEMPERAMENT_BALANCE = { share: FIGURE_LIFE.temperamentShare };
+/** Temperamentet för en gäst, deterministiskt ur gästens nummer (samma kväll ser likadan ut). Personalen är 'calm'. */
+export function temperamentOf(index: number, share?: TemperamentShare | null): TemperamentId {
+  const s = share ?? { calm: 1, lively: 1, reserved: 1 };
+  const tot = TEMPERAMENTS.reduce((a, k) => a + s[k], 0), h = ((index * 2654435761) >>> 0) / 4294967296 * tot;
+  let acc = 0; for (const k of TEMPERAMENTS) { acc += s[k]; if (h < acc) return k; } return 'calm';
+}
+
+/** Tre nivåer per uttryck. tempo = klippets tempo (och därmed moodK), faceK = ansiktets intensitet (figureFace.FACE_INTENSITY),
+ *  amp = gestens storlek ovanpå temperamentet. Måttligt otålig = 'clear', mycket otålig = 'strong'. */
+export const INTENSITY: Record<IntensityId, { tempo: 'calm' | 'normal' | 'stressed'; faceK: number; amp: number }> = {
+  weak: { ...FIGURE_LIFE.intensity.weak, faceK: FIGURE_LIFE.faceIntensity.weak },
+  clear: { ...FIGURE_LIFE.intensity.clear, faceK: FIGURE_LIFE.faceIntensity.clear },
+  strong: { ...FIGURE_LIFE.intensity.strong, faceK: FIGURE_LIFE.faceIntensity.strong }
+};
+/** Nivån ur trycket i det sim-lagret mäter (väntan mot {waitWaveS}, rättens betyg mot förväntan, glädjen i sällskapet), 0..1.
+ *  Under weakBelow svag, från strongFrom stark (balance.ts FIGURE_LIFE.intensityBounds). */
+export const INTENSITY_BALANCE = FIGURE_LIFE.intensityBounds;
+export function intensityFor(pressure: number): IntensityId {
+  const lo = INTENSITY_BALANCE.weakBelow, hi = INTENSITY_BALANCE.strongFrom;
+  return pressure < lo ? 'weak' : pressure >= hi ? 'strong' : 'clear';
+}
+
+/** Minst två varianter per vanlig gest. A är klippet från D1/D11, B är nytt i D12. */
+export const VARIANTS: Record<string, string[]> = {
+  'guest.waveStaff': ['guest.waveStaff', 'guest.waveStaffB'], 'guest.waveWaiter': ['guest.waveWaiter', 'guest.waveWaiterB'],
+  'guest.waveStand': ['guest.waveStand', 'guest.waveStandB'], 'guest.waveWaiterStand': ['guest.waveWaiterStand', 'guest.waveWaiterStandB'],
+  'guest.laugh': ['guest.laugh', 'guest.laughB'], 'guest.laughStand': ['guest.laughStand', 'guest.laughStandB'],
+  'guest.leanTalk': ['guest.leanTalk', 'guest.leanTalkB'], 'guest.leanTalkStand': ['guest.leanTalkStand', 'guest.leanTalkStandB'],
+  'guest.nodApprove': ['guest.nodApprove', 'guest.nodApproveB'], 'guest.nodApproveStand': ['guest.nodApproveStand', 'guest.nodApproveStandB'],
+  'guest.checkWatch': ['guest.checkWatch', 'guest.checkWatchB'], 'guest.checkWatchStand': ['guest.checkWatchStand', 'guest.checkWatchStandB'],
+  'guest.armsCrossed': ['guest.armsCrossed', 'guest.armsCrossedB'], 'guest.armsCrossedStand': ['guest.armsCrossedStand', 'guest.armsCrossedStandB'],
+  'guest.shrug': ['guest.shrug', 'guest.shrugB'], 'guest.shrugStand': ['guest.shrugStand', 'guest.shrugStandB'],
+  'guest.seekEye': ['guest.seekEye', 'guest.seekEyeB'], 'guest.seekEyeStand': ['guest.seekEyeStand', 'guest.seekEyeStandB'],
+  'guest.cheers': ['guest.cheers', 'guest.cheersB']
+};
+/** Variantregeln: gästens nummer och hur många gånger hen gjort gesten väljer A eller B, och var femte gäst använder
+ *  vänster hand i enhandsklippen (balance.ts FIGURE_LIFE.leftHandShare). Två grannar vid samma bord får aldrig samma
+ *  variant samtidigt (pickVariantApart). */
+export const VARIANT_RULES = { byIndex: true, neighboursDiffer: true, leftHandShare: FIGURE_LIFE.leftHandShare };
+export function pickVariant(clip: string, index: number, count: number): { clip: string; hand: 'L' | 'R' } {
+  const v = VARIANTS[clip], share = VARIANT_RULES.leftHandShare;
+  const hand: 'L' | 'R' = ((((index * 7919) % 100) + 100) % 100) / 100 < share ? 'L' : 'R';
+  return { clip: v ? v[(((index + count) % v.length) + v.length) % v.length] : clip, hand };
+}
+/** ORDER 332 B (VARIANT_RULES.neighboursDiffer) — som pickVariant, men gör grannen redan samma variant (nearby: klippen
+ *  grannarna vid bordet spelar just nu) tas nästa variant. Har gesten bara en variant står den kvar. */
+export function pickVariantApart(clip: string, index: number, count: number, nearby: readonly string[]): { clip: string; hand: 'L' | 'R' } {
+  const p = pickVariant(clip, index, count), v = VARIANTS[clip];
+  if (!v || nearby.indexOf(p.clip) < 0) return p;
+  for (let k = 1; k < v.length; k++) { const c = v[(v.indexOf(p.clip) + k) % v.length]; if (nearby.indexOf(c) < 0) return { clip: c, hand: p.hand }; }
+  return p;
+}
+
+/** Svaren. När två figurer möts reagerar de på varandra: den ena gör något, den andra svarar med ansikte och kropp.
+ *  delayS = temperamentets reactDelayS om inget annat står. Ansiktet går över på temperamentets faceTransS. */
+export interface Reaction { id: string; places: Place[]; trigger: string; who: string; clip: string; standing?: string; face: { mood: MoodId; intensity: IntensityId } | null; delay: string; then?: string }
+export const REACTIONS: Reaction[] = [
+  { id: 'listen', places: ['winebar', 'truck'], trigger: 'någon i sällskapet spelar guest.leanTalk, guest.tellJoke eller pratar med personalen', who: 'de andra i sällskapet', clip: 'guest.listen', standing: 'guest.listenStand', face: { mood: 'content', intensity: 'weak' }, delay: 'reactDelayS' },
+  { id: 'jokeLands', places: ['winebar', 'truck'], trigger: 'poängen i guest.tellJoke (u = punchU)', who: 'den som lyssnar närmast', clip: 'TEMPERAMENT.jokeReply (livlig skrattar, lugn småskrattar, reserverad ler)', face: { mood: 'delighted', intensity: 'clear' }, delay: 'reactDelayS', then: 'smileSpreads' },
+  { id: 'smileSpreads', places: ['winebar', 'truck'], trigger: 'någon i sällskapet skrattar (guest.laugh, guest.laughB, guest.chuckle)', who: 'de andra i sällskapet, i platsordning från den som skrattar', clip: 'guest.smileTurn, eller TEMPERAMENT.jokeReply för den som är livlig', standing: 'guest.smileTurnStand', face: { mood: 'delighted', intensity: 'weak' }, delay: 'reactDelayS + spreadS × platsens ordning' },
+  { id: 'tellerReplies', places: ['winebar', 'truck'], trigger: 'den första lyssnaren skrattar', who: 'den som berättade', clip: 'guest.chuckle', standing: 'guest.chuckleStand', face: { mood: 'delighted', intensity: 'clear' }, delay: 'reactDelayS' },
+  { id: 'staffSpeaks', places: ['winebar', 'truck'], trigger: 'personalen kommer till bordet eller luckan och lyssnar (staff.listenTilt)', who: 'gästen som pratar', clip: 'guest.leanTalk', standing: 'guest.leanTalkStand', face: { mood: 'content', intensity: 'clear' }, delay: 'reactDelayS' },
+  { id: 'badNews', places: ['winebar', 'truck'], trigger: 'något är slut eller dröjer (soldOut, halfGrip)', who: 'gästen som får beskedet, sedan sällskapet', clip: 'guest.shrug eller guest.shrugB', standing: 'guest.shrugStand', face: { mood: 'waiting', intensity: 'clear' }, delay: 'reactDelayS' },
+  { id: 'passNod', places: ['winebar', 'truck', 'street'], trigger: 'personalen går förbi en gäst inom {passNodRadiusM} som har blickkontakt eller väntar', who: 'personalen och gästen', clip: 'staff.walkNod och guest.glanceNodStand (sittande: guest.nodApprove)', face: { mood: 'content', intensity: 'weak' }, delay: 'gästen reactDelayS efter personalen' }
+];
+/** balance.ts FIGURE_LIFE.reaction. punchU = var i guest.tellJoke poängen kommer (klippets egen tid). */
+export const REACTION_BALANCE = FIGURE_LIFE.reaction;
+
+/** Livet i vila, för alla figurer (figureLife.ts). Ingen figur står helt still. Talen i balance.ts FIGURE_LIFE.life. */
+export const LIFE_RULES = {
+  ...FIGURE_LIFE.life,
+  /** Blicken mot kameran är förbjuden (GESTURE_RULES.noCameraGaze): blickarna väljs i rummet, inom ±glanceYaw från där kroppen vetter. */
+  noCameraGaze: true
+};
+
+/** Välj gest för en gäst. state = det sim-lagret vet om gästen just nu. D12: ger klippet med variant, hand, tempo,
+ *  gestens storlek och ansiktets intensitet, eller null. ORDER 332 B: nearby = klippen grannarna spelar (pickVariantApart). */
+export interface GesturePick { clip: string; hand: 'L' | 'R'; tempo: 'calm' | 'normal' | 'stressed'; amp: number; face: { mood: MoodId | null; k: number; transS: number } }
+export function pickGesture(state: { mood: MoodId; posture: Posture; active: string[]; index: number; sinceLastS: number; cooldownS: number; temperament?: TemperamentId; intensity?: IntensityId; count?: number; nearby?: readonly string[] }): GesturePick | null {
   if (state.sinceLastS < state.cooldownS) return null;
+  const T = TEMPERAMENT[state.temperament ?? 'calm'], I = INTENSITY[state.intensity ?? 'clear'];
   const cands = SITUATIONS.filter((s) => state.active.indexOf(s.id) >= 0).sort((a, b) => b.priority - a.priority);
-  if (cands.length) { const s = cands[0]; return state.posture === 'seated' ? s.clip : (s.standing ?? s.clip); }
-  const list = state.posture === 'seated' ? MOOD_MAP[state.mood].seated : MOOD_MAP[state.mood].standing;
-  return list.length ? list[state.index % list.length] : null;
+  let clip: string | null = null, mood: MoodId | null = state.mood;
+  if (cands.length) { const s = cands[0]; clip = state.posture === 'seated' ? s.clip : (s.standing ?? s.clip); mood = s.mood ?? null; }
+  else { const list = state.posture === 'seated' ? MOOD_MAP[state.mood].seated : MOOD_MAP[state.mood].standing; clip = list.length ? list[state.index % list.length] : null; }
+  if (!clip) return null;
+  const v = pickVariantApart(clip, state.index, state.count ?? 0, state.nearby ?? []);
+  return { clip: v.clip, hand: v.hand, tempo: I.tempo, amp: T.amp * I.amp, face: { mood, k: I.faceK * T.faceK, transS: T.faceTransS } };
 }

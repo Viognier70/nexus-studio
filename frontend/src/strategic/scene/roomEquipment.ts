@@ -24,7 +24,8 @@ const CART_SIDE_M = 0.62;
 const CART_FOLLOW_RATE = 8;
 import type { EquipmentId as GameEquipmentId } from '../../sim/goods';
 
-export const D5_EQUIPMENT_OF: Record<GameEquipmentId, EquipmentId> = {
+// ORDER 332 C — vagnens markis (queueAwning) står på foodtruckens vagn (scene/grillstugan.ts), inte i rummet.
+export const D5_EQUIPMENT_OF: Record<Exclude<GameEquipmentId, 'queueAwning'>, EquipmentId> = {
   vinkyl: 'wineFridge',
   flamberingsvagn: 'flambeCart',
   ostvagn: 'cheeseCart',
@@ -36,7 +37,7 @@ export const D5_EQUIPMENT_OF: Record<GameEquipmentId, EquipmentId> = {
 export function equipmentInRoom(owned: readonly string[] | undefined): EquipmentId[] {
   const out: EquipmentId[] = [];
   for (const id of owned ?? []) {
-    const d5 = D5_EQUIPMENT_OF[id as GameEquipmentId];
+    const d5 = (D5_EQUIPMENT_OF as Partial<Record<string, EquipmentId>>)[id];
     if (d5 && !out.includes(d5)) out.push(d5);
   }
   return out;

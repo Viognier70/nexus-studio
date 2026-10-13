@@ -6,6 +6,8 @@
 // låg för ljust och två för mörkt. Fönstret är kroppens luminans L 0,0509–0,0913 (det övre ur 0,48 mot DJ-golvet).
 // Kroppsfärgerna skiljer sig från personalens uniformer. Inget rött, inget grönt som signal (grönt i kläder är dämpat oliv).
 // Ersätter inte gästtyperna i leverans 4 (pengarna), utan visar ORDER 304:s grupper (vilka som kommer per klass).
+// ORDER 332 B — Designs D12 (2026-10-11): ryggsäcken högt på ryggen med remmar, luvan på axlarna, turistens kamera
+// vid höften, BACKPACK, CARRY_RULES och checkCarried(). Designs fil, med checkCarried typad.
 
 import * as THREE from 'three';
 
@@ -47,10 +49,21 @@ export function dressGroup(rig: any, group: GuestGroupId, variant = 0, where: Lo
   const m = (c: string, r = 0.85) => new THREE.MeshStandardMaterial({ color: c, roughness: r });
   const add = (parent: THREE.Object3D, o: THREE.Mesh, name: string) => { o.name = 'sign.' + name; o.castShadow = true; parent.add(o); added.push(o); return o; };
   if (G.sign === 'backpack') {
-    // Ryggsäcken: 0,30 × 0,38 × 0,14 m på ryggen, i en kontrastfärg. Sitter kvar när hen sitter (på stolsryggen i spelet).
-    add(chest, new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.38, 0.14), m(L.accent)), 'backpack').position.set(0, -0.05, -depth / 2 - 0.08);
-    // Tillägg 2026-10-05: luvan i ryggsäckens kontrastfärg, nedfälld som en krage runt halsen, så att studenterna läses från alla håll.
-    const hood = add(chest, new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.055, 8, 20), m(L.accent)), 'hood'); hood.position.set(0, 0.49, -0.03); hood.rotation.set(Math.PI / 2 + 0.25, 0, 0); hood.scale.set(1.25, 1.25, 1);
+    // D12 (2026-10-11): ryggsäcken låg på rumpan. joints.chest sitter i höftlinjen (figureRig: chest i pelvis, y 0), så y −0,05
+    // var 5 cm under höften. Nu sitter den högt på ryggen: överkanten i axelhöjd (0,60 över höftlinjen, bröstkorgens
+    // överkant är 0,588), underkanten 0,20, och den hänger i chest, så den följer överkroppen när figuren går och lutar sig.
+    // Måtten 0,30 × 0,40 × 0,15 m. Två remmar över axlarna och ned över bröstet, innanför armarna (axellederna x ±0,185).
+    const P = BACKPACK, pack = add(chest, new THREE.Mesh(new THREE.BoxGeometry(P.w, P.h, P.d), m(L.accent)), 'backpack');
+    pack.position.set(0, P.centreY, -depth / 2 - P.d / 2 - 0.005);
+    add(chest, new THREE.Mesh(new THREE.BoxGeometry(P.w * 0.92, 0.06, P.d * 1.08), m(L.accent, 0.7)), 'backpackLid').position.set(0, P.centreY + P.h / 2 - 0.02, -depth / 2 - P.d / 2 - 0.01);
+    add(chest, new THREE.Mesh(new THREE.BoxGeometry(P.w * 0.7, P.h * 0.38, 0.05), m(L.accent, 0.9)), 'backpackPocket').position.set(0, P.centreY - P.h * 0.22, -depth / 2 - P.d - 0.02);
+    const strap = m(L.limb, 0.8);
+    [-1, 1].forEach((s) => {
+      add(chest, new THREE.Mesh(new THREE.BoxGeometry(P.strapW, 0.026, depth + 0.03), strap), 'strapTop').position.set(s * P.strapX, 0.6, -0.005);
+      add(chest, new THREE.Mesh(new THREE.BoxGeometry(P.strapW, 0.3, 0.018), strap), 'strapFront').position.set(s * P.strapX, 0.45, depth / 2 + 0.01);
+    });
+    // Tillägg 2026-10-05: luvan i ryggsäckens kontrastfärg, nedfälld som en krage runt halsen. D12: upp till axlarna (0,6), förut 0,49 inne i bröstet.
+    const hood = add(chest, new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.05, 8, 20), m(L.accent)), 'hood'); hood.position.set(0, 0.6, -0.04); hood.rotation.set(Math.PI / 2 + 0.25, 0, 0); hood.scale.set(1.2, 1.2, 1);
   }
   if (G.sign === 'cap') {
     // Kepsen: platt skärmmössa, kullen 0,24 m bred, skärmen 0,07 m fram.
@@ -61,8 +74,10 @@ export function dressGroup(rig: any, group: GuestGroupId, variant = 0, where: Lo
     // Solhatten: brätte 0,46 m, ljust. Den tydligaste siluetten uppifrån. Kameraremmen över bröstet.
     add(head, new THREE.Mesh(new THREE.CylinderGeometry(0.23, 0.23, 0.012, 24), m(L.accent, 0.95)), 'brim').position.set(0, 0.15, 0);
     add(head, new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.125, 0.09, 18), m(L.accent, 0.95)), 'crown').position.set(0, 0.2, 0);
-    const strap = add(chest, new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.62, 0.012), m('#2a2420')), 'strap'); strap.position.set(0, 0.1, depth / 2 + 0.01); strap.rotation.z = 0.7;
-    add(chest, new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.07, 0.06), m('#1c1814')), 'camera').position.set(0.13, -0.12, depth / 2 + 0.04);
+    // D12: remmen och kameran låg också under höftlinjen (kameran på y −0,12). Remmen går nu från vänster axel till höger
+    // höft över bröstet, och kameran hänger vid höger sida i midjehöjd, framför kroppen.
+    const strap = add(chest, new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.5, 0.012), m('#2a2420')), 'strap'); strap.position.set(0.0, 0.4, depth / 2 + 0.01); strap.rotation.z = 0.62;
+    add(chest, new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.07, 0.06), m('#1c1814')), 'camera').position.set(0.13, 0.2, depth / 2 + 0.04);
   }
   if (G.sign === 'scarf') {
     // Sjalen: tjock, i mässing eller bärnsten, lindad och med en ände ned över bröstet.
@@ -76,6 +91,34 @@ export function dressGroup(rig: any, group: GuestGroupId, variant = 0, where: Lo
     const col = add(chest, new THREE.Mesh(new THREE.TorusGeometry(0.085, 0.018, 6, 16), m(L.accent, 0.6)), 'collar'); col.position.set(0, 0.6, 0.01); col.rotation.x = Math.PI / 2;
   }
   return added;
+}
+
+/** Ryggsäcken (D12). Y i chest-ledens ram: 0 = höftlinjen, 0,588 = bröstkorgens överkant (axlarna). */
+export const BACKPACK = { w: 0.3, h: 0.4, d: 0.15, centreY: 0.4, strapX: 0.095, strapW: 0.045 };
+
+/** Det figurerna bär, och var det ska sitta (D12, 2026-10-11). Kontrolleras av checkCarried() i varje bildruta i prototypen.
+ *  Väska och kasse finns inte i spelet än; reglerna står här så att de hamnar rätt när de läggs till. */
+export const CARRY_RULES = {
+  backpack: { parent: 'chest', topY: [0.56, 0.62], bottomYMin: 0.15, note: 'högt på ryggen, remmar över axlarna, följer överkroppen' },
+  cameraStrap: { parent: 'chest', note: 'diagonalt över bröstet, kameran vid höften framför kroppen (y 0,15–0,30)' },
+  shoulderBag: { parent: 'chest', note: 'remmen över en axel, väskan vid motsatt höft (chest y 0,05–0,25, x ±0,2), aldrig under höftlinjen' },
+  carrierBag: { parent: 'handAnchorL eller handAnchorR', note: 'kassen i handen, armen rak (elbow under 0,3), botten minst 0,25 m över marken' },
+  child: { parent: 'den vuxnas handAnchorL och barnets handAnchorR', maxGapM: 0.06, note: 'hand i hand, barnet på den vuxnas vänstra sida' },
+  leash: { parent: 'handAnchorR', note: 'kopplet från handen till hundens halsband (D11)' }
+};
+
+/** Kontrollerar det en figur bär: ryggsäckens över- och underkant i chest-ramen. Tom lista = godkänt.
+ *  ORDER 332 B: med three:s typer i stället för any; kontrollen står i __tests__/order332Figurer.test.ts. */
+export function checkCarried(rig: { joints: { chest: THREE.Object3D } }): string[] {
+  const out: string[] = [], R = CARRY_RULES.backpack;
+  rig.joints.chest.children.forEach((o) => {
+    if (o.name !== 'sign.backpack') return;
+    const g = (o as THREE.Mesh).geometry as THREE.BoxGeometry | undefined;
+    const h = g?.parameters?.height ?? 0, top = o.position.y + h / 2, bot = o.position.y - h / 2;
+    if (top < R.topY[0] || top > R.topY[1]) out.push('backpack top ' + top.toFixed(3));
+    if (bot < R.bottomYMin) out.push('backpack bottom ' + bot.toFixed(3));
+  });
+  return out;
 }
 
 /** Utseendet som teaterScen.LOOKS-post (body, limb), så att samma rigg och kontrastkontroll gäller. */

@@ -1,0 +1,642 @@
+{
+  "definition": "En regnkväll vid foodtrucken i spelarens flöde: startInFoodtruck(frö, vecka 2 fredag), morgonen med bästa svar (playMorning), vädret regn från kvällens början (rainFromE 0), START_SERVICE och tickUntil till kvällens slut. Fröna 1–REGN_SEEDS. Per inställning av RAIN_QUEUE_BALANCE (patienceRain/leaveAt; \"utan verkan\" = 1 och ingen gräns) utan och med markisen (equipment queueAwning). bills = kvällens notor (day.billsTonight), leavers = gäster som gick ur kön i regnet (day.truckRainLeavers), endCash = kassan efter kvällen (alla börjar med samma kassa). markisensVinst = med markis minus utan; kostnadUtanMarkis = utan markis minus \"utan verkan\" (billsShare = andel av notorna).",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "current": {
+    "patienceRain": 0.75,
+    "leaveAt": 10
+  },
+  "rows": [
+    {
+      "setting": "utan verkan",
+      "patienceRain": 9007199254740991,
+      "leaveAt": null,
+      "utanMarkis": {
+        "bills": 55.75,
+        "leavers": 0,
+        "endCash": 19522.875,
+        "perSeed": {
+          "bills": [
+            57,
+            58,
+            58,
+            57,
+            58,
+            59,
+            54,
+            45
+          ],
+          "leavers": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "endCash": [
+            20377,
+            20128,
+            18512,
+            19254,
+            20305,
+            19385,
+            20272,
+            17950
+          ]
+        }
+      },
+      "medMarkis": {
+        "bills": 55.75,
+        "leavers": 0,
+        "endCash": 19522.875,
+        "perSeed": {
+          "bills": [
+            57,
+            58,
+            58,
+            57,
+            58,
+            59,
+            54,
+            45
+          ],
+          "leavers": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "endCash": [
+            20377,
+            20128,
+            18512,
+            19254,
+            20305,
+            19385,
+            20272,
+            17950
+          ]
+        }
+      },
+      "markisensVinst": {
+        "bills": 0,
+        "leavers": 0,
+        "endCash": 0
+      },
+      "kostnadUtanMarkis": {
+        "bills": 0,
+        "billsShare": 0,
+        "endCash": 0
+      }
+    },
+    {
+      "setting": "balance.ts 0.75/10",
+      "patienceRain": 0.75,
+      "leaveAt": 10,
+      "utanMarkis": {
+        "bills": 49.375,
+        "leavers": 21.5,
+        "endCash": 18146,
+        "perSeed": {
+          "bills": [
+            51,
+            48,
+            48,
+            50,
+            55,
+            52,
+            49,
+            42
+          ],
+          "leavers": [
+            23,
+            32,
+            31,
+            20,
+            18,
+            22,
+            23,
+            3
+          ],
+          "endCash": [
+            18640,
+            18073,
+            17873,
+            17886,
+            18753,
+            17936,
+            18431,
+            17576
+          ]
+        }
+      },
+      "medMarkis": {
+        "bills": 52.625,
+        "leavers": 13.75,
+        "endCash": 18760.75,
+        "perSeed": {
+          "bills": [
+            54,
+            52,
+            50,
+            53,
+            58,
+            57,
+            52,
+            45
+          ],
+          "leavers": [
+            15,
+            22,
+            24,
+            12,
+            10,
+            12,
+            15,
+            0
+          ],
+          "endCash": [
+            19184,
+            18647,
+            18422,
+            18488,
+            19492,
+            18606,
+            19297,
+            17950
+          ]
+        }
+      },
+      "markisensVinst": {
+        "bills": 3.25,
+        "leavers": -7.75,
+        "endCash": 614.75
+      },
+      "kostnadUtanMarkis": {
+        "bills": -6.375,
+        "billsShare": -0.11434977578475336,
+        "endCash": -1376.875
+      }
+    },
+    {
+      "setting": "0.75/10",
+      "patienceRain": 0.75,
+      "leaveAt": 10,
+      "utanMarkis": {
+        "bills": 49.375,
+        "leavers": 21.5,
+        "endCash": 18146,
+        "perSeed": {
+          "bills": [
+            51,
+            48,
+            48,
+            50,
+            55,
+            52,
+            49,
+            42
+          ],
+          "leavers": [
+            23,
+            32,
+            31,
+            20,
+            18,
+            22,
+            23,
+            3
+          ],
+          "endCash": [
+            18640,
+            18073,
+            17873,
+            17886,
+            18753,
+            17936,
+            18431,
+            17576
+          ]
+        }
+      },
+      "medMarkis": {
+        "bills": 52.625,
+        "leavers": 13.75,
+        "endCash": 18760.75,
+        "perSeed": {
+          "bills": [
+            54,
+            52,
+            50,
+            53,
+            58,
+            57,
+            52,
+            45
+          ],
+          "leavers": [
+            15,
+            22,
+            24,
+            12,
+            10,
+            12,
+            15,
+            0
+          ],
+          "endCash": [
+            19184,
+            18647,
+            18422,
+            18488,
+            19492,
+            18606,
+            19297,
+            17950
+          ]
+        }
+      },
+      "markisensVinst": {
+        "bills": 3.25,
+        "leavers": -7.75,
+        "endCash": 614.75
+      },
+      "kostnadUtanMarkis": {
+        "bills": -6.375,
+        "billsShare": -0.11434977578475336,
+        "endCash": -1376.875
+      }
+    },
+    {
+      "setting": "1.5/10",
+      "patienceRain": 1.5,
+      "leaveAt": 10,
+      "utanMarkis": {
+        "bills": 50.125,
+        "leavers": 18.5,
+        "endCash": 18378.875,
+        "perSeed": {
+          "bills": [
+            49,
+            48,
+            50,
+            54,
+            55,
+            52,
+            48,
+            45
+          ],
+          "leavers": [
+            23,
+            29,
+            26,
+            14,
+            15,
+            20,
+            21,
+            0
+          ],
+          "endCash": [
+            18551,
+            17997,
+            18198,
+            18303,
+            19187,
+            18176,
+            18669,
+            17950
+          ]
+        }
+      },
+      "medMarkis": {
+        "bills": 50.875,
+        "leavers": 13.5,
+        "endCash": 18765.625,
+        "perSeed": {
+          "bills": [
+            53,
+            51,
+            48,
+            53,
+            54,
+            54,
+            49,
+            45
+          ],
+          "leavers": [
+            14,
+            21,
+            24,
+            10,
+            11,
+            12,
+            16,
+            0
+          ],
+          "endCash": [
+            19308,
+            18485,
+            18407,
+            18676,
+            19536,
+            18652,
+            19111,
+            17950
+          ]
+        }
+      },
+      "markisensVinst": {
+        "bills": 0.75,
+        "leavers": -5,
+        "endCash": 386.75
+      },
+      "kostnadUtanMarkis": {
+        "bills": -5.625,
+        "billsShare": -0.10089686098654704,
+        "endCash": -1144
+      }
+    },
+    {
+      "setting": "2/10",
+      "patienceRain": 2,
+      "leaveAt": 10,
+      "utanMarkis": {
+        "bills": 48.875,
+        "leavers": 19.375,
+        "endCash": 18324.125,
+        "perSeed": {
+          "bills": [
+            48,
+            46,
+            49,
+            50,
+            51,
+            53,
+            49,
+            45
+          ],
+          "leavers": [
+            24,
+            30,
+            25,
+            18,
+            19,
+            18,
+            21,
+            0
+          ],
+          "endCash": [
+            18516,
+            17980,
+            18300,
+            18151,
+            18866,
+            18289,
+            18541,
+            17950
+          ]
+        }
+      },
+      "medMarkis": {
+        "bills": 50.125,
+        "leavers": 12.5,
+        "endCash": 18631.875,
+        "perSeed": {
+          "bills": [
+            52,
+            50,
+            45,
+            53,
+            54,
+            54,
+            48,
+            45
+          ],
+          "leavers": [
+            15,
+            22,
+            14,
+            10,
+            11,
+            12,
+            16,
+            0
+          ],
+          "endCash": [
+            19290,
+            18454,
+            17462,
+            18652,
+            19475,
+            18585,
+            19187,
+            17950
+          ]
+        }
+      },
+      "markisensVinst": {
+        "bills": 1.25,
+        "leavers": -6.875,
+        "endCash": 307.75
+      },
+      "kostnadUtanMarkis": {
+        "bills": -6.875,
+        "billsShare": -0.12331838565022424,
+        "endCash": -1198.75
+      }
+    },
+    {
+      "setting": "2/6",
+      "patienceRain": 2,
+      "leaveAt": 6,
+      "utanMarkis": {
+        "bills": 45.75,
+        "leavers": 26.25,
+        "endCash": 17828.75,
+        "perSeed": {
+          "bills": [
+            45,
+            45,
+            46,
+            47,
+            48,
+            49,
+            47,
+            39
+          ],
+          "leavers": [
+            31,
+            36,
+            33,
+            25,
+            26,
+            26,
+            27,
+            6
+          ],
+          "endCash": [
+            18045,
+            17634,
+            17830,
+            17616,
+            18240,
+            17739,
+            18103,
+            17423
+          ]
+        }
+      },
+      "medMarkis": {
+        "bills": 48.375,
+        "leavers": 19.25,
+        "endCash": 18321.375,
+        "perSeed": {
+          "bills": [
+            48,
+            46,
+            47,
+            50,
+            52,
+            52,
+            47,
+            45
+          ],
+          "leavers": [
+            23,
+            30,
+            26,
+            17,
+            17,
+            19,
+            22,
+            0
+          ],
+          "endCash": [
+            18642,
+            17872,
+            18140,
+            18145,
+            19033,
+            18166,
+            18623,
+            17950
+          ]
+        }
+      },
+      "markisensVinst": {
+        "bills": 2.625,
+        "leavers": -7,
+        "endCash": 492.625
+      },
+      "kostnadUtanMarkis": {
+        "bills": -10,
+        "billsShare": -0.179372197309417,
+        "endCash": -1694.125
+      }
+    },
+    {
+      "setting": "3/10",
+      "patienceRain": 3,
+      "leaveAt": 10,
+      "utanMarkis": {
+        "bills": 47.875,
+        "leavers": 20.375,
+        "endCash": 18243.75,
+        "perSeed": {
+          "bills": [
+            48,
+            45,
+            47,
+            49,
+            51,
+            51,
+            47,
+            45
+          ],
+          "leavers": [
+            24,
+            31,
+            27,
+            19,
+            19,
+            20,
+            23,
+            0
+          ],
+          "endCash": [
+            18412,
+            17923,
+            18069,
+            18089,
+            18830,
+            18125,
+            18552,
+            17950
+          ]
+        }
+      },
+      "medMarkis": {
+        "bills": 50.375,
+        "leavers": 12.375,
+        "endCash": 18622,
+        "perSeed": {
+          "bills": [
+            52,
+            49,
+            48,
+            53,
+            54,
+            54,
+            48,
+            45
+          ],
+          "leavers": [
+            15,
+            23,
+            11,
+            10,
+            11,
+            12,
+            17,
+            0
+          ],
+          "endCash": [
+            19208,
+            18324,
+            17725,
+            18652,
+            19475,
+            18576,
+            19066,
+            17950
+          ]
+        }
+      },
+      "markisensVinst": {
+        "bills": 2.5,
+        "leavers": -8,
+        "endCash": 378.25
+      },
+      "kostnadUtanMarkis": {
+        "bills": -7.875,
+        "billsShare": -0.14125560538116588,
+        "endCash": -1279.125
+      }
+    }
+  ]
+}

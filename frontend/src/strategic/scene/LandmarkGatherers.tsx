@@ -11,7 +11,8 @@ import { GROUP_IDS } from './guestLooks';
 import { OSM_FRAME, streetSignGeometry } from './village/streetLooks';
 import { streetFigureMaterial, streetFloorRef } from './village/streetFigureLight';
 import { addProbeFigures, lampProbeRequested, type ProbeFigure } from './village/lampProbe';
-import { playerTruckPlacement } from '../content/villagePlaces';
+import { playerTruckPlacement, truckSpotBoxCentre } from '../content/villagePlaces';
+import { TRUCK_SPOT_IDS } from '../../sim/districts';
 
 // ORDER 319a.2 (Anders 2026-10-07: "Inga föremål får hoppa fram … Tona in och ut i stället för att
 // byta på en gång.") — de samlade växte fram och krympte bort på stället, också mitt i bilden, och
@@ -21,14 +22,21 @@ import { playerTruckPlacement } from '../content/villagePlaces';
 const GATHER_TRUCK_CLEAR_M = 10;
 const GATHER_FIGURE_TOP_M = 1.7;
 
-/** En förskjutning som hamnar för nära spelarens vagn skjuts ut till GATHER_TRUCK_CLEAR_M. */
-function clearOfTruck(cx: number, cz: number, ox: number, oz: number): [number, number] {
-  const truck = playerTruckPlacement();
-  const dx = cx + ox - truck.x, dz = cz + oz - truck.z, d = Math.hypot(dx, dz);
-  if (d >= GATHER_TRUCK_CLEAR_M) return [ox, oz];
-  if (d <= 1e-3) return [truck.x + GATHER_TRUCK_CLEAR_M - cx, truck.z - cz];
-  const k = GATHER_TRUCK_CLEAR_M / d;
-  return [truck.x + dx * k - cx, truck.z + dz * k - cz];
+/** En förskjutning som hamnar för nära spelarens vagn skjuts ut till GATHER_TRUCK_CLEAR_M.
+ *  ORDER 332 G — vid alla fem platserna (vagnen byter plats varje morgon): på Torget från vagnens mitt som förut, på de
+ *  andra från mitten av D15-lådan (villagePlaces.ts truckSpotBoxCentre; halva diagonalen 7,2 m < 10 m). */
+export function clearOfTruck(cx: number, cz: number, ox: number, oz: number): [number, number] {
+  let o: [number, number] = [ox, oz];
+  for (const spot of TRUCK_SPOT_IDS) {
+    const t = playerTruckPlacement(spot);
+    const [px, pz] = spot === 'torget' ? [t.x, t.z] : truckSpotBoxCentre(spot);
+    const dx = cx + o[0] - px, dz = cz + o[1] - pz, d = Math.hypot(dx, dz);
+    if (d >= GATHER_TRUCK_CLEAR_M) continue;
+    if (d <= 1e-3) { o = [px + GATHER_TRUCK_CLEAR_M - cx, pz - cz]; continue; }
+    const k = GATHER_TRUCK_CLEAR_M / d;
+    o = [px + dx * k - cx, pz + dz * k - cz];
+  }
+  return o;
 }
 
 // Static-ish figures placed at named landmarks. They are the reason the

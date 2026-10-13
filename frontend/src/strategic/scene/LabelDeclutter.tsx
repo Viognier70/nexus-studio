@@ -5,7 +5,8 @@
 // (StreetLabels.tsx). De två sista räknades inte mot något. Här, några gånger i sekunden, i den ordning de är
 // viktiga:
 //   1. krogarnas skyltar står kvar där VillageVenues ställt dem;
-//   2. sällskapen, i den ordning de står (närmast dörren först);
+//   2. kvarterens namn på nivån Byn (ORDER 332 D, DistrictLabels.tsx);
+//   2b. sällskapen, i den ordning de står (närmast dörren först);
 //   3. gatunamnen, huvudvägarna först (gb-street-main, -major, -secondary, -local).
 // En etikett som skulle ligga på en som redan står döljs (visibility), tills den har plats igen. Rektangeln är
 // den omslutande på skärmen (getBoundingClientRect), för ett vridet gatunamn alltså något större än texten.
@@ -46,7 +47,9 @@ export function declutterLabels(root: ParentNode = document): { hidden: number }
     const b = el.style.visibility === 'hidden' ? null : boxOf(el);
     if (b) placed.push(b);
   }
+  // ORDER 332 D — kvarterens namn (DistrictLabels.tsx) efter skyltarna, före sällskapen och gatunamnen.
   const yielding: HTMLElement[] = [
+    ...root.querySelectorAll<HTMLElement>('.nx-district-label'),
     ...root.querySelectorAll<HTMLElement>('.nx-street-tag'),
     ...STREET_TIERS.flatMap((t) => [...root.querySelectorAll<HTMLElement>(`.gb-street-label.gb-street-${t}`)])
   ];

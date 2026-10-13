@@ -36,7 +36,8 @@ import { staminaOf, wellbeingOf, type StaminaId } from './staffStatus';
 import { createOrkRing, orkFacing, orkRingShown, type OrkRing } from './orkRing';
 import { WellbeingLayer, type WellbeingItem } from './wellbeingLayer';
 import { withStreetFloorOnTree } from './village/streetFigureLight';
-import { applyStreetBlend, beyondDoorMat, dressAllGroups, disposeDressed, showGroup, stepStreetBlend, streetShare, HEAD_SIGNS, type DressedRig } from './guestLooks';
+import { applyStreetBlend, beyondDoorMat, dressAllGroups, disposeDressed, groupOfGuestType, showGroup, stepStreetBlend, streetShare, HEAD_SIGNS, type DressedRig } from './guestLooks';
+import { FigureLives, applyPassNod, faceKOf, intensityOfGuest, liveFrame, passNodTarget, temperamentForGuest } from './figureLife';
 import { GUEST_GROUPS } from './guestGroups';
 import { crewShown, equipmentUsesOf, morningShowsOf } from './choicesShown';
 import { RoomEquipment } from './roomEquipment';
@@ -122,7 +123,7 @@ const ROOM_SHOWN_ROOF = 0.99;
 import { MoodSymbolLayer, type MoodGroup } from './moodSymbols';
 import { attachFace, type FaceHandle } from './figureFace';
 import { FaceProbe } from './faceProbe';
-import { MoodGestures } from './moodGestures';
+import { MoodGestures, type GestureSample } from './moodGestures';
 import { SEEK_MAX_YAW } from './wantSignals';
 import { FACE_STEP, scriptFaceMood } from './scriptFaces';
 import { guestMoodValue, moodOf } from '../../sim/guestMood';
@@ -222,6 +223,15 @@ function seekEyeYaw(guest: FigureRig, staff: readonly FigureRig[]): number {
   while (a > Math.PI) a -= 2 * Math.PI;
   while (a < -Math.PI) a += 2 * Math.PI;
   // Huvudet och axlarna vrids inte längre än så; den som står bakom gästen söks över axeln.
+  return Math.max(-SEEK_MAX_YAW, Math.min(SEEK_MAX_YAW, a));
+}
+
+/** ORDER 332 B — vinkeln från gästen till en annan figur i gästens ram (den man lyssnar på eller ler mot), högst
+ *  SEEK_MAX_YAW som blicken (huvudet och axlarna vrids inte längre). */
+function yawToward(from: FigureRig, to: FigureRig): number {
+  let a = Math.atan2(to.root.position.x - from.root.position.x, to.root.position.z - from.root.position.z) - from.root.rotation.y;
+  while (a > Math.PI) a -= 2 * Math.PI;
+  while (a < -Math.PI) a += 2 * Math.PI;
   return Math.max(-SEEK_MAX_YAW, Math.min(SEEK_MAX_YAW, a));
 }
 
@@ -439,6 +449,10 @@ interface Cast {
   staffFaces: FaceHandle[];
   /** ORDER 299 — gästernas gester efter stämningen. */
   moodGestures: MoodGestures;
+  /** ORDER 332 B (Designs D12 figureLife.ts) — livet i vila och ansiktenas övergångar per gäst och anställd, och hur
+   *  upptagen varje gästfigur är av en gest den här bildrutan (dämpar blickarna). */
+  lives: FigureLives;
+  guestBusy: number[];
   /** ORDER 297 — ansiktena på manusfigurerna och svaren i händelsen. */
   scriptFaces: { key: string | null; answers: number; lastAt: number; answer: { at: number; kind: 'right' | 'wrong' } | null; faces: WeakMap<FigureRig, FaceHandle> };
   /** ORDER 309 — orkringen per anställd (D5 ORK_RING), gästernas grupper och bonaderna. */
@@ -724,6 +738,8 @@ export function WineBarFigures({ room, mood }: Props) {
       guestFaces,
       staffFaces,
       moodGestures: new MoodGestures(WINE_BAR_GUEST_POOL),
+      lives: new FigureLives(),
+      guestBusy: guestRigs.map(() => 0),
       space: new PersonalSpace(),
       scriptFaces: { key: null, answers: 0, lastAt: -Infinity, answer: null, faces: new WeakMap() },
       orkRings,
@@ -880,6 +896,12 @@ export function WineBarFigures({ room, mood }: Props) {
     // ORDER 292 — samspelen den här bildrutan: klipp och tid för båda parterna.
     const together = cast.interactions.frame(cast.director, STAFF_KEYS, t);
     const kw = cast.kitchenWalk;
+    // ORDER 332 B — sällskapen i platsordning (svaren i moodGestures.partyPlan) och var varje gäst sitter just nu.
+    const partyOrder = new Map<string, string[]>();
+    for (const g of s.guests) if (g.partyId) partyOrder.set(g.partyId, [...(partyOrder.get(g.partyId) ?? []), g.id]);
+    for (const ids of partyOrder.values()) ids.sort((a, b) => (cast.director.guestSeat(a)?.seatIndex ?? 999) - (cast.director.guestSeat(b)?.seatIndex ?? 999) || (a < b ? -1 : 1));
+    const figureOf = new Map<string, number>();
+    for (let j = 0; j < gs.length; j++) if (gs[j].guestId && gs[j].visible) figureOf.set(gs[j].guestId!, j);
     for (let i = 0; i < gs.length; i++) {
       const rig = cast.guestRigs[i];
       const sample = gs[i];
@@ -949,15 +971,20 @@ export function WineBarFigures({ room, mood }: Props) {
       }
       // ORDER 299 — gesten efter stämningen när gästen bara sitter (moodGestures.ts).
       // ORDER 325 — och efter situationerna i Designs D11-karta (gestureMap.ts): väntan, första tuggan, fel svar.
-      let gesture: { id: string; clip: ClipSample } | null = null;
+      let gesture: GestureSample | null = null;
       if (walkSample === sample && sample.seated && !isFigure && simGuest) {
         const partySize = simGuest.partyId ? s.guests.reduce((n, g) => n + (g.partyId === simGuest.partyId ? 1 : 0), 0) : 1;
         gesture = cast.moodGestures.sample(i, sample.guestId, clip ? cast.stage.guestClipId(i) : null, guestMoodValue(simGuest, s.day.roomMoodLift ?? 0), s.simTime, seatKind, s.day.consequence, s.seed ?? 0,
           // ORDER 327 B — stegen läser regissörens signal (beställningen, glaset, notan och blickkontakten).
-          { state: simGuest.state, stateSinceS: s.simTime - simGuest.stateTime, partyId: simGuest.partyId ?? null, partySize, seekYaw: seekEyeYaw(rig, cast.staffRigs), want: sample.guestId ? cast.director.wantOf(sample.guestId, t) : null });
+          { state: simGuest.state, stateSinceS: s.simTime - simGuest.stateTime, partyId: simGuest.partyId ?? null, partySize, seekYaw: seekEyeYaw(rig, cast.staffRigs), want: sample.guestId ? cast.director.wantOf(sample.guestId, t) : null,
+            // ORDER 332 B — gruppen (temperamentet), sällskapet i platsordning och vinkeln mot den man svarar.
+            group: simGuest.guestType ? groupOfGuestType(simGuest.guestType) : null,
+            partyIds: simGuest.partyId ? partyOrder.get(simGuest.partyId) : undefined,
+            yawTo: (other) => { const j = figureOf.get(other); return j === undefined ? null : yawToward(rig, cast.guestRigs[j]); } });
       } else {
         cast.moodGestures.reset(i);
       }
+      cast.guestBusy[i] = gesture ? gesture.busy : 0;
       cast.guestClips[i] = gesture ? gesture.clip : clip;
       cast.guestClipIds[i] = gesture ? gesture.id : clip ? cast.stage.guestClipId(i) : null;
       applySample(rig, walkSample, false, visibility, gesture ? gesture.clip : clip);
@@ -1300,17 +1327,47 @@ export function WineBarFigures({ room, mood }: Props) {
     // ORDER 299 — ansiktena tänds från 9 m och syns helt vid 7 m. Uttrycket
     // följer gästens stämning och byts i konsekvensögonblicket vid faceSwapAt.
     const faceHold = momentAt !== null && momentAt < CONSEQUENCE.guests.faceSwapAt;
+    // ORDER 332 B (Designs D12 §2) — efter applyPose: livet (applyLife) och ansiktet som går över (face.show(faceAt)).
+    const lifeKeep = new Set<string>();
     for (let i = 0; i < cast.guestFaces.length; i++) {
       const face = cast.guestFaces[i];
-      const id = gs[i]?.guestId;
+      const smp = gs[i];
+      const id = smp?.guestId;
       const g = id ? s.guests.find((x) => x.id === id) : undefined;
-      // ORDER 325 (D11 GESTURE_RULES.faceWithGesture) — ansiktet följer gesten medan den spelas.
-      if (g && !faceHold) face.set(cast.moodGestures.faceFor(i) ?? moodOf(guestMoodValue(g, s.day.roomMoodLift ?? 0)));
+      if (g && id && smp.visible) {
+        lifeKeep.add(id);
+        const value = guestMoodValue(g, s.day.roomMoodLift ?? 0);
+        const temper = temperamentForGuest(id, g.guestType ? groupOfGuestType(g.guestType) : null);
+        const st = cast.lives.of(id, temper, moodOf(value), faceKOf(intensityOfGuest(value), temper));
+        // ORDER 325 (D11 GESTURE_RULES.faceWithGesture) — ansiktet följer gesten medan den spelas; i konsekvensögonblicket
+        // står det kvar till faceSwapAt. Intensiteten ur trycket (D12 INTENSITY), eller gestens.
+        const mood = faceHold ? null : cast.moodGestures.faceFor(i) ?? moodOf(value);
+        const k = cast.moodGestures.faceKFor(i) ?? faceKOf(intensityOfGuest(value), temper);
+        const moving = !smp.seated && /walk|arrive|leave/.test(smp.pose);
+        liveFrame(cast.guestRigs[i], face, st, { t, busy: moving ? 1 : cast.guestBusy[i], standing: !smp.seated && !moving, mood, k, reduced: reducedMotionRef.current });
+      }
       // ORDER 325 §2 — avståndet till huvudet för mätningen (faceProbe.ts), bara för gäster som syns.
       faceProbe.add(face.update(camera), !!g && !!gs[i]?.visible && roomShownRef.current);
     }
     faceProbe.flush();
-    for (const face of cast.staffFaces) face.update(camera);
+    for (let i = 0; i < cast.staffFaces.length; i++) {
+      const face = cast.staffFaces[i], smp = ss[i], rig = cast.staffRigs[i];
+      if (smp?.visible) {
+        const key = `staff:${STAFF_KEYS[i]}`;
+        lifeKeep.add(key);
+        const walking = /walk|Walk|arrive|leave/.test(smp.pose);
+        liveFrame(rig, face, cast.lives.of(key, 'calm'), { t, busy: smp.pose === 'idle' ? 0 : 1, standing: !walking, mood: FACE.staffMood, k: faceKOf('clear', 'calm'), reduced: reducedMotionRef.current });
+        // ORDER 332 B (D12 REACTIONS.passNod) — personalen som går förbi en gäst som söker blicken nickar åt hen;
+        // gästen nickar tillbaka vid blickkontakten (moodGestures, guest.nodApprove).
+        if (walking && inService && !reducedMotionRef.current) {
+          const near = cast.guestRigs.filter((_, j) => !!gs[j]?.visible && !!gs[j].seated && !!gs[j].guestId && !!cast.director.wantOf(gs[j].guestId!, t)?.step).map((r) => ({ x: r.root.position.x, z: r.root.position.z }));
+          const hit = passNodTarget({ x: rig.root.position.x, z: rig.root.position.z, yaw: rig.root.rotation.y }, near);
+          if (hit) applyPassNod(rig, hit.yaw, smp.phase ?? t);
+        }
+      }
+      face.update(camera);
+    }
+    cast.lives.keepOnly(lifeKeep);
     if (active && ringAt && !ev.playing) {
       // ORDER 297 — ringen syns inte genom taket (rummet syns när taket lyfts).
       cast.ring.group.visible = roomShownRef.current;

@@ -16,6 +16,7 @@ import { SAUSAGE, TRUCK_SITUATIONS } from './balance';
 import { eveningProgress } from './clock';
 import { tableOfSpot, truckOf, truckRaining } from './truckLife';
 import { venuesTonight } from './village';
+import { playerTruckSpotOf } from './districts';
 
 /** Rivalen vars skylt syns vid torget (balance.ts VILLAGE.rivals). */
 export const GRILL_TRUCK_ID = 'grillvagnen';
@@ -29,8 +30,10 @@ export function eaterAtTable(state: SimulationState): SimulationState['guests'][
   return state.guests.find((g) => g.state === 'eating' && !!g.truckSpot && tableOfSpot(g.truckSpot) !== null) ?? null;
 }
 
-/** Grillvagnen står på torget i kväll. */
+/** Grillvagnen står på torget i kväll, och spelarens vagn också (ORDER 332 G: skylten och stamgästen syns bara från
+ *  Torget; står spelaren på en annan plats ser hen inte Grillvagnens skylt). */
 export function grillTruckAtTorget(state: SimulationState): boolean {
+  if (playerTruckSpotOf(state) !== 'torget') return false;
   return venuesTonight(state).some((v) => v.id === GRILL_TRUCK_ID && v.open && v.spot === 'torget');
 }
 

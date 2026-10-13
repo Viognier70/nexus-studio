@@ -45,7 +45,7 @@ describe('ORDER 326 B — söka personalens blick', () => {
   });
 
   it('stegen: blicken från waitWatchS, handen efter seekEyeS till, den stora vinkningen från waitWaveS', () => {
-    const run = (t: number, g: MoodGestures) => g.sample(0, 'a', 'guest.seatedIdle', content, t, 'chair', null, 1, info(t))?.id ?? null;
+    const run = (t: number, g: MoodGestures) => g.sample(0, 'a', 'guest.seatedIdle', content, t, 'chair', null, 1, info(t))?.base ?? null;
     const g = new MoodGestures(1);
     run(0, g);
     expect(run(B.waitWatchS - 1, g)).toBeNull();
@@ -65,7 +65,7 @@ describe('ORDER 326 B — söka personalens blick', () => {
     g.sample(0, 'a', 'guest.seatedIdle', content, 0, 'chair', null, 1, info(0, -1.1));
     g.sample(0, 'a', 'guest.seatedIdle', content, B.waitWatchS, 'chair', null, 1, info(B.waitWatchS, -1.1));
     const x = g.sample(0, 'a', 'guest.seatedIdle', content, B.waitWatchS + 1.6, 'chair', null, 1, info(B.waitWatchS, -1.1));
-    expect(x?.id).toBe('guest.seekEye');
+    expect(x?.base).toBe('guest.seekEye');
     expect(x!.clip.pose.head?.yaw ?? 0).toBeLessThan(-0.5);
   });
 });

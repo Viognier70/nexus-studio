@@ -151,6 +151,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_329_RAPPORT.md`: ORDER 329 — fikat vid vagnen: sju nya dilemman, vanligt fika, mätningen före och efter (rapport).
 - `ORDER_330_RAPPORT.md`: ORDER 330 — talarmärket i inledningen, bankens diagnos dag 1, grundregeln, Jonas vid vagnen och genomgången av spelarens val (rapport).
 - `ORDER_331_RAPPORT.md`: ORDER 331 — felen (vinlistan, fikats extra hand), resten av valen som syns, beställningen D14 och granskningen av servern (rapport).
+- `ORDER_332_RAPPORT.md`: ORDER 332 — etapp 1: D12:s levande figurer, Grillstugan med markisen och kön i regn, kvarteren med gränserna, gästens val och vagnens fem platser (rapport, gränserna för Anders godkännande).
 - `ORDER_325_RAPPORT.md`: ORDER 325 — Ansikten och gester (Designs D11): ansiktena nära och på avstånd, de nya klippen och kartan, kamerans avstånd vid Krogen (Z) och gränserna i balance.ts, gatans sex gångsätt, kontrollbilderna (rapport).
 - `ORDER_324_RAPPORT.md`: ORDER 324 — Beslut om FÖR_GRANSKNING_323.md i spelet (svenska och engelska), ft06 steg 2 för Claude, somm-h7, och layouten i 1180 × 660 och 1024 × 600 (rapport); 324b: ft06 svar A, lagtexterna granskade, layoutkontrollen på engelska.
 - `ORDER_RECONSTRUCTION_004_005_019_020.md`: ORDER_RECONSTRUCTION_004_005_019_020 — Evidence record for four sprint orders.
@@ -598,6 +599,27 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - 7 tillhörande filer (kod, data) (6 .ts, 1 .js): `d11Clips.ts`, `d11Strings.ts`, `figureClips.ts`, `figureFace.ts`, `figureRig.ts`, `gestureMap.ts`, `d11Manus.js`.
 - `prototyp/D11 - Ansikten och gester.html`: prototypen med sex skärmar.
 - `kontrollbilder/1280x720/`, `kontrollbilder/1440x900/`: 47 kontrollbilder per storlek.
+
+## documentation/leveranser/nexus-leverans-2026-10-11-d12-levande-figurer/
+
+- `LEVERANSNOT.md`: D12: levande figurer och grillvagnen (Claude Design 2026-10-11, zip 47), inbyggd i ORDER 332 B; vagn B valdes och blev D13.
+- 9 tillhörande filer (kod, data) (6 .ts, 3 .js): `d12Clips.ts`, `figureClips.ts`, `figureFace.ts`, `figureLife.ts`, `gestureMap.ts`, `guestGroups.ts`, `d12Manus.js`, `d12Strings.js`, `grillvagnar.js`.
+- `prototyp/D12 - Levande figurer och grillvagnen.html`: prototypen med tio skärmar.
+- `kontrollbilder/1280x720/`, `kontrollbilder/1024x600/`: 32 kontrollbilder per storlek.
+
+## documentation/leveranser/nexus-leverans-2026-10-12-grillstugan/
+
+- `LEVERANSNOT.md`: D13: grillvagn B, Grillstugan, färdig, med markisen som tillval och kön i regn (Claude Design 2026-10-12, zip 49), inbyggd i ORDER 332 C.
+- 5 tillhörande filer (kod, data) (5 .js): `grillstugan.js`, `truckRain.js`, `d13Manus.js`, `d13Strings.js`, `grillvagnar.js`.
+- `prototyp/D13 - Grillstugan.html`: prototypen.
+- `kontrollbilder/1440x900/`, `kontrollbilder/1280x720/`: 18 kontrollbilder per storlek.
+
+## documentation/leveranser/nexus-leverans-2026-10-12-d15-lokalerna-och-platserna/
+
+- `LEVERANSNOT.md`: D15: lokalerna och platserna (Claude Design 2026-10-12, zip 50; zip 51 samma innehåll): foodtruckens fem platser, gästerna på gatan per kvarter och tre lokaler. Platserna och gatan i ORDER 332, lokalerna i ORDER 333.
+- 4 tillhörande filer (kod, data) (4 .js): `kvarterPlatser.js`, `kvarterRita.js`, `d15Manus.js`, `d15Strings.js`.
+- `prototyp/D15 - Lokalerna och platserna.html`: prototypen med nio skärmar.
+- `kontrollbilder/1440x900/`, `kontrollbilder/1280x720/`: 32 kontrollbilder per storlek.
 
 ## documentation/orders/
 

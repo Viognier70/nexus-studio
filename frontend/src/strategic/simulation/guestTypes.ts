@@ -15,6 +15,7 @@
 // simuleringens slumpflöde inte flyttas. Gäster utan bokning, och de som
 // kommer när boken är slut, får en typ efter andelarna.
 
+import { districtSpec, playerDistrictOf } from '../../sim/districts';
 import type { Guest, GuestBooking, GuestType, SimulationState } from '../types';
 import { BILLIONAIRE, CONCEPT, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, SHOP, SOCIAL_GUEST } from '../../sim/balance';
 import { conceptOf, reputationByTier, type Tier } from '../../sim/goods';
@@ -48,7 +49,12 @@ export function conceptTonight(state: SimulationState): Tier | null {
 // blandning, och de betalningsstarka kommer fullt först när konceptets rykte
 // är minst CONCEPT.highFullAt; platsen de lämnar går till studenter och bybor.
 export function typeShares(state: SimulationState, concept: Tier | null = null): Record<BookedType, number> {
-  if (!concept) return GUEST_TYPES.share[state.businessClass] ?? GUEST_TYPES.share.default;
+  if (!concept) {
+    // ORDER 332 D — vagnen i ett annat kvarter än Torget får kvarterets gäster (balance.ts DISTRICTS doorMix).
+    const mix = districtSpec(playerDistrictOf(state)).doorMix;
+    if (mix) return mix;
+    return GUEST_TYPES.share[state.businessClass] ?? GUEST_TYPES.share.default;
+  }
   const base = CONCEPT.share[concept];
   const rep = reputationByTier(state)[concept];
   const fullAt = CONCEPT.highFullAt[concept];

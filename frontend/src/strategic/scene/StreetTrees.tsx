@@ -1,4 +1,4 @@
-import { PLAYER_TRUCK_PITCH } from '../content/villagePlaces';
+import { PLAYER_TRUCK_PITCH, inTruckSpotBox } from '../content/villagePlaces';
 import { Instance, Instances } from '@react-three/drei';
 import { useMemo } from 'react';
 import { WORLD } from '../content/world';
@@ -131,9 +131,12 @@ function resolveSpecies(spec: TreeSpecies, h: number): Exclude<TreeSpecies, 'mix
 // Vagnen och trädäcket (x −3,4 … 6,2 i vagnens ram) ryms i en cirkel om 5,5 m kring en punkt 1,4 m
 // öster om vagnens mitt; kronan är upp till 3 m bred. Vagnen står nästan längs x (−6,29°).
 const TRUCK_CLEAR = { dx: 1.4, dz: 1.0, radius: 8.5 };
+/** ORDER 332 G — kronans halva bredd (upp till 3 m bred), marginalen runt platsernas låda. */
+export const TREE_CROWN_M = 1.5;
 
-export function StreetTrees() {
-  const trees = useMemo<StreetTreeInstance[]>(() => {
+/** ORDER 332 G — gatornas träd (byggs en gång). Testet (order332Grillstugan.test.ts) läser samma lista. */
+export function streetTreeInstances(): StreetTreeInstance[] {
+  {
     const out: StreetTreeInstance[] = [];
     for (const road of WORLD.roads) {
       if (!road.name) continue;
@@ -184,6 +187,8 @@ export function StreetTrees() {
             // ORDER 315b del 3 — inget träd i spelarens vagn eller över trädäcket på torget
             // (villagePlaces.ts PLAYER_TRUCK_PITCH): kronan skymde vagnen på krogens nivå.
             if (Math.hypot(fx - PLAYER_TRUCK_PITCH.centre[0] - TRUCK_CLEAR.dx, fz - PLAYER_TRUCK_PITCH.centre[1] - TRUCK_CLEAR.dz) < TRUCK_CLEAR.radius) continue;
+            // ORDER 332 G — och inget träd vid någon av foodtruckens fem platser (D15-lådan, kronan TREE_CROWN_M bred).
+            if (inTruckSpotBox(fx, fz, TREE_CROWN_M)) continue;
             out.push({
               x: fx,
               z: fz,
@@ -198,7 +203,11 @@ export function StreetTrees() {
       }
     }
     return out;
-  }, []);
+  }
+}
+
+export function StreetTrees() {
+  const trees = useMemo<StreetTreeInstance[]>(() => streetTreeInstances(), []);
 
   if (trees.length === 0) return null;
 

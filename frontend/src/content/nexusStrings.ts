@@ -521,6 +521,26 @@ export const STRINGS = {
   'incident.legalPending': { sv: 'Förklaringen granskas och visas senare.', en: 'The explanation is being reviewed and will be shown later.' },
   // ORDER 319c — priset på skylten (menu.* {price}) och kvällens väder vid vagnen på morgonen (weather.*).
   'menu.price': { sv: '{n} kr', en: 'SEK {n}' },
+  // ORDER 332 G — foodtruckens fem platser (Designs D15). Spelaren väljer plats i vagnens morgonruta.
+  'spot.label': { sv: 'Platsen i kväll', en: 'Tonight’s pitch' },
+  'spot.name.torget': { sv: 'Torget', en: 'The square' },
+  'spot.name.prastgatan': { sv: 'Prästgatan', en: 'Prästgatan' },
+  'spot.name.gastgivaregarden': { sv: 'Gästgivaregården', en: 'Gästgivaregården' },
+  'spot.name.campus': { sv: 'Campus', en: 'Campus' },
+  'spot.name.sjon': { sv: 'Sjön', en: 'The lake' },
+  'spot.fee': { sv: '{price} per kväll', en: '{price} an evening' },
+  'spot.feeTorget': { sv: 'Ingår i veckans tillstånd', en: 'Included in the weekly permit' },
+  'spot.closed': { sv: 'Badsäsongen är slut', en: 'The bathing season is over' },
+  'spot.chosen': { sv: 'Vagnen står vid {spot} i kväll.', en: 'The truck stands at {spot} tonight.' },
+  'spot.who.torget': { sv: 'Bybor, förbipasserande och marknadsbesökare. Plånbok och kräsenhet i mitten.', en: 'Villagers, passers-by and market-goers. Middling wallets, middling standards.' },
+  'spot.who.student': { sv: 'Studenter och unga. Liten plånbok, nyfikna, kommer i mängd.', en: 'Students and young people. Small wallets, curious, they come in numbers.' },
+  'spot.who.gastgivaregarden': { sv: 'Kulturturister och hotellets gäster. Stor plånbok; de väger rätten och servicen och förlåter minst.', en: 'Cultural tourists and hotel guests. Deep pockets; they weigh the food and the service and forgive least.' },
+  'spot.who.campus': { sv: 'Lärare, konferenser och besökare. God plånbok; de väger medaljerna från Måltidens hus.', en: 'Teachers, conferences and visitors. Good wallets; they weigh the medals from Måltidens hus.' },
+  'spot.who.sjon': { sv: 'Familjer, badgäster och båtfolk. Kommer på sommardagar och när vädret är fint.', en: 'Families, bathers and boat people. They come on summer days and when the weather is fine.' },
+  'spot.tonight.term': { sv: 'Terminen har börjat.', en: 'Term has started.' },
+  'spot.tonight.outOfTerm': { sv: 'Studenterna är lediga.', en: 'The students are off for the summer.' },
+  'spot.tonight.conference': { sv: 'Konferens på campus.', en: 'A conference on campus.' },
+  'spot.tonight.market': { sv: 'Marknad på torget.', en: 'Market day on the square.' },
   'truck.forecast': { sv: 'Vädret i kväll vid vagnen: {weather}.', en: 'Tonight’s weather at the truck: {weather}.' },
   'truck.forecastRain': { sv: 'Regnet kommer en bit in i kvällen.', en: 'The rain comes a while into the evening.' }
 } satisfies Record<string, Entry>;
@@ -1300,7 +1320,9 @@ export const TABLE = {
       sale: { sv: 'Lokalen såld till banken', en: 'Premises sold to the bank' },
       deposit: { sv: 'Kontantinsats för den nya lokalen', en: 'Cash deposit for the new premises' },
       // ORDER 296 — den extra handen till förberedelsen.
-      prepHand: { sv: 'En extra hand till förberedelsen', en: 'An extra pair of hands for the prep' }
+      prepHand: { sv: 'En extra hand till förberedelsen', en: 'An extra pair of hands for the prep' },
+      // ORDER 332 G — platsavgiften när vagnen står på en annan plats än Torget.
+      spotFee: { sv: 'Platsavgift för vagnen', en: 'Pitch fee for the truck' }
     },
     classes: {
       vinbar: { sv: 'Vinbar', en: 'Wine bar' },
@@ -2234,6 +2256,14 @@ export const TABLE = {
       torget: { sv: 'på torget', en: 'on the square' },
       'maltidens-hus': { sv: 'vid Måltidens hus', en: 'by the House of the Meal' },
       sjon: { sv: 'vid sjön', en: 'by the lake' }
+    } as Record<string, { sv: string; en: string }>,
+    // ORDER 332 D — kvarterens namn på nivån Byn (Designs D15 d15Strings.js quarter.*; Måltidens hus heter the House of the Meal på engelska, CLAUDE.md regel 7).
+    districts: {
+      torget: { sv: 'Torget', en: 'The square' },
+      student: { sv: 'Studentkvarteret', en: 'The student quarter' },
+      gastgivaregarden: { sv: 'Gästgivaregården och kyrkan', en: 'Gästgivaregården and the church' },
+      campus: { sv: 'Campus och Måltidens hus', en: 'Campus and the House of the Meal' },
+      sjon: { sv: 'Vid sjön', en: 'By the lake' }
     } as Record<string, { sv: string; en: string }>,
     open: { sv: 'Öppet', en: 'Open' },
     closed: { sv: 'Stängt i kväll', en: 'Closed tonight' },
@@ -3559,6 +3589,8 @@ export const TABLE = {
     equipmentTab: { sv: 'Utrustning', en: 'Equipment' },
     suppliersIntro: { sv: 'Leverantörerna ger krogen nya varor i morgonens inköp. De öppnas med en medalj och betalas med krediter.', en: 'Suppliers bring new goods to the morning purchase. They open with a medal and are paid in credits.' },
     equipmentIntro: { sv: 'Utrustningen köps för kassan, står i rummet och lyfter krogens koncept.', en: 'Equipment is bought with cash, stands in the room and lifts the restaurant’s concept.' },
+    // ORDER 332 C — foodtruckens flik: utrustningen står vid vagnen.
+    equipmentIntroTruck: { sv: 'Utrustningen köps för kassan och står vid vagnen.', en: 'Equipment is bought with cash and stands at the van.' },
     open: { sv: 'Öppen från start', en: 'Open from the start' },
     buyCredits: { sv: (n: number) => `Öppna för ${n} krediter`, en: (n: number) => `Open for ${n} credits` },
     buyCash: { sv: (kr: string) => `Köp för ${kr} kr`, en: (kr: string) => `Buy for SEK ${kr}` },
@@ -3585,14 +3617,17 @@ export const TABLE = {
         flamberingsvagn: { name: 'Flamberingsvagn', note: 'Flambering vid bordet.' },
         ostvagn: { name: 'Ostvagn', note: 'Ostarna vid borden.' },
         avecvagn: { name: 'Avecvagn', note: 'Avec efter maten: bordet stannar för avec när situationen klaras.' },
-        humidor: { name: 'Humidor', note: 'Cigarren och uteserveringen.' }
+        humidor: { name: 'Humidor', note: 'Cigarren och uteserveringen.' },
+        // ORDER 332 C — Designs D13 (d13Strings part.awning).
+        queueAwning: { name: 'Markis över kön', note: 'Markisen står på stolpar över kön vid vagnen. När det regnar står sex i kön torrt under den, och kön stannar. Utan den står bara den som beställer och en till under luckans skiva, och de andra fäller upp paraply.' }
       } as Record<string, { name: string; note: string }>,
       en: {
         vinkyl: { name: 'A finer wine fridge', note: 'Wine at the right temperature.' },
         flamberingsvagn: { name: 'Flambé trolley', note: 'Flambéing at the table.' },
         ostvagn: { name: 'Cheese trolley', note: 'The cheeses at the tables.' },
         avecvagn: { name: 'Digestif trolley', note: 'A digestif after the meal: the table stays for one when the situation is cleared.' },
-        humidor: { name: 'Humidor', note: 'The cigar and the terrace.' }
+        humidor: { name: 'Humidor', note: 'The cigar and the terrace.' },
+        queueAwning: { name: 'Awning over the queue', note: 'The awning stands on posts over the queue at the van. When it rains, six people in the queue stay dry under it, and the queue stays. Without it only the person ordering and one more stand under the hatch board, and the others put up umbrellas.' }
       } as Record<string, { name: string; note: string }>
     },
     // ORDER 315 (Anders 2026-10-06) — konceptklasserna från 307 är nivåer inom

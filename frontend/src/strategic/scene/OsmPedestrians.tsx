@@ -19,6 +19,12 @@ import { streetFigureMaterial, streetFloorRef } from './village/streetFigureLigh
 import { addProbeFigures, lampProbeRequested, type ProbeFigure } from './village/lampProbe';
 import { advanceGait, composeLeg, easeMoving, gaitBob, legSwing, streetLegGeometry } from './village/streetGait';
 import { clearStreetWalkers, publishStreetWalkers } from './streetPresence';
+// ORDER 332 D — gästerna på gatan per kvarter (Designs D15 §3, balance.ts DISTRICT_STREET).
+import { useSimState } from '../simulation/SimulationProvider';
+import { DISTRICT_IDS, type DistrictId } from '../../sim/districts';
+import { DISTRICT_STREET } from '../../sim/balance';
+import { districtAt } from '../content/districts';
+import { districtLanes, districtParties, districtWalkerCount, lakeModeFor, pickFromMix, type LakeMode } from './village/districtStreet';
 
 // Village-scale readability treatment. At close and district range the
 // walker keeps its authored 1.2 m height; from ~320 m up the visual scale
@@ -35,7 +41,8 @@ const CYCLIST_CURVE: ReadabilityCurve = {
   maxScale: 5
 };
 
-type WalkerRole = 'resident' | 'student' | 'tourist' | 'conference' | 'staff';
+// ORDER 332 D — gourmeterna (Gästgivaregårdens hotellgäster, D15) och barnet i familjen vid sjön.
+type WalkerRole = 'resident' | 'student' | 'tourist' | 'conference' | 'staff' | 'gourmet' | 'child';
 
 interface Walker {
   role: WalkerRole;
@@ -60,6 +67,16 @@ interface Walker {
   moving: number;
   pauseLeft: number;
   nextPause: number;
+  // ORDER 332 D — kvarteret den gående går i (byns lager: där vägen låg från början; kvarterets lager: sitt
+  // kvarter), och för kvarterets lager: avståndet åt sidan i sällskapet, storleken (barnet), farten och sättet.
+  district: DistrictId | null;
+  own: boolean;
+  lateral: number;
+  aheadM: number;
+  sizeK: number;
+  hurried: boolean;
+  stopLook: boolean;
+  talk: boolean;
 }
 
 interface Cyclist {
@@ -177,7 +194,9 @@ const ROLE_GROUP: Record<WalkerRole, GuestGroupId | null> = {
   student: 'student',
   tourist: 'tourist',
   conference: 'business',
-  staff: null
+  staff: null,
+  gourmet: 'gourmet',
+  child: null
 };
 // ORDER 302c — gatans variant (Designs tillägg 2026-10-06, looks[].street): kroppen
 // ljusare än marken, tecknet i gatans accentfärg.
@@ -187,8 +206,22 @@ const ROLE_PALETTE: Record<WalkerRole, string[]> = {
   student: groupBodies('student'),
   tourist: groupBodies('tourist'),
   conference: groupBodies('business'),
-  staff: ['#efe7d3', '#c9b28e']
+  staff: ['#efe7d3', '#c9b28e'],
+  gourmet: groupBodies('gourmet'),
+  // Barnet i studentens färger (D15: barnet har looken student), utan tecken.
+  child: groupBodies('student')
 };
+// ORDER 332 D — D15:s grupper som byns roller.
+const GROUP_ROLE: Record<string, WalkerRole> = { villager: 'resident', student: 'student', tourist: 'tourist', business: 'conference', gourmet: 'gourmet', family: 'resident', child: 'child' };
+const pathMid = (p: RawRoad) => p.poly[Math.floor(p.poly.length / 2)];
+// Kvarterets gångplatser som vägar för gångmaskineriet nedan (bara poly läses).
+const laneRoads = new Map<string, RawRoad>();
+function ownLaneRoad(d: DistrictId, i: number, poly: Array<[number, number]>): RawRoad {
+  const id = `district-lane:${d}:${i}`;
+  let r = laneRoads.get(id);
+  if (!r) laneRoads.set(id, (r = { id, poly, kind: 'footway', name: null, car: false, ped: true }));
+  return r;
+}
 // Kroppen är en låda 0,42 × 1,2 × 0,32 m (fötterna vid 0) och huvudet r 0,22 vid 1,35 m (streetLooks.ts OSM_FRAME).
 
 // ORDER 302c — cyklisterna (cykeln och den som cyklar, en låda) i gatans
@@ -224,7 +257,29 @@ export function OsmPedestrians() {
   const gl = useThree((x) => x.gl);
   const camera = useThree((x) => x.camera);
   const scene = useThree((x) => x.scene);
-  const { paths, weights } = useMemo(() => pickPedPaths(), []);
+  const { paths: allPaths, weights: allWeights } = useMemo(() => pickPedPaths(), []);
+  // ORDER 332 D — byns gående går inte vid sjön (där syns bara sjöns läge, D15 LAKE_MODES) och byter väg inom
+  // kvarteret där de började (så att kvarterets andelar står kvar där de går).
+  const pools = useMemo(() => {
+    const by = new Map<DistrictId | null, { paths: RawRoad[]; weights: number[] }>();
+    allPaths.forEach((p, i) => {
+      const m = pathMid(p);
+      const d = districtAt(m[0], m[1]);
+      if (d === 'sjon') return;
+      const e = by.get(d) ?? { paths: [], weights: [] };
+      e.paths.push(p);
+      e.weights.push(allWeights[i]);
+      by.set(d, e);
+    });
+    return by;
+  }, [allPaths, allWeights]);
+  const { paths, weights } = useMemo(() => {
+    const ps: RawRoad[] = [], ws: number[] = [];
+    for (const e of pools.values()) { ps.push(...e.paths); ws.push(...e.weights); }
+    return { paths: ps, weights: ws };
+  }, [pools]);
+  const sim = useSimState();
+  const lakeMode: LakeMode = lakeModeFor(sim);
   const cyclePaths = useMemo(
     () =>
       CYCLE_PATHS.filter((p) => polylineLength(p.poly) >= MIN_CYCLE_LENGTH),
@@ -234,10 +289,14 @@ export function OsmPedestrians() {
     const rng = createRng(WALKER_SEED);
     if (paths.length === 0) return [];
     const list: Walker[] = Array.from({ length: WALKER_COUNT }, () => {
-      const role = pickRole(rng);
+      // ORDER 332 D — vägen först, sedan gruppen ur kvarterets andelar där vägen ligger (byns blandning utanför).
+      const path = weightedPick(paths, weights, rng.next());
+      const mid = pathMid(path);
+      const district = districtAt(mid[0], mid[1]);
+      const role = district ? GROUP_ROLE[pickFromMix(DISTRICT_STREET.mix[district], rng.next())] : pickRole(rng);
       return {
         role,
-        path: weightedPick(paths, weights, rng.next()),
+        path,
         t: rng.next(),
         speed: rng.range(WALK_MPS[0], WALK_MPS[1]),
         forward: rng.chance(0.5) ? 1 : -1,
@@ -251,7 +310,8 @@ export function OsmPedestrians() {
         phase: rng.next(),
         moving: 1,
         pauseLeft: 0,
-        nextPause: rng.range(PAUSE_EVERY_S[0], PAUSE_EVERY_S[1])
+        nextPause: rng.range(PAUSE_EVERY_S[0], PAUSE_EVERY_S[1]),
+        district, own: false, lateral: 0, aheadM: 0, sizeK: 1, hurried: false, stopLook: false, talk: false
       };
     });
     // Second pass: group formation. Roughly one in every seven walkers
@@ -293,12 +353,36 @@ export function OsmPedestrians() {
       }
       i += followerCount + 1;
     }
+    // ORDER 332 D — kvarterets eget lager (D15 streetWalkers): sällskapen ur kvarterets andelar på kvarterets
+    // gångplatser, bredvid varandra (lateral), med gruppens fart och sätt. Sjön har bara det här lagret, med
+    // antalet ur sjöns läge i kväll.
+    DISTRICT_IDS.forEach((d, di) => {
+      const lanes = districtLanes(d);
+      const n = districtWalkerCount(d, lakeMode);
+      if (!lanes.length || n <= 0) return;
+      districtParties(d, n, WALKER_SEED + di).forEach((party, k) => {
+        const lane = ownLaneRoad(d, k % lanes.length, lanes[k % lanes.length]);
+        const t = rng.next();
+        const forward: 1 | -1 = rng.chance(0.5) ? 1 : -1;
+        const leader = list.length;
+        party.members.forEach((m, mi) => {
+          const role = GROUP_ROLE[m.group];
+          list.push({
+            role, path: lane, t, speed: party.speedMps, forward, swap: rng.range(60, 140),
+            colour: rng.pick(ROLE_PALETTE[role]), variant: 0, entering: 1,
+            leaderIndex: mi === 0 ? -1 : leader, groupOffset: 0, len: 1, phase: rng.next(), moving: 1, pauseLeft: 0,
+            nextPause: party.stopLook ? rng.range(DISTRICT_STREET.style.touristStopEveryS[0], DISTRICT_STREET.style.touristStopEveryS[1]) : rng.range(PAUSE_EVERY_S[0], PAUSE_EVERY_S[1]),
+            district: d, own: true, lateral: m.lateral, aheadM: m.aheadM, sizeK: m.sizeK, hurried: party.hurried, stopLook: party.stopLook, talk: party.talk
+          });
+        });
+      });
+    });
     for (const w of list) {
       w.variant = Math.max(0, ROLE_PALETTE[w.role].indexOf(w.colour));
       w.len = Math.max(1, polylineLength(w.path.poly));
     }
     return list;
-  }, [paths, weights]);
+  }, [paths, weights, lakeMode]);
 
   const cyclists = useMemo<Cyclist[]>(() => {
     const rng = createRng(CYCLIST_SEED);
@@ -394,19 +478,23 @@ export function OsmPedestrians() {
           w.forward = L.forward;
           // Sällskapet står när ledaren står.
           w.pauseLeft = L.pauseLeft;
-          w.t = Math.max(0, Math.min(1, L.t + w.groupOffset));
+          // ORDER 332 D — barnet går en bit före den vuxna (D12 CHILD_AHEAD), i ledarens gångriktning.
+          w.t = Math.max(0, Math.min(1, L.t + w.groupOffset + (w.aheadM * L.forward) / L.len));
           // No further simulation for a follower — the sample below runs
           // on the shadowed values.
         } else {
           // Landmark-adjacent walkers move at 60% speed. Reads as dwelling.
-          const linger = isLandmarkPath(w.path);
+          const linger = !w.own && isLandmarkPath(w.path);
           const walkSpeed = linger ? w.speed * 0.75 : w.speed;
           // ORDER 323 §6 — ibland stannar den gående en stund.
+          // ORDER 332 D — den som har bråttom stannar inte; turisterna stannar och tittar oftare (D15 stopLook).
           if (w.pauseLeft > 0) w.pauseLeft = Math.max(0, w.pauseLeft - dt);
-          else if ((w.nextPause -= dt) <= 0) {
+          else if (!w.hurried && (w.nextPause -= dt) <= 0) {
             const r = createRng(Math.floor(now * 1000) + i * 31);
+            const S = DISTRICT_STREET.style;
             w.pauseLeft = r.range(PAUSE_S[0], PAUSE_S[1]) * (linger ? 1.5 : 1);
-            w.nextPause = r.range(PAUSE_EVERY_S[0], PAUSE_EVERY_S[1]);
+            if (w.stopLook) w.pauseLeft = r.range(S.touristStopS[0], S.touristStopS[1]);
+            w.nextPause = w.stopLook ? r.range(S.touristStopEveryS[0], S.touristStopEveryS[1]) : r.range(PAUSE_EVERY_S[0], PAUSE_EVERY_S[1]);
           }
           if (w.pauseLeft <= 0) w.t += (dt * walkSpeed * w.forward) / w.len;
           if (w.t > 1) {
@@ -419,7 +507,11 @@ export function OsmPedestrians() {
           const here = w.swap <= 0 ? samplePolyline(w.path.poly, w.t) : null;
           if (w.swap <= 0 && here && !inView(here.x, here.z)) {
             const rng = createRng(Math.floor(performance.now() * 7 + i * 11));
-            const path = weightedPick(paths, weights, rng.next());
+            // ORDER 332 D — en ny väg i samma kvarter (kvarterets lager: kvarterets gångplatser).
+            const lanes = w.own && w.district ? districtLanes(w.district) : null;
+            const pool = w.own ? null : pools.get(w.district) ?? { paths, weights };
+            const li = lanes ? Math.floor(rng.next() * lanes.length) : 0;
+            const path = lanes && w.district ? ownLaneRoad(w.district, li, lanes[li]) : weightedPick(pool!.paths, pool!.weights, rng.next());
             const t = rng.next();
             const there = samplePolyline(path.poly, t);
             // Den nya platsen syns: försök igen nästa bild.
@@ -441,6 +533,12 @@ export function OsmPedestrians() {
           w.entering = Math.min(1, w.entering + dt * 2.2);
         }
         const p = samplePolyline(w.path.poly, w.t);
+        // ORDER 332 D — sällskapet bredvid varandra (kvarterets lager), åt sidan från gångriktningen.
+        if (w.lateral) {
+          const my = p.yaw + (w.forward === -1 ? Math.PI : 0);
+          p.x += Math.cos(my) * w.lateral;
+          p.z -= Math.sin(my) * w.lateral;
+        }
         // ORDER 323 §6 — gången: benen svingar med sträckan den gående har
         // gått (streetGait.ts), så att fötterna följer marken; i en paus står
         // benen raka och kroppen stilla. Förut gungade en låda utan ben.
@@ -449,11 +547,14 @@ export function OsmPedestrians() {
         w.phase = advanceGait(w.phase, walked, 1, dt);
         const bob = gaitBob(w.phase, w.moving);
         // Face the direction of motion.
-        const yaw = p.yaw + (w.forward === -1 ? Math.PI : 0);
+        let yaw = p.yaw + (w.forward === -1 ? Math.PI : 0);
+        // ORDER 332 D — när de står: paret som pratar vänder sig mot varandra, turisten ser åt sidan på husen.
+        if (w.pauseLeft > 0 && w.talk) yaw += w.lateral > 0 ? -Math.PI / 2 : Math.PI / 2;
+        else if (w.pauseLeft > 0 && w.stopLook) yaw += Math.PI / 3;
         // Fade-in hides the teleport frame; readability grows the walker
         // at village range only. Feet stay on the ground because position.y
         // scales with the same factor.
-        const scale = w.entering * w.entering * walkerRead;
+        const scale = w.entering * w.entering * walkerRead * w.sizeK;
         for (const [k, side] of [[0, -1], [1, 1]] as const) {
           const leg = walkerLegMeshes[k].current;
           if (!leg) continue;

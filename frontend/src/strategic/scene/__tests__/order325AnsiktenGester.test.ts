@@ -76,10 +76,10 @@ describe('ORDER 325 — kartan', () => {
   });
 
   it('pickGesture: situationen med högst prioritet går före stämningen, stående vid vagnen', () => {
-    expect(pickGesture({ mood: 'content', posture: 'seated', active: ['talking', 'wrongWitnessed'], index: 0, sinceLastS: 99, cooldownS: 6 })).toBe('guest.armsCrossed');
-    expect(pickGesture({ mood: 'content', posture: 'standing', active: ['halfGrip'], index: 0, sinceLastS: 99, cooldownS: 6 })).toBe('guest.shrugStand');
+    expect(pickGesture({ mood: 'content', posture: 'seated', active: ['talking', 'wrongWitnessed'], index: 0, sinceLastS: 99, cooldownS: 6 })?.clip).toBe('guest.armsCrossed');
+    expect(pickGesture({ mood: 'content', posture: 'standing', active: ['halfGrip'], index: 0, sinceLastS: 99, cooldownS: 6 })?.clip).toBe('guest.shrugStand');
     // ORDER 326 — väntar: blicken, klockan, axelryckningen.
-    expect(pickGesture({ mood: 'waiting', posture: 'seated', active: [], index: 2, sinceLastS: 99, cooldownS: 6 })).toBe('guest.shrug');
+    expect(pickGesture({ mood: 'waiting', posture: 'seated', active: [], index: 2, sinceLastS: 99, cooldownS: 6 })?.clip).toBe('guest.shrug');
   });
 });
 
@@ -94,21 +94,21 @@ describe('ORDER 325 — gesterna i vinbaren följer kartan', () => {
     const g = new MoodGestures(1);
     g.sample(0, 'a', 'guest.seatedIdle', content, 0, 'chair', null, 1, info('seated', 0));
     const w = g.sample(0, 'a', 'guest.seatedIdle', content, GESTURE_BALANCE.waitWatchS, 'chair', null, 1, info('seated', GESTURE_BALANCE.waitWatchS));
-    expect(w?.id).toBe('guest.seekEye');
+    expect(w?.base).toBe('guest.seekEye');
     expect(g.faceFor(0)).toBe('waiting');
     const h = new MoodGestures(1);
     h.sample(0, 'a', 'guest.seatedIdle', content, 0, 'chair', null, 1, info('seated', 0));
-    expect(h.sample(0, 'a', 'guest.seatedIdle', content, GESTURE_BALANCE.waitWaveS, 'chair', null, 1, info('seated', GESTURE_BALANCE.waitWaveS))?.id).toBe('guest.waveWaiter');
+    expect(h.sample(0, 'a', 'guest.seatedIdle', content, GESTURE_BALANCE.waitWaveS, 'chair', null, 1, info('seated', GESTURE_BALANCE.waitWaveS))?.base).toBe('guest.waveWaiter');
   });
 
   it('första tuggan: nick som nöjd, tallriken undan under pushPlateBelow', () => {
     const g = new MoodGestures(1);
     g.sample(0, 'a', 'guest.eat', content, 100, 'chair', null, 1, info('dining', 0));
-    expect(g.sample(0, 'a', 'guest.eat', content, 100.1, 'chair', null, 1, info('dining', 0.1))?.id).toBe('guest.nodFirstBite');
+    expect(g.sample(0, 'a', 'guest.eat', content, 100.1, 'chair', null, 1, info('dining', 0.1))?.base).toBe('guest.nodFirstBite');
     const low = GESTURE_BALANCE.pushPlateBelow - 0.05;
     const h = new MoodGestures(1);
     h.sample(0, 'b', 'guest.eat', low, 100, 'chair', null, 1, info('dining', 0));
-    expect(h.sample(0, 'b', 'guest.eat', low, 100.1, 'chair', null, 1, info('dining', 0.1))?.id).toBe('guest.pushPlate');
+    expect(h.sample(0, 'b', 'guest.eat', low, 100.1, 'chair', null, 1, info('dining', 0.1))?.base).toBe('guest.pushPlate');
   });
 
   it('ensam vid bordet lutar sig ingen fram och pratar; i sällskap gör man det', () => {
@@ -116,7 +116,7 @@ describe('ORDER 325 — gesterna i vinbaren följer kartan', () => {
     const party = new MoodGestures(1);
     const ids = (g: MoodGestures, size: number) => {
       const out = new Set<string>();
-      for (let t = 0; t < 2000; t += 0.5) { const x = g.sample(0, 'a', 'guest.seatedIdle', content, t, 'chair', null, 1, { state: 'dining', stateSinceS: 999, partyId: size > 1 ? 'p' : null, partySize: size }); if (x) out.add(x.id); }
+      for (let t = 0; t < 2000; t += 0.5) { const x = g.sample(0, 'a', 'guest.seatedIdle', content, t, 'chair', null, 1, { state: 'dining', stateSinceS: 999, partyId: size > 1 ? 'p' : null, partySize: size }); if (x) out.add(x.base); }
       return out;
     };
     expect(ids(solo, 1).has('guest.leanTalk')).toBe(false);
@@ -130,7 +130,7 @@ describe('ORDER 325 — gesterna i vinbaren följer kartan', () => {
     const moment = { at: 10, kind: 'wrong' as const, table: 1, tableGuestIds: [], witnessIds: ['a'] };
     const after = MOOD_BALANCE.threshold.impatient - 0.05;
     g.sample(0, 'a', 'guest.seatedIdle', after, 10.2, 'chair', moment, 1, info('dining', 50));
-    expect(g.sample(0, 'a', 'guest.seatedIdle', after, 11.5, 'chair', moment, 1, info('dining', 51))?.id).toBe('guest.armsCrossed');
+    expect(g.sample(0, 'a', 'guest.seatedIdle', after, 11.5, 'chair', moment, 1, info('dining', 51))?.base).toBe('guest.armsCrossed');
   });
 });
 

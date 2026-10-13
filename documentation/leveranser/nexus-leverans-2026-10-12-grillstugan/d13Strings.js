@@ -1,0 +1,28 @@
+// d13Strings.js — D13 grillstugan. Alla texter som nycklar { sv, en } (brittisk engelska).
+window.D13_STR = {
+  'ui.kicker': { sv: 'D13 · Grillvagn B', en: 'D13 · Grill van B' },
+  'ui.title': { sv: 'Grillstugan, färdig', en: 'The grill cabin, finished' },
+  'ui.weather': { sv: 'Vädret', en: 'Weather' }, 'ui.dry': { sv: 'Kväll', en: 'Evening' }, 'ui.rain': { sv: 'Regn', en: 'Rain' },
+  'ui.awning': { sv: 'Markisen (tillval)', en: 'Awning (extra)' }, 'ui.awning.on': { sv: 'Köpt', en: 'Bought' }, 'ui.awning.off': { sv: 'Inte köpt', en: 'Not bought' },
+  'ui.cam': { sv: 'Kameran', en: 'Camera' }, 'ui.cam.script': { sv: 'Manus', en: 'Script' }, 'ui.cam.game': { sv: 'Krogen (Z)', en: 'Venue (Z)' },
+  'ui.play': { sv: 'Spela', en: 'Play' }, 'ui.pause': { sv: 'Paus', en: 'Pause' },
+  'ui.size': { sv: 'Skärmen', en: 'Screen' }, 'ui.record': { sv: 'Spela in video', en: 'Record video' }, 'ui.recording': { sv: 'Spelar in …', en: 'Recording …' },
+  'ui.distance': { sv: 'Avstånd', en: 'Distance' }, 'ui.roof': { sv: 'taket', en: 'roof' }, 'ui.dryCount': { sv: 'torra i kön', en: 'dry in the queue' },
+  'ui.parts': { sv: 'Det som är nytt', en: 'What is new' },
+  'part.chassis': { sv: 'Tandemaxel bakom en mörk kjol, stödben i hörnen, dragstång med stödhjul och gasolskåp.', en: 'Tandem axle behind a dark skirt, stabiliser legs at the corners, drawbar with jockey wheel and gas locker.' },
+  'part.roof': { sv: 'Plåttak med falsar och nockplåt. Takrännor och tre stuprör.', en: 'Standing-seam tin roof with a ridge cap. Gutters and three downpipes.' },
+  'part.gable': { sv: 'Östra gaveln: skylten, ett fönster, dörren med fönster, trappsteg och lykta.', en: 'East gable: the sign, a window, the door with a window, steps and a lantern.' },
+  'part.hatch': { sv: 'Hyllan under luckan: kortläsaren, ketchup, mild senap, dressing och servetter. Sopkorg i trä.', en: 'The shelf under the hatch: card reader, ketchup, mild mustard, dressing and napkins. Wooden bin.' },
+  'part.fridge': { sv: 'Kylen i eget skåp mot västra gaveln, med pulpettak. Menyn har ett eget tak.', en: 'The fridge in its own cabinet against the west gable, with a lean-to roof. The menu has its own roof.' },
+  'part.power': { sv: 'Kabeln från bakväggen till elstolpen.', en: 'The cable from the back wall to the power post.' },
+  'part.awning': { sv: 'Markisen över kön är ett tillval. Utan den är vagnen färdig: luckans skiva skyddar den som beställer.', en: 'The awning over the queue is an extra. Without it the van is finished: the hatch board shelters the person ordering.' },
+  'ch.z': { sv: 'Krogen (Z), 24 m', en: 'The venue (Z), 24 m' }, 'why.z': { sv: 'Taket och markisens duk tonar ut som husens tak. Stolparna, rännorna och festongerna står kvar.', en: 'The roof and the awning fabric fade out like the houses’ roofs. The posts, gutters and festoons stay.' },
+  'ch.10': { sv: 'Vagnen, 10 m', en: 'The van, 10 m' }, 'why.10': { sv: 'Luckan, grillen, kylen och menyn.', en: 'The hatch, the grill, the fridge and the menu.' },
+  'ch.42': { sv: 'Gatans nivå, 42 m', en: 'Street level, 42 m' }, 'why.42': { sv: 'Taket på: så ser vagnen ut från byn.', en: 'Roof on: this is how the van looks from the village.' },
+  'ch.hatch6': { sv: 'Luckan, 6 m', en: 'The hatch, 6 m' }, 'why.hatch6': { sv: 'Grillen i luckan, hyllan med kortläsaren och såserna.', en: 'The grill in the hatch, the shelf with the card reader and the sauces.' },
+  'ch.door8': { sv: 'Östra gaveln, 8 m', en: 'East gable, 8 m' }, 'why.door8': { sv: 'Skylten, fönstret, dörren och trappsteget.', en: 'The sign, the window, the door and the step.' },
+  'ch.fridge8': { sv: 'Västra gaveln, 8 m', en: 'West gable, 8 m' }, 'why.fridge8': { sv: 'Kylskåpet, dragstången och gasolskåpet.', en: 'The fridge cabinet, the drawbar and the gas locker.' },
+  'ch.helper10': { sv: 'Medhjälparen, 10 m', en: 'The helper, 10 m' }, 'why.helper10': { sv: 'Nickar åt kön och tar en beställning längst bak.', en: 'Nods to the queue and takes an order at the back.' },
+  'ch.umbrella8': { sv: 'Paraplyerna, 8 m', en: 'The umbrellas, 8 m' }, 'why.umbrella8': { sv: 'Två står torrt under luckans skiva. De andra fäller upp paraply, och kön glesnar.', en: 'Two stand dry under the hatch board. The others put up umbrellas, and the queue spreads out.' },
+  'ch.under8': { sv: 'Under markisen, 8 m', en: 'Under the awning, 8 m' }, 'why.under8': { sv: 'Alla står torrt, tätare. Marken under markisen är torr och det droppar från kanten.', en: 'Everyone stands dry, closer together. The ground under the awning is dry and it drips from the edge.' }
+};

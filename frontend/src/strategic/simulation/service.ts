@@ -1,5 +1,5 @@
 import { slowFactor } from '../../sim/staffCondition';
-import { EVENING_ECONOMY, FOODTRUCK, GAME_MINUTES_PER_SIM_SECOND, MOOD_BALANCE, SHOP, SITTING, TRUCK_SEATING } from '../../sim/balance';
+import { EVENING_ECONOMY, FOODTRUCK, GAME_MINUTES_PER_SIM_SECOND, MOOD_BALANCE, RAIN_QUEUE_BALANCE, SHOP, SITTING, TRUCK_SEATING } from '../../sim/balance';
 import { abilityActive } from '../../sim/shop';
 import { helpTaskTime } from '../../sim/hostZones';
 import { clockMinutes as clockNowMinutes } from '../../sim/clock';
@@ -31,7 +31,7 @@ import {
 import { valueQuotaSatisfactionDelta } from './valueQuota';
 import { applyMissingMepHit, consumeMepForOneGuest } from './mepConsumption';
 import { spreadDeparture } from '../../sim/guestMood';
-import { finishTruckEating, startTruckEating, truckAssistantAway, useTruckSausages } from '../../sim/truckLife';
+import { finishTruckEating, rainExposedInQueue, rainQueueLeaver, rainQueuePatience, startTruckEating, truckAssistantAway, truckRaining, useTruckSausages } from '../../sim/truckLife';
 
 const TICK_SECONDS = 0.2;
 
@@ -506,7 +506,10 @@ export function tickGuests(state: SimulationState) {
       // Satisfaction decreases while waiting. ORDER 260 §1 (VO 2026-09-23):
       // rate sänkt 0.02 → 0.007 sat/sim-sek så 40 s kö landar sat ≈ 0.6.
       // ORDER 296 — stamgästboken: gästerna har mer tålamod i kön.
-      const drop = WAITING_SAT_DROP_PER_SEC * TICK_SECONDS * (abilityActive(state, 'regulars') ? SHOP.effects.regulersPatience : 1);
+      // ORDER 332 C — vid vagnen i regnet, utan tak över sig (markisen, luckans skiva): mindre tålamod
+      // (sim/truckLife.ts rainQueuePatience, balance.ts RAIN_QUEUE_BALANCE.patienceRain).
+      const rainPatience = rainQueuePatience(state, guest.id);
+      const drop = WAITING_SAT_DROP_PER_SEC * TICK_SECONDS * (abilityActive(state, 'regulars') ? SHOP.effects.regulersPatience : 1) / rainPatience;
       guest.satisfaction = Math.max(0, guest.satisfaction - drop);
       // ORDER 292 — det valda sällskapet får varje plats som blir ledig tills
       // alla i det sitter; de andra i kön väntar (spelarens val: Bord först).
@@ -517,7 +520,7 @@ export function tickGuests(state: SimulationState) {
         setGuestSeated(state, guest, seat);
       } else if (
         // ORDER 269 — Kalastorget: klagande gäster stannar oftare.
-        now - guest.stateTime > queuePatienceSeconds(state) &&
+        now - guest.stateTime > queuePatienceSeconds(state) * rainPatience &&
         guest.satisfaction < giveUpSatisfaction(state)
       ) {
         // Give up. ORDER 043 v3 §4 reputation loop: a walkout from
@@ -534,8 +537,35 @@ export function tickGuests(state: SimulationState) {
         settleSocialGuest(state, guest, true);
         // ORDER 299b — rummet ser gästen ge upp (stämningen, inte nöjdheten).
         spreadDeparture(state, guest);
+      } else if (rainQueueLeaver(state) === guest.id) {
+        // ORDER 332 C — fler än RAIN_QUEUE_BALANCE.leaveAt står i regnet: den sista i kön går (figuren går
+        // därifrån, truckGuestFlow.ts). Inget slag mot ryktet eller moralen: hen såg kön i regnet och gick.
+        guest.state = 'leaving';
+        guest.stateTime = now;
+        moveGuest(guest, { x: 0, z: 8 });
+        settleSocialGuest(state, guest, true);
+        state.day.truckRainLeavers = (state.day.truckRainLeavers ?? 0) + 1;
       }
       continue;
+    }
+
+    // ORDER 332 C — kön vid foodtruckens lucka är gästerna som beställer (truckQueueLine). Regnet bestämmer hur länge
+    // kön står kvar, inte humöret hos dem som står kvar under paraplyet: den som står i regnet utan tak över sig
+    // (markisen, luckans skiva) går efter queuePatienceSeconds × patienceRain, och står fler än leaveAt i regnet går
+    // den sista (sim/truckLife.ts, balance.ts RAIN_QUEUE_BALANCE). Torrt sjunker inte nöjdheten i kön vid vagnen,
+    // så den gör det inte i regnet heller (första versionen gjorde det, och ryktet föll: reports/order332/jamforelse.json).
+    // Utan ryktets och moralens slag: hen gick ur regnet.
+    if (guest.state === 'ordering' && state.economy?.businessClass === 'foodtruck' && truckRaining(state)) {
+      if (rainExposedInQueue(state, guest.id)) {
+        if (now - guest.stateTime > queuePatienceSeconds(state) * RAIN_QUEUE_BALANCE.patienceRain || rainQueueLeaver(state) === guest.id) {
+          guest.state = 'leaving';
+          guest.stateTime = now;
+          moveGuest(guest, { x: 0, z: 8 });
+          settleSocialGuest(state, guest, true);
+          state.day.truckRainLeavers = (state.day.truckRainLeavers ?? 0) + 1;
+          continue;
+        }
+      }
     }
 
     if (guest.state === 'seated' && now - guest.stateTime > 4) {

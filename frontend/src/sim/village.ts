@@ -29,8 +29,9 @@
 // Allt läses ur fröet och dagen (hashKey), så att byn kan spelas om och
 // simuleringens slumpflöde inte flyttas.
 
+import { districtSpec, playerDistrictOf, playerQuality, qualityWeight, PLAYER_DISTRICT, type DistrictId } from './districts';
 import { refitClosedToday } from './ladderStep';
-import { BUSINESS_CLASSES, CONSEQUENCES, MARKET, RUSH, VILLAGE, type Weekday } from './balance';
+import { BUSINESS_CLASSES, CONSEQUENCES, DISTRICTS, MARKET, RUSH, VILLAGE, type Weekday } from './balance';
 import { calendarFor } from './calendar';
 import { hashKey, signedKey } from '../strategic/util/hash';
 import type { SimulationState } from '../strategic/types';
@@ -140,18 +141,26 @@ function capacityOf(def: RivalDef): number {
   return def.kind === 'truck' ? VILLAGE.truckGuestsPerEvening : Math.round(def.seats * def.turns);
 }
 
-function starWeight(type: PoolType, stars: number): number {
+// ORDER 332 E — kvarteret: plånboken väger priset, kräsenheten kvaliteten (balance.ts DISTRICTS). Torget har alla
+// faktorer 1 och kräsenheten 0, så vikterna där är dagens.
+function starWeight(type: PoolType, stars: number, d: DistrictId = PLAYER_DISTRICT): number {
   if (VILLAGE.starWeight.ignoredBy.includes(type)) return 1;
-  return VILLAGE.starWeight.base + VILLAGE.starWeight.perStar * stars;
+  return VILLAGE.starWeight.base + VILLAGE.starWeight.perStar * districtSpec(d).starK * stars;
 }
 
-function priceWeight(type: PoolType, billSek: number): number {
-  const comfort = VILLAGE.priceComfortSek[type];
-  return billSek <= comfort ? 1 : Math.pow(comfort / billSek, VILLAGE.priceExponent);
+function priceWeight(type: PoolType, billSek: number, d: DistrictId = PLAYER_DISTRICT): number {
+  const s = districtSpec(d);
+  const comfort = VILLAGE.priceComfortSek[type] * s.walletComfortK;
+  return billSek <= comfort ? 1 : Math.pow(comfort / billSek, VILLAGE.priceExponent * s.walletPriceK);
 }
 
-export function venueWeight(type: PoolType, taste: { student: number; middle: number; high: number }, stars: number, billSek: number): number {
-  return taste[type] * starWeight(type, stars) * priceWeight(type, billSek);
+export function venueWeight(type: PoolType, taste: { student: number; middle: number; high: number }, stars: number, billSek: number, d: DistrictId = PLAYER_DISTRICT, quality: number | null = null): number {
+  return taste[type] * starWeight(type, stars, d) * priceWeight(type, billSek, d) * (quality === null ? 1 : qualityWeight(d, quality));
+}
+
+/** Kvarterets blandning av gäster (Torget: byns, VILLAGE.poolMix). */
+export function districtMix(d: DistrictId): Record<PoolType, number> {
+  return districtSpec(d).doorMix ?? VILLAGE.poolMix;
 }
 
 // Spelarens nota: veckans intäkt per gäst hittills, annars klassens.
@@ -213,22 +222,32 @@ function tasteOf(state: SimulationState, v: VenueTonight) {
   return v.kind === 'player' ? playerTaste(state) : rivalDef(v.id)?.taste ?? { student: 0, middle: 0, high: 0 };
 }
 
-// Varje typs vikter över kvällens öppna krogar.
-function weightsByType(state: SimulationState, venues: VenueTonight[]): Record<PoolType, number[]> {
+// ORDER 332 E — kvaliteten som kvarterets gäster läser: spelarens ur rummet eller medaljerna, rivalernas ur nivån.
+function qualityOf(state: SimulationState, v: VenueTonight, d: DistrictId): number {
+  if (v.kind === 'player') return playerQuality(state, d);
+  const level = rivalDef(v.id)?.level;
+  return level ? DISTRICTS.rivalQuality[level] : DISTRICTS.qualityRef;
+}
+
+// Varje typs vikter över kvällens öppna krogar, med gästerna i kvarteret d.
+function weightsByType(state: SimulationState, venues: VenueTonight[], d: DistrictId = PLAYER_DISTRICT): Record<PoolType, number[]> {
   const out = {} as Record<PoolType, number[]>;
-  for (const t of POOL_TYPES) out[t] = venues.map((v) => (v.open ? venueWeight(t, tasteOf(state, v), v.stars, v.billSek) : 0));
+  for (const t of POOL_TYPES) out[t] = venues.map((v) => (v.open ? venueWeight(t, tasteOf(state, v), v.stars, v.billSek, d, qualityOf(state, v, d)) : 0));
   return out;
 }
 
 // Spelarens andel av byns gäster i kväll efter rykte, pris och smak (före
 // kunskapens tak).
+// ORDER 332 E — gästerna i kvarteret där spelaren står i kväll (vagnens plats, annars Torget).
 export function playerChoiceShare(state: SimulationState): number {
+  const d = playerDistrictOf(state);
   const venues = venuesTonight(state);
-  const w = weightsByType(state, venues);
+  const w = weightsByType(state, venues, d);
+  const mix = districtMix(d);
   let share = 0;
   for (const t of POOL_TYPES) {
     const total = w[t].reduce((a, b) => a + b, 0);
-    if (total > 0) share += VILLAGE.poolMix[t] * (w[t][0] / total);
+    if (total > 0) share += mix[t] * (w[t][0] / total);
   }
   return share;
 }
@@ -296,7 +315,8 @@ export function villageEvening(
   playerRow.typeGuests.high = (pt.high ?? 0) + (pt.gourmet ?? 0) + (pt.business ?? 0);
   for (const t of POOL_TYPES) {
     // Bussens turister är inte byns gäster: de dras inte från poolen.
-    const fromPool = playerRow.typeGuests[t] - (t === VILLAGE.bus.type ? player.tourists ?? 0 : 0);
+    // ORDER 332 — står vagnen i ett annat kvarter kommer spelarens gäster inte ur torgets pool.
+    const fromPool = playerDistrictOf(state) !== PLAYER_DISTRICT ? 0 : playerRow.typeGuests[t] - (t === VILLAGE.bus.type ? player.tourists ?? 0 : 0);
     const rest = Math.max(0, pool * VILLAGE.poolMix[t] - fromPool);
     const rivalTotal = w[t].slice(1).reduce((a, b) => a + b, 0);
     if (rivalTotal <= 0) continue;

@@ -14,8 +14,9 @@ export function newQueueWalk(home: Vec2): QueueWalkState {
   return { at: [home[0], home[1]], target: 0, takeLeft: 0, yaw: 0 };
 }
 
-/** Ett steg: `spots` är köplatserna som har en gäst (vagnens ram), `home` där han står när kön är tom. Muterar `s`. */
-export function stepQueueWalk(s: QueueWalkState, dt: number, spots: readonly Vec2[], home: Vec2, walked: number): QueueWalkPose {
+/** Ett steg: `spots` är köplatserna som har en gäst (vagnens ram), `home` där han står när kön är tom. Muterar `s`.
+ *  ORDER 332 C — `outM`: hur långt utanför kön han går (i regn D13 RAIN_QUEUE helperZ, truckGuestFlow.ts queueInForce). */
+export function stepQueueWalk(s: QueueWalkState, dt: number, spots: readonly Vec2[], home: Vec2, walked: number, outM: number = FOODTRUCK.queueWalk.outM): QueueWalkPose {
   const W = FOODTRUCK.queueWalk;
   if (spots.length === 0) {
     s.takeLeft = 0;
@@ -23,7 +24,7 @@ export function stepQueueWalk(s: QueueWalkState, dt: number, spots: readonly Vec
   }
   if (s.target >= spots.length) s.target = 0;
   const spot = spots[s.target];
-  const stand: Vec2 = [spot[0], spot[1] + W.outM];
+  const stand: Vec2 = [spot[0], spot[1] + outM];
   if (s.takeLeft > 0) {
     s.takeLeft -= dt;
     s.yaw = Math.atan2(spot[0] - s.at[0], spot[1] - s.at[1]);

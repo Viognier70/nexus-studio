@@ -18,8 +18,8 @@ describe('ORDER 286a — leveransens kontroller', () => {
   // ORDER 319c — D9:s nio klipp för de som äter och vädret, och tilläggets två med tändaren: 152.
   // ORDER 320 — D10:s 20 klipp för människorna vid vagnen (med omtagets guest.toastCup): 172.
   // ORDER 325 — D11:s 23 klipp, av vilka två (guest.checkWatchStand, guest.armsCrossedStand) redan fanns från D9: 21 nya.
-  it('195 klipp (till och med D6:s tre, D7:s fem, D9:s tjugo, D10:s tjugo och D11:s tjugoett och två, ORDER 326), och varje efterföljare finns och passar', () => {
-    expect(Object.keys(CLIPS)).toHaveLength(195);
+  it('224 klipp (till och med D6:s tre, D7:s fem, D9:s tjugo, D10:s tjugo, D11:s tjugoett och två, ORDER 326, och D12:s tjugonio, ORDER 332 B), och varje efterföljare finns och passar', () => {
+    expect(Object.keys(CLIPS)).toHaveLength(224);
     expect(validateClips()).toEqual([]);
   });
 

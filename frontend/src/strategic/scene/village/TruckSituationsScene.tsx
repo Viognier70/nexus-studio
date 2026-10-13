@@ -25,7 +25,7 @@ import { useSimState } from '../../simulation/SimulationProvider';
 import { TruckPin } from '../../ui/curious/TruckPin';
 import { t as tt } from '../../../content/nexusStrings';
 import { useLanguage } from '../../../content/language';
-import { DECK_TOP_M, TRUCK_LAYOUT, onDeck } from '../playerTruck';
+import { DECK_TOP_M, SAUSAGE_BOX_TOP_M, onDeck } from '../playerTruck';
 import { TRUCK_PROPS, WATER_BOWL_AT } from '../truckProps';
 import { RAIN_TABLE, RIVAL_SIGN, SAUSAGE_BOX, SHELF_D10, TERMINAL, SWISH_SIGN, WASP_SCALE, PAY_LEDGE } from '../truckPropsD10';
 import { TRUCK_STANDS } from '../../content/villagePlaces';
@@ -38,7 +38,8 @@ export const RIVAL_YAW = -3.7103;
 /** Getingen: 0,015 m, ritad WASP_SCALE gånger; öglornas radie (Designs wasp.fly 0,14–0,17 m) och varv per sekund. */
 const WASP = { sizeM: 0.015, loopR: [0.14, 0.17] as const, hz: 0.9, shelf: 4, can: 2, leaveS: 1.8 };
 /** Korvarna i lådan: platsernas rader och kolumner (SAUSAGE_BOX). */
-const BOX_TOP_M = 0.5 + TRUCK_LAYOUT.grill.top + 0.1;
+// ORDER 332 C — lådan står på bänken mot bakväggen i Grillstugan (playerTruck.ts SAUSAGE_BOX_TOP_M).
+const BOX_TOP_M = SAUSAGE_BOX_TOP_M - 0.02;
 /** Swish-nålen står så här länge efter ett helt grepp i ft10 (spelets sekunder). */
 const SWISH_PIN_S = 12;
 /** Ståbord A bärs in under markisen på så här många sekunder (Designs carryTable 3,2 s och lyft/ställ). */

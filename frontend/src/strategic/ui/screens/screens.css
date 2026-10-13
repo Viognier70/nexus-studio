@@ -521,3 +521,15 @@ body:has(.nx-stake) .nx-status-legend { max-height: calc(64.5vh - 4.7vh - 96px -
 .nxs-morning-right .nx-speaker-line { --nx-speaker-col: max(84px, 11vh); --nx-speaker-gap: max(12px, 1.6vh); }
 .nxs-morning-right .nx-sender-stacked .nx-sender-name { font-size: max(13px, 1.9vh); }
 .nxs-morning-right .nx-sender-stacked .nx-sender-sub { font-size: 12px; }
+
+/* ORDER 332 G — vagnens plats i morgonrutan: fem rutor med namnet och avgiften, den valda fylld. */
+.nxs-spot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(230 * var(--nx-u)), 1fr)); gap: calc(8 * var(--nx-u)); }
+.nxs-spot {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 44px; padding: calc(10 * var(--nx-u)) calc(14 * var(--nx-u));
+  background: transparent; color: var(--w-cream); border: 1px solid var(--nx-rule); border-radius: calc(12 * var(--nx-u)); text-align: left; cursor: pointer; font: inherit;
+}
+.nxs-spot:hover:not(:disabled) { border-color: var(--w-brass-light); }
+.nxs-spot:focus-visible { outline: 2px solid var(--w-brass-light); outline-offset: 2px; }
+.nxs-spot[aria-checked='true'] { background: var(--w-brass-light); border-color: var(--w-brass-light); color: var(--w-hud); }
+.nxs-spot:disabled { cursor: default; opacity: 0.45; }
+.nxs-spot-name { font-weight: 700; }

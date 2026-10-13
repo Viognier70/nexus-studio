@@ -1,0 +1,180 @@
+{
+  "definition": "Vagnen på en plats hela foodtruck-perioden (KARNAN_TRUCK_SPOT, order296Karnan.test.ts truckBySpot), 40 frön per rad. meanRevenueSek = intäkt per kväll vagnen stod där (state.revenue före och efter dagen), feeSek = platsavgift per kväll (balance.ts DISTRICTS.truckSpotFeeSek), netPerEveningSek = intäkt − avgift. fallbackTorgetEvenings = kvällar på Torget när platsen var stängd. closed/meanCashEnd/reachedVinbar = säsongen.",
+  "spots": {
+    "campus": {
+      "trappa-mentorn": {
+        "district": "campus",
+        "evenings": 441,
+        "meanRevenueSek": 5281,
+        "feeSek": 250,
+        "netPerEveningSek": 5031,
+        "fallbackTorgetEvenings": 0,
+        "closed": 0,
+        "meanCashEnd": 31119,
+        "reachedVinbar": 40
+      },
+      "trappa-rimlig": {
+        "district": "campus",
+        "evenings": 441,
+        "meanRevenueSek": 5021,
+        "feeSek": 250,
+        "netPerEveningSek": 4771,
+        "fallbackTorgetEvenings": 0,
+        "closed": 0,
+        "meanCashEnd": 21993,
+        "reachedVinbar": 40
+      },
+      "trappa-slarvig": {
+        "district": "campus",
+        "evenings": 1920,
+        "meanRevenueSek": 1760,
+        "feeSek": 250,
+        "netPerEveningSek": 1510,
+        "fallbackTorgetEvenings": 0,
+        "closed": 12,
+        "meanCashEnd": 1405,
+        "reachedVinbar": 0
+      }
+    },
+    "gastgivaregarden": {
+      "trappa-mentorn": {
+        "district": "gastgivaregarden",
+        "evenings": 442,
+        "meanRevenueSek": 6538,
+        "feeSek": 350,
+        "netPerEveningSek": 6188,
+        "fallbackTorgetEvenings": 0,
+        "closed": 0,
+        "meanCashEnd": 40859,
+        "reachedVinbar": 40
+      },
+      "trappa-rimlig": {
+        "district": "gastgivaregarden",
+        "evenings": 456,
+        "meanRevenueSek": 6338,
+        "feeSek": 350,
+        "netPerEveningSek": 5988,
+        "fallbackTorgetEvenings": 0,
+        "closed": 0,
+        "meanCashEnd": 32073,
+        "reachedVinbar": 40
+      },
+      "trappa-slarvig": {
+        "district": "gastgivaregarden",
+        "evenings": 1920,
+        "meanRevenueSek": 2946,
+        "feeSek": 350,
+        "netPerEveningSek": 2596,
+        "fallbackTorgetEvenings": 0,
+        "closed": 0,
+        "meanCashEnd": 35298,
+        "reachedVinbar": 0
+      }
+    },
+    "prastgatan": {
+      "trappa-mentorn": {
+        "district": "student",
+        "evenings": 450,
+        "meanRevenueSek": 4396,
+        "feeSek": 150,
+        "netPerEveningSek": 4246,
+        "fallbackTorgetEvenings": 0,
+        "closed": 0,
+        "meanCashEnd": 28010,
+        "reachedVinbar": 40
+      },
+      "trappa-rimlig": {
+        "district": "student",
+        "evenings": 449,
+        "meanRevenueSek": 4357,
+        "feeSek": 150,
+        "netPerEveningSek": 4207,
+        "fallbackTorgetEvenings": 0,
+        "closed": 1,
+        "meanCashEnd": 18921,
+        "reachedVinbar": 40
+      },
+      "trappa-slarvig": {
+        "district": "student",
+        "evenings": 1920,
+        "meanRevenueSek": 1997,
+        "feeSek": 150,
+        "netPerEveningSek": 1847,
+        "fallbackTorgetEvenings": 0,
+        "closed": 0,
+        "meanCashEnd": 13840,
+        "reachedVinbar": 0
+      }
+    },
+    "sjon": {
+      "trappa-mentorn": {
+        "district": "sjon",
+        "evenings": 444,
+        "meanRevenueSek": 5293,
+        "feeSek": 300,
+        "netPerEveningSek": 4993,
+        "fallbackTorgetEvenings": 0,
+        "closed": 0,
+        "meanCashEnd": 30370,
+        "reachedVinbar": 40
+      },
+      "trappa-rimlig": {
+        "district": "sjon",
+        "evenings": 448,
+        "meanRevenueSek": 5015,
+        "feeSek": 300,
+        "netPerEveningSek": 4715,
+        "fallbackTorgetEvenings": 0,
+        "closed": 0,
+        "meanCashEnd": 20389,
+        "reachedVinbar": 40
+      },
+      "trappa-slarvig": {
+        "district": "sjon",
+        "evenings": 1440,
+        "meanRevenueSek": 3322,
+        "feeSek": 300,
+        "netPerEveningSek": 3022,
+        "fallbackTorgetEvenings": 480,
+        "closed": 0,
+        "meanCashEnd": 65677,
+        "reachedVinbar": 0
+      }
+    },
+    "torget": {
+      "trappa-mentorn": {
+        "district": "torget",
+        "evenings": 459,
+        "meanRevenueSek": 6279,
+        "feeSek": 0,
+        "netPerEveningSek": 6279,
+        "fallbackTorgetEvenings": 0,
+        "closed": 0,
+        "meanCashEnd": 36424,
+        "reachedVinbar": 40
+      },
+      "trappa-rimlig": {
+        "district": "torget",
+        "evenings": 477,
+        "meanRevenueSek": 6175,
+        "feeSek": 0,
+        "netPerEveningSek": 6175,
+        "fallbackTorgetEvenings": 0,
+        "closed": 0,
+        "meanCashEnd": 28976,
+        "reachedVinbar": 40
+      },
+      "trappa-slarvig": {
+        "district": "torget",
+        "evenings": 1920,
+        "meanRevenueSek": 4938,
+        "feeSek": 0,
+        "netPerEveningSek": 4938,
+        "fallbackTorgetEvenings": 0,
+        "closed": 0,
+        "meanCashEnd": 117576,
+        "reachedVinbar": 0
+      }
+    }
+  }
+}

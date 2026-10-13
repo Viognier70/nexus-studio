@@ -1,3 +1,5 @@
+// ORDER 332 C — vagnen är Designs D13 Grillstugan (grillstugan.ts); D7:s släpvagn är borta. Måtten nedan som rör
+// vagnen (luckan, grillen, stationerna, skorstenen, markisen) läses ur STUGAN; uteserveringen är D7/D9:s.
 // ORDER 315b del 2 — Designs D7 (nexus-leverans-2026-10-06-din-vag/playerTruck.ts): spelarens egen
 // vagn, en släpvagn med runda gavlar, dragstång och gasolflaskor, dalablå med gräddrand, hel
 // markis i grädde med bågad kant, skylten på bakkanten och trädäcket med ståborden och
@@ -8,6 +10,10 @@
 import * as THREE from 'three';
 import { PROP_SCALE_HANDHELD, TRUCK_PROPS, WATER_BOWL_AT } from './truckProps';
 import { GRILL_REGULAR, GRILL_VEG, PAY_LEDGE, SAUCE_LID, SAUSAGE_BOX, SHELF_D10, SWISH_SIGN, TERMINAL, WATER_BOWL } from './truckPropsD10';
+import { STUGAN, buildGrillstugan, updateGrillstugan, type Stugan } from './grillstugan';
+import { queueAwningOwned } from '../../sim/goods';
+import { truckRaining } from '../../sim/truckLife';
+import type { SimulationState } from '../types';
 
 /** ORDER 320 — den milda senapens flaska (Anders 2026-10-08, n18): ljusare gul än den skånska. */
 const MILD_MUSTARD = { colour: '#ead98a', cap: '#2c2a28' };
@@ -32,15 +38,20 @@ export const TRUCK_COLOURS = {
 export const TRUCK_LAYOUT = {
   body: { x0: -2.3, x1: 2.3, z0: -1.15, z1: 1.15, endRadius: 1.0 },
   drawbar: { hitch: [-3.4, 0] as Vec2, gasBottles: [[-2.72, -0.32], [-2.72, 0.32]] as Vec2[] },
-  hatch: { x0: -1.2, x1: 1.2, sill: 1.3 },
-  awning: { x0: -1.5, x1: 1.5, z0: 1.15, z1: 1.85, height: 2.25 },
+  // ORDER 332 C — Grillstugans lucka och markis (D13 STUGAN.hatch, STUGAN.awning); förut D7:s.
+  hatch: { x0: STUGAN.hatch.x0, x1: STUGAN.hatch.x1, sill: STUGAN.hatch.y0 },
+  awning: { x0: STUGAN.awning.x0, x1: STUGAN.awning.x1, z0: STUGAN.awning.z0, z1: STUGAN.awning.z1, height: STUGAN.awning.yOut },
   counter: { x0: -1.35, x1: 1.35, z0: 0.7, z1: 1.0, top: 0.95 },
-  grill: { x0: 0.85, x1: 1.95, z0: -0.95, z1: -0.35, top: 0.92, items: 3 },
+  // ORDER 332 C — grillen står i luckan (D13 STUGAN.grill, kolgrill); top är gallret över golvet.
+  grill: { x0: STUGAN.grill.x0, x1: STUGAN.grill.x1, z0: STUGAN.grill.z0, z1: STUGAN.grill.z1, top: STUGAN.hatch.y0 + 0.215 - STUGAN.floorY, items: 3 },
   // Anders 2026-10-08 (n04): vegokorven grillas på en egen del av grillen, med egen tång. Delen och
   // tängerna står i Designs D10 (truckPropsD10.ts GRILL_VEG, GRILL_REGULAR): grillens västra del bakom en list.
-  chimney: [1.75, -0.85] as Vec2,
+  // ORDER 332 C — Grillstugans skorsten över grillen i luckan (D13: grillens mitt, 0,05 m bakåt).
+  chimney: [(STUGAN.grill.x0 + STUGAN.grill.x1) / 2, (STUGAN.grill.z0 + STUGAN.grill.z1) / 2 - 0.05] as Vec2,
   roofSign: { x0: -1.3, x1: 1.3, z0: -1.3, z1: -1.05, pips: 3 },
-  stations: { grill: [1.4, -0.1] as Vec2, hatch: [0, 0.45] as Vec2 },
+  // ORDER 332 C — D13 STUGAN.stations: båda vända mot luckan (yaw 0), grillaren vid grillen i luckan.
+  stations: { grill: [...STUGAN.stations.grill.pos] as Vec2, hatch: [...STUGAN.stations.hatch.pos] as Vec2 },
+  stationYaw: { grill: STUGAN.stations.grill.yaw, hatch: STUGAN.stations.hatch.yaw },
   /** Där grillaren ställer brickan och den vid luckan tar den (Surface 'pass'). */
   pass: [0.9, 0.85] as Vec2,
   queue: {
@@ -88,6 +99,15 @@ export const TRUCK_DEFAULT_TIER = 'simple';
 
 type AddFn = (geo: THREE.BufferGeometry, mat: THREE.Material, x: number, y: number, z: number, name: string) => THREE.Mesh;
 type MatFn = (c: string, e?: number) => THREE.MeshStandardMaterial;
+
+/** ORDER 332 C — golvet i Grillstugan (D13 STUGAN.floorY); förut D7:s 0,5 m. */
+export const FLOOR_Y_M = STUGAN.floorY;
+/** Gallret på grillen i luckan (D13: luckans underkant + 0,215 m). */
+export const GRILL_TOP_M = STUGAN.hatch.y0 + 0.215;
+/** Skorstenens topp (D13: 3,46 m). */
+export const CHIMNEY_TOP_M = 3.48;
+/** Korvlådans överkant: lådan (0,12 m) står på bänken mot bakväggen (D13: golvet + 0,92 + 0,02). */
+export const SAUSAGE_BOX_TOP_M = STUGAN.floorY + 0.94 + 0.12;
 
 /** Däckets ovansida (trädäcket är 0,12 m högt). */
 export const DECK_TOP_M = 0.12;
@@ -173,7 +193,37 @@ function buildServing(add: AddFn, m: MatFn): void {
 /** Servetthållaren på ståborden är vriden 0,3 rad (D9 standTable.holder). */
 const TABLE_HOLDER_YAW = 0.3;
 
-/** Vagnen, byggd i vagnens ram. `pips` är nivåns knappar på skylten (1–3, venueTier.ts). */
+/** ORDER 332 C — Grillstugan i vagnen (scene/grillstugan.ts), för scenen och testerna. */
+export function stuganOf(trailer: THREE.Object3D | null | undefined): Stugan | null {
+  return (trailer?.userData.stugan as Stugan | undefined) ?? null;
+}
+
+/** ORDER 332 C — vad Grillstugan visar i kväll ur simuleringen: markisen när den är köpt (grundregeln: köpet syns på
+ *  vagnen), och våt i regnet. Komponenten (PlayerTruckCrew.tsx) och testet läser samma funktion. */
+export function stuganStateFor(sim: SimulationState): { awning: boolean; wet: number } {
+  return { awning: queueAwningOwned(sim), wet: truckRaining(sim) ? 1 : 0 };
+}
+
+/** ORDER 332 C — markisen, vätan och taket (husens regel, roofAt) på vagnen. Ger takets värde. */
+export function applyStuganState(trailer: THREE.Object3D | null | undefined, st: { awning: boolean; wet: number }, distM: number): number {
+  const s = stuganOf(trailer);
+  if (!s) return 1;
+  if (s.awningOn !== st.awning) s.setAwning(st.awning);
+  s.setWet(st.wet);
+  return updateGrillstugan(s, distM);
+}
+
+/** ORDER 332 C — Designs D10:s grilldelar (truckPropsD10.ts GRILL_VEG, GRILL_REGULAR, x 0,85…1,95 på D7:s grill mot
+ *  bakväggen) på Grillstugans grill i luckan (STUGAN.grill x 0,35…1,25): samma ordning och andelar längs grillen. */
+const D10_GRILL_X: readonly [number, number] = [0.85, 1.95];
+export function grillX(d10x: number): number {
+  const G = STUGAN.grill;
+  return G.x0 + ((d10x - D10_GRILL_X[0]) * (G.x1 - G.x0)) / (D10_GRILL_X[1] - D10_GRILL_X[0]);
+}
+
+/** Vagnen, byggd i vagnens ram. `pips` är nivåns knappar på skylten (1–3, venueTier.ts).
+ *  ORDER 332 C — Grillstugan (Designs D13) i stället för D7:s släpvagn; trädäcket, uteserveringen och D9/D10:s föremål
+ *  står kvar. Markisen över kön döljs tills den är köpt (stuganOf(g).setAwning, PlayerTruckCrew.tsx). */
 export function makePlayerTrailer(pips = 1): THREE.Group {
   const C = TRUCK_COLOURS, L = TRUCK_LAYOUT;
   const g = new THREE.Group();
@@ -193,91 +243,41 @@ export function makePlayerTrailer(pips = 1): THREE.Group {
     g.add(o);
     return o;
   };
-  const B = L.body;
-  const W = B.z1 - B.z0, R = B.endRadius;
-  const midLen = B.x1 - B.x0 - 2 * R;
-  const bodyY0 = 0.5, bodyY1 = 2.6;
-  const H = bodyY1 - bodyY0;
-  // Karossen som skal (ORDER 315b del 3): golvet, väggarna och de runda gavlarna, öppen upptill när
-  // taket kapas, så att besättningen syns. Framväggen har luckans öppning (sill 1,30 över marken).
-  const WALL = 0.06;
-  const shell = m(C.livery);
-  shell.side = THREE.DoubleSide;
-  add(new THREE.BoxGeometry(midLen + 2 * R * 0.95, 0.06, W - 0.04), m(C.interiorFloor), 0, bodyY0, 0, 'trailerFloor');
-  add(new THREE.BoxGeometry(midLen, H, WALL), shell, 0, bodyY0 + H / 2, B.z0 + WALL / 2, 'trailerWallBack');
-  const hx0 = L.hatch.x0, hx1 = L.hatch.x1, sill = L.hatch.sill, lintel = sill + 0.85;
-  add(new THREE.BoxGeometry(midLen, sill - bodyY0, WALL), shell, 0, bodyY0 + (sill - bodyY0) / 2, B.z1 - WALL / 2, 'trailerWallFrontLow');
-  add(new THREE.BoxGeometry(midLen, bodyY1 - lintel, WALL), shell, 0, lintel + (bodyY1 - lintel) / 2, B.z1 - WALL / 2, 'trailerWallFrontTop');
-  for (const [x0, x1] of [[-midLen / 2, hx0], [hx1, midLen / 2]]) {
-    if (x1 - x0 > 0.01) add(new THREE.BoxGeometry(x1 - x0, lintel - sill, WALL), shell, (x0 + x1) / 2, (sill + lintel) / 2, B.z1 - WALL / 2, 'trailerWallFrontSide');
-  }
-  for (const side of [-1, 1]) {
-    const end = add(new THREE.CylinderGeometry(R, R, H, 20, 1, true, side > 0 ? 0 : Math.PI, Math.PI), shell, side * midLen / 2, bodyY0 + H / 2, 0, side > 0 ? 'trailerEndBack' : 'trailerEndFront');
-    end.scale.set(1, 1, W / 2 / R);
-  }
-  // Gräddranden på karossens långsidor.
-  for (const z of [B.z0 - 0.005, B.z1 + 0.005]) add(new THREE.BoxGeometry(midLen, 0.14, 0.012), m(C.stripe), 0, 1.05 < sill ? 1.05 : sill - 0.15, z, 'trailerStripe');
-  // Taket (kapas när kameran är nära, PlayerTruckCrew.tsx).
-  add(new THREE.BoxGeometry(midLen + 2 * R * 0.9, 0.08, W - 0.1), m(C.livery), 0, bodyY1 + 0.04, 0, 'trailerRoof');
-  // Inne i vagnen: bänken vid luckan och grillen mot bakväggen (TRUCK_LAYOUT, höjder över golvet).
-  const CT = L.counter, GR = L.grill;
-  add(new THREE.BoxGeometry(CT.x1 - CT.x0, CT.top, CT.z1 - CT.z0), m(C.counter), (CT.x0 + CT.x1) / 2, bodyY0 + CT.top / 2, (CT.z0 + CT.z1) / 2, 'trailerCounter');
-  add(new THREE.BoxGeometry(GR.x1 - GR.x0, GR.top, GR.z1 - GR.z0), m(C.grill), (GR.x0 + GR.x1) / 2, bodyY0 + GR.top / 2, (GR.z0 + GR.z1) / 2, 'trailerGrill');
-  // ORDER 320 — Designs D10 (truckPropsD10.ts): vegodelen på grillens västra del bakom en list, med två
-  // vegokorvar och egen tång med mässingshandtag; den vanliga delen med tre korvar och sin tång; lådan med korv
-  // bredvid grillen (korvarna i den ritas av TruckLife.tsx efter simuleringen); betalhyllan under luckan med
-  // kortläsaren och Swish-skylten.
-  const grillTop = bodyY0 + GR.top;
-  const GV = GRILL_VEG, GZ = (GR.z0 + GR.z1) / 2;
-  add(new THREE.BoxGeometry(GV.divider.w, 0.05, GR.z1 - GR.z0), m('#9a9894'), GV.divider.x, grillTop + 0.025, GZ, 'trailerGrillDivider');
-  GV.items.forEach((x, i) => add(new THREE.BoxGeometry(0.05, 0.035, 0.24), m('#6f6a3e'), x, grillTop + 0.018, GZ, 'grillVeg' + i));
-  GRILL_REGULAR.items.forEach((x, i) => add(new THREE.BoxGeometry(0.05, 0.035, 0.24), m('#8c4526'), x, grillTop + 0.018, GZ, 'grillSausage' + i));
-  for (const [k, [x, z], col] of [['Meat', GRILL_REGULAR.tongsRest, '#9a9894'], ['Veggie', GV.tongsRest, GV.tongsColour]] as [string, number[], string][]) {
-    const tongs = add(new THREE.BoxGeometry(0.03, 0.015, 0.26), m(col), x, grillTop + 0.01, z, 'trailerTongs' + k);
+  const stugan = buildGrillstugan({ awning: false });
+  g.add(stugan.group);
+  g.userData.stugan = stugan;
+  // ORDER 320 — Designs D10 (truckPropsD10.ts) på Grillstugans grill: vegodelen bakom en list med två vegokorvar och
+  // egen tång med mässingshandtag, den vanliga delen med tre korvar och sin tång (grillX). Lådan med korv på bänken
+  // mot bakväggen (korvarna i den ritas av TruckSituationsScene.tsx efter simuleringen). Betalhyllan är Grillstugans
+  // hylla under luckan (D13 STUGAN.shelf) i D10:s höjd, med kortläsaren och Swish-skylten.
+  const GR = STUGAN.grill, grillTop = GRILL_TOP_M, GZ = (GR.z0 + GR.z1) / 2;
+  const GV = GRILL_VEG;
+  add(new THREE.BoxGeometry(GV.divider.w, 0.05, GR.z1 - GR.z0), m('#9a9894'), grillX(GV.divider.x), grillTop + 0.025, GZ, 'trailerGrillDivider');
+  GV.items.forEach((x, i) => add(new THREE.BoxGeometry(0.05, 0.035, 0.24), m('#6f6a3e'), grillX(x), grillTop + 0.018, GZ, 'grillVeg' + i));
+  GRILL_REGULAR.items.forEach((x, i) => add(new THREE.BoxGeometry(0.05, 0.035, 0.24), m('#8c4526'), grillX(x), grillTop + 0.018, GZ, 'grillSausage' + i));
+  for (const [k, x, col] of [['Meat', GRILL_REGULAR.tongsRest[0], '#9a9894'], ['Veggie', GV.tongsRest[0], GV.tongsColour]] as [string, number, string][]) {
+    // Tängerna vilar på grillens kant mot grillaren.
+    const tongs = add(new THREE.BoxGeometry(0.03, 0.015, 0.26), m(col), grillX(x), grillTop + 0.01, GR.z0 + 0.04, 'trailerTongs' + k);
     tongs.rotation.y = 0.35;
   }
   const SB = SAUSAGE_BOX;
-  add(new THREE.BoxGeometry(SB.x1 - SB.x0, 0.12, SB.z1 - SB.z0), m('#9ab0b8'), (SB.x0 + SB.x1) / 2, grillTop + 0.06, (SB.z0 + SB.z1) / 2, 'sausageBox');
-  const lidUp = add(new THREE.BoxGeometry(SB.x1 - SB.x0, 0.01, SB.z1 - SB.z0), m('#b9ccd2'), (SB.x0 + SB.x1) / 2, grillTop + 0.12 + (SB.z1 - SB.z0) / 2, SB.z0, 'sausageBoxLid');
+  add(new THREE.BoxGeometry(SB.x1 - SB.x0, 0.12, SB.z1 - SB.z0), m('#9ab0b8'), (SB.x0 + SB.x1) / 2, SAUSAGE_BOX_TOP_M - 0.06, (SB.z0 + SB.z1) / 2, 'sausageBox');
+  const lidUp = add(new THREE.BoxGeometry(SB.x1 - SB.x0, 0.01, SB.z1 - SB.z0), m('#b9ccd2'), (SB.x0 + SB.x1) / 2, SAUSAGE_BOX_TOP_M + (SB.z1 - SB.z0) / 2, SB.z0, 'sausageBoxLid');
   lidUp.rotation.x = Math.PI / 2;
-  const PL = PAY_LEDGE;
-  add(new THREE.BoxGeometry(PL.x1 - PL.x0, 0.03, PL.z1 - PL.z0), m(C.counter), (PL.x0 + PL.x1) / 2, PL.height, (PL.z0 + PL.z1) / 2, 'payLedge');
+  const PL = PAY_LEDGE, SH = STUGAN.shelf;
+  add(new THREE.BoxGeometry(SH.x1 - SH.x0, 0.04, SH.z1 - SH.z0), m('#6a4a2e'), (SH.x0 + SH.x1) / 2, PL.height, (SH.z0 + SH.z1) / 2, 'payLedge');
+  for (const x of [SH.x0 + 0.15, SH.x1 - 0.15]) add(new THREE.BoxGeometry(0.03, PL.height - STUGAN.bodyBottomY, 0.03), m(C.livery), x, (PL.height + STUGAN.bodyBottomY) / 2, SH.z1 - 0.06, 'payLedgeStay');
   const k15 = PROP_SCALE_HANDHELD;
   add(new THREE.BoxGeometry(TERMINAL.size[0] * k15, TERMINAL.size[1] * k15, 0.04), m('#2a2826'), TERMINAL.p[0], PL.height + TERMINAL.size[1] * k15 / 2 + 0.015, TERMINAL.p[1], 'terminal');
   const ring = add(new THREE.TorusGeometry(0.03, 0.006, 6, 16, Math.PI * 1.6), m('#b98a3c', 0.6), TERMINAL.p[0], PL.height + TERMINAL.size[1] * k15 * 0.7, TERMINAL.p[1] + 0.022, 'terminalRing');
   ring.visible = false;
   add(new THREE.BoxGeometry(SWISH_SIGN.size[0] * k15, SWISH_SIGN.size[1] * k15, 0.02), m('#efe1bf'), SWISH_SIGN.p[0], PL.height + SWISH_SIGN.size[1] * k15 / 2 + 0.015, SWISH_SIGN.p[1], 'swishSign');
   add(new THREE.BoxGeometry(0.08, 0.08, 0.005), m('#2a2826'), SWISH_SIGN.p[0], PL.height + SWISH_SIGN.size[1] * k15 * 0.6, SWISH_SIGN.p[1] + 0.012, 'swishSignQr');
-  add(new THREE.BoxGeometry(L.counter.x1 - L.counter.x0, 0.05, 0.3), m(C.counter), 0, sill, B.z1 + 0.12, 'trailerHatchShelf');
-  // Markisen: hel duk i grädde, bågad kant i karossens blå.
-  const A = L.awning;
-  const aw = add(new THREE.BoxGeometry(A.x1 - A.x0, 0.05, A.z1 - A.z0), m(C.awning), 0, A.height, (A.z0 + A.z1) / 2, 'trailerAwning');
-  aw.rotation.x = 0.18;
-  // Bågkanten har karossens färg men ett eget material: markisen tonas när kameran är nära (PlayerTruckCrew).
-  const scallopMat = new THREE.MeshStandardMaterial({ color: C.scallop, roughness: 0.65 });
-  const scallops = 8;
-  for (let i = 0; i < scallops; i++) {
-    const x = A.x0 + ((i + 0.5) * (A.x1 - A.x0)) / scallops;
-    const sc = add(new THREE.CylinderGeometry(0.17, 0.17, 0.03, 14, 1, false, 0, Math.PI), scallopMat, x, A.height - 0.12, A.z1 + 0.02, 'trailerScallop' + i);
-    sc.rotation.x = Math.PI / 2;
-    sc.rotation.z = Math.PI;
-  }
-  // Dragstången med två gasolflaskor.
-  add(new THREE.BoxGeometry(B.x0 - L.drawbar.hitch[0], 0.08, 0.1), m('#2a2724'), (B.x0 + L.drawbar.hitch[0]) / 2, 0.5, 0, 'trailerDrawbar');
-  for (const [x, z] of L.drawbar.gasBottles) add(new THREE.CylinderGeometry(0.15, 0.15, 0.6, 12), m('#c9c4b8'), x, 0.85, z, 'trailerGas');
-  // Hjulen: en axel.
-  for (const z of [B.z0 - 0.05, B.z1 + 0.05]) {
-    const wh = add(new THREE.CylinderGeometry(0.33, 0.33, 0.22, 14), m('#1c1a19'), 0, 0.33, z, 'trailerWheel');
-    wh.rotation.x = Math.PI / 2;
-  }
-  // Skorstenen över grillen.
-  add(new THREE.CylinderGeometry(0.08, 0.08, 0.7, 10), m('#3a3633'), L.chimney[0], bodyY1 + 0.35, L.chimney[1], 'trailerChimney');
-  // Skylten på bakkanten med nivåns knappar i högra änden.
-  const S = L.roofSign;
-  add(new THREE.BoxGeometry(S.x1 - S.x0, 0.4, 0.06), m(C.sign), (S.x0 + S.x1) / 2, bodyY1 + 0.3, (S.z0 + S.z1) / 2, 'trailerSign');
-  for (let i = 0; i < Math.max(1, Math.min(S.pips, pips)); i++) {
-    const pip = add(new THREE.CylinderGeometry(0.045, 0.045, 0.02, 10), m(C.pip), S.x1 - 0.12 - i * 0.14, bodyY1 + 0.3, S.z1 + 0.01, 'trailerPip' + i);
-    pip.rotation.x = Math.PI / 2;
+  // Nivåns knappar (venueTier.ts) på skylten på östra gaveln (D13 STUGAN.sign), nere till höger.
+  const SG = STUGAN.sign;
+  for (let i = 0; i < Math.max(1, Math.min(L.roofSign.pips, pips)); i++) {
+    const pip = add(new THREE.CylinderGeometry(0.045, 0.045, 0.02, 10), m(C.pip), SG.x + 0.05, SG.y - SG.h / 2 + 0.07, SG.z + SG.w / 2 - 0.12 - i * 0.14, 'trailerPip' + i);
+    pip.rotation.z = Math.PI / 2;
   }
   // Trädäcket med tre ståbord, papperskorgen, planteringslådorna och ljusslingan.
   const SA = L.servingArea;

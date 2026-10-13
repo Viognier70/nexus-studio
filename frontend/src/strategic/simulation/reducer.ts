@@ -1,4 +1,6 @@
 import { drainStamina, staffNight, tipStamina } from '../../sim/staffCondition';
+import { applyTruckSpotAtDoors, setTruckSpot } from '../../sim/truckSpot';
+import { playerTruckSpotOf, truckSpotOpen } from '../../sim/districts';
 import { guestMoodValue } from '../../sim/guestMood';
 import { buildMorningReview } from '../../sim/morningReview';
 import { calendarFor } from '../../sim/calendar';
@@ -510,6 +512,8 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return makeNewGameState(state.seed, state.policies);
     case 'HIRE_PREP_HAND':
       return hirePrepHand(state);
+    case 'SET_TRUCK_SPOT':
+      return setTruckSpot(state, action.spot);
     // ORDER 319b — de nyfikna vid foodtruckens lucka.
     case 'CURIOUS_OPEN': {
       const draft: SimulationState = { ...state, day: { ...state.day } };
@@ -1363,12 +1367,19 @@ function startService(state: SimulationState): SimulationState {
     discardUnresolvedSalvage(d);
     base = { ...d, salvage: d.salvage && d.salvage.resolved === 'discarded' ? d.salvage : null };
   }
+  // ORDER 332 G — en plats som inte är öppen den veckan blir Torget innan bokningen läses.
+  if (base.economy.businessClass === 'foodtruck' && !truckSpotOpen(playerTruckSpotOf(base), base.day.dayNumber)) {
+    base = { ...base, economy: { ...base.economy, truckSpot: 'torget' } };
+  }
   // ORDER 287a — bokningsboken låses när dörrarna öppnar, så som morgonen
   // visade den.
   const booked = { ...base, day: { ...base.day, booking: bookingFor(base) } };
   const fromAfternoon = booked.day.period === 'morning' ? skipLunch(booked) : booked;
   const opened = openService(fromAfternoon, 'dinner', SERVICE.simMinutes);
   if (opened === fromAfternoon || opened.day.doorsOpenAt === null) return opened;
+  // ORDER 332 G — platsens avgift när dörrarna har öppnat.
+  const paid: SimulationState = { ...opened };
+  applyTruckSpotAtDoors(paid);
   // ORDER 270 — kvällens händelser. Klasser med händelsebank får
   // händelser i stället för scenarierna vid dörren ("Dagens scenarier
   // flyttar in som händelser"); övriga behåller scenarierna tills deras
@@ -1376,7 +1387,7 @@ function startService(state: SimulationState): SimulationState {
   const endsAt = opened.day.periodStartAt + SERVICE.simMinutes * 60;
   // ORDER 278 — slumpens händelser i kväll (klasser med paket).
   // ORDER 280 — och lagret när dörrarna öppnar (Designs L1).
-  const withChance = usesPackages(opened) ? recordStockAtOpen(planChance(opened, opened.day.doorsOpenAt, endsAt)) : opened;
+  const withChance = usesPackages(paid) ? recordStockAtOpen(planChance(paid, opened.day.doorsOpenAt, endsAt)) : paid;
   const planned = planIncidents(withChance, withChance.day.doorsOpenAt ?? opened.day.doorsOpenAt, endsAt);
   if (!planned.incidents?.enabled) return planned;
   return { ...planned, day: { ...planned.day, scenariosPlanned: 0, scenarioTriggerTimes: [] } };

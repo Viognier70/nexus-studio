@@ -963,6 +963,8 @@ export interface DayState {
   // ORDER 296 — mise en place efter inköpen (sim/miseEnPlace.ts): den extra
   // handen på morgonen, och behovet, det som hanns och eftersläpet (spelminuter).
   prepHand?: boolean;
+  /** ORDER 332 C — gäster som gick ur kön vid vagnen i regnet i kväll (service.ts, balance.ts RAIN_QUEUE_BALANCE). */
+  truckRainLeavers?: number;
   /** ORDER 331 C — det värden bjöd på eller sålde in (sim/hostPins.ts), till scenen: bärs till bordet. */
   hostCarries?: { id: string; guestIds: string[]; carry: 'glass' | 'plate' }[];
   /** ORDER 331 B — den extra handen kommer från fikats svar (redan betald). */
@@ -1984,6 +1986,8 @@ export type SimAction =
   | { type: 'RESTART_SEASON' }
   // ORDER 296 — en extra hand till förberedelsen på morgonen.
   | { type: 'HIRE_PREP_HAND' }
+  // ORDER 332 G — vagnens plats i kväll (sim/districts.ts TRUCK_SPOT_IDS).
+  | { type: 'SET_TRUCK_SPOT'; spot: import('../sim/districts').TruckSpotId }
   // ORDER 296 — butiken: köp en förmåga, lägg i eller ta ur facket.
   | { type: 'SHOP_BUY'; id: string }
   | { type: 'SHOP_SLOT'; id: string; on: boolean }
