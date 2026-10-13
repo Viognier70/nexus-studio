@@ -55,6 +55,8 @@ async function open(save, w, h) {
   const page = await ctx.newPage();
   page.setDefaultTimeout(90000);
   page.on('pageerror', (e) => report.errors.push(`${w}x${h}: ${e.message}`));
+  ctx.on('response', (r) => { if (r.status() >= 400) report.errors.push(`${r.status()} ${r.url()}`); });
+  page.on('console', (m) => { if (m.type() === 'error') report.errors.push(`console ${w}x${h}: ${m.text().slice(0, 300)}`); });
   await page.goto(`${URL}/`, { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('[data-testid=start-screen]', { timeout: 120000 });
   await page.click('[data-testid=continue-saved]', { timeout: 120000 });
@@ -155,7 +157,29 @@ try {
   if (CASES.includes('byn')) {
     const { ctx, page } = await open(truckSave(), w, h);
     await serviceAtZ(page, w, h);
-    await page.click('[data-testid=village-toggle]').catch(() => page.keyboard.press('v'));
+    // Klockan under en minut (fryser spelet?): HUD:ens text var tionde sekund.
+    report.clock = [];
+    for (let i = 0; i < 6; i++) { report.clock.push(await page.evaluate(() => document.body.innerText.match(/\d{2}\.\d{2}/)?.[0] ?? null)); await delay(10000); }
+    // Ett kort kan ligga över knappen: tangenten V och knappen, tills nivån är Byn (högst sex försök).
+    for (let i = 0; i < 6; i++) {
+      // Under en situation är nivåknapparna borta (scenens kamera tar över): svara tills kortet är stängt, högst 90 s.
+      const until = Date.now() + 90000;
+      const cardOpen = () => page.evaluate(() => /Välj med 1–4|Choose with 1–4|Fortsätt|Continue/.test(document.body.innerText) || !!document.querySelector('[data-testid=incident-card], [data-testid^=incident-option-]'));
+      while (Date.now() < until && (await cardOpen())) {
+        await answerCards(page);
+        // Situationens steg väljs med 1–4 (kortet säger "Välj med 1–4"); sedan Fortsätt.
+        await page.keyboard.press('2'); await delay(1200);
+        for (const b of await page.$$('button')) { const t = (await b.textContent().catch(() => '')) ?? ''; if (/^(Fortsätt|Continue|Vidare|Stäng)/.test(t.trim())) { await b.click().catch(() => {}); break; } }
+        await delay(800);
+      }
+      await page.mouse.click(Math.round(w / 2), Math.round(h * 0.55)).catch(() => {});
+      await page.keyboard.press('v');
+      await delay(800);
+      if ((await page.getAttribute('[data-testid=level-bar]', 'data-level').catch(() => null)) === 'village') break;
+      await page.click('[data-testid=village-toggle]', { timeout: 5000 }).catch(() => {});
+      await delay(800);
+      if ((await page.getAttribute('[data-testid=level-bar]', 'data-level').catch(() => null)) === 'village') break;
+    }
     await landed(page);
     await delay(1500);
     report.cases.byn = await page.evaluate(() => ({
@@ -169,7 +193,12 @@ try {
     await ctx.close();
   }
 } finally {
-  writeFileSync(resolve(OUT, 'check.json'), JSON.stringify(report, null, 2) + '\n');
+  // CASES: fallen som inte kördes står kvar ur förra körningen, med sin tid.
+  let prev = {};
+  try { prev = JSON.parse(readFileSync(resolve(OUT, 'check.json'), 'utf8')); } catch { /* första körningen */ }
+  const stamp = new Date().toISOString();
+  for (const k of Object.keys(report.cases)) report.cases[k] = { ...report.cases[k], at: stamp };
+  writeFileSync(resolve(OUT, 'check.json'), JSON.stringify({ ...report, cases: { ...(prev.cases ?? {}), ...report.cases } }, null, 2) + '\n');
   await browser.close().catch(() => {});
   try { process.kill(-proc.pid); } catch { /* redan borta */ }
 }

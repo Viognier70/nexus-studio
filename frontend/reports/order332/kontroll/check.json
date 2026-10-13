@@ -1,0 +1,468 @@
+{
+  "build": "produktion (vite build + preview)",
+  "lang": "sv",
+  "day": 8,
+  "errors": [
+    "console 1280x720: Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "console 1280x720: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "cases": {
+    "regn-utan-markis": {
+      "camDistance": 12
+    },
+    "regn-med-markis": {
+      "camDistance": 12
+    },
+    "spot-torget": {
+      "morning": {
+        "present": true,
+        "spot": "torget",
+        "buttons": [
+          {
+            "id": "truck-spot-torget",
+            "text": "TorgetIngår i veckans tillstånd",
+            "disabled": false,
+            "checked": "true"
+          },
+          {
+            "id": "truck-spot-prastgatan",
+            "text": "Prästgatan150 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-gastgivaregarden",
+            "text": "Gästgivaregården350 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-campus",
+            "text": "Campus250 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-sjon",
+            "text": "Sjön300 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          }
+        ],
+        "who": "Bybor, förbipasserande och marknadsbesökare. Plånbok och kräsenhet i mitten.",
+        "chosen": "Vagnen står vid Torget i kväll.",
+        "box": {
+          "x": 870,
+          "y": 292,
+          "w": 335,
+          "h": 320
+        },
+        "inViewport": true
+      },
+      "atZ": {
+        "camDistance": 12,
+        "camTarget": 12
+      },
+      "at": "2026-10-13T14:19:00.947Z"
+    },
+    "spot-prastgatan": {
+      "morning": {
+        "present": true,
+        "spot": "prastgatan",
+        "buttons": [
+          {
+            "id": "truck-spot-torget",
+            "text": "TorgetIngår i veckans tillstånd",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-prastgatan",
+            "text": "Prästgatan150 kr per kväll",
+            "disabled": false,
+            "checked": "true"
+          },
+          {
+            "id": "truck-spot-gastgivaregarden",
+            "text": "Gästgivaregården350 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-campus",
+            "text": "Campus250 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-sjon",
+            "text": "Sjön300 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          }
+        ],
+        "who": "Studenter och unga. Liten plånbok, nyfikna, kommer i mängd. Studenterna är lediga.",
+        "chosen": "Vagnen står vid Prästgatan i kväll.",
+        "box": {
+          "x": 870,
+          "y": 292,
+          "w": 335,
+          "h": 320
+        },
+        "inViewport": true
+      },
+      "atZ": {
+        "camDistance": 12,
+        "camTarget": 12
+      },
+      "at": "2026-10-13T14:19:00.947Z"
+    },
+    "spot-gastgivaregarden": {
+      "morning": {
+        "present": true,
+        "spot": "gastgivaregarden",
+        "buttons": [
+          {
+            "id": "truck-spot-torget",
+            "text": "TorgetIngår i veckans tillstånd",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-prastgatan",
+            "text": "Prästgatan150 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-gastgivaregarden",
+            "text": "Gästgivaregården350 kr per kväll",
+            "disabled": false,
+            "checked": "true"
+          },
+          {
+            "id": "truck-spot-campus",
+            "text": "Campus250 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-sjon",
+            "text": "Sjön300 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          }
+        ],
+        "who": "Kulturturister och hotellets gäster. Stor plånbok; de väger rätten och servicen och förlåter minst.",
+        "chosen": "Vagnen står vid Gästgivaregården i kväll.",
+        "box": {
+          "x": 870,
+          "y": 292,
+          "w": 335,
+          "h": 320
+        },
+        "inViewport": true
+      },
+      "atZ": {
+        "camDistance": 12,
+        "camTarget": 12
+      },
+      "at": "2026-10-13T14:19:00.947Z"
+    },
+    "spot-campus": {
+      "morning": {
+        "present": true,
+        "spot": "campus",
+        "buttons": [
+          {
+            "id": "truck-spot-torget",
+            "text": "TorgetIngår i veckans tillstånd",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-prastgatan",
+            "text": "Prästgatan150 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-gastgivaregarden",
+            "text": "Gästgivaregården350 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-campus",
+            "text": "Campus250 kr per kväll",
+            "disabled": false,
+            "checked": "true"
+          },
+          {
+            "id": "truck-spot-sjon",
+            "text": "Sjön300 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          }
+        ],
+        "who": "Lärare, konferenser och besökare. God plånbok; de väger medaljerna från Måltidens hus.",
+        "chosen": "Vagnen står vid Campus i kväll.",
+        "box": {
+          "x": 870,
+          "y": 292,
+          "w": 335,
+          "h": 320
+        },
+        "inViewport": true
+      },
+      "atZ": {
+        "camDistance": 12,
+        "camTarget": 12
+      },
+      "at": "2026-10-13T14:19:00.947Z"
+    },
+    "spot-sjon": {
+      "morning": {
+        "present": true,
+        "spot": "sjon",
+        "buttons": [
+          {
+            "id": "truck-spot-torget",
+            "text": "TorgetIngår i veckans tillstånd",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-prastgatan",
+            "text": "Prästgatan150 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-gastgivaregarden",
+            "text": "Gästgivaregården350 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-campus",
+            "text": "Campus250 kr per kväll",
+            "disabled": false,
+            "checked": "false"
+          },
+          {
+            "id": "truck-spot-sjon",
+            "text": "Sjön300 kr per kväll",
+            "disabled": false,
+            "checked": "true"
+          }
+        ],
+        "who": "Familjer, badgäster och båtfolk. Kommer på sommardagar och när vädret är fint.",
+        "chosen": "Vagnen står vid Sjön i kväll.",
+        "box": {
+          "x": 870,
+          "y": 292,
+          "w": 335,
+          "h": 320
+        },
+        "inViewport": true
+      },
+      "atZ": {
+        "camDistance": 12,
+        "camTarget": 12
+      },
+      "at": "2026-10-13T14:19:00.947Z"
+    },
+    "morgon-1024x600": {
+      "present": true,
+      "spot": "torget",
+      "buttons": [
+        {
+          "id": "truck-spot-torget",
+          "text": "TorgetIngår i veckans tillstånd",
+          "disabled": false,
+          "checked": "true"
+        },
+        {
+          "id": "truck-spot-prastgatan",
+          "text": "Prästgatan150 kr per kväll",
+          "disabled": false,
+          "checked": "false"
+        },
+        {
+          "id": "truck-spot-gastgivaregarden",
+          "text": "Gästgivaregården350 kr per kväll",
+          "disabled": false,
+          "checked": "false"
+        },
+        {
+          "id": "truck-spot-campus",
+          "text": "Campus250 kr per kväll",
+          "disabled": false,
+          "checked": "false"
+        },
+        {
+          "id": "truck-spot-sjon",
+          "text": "Sjön300 kr per kväll",
+          "disabled": false,
+          "checked": "false"
+        }
+      ],
+      "who": "Bybor, förbipasserande och marknadsbesökare. Plånbok och kräsenhet i mitten.",
+      "chosen": "Vagnen står vid Torget i kväll.",
+      "box": {
+        "x": 696,
+        "y": 242,
+        "w": 267,
+        "h": 266
+      },
+      "inViewport": true,
+      "at": "2026-10-13T14:27:39.636Z"
+    },
+    "byn": {
+      "level": "village",
+      "camDistance": 660,
+      "districts": [
+        {
+          "id": "torget",
+          "text": "Torget",
+          "opacity": 1,
+          "visible": true,
+          "free": true,
+          "box": [
+            384,
+            155,
+            63,
+            16
+          ]
+        },
+        {
+          "id": "student",
+          "text": "Studentkvarteret",
+          "opacity": 1,
+          "visible": true,
+          "free": true,
+          "box": [
+            579,
+            199,
+            156,
+            16
+          ]
+        },
+        {
+          "id": "gastgivaregarden",
+          "text": "Gästgivaregården och kyrkan",
+          "opacity": 1,
+          "visible": true,
+          "free": true,
+          "box": [
+            75,
+            351,
+            156,
+            33
+          ]
+        },
+        {
+          "id": "campus",
+          "text": "Campus och Måltidens hus",
+          "opacity": 1,
+          "visible": true,
+          "free": true,
+          "box": [
+            1063,
+            144,
+            156,
+            33
+          ]
+        },
+        {
+          "id": "sjon",
+          "text": "Vid sjön",
+          "opacity": 1,
+          "visible": true,
+          "free": true,
+          "box": [
+            850,
+            594,
+            77,
+            16
+          ]
+        }
+      ],
+      "venues": [
+        {
+          "text": "Vinbaren vid torget, din krog★",
+          "box": [
+            212,
+            241,
+            150,
+            79
+          ]
+        },
+        {
+          "text": "Torgkrogen★★★★★0 gäster i kväl",
+          "box": [
+            237,
+            506,
+            88,
+            78
+          ]
+        },
+        {
+          "text": "Pizzeria Grytan★★★★★0 gäster i",
+          "box": [
+            767,
+            159,
+            79,
+            95
+          ]
+        },
+        {
+          "text": "Sjöboden★★★★★Stängt i kväll",
+          "box": [
+            927,
+            704,
+            79,
+            78
+          ]
+        },
+        {
+          "text": "Hotellets matsal★★★★★0 gäster ",
+          "box": [
+            295,
+            325,
+            79,
+            95
+          ]
+        },
+        {
+          "text": "Grillvagnen★★★★★Stängt i kväll",
+          "box": [
+            235,
+            424,
+            87,
+            78
+          ]
+        },
+        {
+          "text": "Tacovagnen★★★★★Stängt i kväll",
+          "box": [
+            835,
+            487,
+            91,
+            62
+          ]
+        }
+      ],
+      "at": "2026-10-13T14:31:08.744Z"
+    }
+  },
+  "clock": [
+    "19.15",
+    "19.22",
+    "19.27",
+    "19.32",
+    "19.52",
+    "20.08"
+  ]
+}

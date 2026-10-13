@@ -2,8 +2,9 @@
 // plats och kvarter (scripts/order332-platser.sh, KARNAN_TRUCK_SPOT).
 //   fore        = reports/order332/fore        (main 32d19013, före ordern)
 //   efter       = reports/order332/efter       (order-332, allt)
-//   utanRegn    = reports/order332/efter-utan-regn (order-332 med kön i regn som förut, KARNAN_VARIANT; visar att
+//   utanRegn    = reports/order332/efter-utan-regn (f6e7d17e med kön i regn utan verkan, KARNAN_VARIANT; visar att
 //                 kvarteren inte ändrar Torget)
+//   regn1       = reports/order332/efter-f6e7d17e (första regnregeln, som sänkte nöjdheten i kön; ersatt i 6e9a0a35)
 //   platser     = reports/order332/platser/<plats>-<rad>.json
 // Skriver reports/order332/jamforelse.json och reports/order332/platser.json. Talen läses ur harnessens utdata
 // (order296Karnan.test.ts: closed, meanCashEnd, ladder, starEarned, truckBySpot), inget räknas om här utom medianen.
@@ -27,16 +28,16 @@ const pick = (dir, f) => {
 const rows = {};
 for (const f of readdirSync(resolve(R, 'order332/fore')).filter((x) => x.endsWith('.json')).sort()) {
   const name = f.replace(/\.json$/, '');
-  const fore = pick('order332/fore', f), efter = pick('order332/efter', f), utanRegn = pick('order332/efter-utan-regn', f);
-  rows[name] = { fore, efter, utanRegn, closedMore: fore && efter ? efter.closed - fore.closed : null, utanRegnSameAsFore: fore && utanRegn ? JSON.stringify(fore) === JSON.stringify(utanRegn) : null };
+  const fore = pick('order332/fore', f), efter = pick('order332/efter', f), utanRegn = pick('order332/efter-utan-regn', f), regn1 = pick('order332/efter-f6e7d17e', f);
+  rows[name] = { fore, efter, utanRegn, regn1, closedMore: fore && efter ? efter.closed - fore.closed : null, utanRegnSameAsFore: fore && utanRegn ? JSON.stringify(fore) === JSON.stringify(utanRegn) : null };
 }
 const worse = Object.entries(rows).filter(([, v]) => (v.closedMore ?? 0) > 0).map(([k]) => k);
 writeFileSync(resolve(R, 'order332/jamforelse.json'), JSON.stringify({
-  definition: 'fore = reports/order332/fore (main 32d19013), efter = reports/order332/efter (order-332), utanRegn = order-332 med RAIN_QUEUE_BALANCE neutral (kön i regn som förut). 40 frön per rad. closed = stängda säsonger, meanCashEnd = medelkassan vid säsongens slut (kr), reachedVinbar/reachedBistro = säsonger som nådde steget, vinbarWeekMedian/bistroWeekMedian = medianveckan dit, starEarned = säsonger med stjärna. closedMore = efter − före. utanRegnSameAsFore = alla fält lika.',
+  definition: 'fore = reports/order332/fore (main 32d19013), efter = reports/order332/efter (order-332 6e9a0a35), utanRegn = f6e7d17e med RAIN_QUEUE_BALANCE utan verkan (kön i regn som förut), regn1 = f6e7d17e med den första regnregeln (nöjdheten sjönk i kön). 40 frön per rad. closed = stängda säsonger, meanCashEnd = medelkassan vid säsongens slut (kr), reachedVinbar/reachedBistro = säsonger som nådde steget, vinbarWeekMedian/bistroWeekMedian = medianveckan dit, starEarned = säsonger med stjärna. closedMore = efter − före. utanRegnSameAsFore = alla fält lika.',
   rowsClosingMore: worse, rows
 }, null, 2) + '\n');
 const sh = (v) => v && `c${v.closed} v${v.reachedVinbar}/${v.vinbarWeekMedian} b${v.reachedBistro}/${v.bistroWeekMedian} s${v.starEarned} kr${v.meanCashEnd}`;
-for (const [k, v] of Object.entries(rows)) console.log(k.padEnd(26), 'före', sh(v.fore), '| efter', sh(v.efter), '| utan regn', sh(v.utanRegn), v.utanRegnSameAsFore === null ? '' : v.utanRegnSameAsFore ? '(= före)' : '(≠ före)');
+for (const [k, v] of Object.entries(rows)) console.log(k.padEnd(26), 'före', sh(v.fore), '| efter', sh(v.efter), '| regn1', sh(v.regn1), '| utan regn', sh(v.utanRegn), v.utanRegnSameAsFore === null ? '' : v.utanRegnSameAsFore ? '(= före)' : '(≠ före)');
 console.log('rader som stänger fler säsonger:', worse.length ? worse.join(', ') : 'inga');
 
 // Platserna: vagnens kvällar per plats (truckBySpot), för raderna som kördes med KARNAN_TRUCK_SPOT.
