@@ -16,12 +16,13 @@ describe.skipIf(!process.env.REGN_SEEDS)('ORDER 332 C — kön i regnet, provet 
     const B = RAIN_QUEUE_BALANCE as unknown as { patienceRain: number; leaveAt: number };
     const current = { patienceRain: B.patienceRain, leaveAt: B.leaveAt };
     const settings: { name: string; patienceRain: number; leaveAt: number }[] = [
-      { name: 'utan verkan', patienceRain: 1, leaveAt: Number.MAX_SAFE_INTEGER },
+      { name: 'utan verkan', patienceRain: Number.MAX_SAFE_INTEGER, leaveAt: Number.MAX_SAFE_INTEGER },
       { name: `balance.ts ${current.patienceRain}/${current.leaveAt}`, ...current },
-      { name: '0.85/8', patienceRain: 0.85, leaveAt: 8 },
-      { name: '0.85/6', patienceRain: 0.85, leaveAt: 6 },
-      { name: '0.8/8', patienceRain: 0.8, leaveAt: 8 },
-      { name: '0.75/10', patienceRain: 0.75, leaveAt: 10 }
+      { name: '0.75/10', patienceRain: 0.75, leaveAt: 10 },
+      { name: '1.5/10', patienceRain: 1.5, leaveAt: 10 },
+      { name: '2/10', patienceRain: 2, leaveAt: 10 },
+      { name: '2/6', patienceRain: 2, leaveAt: 6 },
+      { name: '3/10', patienceRain: 3, leaveAt: 10 }
     ];
     const seeds = Array.from({ length: SEEDS }, (_, i) => i + 1);
     const mean = (a: number[]) => a.reduce((x, y) => x + y, 0) / a.length;

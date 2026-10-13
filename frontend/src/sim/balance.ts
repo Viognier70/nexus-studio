@@ -1218,16 +1218,16 @@ export const TRUCK_WEATHER = {
 // ORDER 332 C (Designs D13 truckRain.js RAIN_QUEUE_BALANCE) — kön vid vagnen i regn. Kön är gästerna som beställer vid
 // luckan i den ordning scenen ritar dem (sim/truckLife.ts truckQueueLine). Utan markisen står den som beställer och en
 // till torrt under luckans skiva (scene/truckRain.ts RAIN_QUEUE.withoutAwning.sheltered); med markisen sex till
-// (withAwning). Den som står i regnet (truckLife.ts rainExposedInQueue) tappar nöjdheten 1/patienceRain gånger så fort
-// som i kön, och går efter QUEUE.patienceSimSeconds gånger patienceRain om hen är missnöjd (service.ts). Står fler än
-// leaveAt i regnet går den sista i kön. Utan ryktets och moralens slag: hen gick ur regnet. Förut (ORDER 319c–331) gjorde
+// (withAwning). Den som står i regnet (truckLife.ts rainExposedInQueue) går efter QUEUE.patienceSimSeconds gånger
+// patienceRain, och står fler än leaveAt i regnet går den sista i kön (service.ts). Regnet bestämmer hur länge kön står
+// kvar, inte humöret hos dem som står kvar under paraplyet: torrt sjunker inte nöjdheten i kön vid vagnen. (Första
+// versionen sänkte nöjdheten i regnet, och ryktet föll så att 0,6-raderna aldrig nådde vinbaren: reports/order332/
+// efter-f6e7d17e.) Utan ryktets och moralens slag: hen gick ur regnet. Förut (ORDER 319c–331) gjorde
 // regnet i kön ingenting: bara footfall.rain 0,8 och curiousGap.rain 1,5.
 // Valda tal ur provet strategic/testHarness/__tests__/order332Regn.test.ts (REGN_SEEDS=8), som skriver
-// reports/order332/regn.json: en regnkväll i spelarens flöde per frö, utan och med markisen, för sex inställningar.
-// rows[].kostnadUtanMarkis.billsShare är kostnaden utan markis mot "utan verkan", rows[].markisensVinst.endCash
-// markisens vinst i kronor. 0,75/10 håller kostnaden under ~8 % av notorna (säsongsraderna ska inte stänga fler) och
-// ger markisen den tydligaste vinsten bland de inställningar som håller den gränsen; 0,85/8 ger mer men kostar mer.
-// Högre patienceRain och högre leaveAt är mildare.
+// reports/order332/regn.json: en regnkväll i spelarens flöde per frö, utan och med markisen. rows[].kostnadUtanMarkis
+// är kostnaden utan markis mot "utan verkan", rows[].markisensVinst markisens vinst. 0,75/10 ger markisen den
+// tydligaste vinsten; taket leaveAt står för det mesta av kostnaden. Högre patienceRain och högre leaveAt är mildare.
 export const RAIN_QUEUE_BALANCE = {
   section: 'Servicen',
   patienceRain: 0.75,
