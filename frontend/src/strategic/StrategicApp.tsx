@@ -67,6 +67,8 @@ import { useLanguage } from '../content/language';
 import { RoomNotices } from './ui/service/RoomNotices';
 import { CameraButtons } from './ui/CameraButtons';
 import { RoomCameraBounds } from './camera/RoomCameraBounds';
+import { setCurrentPremises } from './content/playerPremises';
+import { playerPremisesOf } from '../sim/districts';
 import { HudBottom } from './ui/service/HudBottom';
 import { MoodMeter } from './ui/host/MoodMeter';
 import { OpeningSequence } from './opening/OpeningSequence';
@@ -143,6 +145,10 @@ function StrategicShell() {
   // ORDER 293 — provspel av händelserna: #playtest=1&rocket=<id> köar raketen
   // när dörrarna öppnar, en gång per kväll.
   const simForRocket = useSimState();
+  // ORDER 333 D — vinbarens lokal (sim economy.premises) sätts innan scenen ritas; scenen monteras om när den byts,
+  // så att rummet, gatans hus och dörrarna byggs i lokalens hus (content/playerPremises.ts).
+  const premises = playerPremisesOf(simForRocket);
+  setCurrentPremises(premises);
   // ORDER 315b — Åsas erbjudande väntar tills hennes egen skärm (M1) är läst.
   const mentorView = useMentor();
   const queuedRocketDay = useRef(-1);
@@ -321,6 +327,7 @@ function StrategicShell() {
           <DollhouseFrame />
         ) : (
           <StrategicScene
+            key={premises}
             onSelect={handleSelect}
             selectedId={selectedId}
             showScaleRef={showScaleRef}

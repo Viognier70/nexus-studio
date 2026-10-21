@@ -9,7 +9,11 @@ import type { CameraTarget } from '../types';
 import { computePlayerBusinessInterior } from '../business/interiorLayout';
 import { BLEND, LEVELS, type LevelId, type LevelSpec } from '../village/villageEvening';
 
-const ROOM = computePlayerBusinessInterior();
+import { onPremisesChange } from '../content/playerPremises';
+
+// ORDER 333 D — räknas om när vinbarens lokal byts (content/playerPremises.ts).
+let ROOM = computePlayerBusinessInterior();
+onPremisesChange(() => { ROOM = computePlayerBusinessInterior(); });
 
 // ORDER 300 §7 (Anders 2026-10-04): "På gatunivån syns spelarens krog
 // tydligt och skylten går att läsa i 1280 × 720." Med rummet vänt mot Torget

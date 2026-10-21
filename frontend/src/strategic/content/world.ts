@@ -329,7 +329,8 @@ const HANDCRAFTED_LANDMARK_IDS: ReadonlySet<string> = new Set([
 // excluded WAY-based landmarks and ran no landmark-proximity check;
 // node landmarks and adjacency slipped through. See the 2026-07-30
 // entry in APPROXIMATION_REGISTER.md for the mechanism-note.
-export const PLAYER_BUSINESS_BUILDING_IDS: ReadonlySet<string> = new Set([
+// ORDER 333 D — mängden följer vinbarens lokal (content/playerPremises.ts setCurrentPremises).
+export const PLAYER_BUSINESS_BUILDING_IDS: Set<string> = new Set([
   'w869907975'   // Candidate A, Torget south edge café-scale
 ]);
 

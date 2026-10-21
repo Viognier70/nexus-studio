@@ -3,6 +3,7 @@ import { LANDMARK_BY_ID } from '../content/world';
 import type { CameraTarget, ViewLabel } from '../types';
 import { clampToRoom } from './roomBounds';
 import { levelById, levelTarget } from './eveningLevels';
+import { onPremisesChange } from '../content/playerPremises';
 
 export interface Preset {
   label: ViewLabel;
@@ -104,6 +105,12 @@ export const PRESETS: Record<'village' | 'district' | 'business' | 'street' | 'm
     target: levelTarget(levelById('venue'))
   }
 };
+
+// ORDER 333 D — gatans och krogens förval ligger i rummets ram och följer vinbarens lokal.
+onPremisesChange(() => {
+  PRESETS.street.target = levelTarget(levelById('street'));
+  PRESETS.myBusiness.target = levelTarget(levelById('venue'));
+});
 
 // Continuous-zoom label. Chosen from the current camera distance so the
 // label crossfades naturally through the world.

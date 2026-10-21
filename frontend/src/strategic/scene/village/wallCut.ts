@@ -8,7 +8,8 @@ import { useMemo } from 'react';
 import { LANDMARK_BUILDING_IDS, WORLD, type Vec2Tuple } from '../../content/world';
 import { drawnOsmBuildings } from '../OsmBuildings';
 import { playerTruckPlacement } from '../../content/villagePlaces';
-import { playerTruckSpotOf } from '../../../sim/districts';
+import { playerPremisesOf, playerTruckSpotOf } from '../../../sim/districts';
+import { premisesBuilding } from '../../content/playerPremises';
 import { useSimState } from '../../simulation/SimulationProvider';
 import type { SimulationState } from '../../types';
 
@@ -46,6 +47,13 @@ export function wallCutCentre(state: Pick<SimulationState, 'economy'>): { key: s
     const spot = playerTruckSpotOf(state);
     const at = playerTruckPlacement(spot);
     return { key: `truck:${spot}`, centre: [at.x, at.z], exclude: new Set() };
+  }
+  // ORDER 333 D — vinbaren i en lokal: husen runt lokalen (lokalens eget hus är vinbarens skal och kapas av rummet).
+  const premises = playerPremisesOf(state);
+  const b = premises !== 'torget' && state.economy?.businessClass ? premisesBuilding(premises) : null;
+  if (b) {
+    const c = b.poly.reduce((a, p) => [a[0] + p[0] / b.poly.length, a[1] + p[1] / b.poly.length], [0, 0]) as unknown as Vec2Tuple;
+    return { key: `premises:${premises}`, centre: c, exclude: new Set([b.id]) };
   }
   return null;
 }

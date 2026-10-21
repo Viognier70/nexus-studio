@@ -11,7 +11,8 @@
 // Måltidens hus (campus, gry-campus) och vid sjön (vattnets norra strand).
 // Dörren är gatunätets nod närmast byggnaden.
 
-import { LANDMARK_BY_ID, WORLD_RAW_BUILDINGS } from './world';
+import { LANDMARK_BY_ID, PLAYER_BUSINESS_BUILDING_IDS, WORLD_RAW_BUILDINGS } from './world';
+import { onPremisesChange, premisesBuilding } from './playerPremises';
 import { driveNetwork, nearestNode, walkNetwork } from './villageNetwork';
 import type { TruckSpot } from '../../sim/village';
 import { TRUCK_SPOT_IDS, truckSpotPlacement, type TruckSpotId } from '../../sim/districts';
@@ -58,15 +59,23 @@ export interface VenuePlace {
 }
 
 let venuesCache: Record<string, VenuePlace> | null = null;
+// ORDER 333 D — vinbarens hus och dörr följer lokalen (content/playerPremises.ts).
+onPremisesChange(() => {
+  venuesCache = null;
+  VENUE_BUILDINGS.player = [...PLAYER_BUSINESS_BUILDING_IDS][0] ?? 'w869907975';
+});
 
 export function venuePlaces(): Record<string, VenuePlace> {
   if (venuesCache) return venuesCache;
   const g = walkNetwork();
   const out: Record<string, VenuePlace> = {};
+  // ORDER 333 D — vinbaren i en lokal: gästerna går till noden närmast entrén (det tänkta husets +x-ände).
+  const premises = premisesBuilding();
   for (const [id, bid] of Object.entries(VENUE_BUILDINGS)) {
     const b = WORLD_RAW_BUILDINGS.find((x) => x.id === bid);
-    const centre = b ? centroid(b.poly as Vec2[]) : TORGET;
-    const door = nearestNode(g, centre[0], centre[1]);
+    const centre = id === 'player' && premises ? centroid(premises.poly as Vec2[]) : b ? centroid(b.poly as Vec2[]) : TORGET;
+    const at = id === 'player' && premises ? [(premises.poly[1][0] + premises.poly[2][0]) / 2, (premises.poly[1][1] + premises.poly[2][1]) / 2] : centre;
+    const door = nearestNode(g, at[0], at[1]);
     out[id] = { id, centre, door, doorPoint: g.nodes[door] };
   }
   venuesCache = out;

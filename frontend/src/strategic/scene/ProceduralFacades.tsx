@@ -16,7 +16,7 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
-import { WORLD } from '../content/world';
+import { PLAYER_BUSINESS_BUILDING_IDS, WORLD } from '../content/world';
 import type { RawBuilding } from '../content/world';
 import { BUILDINGS_ON_ROADS } from '../content/buildingsOnRoads';
 import {
@@ -198,6 +198,8 @@ export function ProceduralFacades() {
       // som SKIP_PROCEDURAL_IDS ovan; guarden är per byggnad, filtret
       // per renderare).
       if (BUILDINGS_ON_ROADS.has(b.id)) continue;
+      // ORDER 333 D — huset där vinbaren står (källaren) ritas av vinbarens skal (content/playerPremises.ts).
+      if (PLAYER_BUSINESS_BUILDING_IDS.has(b.id)) continue;
       const params = paramsFor(b.id);
       const seed = hash32(b.id);
       const lod0 = buildFacade(b.poly, params, seed, { lod: 0 });

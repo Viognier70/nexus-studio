@@ -1,5 +1,9 @@
 import { Instance, Instances } from '@react-three/drei';
-import { useMemo } from 'react';
+import { useMemo, useRef, type ReactNode } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { useCamera } from '../camera/CameraContext';
+import { CUT_BELOW, roofAt } from '../village/roofBlend';
+import { currentPremises } from '../content/playerPremises';
 import * as THREE from 'three';
 import { WORLD } from '../content/world';
 import type { RawBuilding, Vec2Tuple } from '../content/world';
@@ -900,11 +904,24 @@ const SCHOOL_COMPLEX: SchoolEntry[] = [
   { osmId: 'w870510871', wallHeight: 6.0, wallColour: '#c4ac86', roofColour: '#5a3f30', note: 'medium block' }
 ];
 
+// ORDER 333 D — vinbaren i Flygeln (Kärnhusets östra flygel, content/playerPremises.ts): Kärnhuset är ett platt
+// block med tak över hela polygonen, så det döljs vid krogens nivå när taken tonat ut (roofAt under CUT_BELOW), som
+// väggarna kapas på husen nära vagnen (village/wallCut.ts). Annars står vinbaren osynlig inne i blocket.
+function KarnhusetAroundPremises({ children }: { children: ReactNode }) {
+  const { actualRef } = useCamera();
+  const g = useRef<THREE.Group>(null);
+  const here = currentPremises() === 'glashornet';
+  useFrame(() => {
+    if (g.current) g.current.visible = !here || roofAt(actualRef.current.distance) >= CUT_BELOW;
+  });
+  return <group ref={g}>{children}</group>;
+}
+
 // ---------- Composition ----------
 export function CraftedLandmarksD2() {
   return (
     <group>
-      <KarnhusetD2Pass5 />
+      <KarnhusetAroundPremises><KarnhusetD2Pass5 /></KarnhusetAroundPremises>
       {STATION_CORRIDOR.map((e) => (
         <IndustrialShedD2Pass5
           key={e.osmId}
