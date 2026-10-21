@@ -1,0 +1,55 @@
+{
+  "definition": "ORDER 333 C. Bilderna i reports/order333/sommar/<etikett>-<namn>.png, foodtrucken på Torget i produktionsbygget. clock = HUD:ens klocka när bilden togs; walkers = body.dataset.villageWalkers (OsmPedestrians: gående i byn), null om sidan inte sätter det.",
+  "fore": {
+    "at": "2026-10-21T13:07:31.516Z",
+    "build": "produktion (vite build + preview)",
+    "shots": {
+      "start-byn": {
+        "clock": "18.19",
+        "walkers": null
+      },
+      "start-gatan": {
+        "clock": "18.27",
+        "walkers": null
+      },
+      "mitt-gatan": {
+        "clock": "19.32",
+        "walkers": null
+      },
+      "sen-gatan": {
+        "clock": "21.11",
+        "walkers": null
+      },
+      "sen-byn": {
+        "clock": "21.19",
+        "walkers": null
+      }
+    }
+  },
+  "efter": {
+    "at": "2026-10-21T13:16:15.809Z",
+    "build": "produktion (vite build + preview)",
+    "shots": {
+      "start-byn": {
+        "clock": "18.19",
+        "walkers": "254"
+      },
+      "start-gatan": {
+        "clock": "18.27",
+        "walkers": "254"
+      },
+      "mitt-gatan": {
+        "clock": "19.32",
+        "walkers": "254"
+      },
+      "sen-gatan": {
+        "clock": "21.11",
+        "walkers": "254"
+      },
+      "sen-byn": {
+        "clock": "21.19",
+        "walkers": "254"
+      }
+    }
+  }
+}
