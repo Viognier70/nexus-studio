@@ -1,5 +1,6 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
+import { SUMMER_STREET, useVisibleSeason } from '../village/summer';
 import * as THREE from 'three';
 import { useCamera } from '../camera/CameraContext';
 import {
@@ -285,10 +286,13 @@ export function OsmPedestrians() {
       CYCLE_PATHS.filter((p) => polylineLength(p.poly) >= MIN_CYCLE_LENGTH),
     []
   );
+  // ORDER 333 C — folk på gatan som sommar: fler gående i byn och i kvarterens lager (village/summer.ts SUMMER_STREET).
+  const season = useVisibleSeason();
+  const streetK = season === 'summer' ? SUMMER_STREET.walkersK : 1;
   const walkers = useMemo<Walker[]>(() => {
     const rng = createRng(WALKER_SEED);
     if (paths.length === 0) return [];
-    const list: Walker[] = Array.from({ length: WALKER_COUNT }, () => {
+    const list: Walker[] = Array.from({ length: Math.round(WALKER_COUNT * streetK) }, () => {
       // ORDER 332 D — vägen först, sedan gruppen ur kvarterets andelar där vägen ligger (byns blandning utanför).
       const path = weightedPick(paths, weights, rng.next());
       const mid = pathMid(path);
@@ -358,7 +362,7 @@ export function OsmPedestrians() {
     // antalet ur sjöns läge i kväll.
     DISTRICT_IDS.forEach((d, di) => {
       const lanes = districtLanes(d);
-      const n = districtWalkerCount(d, lakeMode);
+      const n = Math.round(districtWalkerCount(d, lakeMode) * streetK);
       if (!lanes.length || n <= 0) return;
       districtParties(d, n, WALKER_SEED + di).forEach((party, k) => {
         const lane = ownLaneRoad(d, k % lanes.length, lanes[k % lanes.length]);
@@ -382,7 +386,10 @@ export function OsmPedestrians() {
       w.len = Math.max(1, polylineLength(w.path.poly));
     }
     return list;
-  }, [paths, weights, lakeMode]);
+  }, [paths, weights, lakeMode, streetK]);
+  useEffect(() => {
+    if (typeof document !== 'undefined') document.body.dataset.villageWalkers = String(walkers.length);
+  }, [walkers]);
 
   const cyclists = useMemo<Cyclist[]>(() => {
     const rng = createRng(CYCLIST_SEED);

@@ -1,0 +1,69 @@
+{
+ "definition": "ORDER 333 E. Per plats: de ritade husen (drawnOsmBuildings och ProceduralFacades, utom landmärkena) vars kant ligger inom WALL_CUT.radiusM (12 m) från vagnens mitt (wallCut.ts wallCutIds). Väggarna går till 1,6 m när taket tonar ut (roofAt, 40 → 26 m).",
+ "radiusM": 12,
+ "heightM": 1.6,
+ "spots": {
+  "torget": {
+   "centre": [
+    17,
+    -21.9
+   ],
+   "houses": [
+    {
+     "id": "w869907973",
+     "distanceM": 11.54
+    }
+   ],
+   "landmarksNotCut": [
+    "w869907975"
+   ]
+  },
+  "prastgatan": {
+   "centre": [
+    290.63,
+    39.17
+   ],
+   "houses": [
+    {
+     "id": "w193810970",
+     "distanceM": 7.94
+    }
+   ],
+   "landmarksNotCut": []
+  },
+  "gastgivaregarden": {
+   "centre": [
+    62.34,
+    76.91
+   ],
+   "houses": [],
+   "landmarksNotCut": []
+  },
+  "campus": {
+   "centre": [
+    550.3,
+    -70.42
+   ],
+   "houses": [],
+   "landmarksNotCut": [
+    "w193810975"
+   ]
+  },
+  "sjon": {
+   "centre": [
+    376,
+    236
+   ],
+   "houses": [],
+   "landmarksNotCut": []
+  },
+  "magasinsgatan": {
+   "centre": [
+    -234.76,
+    49.74
+   ],
+   "houses": [],
+   "landmarksNotCut": []
+  }
+ }
+}

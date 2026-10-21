@@ -108,7 +108,8 @@ export function eveningLightAt(
   };
 }
 
-export function EveningLighting({ e, level: fixedLevel, gain }: { e: number; level?: number; gain?: (d: number) => { light: number; exposure: number } }) {
+// ORDER 333 C — keys: himlens nycklar, sommarens (village/summer.ts SUMMER_SKY) eller höstens (SKY).
+export function EveningLighting({ e, level: fixedLevel, gain, keys = SKY }: { e: number; level?: number; gain?: (d: number) => { light: number; exposure: number }; keys?: SkyKey[] }) {
   const { scene, gl } = useThree();
   const { actualRef } = useCamera();
   // ORDER 308 — öppningen sätter byns ljusnivå själv (oppningManus VILLAGE_LIGHT_LEVEL).
@@ -117,7 +118,7 @@ export function EveningLighting({ e, level: fixedLevel, gain }: { e: number; lev
   const hemi = useRef<THREE.HemisphereLight>(null);
   const moon = useRef<THREE.DirectionalLight>(null);
   const target = useMemo(() => new THREE.Object3D(), []);
-  const sky = useMemo(() => skyAt(e), [e]);
+  const sky = useMemo(() => skyAt(e, keys), [e, keys]);
   const fog = useMemo(() => new THREE.Fog(sky.bg.getHex(), 1000, 3600), []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Nattvärdet till gatlyktorna, fönstren och krogarnas sken.

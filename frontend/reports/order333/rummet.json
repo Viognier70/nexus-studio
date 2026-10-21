@@ -1,0 +1,73 @@
+{
+ "definition": "ORDER 333 D. Per lokal: rummets mitt och vinkel (computePlayerBusinessInterior), entrén, hur många av det tänkta husets fyra hörn (vinbarens yttermått) som ligger i husets polygon (Flygeln: D15:s outline), metrarna från gästernas dörrnod (venuePlaces) till entrén och kamerans förval Krogen (PRESETS.myBusiness).",
+ "rows": {
+  "torget": {
+   "centre": [
+    31.597500000000004,
+    -16.7375
+   ],
+   "angle": -1.693099516065027,
+   "entrance": [
+    30.785648655360223,
+    -23.34239229537448
+   ],
+   "cornersInsideHouse": null,
+   "doorNodeToEntranceM": 5.9,
+   "myBusinessFocus": {
+    "x": 31.771606353802746,
+    "z": -16.96040575938166
+   }
+  },
+  "kallaren": {
+   "centre": [
+    279.81,
+    50.42
+   ],
+   "angle": 0.20956999999999934,
+   "entrance": [
+    286.4954533581758,
+    51.84194880205183
+   ],
+   "cornersInsideHouse": 4,
+   "doorNodeToEntranceM": 17.7,
+   "myBusinessFocus": {
+    "x": 279.96401622695316,
+    "z": 50.6572319578706
+   }
+  },
+  "salongen": {
+   "centre": [
+    116.39955631327146,
+    51.39733842920767
+   ],
+   "angle": -1.6165900000000006,
+   "entrance": [
+    116.08666594201581,
+    44.56950388115544
+   ],
+   "cornersInsideHouse": 4,
+   "doorNodeToEntranceM": 9.3,
+   "myBusinessFocus": {
+    "x": 116.590191109959,
+    "z": 51.18839256470707
+   }
+  },
+  "glashornet": {
+   "centre": [
+    427.75,
+    -87.69999999999999
+   ],
+   "angle": 0.9061899999999992,
+   "entrance": [
+    431.96548144409047,
+    -82.31976383468817
+   ],
+   "cornersInsideHouse": 4,
+   "doorNodeToEntranceM": 12.8,
+   "myBusinessFocus": {
+    "x": 427.7159179306153,
+    "z": -87.41921821186824
+   }
+  }
+ }
+}

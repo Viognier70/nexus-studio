@@ -1,4 +1,5 @@
 import { LANDMARK_BUILDING_IDS, WORLD } from '../content/world';
+import { onPremisesChange } from '../content/playerPremises';
 import type { RawBuilding, Vec2Tuple } from '../content/world';
 import { boxFootprint, polygonNearMapRoad, polygonsOverlap, roadOverlapsForPolygon } from '../content/roadSurface';
 import {
@@ -71,6 +72,8 @@ function blocked(wx: number, wz: number, angle: number, size: Placement['size'],
 // OsmPropertyDetail / OsmYards (as an occupancy hint) so all three
 // modules agree on where the shed sits.
 const CACHE = new Map<string, Placement | null>();
+// ORDER 333 D — huset vid torget och lokalens hus byter roll när vinbarens lokal byts.
+onPremisesChange(() => CACHE.clear());
 
 export function outbuildingPlacementFor(b: RawBuilding): Placement | null {
   if (CACHE.has(b.id)) return CACHE.get(b.id) ?? null;

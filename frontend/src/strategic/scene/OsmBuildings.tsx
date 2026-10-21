@@ -1,5 +1,6 @@
 import { Instance, Instances } from '@react-three/drei';
-import { useMemo } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { useMemo, useRef, type ReactNode } from 'react';
 import * as THREE from 'three';
 import {
   BUILDING_STATUS_BY_OSM_ID,
@@ -14,6 +15,9 @@ import { inside } from '../procgen/geom';
 import { SKIP_PROCEDURAL_IDS } from './ProceduralFacades';
 import { BUILDINGS_ON_ROADS } from '../content/buildingsOnRoads';
 import { STATIC_INSTANCE_FRAMES } from './staticInstances';
+import { useCamera } from '../camera/CameraContext';
+import { CUT_BELOW, roofAt } from '../village/roofBlend';
+import { cutWallHeight, useWallCutIds } from './village/wallCut';
 
 type WealthTier = 'modest' | 'standard' | 'prosperous';
 
@@ -1276,6 +1280,47 @@ export function osmWindowsOf(buildings: readonly Extruded[]): OsmWindow[] {
   return out;
 }
 
+// ORDER 333 E — ett hus nära vagnen vid krogens nivå (village/wallCut.ts): väggen går ned till 1,6 m medan taket
+// tonar ut, och det som står över väggen (taket, listerna, hörnbräderna, entrén) döljs när väggen är kapad.
+function CutWall({ b, children }: { b: Extruded; children: ReactNode }) {
+  const { actualRef } = useCamera();
+  const wall = useRef<THREE.Mesh>(null);
+  const above = useRef<THREE.Group>(null);
+  useFrame(() => {
+    const rk = roofAt(actualRef.current.distance);
+    if (wall.current) wall.current.scale.y = cutWallHeight(b.height, rk) / b.height;
+    if (above.current) above.current.visible = rk >= CUT_BELOW;
+  });
+  return (
+    <>
+      <mesh ref={wall} geometry={b.geo} userData={{ osmBuildingWall: true, osmBuildingId: b.id, wallCut: true }}>
+        <meshStandardMaterial color={b.wallColour} roughness={0.9} />
+      </mesh>
+      <group ref={above}>{children}</group>
+    </>
+  );
+}
+
+// ORDER 333 E — fönstren på de kapade husen i en egen grupp, dold när väggarna är kapade (D15 cutWins).
+function CutWindows({ windows }: { windows: OsmWindow[] }) {
+  const { actualRef } = useCamera();
+  const g = useRef<THREE.Group>(null);
+  useFrame(() => {
+    if (g.current) g.current.visible = roofAt(actualRef.current.distance) >= CUT_BELOW;
+  });
+  if (windows.length === 0) return null;
+  return (
+    <group ref={g}>
+      {/* Matriserna räknas en gång (ORDER 297b); nyckeln monterar om när vagnen byter plats. */}
+      <Instances frames={STATIC_INSTANCE_FRAMES} key={[...new Set(windows.map((w) => w.id))].join(',')} limit={windows.length} range={windows.length}>
+        <boxGeometry args={[FACADE_WINDOW.w, FACADE_WINDOW.h, FACADE_WINDOW.depth]} />
+        <meshStandardMaterial color="#efe6d4" emissive="#f4c680" emissiveIntensity={0.14} roughness={0.65} />
+        {windows.map((w, i) => <Instance key={i} position={w.pos} rotation={[0, w.rotY, 0]} />)}
+      </Instances>
+    </group>
+  );
+}
+
 export function OsmBuildings() {
   const buildings = useMemo(
     () =>
@@ -1284,11 +1329,14 @@ export function OsmBuildings() {
         .filter((b): b is Extruded => b !== null),
     []
   );
+  const cut = useWallCutIds();
 
   // Aggregate every window across every eligible building into one flat
   // list, rendered via a single drei Instances call — one draw call for
   // the entire village window population instead of one mesh per pane.
-  const windows = useMemo(() => osmWindowsOf(buildings), [buildings]);
+  // ORDER 333 E — de kapade husens fönster står i CutWindows.
+  const windows = useMemo(() => osmWindowsOf(buildings.filter((b) => !cut.has(b.id))), [buildings, cut]);
+  const cutWindows = useMemo(() => osmWindowsOf(buildings.filter((b) => cut.has(b.id))), [buildings, cut]);
 
   return (
     <group>
@@ -1309,28 +1357,9 @@ export function OsmBuildings() {
           b.effectiveKind === 'residential' ||
           b.effectiveKind === 'commercial';
         const bhash = idHash(b.id + ':entry');
-        return (
-          <group key={b.id}>
-            {hasPlinth && (
-              <BuildingPlinth
-                centre={b.ridgeCentre}
-                ridgeW={b.ridgeW}
-                ridgeD={b.ridgeD}
-                ridgeAngle={b.ridgeAngle}
-                wealth={b.profile.wealth}
-                osmBuildingId={b.id}
-              />
-            )}
-            {/* ORDER 162 §DoD 1 — userData-taggen läses av
-                WallSurfaceAuditProbe för att jämföra grannens wall-mesh
-                (ExtrudeGeometry, alltid opak) mot PlayerBusiness wall-mesh
-                (sideWallGeometry, transparent + fade). Ingen render-effekt. */}
-            <mesh
-              geometry={b.geo}
-              userData={{ osmBuildingWall: true, osmBuildingId: b.id }}
-            >
-              <meshStandardMaterial color={b.wallColour} roughness={0.9} />
-            </mesh>
+        // ORDER 333 E — det som står över väggen; döljs på ett kapat hus (CutWall).
+        const extras = (
+          <>
             {hasStoreyBands && (
               <StoreyBands
                 centre={b.ridgeCentre}
@@ -1374,6 +1403,37 @@ export function OsmBuildings() {
               trimColour={b.trimColour}
               profile={b.profile}
             />
+          </>
+        );
+        return (
+          <group key={b.id}>
+            {hasPlinth && (
+              <BuildingPlinth
+                centre={b.ridgeCentre}
+                ridgeW={b.ridgeW}
+                ridgeD={b.ridgeD}
+                ridgeAngle={b.ridgeAngle}
+                wealth={b.profile.wealth}
+                osmBuildingId={b.id}
+              />
+            )}
+            {/* ORDER 162 §DoD 1 — userData-taggen läses av
+                WallSurfaceAuditProbe för att jämföra grannens wall-mesh
+                (ExtrudeGeometry, alltid opak) mot PlayerBusiness wall-mesh
+                (sideWallGeometry, transparent + fade). Ingen render-effekt. */}
+            {cut.has(b.id) ? (
+              <CutWall b={b}>{extras}</CutWall>
+            ) : (
+              <>
+                <mesh
+                  geometry={b.geo}
+                  userData={{ osmBuildingWall: true, osmBuildingId: b.id }}
+                >
+                  <meshStandardMaterial color={b.wallColour} roughness={0.9} />
+                </mesh>
+                {extras}
+              </>
+            )}
           </group>
         );
       })}
@@ -1382,6 +1442,7 @@ export function OsmBuildings() {
           just proud of the drawn wall (ORDER 323 §4, facadeWindowsOf). Legible from village zoom as
           a horizontal band and readable as individual panes at close
           zoom without the earlier blank-slab feel. */}
+      <CutWindows windows={cutWindows} />
       {windows.length > 0 && (
         <Instances frames={STATIC_INSTANCE_FRAMES} limit={windows.length} range={windows.length}>
           <boxGeometry args={[FACADE_WINDOW.w, FACADE_WINDOW.h, FACADE_WINDOW.depth]} />

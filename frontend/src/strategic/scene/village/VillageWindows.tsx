@@ -16,10 +16,13 @@
 // och egna fönster. Bara under servicen och kvällen.
 
 import { useFrame } from '@react-three/fiber';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { VENUE_BUILDINGS } from '../../content/villagePlaces';
 import { useSimState } from '../../simulation/SimulationProvider';
+import { useCamera } from '../../camera/CameraContext';
+import { CUT_BELOW, roofAt } from '../../village/roofBlend';
+import { useWallCutIds } from './wallCut';
 import { eveningProgress } from '../../../sim/clock';
 import { useOpeningEvening } from '../../opening/openingStage';
 import { venuesTonight, PLAYER_VENUE } from '../../../sim/village';
@@ -160,10 +163,31 @@ export function VillageWindows() {
   }, [built]);
 
   const venues = useMemo(() => venuesTonight(sim), [sim.day.dayNumber]); // eslint-disable-line react-hooks/exhaustive-deps
+  // ORDER 333 E — fönstren på husen som kapas vid krogens nivå (wallCut.ts) döljs när väggarna är kapade.
+  const cut = useWallCutIds();
+  const { actualRef } = useCamera();
+  const hiddenKey = useRef('');
 
   useFrame((_, delta) => {
     built.group.visible = e !== null;
     if (e === null) return;
+    const hide = roofAt(actualRef.current.distance) < CUT_BELOW && cut.size > 0;
+    const key = hide ? [...cut].join(',') : '';
+    if (key !== hiddenKey.current) {
+      hiddenKey.current = key;
+      const dummy = new THREE.Object3D();
+      for (const { im, list } of built.inst) {
+        list.forEach((w, i) => {
+          const gone = hide && cut.has(w.bid);
+          dummy.position.set(w.x, w.y, w.z);
+          dummy.rotation.set(0, w.ry, 0);
+          dummy.scale.set(gone ? 0 : w.w, gone ? 0 : w.h, gone ? 0 : 1);
+          dummy.updateMatrix();
+          im.setMatrixAt(i, dummy.matrix);
+        });
+        im.instanceMatrix.needsUpdate = true;
+      }
+    }
     const dt = Math.min(delta, 0.1);
     const out = new Set(villageLive().outHomes);
     const light: Record<string, { open: number; busy: number }> = {};

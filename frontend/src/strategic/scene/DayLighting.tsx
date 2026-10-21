@@ -21,6 +21,8 @@ import { harnessParams } from '../testHarness/urlParams';
 import type { DayPeriod } from '../types';
 import { clockMinutes, eveningProgress } from '../../sim/clock';
 import { EveningLighting } from '../village/EveningLighting';
+import { SKY } from '../village/villageEvening';
+import { SUMMER_SKY } from '../village/summer';
 import { useOpeningLight } from '../opening/openingLight';
 
 // Hour-of-day per game period. Local civil time. Autumn-calibrated
@@ -85,9 +87,9 @@ export function DayLighting() {
   const lift = dinnerHour === null
     ? EVENING_LIFT[effectivePeriod] ?? 1
     : DINNER_LIFT[0] + (DINNER_LIFT[1] - DINNER_LIFT[0]) * night;
-  // ORDER 056 Del A — season is a dev-toggle (default autumn = 25 Sep
-  // per ORDER 054). Summer selects 21 Jun for comparison. Non-dev
-  // builds always read 'autumn' (the module default).
+  // ORDER 056 Del A — season is a dev-toggle. ORDER 333 C: the default
+  // is summer (21 Jun, village/summer.ts); J switches to the autumn
+  // calibration (25 Sep, ORDER 054) for comparison.
   const season = useDevSeason();
   const date = SEASON_DATE[season];
   // ORDER 297 — under servicen och kvällen gäller byns kvällsljus (Designs
@@ -99,7 +101,8 @@ export function DayLighting() {
   // ORDER 308b — med öppningens eget ljus (openingLight.ts), bara medan den spelas.
   const opening = useOpeningLight();
   if (opening !== null) return <EveningLighting e={opening.e} level={opening.level} gain={opening.gain} />;
-  if (evening !== null) return <EveningLighting e={evening} />;
+  // ORDER 333 C — sommarkvällen (village/summer.ts); hösten bakom DEV-växeln J.
+  if (evening !== null) return <EveningLighting e={evening} keys={season === 'summer' ? SUMMER_SKY : SKY} />;
   return (
     <SunLightRig
       hourOfDay={hour}

@@ -17,7 +17,9 @@ interface DevToggleState {
 type Listener = (state: DevToggleState) => void;
 
 const state: DevToggleState = {
-  season: 'autumn'   // ORDER 054 default — 25 Sep autumn calibration.
+  // ORDER 333 C — sommaren är spelets säsong (avsnitt 8 punkt 3); hösten är jämförelsen bakom J.
+  // Förut hösten (ORDER 054, 25 sep).
+  season: 'summer'
 };
 
 const listeners = new Set<Listener>();
@@ -32,7 +34,7 @@ export const devToggles = {
     for (const l of listeners) l({ ...state });
   },
   toggleSeason(): void {
-    devToggles.setSeason(state.season === 'autumn' ? 'summer' : 'autumn');
+    devToggles.setSeason(state.season === 'summer' ? 'autumn' : 'summer');
   },
   subscribe(l: Listener): () => void {
     listeners.add(l);

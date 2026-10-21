@@ -1,0 +1,181 @@
+{
+  "definition": "ORDER 333. premises = vinbaren och bistron i lokalen från övertagandet (KARNAN_PREMISES), magasinsgatan = vagnen på Magasinsgatan varje kväll (KARNAN_TRUCK_SPOT). 40 frön per rad. closed = stängda säsonger, meanCashEnd = medelkassan vid säsongens slut (kr), reachedVinbar/reachedBistro = säsonger som nådde steget, vinbarWeekMedian/bistroWeekMedian = medianveckan dit, starEarned = säsonger med stjärna. closedMoreThanTorget332 = stängda här minus i reports/order332/efter (samma rad, Torget). torgetSameAs332 = Torgets rader lika med ORDER 332 efter i alla fält. Magasinsgatan: evenings, meanRevenueSek, feeSek, netPerEveningSek = intäkt minus avgift per kväll vid vagnen (truckBySpot).",
+  "torgetSameAs332": true,
+  "premises": {
+    "torget": {
+      "trappa-mentorn": {
+        "closed": 0,
+        "meanCashEnd": 36424,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 36,
+        "bistroWeekMedian": 5,
+        "starEarned": 0,
+        "closedMoreThanTorget332": 0
+      },
+      "trappa-rimlig": {
+        "closed": 0,
+        "meanCashEnd": 28976,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0,
+        "closedMoreThanTorget332": 0
+      },
+      "trappa-slarvig": {
+        "closed": 0,
+        "meanCashEnd": 117576,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0,
+        "closedMoreThanTorget332": 0
+      }
+    },
+    "kallaren": {
+      "trappa-mentorn": {
+        "closed": 40,
+        "meanCashEnd": -39052,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0,
+        "closedMoreThanTorget332": 40
+      },
+      "trappa-rimlig": {
+        "closed": 32,
+        "meanCashEnd": -37409,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0,
+        "closedMoreThanTorget332": 32
+      },
+      "trappa-slarvig": {
+        "closed": 0,
+        "meanCashEnd": 117576,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0,
+        "closedMoreThanTorget332": 0
+      }
+    },
+    "salongen": {
+      "trappa-mentorn": {
+        "closed": 0,
+        "meanCashEnd": 39334,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 38,
+        "bistroWeekMedian": 4,
+        "starEarned": 0,
+        "closedMoreThanTorget332": 0
+      },
+      "trappa-rimlig": {
+        "closed": 0,
+        "meanCashEnd": 31966,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0,
+        "closedMoreThanTorget332": 0
+      },
+      "trappa-slarvig": {
+        "closed": 0,
+        "meanCashEnd": 117576,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0,
+        "closedMoreThanTorget332": 0
+      }
+    },
+    "glashornet": {
+      "trappa-mentorn": {
+        "closed": 0,
+        "meanCashEnd": 24784,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 17,
+        "bistroWeekMedian": 5,
+        "starEarned": 0,
+        "closedMoreThanTorget332": 0
+      },
+      "trappa-rimlig": {
+        "closed": 3,
+        "meanCashEnd": 17282,
+        "reachedVinbar": 40,
+        "vinbarWeekMedian": 2,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0,
+        "closedMoreThanTorget332": 3
+      },
+      "trappa-slarvig": {
+        "closed": 0,
+        "meanCashEnd": 117576,
+        "reachedVinbar": 0,
+        "vinbarWeekMedian": null,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0,
+        "closedMoreThanTorget332": 0
+      }
+    }
+  },
+  "magasinsgatan": {
+    "trappa-mentorn": {
+      "closed": 0,
+      "meanCashEnd": 35999,
+      "reachedVinbar": 40,
+      "vinbarWeekMedian": 2,
+      "reachedBistro": 34,
+      "bistroWeekMedian": 5,
+      "starEarned": 0,
+      "evenings": 462,
+      "meanRevenueSek": 6284,
+      "feeSek": 100,
+      "netPerEveningSek": 6184,
+      "torgetEvenings": 0,
+      "torgetMeanRevenueSek": 0
+    },
+    "trappa-rimlig": {
+      "closed": 0,
+      "meanCashEnd": 27262,
+      "reachedVinbar": 40,
+      "vinbarWeekMedian": 2,
+      "reachedBistro": 0,
+      "bistroWeekMedian": null,
+      "starEarned": 0,
+      "evenings": 477,
+      "meanRevenueSek": 6175,
+      "feeSek": 100,
+      "netPerEveningSek": 6075,
+      "torgetEvenings": 0,
+      "torgetMeanRevenueSek": 0
+    },
+    "trappa-slarvig": {
+      "closed": 0,
+      "meanCashEnd": 112749,
+      "reachedVinbar": 0,
+      "vinbarWeekMedian": null,
+      "reachedBistro": 0,
+      "bistroWeekMedian": null,
+      "starEarned": 0,
+      "evenings": 1920,
+      "meanRevenueSek": 4937,
+      "feeSek": 100,
+      "netPerEveningSek": 4837,
+      "torgetEvenings": 0,
+      "torgetMeanRevenueSek": 0
+    }
+  }
+}

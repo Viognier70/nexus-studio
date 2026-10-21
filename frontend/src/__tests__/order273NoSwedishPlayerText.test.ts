@@ -39,6 +39,8 @@ const ALLOWED = [
   'Prästgatan',
   // ORDER 332 — Gästgivaregården (kvarteret och vagnens plats, Designs D15): ortnamnet står kvar på engelska (regel 7).
   'Gästgivaregården',
+  // ORDER 333 D — Kärnhuset (huset på campus där Flygeln är östra flygeln, Designs D15): egennamnet står kvar (regel 7).
+  'Kärnhuset',
   // ORDER 319b — Designs D9 meny: tunnbröd är rättens namn också på engelska ("Tunnbröd wrap").
   'Tunnbröd',
   // ORDER 301 — avhandlingarnas titlar i Kunskapsgrundens källor (egennamn).

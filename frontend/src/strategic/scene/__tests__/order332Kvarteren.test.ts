@@ -31,8 +31,9 @@ describe('ORDER 332 D — gränserna', () => {
     for (const id of DISTRICT_IDS) expect(DISTRICT_AREAS[id].maxOffRoadM).toBeLessThan(1);
   });
 
-  it('vagnens fem platser ligger i sina kvarter', () => {
-    for (const s of Object.values(TRUCK_SPOTS)) expect([s.id, districtAt(s.C[0], s.C[1])]).toEqual([s.id, s.district]);
+  // ORDER 333 B — Magasinsgatan ligger utanför kvarteren (avsnitt 8 punkt 1).
+  it('vagnens platser ligger i sina kvarter, Magasinsgatan i inget', () => {
+    for (const s of Object.values(TRUCK_SPOTS)) expect([s.id, districtAt(s.C[0], s.C[1])]).toEqual([s.id, s.outsideDistricts ? null : s.district]);
   });
 
   it('krogen, Gästgivaregården, kyrkan, Måltidens hus, Kärnhuset och Prästgatans studentsträcka', () => {

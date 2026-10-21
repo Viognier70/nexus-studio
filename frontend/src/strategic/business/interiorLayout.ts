@@ -30,6 +30,7 @@ import type { BusinessClass } from './businessClass';
 import { businessHasSeats } from './businessClass';
 import { businessRoomRef } from '../scene/interiorSharedState';
 import { entranceObb } from './venueEntrance';
+import { currentPremises, premisesBuilding } from '../content/playerPremises';
 
 // ---------- Compile-time layout constants ----------
 // Every measurement below is metres in the OBB local frame:
@@ -176,6 +177,9 @@ export function playerObb(building: RawBuilding): OBB {
 }
 
 function findPlayerBuilding(): RawBuilding | null {
+  // ORDER 333 D — vinbaren i en av lokalerna: det tänkta huset i lokalens ram (content/playerPremises.ts).
+  const premises = premisesBuilding();
+  if (premises) return premises;
   const targetId = [...PLAYER_BUSINESS_BUILDING_IDS][0];
   if (!targetId) return null;
   return WORLD.buildings.find((b) => b.id === targetId) ?? null;
@@ -370,8 +374,11 @@ function readContractSeats(
 export function usePlayerBusinessInterior(
   businessClass?: BusinessClass
 ): InteriorLayout | null {
+  // ORDER 333 D — och lokalen (content/playerPremises.ts).
+  const premises = currentPremises();
   return useMemo(
     () => computePlayerBusinessInterior(businessClass),
-    [businessClass]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [businessClass, premises]
   );
 }

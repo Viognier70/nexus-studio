@@ -15,7 +15,7 @@
 //
 //   WRITE_REPORTS=1 KARNAN_SEEDS=20 [KARNAN_START=25000] [KARNAN_VARIANT='{"RISK":{...}}'] npx vitest run src/strategic/testHarness/__tests__/order296Karnan.test.ts
 
-import { playerTruckSpotOf, truckSpotFeeSek, truckSpotOpen, TRUCK_SPOT_IDS, TRUCK_SPOTS, type TruckSpotId } from '../../../sim/districts';
+import { playerTruckSpotOf, truckSpotFeeSek, truckSpotOpen, TRUCK_SPOT_IDS, TRUCK_SPOTS, type PremisesId, type TruckSpotId } from '../../../sim/districts';
 import { rankedVillage } from '../../scenario/CompareScreen';
 import { PLAYER_VENUE } from '../../../sim/village';
 import { describe, expect, it } from 'vitest';
@@ -151,6 +151,9 @@ const START_IN = process.env.KARNAN_START ?? 'foodtruck';
 // ORDER 332 G — KARNAN_TRUCK_SPOT=sjon ställer vagnen på en av de fem platserna varje morgon den är öppen (annars
 // Torget), som spelaren gör i morgonrutan. Utan den står vagnen på Torget som förut.
 const TRUCK_SPOT = (process.env.KARNAN_TRUCK_SPOT ?? null) as TruckSpotId | null;
+// ORDER 333 D — KARNAN_PREMISES=kallaren: vinbaren (och bistron) står i en av lokalerna från övertagandet, som
+// spelaren väljer i erbjudandet. Utan den Torget som förut.
+const PREMISES_ROW = (process.env.KARNAN_PREMISES ?? null) as PremisesId | null;
 // Från den här veckan räknas platsen i byn (efter stegen i foodtrucken och vinbaren).
 const TOP_FROM_WEEK = 4;
 
@@ -177,6 +180,9 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
     const cal = calendarFor(s.day.dayNumber);
     if (TRUCK_SPOT && s.economy.businessClass === 'foodtruck' && cal.isServiceDay) {
       s = { ...s, economy: { ...s.economy, truckSpot: truckSpotOpen(TRUCK_SPOT, s.day.dayNumber) ? TRUCK_SPOT : 'torget' } };
+    }
+    if (PREMISES_ROW && s.economy.businessClass && s.economy.businessClass !== 'foodtruck' && s.economy.premises !== PREMISES_ROW) {
+      s = { ...s, economy: { ...s.economy, premises: PREMISES_ROW } };
     }
     const truckTonight = s.economy.businessClass === 'foodtruck' && cal.isServiceDay ? playerTruckSpotOf(s) : null;
     const revenueBefore = s.revenue;
@@ -300,7 +306,7 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
       const { fileURLToPath } = await import('node:url');
       const out = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports', process.env.REPORT_ORDER ?? 'order296');
       mkdirSync(out, { recursive: true });
-      writeFileSync(resolve(out, process.env.KARNAN_OUT ?? 'karnan.json'), JSON.stringify({ truckSpot: TRUCK_SPOT, tasting: TASTING_ON, definition: 'Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).', start, variant: process.env.KARNAN_VARIANT ?? null, seeds, weeks, players: result }, null, 2) + '\n');
+      writeFileSync(resolve(out, process.env.KARNAN_OUT ?? 'karnan.json'), JSON.stringify({ truckSpot: TRUCK_SPOT, premises: PREMISES_ROW, tasting: TASTING_ON, definition: 'Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).', start, variant: process.env.KARNAN_VARIANT ?? null, seeds, weeks, players: result }, null, 2) + '\n');
     }
     expect(Object.keys(result).length).toBe(players.length);
   }, 3600000);

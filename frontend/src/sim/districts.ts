@@ -8,11 +8,28 @@
 export type DistrictId = 'torget' | 'student' | 'gastgivaregarden' | 'campus' | 'sjon';
 export const DISTRICT_IDS: readonly DistrictId[] = ['torget', 'student', 'gastgivaregarden', 'campus', 'sjon'];
 
-/** Foodtruckens fem platser (D15 SPOTS). */
-export type TruckSpotId = 'torget' | 'prastgatan' | 'gastgivaregarden' | 'campus' | 'sjon';
-export const TRUCK_SPOT_IDS: readonly TruckSpotId[] = ['torget', 'prastgatan', 'gastgivaregarden', 'campus', 'sjon'];
+/** Foodtruckens platser: D15:s fem (SPOTS) och Magasinsgatan (ORDER 333 B, avsnitt 8 punkt 2). */
+export type TruckSpotId = 'torget' | 'prastgatan' | 'gastgivaregarden' | 'campus' | 'sjon' | 'magasinsgatan';
+export const TRUCK_SPOT_IDS: readonly TruckSpotId[] = ['torget', 'prastgatan', 'gastgivaregarden', 'campus', 'sjon', 'magasinsgatan'];
 
 export { TRUCK_SPOTS, type TruckSpotFrame } from '../strategic/content/truckSpots';
+
+/** ORDER 333 D — vinbarens lokaler: Torget som förut och D15:s tre (avsnitt 8 punkt 4). Spelaren väljer när vinbaren
+ *  tas över; bistron byggs om i samma lokal. Lokalens kvarter styr gästerna, klassen är densamma. */
+export type PremisesId = 'torget' | 'kallaren' | 'salongen' | 'glashornet';
+export const PREMISES_IDS: readonly PremisesId[] = ['torget', 'kallaren', 'salongen', 'glashornet'];
+/** Lokalens kvarter och hus (D15 kvarterPlatser.js VENUES; Torget: spelarens hus, world.ts PLAYER_BUSINESS_BUILDING_IDS). */
+export const PREMISES: Record<PremisesId, { id: PremisesId; district: DistrictId; building: string }> = {
+  torget: { id: 'torget', district: 'torget', building: 'w869907975' },
+  kallaren: { id: 'kallaren', district: 'student', building: 'w193810970' },
+  salongen: { id: 'salongen', district: 'gastgivaregarden', building: 'w193810957' },
+  glashornet: { id: 'glashornet', district: 'campus', building: 'w193810921' }
+};
+
+/** Lokalen spelarens krog står i. Saknas i äldre sparfiler: Torget. */
+export function playerPremisesOf(state: { economy?: { premises?: PremisesId } | null }): PremisesId {
+  return state.economy?.premises ?? 'torget';
+}
 import { TRUCK_SPOTS } from '../strategic/content/truckSpots';
 
 /** Spelarens krog ligger på Torget (avsnitt 7 punkt 7). */
@@ -49,9 +66,9 @@ export function districtSpec(d: DistrictId): DistrictSpec {
   return DISTRICTS.list[d];
 }
 
-/** Kvarteret spelarens verksamhet står i i kväll: vagnens plats, annars Torget (krogen ligger på torget). */
-export function playerDistrictOf(state: { economy?: { businessClass?: string | null; truckSpot?: TruckSpotId } | null }): DistrictId {
-  return state.economy?.businessClass === 'foodtruck' ? TRUCK_SPOTS[playerTruckSpotOf(state)].district : PLAYER_DISTRICT;
+/** Kvarteret spelarens verksamhet står i i kväll: vagnens plats, annars lokalens (ORDER 333 D; Torget som förut). */
+export function playerDistrictOf(state: { economy?: { businessClass?: string | null; truckSpot?: TruckSpotId; premises?: PremisesId } | null }): DistrictId {
+  return state.economy?.businessClass === 'foodtruck' ? TRUCK_SPOTS[playerTruckSpotOf(state)].district : PREMISES[playerPremisesOf(state)].district;
 }
 
 /** Terminstid en viss dag (DISTRICTS.termWeeks). */

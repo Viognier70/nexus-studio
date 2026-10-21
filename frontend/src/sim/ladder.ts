@@ -21,6 +21,7 @@ import { ladderOf, nextStep, refitClosedToday, stepSpec, type LadderOffer, type 
 export * from './ladderStep';
 import type { PavilionKey, SimulationState } from '../strategic/types';
 import { changeClass, floorPercent, openFirstBusiness } from './economy';
+import type { PremisesId } from './districts';
 import { introductionStep } from './introduction';
 import { applyCashDelta, postLedger } from '../strategic/simulation/cashReading';
 import { strings } from '../content/strings';
@@ -168,8 +169,9 @@ export function canTakeOffer(state: SimulationState): 'ok' | 'none' | 'notMornin
   return 'ok';
 }
 
-/** "Ta över": köpet (insatsen och lånet) och nästa steg. */
-export function takeOffer(state: SimulationState): SimulationState {
+/** "Ta över": köpet (insatsen och lånet) och nästa steg. ORDER 333 D: när vinbaren tas över väljer spelaren lokal
+ *  (sim/districts.ts PREMISES); utan val Torget, som förut. Ombyggnaden till bistron sker i samma lokal. */
+export function takeOffer(state: SimulationState, premises?: PremisesId): SimulationState {
   if (canTakeOffer(state) !== 'ok') return state;
   if (introOffer(state)) return openFoodtruck(state);
   const ladder: LadderState = ladderOf(state)!;
@@ -183,6 +185,7 @@ export function takeOffer(state: SimulationState): SimulationState {
     // Insatsen är klassens (stegets faktor är 1 för vinbaren).
     const changed = changeClass(state, toSpec.businessClass, false);
     next = { ...changed, reputation: state.reputation * LADDER.reputationFactorOnPurchase };
+    if (toSpec.businessClass === 'vinbar') next = { ...next, economy: { ...next.economy, premises: premises ?? 'torget' } };
   } else {
     // Ombyggnad i samma hus (vinbaren → bistron): insatsen ur kassan och
     // ombyggnaden till lånet.

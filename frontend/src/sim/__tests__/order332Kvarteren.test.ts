@@ -10,7 +10,7 @@ import { DISTRICTS, VILLAGE } from '../balance';
 import { calendarFor, firstDayOfWeek } from '../calendar';
 import {
   districtTonight, isConferenceDay, isTermTime, playerDistrictOf, playerQuality, playerTruckSpotOf, qualityWeight,
-  truckSpotOpen, DISTRICT_IDS, TRUCK_SPOT_IDS, TRUCK_SPOTS
+  truckSpotFeeSek, truckSpotOpen, DISTRICT_IDS, TRUCK_SPOT_IDS, TRUCK_SPOTS
 } from '../districts';
 import { districtMix, playerChoiceShare, venueWeight } from '../village';
 import { dailyGuestCap } from '../economy';
@@ -51,8 +51,11 @@ describe('ORDER 332 F — Torgets tal är dagens', () => {
 });
 
 describe('ORDER 332 G — platserna', () => {
-  it('fem platser, var och en i sitt kvarter, Torget och Campus som D15', () => {
-    expect(TRUCK_SPOT_IDS).toHaveLength(5);
+  // ORDER 333 B — och Magasinsgatan, den sjätte, med Torgets gäster och en egen avgift.
+  it('sex platser, var och en i sitt kvarter, Torget och Campus som D15', () => {
+    expect(TRUCK_SPOT_IDS).toHaveLength(6);
+    expect(TRUCK_SPOTS.magasinsgatan.district).toBe('torget');
+    expect(truckSpotFeeSek('magasinsgatan')).toBeGreaterThan(0);
     expect(TRUCK_SPOTS.torget.C).toEqual([17.0, -21.9]);
     expect(TRUCK_SPOTS.campus.C).toEqual([550.3, -70.42]);
     expect(new Set(TRUCK_SPOT_IDS.map((id) => TRUCK_SPOTS[id].district))).toEqual(new Set(DISTRICT_IDS));

@@ -23,6 +23,9 @@ import { calendarFor } from '../../sim/calendar';
 import { GAME_MINUTES_PER_SIM_SECOND, INCIDENTS, SITTING, CLOCK, SUSTAINABILITY_LEVELS } from '../../sim/balance';
 import { WARM } from '../../ui/theme/nexusTheme.warm';
 import { eveningGuests } from '../simulation/guestTypes';
+import { whereGuestsWent, PLAYER_VENUE } from '../../sim/village';
+import { playerTruckSpotOf, TRUCK_SPOTS } from '../../sim/districts';
+import { t as tt, type StringKey } from '../../content/nexusStrings';
 import type { SimulationState } from '../types';
 import { NxButton, NxScreen } from '../ui/system/components';
 import { formatSek } from '../ui/CashCounter';
@@ -40,6 +43,37 @@ function LevelDots({ level, previous, label }: { level: number; previous: number
       {Array.from({ length: SUSTAINABILITY_LEVELS.max }, (_, i) => (
         <span key={i} className="nx-level-dot" data-on={i < level} data-prev={previous !== null && i === previous - 1} />
       ))}
+    </div>
+  );
+}
+
+// ORDER 333 F — vart kvarterets gäster gick och varför (avsnitt 8 punkt 6): varje grupp med andelen som valde
+// vinnaren, skälet och andelen som valde spelaren. Ingen siffra utan förklaring.
+export function WhereGuestsWentPanel({ sim }: { sim: SimulationState }) {
+  const lang = useLanguage();
+  const v = strings.village, w = v.whereWent, g = strings.guestTypes;
+  const { district, rows } = whereGuestsWent(sim);
+  if (rows.length === 0) return null;
+  // Magasinsgatan ligger utanför kvarteren (ORDER 333 B): platsens namn, inte kvarterets vars gäster den har.
+  const spot = sim.economy.businessClass === 'foodtruck' ? playerTruckSpotOf(sim) : null;
+  const place = spot && TRUCK_SPOTS[spot].outsideDistricts ? tt(lang, `spot.name.${spot}` as StringKey) : v.districts[district] ?? district;
+  const name = (id: string) => v.venues[id] ?? id;
+  const pct = (x: number) => Math.round(x * 100);
+  return (
+    <div className="nx-result-guests" data-testid="result-where" data-district={district}>
+      <div className="nx-label">{w.heading(place)}</div>
+      {rows.map((r) => {
+        const group = g.label[r.type];
+        const key = r.reason === 'quality' ? r.quality : r.reason;
+        const text = r.versusId === null ? w.alone(group)
+          : r.topId === PLAYER_VENUE ? w.playerWon(group, pct(r.playerShare), w.whyPlayer[key](name(r.versusId)))
+          : w.rivalWon(group, name(r.topId), pct(r.topShare), pct(r.playerShare), w.whyRival[key]);
+        return (
+          <p key={r.type} className="nx-small" data-testid={`result-where-${r.type}`} data-top={r.topId} data-reason={r.reason} style={{ margin: 0 }}>
+            {text}
+          </p>
+        );
+      })}
     </div>
   );
 }
@@ -206,6 +240,7 @@ export function ResultScreen({ sim, onContinue }: { sim: SimulationState; onCont
             })}
           </ol>
           <EveningGuestsPanel sim={sim} />
+          <WhereGuestsWentPanel sim={sim} />
         </section>
         <section className="nx-result-gains" aria-label={t.gains}>
           <div className="nx-label" style={{ marginBottom: 'calc(12 * var(--nx-u))' }}>{t.gains}</div>

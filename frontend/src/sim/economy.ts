@@ -6,7 +6,7 @@
 // Kassa och krediter byter aldrig plats: här läses medaljer, aldrig
 // krediter, och inget i filen skriver krediter.
 
-import { districtTonight, playerDistrictOf, type TruckSpotId } from './districts';
+import { districtTonight, playerDistrictOf, type PremisesId, type TruckSpotId } from './districts';
 import { truckWeatherOf } from './truckLife';
 import { ladderWageFactor, starsPossible } from './ladderStep';
 import { staffSnapshot } from './staffCondition';
@@ -237,6 +237,8 @@ export interface EconomyState {
   risk?: RiskState;
   // ORDER 332 G — platsen spelarens foodtruck står på (sim/districts.ts). Saknas: Torget.
   truckSpot?: TruckSpotId;
+  // ORDER 333 D — lokalen spelarens krog står i (sim/districts.ts PREMISES), vald när vinbaren tas över. Saknas: Torget.
+  premises?: PremisesId;
 }
 
 export function classSpec(id: BusinessClassId): BusinessClassSpec {

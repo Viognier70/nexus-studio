@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { WORLD_BOUNDS } from '../content/world';
 import { openingGroundRgb, useOpeningGround } from '../opening/openingGround';
+import { SUMMER_GROUND, useVisibleSeason } from '../village/summer';
 
 // Segmented terrain plane with gentle Bergslag-hill displacement outside
 // the village core. Vertices within the village bounds (plus a safety
@@ -14,10 +15,15 @@ import { openingGroundRgb, useOpeningGround } from '../opening/openingGround';
 // The single-plane / no polygonOffset choice from VS-02B is preserved
 // (avoids the previous shimmering ground); we simply move it from a
 // hard-coded plane to a low-segment BufferGeometry.
+// Höstens mark (förut den enda).
+const AUTUMN_GROUND = { base: '#79806b', dry: '#8a7a5e', moss: '#6a7561', peat: '#4f4d3d', gravel: '#a89f88' } as const;
+
 export function OsmTerrain() {
   // ORDER 308c — under öppningen markens färg mot Designs (openingGround.ts);
   // spelets färger per hörn sparas och läggs tillbaka när öppningen slutar.
   const opening = useOpeningGround();
+  // ORDER 333 C — sommarens mark (village/summer.ts SUMMER_GROUND); hösten bakom DEV-växeln J.
+  const season = useVisibleSeason();
   const { geometry, gameColours } = useMemo(() => {
     const cx = (WORLD_BOUNDS.maxX + WORLD_BOUNDS.minX) / 2;
     const cz = (WORLD_BOUNDS.maxZ + WORLD_BOUNDS.minZ) / 2;
@@ -52,11 +58,12 @@ export function OsmTerrain() {
     // octave gives sub-metre grain that reads as tussocks and worn
     // path fringes at close zoom.
     const colors = new Float32Array(pos.count * 3);
-    const base = new THREE.Color('#79806b');
-    const dry = new THREE.Color('#8a7a5e');
-    const moss = new THREE.Color('#6a7561');
-    const peat = new THREE.Color('#4f4d3d');
-    const gravel = new THREE.Color('#a89f88');
+    const G = season === 'summer' ? SUMMER_GROUND : AUTUMN_GROUND;
+    const base = new THREE.Color(G.base);
+    const dry = new THREE.Color(G.dry);
+    const moss = new THREE.Color(G.moss);
+    const peat = new THREE.Color(G.peat);
+    const gravel = new THREE.Color(G.gravel);
     const tmp = new THREE.Color();
 
     for (let i = 0; i < pos.count; i++) {
@@ -107,7 +114,9 @@ export function OsmTerrain() {
     geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
     geo.computeVertexNormals();
     return { geometry: geo, gameColours: colors.slice() };
-  }, []);
+  }, [season]);
+
+  useEffect(() => () => geometry.dispose(), [geometry]);
 
   useEffect(() => {
     const attr = geometry.attributes.color as THREE.BufferAttribute;
