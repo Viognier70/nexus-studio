@@ -2062,7 +2062,8 @@ export type SimAction =
   | { type: 'FIKA_ANSWER'; optionId: 'A' | 'B' | 'C' | 'D' }
   | { type: 'FIKA_GO_HOME' }
   // ORDER 315a — Åsas erbjudande om nästa steg: Ta över eller Inte än.
-  | { type: 'LADDER_TAKE' }
+  // ORDER 333 D — lokalen när vinbaren tas över (sim/districts.ts PREMISES); utan den Torget.
+  | { type: 'LADDER_TAKE'; premises?: import('../sim/districts').PremisesId }
   | { type: 'LADDER_DECLINE' }
   // ORDER 283 — spelaren har läst introduktionen i Måltidens hus.
   | { type: 'SEE_HOUSE_INTRO' }

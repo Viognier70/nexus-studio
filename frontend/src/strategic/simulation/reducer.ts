@@ -366,7 +366,7 @@ function reduce(state: SimulationState, action: SimAction): SimulationState {
       return outcome.credits > 0 ? creditQuestion(draft, 'phronesis', null, outcome.credits) : draft;
     }
     case 'LADDER_TAKE':
-      return takeOffer(state);
+      return takeOffer(state, action.premises);
     case 'LADDER_DECLINE':
       return declineOffer(state);
     case 'FIKA_GO_HOME': {

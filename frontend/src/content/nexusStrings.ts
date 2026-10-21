@@ -543,6 +543,16 @@ export const STRINGS = {
   'spot.tonight.outOfTerm': { sv: 'Studenterna är lediga.', en: 'The students are off for the summer.' },
   'spot.tonight.conference': { sv: 'Konferens på campus.', en: 'A conference on campus.' },
   'spot.tonight.market': { sv: 'Marknad på torget.', en: 'Market day on the square.' },
+  // ORDER 333 D — vinbarens lokal, vald när vinbaren tas över (Designs D15: källaren, salongen, Flygeln).
+  'premises.label': { sv: 'Lokalen', en: 'The premises' },
+  'premises.name.torget': { sv: 'Torget', en: 'The square' },
+  'premises.name.kallaren': { sv: 'Källaren', en: 'The cellar' },
+  'premises.name.salongen': { sv: 'Salongen', en: 'The salon' },
+  'premises.name.glashornet': { sv: 'Flygeln', en: 'Flygeln' },
+  'premises.where.torget': { sv: 'Huset vid torget, som i dag', en: 'The house on the square, as today' },
+  'premises.where.kallaren': { sv: 'Under ett hus vid Prästgatan, i studentkvarteret', en: 'Under a house on Prästgatan, in the student quarter' },
+  'premises.where.salongen': { sv: 'Ett långt hus nära Gästgivaregården och kyrkan', en: 'A long house near Gästgivaregården and the church' },
+  'premises.where.glashornet': { sv: 'Kärnhusets östra flygel på campus', en: 'The east wing of Kärnhuset on campus' },
   'truck.forecast': { sv: 'Vädret i kväll vid vagnen: {weather}.', en: 'Tonight’s weather at the truck: {weather}.' },
   'truck.forecastRain': { sv: 'Regnet kommer en bit in i kvällen.', en: 'The rain comes a while into the evening.' }
 } satisfies Record<string, Entry>;
