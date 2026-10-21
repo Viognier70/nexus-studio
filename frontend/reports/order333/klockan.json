@@ -1,0 +1,1427 @@
+{
+  "definition": "ORDER 333 G. Varannan sekund under servicen vid vagnen (4×): clock = HUD:ens klocka (service-clock-time), firstMatch = första hh.mm i sidans text (det ORDER 332:s skript läste), countdown = situationskortets nedräkning (incident-countdown, n och data-frozen), card = kortet öppet. svara = första valet klickas, vanta = kortet går ut av sig självt. clockLongestStillSeconds/firstMatchLongestStillSeconds = längsta tid värdet stod still (verkliga sekunder).",
+  "fore": {
+    "at": "2026-10-21T10:09:10.918Z",
+    "build": "produktion (vite build + preview)",
+    "runs": {
+      "svara": {
+        "answered": 6,
+        "clockLongestStillSeconds": 0,
+        "firstMatchLongestStillSeconds": 0,
+        "rows": [
+          {
+            "t": 0,
+            "clock": "18.09",
+            "firstMatch": "18.09",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 2,
+            "clock": "18.13",
+            "firstMatch": "18.13",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 4,
+            "clock": "18.17",
+            "firstMatch": "18.17",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 6,
+            "clock": "18.21",
+            "firstMatch": "18.21",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 8,
+            "clock": "18.26",
+            "firstMatch": "18.26",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 10,
+            "clock": "18.30",
+            "firstMatch": "18.30",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 12,
+            "clock": "18.34",
+            "firstMatch": "18.34",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 14,
+            "clock": "18.35",
+            "firstMatch": "18.35",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 16,
+            "clock": "18.36",
+            "firstMatch": "18.36",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 18,
+            "clock": "18.37",
+            "firstMatch": "18.37",
+            "countdown": {
+              "n": "19",
+              "frozen": "false"
+            },
+            "card": true,
+            "answered": true
+          },
+          {
+            "t": 20,
+            "clock": "18.38",
+            "firstMatch": "18.38",
+            "countdown": {
+              "n": "19",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 22,
+            "clock": "18.39",
+            "firstMatch": "18.39",
+            "countdown": {
+              "n": "19",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 24,
+            "clock": "18.40",
+            "firstMatch": "18.40",
+            "countdown": {
+              "n": "19",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 26,
+            "clock": "18.41",
+            "firstMatch": "18.41",
+            "countdown": {
+              "n": "33",
+              "frozen": "false"
+            },
+            "card": true,
+            "answered": true
+          },
+          {
+            "t": 28,
+            "clock": "18.42",
+            "firstMatch": "18.42",
+            "countdown": {
+              "n": "33",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 30,
+            "clock": "18.43",
+            "firstMatch": "18.43",
+            "countdown": {
+              "n": "33",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 32,
+            "clock": "18.44",
+            "firstMatch": "18.44",
+            "countdown": {
+              "n": "33",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 35,
+            "clock": "18.45",
+            "firstMatch": "18.45",
+            "countdown": {
+              "n": "34",
+              "frozen": "false"
+            },
+            "card": true,
+            "answered": true
+          },
+          {
+            "t": 37,
+            "clock": "18.46",
+            "firstMatch": "18.46",
+            "countdown": {
+              "n": "33",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 39,
+            "clock": "18.47",
+            "firstMatch": "18.47",
+            "countdown": {
+              "n": "33",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 41,
+            "clock": "18.48",
+            "firstMatch": "18.48",
+            "countdown": {
+              "n": "33",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 43,
+            "clock": "18.49",
+            "firstMatch": "18.49",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 45,
+            "clock": "18.52",
+            "firstMatch": "18.52",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 47,
+            "clock": "18.56",
+            "firstMatch": "18.56",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 49,
+            "clock": "19.00",
+            "firstMatch": "19.00",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 51,
+            "clock": "19.04",
+            "firstMatch": "19.04",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 53,
+            "clock": "19.08",
+            "firstMatch": "19.08",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 55,
+            "clock": "19.12",
+            "firstMatch": "19.12",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 57,
+            "clock": "19.16",
+            "firstMatch": "19.16",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 59,
+            "clock": "19.20",
+            "firstMatch": "19.20",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 61,
+            "clock": "19.24",
+            "firstMatch": "19.24",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 63,
+            "clock": "19.28",
+            "firstMatch": "19.28",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 65,
+            "clock": "19.32",
+            "firstMatch": "19.32",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 67,
+            "clock": "19.36",
+            "firstMatch": "19.36",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 69,
+            "clock": "19.41",
+            "firstMatch": "19.41",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 71,
+            "clock": "19.45",
+            "firstMatch": "19.45",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 73,
+            "clock": "19.49",
+            "firstMatch": "19.49",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 75,
+            "clock": "19.53",
+            "firstMatch": "19.53",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 77,
+            "clock": "19.57",
+            "firstMatch": "19.57",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 79,
+            "clock": "20.01",
+            "firstMatch": "20.01",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 81,
+            "clock": "20.05",
+            "firstMatch": "20.05",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 83,
+            "clock": "20.08",
+            "firstMatch": "20.08",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 85,
+            "clock": "20.09",
+            "firstMatch": "20.09",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 87,
+            "clock": "20.10",
+            "firstMatch": "20.10",
+            "countdown": {
+              "n": "20",
+              "frozen": "false"
+            },
+            "card": true,
+            "answered": true
+          },
+          {
+            "t": 89,
+            "clock": "20.11",
+            "firstMatch": "20.11",
+            "countdown": {
+              "n": "20",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 91,
+            "clock": "20.12",
+            "firstMatch": "20.12",
+            "countdown": {
+              "n": "20",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 93,
+            "clock": "20.13",
+            "firstMatch": "20.13",
+            "countdown": {
+              "n": "20",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 96,
+            "clock": "20.14",
+            "firstMatch": "20.14",
+            "countdown": {
+              "n": "33",
+              "frozen": "false"
+            },
+            "card": true,
+            "answered": true
+          },
+          {
+            "t": 98,
+            "clock": "20.15",
+            "firstMatch": "20.15",
+            "countdown": {
+              "n": "33",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 100,
+            "clock": "20.16",
+            "firstMatch": "20.16",
+            "countdown": {
+              "n": "33",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 102,
+            "clock": "20.17",
+            "firstMatch": "20.17",
+            "countdown": {
+              "n": "33",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 104,
+            "clock": "20.18",
+            "firstMatch": "20.18",
+            "countdown": {
+              "n": "33",
+              "frozen": "false"
+            },
+            "card": true,
+            "answered": true
+          },
+          {
+            "t": 106,
+            "clock": "20.19",
+            "firstMatch": "20.19",
+            "countdown": {
+              "n": "33",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 108,
+            "clock": "20.20",
+            "firstMatch": "20.20",
+            "countdown": {
+              "n": "33",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 110,
+            "clock": "20.21",
+            "firstMatch": "20.21",
+            "countdown": {
+              "n": "33",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 112,
+            "clock": "20.22",
+            "firstMatch": "20.22",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 114,
+            "clock": "20.25",
+            "firstMatch": "20.25",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 116,
+            "clock": "20.29",
+            "firstMatch": "20.29",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 118,
+            "clock": "20.33",
+            "firstMatch": "20.33",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 120,
+            "clock": "20.37",
+            "firstMatch": "20.37",
+            "countdown": null,
+            "card": false
+          }
+        ]
+      },
+      "vanta": {
+        "answered": 0,
+        "clockLongestStillSeconds": 0,
+        "firstMatchLongestStillSeconds": 0,
+        "rows": [
+          {
+            "t": 0,
+            "clock": "18.09",
+            "firstMatch": "18.09",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 2,
+            "clock": "18.13",
+            "firstMatch": "18.13",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 4,
+            "clock": "18.17",
+            "firstMatch": "18.17",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 6,
+            "clock": "18.21",
+            "firstMatch": "18.21",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 8,
+            "clock": "18.25",
+            "firstMatch": "18.25",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 10,
+            "clock": "18.29",
+            "firstMatch": "18.29",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 12,
+            "clock": "18.33",
+            "firstMatch": "18.33",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 14,
+            "clock": "18.37",
+            "firstMatch": "18.37",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 16,
+            "clock": "18.41",
+            "firstMatch": "18.41",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 18,
+            "clock": "18.45",
+            "firstMatch": "18.45",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 20,
+            "clock": "18.50",
+            "firstMatch": "18.50",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 22,
+            "clock": "18.54",
+            "firstMatch": "18.54",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 24,
+            "clock": "18.58",
+            "firstMatch": "18.58",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 26,
+            "clock": "19.02",
+            "firstMatch": "19.02",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 28,
+            "clock": "19.06",
+            "firstMatch": "19.06",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 30,
+            "clock": "19.10",
+            "firstMatch": "19.10",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 32,
+            "clock": "19.14",
+            "firstMatch": "19.14",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 34,
+            "clock": "19.18",
+            "firstMatch": "19.18",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 36,
+            "clock": "19.19",
+            "firstMatch": "19.19",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 38,
+            "clock": "19.20",
+            "firstMatch": "19.20",
+            "countdown": {
+              "n": "20",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 40,
+            "clock": "19.21",
+            "firstMatch": "19.21",
+            "countdown": {
+              "n": "18",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 42,
+            "clock": "19.22",
+            "firstMatch": "19.22",
+            "countdown": {
+              "n": "16",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 44,
+            "clock": "19.23",
+            "firstMatch": "19.23",
+            "countdown": {
+              "n": "14",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 46,
+            "clock": "19.24",
+            "firstMatch": "19.24",
+            "countdown": {
+              "n": "12",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 48,
+            "clock": "19.25",
+            "firstMatch": "19.25",
+            "countdown": {
+              "n": "10",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 50,
+            "clock": "19.26",
+            "firstMatch": "19.26",
+            "countdown": {
+              "n": "8",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 52,
+            "clock": "19.27",
+            "firstMatch": "19.27",
+            "countdown": {
+              "n": "6",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 54,
+            "clock": "19.28",
+            "firstMatch": "19.28",
+            "countdown": {
+              "n": "4",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 56,
+            "clock": "19.29",
+            "firstMatch": "19.29",
+            "countdown": {
+              "n": "2",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 58,
+            "clock": "19.30",
+            "firstMatch": "19.30",
+            "countdown": {
+              "n": "1",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 60,
+            "clock": "19.31",
+            "firstMatch": "19.31",
+            "countdown": {
+              "n": "1",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 62,
+            "clock": "19.32",
+            "firstMatch": "19.32",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 64,
+            "clock": "19.34",
+            "firstMatch": "19.34",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 66,
+            "clock": "19.38",
+            "firstMatch": "19.38",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 68,
+            "clock": "19.42",
+            "firstMatch": "19.42",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 70,
+            "clock": "19.47",
+            "firstMatch": "19.47",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 72,
+            "clock": "19.51",
+            "firstMatch": "19.51",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 74,
+            "clock": "19.55",
+            "firstMatch": "19.55",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 76,
+            "clock": "19.59",
+            "firstMatch": "19.59",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 78,
+            "clock": "20.03",
+            "firstMatch": "20.03",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 80,
+            "clock": "20.07",
+            "firstMatch": "20.07",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 83,
+            "clock": "20.08",
+            "firstMatch": "20.08",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 85,
+            "clock": "20.09",
+            "firstMatch": "20.09",
+            "countdown": {
+              "n": "20",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 87,
+            "clock": "20.10",
+            "firstMatch": "20.10",
+            "countdown": {
+              "n": "19",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 89,
+            "clock": "20.11",
+            "firstMatch": "20.11",
+            "countdown": {
+              "n": "17",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 91,
+            "clock": "20.12",
+            "firstMatch": "20.12",
+            "countdown": {
+              "n": "15",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 93,
+            "clock": "20.13",
+            "firstMatch": "20.13",
+            "countdown": {
+              "n": "13",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 95,
+            "clock": "20.14",
+            "firstMatch": "20.14",
+            "countdown": {
+              "n": "11",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 97,
+            "clock": "20.15",
+            "firstMatch": "20.15",
+            "countdown": {
+              "n": "9",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 99,
+            "clock": "20.16",
+            "firstMatch": "20.16",
+            "countdown": {
+              "n": "7",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 101,
+            "clock": "20.17",
+            "firstMatch": "20.17",
+            "countdown": {
+              "n": "5",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 103,
+            "clock": "20.18",
+            "firstMatch": "20.18",
+            "countdown": {
+              "n": "3",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 105,
+            "clock": "20.19",
+            "firstMatch": "20.19",
+            "countdown": {
+              "n": "1",
+              "frozen": "false"
+            },
+            "card": true
+          },
+          {
+            "t": 107,
+            "clock": "20.20",
+            "firstMatch": "20.20",
+            "countdown": {
+              "n": "1",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 109,
+            "clock": "20.21",
+            "firstMatch": "20.21",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 111,
+            "clock": "20.24",
+            "firstMatch": "20.24",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 113,
+            "clock": "20.28",
+            "firstMatch": "20.28",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 115,
+            "clock": "20.32",
+            "firstMatch": "20.32",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 117,
+            "clock": "20.36",
+            "firstMatch": "20.36",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 119,
+            "clock": "20.40",
+            "firstMatch": "20.40",
+            "countdown": null,
+            "card": false
+          }
+        ]
+      }
+    }
+  },
+  "fore-tangenter": {
+    "at": "2026-10-21T12:38:23.998Z",
+    "build": "produktion (vite build + preview)",
+    "runs": {
+      "tangenter": {
+        "answered": 6,
+        "clockLongestStillSeconds": 0,
+        "firstMatchLongestStillSeconds": 0,
+        "rows": [
+          {
+            "t": 0,
+            "clock": "18.09",
+            "firstMatch": "18.09",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 2,
+            "clock": "18.13",
+            "firstMatch": "18.13",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 4,
+            "clock": "18.17",
+            "firstMatch": "18.17",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 6,
+            "clock": "18.21",
+            "firstMatch": "18.21",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 8,
+            "clock": "18.25",
+            "firstMatch": "18.25",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 10,
+            "clock": "18.29",
+            "firstMatch": "18.29",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 12,
+            "clock": "18.33",
+            "firstMatch": "18.33",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 14,
+            "clock": "18.37",
+            "firstMatch": "18.37",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 16,
+            "clock": "18.41",
+            "firstMatch": "18.41",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 18,
+            "clock": "18.45",
+            "firstMatch": "18.45",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 20,
+            "clock": "18.49",
+            "firstMatch": "18.49",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 22,
+            "clock": "18.53",
+            "firstMatch": "18.53",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 24,
+            "clock": "18.58",
+            "firstMatch": "18.58",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 26,
+            "clock": "19.02",
+            "firstMatch": "19.02",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 28,
+            "clock": "19.06",
+            "firstMatch": "19.06",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 30,
+            "clock": "19.10",
+            "firstMatch": "19.10",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 32,
+            "clock": "19.14",
+            "firstMatch": "19.14",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 34,
+            "clock": "19.18",
+            "firstMatch": "19.18",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 36,
+            "clock": "19.19",
+            "firstMatch": "19.19",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 40,
+            "clock": "19.20",
+            "firstMatch": "19.20",
+            "countdown": {
+              "n": "20",
+              "frozen": "false"
+            },
+            "card": true,
+            "answered": true
+          },
+          {
+            "t": 42,
+            "clock": "19.21",
+            "firstMatch": "19.21",
+            "countdown": {
+              "n": "20",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 46,
+            "clock": "19.23",
+            "firstMatch": "19.23",
+            "countdown": {
+              "n": "20",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 50,
+            "clock": "19.24",
+            "firstMatch": "19.24",
+            "countdown": {
+              "n": "32",
+              "frozen": "false"
+            },
+            "card": true,
+            "answered": true
+          },
+          {
+            "t": 53,
+            "clock": "19.26",
+            "firstMatch": "19.26",
+            "countdown": {
+              "n": "32",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 56,
+            "clock": "19.28",
+            "firstMatch": "19.28",
+            "countdown": {
+              "n": "35",
+              "frozen": "false"
+            },
+            "card": true,
+            "answered": true
+          },
+          {
+            "t": 60,
+            "clock": "19.30",
+            "firstMatch": "19.30",
+            "countdown": {
+              "n": "35",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 63,
+            "clock": "19.31",
+            "firstMatch": "19.31",
+            "countdown": {
+              "n": "35",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 65,
+            "clock": "19.34",
+            "firstMatch": "19.34",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 67,
+            "clock": "19.38",
+            "firstMatch": "19.38",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 69,
+            "clock": "19.42",
+            "firstMatch": "19.42",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 71,
+            "clock": "19.46",
+            "firstMatch": "19.46",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 73,
+            "clock": "19.50",
+            "firstMatch": "19.50",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 75,
+            "clock": "19.54",
+            "firstMatch": "19.54",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 77,
+            "clock": "19.58",
+            "firstMatch": "19.58",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 79,
+            "clock": "20.02",
+            "firstMatch": "20.02",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 81,
+            "clock": "20.06",
+            "firstMatch": "20.06",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 83,
+            "clock": "20.08",
+            "firstMatch": "20.08",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 85,
+            "clock": "20.09",
+            "firstMatch": "20.09",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 88,
+            "clock": "20.10",
+            "firstMatch": "20.10",
+            "countdown": {
+              "n": "19",
+              "frozen": "false"
+            },
+            "card": true,
+            "answered": true
+          },
+          {
+            "t": 92,
+            "clock": "20.12",
+            "firstMatch": "20.12",
+            "countdown": {
+              "n": "19",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 95,
+            "clock": "20.13",
+            "firstMatch": "20.13",
+            "countdown": {
+              "n": "35",
+              "frozen": "false"
+            },
+            "card": true,
+            "answered": true
+          },
+          {
+            "t": 99,
+            "clock": "20.15",
+            "firstMatch": "20.15",
+            "countdown": {
+              "n": "35",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 102,
+            "clock": "20.17",
+            "firstMatch": "20.17",
+            "countdown": {
+              "n": "35",
+              "frozen": "false"
+            },
+            "card": true,
+            "answered": true
+          },
+          {
+            "t": 106,
+            "clock": "20.19",
+            "firstMatch": "20.19",
+            "countdown": {
+              "n": "35",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 109,
+            "clock": "20.20",
+            "firstMatch": "20.20",
+            "countdown": {
+              "n": "35",
+              "frozen": "true"
+            },
+            "card": true
+          },
+          {
+            "t": 111,
+            "clock": "20.23",
+            "firstMatch": "20.23",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 113,
+            "clock": "20.27",
+            "firstMatch": "20.27",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 115,
+            "clock": "20.31",
+            "firstMatch": "20.31",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 117,
+            "clock": "20.35",
+            "firstMatch": "20.35",
+            "countdown": null,
+            "card": false
+          },
+          {
+            "t": 119,
+            "clock": "20.39",
+            "firstMatch": "20.39",
+            "countdown": null,
+            "card": false
+          }
+        ]
+      }
+    }
+  }
+}
