@@ -1311,7 +1311,8 @@ function CutWindows({ windows }: { windows: OsmWindow[] }) {
   if (windows.length === 0) return null;
   return (
     <group ref={g}>
-      <Instances limit={windows.length} range={windows.length}>
+      {/* Matriserna räknas en gång (ORDER 297b); nyckeln monterar om när vagnen byter plats. */}
+      <Instances frames={STATIC_INSTANCE_FRAMES} key={[...new Set(windows.map((w) => w.id))].join(',')} limit={windows.length} range={windows.length}>
         <boxGeometry args={[FACADE_WINDOW.w, FACADE_WINDOW.h, FACADE_WINDOW.depth]} />
         <meshStandardMaterial color="#efe6d4" emissive="#f4c680" emissiveIntensity={0.14} roughness={0.65} />
         {windows.map((w, i) => <Instance key={i} position={w.pos} rotation={[0, w.rotY, 0]} />)}
