@@ -1,0 +1,75 @@
+{
+  "definition": "ORDER 333 D. Bilderna i reports/order333/lokal/<lokal>-<nivå>.png. clock = HUD:ens klocka, level = nivåknapparnas data-level, errors = sidans fel (pageerror). Källaren är omkörd för sig (LOKALER=kallaren, 2026-10-21T14:16:16.343Z): i första körningen öppnade skriptets klick i scenen en figurs kort, och nivåknapparna nådde inte kameran. Skriptet klickar inte längre i scenen.",
+  "at": "2026-10-21T14:04:15.713Z",
+  "build": "produktion (vite build + preview)",
+  "premises": {
+    "torget": {
+      "shots": {
+        "krogen": {
+          "clock": "20.17",
+          "level": "room"
+        },
+        "gatan": {
+          "clock": "20.25",
+          "level": "street"
+        },
+        "byn": {
+          "clock": "20.34",
+          "level": "village"
+        }
+      },
+      "errors": []
+    },
+    "kallaren": {
+      "shots": {
+        "krogen": {
+          "clock": "20.17",
+          "level": "room"
+        },
+        "gatan": {
+          "clock": "20.26",
+          "level": "street"
+        },
+        "byn": {
+          "clock": "20.34",
+          "level": "village"
+        }
+      },
+      "errors": []
+    },
+    "salongen": {
+      "shots": {
+        "krogen": {
+          "clock": "20.17",
+          "level": "room"
+        },
+        "gatan": {
+          "clock": "20.25",
+          "level": "street"
+        },
+        "byn": {
+          "clock": "20.34",
+          "level": "village"
+        }
+      },
+      "errors": []
+    },
+    "glashornet": {
+      "shots": {
+        "krogen": {
+          "clock": "20.17",
+          "level": "room"
+        },
+        "gatan": {
+          "clock": "20.26",
+          "level": "street"
+        },
+        "byn": {
+          "clock": "20.35",
+          "level": "village"
+        }
+      },
+      "errors": []
+    }
+  }
+}

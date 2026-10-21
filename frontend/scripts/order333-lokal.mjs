@@ -32,7 +32,8 @@ const saveAt = (premises) => { const s = JSON.parse(JSON.stringify(base)); s.sim
 const clock = (page) => page.evaluate(() => document.querySelector('[data-testid=service-clock-time]')?.textContent ?? null);
 const minutes = (t) => (t ? Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5)) : -1);
 async function noCard(page) { const until = Date.now() + 60000; while (Date.now() < until && (await page.$('.nx-rocket'))) await delay(1000); }
-async function level(page, key) { await page.mouse.click(640, 400).catch(() => {}); await page.keyboard.press(key); await delay(4000); }
+// Nivåknapparna lyssnar på fönstret; inget klick i scenen (det kan öppna en figurs kort).
+async function level(page, key) { await page.keyboard.press(key); await delay(4000); }
 
 const result = { at: new Date().toISOString(), build: 'produktion (vite build + preview)', premises: {} };
 try {
