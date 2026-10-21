@@ -1,0 +1,46 @@
+{
+  "definition": "ORDER 333 H. Per flöde (start = startsidan, service = sparat spel och servicen öppnad): responses = svar med status ≥ 400 (BrowserContext response), failed = misslyckade begäranden, console = konsolens fel med adressen (ConsoleMessage.location). fore = före rättelsen, efter = med den.",
+  "fore": {
+    "at": "2026-10-21T10:03:41.418Z",
+    "build": "produktion (vite build + preview)",
+    "pages": {
+      "start": {
+        "responses": [],
+        "failed": [],
+        "console": [
+          {
+            "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+            "url": "/favicon.ico"
+          }
+        ],
+        "unique": [
+          "Failed to load resource: the server responded with a status of 404 (Not Found) @ /favicon.ico"
+        ]
+      },
+      "service": {
+        "responses": [],
+        "failed": [],
+        "console": [],
+        "unique": []
+      }
+    }
+  },
+  "efter": {
+    "at": "2026-10-21T10:06:14.213Z",
+    "build": "produktion (vite build + preview)",
+    "pages": {
+      "start": {
+        "responses": [],
+        "failed": [],
+        "console": [],
+        "unique": []
+      },
+      "service": {
+        "responses": [],
+        "failed": [],
+        "console": [],
+        "unique": []
+      }
+    }
+  }
+}
