@@ -93,3 +93,32 @@ AI:n lär sig av kvarteret. Tappar den gäster ändrar den pris eller meny, och 
 | **5. Online** | Realtid, frånvarande ägare, rapporten vid inloggning, moderering. | Etapp 4, plus juridik och GDPR |
 
 Etapp 1 börjar när vinbarens 306c och fikat är på plats (ORDER 329–330).
+
+---
+
+## 7. Beslut efter Codes synpunkter (12 oktober 2026)
+
+1. **Tider på dygnet.** Etapp 1 behåller den enda kvällsservicen. Kvarteren skiljer sig i stället åt mellan vardag och helg, terminstid, säsong, marknadsdagar och konferensdagar. Frukost, lunch, AW och nattliv kommer i etapp 5.
+2. **Sjön** blir i etapp 1 en plats för foodtrucken och inte ett kvarter med en krog. Den lever på sommaren, på varma helger och på fiskepremiärer, och är nästan tom en höstvardag. Att välja den är ett omdöme som spelaren gör.
+3. **Två sätt att vara kräsen.**
+   - Campusgästerna väger det som går att visa inom ämnet, alltså medaljer och prov från Måltidens hus. De betalar en medelhög summa.
+   - Gästerna vid Gästgivaregården väger helheten: rätten, vinet och servicen. De betalar mest och förlåter minst.
+4. **Konkurrenterna** i simulation/competitors.ts blir AI-krogarna i etapp 2.
+   - Prästgatans krog hör till studentkvarteret och Torgets vinkällare till torget.
+   - Kvarnkrogen och Bergsmansöl placeras efter var de ligger på kartan.
+   - Kvarteret vid Gästgivaregården får en påhittad konkurrent. Riktiga företag i byn ska inte göras till AI-krogar med påhittade egenskaper.
+5. **Höstmarknaden på torget** (worldFactors.ts) blir torgets bästa dagar.
+6. **Gränserna** följer gatorna på kartan. Code ritar ett förslag, och Anders godkänner det på en bild. Kvarteren syns i spelet: de har namn på nivån Byn och olika gäster på gatorna.
+7. **Spelarens krog** ligger på torget, där plånboken och kräsenheten är medelhöga. Dagens mätningar gäller därmed för torget, och de andra kvarteren beskrivs som avvikelser från det.
+8. **Namnet kvarterskrogen** behålls i koden. I spelets texter skrivs verksamheten så att den inte blandas ihop med kvarteren.
+
+## 8. Beslut efter etapp 1 (21 oktober 2026)
+
+Anders beslut efter ORDER 332, byggda i ORDER 333.
+
+1. **Gränserna** godkänns som på bilden i ORDER 332 (`frontend/reports/order332/kvarteren.png`). Magasinsgatan hör inte till något kvarter.
+2. **Magasinsgatan** blir foodtruckens sjätte plats. Gästerna där är som på torget, och platsen har en egen avgift.
+3. **Säsongen är sommar,** och byn ska se ut som sommar: grönska, ljus och folk på gatan. Hösten blir säsong två, senare.
+4. **Lokalerna:** de tre husen i D15 godkänns, källaren (w193810970) i studentkvarteret, salongen (w193810957) vid Gästgivaregården och glashörnet Flygeln (Kärnhusets östra flygel) på campus. När spelaren tar över vinbaren väljer hen lokal: torget som förut eller en av de tre. Lokalens kvarter styr gästerna, och klassen är densamma. Valet syns i världen.
+5. **Vid vagnen på krogens nivå** kapas väggarna på byns hus inom 12 m, så att vagnen och kön syns. Samma sak gäller lokalerna.
+6. **Grundregeln gäller kvarteren:** kvällens resultat visar vart gästerna gick och varför, till exempel att campusgästerna valde Kvarnkrogen för att de frågade efter medaljer. Ingen siffra står utan förklaring.
