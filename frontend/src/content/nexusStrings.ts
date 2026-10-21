@@ -528,6 +528,8 @@ export const STRINGS = {
   'spot.name.gastgivaregarden': { sv: 'Gästgivaregården', en: 'Gästgivaregården' },
   'spot.name.campus': { sv: 'Campus', en: 'Campus' },
   'spot.name.sjon': { sv: 'Sjön', en: 'The lake' },
+  // ORDER 333 B — vagnens sjätte plats.
+  'spot.name.magasinsgatan': { sv: 'Magasinsgatan', en: 'Magasinsgatan' },
   'spot.fee': { sv: '{price} per kväll', en: '{price} an evening' },
   'spot.feeTorget': { sv: 'Ingår i veckans tillstånd', en: 'Included in the weekly permit' },
   'spot.closed': { sv: 'Badsäsongen är slut', en: 'The bathing season is over' },

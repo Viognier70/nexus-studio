@@ -425,7 +425,8 @@ export const DISTRICTS = {
   } as Record<DistrictId, DistrictSpec>,
   // Foodtruckens platser: avgiften per kväll vagnen står där. Torget ingår i veckans tillstånd
   // (FOODTRUCK.pitchFeeWeeklySek), så Torgets tal är dagens.
-  truckSpotFeeSek: { torget: 0, prastgatan: 150, gastgivaregarden: 350, campus: 250, sjon: 300 } as Record<TruckSpotId, number>
+  // ORDER 333 B — Magasinsgatan (avsnitt 8 punkt 2): gästerna som på torget, en egen avgift. Den lägsta av platserna.
+  truckSpotFeeSek: { torget: 0, prastgatan: 150, gastgivaregarden: 350, campus: 250, sjon: 300, magasinsgatan: 100 } as Record<TruckSpotId, number>
 } as const;
 
 export interface DistrictSpec {

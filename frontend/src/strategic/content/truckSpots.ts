@@ -13,6 +13,8 @@ export interface TruckSpotFrame {
   th: number;
   /** Gatan på kartan (grythyttan-world.json). */
   street: string;
+  /** ORDER 333 B — platsen ligger utanför kvarterens gränser (districtBorders.ts); gästerna är `district`:s. */
+  outsideDistricts?: true;
 }
 
 // D15 kvarterPlatser.js SPOTS, oförändrade. Torget är D7:s plats (villagePlaces.ts PLAYER_TRUCK_PITCH, −6,29°).
@@ -24,6 +26,9 @@ export const TRUCK_SPOTS: Record<TruckSpotId, TruckSpotFrame> = {
   prastgatan: { id: 'prastgatan', district: 'student', C: [290.63, 39.17], th: 0.187, street: 'w122157689' },
   gastgivaregarden: { id: 'gastgivaregarden', district: 'gastgivaregarden', C: [62.34, 76.91], th: -1.9201, street: 'w862853214' },
   campus: { id: 'campus', district: 'campus', C: [550.3, -70.42], th: 1.7296, street: 'w122157690' },
-  sjon: { id: 'sjon', district: 'sjon', C: [376.0, 236.0], th: 0.126, street: 'w862853236' }
+  sjon: { id: 'sjon', district: 'sjon', C: [376.0, 236.0], th: 0.126, street: 'w862853236' },
+  // ORDER 333 B — Magasinsgatan, vagnens sjätte plats (avsnitt 8 punkt 2). Hör inte till något kvarter; gästerna är
+  // Torgets. Platsen är sökt längs gatan (reports/order333/magasinsgatan.json).
+  magasinsgatan: { id: 'magasinsgatan', district: 'torget', C: [-234.76, 49.74], th: 2.0493, street: 'w1329020064', outsideDistricts: true }
 };
 

@@ -8,9 +8,9 @@
 export type DistrictId = 'torget' | 'student' | 'gastgivaregarden' | 'campus' | 'sjon';
 export const DISTRICT_IDS: readonly DistrictId[] = ['torget', 'student', 'gastgivaregarden', 'campus', 'sjon'];
 
-/** Foodtruckens fem platser (D15 SPOTS). */
-export type TruckSpotId = 'torget' | 'prastgatan' | 'gastgivaregarden' | 'campus' | 'sjon';
-export const TRUCK_SPOT_IDS: readonly TruckSpotId[] = ['torget', 'prastgatan', 'gastgivaregarden', 'campus', 'sjon'];
+/** Foodtruckens platser: D15:s fem (SPOTS) och Magasinsgatan (ORDER 333 B, avsnitt 8 punkt 2). */
+export type TruckSpotId = 'torget' | 'prastgatan' | 'gastgivaregarden' | 'campus' | 'sjon' | 'magasinsgatan';
+export const TRUCK_SPOT_IDS: readonly TruckSpotId[] = ['torget', 'prastgatan', 'gastgivaregarden', 'campus', 'sjon', 'magasinsgatan'];
 
 export { TRUCK_SPOTS, type TruckSpotFrame } from '../strategic/content/truckSpots';
 import { TRUCK_SPOTS } from '../strategic/content/truckSpots';
