@@ -32,6 +32,9 @@ import { buildFacade, type FacadeGeometry } from '../../lib/facade/buildFacade';
 import { paramsFor } from '../../lib/facade/paramsFor';
 import { skyState } from '../../lib/lighting/skyState';
 import { villageLive } from './village/villageLive';
+import { useCamera } from '../camera/CameraContext';
+import { CUT_BELOW, roofAt } from '../village/roofBlend';
+import { cutWallHeight, useWallCutIds } from './village/wallCut';
 
 // Distance thresholds in metres, measured camera → building centroid.
 // Adjust in one place so LOD tuning stays legible.
@@ -240,7 +243,16 @@ export function ProceduralFacades() {
   // frame, and at most one material-swap per building per twilight
   // crossing (usually zero mid-day / mid-night).
   const frameCounter = useRef(0);
+  // ORDER 333 E — husen nära vagnen vid krogens nivå (village/wallCut.ts): väggarna och knutarna går ned till 1,6 m
+  // medan taket tonar ut, och taket och fönstren döljs när väggarna är kapade. Bara LOD 0 (kameran står nära).
+  const cut = useWallCutIds();
+  const { actualRef } = useCamera();
+  const cutBefore = useRef<ReadonlySet<string>>(new Set());
   useFrame(() => {
+    const rk = roofAt(actualRef.current.distance);
+    for (const id of cutBefore.current) if (!cut.has(id)) applyCut(groupsRef.current.get(id)?.lod0, 1, true);
+    cutBefore.current = cut;
+    for (const id of cut) applyCut(groupsRef.current.get(id)?.lod0, rk, rk >= CUT_BELOW);
     frameCounter.current += 1;
     if (frameCounter.current % 4 !== 0) return;
     const cx = camera.position.x;
@@ -357,6 +369,24 @@ export function ProceduralFacades() {
   );
 }
 
+// ORDER 333 E — LOD 0:s barn i BuildingGroup: väggarna och knutarna (taggade 'cut') skalas från marken, resten
+// (taket, fodren, blecken och glaset) döljs när väggarna är kapade. Sockeln står kvar.
+function applyCut(g: THREE.Group | undefined, rk: number, aboveVisible: boolean): void {
+  if (!g) return;
+  for (const o of g.children) {
+    const m = o as THREE.Mesh;
+    const role = m.userData.cut as 'wall' | 'keep' | undefined;
+    if (role === 'wall') {
+      if (m.userData.topM === undefined) {
+        m.geometry.computeBoundingBox();
+        m.userData.topM = m.geometry.boundingBox?.max.y ?? 0;
+      }
+      const top = m.userData.topM as number;
+      m.scale.y = top > 0 ? cutWallHeight(top, rk) / top : 1;
+    } else if (role !== 'keep') m.visible = aboveVisible;
+  }
+}
+
 interface BuildingGroupProps {
   data: BuiltBuilding;
   registerGroups: (g: { lod0: THREE.Group; lod1: THREE.Group }) => void;
@@ -400,12 +430,12 @@ function BuildingGroup({ data, registerGroups, registerLitGlass, registerLod1Emi
       {/* LOD 0 — full detail with windows. Starts hidden; useFrame
           promotes it when the camera comes close. */}
       <group ref={lod0Ref} visible={false}>
-        <mesh geometry={data.lod0.walls} material={wallMat} castShadow receiveShadow />
+        <mesh geometry={data.lod0.walls} material={wallMat} castShadow receiveShadow userData={{ cut: 'wall' }} />
         {data.lod0.corners && (
-          <mesh geometry={data.lod0.corners} material={cornerMat} castShadow />
+          <mesh geometry={data.lod0.corners} material={cornerMat} castShadow userData={{ cut: 'wall' }} />
         )}
         {data.lod0.sockel && sockelMat && (
-          <mesh geometry={data.lod0.sockel} material={sockelMat} castShadow receiveShadow />
+          <mesh geometry={data.lod0.sockel} material={sockelMat} castShadow receiveShadow userData={{ cut: 'keep' }} />
         )}
         <mesh geometry={data.lod0.roof} material={roofMat} castShadow receiveShadow />
         {data.lod0.windowFrames && (
