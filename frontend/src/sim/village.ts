@@ -252,6 +252,64 @@ export function playerChoiceShare(state: SimulationState): number {
   return share;
 }
 
+// ORDER 333 F — vart kvarterets gäster gick i kväll och varför (avsnitt 8 punkt 6: "Campusgästerna valde Kvarnkrogen,
+// de frågade efter medaljer"). Samma vikter som playerChoiceShare. Skälet är faktorn där vinnaren ligger längst före
+// den den jämförs med: rivalen mot spelaren, eller spelaren mot tvåan när spelaren vann gruppen.
+export type ChoiceReason = 'taste' | 'stars' | 'price' | 'quality';
+export interface GuestChoiceRow {
+  type: PoolType;
+  /** Gruppens andel av kvarterets gäster (districtMix). */
+  mix: number;
+  /** Andelen av gruppen som valde spelaren. */
+  playerShare: number;
+  /** Krogen som flest i gruppen valde (PLAYER_VENUE om spelaren), och dess andel. */
+  topId: string;
+  topShare: number;
+  /** Den som vinnaren jämförs med (spelaren, eller tvåan när spelaren vann). null om ingen annan var öppen. */
+  versusId: string | null;
+  reason: ChoiceReason;
+  quality: 'whole' | 'medals';
+}
+
+export function whereGuestsWent(state: SimulationState): { district: DistrictId; rows: GuestChoiceRow[] } {
+  const d = playerDistrictOf(state);
+  const venues = venuesTonight(state);
+  const mix = districtMix(d);
+  const rows: GuestChoiceRow[] = [];
+  for (const t of POOL_TYPES) {
+    if (mix[t] <= 0) continue;
+    const factors = venues.map((v) => v.open ? {
+      taste: tasteOf(state, v)[t],
+      stars: starWeight(t, v.stars, d),
+      price: priceWeight(t, v.billSek, d),
+      quality: qualityWeight(d, qualityOf(state, v, d))
+    } : null);
+    const w = factors.map((f) => (f ? f.taste * f.stars * f.price * f.quality : 0));
+    const total = w.reduce((a, b) => a + b, 0);
+    if (total <= 0) continue;
+    const order = w.map((_, i) => i).sort((a, b) => w[b] - w[a]);
+    const top = order[0];
+    const versus = top === 0 ? (order.find((i) => i !== 0 && w[i] > 0) ?? null) : 0;
+    let reason: ChoiceReason = 'taste';
+    if (versus !== null && factors[top] && factors[versus]) {
+      const a = factors[top]!, b = factors[versus]!;
+      let best = -Infinity;
+      for (const k of ['taste', 'stars', 'price', 'quality'] as const) {
+        // Kvoten i log: en faktor 0 hos den jämförda räknas som avgörande.
+        const r = b[k] <= 0 ? Infinity : a[k] <= 0 ? -Infinity : Math.log(a[k] / b[k]);
+        if (r > best) { best = r; reason = k; }
+      }
+    }
+    rows.push({
+      type: t, mix: mix[t], playerShare: w[0] / total,
+      topId: venues[top].id, topShare: w[top] / total,
+      versusId: versus === null ? null : venues[versus].id,
+      reason, quality: districtSpec(d).quality
+    });
+  }
+  return { district: d, rows };
+}
+
 // Kvällens ankomster ur byns pool: alla utom bussens turister.
 export function poolArrivals(day: Pick<SimulationState['day'], 'arrivalsToday' | 'touristsToday'>): number {
   return Math.max(0, (day.arrivalsToday ?? 0) - (day.touristsToday ?? 0));

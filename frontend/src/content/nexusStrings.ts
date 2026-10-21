@@ -2267,6 +2267,33 @@ export const TABLE = {
       campus: { sv: 'Campus och Måltidens hus', en: 'Campus and the House of the Meal' },
       sjon: { sv: 'Vid sjön', en: 'By the lake' }
     } as Record<string, { sv: string; en: string }>,
+    // ORDER 333 F — vart kvarterets gäster gick i kväll och varför (sim/village.ts whereGuestsWent; avsnitt 8 punkt 6).
+    whereWent: {
+      heading: { sv: (district: string) => `Vart gästerna gick: ${district}`, en: (district: string) => `Where the guests went: ${district}` },
+      rivalWon: {
+        sv: (group: string, venue: string, topPct: number, playerPct: number, why: string) => `${group}: ${topPct} % valde ${venue}, ${why}. ${playerPct} % valde dig.`,
+        en: (group: string, venue: string, topPct: number, playerPct: number, why: string) => `${group}: ${topPct}% chose ${venue}, ${why}. ${playerPct}% chose you.`
+      },
+      playerWon: {
+        sv: (group: string, pct: number, why: string) => `${group}: ${pct} % valde dig, ${why}.`,
+        en: (group: string, pct: number, why: string) => `${group}: ${pct}% chose you, ${why}.`
+      },
+      alone: { sv: (group: string) => `${group}: alla valde dig, ingen annan hade öppet.`, en: (group: string) => `${group}: all chose you, nobody else was open.` },
+      whyRival: {
+        price: { sv: 'där var notan lägre', en: 'the bill was lower there' },
+        stars: { sv: 'där var ryktet bättre', en: 'its reputation was better' },
+        taste: { sv: 'maten där passade dem bättre', en: 'the food there suited them better' },
+        medals: { sv: 'de frågade efter medaljer', en: 'they asked for medals' },
+        whole: { sv: 'de väger rätten, vinet och servicen', en: 'they weigh the food, the wine and the service' }
+      },
+      whyPlayer: {
+        price: { sv: (v: string) => `din nota var lägre än hos ${v}`, en: (v: string) => `your bill was lower than at ${v}` },
+        stars: { sv: (v: string) => `ditt rykte var bättre än hos ${v}`, en: (v: string) => `your reputation was better than ${v}'s` },
+        taste: { sv: (v: string) => `din mat passade dem bättre än hos ${v}`, en: (v: string) => `your food suited them better than at ${v}` },
+        medals: { sv: (v: string) => `de frågade efter medaljer, och du hade fler än ${v}`, en: (v: string) => `they asked for medals, and you had more than ${v}` },
+        whole: { sv: (v: string) => `de väger rätten, vinet och servicen, och du låg före ${v}`, en: (v: string) => `they weigh the food, the wine and the service, and you were ahead of ${v}` }
+      }
+    },
     open: { sv: 'Öppet', en: 'Open' },
     closed: { sv: 'Stängt i kväll', en: 'Closed tonight' },
     tonight: {
