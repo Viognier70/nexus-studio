@@ -121,6 +121,17 @@ Varje förmåga ändrar kvällen, men ingen av dessa syns i rummet i dag:
   - klippen `staff.sitEdge` (sittande på vagnens kant, loop) och `staff.cupStand` (stående med kopp, loop);
   - koppen från punkt 8.
 
+### 11. Bord A i regn (fråga, ORDER 333 I)
+- **Plats:** vid Grillstugan, på alla vagnens platser.
+- **Tillfälle:** regnet (ft08). Efter ett helt grepp flyttas ståbord A in under skydd resten av kvällen.
+- **I dag:** bordet flyttas till `RAIN_TABLE.to` [1,85; 2,0] (D10 `truckPropsD10.ts`). Skivan över luckan (D13 `STUGAN.flap`) täcker x −1,4 till 1,4 och z ut till 2,21 (`flapEdge`). Bordets skiva är 0,68 m och når x 1,51 till 2,19, så det mesta av bordet står utanför skivan i regnet.
+- **Det som inte går:** flyttas bordet in under skivan står det på hämtplatsen (`TRUCK_LAYOUT.queue.collect` [0,9; 2,15]), där gästen tar emot korven.
+- **Frågan:** var ska bord A stå i regn? Tre vägar som Code ser:
+  1. kvar på [1,85; 2,0], och gästerna vid bordet står i regnet;
+  2. en egen liten markis eller ett paraply över bordet öster om luckan;
+  3. bordet under markisen över kön (tillvalet `equipment.queueAwning`), och bara när markisen är köpt.
+- **Leverans:** platsen i vagnens ram, och föremålet om det behövs ett.
+
 ## Synpunkter från bygget i ORDER 331
 
 - **Vagnarnas parkering.** Flamberings-, ost- och avecvagnen står med handtaget mot väggen (D5 `equipment.ts`: "handtaget mot väggen"). Den som hämtar en vagn står därför vid vagnens andra ände, och vagnen vänds när den börjar skjutas. Code mjukar upp vändningen, men den syns. Om vagnarna parkeras med handtaget mot rummet kan de tas direkt.
@@ -133,3 +144,4 @@ Varje förmåga ändrar kvällen, men ingen av dessa syns i rummet i dag:
 3. Menytavlan (7). Två val och dagens rätt hänger på den.
 4. Kaffekoppen (8) och fikat vid vagnen (10).
 5. DJ:ns klipp (1), provsmakningsbordet (4), gästkockens kläder (5), komposttunnan (6) och förmågorna (9).
+6. Bord A i regn (11) är en fråga, inte en beställning, och kan besvaras först.
