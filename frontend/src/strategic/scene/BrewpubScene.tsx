@@ -69,7 +69,7 @@ import { applyWineBarRoof, CUT_BELOW, roofAt, STAGE_LIGHT, stageLightIntensity }
 import { applyPremisesCeiling, applyPremisesInterior, premisesToRoomLocal, PREMISES_LOOK, setAfterWorkSign, type PremisesInterior } from './premisesInterior';
 import { afterWorkGuestsTonight } from '../../sim/districts';
 import { currentPremises } from '../content/playerPremises';
-import { layoutForPremises } from './tablePlans';
+import { layoutForPremises, planOf } from './tablePlans';
 
 // ORDER 184 — skalets tonning: businessRoom.shellOpacityForDistance (samma
 // smoothstep som PlayerBusiness roof-fade; flyttad dit i ORDER 271).
@@ -135,7 +135,8 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
     // ORDER 334 C — lokalens rum: höjden och D15:s interiör runt vinbarens möblering (premisesInterior.ts).
     const premises = isWineBar ? currentPremises() : 'torget';
     const room = createRoom(roomClass, { ...roomSizeFor(roomClass, layout.width, layout.depth), layout: roomLayout, ...(premises !== 'torget' ? { interiorHeight: PREMISES_LOOK[premises].heightM } : {}) });
-    room.group.position.set(layout.centre[0], 0, layout.centre[1]);
+    // ORDER 336 B — källaren ligger under gatan (tablePlans.ts PlanDoor.floorY); figurerna följer rummets grupp.
+    room.group.position.set(layout.centre[0], planOf(roomLayout)?.door?.floorY ?? 0, layout.centre[1]);
     room.group.rotation.y = -layout.worldAngle;
     if (premises !== 'torget') applyPremisesInterior(room.raw as WineBarRoom, premises, premisesToRoomLocal(premises, layout.centre, layout.worldAngle));
     grp.add(room.group);

@@ -200,17 +200,20 @@ export function assignGuestTypes(draft: SimulationState): void {
     const t: GuestType = partyType
       ? (partyType === 'social' || partyType === 'billionaire' ? 'middle' : partyType)
       : pickType(draft, book, arrived, g);
-    g.guestType = t;
     // ORDER 334 B — de första bybornas kväll är stamgästerna (bokningens regulars), med sitt nummer: samma figur
-    // kommer tillbaka kväll efter kväll (scene/village/truckGuestFlow.ts).
-    if (t === 'middle' && (draft.day.regularsTonight ?? 0) < (book.regulars ?? 0)) {
+    // kommer tillbaka kväll efter kväll (scene/village/truckGuestFlow.ts). ORDER 336 C — också i vinbaren, där
+    // stamgästen är bybo (mellangruppen) och inte blir turist av konceptet.
+    let tt = t;
+    if (poolGroup(t) === 'middle' && !partyType && (draft.day.regularsTonight ?? 0) < (book.regulars ?? 0)) {
+      tt = 'middle';
       g.spotRegular = draft.day.regularsTonight ?? 0;
       draft.day = { ...draft.day, regularsTonight: g.spotRegular + 1 };
     }
-    g.satisfaction = Math.max(0, Math.min(1, g.satisfaction + GUEST_TYPES.satisfactionOffset[t]));
-    arrived[t] = (arrived[t] ?? 0) + 1;
-    if (g.partyId && !partyType) byParty.set(g.partyId, t);
-    if (t === 'social') {
+    g.guestType = tt;
+    g.satisfaction = Math.max(0, Math.min(1, g.satisfaction + GUEST_TYPES.satisfactionOffset[tt]));
+    arrived[tt] = (arrived[tt] ?? 0) + 1;
+    if (g.partyId && !partyType) byParty.set(g.partyId, tt);
+    if (tt === 'social') {
       draft.day = { ...draft.day, socialGuest: { guestId: g.id, outcome: null } };
       streamGuestLine(draft, strings.guestTypes.stream.socialArrives(socialName(book.social?.nameIndex ?? 0)), 'guest_social_arrives');
     }

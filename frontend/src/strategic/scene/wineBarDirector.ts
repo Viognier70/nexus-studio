@@ -46,7 +46,7 @@ import {
   type Pose,
   type Vec2
 } from './serviceFlow';
-import { WINE_BAR_PLAN, doorPath } from './wineBarRoom';
+import { WINE_BAR_PLAN, doorPathFor } from './wineBarRoom';
 import { staffTempo, waitStateFor, WAIT_THRESHOLDS } from './figureActs';
 import { IDLE_RULE } from './serviceScore';
 import { GESTURE_BALANCE, QUEUE_MOOD } from '../../sim/balance';
@@ -167,6 +167,9 @@ export interface DirectorRoom {
   floorY: number;
   width: number;
   depth: number;
+  /** ORDER 336 B — rummets möblering (lokalens egen dörr) och riktningen in genom dörren. */
+  layout?: string;
+  doorInward?: Vec2;
 }
 
 export interface DirectorOptions {
@@ -785,7 +788,17 @@ export class WineBarDirector {
     if (q.length === 0) return [this.room.waitingSpot[0], this.room.waitingSpot[1]];
     if (ix < q.length) return q[ix];
     const last = q[q.length - 1];
-    return [last[0] + 0.7 * (ix - q.length + 1), last[1]];
+    // ORDER 336 B — kön växer åt samma håll som de sista köplatserna (vinbaren: österut, källaren: längs fasaden).
+    const prev = q.length > 1 ? q[q.length - 2] : [last[0] - 0.7, last[1]];
+    const dx = last[0] - prev[0], dz = last[1] - prev[1], L = Math.hypot(dx, dz) || 1;
+    const k = 0.7 * (ix - q.length + 1);
+    return [last[0] + (dx / L) * k, last[1] + (dz / L) * k];
+  }
+
+  /** ORDER 336 B — riktningen från dörren in i rummet (wineBarRoom.ts doorInward; äldre rum: −x). */
+  private inward(): Vec2 {
+    const w = (this.room as { doorInward?: Vec2 }).doorInward;
+    return w ? [w[0], w[1]] : [-1, 0];
   }
 
   private freeQueueSlot(tr: GuestTrack): void {
@@ -795,7 +808,7 @@ export class WineBarDirector {
 
   private walkPath(given: Vec2[], t0: number, speed: number, pose: DirectorPose) {
     // ORDER 317 — en väg mellan rummet och trottoaren går genom dörrens mitt (wineBarRoom.ts doorPath).
-    const path = doorPath(given, this.room.width);
+    const path = doorPathFor(this.room, given);
     const len = pathLen(path);
     return { path, len, t0, dur: len / speed, pose };
   }
@@ -1407,7 +1420,7 @@ export class WineBarDirector {
     const a = this.actors.find((x) => x.key === 'host');
     if (!a || !a.base || input.prep) return;
     const queue = [...this.tracks.values()].filter((g) => g.mode === 'queue');
-    const door: Vec2 = [this.room.entrance[0] - HOST_IN_M, this.room.entrance[1]];
+    const door: Vec2 = [this.room.entrance[0] + this.inward()[0] * HOST_IN_M, this.room.entrance[1] + this.inward()[1] * HOST_IN_M];
     if (t < this.doorHeldUntil) {
       a.home = door; a.homeFacing = Math.PI / 2; a.idlePose = 'holdDoor';
     } else if (queue.length > 0) {
@@ -1484,7 +1497,7 @@ export class WineBarDirector {
     if ((input.morning ?? []).includes('guestChef')) on.add('cook2');
     const first = !this.crewInit;
     this.crewInit = true;
-    const door: Vec2 = [this.room.entrance[0] - HOST_IN_M, this.room.entrance[1]];
+    const door: Vec2 = [this.room.entrance[0] + this.inward()[0] * HOST_IN_M, this.room.entrance[1] + this.inward()[1] * HOST_IN_M];
     for (const a of this.actors) {
       const optional = a.key === 'extra' || a.key === 'cook2';
       const want = optional ? on.has(a.key) && !off.has(a.key) : !off.has(a.key);
@@ -1559,7 +1572,7 @@ export class WineBarDirector {
         circle(POUR_SPOT, 'sommelier', 'pour', ['bartender', 'server', 'server2'], S.tastingS, 'bottle');
         ready += S.tastingS + S.gapS;
       } else if (show === 'local') {
-        const door: Vec2 = [this.room.entrance[0] - HOST_IN_M, this.room.entrance[1]];
+        const door: Vec2 = [this.room.entrance[0] + this.inward()[0] * HOST_IN_M, this.room.entrance[1] + this.inward()[1] * HOST_IN_M];
         for (let i = 0; i < S.crates; i++) {
           this.addTask({ party: null, roles: ['dish'], target: PASS_FLOOR, facing: Math.PI / 2, pose: 'serve', walkPose: 'carryCrate', dur: S.crateSetS, pickup: door, pickupHold: 0.6, ready: t + i * 0.5 });
         }
@@ -1737,7 +1750,8 @@ export class WineBarDirector {
     const seat = this.seatByIndex.get(Math.max(0, (to.table - 1) * 2));
     const g = seat ? this.groupBySeatId.get(seat.id) : undefined;
     if (g) return { at: g.serveAt, facing: g.serveFacing };
-    return { at: [this.room.entrance[0] - 1, this.room.entrance[1]], facing: Math.PI / 2 };
+    const iw = this.inward();
+    return { at: [this.room.entrance[0] + iw[0], this.room.entrance[1] + iw[1]], facing: Math.atan2(-iw[0], -iw[1]) };
   }
 
   // ---------- läsning ----------

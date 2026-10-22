@@ -244,6 +244,8 @@ export interface EconomyState {
   // senast räknades. Stamgästerna på Magasinsgatan blir fler med dem (sim/districts.ts truckRegularsTonight).
   truckNights?: Partial<Record<TruckSpotId, number>>;
   truckNightDay?: number;
+  // ORDER 336 C — stamgästerna från Magasinsgatan som följde med till vinbaren och kommer varje kväll.
+  followingRegulars?: number;
 }
 
 export function classSpec(id: BusinessClassId): BusinessClassSpec {
@@ -330,8 +332,14 @@ export function dailyGuestCap(state: SimulationState): number {
   // ORDER 334 B — Magasinsgatan: färre gäster på gatan (truckSpotPoolK), och stamgästerna som kommer i alla fall.
   const district = districtTonight(playerDistrictOf(state), d, truckWeatherOf(state)).poolFactor * truckSpotPoolK(state);
   // ORDER 334 A — byborna på AW i källaren (balance.ts AFTER_WORK).
-  const fixed = answerBookingsFor(state) + truckRegularsTonight(state) + afterWorkGuestsTonight(state);
-  return Math.max(0, Math.floor(pool * truck * district * playerShareTonight(state) * Math.max(0, 1 + buzz + dj + regulars)) + fixed);
+  // ORDER 336 C — i krogen är stamgästerna från Magasinsgatan ett golv, inte fler gäster ovanpå: de kommer också en
+  // tunn kväll, men en kväll när rummet ändå fylls är de bland gästerna (mätt: ovanpå gav fullt rum, inköp för fler än
+  // rummet tar och lägre rykte, reports/order336/lokaler.json magasinsgatan). Vid vagnen ligger de ovanpå som förut.
+  const atTruck = state.economy.businessClass === 'foodtruck';
+  const loyal = truckRegularsTonight(state);
+  const market = Math.max(0, Math.floor(pool * truck * district * playerShareTonight(state) * Math.max(0, 1 + buzz + dj + regulars)));
+  const fixed = answerBookingsFor(state) + afterWorkGuestsTonight(state);
+  return (atTruck ? market + loyal : Math.max(market, loyal)) + fixed;
 }
 
 // Nedgraderingskedjan (speldesign > Nedgradering).

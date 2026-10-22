@@ -164,8 +164,10 @@ export function truckNightsBefore(state: Pick<SimulationState, 'economy' | 'day'
   return state.economy?.truckNightDay === state.day.dayNumber && playerTruckSpotOf(state) === spot ? Math.max(0, n - 1) : n;
 }
 
-/** Stamgästerna vid vagnen i kväll: på Magasinsgatan fler för varje kväll den stått där förut (DISTRICTS.magasinsgatan). */
+/** Stamgästerna vid vagnen i kväll: på Magasinsgatan fler för varje kväll den stått där förut (DISTRICTS.magasinsgatan).
+ *  ORDER 336 C — i krogen: de som följde med från Magasinsgatan när vinbaren togs över (economy.followingRegulars). */
 export function truckRegularsTonight(state: Pick<SimulationState, 'economy' | 'day'>): number {
+  if (state.economy?.businessClass && state.economy.businessClass !== 'foodtruck') return state.economy.followingRegulars ?? 0;
   if (state.economy?.businessClass !== 'foodtruck' || playerTruckSpotOf(state) !== 'magasinsgatan') return 0;
   const m = DISTRICTS.magasinsgatan;
   return Math.min(m.regularsMax, Math.floor(m.regularsPerEvening * truckNightsBefore(state, 'magasinsgatan')));
@@ -180,4 +182,14 @@ export function truckSpotPoolK(state: Pick<SimulationState, 'economy'>): number 
 export function playerDoorMix(state: Pick<SimulationState, 'economy'>): { student: number; middle: number; high: number } | null {
   if (state.economy?.businessClass === 'foodtruck' && playerTruckSpotOf(state) === 'magasinsgatan') return DISTRICTS.magasinsgatan.doorMix;
   return districtSpec(playerDistrictOf(state)).doorMix;
+}
+
+/** ORDER 336 C — stamgästerna som följer med från Magasinsgatan till vinbaren: andelen (DISTRICTS.magasinsgatan.followShare)
+ *  av de stamgäster vagnen hade där sista kvällen. */
+export function followingRegularsAtTakeover(state: Pick<SimulationState, 'economy' | 'day'>): number {
+  const m = DISTRICTS.magasinsgatan;
+  const nights = state.economy?.truckNights?.magasinsgatan ?? 0;
+  if (nights <= 0) return 0;
+  const lastEvening = Math.min(m.regularsMax, Math.floor(m.regularsPerEvening * (nights - 1)));
+  return Math.floor(m.followShare * lastEvening);
 }

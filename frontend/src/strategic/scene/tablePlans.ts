@@ -8,8 +8,8 @@
 // vinbarens (wineBarHouse.ts); baren, borden, platserna och gångarna är lokalens.
 //   - Källaren: två rader långbord om tio (fem per sida) och baren längs östra väggen norr om dörren med fyra pallar.
 //   - Flygeln: tolv pallar längs södra glaset, sex bord för fyra i två rader, baren mot norra väggen bort från glaset.
-//   - Salongen: vinbaren i östra änden som nu (20 platser) och salongen väster om mellanväggen: soffgruppen (tre) och
-//     tre runda bord för fyra med vit duk, genom öppningen i mellanväggen (premisesInterior.ts).
+//   - Salongen (ORDER 336 A): åtta runda bord med vit duk i hela rummet, soffgruppen vid kakelugnen, vinbarens bar kvar
+//     i östra änden; västra delen nås genom öppningen i mellanväggen (premisesInterior.ts).
 // Platsernas mått som bistrons: stolens mitt 0,2 m från bordets kant, pallens mitt 0,45 m från disken.
 import type { PremisesId } from '../../sim/districts';
 
@@ -20,7 +20,7 @@ type Rect = { x0: number; x1: number; z0: number; z1: number };
 export type PlanSeatKind = 'chair' | 'stool' | 'sofa';
 export interface PlanSeat { id: string; kind: PlanSeatKind; furnitureId: string; local: Vec2; facing: number }
 export interface PlanTable { id: string; at: Vec2; w: number; d: number; round?: boolean; cloth?: boolean }
-export type PlanLayout = 'kallaren' | 'flygeln';
+export type PlanLayout = 'kallaren' | 'flygeln' | 'salongen';
 
 export interface TablePlan {
   id: PlanLayout;
@@ -29,21 +29,45 @@ export interface TablePlan {
   /** Disken (barens låda) och hyllan bakom den. */
   bar: Rect & { h: number };
   shelf: Rect | null;
+  /** ORDER 336 A — vinbarens bar (ön med vinväggen, wineBarRoom.ts) står kvar; bar ovan är dess mått för vägarna. */
+  winebarBar?: boolean;
   /** Fönsterbänken längs glaset (Flygeln). */
   ledge: Rect | null;
   /** Personalen: bartendern i gången bakom baren, sommelieren vid barens ände, DJ:ns plats (ingen DJ). */
   bartender: { at: Vec2; facing: number };
   sommelier: { at: Vec2; facing: number };
   djAt: Vec2;
-  /** serviceFlow.ts: glaset hämtas, bartendern häller, flaskan står. */
-  spots: { pickupBar: Vec2; pourSpot: Vec2; bottlePickup: Vec2 };
-  /** theatreStage.ts: flaskorna på disken. */
-  bottles: readonly Vec2[];
+  /** serviceFlow.ts: glaset hämtas, bartendern häller, flaskan står (null: vinbarens). */
+  spots: { pickupBar: Vec2; pourSpot: Vec2; bottlePickup: Vec2 } | null;
+  /** theatreStage.ts: flaskorna på disken (null: vinbarens). */
+  bottles: readonly Vec2[] | null;
   /** Mise en place: nya platser för det som stod vid vinbarens bar. */
   mise: Record<string, { local: Vec2; facing: number }>;
   aisles: readonly Seg[];
   /** Gången bakom baren och dess utgång till gångarna. */
   runway: Rect & { exit: Vec2[] };
+  /** ORDER 336 B — en egen dörr (källaren: norra långsidan, rummets −z) och vägen utanför: entrén innanför dörren,
+   *  väntplatsen på gatan, köplatserna, trappan ned och golvets höjd under gatan. Saknas: vinbarens dörr i öster. */
+  door?: PlanDoor;
+}
+
+export interface PlanDoor {
+  /** Dörren i rummets södra vägg (−z), x0…x1 längs väggen. */
+  x0: number; x1: number;
+  /** Innanför dörren (gästens första punkt i rummet) och riktningen in i rummet. */
+  entrance: Vec2; inward: Vec2;
+  /** Väntplatsen på gatan och köplatserna (innanför på vilplanet vid dörren, utanför längs fasaden på gatan). */
+  waitingSpot: Vec2;
+  queue: readonly { id: string; side: 'inside' | 'outside'; order: number; local: Vec2 }[];
+  /** Golvet under gatan (m) och trappan längs fasaden: från gatan vid x0 ned till x1, vilplanet till xEnd, z0…z1. */
+  floorY: number;
+  stair: { x0: number; x1: number; xEnd: number; z0: number; z1: number };
+  /** Vägen från väntplatsen på gatan nedför trappan till dörren (rummets lokala ram). */
+  approach: readonly Vec2[];
+  /** ORDER 336 B (Anders 2026-10-22: "Gästerna ska mötas där de kommer in") — värdpulten innanför dörren vid
+   *  trappans fot [x0, x1, z0, z1], och värdens plats bakom den, vänd mot dörren. */
+  hostDesk: readonly [number, number, number, number];
+  host: { at: Vec2; facing: number };
 }
 
 // ---------- Gemensamt: rummets fasta delar (wineBarHouse.ts) ----------
@@ -73,6 +97,29 @@ const CELLAR_TABLES: PlanTable[] = [
   { id: 'longSE', at: [2.1, -2.95], w: 3.8, d: 0.8 }
 ];
 const CELLAR_BAR = { x0: 5.35, x1: 5.97, z0: 1.55, z1: 4.65, h: 1.05 };
+// ORDER 336 B — källardörren i norra långsidan (lokalens −z, rummets södra vägg) med trappan ned längs fasaden
+// (D15 kvarterPlatser.js VENUES.kallaren: door x 5,2, w 1,1; stair x −0,6…3,8, xEnd 6,5, 2,7 m ned). Trappan ligger
+// utanför murarna (rummets yttervägg vid z −5,205 och muren 0,45 m utanför den), 1,23 m bred som i D15.
+const CELLAR_WALL_OUT = 5.205 + 0.45;
+const CELLAR_DOOR: PlanDoor = {
+  x0: 4.65, x1: 5.75,
+  entrance: [5.2, -4.55], inward: [0, 1],
+  waitingSpot: [-1.5, -CELLAR_WALL_OUT - 0.75],
+  queue: [
+    { id: 'queueIn1', side: 'inside', order: 1, local: [5.2, -4.4] },
+    { id: 'queueIn2', side: 'inside', order: 2, local: [4.45, -4.3] },
+    { id: 'queueOut1', side: 'outside', order: 3, local: [-1.5, -CELLAR_WALL_OUT - 0.45] },
+    { id: 'queueOut2', side: 'outside', order: 4, local: [-2.4, -CELLAR_WALL_OUT - 0.45] },
+    { id: 'queueOut3', side: 'outside', order: 5, local: [-3.3, -CELLAR_WALL_OUT - 0.45] },
+    { id: 'queueOut4', side: 'outside', order: 6, local: [-4.2, -CELLAR_WALL_OUT - 0.45] },
+    { id: 'queueOut5', side: 'outside', order: 7, local: [-5.1, -CELLAR_WALL_OUT - 0.45] }
+  ],
+  floorY: -2.7,
+  stair: { x0: -0.6, x1: 3.8, xEnd: 6.5, z0: -CELLAR_WALL_OUT - 1.23, z1: -CELLAR_WALL_OUT },
+  hostDesk: [6.3, 6.75, -4.95, -4.45],
+  host: { at: [6.98, -4.7], facing: -Math.PI / 2 },
+  approach: [[-1.5, -CELLAR_WALL_OUT - 0.6], [-0.6, -CELLAR_WALL_OUT - 0.6], [3.8, -CELLAR_WALL_OUT - 0.6], [5.2, -CELLAR_WALL_OUT - 0.6], [5.2, -5.205], [5.2, -4.55]]
+};
 function cellarSeats(): PlanSeat[] {
   const out: PlanSeat[] = [];
   for (const t of CELLAR_TABLES) chairsAlong(out, t.id, t, 5, ['s', 'n']);
@@ -96,12 +143,13 @@ export const CELLAR_PLAN: TablePlan = {
   // Mittgången (z 0) från dörren till köksdörren, gångarna längs väggarna bakom de yttre stolarna (z ±4,35) och
   // tvärgångarna vid radernas ändar (x −4,1 vid köket och passet, x 4,4 mellan borden och barpallarna).
   aisles: [
-    [[-4.1, 0], [DOOR_X, 0]],
-    [[-4.1, 4.35], [4.4, 4.35]], [[-4.1, -4.35], [4.4, -4.35]],
+    [[-4.1, 0], [4.4, 0]],
+    [[-4.1, 4.35], [4.4, 4.35]], [[-4.1, -4.35], [5.2, -4.35]], [[5.2, -4.35], [5.2, -4.55]],
     [[-4.1, -4.35], [-4.1, 4.35]], [[4.4, -4.35], [4.4, 4.35]],
     [[-4.1, 0.9], [KITCHEN_EXIT[0], KITCHEN_EXIT[1]]]
   ],
-  runway: { x0: 5.97, x1: 6.82, z0: 1.3, z1: 4.65, exit: [[6.4, 1.2], [5.0, 0.6]] }
+  runway: { x0: 5.97, x1: 6.82, z0: 1.3, z1: 4.65, exit: [[6.4, 1.2], [5.0, 0.6]] },
+  door: CELLAR_DOOR
 };
 
 // ---------- Flygeln (36) ----------
@@ -145,53 +193,75 @@ export const WING_PLAN: TablePlan = {
   runway: { x0: -3.4, x1: 1.8, z0: 4.02, z1: 4.72, exit: [[2.35, 4.37], [2.35, 2.75]] }
 };
 
-// ---------- Salongen: vinbaren och 15 platser väster om mellanväggen ----------
+// ---------- Salongen (35): runda bord med vit duk i hela rummet ----------
+// ORDER 336 A (Anders 2026-10-22: "En salong med vinbarens bordsrader är ingen salong"): åtta runda bord för fyra med
+// vit duk (D15 salongen t1–t8) och soffgruppen vid kakelugnen (tre). Vinbarens bar står kvar i östra änden, utan
+// barpallar och utan DJ. Tre bord i vinbarens del (norr om baren och i sydöst) och fem väster om mellanväggen.
+// Salongens västra del ligger i rummets lokala ram väster om x −7,4 (lokalens x − content/premises.ts offsetX).
 
-/** Salongens västra del i rummets lokala ram (lokalens x − content/premises.ts salongen.offsetX; z som lokalens). */
+/** Salongens västra del: kakelugnen, soffgruppen, mattan, det låga bordet och öppningen i mellanväggen. */
 export const SALON = {
-  /** Öppningen i mellanväggen (premisesInterior.ts), och gången genom den från korridoren väster om baren. */
   opening: { z0: -1.4, z1: 1.4 },
-  corridor: [[-4.1, 0], [-7.0, 0], [-8.2, 0]] as Vec2[],
-  /** Kakelugnen mot västra gaveln, soffgruppen framför den med det låga bordet och mattan. */
   stove: [-20.69, 2.9] as Vec2,
   rug: { at: [-17.84, 2.2] as Vec2, w: 3.2, d: 2.6 },
   lowTable: { at: [-17.84, 2.2] as Vec2, w: 1.1, d: 0.6 },
   sofas: [{ id: 'sofaN', at: [-17.84, 3.45] as Vec2, facing: Math.PI }, { id: 'sofaS', at: [-17.84, 0.95] as Vec2, facing: 0 }],
   armchair: { at: [-16.34, 2.2] as Vec2, facing: -Math.PI / 2 },
-  /** Runda bord för fyra med vit duk (D15: åtta i hela salongen; här tre, med vinbarens 20 och soffgruppen 35). */
-  rounds: [[-18.0, -2.8], [-14.2, -2.8], [-11.6, 2.6]] as Vec2[],
-  roundW: 0.95,
-  /** Gångarna i salongen: längs rummet (z −0,2), längs södra väggen bakom de runda borden (z −4,3) och längs norra
-   *  (z 4,3) bakom soffgruppen och det norra bordet, med tvärgångar mellan borden. */
-  aisles: [
-    [[-8.2, -0.2], [-19.6, -0.2]], [[-8.2, 0], [-8.2, -0.2]],
-    [[-19.6, -4.3], [-12.4, -4.3]], [[-19.6, -0.2], [-19.6, -4.3]], [[-16.1, -0.2], [-16.1, -4.3]], [[-12.4, -0.2], [-12.4, -4.3]],
-    [[-19.6, 4.3], [-10.0, 4.3]], [[-15.4, -0.2], [-15.4, 4.3]], [[-10.0, -0.2], [-10.0, 4.3]], [[-11.6, -0.2], [-11.6, 1.4]], [[-13.0, -0.2], [-13.0, 4.3]]
-  ] as Seg[]
+  rounds: [[-2.0, 3.6], [1.6, 3.6], [4.6, -3.8], [-18.2, -2.9], [-14.6, -2.9], [-11.0, -2.9], [-12.6, 2.7], [-9.4, 2.7]] as Vec2[],
+  roundW: 0.95
 };
 
-function salonExtraSeats(): PlanSeat[] {
+const SALON_TABLES: PlanTable[] = SALON.rounds.map((at, i) => ({ id: `round${i + 1}`, at, w: SALON.roundW, d: SALON.roundW, round: true, cloth: true }));
+function salonSeats(): PlanSeat[] {
   const out: PlanSeat[] = [];
-  SALON.sofas.forEach((s) => out.push({ id: s.id, kind: 'sofa', furnitureId: 'sofaGroup', local: [s.at[0], s.at[1]], facing: s.facing }));
-  out.push({ id: 'armchair', kind: 'sofa', furnitureId: 'sofaGroup', local: [SALON.armchair.at[0], SALON.armchair.at[1]], facing: SALON.armchair.facing });
-  SALON.rounds.forEach((at, i) => {
-    const r = SALON.roundW / 2 + CHAIR_FROM_EDGE, fid = `round${i + 1}`;
-    out.push({ id: fid + 'n', kind: 'chair', furnitureId: fid, local: [at[0], at[1] + r], facing: Math.PI });
-    out.push({ id: fid + 's', kind: 'chair', furnitureId: fid, local: [at[0], at[1] - r], facing: 0 });
-    out.push({ id: fid + 'w', kind: 'chair', furnitureId: fid, local: [at[0] - r, at[1]], facing: Math.PI / 2 });
-    out.push({ id: fid + 'e', kind: 'chair', furnitureId: fid, local: [at[0] + r, at[1]], facing: -Math.PI / 2 });
+  SALON_TABLES.forEach((t) => {
+    const r = SALON.roundW / 2 + CHAIR_FROM_EDGE, [x, z] = t.at;
+    out.push({ id: t.id + 'n', kind: 'chair', furnitureId: t.id, local: [x, z + r], facing: Math.PI });
+    out.push({ id: t.id + 's', kind: 'chair', furnitureId: t.id, local: [x, z - r], facing: 0 });
+    out.push({ id: t.id + 'w', kind: 'chair', furnitureId: t.id, local: [x - r, z], facing: Math.PI / 2 });
+    out.push({ id: t.id + 'e', kind: 'chair', furnitureId: t.id, local: [x + r, z], facing: -Math.PI / 2 });
   });
+  SALON.sofas.forEach((x) => out.push({ id: x.id, kind: 'sofa', furnitureId: 'sofaGroup', local: [x.at[0], x.at[1]], facing: x.facing }));
+  out.push({ id: 'armchair', kind: 'sofa', furnitureId: 'sofaGroup', local: [SALON.armchair.at[0], SALON.armchair.at[1]], facing: SALON.armchair.facing });
   return out;
 }
-/** Salongens platser väster om mellanväggen, efter vinbarens 20 (seatIndex 20–34). */
-export const SALON_EXTRA_SEATS: readonly PlanSeat[] = salonExtraSeats();
-export const SALON_TABLES: readonly PlanTable[] = SALON.rounds.map((at, i) => ({ id: `round${i + 1}`, at, w: SALON.roundW, d: SALON.roundW, round: true, cloth: true }));
+
+export const SALON_PLAN: TablePlan = {
+  id: 'salongen',
+  seats: salonSeats(),
+  tables: SALON_TABLES,
+  // Vinbarens ö (wineBarHouse.ts LAYOUT.bar); personalen går ut genom öns öppna västra ände.
+  bar: { x0: -3.4, x1: 1.8, z0: -2.2, z1: 1.4, h: 1.1 },
+  shelf: null,
+  winebarBar: true,
+  ledge: null,
+  bartender: { at: [-0.9, -1.11], facing: 0 },
+  sommelier: { at: [0.9, 0.31], facing: Math.PI / 2 },
+  djAt: [6.5, -3.4],
+  spots: null,
+  bottles: null,
+  mise: {},
+  aisles: [
+    // Vinbarens del: dörren, ryggraden öster om ön, gångarna norr och söder om ön, korridoren väster om den.
+    [[3.0, 0], [DOOR_X, 0]], [[3.0, -2.65], [3.0, 2.2]], [[-4.1, 2.2], [3.0, 2.2]], [[-4.1, -2.65], [5.6, -2.65]],
+    [[-4.1, -2.65], [-4.1, 2.2]], [[-4.1, 0.9], [KITCHEN_EXIT[0], KITCHEN_EXIT[1]]],
+    // Bakom de norra borden längs väggen, och runt bordet i sydöst.
+    [[-3.1, 4.7], [3.0, 4.7]], [[-3.1, 2.2], [-3.1, 4.7]], [[-0.2, 2.2], [-0.2, 4.7]], [[3.0, 2.2], [3.0, 4.7]],
+    [[5.6, -2.65], [5.6, -4.7]], [[5.6, -4.7], [3.6, -4.7]],
+    // Genom öppningen i mellanväggen till salongens västra del.
+    [[-4.1, 0], [-8.2, 0]], [[-8.2, 0], [-8.2, -0.2]],
+    [[-8.2, -0.2], [-19.6, -0.2]],
+    [[-19.6, -4.4], [-9.2, -4.4]], [[-19.6, -0.2], [-19.6, -4.4]], [[-16.4, -0.2], [-16.4, -4.4]], [[-12.8, -0.2], [-12.8, -4.4]], [[-9.2, -0.2], [-9.2, -4.4]],
+    [[-19.6, 4.4], [-8.2, 4.4]], [[-15.4, -0.2], [-15.4, 4.4]], [[-11.0, -0.2], [-11.0, 4.4]], [[-8.2, -0.2], [-8.2, 4.4]]
+  ],
+  runway: { x0: -3.4, x1: 1.2, z0: -1.6, z1: 0.8, exit: [[-3.0, -0.4], [-4.1, -0.4]] }
+};
 
 // ---------- Vilken plan ----------
 
-/** Planen för vinbaren i lokalen (null: vinbarens egen möblering, Torget och salongens östra del). */
+/** Planen för vinbaren i lokalen (null: vinbarens egen möblering vid Torget). */
 export function planForPremises(p: PremisesId | null | undefined): TablePlan | null {
-  return p === 'kallaren' ? CELLAR_PLAN : p === 'glashornet' ? WING_PLAN : null;
+  return p === 'kallaren' ? CELLAR_PLAN : p === 'glashornet' ? WING_PLAN : p === 'salongen' ? SALON_PLAN : null;
 }
 
 /** Rummets möblering för vinbaren i lokalen (wineBarRoom.ts RoomLayout). */
@@ -200,7 +270,7 @@ export function layoutForPremises(p: PremisesId | null | undefined): 'winebar' |
 }
 
 export function planOf(layout: string | undefined): TablePlan | null {
-  return layout === 'kallaren' ? CELLAR_PLAN : layout === 'flygeln' ? WING_PLAN : null;
+  return layout === 'kallaren' ? CELLAR_PLAN : layout === 'flygeln' ? WING_PLAN : layout === 'salongen' ? SALON_PLAN : null;
 }
 
 // ---------- Simuleringens platser (strategic/simulation/service.ts) ----------
@@ -279,7 +349,8 @@ export function aisleRoute(aisles: readonly Seg[], a: Vec2, b: Vec2): Vec2[] {
 
 const dedupe = (p: Vec2[]) => p.filter((q, i) => i === 0 || Math.hypot(q[0] - p[i - 1][0], q[1] - p[i - 1][1]) > 1e-4);
 const inRect = (p: Vec2, r: Rect) => p[0] >= r.x0 - 0.05 && p[0] <= r.x1 + 0.05 && p[1] >= r.z0 - 0.05 && p[1] <= r.z1 + 0.05;
-function inKitchen(p: Vec2): boolean { return p[0] < KITCHEN.x1 && p[1] > KITCHEN.z0; }
+// Köket ligger mellan rummets västra vägg och halvväggen (salongens västra del väster om x −7,4 är inte köket).
+function inKitchen(p: Vec2): boolean { return p[0] < KITCHEN.x1 && p[0] > -7.4 && p[1] > KITCHEN.z0; }
 
 /** Från en punkt ut till planens gångar: köket genom köksdörren, gången bakom baren genom sin ände. */
 function exitTo(plan: TablePlan, p: Vec2): Vec2[] {
@@ -334,24 +405,16 @@ function serveBehind(aisles: readonly Seg[], ss: readonly PlanSeat[]): Vec2 {
   return back.reduce((best, q) => (d(q) < d(best) ? q : best), back[0]);
 }
 
-/** Salongens västra del: vägen från en punkt i vinbarens del genom öppningen till en plats i salongen. */
-export function salonPathFrom(fromInBar: Vec2, seat: PlanSeat): Vec2[] {
-  const a = onAisles(SALON.aisles, [-8.2, 0]);
-  const back = behindSeat(seat);
-  const b = onAisles(SALON.aisles, back);
-  return dedupe([fromInBar, ...SALON.corridor, ...aisleRoute(SALON.aisles, a, b), back, seat.local]);
-}
 
-/** Salongens sällskap väster om mellanväggen (serviceFlow.ts groupsFor). */
-export function salonGroups(): PlanGroup[] {
-  const by = new Map<string, PlanSeat[]>();
-  for (const s of SALON_EXTRA_SEATS) by.set(s.furnitureId, [...(by.get(s.furnitureId) ?? []), s]);
-  return [...by.entries()].map(([fid, ss], i) => {
-    const at: Vec2 = fid === 'sofaGroup' ? SALON.lowTable.at : SALON.rounds[Number(fid.replace(/\D/g, '')) - 1];
-    const serveAt = serveBehind(SALON.aisles, ss);
-    return { id: fid, label: fid === 'sofaGroup' ? 'Soffgruppen' : 'Salong ' + (i + 1), seats: ss.map((s) => s.id), serveAt, serveFacing: Math.atan2(at[0] - serveAt[0], at[1] - serveAt[1]), tableAt: at, kind: 'two' };
-  });
-}
+// ---------- ORDER 336 B — höjden i trappan ----------
 
-/** Är punkten i salongens västra del (väster om mellanväggen)? */
-export function inSalonWest(p: Vec2): boolean { return p[0] < -7.4; }
+/** Markens höjd över rummets golv i en punkt (rummets lokala ram): 0 i rummet och på vilplanet, gatans höjd
+ *  (−floorY) utanför, och nedför trappan däremellan. Utan egen dörr: 0. */
+export function planGroundLift(plan: TablePlan | null, x: number, z: number): number {
+  const d = plan?.door;
+  if (!d) return 0;
+  const st = d.stair, street = -d.floorY;
+  if (z > st.z1 - 0.01) return 0;
+  if (z >= st.z0 && x >= st.x0 && x <= st.xEnd) return x >= st.x1 ? 0 : street * (st.x1 - x) / (st.x1 - st.x0);
+  return street;
+}

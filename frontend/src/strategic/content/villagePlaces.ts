@@ -12,7 +12,9 @@
 // Dörren är gatunätets nod närmast byggnaden.
 
 import { LANDMARK_BY_ID, PLAYER_BUSINESS_BUILDING_IDS, WORLD_RAW_BUILDINGS } from './world';
-import { onPremisesChange, premisesBuilding } from './playerPremises';
+import { currentPremises, onPremisesChange, premisesBuilding } from './playerPremises';
+import { PREMISES_FRAMES, premisesToWorld } from './premises';
+import { CELLAR_PLAN } from '../scene/tablePlans';
 import { driveNetwork, nearestNode, walkNetwork } from './villageNetwork';
 import type { TruckSpot } from '../../sim/village';
 import { TRUCK_SPOT_IDS, truckSpotPlacement, type TruckSpotId } from '../../sim/districts';
@@ -74,7 +76,9 @@ export function venuePlaces(): Record<string, VenuePlace> {
   for (const [id, bid] of Object.entries(VENUE_BUILDINGS)) {
     const b = WORLD_RAW_BUILDINGS.find((x) => x.id === bid);
     const centre = id === 'player' && premises ? centroid(premises.poly as Vec2[]) : b ? centroid(b.poly as Vec2[]) : TORGET;
-    const at = id === 'player' && premises ? [(premises.poly[1][0] + premises.poly[2][0]) / 2, (premises.poly[1][1] + premises.poly[2][1]) / 2] : centre;
+    // ORDER 336 B — källaren: dörren i norra långsidan, gästerna går till trappans början på gatan (tablePlans.ts CELLAR_DOOR).
+    const cellar = id === 'player' && premises && currentPremises() === 'kallaren' ? CELLAR_PLAN.door : null;
+    const at = cellar ? premisesToWorld(PREMISES_FRAMES.kallaren, cellar.approach[0]) : id === 'player' && premises ? [(premises.poly[1][0] + premises.poly[2][0]) / 2, (premises.poly[1][1] + premises.poly[2][1]) / 2] : centre;
     const door = nearestNode(g, at[0], at[1]);
     out[id] = { id, centre, door, doorPoint: g.nodes[door] };
   }

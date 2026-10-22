@@ -106,7 +106,9 @@ describe('ORDER 334 C — lokalernas rum', () => {
     expect(sign.visible).toBe(true);
     const at: [number, number] = [sign.position.x, sign.position.z];
     for (const q of raw.queueSpots) expect([q.id, Math.hypot(at[0] - q.local[0], at[1] - q.local[1]) > 1.0]).toEqual([q.id, true]);
-    expect(at[0]).toBeGreaterThan(raw.width / 2);
+    // ORDER 336 B — utanför rummet: på gatan vid trappans början (källardörren i norra långsidan), i gatans höjd.
+    expect(Math.abs(at[1]) > raw.depth / 2 || at[0] > raw.width / 2).toBe(true);
+    expect(sign.position.y).toBeCloseTo(2.7, 5);
     expect(build('salongen').pi.group.getObjectByName('afterWorkSign')).toBeUndefined();
   });
 

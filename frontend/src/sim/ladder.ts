@@ -21,7 +21,7 @@ import { ladderOf, nextStep, refitClosedToday, stepSpec, type LadderOffer, type 
 export * from './ladderStep';
 import type { PavilionKey, SimulationState } from '../strategic/types';
 import { changeClass, floorPercent, openFirstBusiness } from './economy';
-import type { PremisesId } from './districts';
+import { followingRegularsAtTakeover, type PremisesId } from './districts';
 import { introductionStep } from './introduction';
 import { applyCashDelta, postLedger } from '../strategic/simulation/cashReading';
 import { strings } from '../content/strings';
@@ -185,7 +185,8 @@ export function takeOffer(state: SimulationState, premises?: PremisesId): Simula
     // Insatsen är klassens (stegets faktor är 1 för vinbaren).
     const changed = changeClass(state, toSpec.businessClass, false);
     next = { ...changed, reputation: state.reputation * LADDER.reputationFactorOnPurchase };
-    if (toSpec.businessClass === 'vinbar') next = { ...next, economy: { ...next.economy, premises: premises ?? 'torget' } };
+    // ORDER 336 C — en del av stamgästerna från Magasinsgatan följer med (sim/districts.ts followingRegularsAtTakeover).
+    if (toSpec.businessClass === 'vinbar') next = { ...next, economy: { ...next.economy, premises: premises ?? 'torget', followingRegulars: followingRegularsAtTakeover(state) } };
   } else {
     // Ombyggnad i samma hus (vinbaren → bistron): insatsen ur kassan och
     // ombyggnaden till lånet.

@@ -151,6 +151,9 @@ import { TheatreCaption } from '../ui/TheatreCaption';
 import { safeCaptionPosition } from './safeCaption';
 import { InteractionDirector } from './theatreInteractions';
 import { attachProps, type HeadToppingId, type PropHandle } from './figureProps';
+import { createProp as createTableProp, holdProp, updateHeld, type PropHandle as TablePropHandle } from './tableware';
+import { regularLook } from './village/truckGuestFlow';
+import { planGroundLift, planOf } from './tablePlans';
 import { auditRig, publishFaults, type FigureFault } from './figureAudit';
 import { beforeDoors, clockMinutes } from '../../sim/clock';
 import { sampleClip } from './figureClips';
@@ -391,10 +394,14 @@ export function roomMass(smp: FigureSample, staff: boolean): MassKind {
   return smp.pose === 'waitCalm' || smp.pose === 'waitImpatient' || smp.pose === 'waitLeaving' ? 'queued' : 'standingAct';
 }
 
+// ORDER 336 B — markens höjd över rummets golv där figuren står (källaren: trappan och gatan, tablePlans.ts
+// planGroundLift). Sätts när rummet monteras; 0 i alla andra rum.
+let groundLift: (x: number, z: number) => number = () => 0;
+
 function applySample(rig: FigureRig, sample: FigureSample, staff: boolean, visibility: number, clip?: ClipSample | null): void {
   rig.root.visible = sample.visible;
   if (!sample.visible) return;
-  rig.root.position.set(sample.x, sample.y, sample.z);
+  rig.root.position.set(sample.x, sample.y + groundLift(sample.x, sample.z), sample.z);
   rig.root.rotation.y = sample.facing;
   applyPose(rig, clip ? clip.pose : poseForSample(sample, staff));
   const wantTransparent = visibility < 0.99;
@@ -431,6 +438,8 @@ interface Cast {
   interactions: InteractionDirector;
   /** ORDER 292 — handrekvisitan per gästfigur (figureProps.ts). */
   guestHandProps: { briefcase: PropHandle; camera: PropHandle }[];
+  /** ORDER 336 C — stamgästens kopp från Magasinsgatan, en per figur. */
+  guestCups: TablePropHandle[];
   /** ORDER 292b — räknaren för figurmätningen (figureAudit.ts). */
   auditTick: number;
   /** ORDER 293 — händelserna som teater (theatreEvents.ts) och kameran före. */
@@ -643,6 +652,8 @@ export function WineBarFigures({ room, mood }: Props) {
   takeoverRef.current = takeover;
 
   useEffect(() => {
+    const plan = planOf((room as { layout?: string }).layout);
+    groundLift = plan?.door ? (x, z) => planGroundLift(plan, x, z) : () => 0;
     const group = new THREE.Group();
     group.name = 'wineBarFigures';
     group.position.copy(room.group.position);
@@ -654,6 +665,7 @@ export function WineBarFigures({ room, mood }: Props) {
     const director = createRoomDirector(room);
     const guestRigs: FigureRig[] = [];
     const guestHandProps: { briefcase: PropHandle; camera: PropHandle }[] = [];
+    const guestCups: TablePropHandle[] = [];
     const guestFaces: FaceHandle[] = [];
     const guestToppings: (PropHandle | null)[] = [];
     const guestDressed: DressedRig[] = [];
@@ -673,6 +685,12 @@ export function WineBarFigures({ room, mood }: Props) {
       briefcase.group.visible = false;
       camera.group.visible = false;
       guestHandProps.push({ briefcase, camera });
+      // ORDER 336 C — koppen stamgästen hade vid vagnen på Magasinsgatan (samma föremål som PlayerTruckCrew.tsx), i vänster hand.
+      const cup = createTableProp('coffeeCup');
+      cup.group.name = 'regularCup';
+      holdProp(cup, rig, 'L', group);
+      cup.group.visible = false;
+      guestCups.push(cup);
       // ORDER 299 — ansiktet i närbild (Designs figureFace.ts).
       guestFaces.push(attachFace(rig));
       // ORDER 302d — kön utanför tar kvällens lägsta ljushet som gatans figurer:
@@ -725,6 +743,7 @@ export function WineBarFigures({ room, mood }: Props) {
       guestClipIds: guestRigs.map(() => null),
       kitchenWalk: { guestId: null, u: 0 },
       guestHandProps,
+      guestCups,
       auditTick: 0,
       interactions: new InteractionDirector(),
       djRig,
@@ -902,6 +921,7 @@ export function WineBarFigures({ room, mood }: Props) {
     for (const ids of partyOrder.values()) ids.sort((a, b) => (cast.director.guestSeat(a)?.seatIndex ?? 999) - (cast.director.guestSeat(b)?.seatIndex ?? 999) || (a < b ? -1 : 1));
     const figureOf = new Map<string, number>();
     for (let j = 0; j < gs.length; j++) if (gs[j].guestId && gs[j].visible) figureOf.set(gs[j].guestId!, j);
+    let withCup = 0;
     for (let i = 0; i < gs.length; i++) {
       const rig = cast.guestRigs[i];
       const sample = gs[i];
@@ -930,7 +950,11 @@ export function WineBarFigures({ room, mood }: Props) {
         // ORDER 309 — gästgruppens kläder och tecken (Designs D5 guestGroups.ts, scene/guestLooks.ts);
         // gäster utan typ (äldre fixturer) behåller rummets dova plagg.
         if (sample.guestId) {
-          const g = showGroup(rig, cast.dressed[i], guestType, i % 2, garmentFor(sample.guestId));
+          // ORDER 336 C — stamgästen från Magasinsgatan i samma kläder som vid vagnen (truckGuestFlow.ts regularLook).
+          const regular = simGuest?.spotRegular;
+          const g = regular !== undefined
+            ? showGroup(rig, cast.dressed[i], null, i % 2, GUEST_GARMENTS[regularLook(regular, GUEST_GARMENTS.length)])
+            : showGroup(rig, cast.dressed[i], guestType, i % 2, garmentFor(sample.guestId));
           const t = cast.toppings[i];
           if (t) t.group.visible = !(g && HEAD_SIGNS.has(GUEST_GROUPS[g].sign));
         }
@@ -988,8 +1012,14 @@ export function WineBarFigures({ room, mood }: Props) {
       cast.guestClips[i] = gesture ? gesture.clip : clip;
       cast.guestClipIds[i] = gesture ? gesture.id : clip ? cast.stage.guestClipId(i) : null;
       applySample(rig, walkSample, false, visibility, gesture ? gesture.clip : clip);
+      const cup = cast.guestCups[i];
+      cup.group.visible = sample.visible && simGuest?.spotRegular !== undefined;
+      if (cup.group.visible) updateHeld(cup);
+      if (cup.group.visible) withCup++;
       if (isFigure) figureLocal = { x: rig.root.position.x, y: rig.root.position.y, z: rig.root.position.z };
     }
+    // ORDER 336 C — kontrollskriptet (scripts/order336-bilder.mjs) läser stamgästerna med kopp i rummet.
+    if (typeof window !== 'undefined') (window as unknown as { __nxRoomRegulars?: unknown }).__nxRoomRegulars = { withCup, tonight: s.day.regularsTonight ?? 0 };
     const ss = cast.director.staffSamples;
     // ORDER 309 — personalens läge i klippen (conditionClips.ts): orken och tvekan.
     const rocketArea = active && !active.backed ? incidentArea(incidentById(s.economy.businessClass, active.id)?.track) : null;

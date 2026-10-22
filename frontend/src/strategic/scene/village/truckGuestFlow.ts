@@ -67,6 +67,8 @@ export interface Spot {
 /** ORDER 319c — gästens plats att äta på och skräpet, ur simuleringen (sim/truckLife.ts). */
 /** ORDER 334 B — stamgästernas kläder börjar här i klädlistan (en annan än de flesta gästers hash). */
 const REGULAR_LOOK_FROM = 3;
+/** ORDER 336 C — stamgästens kläder ur numret: samma vid vagnen och i krogen (WineBarFigures.tsx). */
+export function regularLook(n: number, looks: number): number { return (REGULAR_LOOK_FROM + n) % looks; }
 
 export interface FlowGuest { id: string; state: GuestState; truckSpot?: string; truckLitter?: boolean; spotRegular?: number }
 
@@ -429,7 +431,7 @@ export class TruckGuestFlow {
         if (!spot) continue;
         w = this.newWalker(g.id, this.arrivalPath(g.id, spot), spot);
         // ORDER 334 B — stamgästen på Magasinsgatan: samma kläder varje kväll (numret i kvällens ordning).
-        if (g.spotRegular !== undefined) { w.regular = g.spotRegular; w.look = (REGULAR_LOOK_FROM + g.spotRegular) % this.looks; }
+        if (g.spotRegular !== undefined) { w.regular = g.spotRegular; w.look = regularLook(g.spotRegular, this.looks); }
         this.walkers.set(g.id, w);
         events.push({ kind: 'spawn', id: g.id, x: w.x, z: w.z });
         continue;

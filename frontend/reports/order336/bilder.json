@@ -1,0 +1,42 @@
+{
+  "definition": "ORDER 336. Bilderna reports/order336/bilder/*.png. clock = HUD:ens klocka, level = nivåknapparnas data-level, errors = sidans fel (pageerror). C.regulars = window.__nxRoomRegulars (withCup = figurerna i rummet med Magasinsgatans kopp, tonight = sim day.regularsTonight).",
+  "at": "2026-10-22T12:06:45.777Z",
+  "build": "produktion (vite build + preview)",
+  "A": {
+    "krogen": {
+      "clock": "20.21",
+      "level": "room"
+    },
+    "hela": {
+      "clock": "20.32",
+      "level": "room"
+    },
+    "errors": []
+  },
+  "B": {
+    "krogen": {
+      "clock": "20.17",
+      "level": "room"
+    },
+    "gatan": {
+      "clock": "20.28",
+      "level": "street"
+    },
+    "byn": {
+      "clock": "20.40",
+      "level": "village"
+    },
+    "errors": []
+  },
+  "C": {
+    "krogen": {
+      "clock": "20.16",
+      "level": "room"
+    },
+    "regulars": {
+      "withCup": 5,
+      "tonight": 5
+    },
+    "errors": []
+  }
+}
