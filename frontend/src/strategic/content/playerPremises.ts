@@ -53,8 +53,8 @@ export function premisesBuilding(p: PremisesId = current): (RawBuilding & { entr
   const f = PREMISES_FRAMES[p];
   const real = WORLD.buildings.find((b) => b.id === f.building);
   if (!real) return null;
-  const hx = PREMISES_ROOM_OUTER.w / 2, hz = PREMISES_ROOM_OUTER.d / 2, ox = f.offsetX;
+  const hx = PREMISES_ROOM_OUTER.w / 2, hz = PREMISES_ROOM_OUTER.d / 2, ox = f.offsetX, oz = f.offsetZ;
   // Sluten som kartans hus (första punkten sist): orientedBbox och polygonCentroid räknar så.
-  const poly = ([[ox - hx, -hz], [ox + hx, -hz], [ox + hx, hz], [ox - hx, hz], [ox - hx, -hz]] as const).map((q) => premisesToWorld(f, q) as Vec2Tuple);
-  return { ...real, poly, entrance: { towards: premisesToWorld(f, [ox + hx + 20, 0]) as Vec2Tuple } };
+  const poly = ([[ox - hx, oz - hz], [ox + hx, oz - hz], [ox + hx, oz + hz], [ox - hx, oz + hz], [ox - hx, oz - hz]] as const).map((q) => premisesToWorld(f, q) as Vec2Tuple);
+  return { ...real, poly, entrance: { towards: premisesToWorld(f, [ox + hx + 20, oz]) as Vec2Tuple } };
 }
