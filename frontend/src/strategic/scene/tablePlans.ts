@@ -291,13 +291,30 @@ export const BISTRO_CELLAR_PLAN: TablePlan = {
 const BISTRO_WING_TABLES: PlanTable[] = [-3.0, -0.7, 1.6, 3.9].flatMap((x, i) => [
   { id: `bfourS${i + 1}`, at: [x, -1.9] as Vec2, w: 1.2, d: 0.8 }, { id: `bfourN${i + 1}`, at: [x, 1.3] as Vec2, w: 1.2, d: 0.8 }
 ]);
+// ORDER 338 (Anders 2026-10-22: "Bistron i Flygeln tar hela flygeln") — flygelns norra del, norr om mellanväggen
+// (rummets lokala z över 5,2; lokalens z − offsetZ): fyra bord för fyra i en rad och sex pallar vid fönsterbänken längs
+// östra glaset (premisesInterior.ts wingBench), 22 platser på cirka 105 m² som bistron vid Torget (31 på 145 m²).
+// Öppningen i mellanväggen öster om baren (WING_OPENING) och gången genom den.
+export const WING_OPENING = { x0: 3.0, x1: 5.0 };
+const WING_NORTH_TABLES: PlanTable[] = [-6.4, -3.4, -0.4, 2.6].map((x, i) => ({ id: `bfourNorth${i + 1}`, at: [x, 8.4] as Vec2, w: 1.0, d: 1.0 }));
 export const BISTRO_WING_PLAN: TablePlan = {
   ...WING_PLAN,
   id: 'bistro-flygeln',
   bistro: true,
-  tables: BISTRO_WING_TABLES,
-  seats: (() => { const out: PlanSeat[] = []; BISTRO_WING_TABLES.forEach((t) => fourTop(out, t)); out.push(...WING_PLAN.seats.filter((x) => x.kind === 'stool')); return out; })(),
+  tables: [...BISTRO_WING_TABLES, ...WING_NORTH_TABLES],
+  seats: (() => {
+    const out: PlanSeat[] = [];
+    BISTRO_WING_TABLES.forEach((t) => fourTop(out, t));
+    out.push(...WING_PLAN.seats.filter((x) => x.kind === 'stool'));
+    WING_NORTH_TABLES.forEach((t) => fourTop(out, t));
+    [6.2, 7.0, 7.8, 8.6, 9.4, 10.2].forEach((z, i) => out.push({ id: `benchStool${i + 1}`, kind: 'stool', furnitureId: `bench${Math.floor(i / 2) + 1}`, local: [6.5, z], facing: Math.PI / 2 }));
+    return out;
+  })(),
   aisles: [
+    // Genom öppningen i mellanväggen (x 4,0) till den norra delens gångar: framför borden (z 6,2), bakom dem (z 10,6),
+    // mellan borden och vid fönsterbänken (x 5,8).
+    [[4.0, 2.75], [4.0, 6.2]], [[-7.6, 6.2], [5.8, 6.2]], [[-7.6, 10.6], [5.8, 10.6]],
+    [[-7.6, 6.2], [-7.6, 10.6]], [[-4.9, 6.2], [-4.9, 10.6]], [[-1.9, 6.2], [-1.9, 10.6]], [[1.1, 6.2], [1.1, 10.6]], [[5.8, 6.2], [5.8, 10.6]],
     [[-4.1, -0.3], [5.0, -0.3]], [[5.0, -0.3], [5.0, 0]], [[5.0, 0], [DOOR_X, 0]],
     [[-4.1, -3.4], [5.0, -3.4]], [[-4.1, 2.75], [5.0, 2.75]],
     [[-4.1, -3.4], [-4.1, 2.75]], [[5.0, -3.4], [5.0, 2.75]],
@@ -436,8 +453,9 @@ export function aisleRoute(aisles: readonly Seg[], a: Vec2, b: Vec2): Vec2[] {
 
 const dedupe = (p: Vec2[]) => p.filter((q, i) => i === 0 || Math.hypot(q[0] - p[i - 1][0], q[1] - p[i - 1][1]) > 1e-4);
 const inRect = (p: Vec2, r: Rect) => p[0] >= r.x0 - 0.05 && p[0] <= r.x1 + 0.05 && p[1] >= r.z0 - 0.05 && p[1] <= r.z1 + 0.05;
-// Köket ligger mellan rummets västra vägg och halvväggen (salongens västra del väster om x −7,4 är inte köket).
-function inKitchen(p: Vec2): boolean { return p[0] < KITCHEN.x1 && p[0] > -7.4 && p[1] > KITCHEN.z0; }
+// Köket ligger mellan rummets västra vägg och halvväggen (salongens västra del väster om x −7,4 är inte köket),
+// ORDER 338 — och inte flygelns norra del (norr om rummets norra vägg, z över 5,0).
+function inKitchen(p: Vec2): boolean { return p[0] < KITCHEN.x1 && p[0] > -7.4 && p[1] > KITCHEN.z0 && p[1] < 5.0; }
 
 /** Från en punkt ut till planens gångar: köket genom köksdörren, gången bakom baren genom sin ände. */
 function exitTo(plan: TablePlan, p: Vec2): Vec2[] {
