@@ -20,7 +20,7 @@ import * as THREE from 'three';
 import type { PremisesId } from '../../sim/districts';
 import { PREMISES_FRAMES } from '../content/premises';
 import { CUT_H, PLINTH_M, type WallSide, type WineBarRoom } from './wineBarRoom';
-import { planOf, SALON, CELLAR_PLAN } from './tablePlans';
+import { planOf, SALON, CELLAR_PLAN, WING_OPENING } from './tablePlans';
 
 export type VenueId = Exclude<PremisesId, 'torget'>;
 type V2 = [number, number];
@@ -326,11 +326,29 @@ export function applyPremisesInterior(room: WineBarRoom, id: VenueId, toLocal: (
     const b0 = L(poly[2][0] - 0.25, bz1 + 0.6), b1 = L(poly[2][0] - 0.25, poly[3][1] - 0.5);
     const bl = Math.hypot(b1[0] - b0[0], b1[1] - b0[1]);
     box(group, bl, 0.05, 0.4, wood, (b0[0] + b1[0]) / 2, 0.1 + 1.05, (b0[1] + b1[1]) / 2, 'wingBench', -Math.atan2(b1[1] - b0[1], b1[0] - b0[0]));
-    const n = Math.max(2, Math.floor(bl / 1.3));
+    // ORDER 338 — i bistron som tar hela flygeln är pallarna vid bänken platser i rummets plan (tablePlans.ts benchStool).
+    const n = room.layout === 'bistro-flygeln' ? 0 : Math.max(2, Math.floor(bl / 1.3));
     for (let i = 0; i < n; i++) {
       const u = (i + 0.5) / n, p = L(poly[2][0] - 0.75, bz1 + 0.6 + u * (poly[3][1] - 0.5 - bz1 - 0.6));
       cyl(group, 0.2, 0.2, 0.05, seat, p[0], 0.1 + 0.75, p[1], `wingStool${i}`, 12);
       cyl(group, 0.03, 0.03, 0.75, mullionMat(), p[0], 0.1 + 0.375, p[1], `wingStoolStem${i}`, 6);
+    }
+    // ORDER 338 — bistron tar hela flygeln: rummets norra vägg blir en mellanvägg med en öppning öster om baren
+    // (tablePlans.ts WING_OPENING), som salongens västra (buildSalon).
+    if (room.layout === 'bistro-flygeln') {
+      const north = boxSide(0, 1);
+      const old = room.parts.walls.getObjectByName('wall' + north);
+      if (old) old.visible = false;
+      const part = new THREE.Group(); part.name = 'wingPartition'; room.parts.walls.add(part);
+      const up = new THREE.Group(); up.name = 'wingPartitionUpper'; part.add(up);
+      const wz = north === 'N' ? halfD - 0.1 : -halfD + 0.1;
+      for (const [x0, x1] of [[-halfW, WING_OPENING.x0], [WING_OPENING.x1, halfW]] as const) {
+        box(part, x1 - x0, CUT_H, 0.2, wallMat(), (x0 + x1) / 2, 0.1 + CUT_H / 2, wz, `wingPartLower${x0}`);
+        box(part, x1 - x0, 0.03, 0.2, capMat(), (x0 + x1) / 2, 0.1 + CUT_H + 0.015, wz, `wingPartCap${x0}`);
+        box(up, x1 - x0, H - CUT_H, 0.2, wallMat(), (x0 + x1) / 2, 0.1 + CUT_H + (H - CUT_H) / 2, wz, `wingPartUpper${x0}`);
+      }
+      box(up, WING_OPENING.x1 - WING_OPENING.x0, H - 2.6, 0.2, wallMat(), (WING_OPENING.x0 + WING_OPENING.x1) / 2, 0.1 + 2.6 + (H - 2.6) / 2, wz, 'wingPartLintel');
+      room.parts.wallUpper[north] = up;
     }
     // Pendlarna (tonar ut med taket).
     const shade = mat('#2f2f2c', 0.6, { transparent: true }), bulb = mat(GLOW, 0.4, { emissive: new THREE.Color('#ffb46a'), emissiveIntensity: 1.4, transparent: true });

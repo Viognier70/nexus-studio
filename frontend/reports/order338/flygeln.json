@@ -1,0 +1,49 @@
+{
+  "definition": "ORDER 338. 40 frön, vinbaren och bistron i Flygeln. before = reports/order337/lokaler (bistron i det glasade hörnet, 44 platser), after = reports/order338/flygeln (bistron i hela flygeln, 66 platser). closed = stängda säsonger, meanCashEnd = medelkassan vid säsongens slut (kr), lowestCash = lägsta kassan, renegotiated = säsonger med omförhandlat lån, reachedBistro = säsonger som nådde bistron, bistroWeekMedian = medianveckan dit, starEarned = säsonger med stjärna.",
+  "rows": {
+    "glashornet-trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 27904,
+        "lowestCash": 15581,
+        "renegotiated": 14,
+        "reachedBistro": 25,
+        "bistroWeekMedian": 5,
+        "starEarned": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 27853,
+        "lowestCash": 15581,
+        "renegotiated": 14,
+        "reachedBistro": 25,
+        "bistroWeekMedian": 5,
+        "starEarned": 0
+      }
+    },
+    "glashornet-trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 20544,
+        "lowestCash": 1393,
+        "renegotiated": 26,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 20544,
+        "lowestCash": 1393,
+        "renegotiated": 26,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    }
+  }
+}

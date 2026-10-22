@@ -1,0 +1,6 @@
+{
+  "definition": "ORDER 338. Bistrons platser i Flygeln (wineBarRoom.ts med tablePlans.ts BISTRO_WING_PLAN): seats = alla, north = norr om mellanväggen (rummets lokala z över halva djupet), south = i det glasade hörnet som i ORDER 337.",
+  "seats": 66,
+  "north": 22,
+  "south": 44
+}

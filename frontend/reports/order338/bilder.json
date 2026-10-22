@@ -1,0 +1,13 @@
+{
+  "definition": "ORDER 338. Bilderna reports/order338/bilder/flygeln-{z,hela}.png. (Fälten som ORDER 337:) C: offerTitle = Åsas kort, ask = bankens fråga, title = morgonens rubrik (morning-business-name), signs = krogens skylt vid gatan (player-sign / village-venue player), torgetInText = någon av texterna säger \"vid torget\" eller \"on the square\", nameInSign = bankens namn står på skylten. A: bistrons rum vid Z, bilderna bistro-<lokal>-z.png och bistro-sida-vid-sida.png. errors = sidans fel.",
+  "at": "2026-10-22T15:06:28.543Z",
+  "build": "produktion (vite build + preview)",
+  "A": {
+    "glashornet": {
+      "clock": "20.30",
+      "level": "room",
+      "title": null,
+      "errors": []
+    }
+  }
+}

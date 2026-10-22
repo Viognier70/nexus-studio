@@ -71,10 +71,11 @@ describe('ORDER 337 A — bistron per lokal', () => {
       out[id] = { layout: raw.layout, seats: raw.seats.length };
     }
     expect(premisesSeats('vinbaren', bistroState('torget' as VenueId))).toBeNull();
-    // Storleken: salongen störst, källaren minst; ingen lokal har bistrons 31 från Torget.
+    // Storleken: ORDER 338 — Flygeln hel (cirka 270 m²) störst, sedan salongen, källaren minst; ingen lokal har
+    // bistrons 31 från Torget.
     const n = Object.fromEntries(VENUES.map((id) => [id, (out[id] as { seats: number }).seats]));
-    expect(n.salongen).toBeGreaterThan(n.glashornet);
-    expect(n.glashornet).toBeGreaterThan(n.kallaren);
+    expect(n.glashornet).toBeGreaterThan(n.salongen);
+    expect(n.salongen).toBeGreaterThan(n.kallaren);
     for (const id of VENUES) expect([id, n[id] !== BISTRO_CAPACITY]).toEqual([id, true]);
     if (process.env.WRITE_REPORTS === '1') {
       const dir = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports/order337');
@@ -88,7 +89,7 @@ describe('ORDER 337 A — bistron per lokal', () => {
     const k = build('kallaren');
     expect(planGroundLift(planOf(k.layout), -3, -6.5)).toBeCloseTo(2.7, 5);
     const f = build('glashornet');
-    expect(f.seats.filter((s) => s.kind === 'bar').every((s) => s.local[1] < -3.9)).toBe(true);
+    expect(f.seats.filter((s) => s.id.startsWith('glassStool')).every((s) => s.local[1] < -3.9)).toBe(true);
     const s = build('salongen');
     expect(planOf(s.layout)!.tables.filter((t) => t.round && t.cloth).length).toBeGreaterThanOrEqual(8);
     // Bistron har ingen vinvägg; hyllan bakom baren.
