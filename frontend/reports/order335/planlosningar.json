@@ -1,0 +1,55 @@
+{
+  "definition": "ORDER 335 D. seats = rummets platser (wineBarRoom.ts createWineBarRoom med lokalens layout), kinds = platsernas sort (twotop = stol, bar = pall, lounge = soffa), bar = disken (getObstacles, rummets lokala ram: +x mot dörren, −z söder), groups = simuleringens grupper (service.ts premisesSeats).",
+  "kallaren": {
+    "seats": 44,
+    "kinds": {
+      "twotop": 40,
+      "bar": 4
+    },
+    "bar": {
+      "id": "barCounterPlan",
+      "at": [
+        5.66,
+        3.1
+      ],
+      "halfW": 0.31,
+      "halfD": 1.55
+    },
+    "groups": 9
+  },
+  "salongen": {
+    "seats": 35,
+    "kinds": {
+      "lounge": 9,
+      "twotop": 18,
+      "bar": 8
+    },
+    "bar": {
+      "id": "barCounterN",
+      "at": [
+        -0.8,
+        1.1
+      ],
+      "halfW": 2.6,
+      "halfD": 0.3
+    },
+    "groups": 11
+  },
+  "glashornet": {
+    "seats": 36,
+    "kinds": {
+      "twotop": 24,
+      "bar": 12
+    },
+    "bar": {
+      "id": "barCounterPlan",
+      "at": [
+        -0.8,
+        3.71
+      ],
+      "halfW": 2.6,
+      "halfD": 0.31
+    },
+    "groups": 12
+  }
+}
