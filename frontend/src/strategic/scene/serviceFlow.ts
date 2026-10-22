@@ -149,7 +149,7 @@ export let BOTTLE_PICKUP_AT: Vec2 = WINEBAR_SPOTS.bottlePickup;
 // rummet monteras (wineBarDirector.ts); personalens vägar och barens platser följer den.
 // ORDER 335 D — och lokalernas planlösningar (tablePlans.ts): källaren och Flygeln med sina barer och gångar,
 // salongen med vinbarens och vägen genom mellanväggen till salongens platser.
-type FlowLayout = 'winebar' | 'bistro' | 'kallaren' | 'flygeln' | 'salongen';
+type FlowLayout = 'winebar' | 'bistro' | 'kallaren' | 'flygeln' | 'salongen' | 'bistro-kallaren' | 'bistro-salongen' | 'bistro-flygeln';
 let FLOW_LAYOUT: FlowLayout = 'winebar';
 export function setFlowLayout(layout: FlowLayout): void {
   FLOW_LAYOUT = layout;

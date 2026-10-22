@@ -191,7 +191,7 @@ export interface WineBarOptions {
 }
 
 /** ORDER 335 D — och lokalernas planlösningar (tablePlans.ts): källaren, Flygeln och salongen (vinbaren och salongens 15). */
-export type RoomLayout = 'winebar' | 'bistro' | 'kallaren' | 'flygeln' | 'salongen';
+export type RoomLayout = 'winebar' | 'bistro' | 'kallaren' | 'flygeln' | 'salongen' | 'bistro-kallaren' | 'bistro-salongen' | 'bistro-flygeln';
 
 export interface WineBarRoom {
   group: THREE.Group;
@@ -692,7 +692,7 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
   const zoneMats: { [k: string]: THREE.MeshStandardMaterial } = {};
   ZONE_FLOORS.forEach(function (z) { zoneMats[z.id] = mat(z.colour, 0.9, 0); });
   // ORDER 315b del 2 — bistron: salens varmare ekgolv (D7 BISTRO_FLOOR), inga lounge- eller DJ-zoner.
-  floorPlate(interior, bistro ? mat(BISTRO_FLOOR.hall, 0.9, 0) : zoneMats.main, -inX, inX, -inZ, inZ, 0, 'floorMain');
+  floorPlate(interior, bistro || plan?.bistro ? mat(BISTRO_FLOOR.hall, 0.9, 0) : zoneMats.main, -inX, inX, -inZ, inZ, 0, 'floorMain');
   if (!alt) {
     floorPlate(interior, zoneMats.lounge, LOUNGE_CX[0] - 1.44, LOUNGE_CX[1] + 1.44, HOUSE.lounge.tableZ - 0.4, inZ, 0.002, 'floorLounge');
     floorPlate(interior, zoneMats.barRunway, BAR.x0, BAR.x1 - BAR.depth, BAR.z0 + BAR.depth, BAR.z1 - BAR.depth, 0.002, 'floorBarRunway');
@@ -860,7 +860,8 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
       bar.add(g);
       wineWall[level] = g;
       shelfTargets[level] = [];
-      if (!SH) return;
+      // ORDER 337 A — bistron har ingen vinvägg; hyllan bakom baren byggs nedan.
+      if (!SH || plan.bistro) return;
       const k = level === 'bas' ? 0.6 : 1, h = level === 'bas' ? 1.6 : 2.06;
       const r = alongX ? { x0: SH.x0, x1: SH.x0 + (SH.x1 - SH.x0) * k, z0: SH.z0, z1: SH.z1 } : { x0: SH.x0, x1: SH.x1, z0: SH.z1 - (SH.z1 - SH.z0) * k, z1: SH.z1 };
       rectBox(g, M.rack, r.x0, r.x1, r.z0, r.z1, Y, Y + h, 'wineWallCore_' + level);
@@ -877,6 +878,21 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
       }
       g.add(bm);
     });
+    if (plan.bistro && SH) {
+      // ORDER 337 A — bistrons hylla bakom baren med flaskor, som vid Torget (bistroShelf).
+      rectBox(bar, M.rack, SH.x0, SH.x1, SH.z0, SH.z1, Y, Y + 1.9, 'bistroShelf');
+      const sb = new THREE.InstancedMesh(cyl(0.036, 0.3, 8), bottleMats[0], 12);
+      sb.name = 'bistroShelfBottles';
+      const dm = new THREE.Object3D();
+      for (let k = 0; k < 12; k++) {
+        const u = (k % 6 + 0.5) / 6;
+        if (alongX) dm.position.set(SH.x0 + u * (SH.x1 - SH.x0), Y + 1.25 + Math.floor(k / 6) * 0.4, (SH.z0 + SH.z1) / 2);
+        else dm.position.set((SH.x0 + SH.x1) / 2, Y + 1.25 + Math.floor(k / 6) * 0.4, SH.z0 + u * (SH.z1 - SH.z0));
+        dm.updateMatrix();
+        sb.setMatrixAt(k, dm.matrix);
+      }
+      bar.add(sb);
+    }
     if (plan.ledge) {
       const LG = plan.ledge;
       rectBox(bar, M.barTop, LG.x0, LG.x1, LG.z0, LG.z1, Y + 1.0, Y + 1.05, 'ledgeTop');
@@ -1332,7 +1348,8 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
  * 3 Dukat (ljusen på borden), 4 Tänt (pendlarna tända). 0 eller mer än 4: rummet som det är.
  */
 export function setRefitPhase(room: WineBarRoom, phase: number): void {
-  if (room.layout !== 'bistro') return;
+  // ORDER 337 A — också bistrons plan i lokalerna (tablePlans.ts, layout bistro-…).
+  if (!room.layout.startsWith('bistro')) return;
   const done = phase <= 0 || phase > 4;
   const furniture = room.parts.interior.getObjectByName('furniture');
   const built = done || phase >= 2;
@@ -1340,7 +1357,7 @@ export function setRefitPhase(room: WineBarRoom, phase: number): void {
   if (furniture) {
     furniture.children.forEach(function (o) {
       const isCandle = o.name.startsWith('candle_');
-      const isPendant = o.name.startsWith('bistroPendant');
+      const isPendant = o.name.startsWith('bistroPendant') || o.name.startsWith('planPendant');
       const keep = /^(pavement|kerb|easel|menuBoard|coatRail|hostDesk|music)/.test(o.name);
       o.visible = keep || (built && (!isCandle || done || phase >= 3) && (!isPendant || done || phase >= 4));
     });
@@ -1350,7 +1367,7 @@ export function setRefitPhase(room: WineBarRoom, phase: number): void {
 export function setWineWallLevel(room: WineBarRoom, level: WineWallLevel): void {
   room.wineWallLevel = level;
   // ORDER 315b del 2 — bistron har ingen vinvägg.
-  if (room.layout === 'bistro') return;
+  if (room.layout.startsWith('bistro')) return;
   room.parts.wineWall.bas.visible = level === 'bas';
   room.parts.wineWall.platina.visible = level === 'platina';
   // Flaskfästet följer väggens östra ände (lokalens plan: flaskans plats, tablePlans.ts spots.bottlePickup).

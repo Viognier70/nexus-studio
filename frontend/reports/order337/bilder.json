@@ -1,0 +1,63 @@
+{
+  "definition": "ORDER 337. C: offerTitle = Åsas kort, ask = bankens fråga, title = morgonens rubrik (morning-business-name), signs = krogens skylt vid gatan (player-sign / village-venue player), torgetInText = någon av texterna säger \"vid torget\" eller \"on the square\", nameInSign = bankens namn står på skylten. A: bistrons rum vid Z, bilderna bistro-<lokal>-z.png och bistro-sida-vid-sida.png. errors = sidans fel.",
+  "at": "2026-10-22T13:34:04.451Z",
+  "build": "produktion (vite build + preview)",
+  "C": {
+    "kallaren": {
+      "offerTitle": "Vinbaren",
+      "ask": "Banken lånar ut till en vinbar i källaren på Prästgatan. Vad ska den heta?",
+      "title": "Valvet",
+      "signs": [
+        "Valvet, din krog"
+      ],
+      "level": "street",
+      "torgetInText": false,
+      "nameInSign": true,
+      "errors": []
+    },
+    "salongen": {
+      "offerTitle": "Vinbaren",
+      "ask": "Banken lånar ut till en vinbar i salongen nära Gästgivaregården. Vad ska den heta?",
+      "title": "Kakelugnen",
+      "signs": [
+        "Kakelugnen, din krog"
+      ],
+      "level": "street",
+      "torgetInText": false,
+      "nameInSign": true,
+      "errors": []
+    },
+    "glashornet": {
+      "offerTitle": "Vinbaren",
+      "ask": "Banken lånar ut till en vinbar i Flygeln på campus. Vad ska den heta?",
+      "title": "Glasrummet",
+      "signs": [
+        "Glasrummet, din krog"
+      ],
+      "level": "street",
+      "torgetInText": false,
+      "nameInSign": true,
+      "errors": []
+    }
+  },
+  "A": {
+    "kallaren": {
+      "clock": "20.17",
+      "level": "room",
+      "title": null,
+      "errors": []
+    },
+    "salongen": {
+      "clock": "20.15",
+      "level": "room",
+      "title": null,
+      "errors": []
+    },
+    "glashornet": {
+      "clock": "20.18",
+      "level": "room",
+      "title": null,
+      "errors": []
+    }
+  }
+}

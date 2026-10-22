@@ -436,7 +436,9 @@ export const DISTRICTS = {
   //   regularsPerEvening: stamgäster till per kväll vagnen stått där förut; regularsMax: taket.
   // ORDER 336 C (Anders 2026-10-22): +4 per kväll (förut 2), taket 30; followShare: andelen av kvällens stamgäster som
   //   följer med när spelaren tar över vinbaren och kommer dit varje kväll (economy.followingRegulars).
-  magasinsgatan: { poolK: 0.35, doorMix: { student: 0.1, middle: 0.85, high: 0.05 }, regularsPerEvening: 4, regularsMax: 30, followShare: 0.5 }
+  // ORDER 337 B (Anders 2026-10-22): taket vid vagnen 20 (förut 30); i kön sjunker inte stamgästernas nöjdhet och de
+  //   går inte ur kön (strategic/simulation/service.ts), så deras väntan sänker inte ryktet.
+  magasinsgatan: { poolK: 0.35, doorMix: { student: 0.1, middle: 0.85, high: 0.05 }, regularsPerEvening: 4, regularsMax: 20, followShare: 0.5 }
 } as const;
 
 // ORDER 334 A — AW i källaren (Anders 2026-10-22: "byborna på AW"). En satsning på morgonen, bara när krogen står i

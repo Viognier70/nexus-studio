@@ -20,7 +20,7 @@ type Rect = { x0: number; x1: number; z0: number; z1: number };
 export type PlanSeatKind = 'chair' | 'stool' | 'sofa';
 export interface PlanSeat { id: string; kind: PlanSeatKind; furnitureId: string; local: Vec2; facing: number }
 export interface PlanTable { id: string; at: Vec2; w: number; d: number; round?: boolean; cloth?: boolean }
-export type PlanLayout = 'kallaren' | 'flygeln' | 'salongen';
+export type PlanLayout = 'kallaren' | 'flygeln' | 'salongen' | 'bistro-kallaren' | 'bistro-salongen' | 'bistro-flygeln';
 
 export interface TablePlan {
   id: PlanLayout;
@@ -31,6 +31,8 @@ export interface TablePlan {
   shelf: Rect | null;
   /** ORDER 336 A — vinbarens bar (ön med vinväggen, wineBarRoom.ts) står kvar; bar ovan är dess mått för vägarna. */
   winebarBar?: boolean;
+  /** ORDER 337 A — bistrons plan i lokalen: bistrons golv och ombyggnad, ingen vinvägg (hyllan bakom baren). */
+  bistro?: boolean;
   /** Fönsterbänken längs glaset (Flygeln). */
   ledge: Rect | null;
   /** Personalen: bartendern i gången bakom baren, sommelieren vid barens ände, DJ:ns plats (ingen DJ). */
@@ -257,11 +259,95 @@ export const SALON_PLAN: TablePlan = {
   runway: { x0: -3.4, x1: 1.2, z0: -1.6, z1: 0.8, exit: [[-3.0, -0.4], [-4.1, -0.4]] }
 };
 
+// ---------- ORDER 337 A — bistron per lokal ----------
+// Anders 2026-10-22: "Bistron får en egen planlösning i varje lokal … Antal platser efter lokalens storlek." Som bistron
+// vid Torget (bistroHouse.ts, Designs D7) bord för fyra i salen, en kortare bar och pendlar över borden; lokalens dörr,
+// trappa och glas som vinbarens plan. Platserna efter golvytan: Torget 31 (145 m²), källaren 28 (samma yta, baren och
+// trappans vilplan tar plats), Flygeln 44 (vinbarens del av flygeln med glaset), salongen 46 (hela salongen, 236 m²).
+
+function fourTop(out: PlanSeat[], t: PlanTable): void {
+  const rx = t.w / 2 + CHAIR_FROM_EDGE, rz = t.d / 2 + CHAIR_FROM_EDGE, [x, z] = t.at;
+  if (t.w > 1.1) {
+    // Avlångt bord för fyra (Flygelns): två stolar på varje långsida.
+    chairsAlong(out, t.id, t, 2, ['s', 'n']);
+    return;
+  }
+  out.push({ id: t.id + 'n', kind: 'chair', furnitureId: t.id, local: [x, z + rz], facing: Math.PI });
+  out.push({ id: t.id + 's', kind: 'chair', furnitureId: t.id, local: [x, z - rz], facing: 0 });
+  out.push({ id: t.id + 'w', kind: 'chair', furnitureId: t.id, local: [x - rx, z], facing: Math.PI / 2 });
+  out.push({ id: t.id + 'e', kind: 'chair', furnitureId: t.id, local: [x + rx, z], facing: -Math.PI / 2 });
+}
+
+const BISTRO_CELLAR_TABLES: PlanTable[] = [[-3.0, -2.8], [-0.6, -2.8], [1.8, -2.8], [-2.6, 2.8], [-0.2, 2.8], [2.2, 2.8]].map(([x, z], i) => ({ id: `bfour${i + 1}`, at: [x, z] as Vec2, w: 1.0, d: 1.0 }));
+export const BISTRO_CELLAR_PLAN: TablePlan = {
+  ...CELLAR_PLAN,
+  id: 'bistro-kallaren',
+  bistro: true,
+  tables: BISTRO_CELLAR_TABLES,
+  seats: (() => { const out: PlanSeat[] = []; BISTRO_CELLAR_TABLES.forEach((t) => fourTop(out, t)); out.push(...CELLAR_PLAN.seats.filter((x) => x.furnitureId === 'bar')); return out; })(),
+  mise: { ...CELLAR_PLAN.mise, setTables: { local: [-0.6, -1.6], facing: Math.PI } }
+};
+
+const BISTRO_WING_TABLES: PlanTable[] = [-3.0, -0.7, 1.6, 3.9].flatMap((x, i) => [
+  { id: `bfourS${i + 1}`, at: [x, -1.9] as Vec2, w: 1.2, d: 0.8 }, { id: `bfourN${i + 1}`, at: [x, 1.3] as Vec2, w: 1.2, d: 0.8 }
+]);
+export const BISTRO_WING_PLAN: TablePlan = {
+  ...WING_PLAN,
+  id: 'bistro-flygeln',
+  bistro: true,
+  tables: BISTRO_WING_TABLES,
+  seats: (() => { const out: PlanSeat[] = []; BISTRO_WING_TABLES.forEach((t) => fourTop(out, t)); out.push(...WING_PLAN.seats.filter((x) => x.kind === 'stool')); return out; })(),
+  aisles: [
+    [[-4.1, -0.3], [5.0, -0.3]], [[5.0, -0.3], [5.0, 0]], [[5.0, 0], [DOOR_X, 0]],
+    [[-4.1, -3.4], [5.0, -3.4]], [[-4.1, 2.75], [5.0, 2.75]],
+    [[-4.1, -3.4], [-4.1, 2.75]], [[5.0, -3.4], [5.0, 2.75]],
+    [[-1.85, -3.4], [-1.85, 2.75]], [[0.45, -3.4], [0.45, 2.75]], [[2.75, -3.4], [2.75, 2.75]],
+    [[-4.1, 0.9], [KITCHEN_EXIT[0], KITCHEN_EXIT[1]]]
+  ]
+};
+
+// Salongen: salongens åtta runda bord och två där vinbarens ö stod; bistrons bar mot norra väggen i nordost med tre pallar.
+const BISTRO_SALON_ROUNDS: Vec2[] = [...SALON.rounds, [-2.4, -0.2], [0.4, -0.2]];
+const BISTRO_SALON_TABLES: PlanTable[] = BISTRO_SALON_ROUNDS.map((at, i) => ({ id: `round${i + 1}`, at, w: SALON.roundW, d: SALON.roundW, round: true, cloth: true }));
+export const BISTRO_SALON_PLAN: TablePlan = {
+  ...SALON_PLAN,
+  id: 'bistro-salongen',
+  bistro: true,
+  winebarBar: false,
+  tables: BISTRO_SALON_TABLES,
+  seats: (() => {
+    const out: PlanSeat[] = [];
+    BISTRO_SALON_TABLES.forEach((t) => fourTop(out, t));
+    out.push(...SALON_PLAN.seats.filter((x) => x.kind === 'sofa'));
+    [4.4, 5.1, 5.8].forEach((x, i) => out.push({ id: `bstool${i + 1}`, kind: 'stool', furnitureId: 'bar', local: [x, 3.4 - STOOL_FROM_COUNTER], facing: 0 }));
+    return out;
+  })(),
+  bar: { x0: 3.9, x1: 6.3, z0: 3.4, z1: 4.0, h: 1.05 },
+  shelf: { x0: 3.9, x1: 6.3, z0: 4.82, z1: 5.0 },
+  bartender: { at: [5.1, 4.42], facing: Math.PI },
+  sommelier: { at: [6.6, 3.3], facing: -Math.PI / 2 },
+  spots: { pickupBar: [3.6, 3.0], pourSpot: [4.4, 4.42], bottlePickup: [5.8, 4.42] },
+  bottles: [[4.1, 3.7], [4.4, 3.7], [5.8, 3.7], [6.1, 3.7]],
+  mise: { fridge: { local: [5.8, 4.42], facing: 0 }, polish: { local: [4.6, 4.42], facing: 0 }, setTables: { local: [-1.0, -1.6], facing: Math.PI } },
+  aisles: [
+    ...SALON_PLAN.aisles.filter((a) => !(a[0][1] === 2.2 && a[1][1] === 2.2)),
+    [[-4.1, 2.2], [6.6, 2.2]], [[-4.1, -1.3], [3.0, -1.3]], [[-4.1, 0.9], [3.0, 0.9]]
+  ],
+  runway: { x0: 3.9, x1: 6.3, z0: 4.0, z1: 4.82, exit: [[6.6, 4.42], [6.6, 2.2]] }
+};
+
 // ---------- Vilken plan ----------
 
-/** Planen för vinbaren i lokalen (null: vinbarens egen möblering vid Torget). */
-export function planForPremises(p: PremisesId | null | undefined): TablePlan | null {
+/** Planen för vinbaren i lokalen (null: vinbarens egen möblering vid Torget). ORDER 337 A — bistron: lokalens
+ *  bistroplan (null: bistron vid Torget, bistroHouse.ts). */
+export function planForPremises(p: PremisesId | null | undefined, bistro = false): TablePlan | null {
+  if (bistro) return p === 'kallaren' ? BISTRO_CELLAR_PLAN : p === 'glashornet' ? BISTRO_WING_PLAN : p === 'salongen' ? BISTRO_SALON_PLAN : null;
   return p === 'kallaren' ? CELLAR_PLAN : p === 'glashornet' ? WING_PLAN : p === 'salongen' ? SALON_PLAN : null;
+}
+
+/** ORDER 337 A — bistrons möblering i lokalen: Torget 'bistro' (bistroHouse.ts), annars lokalens bistroplan. */
+export function bistroLayoutForPremises(p: PremisesId | null | undefined): 'bistro' | PlanLayout {
+  return p === 'kallaren' ? 'bistro-kallaren' : p === 'glashornet' ? 'bistro-flygeln' : p === 'salongen' ? 'bistro-salongen' : 'bistro';
 }
 
 /** Rummets möblering för vinbaren i lokalen (wineBarRoom.ts RoomLayout). */
@@ -270,7 +356,8 @@ export function layoutForPremises(p: PremisesId | null | undefined): 'winebar' |
 }
 
 export function planOf(layout: string | undefined): TablePlan | null {
-  return layout === 'kallaren' ? CELLAR_PLAN : layout === 'flygeln' ? WING_PLAN : layout === 'salongen' ? SALON_PLAN : null;
+  return layout === 'kallaren' ? CELLAR_PLAN : layout === 'flygeln' ? WING_PLAN : layout === 'salongen' ? SALON_PLAN
+    : layout === 'bistro-kallaren' ? BISTRO_CELLAR_PLAN : layout === 'bistro-flygeln' ? BISTRO_WING_PLAN : layout === 'bistro-salongen' ? BISTRO_SALON_PLAN : null;
 }
 
 // ---------- Simuleringens platser (strategic/simulation/service.ts) ----------

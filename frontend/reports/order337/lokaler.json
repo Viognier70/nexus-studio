@@ -1,0 +1,375 @@
+{
+  "definition": "ORDER 337 D. 40 frön. before: reports/order336/lokaler; after: reports/order337/lokaler. closed = stängda säsonger, meanCashEnd = medelkassan vid säsongens slut (kr), lowestCash = lägsta kassan, renegotiated = säsonger med omförhandlat lån, reachedVinbar/reachedBistro = säsonger som nådde steget, meanAfterWorks = morgnar med AW, meanFollowing = stamgäster som följde med till vinbaren (medel per säsong). truck = vagnens kvällar på Magasinsgatan: intäkt per kväll, netto (intäkt minus avgift), byNight = efter kvällarna vagnen stått där förut.",
+  "rows": {
+    "kallaren-trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 1,
+        "meanCashEnd": 21312,
+        "lowestCash": -115,
+        "renegotiated": 35,
+        "reachedVinbar": 40,
+        "reachedBistro": 2,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 0,
+        "meanFollowing": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 1,
+        "meanCashEnd": 21302,
+        "lowestCash": -115,
+        "renegotiated": 35,
+        "reachedVinbar": 40,
+        "reachedBistro": 2,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 0,
+        "meanFollowing": 0
+      }
+    },
+    "kallaren-trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 24614,
+        "lowestCash": 3790,
+        "renegotiated": 38,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0,
+        "meanFollowing": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 24614,
+        "lowestCash": 3790,
+        "renegotiated": 38,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0,
+        "meanFollowing": 0
+      }
+    },
+    "kallaren-aw-trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 39661,
+        "lowestCash": 26081,
+        "renegotiated": 13,
+        "reachedVinbar": 40,
+        "reachedBistro": 29,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 29.7,
+        "meanFollowing": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 42507,
+        "lowestCash": 25657,
+        "renegotiated": 13,
+        "reachedVinbar": 40,
+        "reachedBistro": 29,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 29.7,
+        "meanFollowing": 0
+      }
+    },
+    "kallaren-aw-trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 34407,
+        "lowestCash": 15997,
+        "renegotiated": 19,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 29.7,
+        "meanFollowing": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 34407,
+        "lowestCash": 15997,
+        "renegotiated": 19,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 29.7,
+        "meanFollowing": 0
+      }
+    },
+    "salongen-trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 41396,
+        "lowestCash": 20750,
+        "renegotiated": 12,
+        "reachedVinbar": 40,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "meanAfterWorks": 0,
+        "meanFollowing": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 42941,
+        "lowestCash": 21834,
+        "renegotiated": 12,
+        "reachedVinbar": 40,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "meanAfterWorks": 0,
+        "meanFollowing": 0
+      }
+    },
+    "salongen-trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 33124,
+        "lowestCash": 20959,
+        "renegotiated": 17,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0,
+        "meanFollowing": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 33124,
+        "lowestCash": 20959,
+        "renegotiated": 17,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0,
+        "meanFollowing": 0
+      }
+    },
+    "glashornet-trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 26318,
+        "lowestCash": 10753,
+        "renegotiated": 15,
+        "reachedVinbar": 40,
+        "reachedBistro": 25,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 0,
+        "meanFollowing": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 27904,
+        "lowestCash": 15581,
+        "renegotiated": 14,
+        "reachedVinbar": 40,
+        "reachedBistro": 25,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 0,
+        "meanFollowing": 0
+      }
+    },
+    "glashornet-trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 20544,
+        "lowestCash": 1393,
+        "renegotiated": 26,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0,
+        "meanFollowing": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 20544,
+        "lowestCash": 1393,
+        "renegotiated": 26,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0,
+        "meanFollowing": 0
+      }
+    }
+  },
+  "magasinsgatan": {
+    "trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 36065,
+        "lowestCash": 22131,
+        "renegotiated": 36,
+        "reachedVinbar": 40,
+        "reachedBistro": 32,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 0,
+        "meanFollowing": 15,
+        "truck": {
+          "evenings": 442,
+          "meanRevenueSek": 5392,
+          "netPerEveningSek": 5292,
+          "byNight": {
+            "0-4": {
+              "evenings": 200,
+              "meanRevenueSek": 4859,
+              "meanRegulars": 8
+            },
+            "5-9": {
+              "evenings": 200,
+              "meanRevenueSek": 5370,
+              "meanRegulars": 26
+            },
+            "10-19": {
+              "evenings": 42,
+              "meanRevenueSek": 8038,
+              "meanRegulars": 30
+            },
+            "20-": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            }
+          }
+        }
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 32998,
+        "lowestCash": 22267,
+        "renegotiated": 32,
+        "reachedVinbar": 40,
+        "reachedBistro": 32,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 0,
+        "meanFollowing": 10,
+        "truck": {
+          "evenings": 447,
+          "meanRevenueSek": 5334,
+          "netPerEveningSek": 5234,
+          "byNight": {
+            "0-4": {
+              "evenings": 200,
+              "meanRevenueSek": 4859,
+              "meanRegulars": 8
+            },
+            "5-9": {
+              "evenings": 200,
+              "meanRevenueSek": 5289,
+              "meanRegulars": 20
+            },
+            "10-19": {
+              "evenings": 47,
+              "meanRevenueSek": 7542,
+              "meanRegulars": 20
+            },
+            "20-": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            }
+          }
+        }
+      }
+    },
+    "trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 21480,
+        "lowestCash": 10617,
+        "renegotiated": 36,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0,
+        "meanFollowing": 15,
+        "truck": {
+          "evenings": 447,
+          "meanRevenueSek": 5193,
+          "netPerEveningSek": 5093,
+          "byNight": {
+            "0-4": {
+              "evenings": 200,
+              "meanRevenueSek": 4671,
+              "meanRegulars": 8
+            },
+            "5-9": {
+              "evenings": 200,
+              "meanRevenueSek": 5157,
+              "meanRegulars": 26
+            },
+            "10-19": {
+              "evenings": 47,
+              "meanRevenueSek": 7568,
+              "meanRegulars": 30
+            },
+            "20-": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            }
+          }
+        }
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 22002,
+        "lowestCash": 10923,
+        "renegotiated": 36,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0,
+        "meanFollowing": 10,
+        "truck": {
+          "evenings": 446,
+          "meanRevenueSek": 5134,
+          "netPerEveningSek": 5034,
+          "byNight": {
+            "0-4": {
+              "evenings": 200,
+              "meanRevenueSek": 4671,
+              "meanRegulars": 8
+            },
+            "5-9": {
+              "evenings": 200,
+              "meanRevenueSek": 5038,
+              "meanRegulars": 20
+            },
+            "10-19": {
+              "evenings": 46,
+              "meanRevenueSek": 7568,
+              "meanRegulars": 20
+            },
+            "20-": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            }
+          }
+        }
+      }
+    }
+  }
+}

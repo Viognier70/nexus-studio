@@ -1,0 +1,16 @@
+{
+  "definition": "ORDER 337 A. seats = bistrons platser i rummet (wineBarRoom.ts med lokalens bistroplan, tablePlans.ts), lika med simuleringens kapacitet (service.ts premisesSeats). Torget: bistroHouse.ts BISTRO_CAPACITY.",
+  "torget": 31,
+  "kallaren": {
+    "layout": "bistro-kallaren",
+    "seats": 28
+  },
+  "salongen": {
+    "layout": "bistro-salongen",
+    "seats": 46
+  },
+  "glashornet": {
+    "layout": "bistro-flygeln",
+    "seats": 44
+  }
+}
