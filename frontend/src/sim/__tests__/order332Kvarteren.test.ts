@@ -88,7 +88,8 @@ describe('ORDER 332 D — kvarteren över veckan och säsongen', () => {
   it('studenterna kommer i terminen, inte i sommarlovet', () => {
     const summer = firstDayOfWeek(3) + 1, term = firstDayOfWeek(8) + 1;
     expect([isTermTime(summer), isTermTime(term)]).toEqual([false, true]);
-    expect(districtTonight('student', term).poolFactor).toBeGreaterThan(2 * districtTonight('student', summer).poolFactor);
+    // ORDER 334 A — sommarkurserna ger studenter också på sommaren (förut under hälften av terminens).
+    expect(districtTonight('student', term).poolFactor).toBeGreaterThan(1.5 * districtTonight('student', summer).poolFactor);
   });
   it('campus fylls på konferensdagarna och töms på lördagen', () => {
     const conf = firstDayOfWeek(2) + 2; // onsdag vecka 2

@@ -1,0 +1,48 @@
+{
+  "definition": "ORDER 334 C. floorM = golvets mått (m, längst först) ur premisesInterior.ts premisesFloor; d15 = D15:s rum (content/premises.ts room); heightM, floor, wall = PREMISES_LOOK; pieces = meshar i interiören, ceiling = i taket (valv, ljuskronor, pendlar).",
+  "kallaren": {
+    "floorM": [
+      14.72,
+      9.79
+    ],
+    "d15": [
+      14.72,
+      9.79
+    ],
+    "heightM": 3.4,
+    "floor": "#6b655b",
+    "wall": "#7b4e3a",
+    "pieces": 16,
+    "ceiling": 14
+  },
+  "salongen": {
+    "floorM": [
+      28.89,
+      10.24
+    ],
+    "d15": [
+      28.89,
+      10.24
+    ],
+    "heightM": 4.2,
+    "floor": "#8a5a36",
+    "wall": "#34463a",
+    "pieces": 12,
+    "ceiling": 20
+  },
+  "glashornet": {
+    "floorM": [
+      17.78,
+      16.2
+    ],
+    "d15": [
+      17.78,
+      16.19
+    ],
+    "heightM": 3.6,
+    "floor": "#8c8a84",
+    "wall": "#7d4f3c",
+    "pieces": 20,
+    "ceiling": 21
+  }
+}
