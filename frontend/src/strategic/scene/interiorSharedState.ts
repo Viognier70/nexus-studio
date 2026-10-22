@@ -115,6 +115,8 @@ export type XZ = [number, number];
  */
 export interface SharedBusinessRoom {
   businessClass: BusinessClass;
+  /** ORDER 335 D — rummets möblering (wineBarRoom.ts RoomLayout): vinbaren, bistron eller en lokals plan. */
+  layout?: string;
   seats: XZ[];
   /**
    * ORDER 186 fynd 2 — världs-facing (radianer) per sitsplats, samma

@@ -545,7 +545,7 @@ export class WineBarDirector {
 
   constructor(room: DirectorRoom, opts: DirectorOptions) {
     // ORDER 315b del 2 — personalens vägar och barens platser efter rummets möblering.
-    setFlowLayout((room as { layout?: 'winebar' | 'bistro' }).layout ?? 'winebar');
+    setFlowLayout((room as { layout?: Parameters<typeof setFlowLayout>[0] }).layout ?? 'winebar');
     this.room = room;
     this.opts = opts;
     room.seats.forEach((s) => this.seatByIndex.set(s.seatIndex, s));

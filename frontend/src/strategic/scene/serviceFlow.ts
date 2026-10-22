@@ -1,6 +1,7 @@
 // serviceFlow — kvällens koreografi i Vinbaren som händelser i tid.
 import { PLATE_SURFACE, WINE_BAR_PLAN as P } from './wineBarRoom';
 import { BISTRO, BISTRO_RUNWAY_X, bistroGroups, bistroRoute } from './bistroHouse';
+import { aisleRoute, inSalonWest, onAisles, planGroups, planOf, planRoute, SALON, salonGroups } from './tablePlans';
 // Nexus v1, efter provspel 2026-09-26: servicen är en följd av händelser.
 //
 // SD-004. Ligger ovanpå wineBarRoom.ts, figureActs.ts och serviceScore.ts
@@ -146,15 +147,19 @@ export let BOTTLE_PICKUP_AT: Vec2 = WINEBAR_SPOTS.bottlePickup;
 
 // ORDER 315b del 2 — rummets möblering: vinbaren eller bistron. Regissören sätter den när
 // rummet monteras (wineBarDirector.ts); personalens vägar och barens platser följer den.
-let FLOW_LAYOUT: 'winebar' | 'bistro' = 'winebar';
-export function setFlowLayout(layout: 'winebar' | 'bistro'): void {
+// ORDER 335 D — och lokalernas planlösningar (tablePlans.ts): källaren och Flygeln med sina barer och gångar,
+// salongen med vinbarens och vägen genom mellanväggen till salongens platser.
+type FlowLayout = 'winebar' | 'bistro' | 'kallaren' | 'flygeln' | 'salongen';
+let FLOW_LAYOUT: FlowLayout = 'winebar';
+export function setFlowLayout(layout: FlowLayout): void {
   FLOW_LAYOUT = layout;
-  const spots = layout === 'bistro' ? BISTRO_SPOTS : WINEBAR_SPOTS;
+  const plan = planOf(layout);
+  const spots = plan ? plan.spots : layout === 'bistro' ? BISTRO_SPOTS : WINEBAR_SPOTS;
   PICKUP_BAR = spots.pickupBar;
   POUR_SPOT = spots.pourSpot;
   BOTTLE_PICKUP_AT = spots.bottlePickup;
 }
-export function flowLayout(): 'winebar' | 'bistro' { return FLOW_LAYOUT; }
+export function flowLayout(): FlowLayout { return FLOW_LAYOUT; }
 
 function inBar(p: Vec2): boolean { return p[0] > P.bar.x0 && p[0] < P.bar.x1 && p[1] > P.bar.z0 + P.bar.depth && p[1] < P.bar.z1 - P.bar.depth; }
 function laneFor(p: Vec2): number { return p[1] > P.bar.z1 - P.bar.depth ? NORTH_Z : SOUTH_Z; }
@@ -162,6 +167,21 @@ function laneFor(p: Vec2): number { return p[1] > P.bar.z1 - P.bar.depth ? NORTH
 /** Väg för personal mellan två punkter i rummets lokala XZ. */
 export function staffRoute(from: Vec2, to: Vec2): Vec2[] {
   if (FLOW_LAYOUT === 'bistro') return bistroRoute(from, to);
+  const plan = planOf(FLOW_LAYOUT);
+  if (plan) return planRoute(plan, from, to);
+  // Salongen: genom korridoren väster om baren och öppningen i mellanväggen (tablePlans.ts SALON).
+  if (FLOW_LAYOUT === 'salongen' && (inSalonWest(from) || inSalonWest(to))) {
+    const door: Vec2 = [CORR_X, 0];
+    const inSalon = (a: Vec2, b: Vec2) => { const x = onAisles(SALON.aisles, a), y = onAisles(SALON.aisles, b); return [a, ...aisleRoute(SALON.aisles, x, y), b]; };
+    const corridor = SALON.corridor.slice(1);
+    if (inSalonWest(from) && inSalonWest(to)) return inSalon(from, to);
+    if (inSalonWest(to)) return [...winebarRoute(from, door), ...corridor, ...inSalon(corridor[corridor.length - 1], to).slice(1)];
+    return [...inSalon(from, corridor[corridor.length - 1]), ...corridor.slice().reverse().slice(1), ...winebarRoute(door, to)];
+  }
+  return winebarRoute(from, to);
+}
+
+function winebarRoute(from: Vec2, to: Vec2): Vec2[] {
   const p: Vec2[] = [from];
   if (inBar(from) && inBar(to)) {
     if (Math.sign(from[1]) !== Math.sign(to[1]) && Math.abs(from[1]) > 0.3) p.push([BAR_OPEN_X, from[1]], [BAR_OPEN_X, to[1]]);
@@ -187,6 +207,9 @@ export interface Group { id: string; label: string; seats: string[]; serveAt: Ve
 export function groupsFor(room: any): Group[] {
   // ORDER 315b del 2 — bistron: ett sällskap per bord (bistroHouse.ts bistroGroups).
   if (room.layout === 'bistro') return bistroGroups().map((g) => ({ ...g }));
+  // ORDER 335 D — lokalens plan: ett sällskap per bord, långbordets sida, par av pallar och baren.
+  const plan = planOf(room.layout);
+  if (plan) return planGroups(plan).map((g) => ({ ...g }));
   const s = (id: string) => room.seats.find((x: any) => x.id === id);
   const g: Group[] = [];
   [['loungeA', 'Lounge A'], ['loungeB', 'Lounge B']].forEach(function (L) {
@@ -204,6 +227,8 @@ export function groupsFor(room: any): Group[] {
              serveAt: [(a.local[0] + b.local[0]) / 2, north ? P.runwayNorthZ : P.runwaySouthZ], serveFacing: north ? 0 : Math.PI, kind: 'bar',
              tableAt: [(a.local[0] + b.local[0]) / 2, north ? PLATE_SURFACE.barGuestZ : PLATE_SURFACE.barGuestZSouth] });
   });
+  // ORDER 335 D — salongen: soffgruppen och de runda borden väster om mellanväggen.
+  if (room.layout === 'salongen') g.push(...salonGroups().map((x) => ({ ...x })));
   return g;
 }
 

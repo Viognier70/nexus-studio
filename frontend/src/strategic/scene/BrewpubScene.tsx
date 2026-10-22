@@ -69,6 +69,7 @@ import { applyWineBarRoof, CUT_BELOW, roofAt, STAGE_LIGHT, stageLightIntensity }
 import { applyPremisesCeiling, applyPremisesInterior, premisesToRoomLocal, PREMISES_LOOK, setAfterWorkSign, type PremisesInterior } from './premisesInterior';
 import { afterWorkGuestsTonight } from '../../sim/districts';
 import { currentPremises } from '../content/playerPremises';
+import { layoutForPremises } from './tablePlans';
 
 // ORDER 184 — skalets tonning: businessRoom.shellOpacityForDistance (samma
 // smoothstep som PlayerBusiness roof-fade; flyttad dit i ORDER 271).
@@ -107,7 +108,8 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
   const reducedMotion = usePrefersReducedMotion();
   const isWineBar = roomClass === 'vinbaren';
   // ORDER 315b del 2 — bistron byggs i vinbarens hus (Designs D7): samma rum, bistrons möblering.
-  const roomLayout: RoomLayout = isWineBar && ladderStep(sim) === 'bistro' ? 'bistro' : 'winebar';
+  // ORDER 335 D — vinbaren i en lokal har lokalens planlösning (tablePlans.ts layoutForPremises).
+  const roomLayout: RoomLayout = isWineBar && ladderStep(sim) === 'bistro' ? 'bistro' : isWineBar ? layoutForPremises(currentPremises()) : 'winebar';
   // ORDER 315b del 2 — ombyggnadens steg under de stängda dagarna (samma fördelning som morgonens ruta).
   const refit = refitProgress(sim);
   const REFIT_PHASES = 4;
@@ -198,6 +200,7 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
 
     businessRoomRef.current = {
       businessClass: roomClass,
+      layout: roomLayout,
       seats: world.seats as [number, number][],
       seatFacings: world.seatFacings as number[],
       // ORDER 200 fynd 1 — läs sitshöjd per plats från kontraktets

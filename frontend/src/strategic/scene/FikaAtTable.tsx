@@ -28,7 +28,9 @@ const UNIFORM: Record<FikaPerson, string> = {
 };
 // Bordet: de fyra första platserna i bordsordningen (vinbarens tvåor 6–9, bistrons bänkbord 0–3).
 const SEATS_WINEBAR = [6, 7, 8, 9];
+// ORDER 335 D — i lokalernas planer (källaren, Flygeln) är de fyra första platserna ett bords (tablePlans.ts).
 const SEATS_BISTRO = [0, 1, 2, 3];
+const seatsFor = (room: { layout?: string; seats: unknown[] }) => (room.layout === 'winebar' || room.layout === 'salongen' || (room.layout === undefined && room.seats.length <= 20) ? SEATS_WINEBAR : SEATS_BISTRO);
 
 export function FikaAtTable() {
   const sim = useSimState();
@@ -54,7 +56,7 @@ export function FikaAtTable() {
   useEffect(() => {
     const room = businessRoomRef.current;
     if (!active || !room) { start.current = null; return; }
-    const idx = room.seats.length > 20 ? SEATS_BISTRO : SEATS_WINEBAR;
+    const idx = seatsFor(room);
     const pts = idx.map((i) => room.seats[i]).filter(Boolean);
     if (pts.length === 0) return;
     const cx = pts.reduce((a, p) => a + p[0], 0) / pts.length, cz = pts.reduce((a, p) => a + p[1], 0) / pts.length;
@@ -70,7 +72,7 @@ export function FikaAtTable() {
     if (!active || !room) return;
     if (start.current === null) start.current = state.clock.elapsedTime;
     const t = state.clock.elapsedTime - start.current;
-    const idx = room.seats.length > 20 ? SEATS_BISTRO : SEATS_WINEBAR;
+    const idx = seatsFor(room);
     const answered = tonight?.answer != null;
     let sipper = 0;
     team.rigs.forEach(({ person, rig }, k) => {
