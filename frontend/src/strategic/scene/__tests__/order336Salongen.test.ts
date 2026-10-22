@@ -90,6 +90,21 @@ describe('ORDER 336 B — källaren under gatan', () => {
     expect(cellarHoleWorld('salongen')).toBeNull();
   });
 
+  it('värdpulten står innanför dörren vid trappans fot, och värden bakom den vänd mot dörren', () => {
+    const { raw } = build('kallaren');
+    const d = CELLAR_PLAN.door!;
+    const desk = getObstacles(raw).find((o) => o.id === 'hostDesk')!;
+    const doorMid: V2 = [(d.x0 + d.x1) / 2, -raw.depth / 2];
+    expect(Math.hypot(desk.local[0] - doorMid[0], desk.local[1] - doorMid[1])).toBeLessThan(2);
+    const host = raw.staffStations.find((s) => s.id === 'host')!;
+    expect(host.local).toEqual(d.host.at);
+    // Värden tittar mot dörren: (sin θ, cos θ) pekar från värden mot dörrens mitt.
+    const to = [doorMid[0] - host.local[0], doorMid[1] - host.local[1]], L = Math.hypot(to[0], to[1]);
+    expect(Math.sin(host.facing) * to[0] / L + Math.cos(host.facing) * to[1] / L).toBeGreaterThan(0.7);
+    // Pulten står inte i vägen från dörren in i rummet eller i kön innanför.
+    for (const q of raw.queueSpots.filter((x) => x.side === 'inside')) expect([q.id, Math.abs(q.local[0] - desk.local[0]) > desk.halfW + 0.3 || Math.abs(q.local[1] - desk.local[1]) > desk.halfD + 0.3]).toEqual([q.id, true]);
+  });
+
   it('inget möbelhinder i trappan och på vilplanet', () => {
     const { raw } = build('kallaren');
     const st = CELLAR_PLAN.door!.stair;

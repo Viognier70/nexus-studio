@@ -9,7 +9,8 @@ import type { CameraTarget } from '../types';
 import { computePlayerBusinessInterior } from '../business/interiorLayout';
 import { BLEND, LEVELS, type LevelId, type LevelSpec } from '../village/villageEvening';
 
-import { onPremisesChange } from '../content/playerPremises';
+import { currentPremises, onPremisesChange } from '../content/playerPremises';
+import type { PremisesId } from '../../sim/districts';
 
 // ORDER 333 D — räknas om när vinbarens lokal byts (content/playerPremises.ts).
 let ROOM = computePlayerBusinessInterior();
@@ -22,6 +23,13 @@ onPremisesChange(() => { ROOM = computePlayerBusinessInterior(); });
 // oförändrad; avvikelsen står här.
 const TARGET_OVERRIDE: Partial<Record<LevelId, [number, number]>> = { street: [0, 0] };
 
+// ORDER 336 B (Anders 2026-10-22: "Trappan ska synas … lägg källarens standardvinkel så att trappan är med") —
+// källarens dörr och trappan ligger på rummets −z-sida (lokalens norra långsida, scene/tablePlans.ts CELLAR_DOOR).
+// Gatans och krogens kamera står på den sidan, snett från öster, så att trappan och kön är i förgrunden.
+const PREMISES_YAW: Partial<Record<PremisesId, Partial<Record<LevelId, number>>>> = {
+  kallaren: { street: Math.PI - 1.0, venue: Math.PI - 0.7 }
+};
+
 /** En nivås mål och vridning i byns ram (Designs byKvall.js toWorld/worldOf). */
 export function levelTarget(lv: LevelSpec): CameraTarget {
   if (lv.frame === 'world' || !ROOM) return { focus: { x: lv.target[0], z: lv.target[1] }, distance: lv.dist, yaw: lv.yaw, pitch: lv.pitch };
@@ -29,8 +37,9 @@ export function levelTarget(lv: LevelSpec): CameraTarget {
   const c = Math.cos(a);
   const s = Math.sin(a);
   const [lx, lz] = TARGET_OVERRIDE[lv.id] ?? lv.target;
-  const ox = Math.sin(lv.yaw);
-  const oz = Math.cos(lv.yaw);
+  const yaw = PREMISES_YAW[currentPremises()]?.[lv.id] ?? lv.yaw;
+  const ox = Math.sin(yaw);
+  const oz = Math.cos(yaw);
   return {
     focus: { x: ROOM.centre[0] + c * lx - s * lz, z: ROOM.centre[1] + s * lx + c * lz },
     distance: lv.dist,

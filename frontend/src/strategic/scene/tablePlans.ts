@@ -64,6 +64,10 @@ export interface PlanDoor {
   stair: { x0: number; x1: number; xEnd: number; z0: number; z1: number };
   /** Vägen från väntplatsen på gatan nedför trappan till dörren (rummets lokala ram). */
   approach: readonly Vec2[];
+  /** ORDER 336 B (Anders 2026-10-22: "Gästerna ska mötas där de kommer in") — värdpulten innanför dörren vid
+   *  trappans fot [x0, x1, z0, z1], och värdens plats bakom den, vänd mot dörren. */
+  hostDesk: readonly [number, number, number, number];
+  host: { at: Vec2; facing: number };
 }
 
 // ---------- Gemensamt: rummets fasta delar (wineBarHouse.ts) ----------
@@ -103,7 +107,7 @@ const CELLAR_DOOR: PlanDoor = {
   waitingSpot: [-1.5, -CELLAR_WALL_OUT - 0.75],
   queue: [
     { id: 'queueIn1', side: 'inside', order: 1, local: [5.2, -4.4] },
-    { id: 'queueIn2', side: 'inside', order: 2, local: [5.85, -4.4] },
+    { id: 'queueIn2', side: 'inside', order: 2, local: [4.45, -4.3] },
     { id: 'queueOut1', side: 'outside', order: 3, local: [-1.5, -CELLAR_WALL_OUT - 0.45] },
     { id: 'queueOut2', side: 'outside', order: 4, local: [-2.4, -CELLAR_WALL_OUT - 0.45] },
     { id: 'queueOut3', side: 'outside', order: 5, local: [-3.3, -CELLAR_WALL_OUT - 0.45] },
@@ -112,6 +116,8 @@ const CELLAR_DOOR: PlanDoor = {
   ],
   floorY: -2.7,
   stair: { x0: -0.6, x1: 3.8, xEnd: 6.5, z0: -CELLAR_WALL_OUT - 1.23, z1: -CELLAR_WALL_OUT },
+  hostDesk: [6.3, 6.75, -4.95, -4.45],
+  host: { at: [6.98, -4.7], facing: -Math.PI / 2 },
   approach: [[-1.5, -CELLAR_WALL_OUT - 0.6], [-0.6, -CELLAR_WALL_OUT - 0.6], [3.8, -CELLAR_WALL_OUT - 0.6], [5.2, -CELLAR_WALL_OUT - 0.6], [5.2, -5.205], [5.2, -4.55]]
 };
 function cellarSeats(): PlanSeat[] {

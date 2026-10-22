@@ -1210,11 +1210,14 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
   // Värdpulten söder om dörrmattan (leverans 3, godkänd 2026-09-30). Framsidan mot dörren (+x).
   // 0,60 bred längs z, 0,45 djup längs x, 1,10 hög. Samma mått som tableware 'hostDesk'. Vasen står på den.
   // ORDER 317 — pulten ur wineBarHouse.ts (samma mått, 0,565 m längre in).
-  const HD = HOUSE.hostDesk;
+  // ORDER 336 B — med lokalens egen dörr står pulten vid den (källaren: innanför dörren vid trappans fot).
+  const HD = plan?.door?.hostDesk ?? HOUSE.hostDesk;
   rectBox(furniture, M.bar, HD[0], HD[1], HD[2], HD[3], Y, Y + 0.06, 'hostDeskPlinth');
   rectBox(furniture, M.bar, HD[0] + 0.02, HD[1] - 0.02, HD[2] + 0.02, HD[3] - 0.02, Y + 0.06, Y + 1.06, 'hostDesk');
   rectBox(furniture, M.barTop, HD[0], HD[1], HD[2], HD[3], Y + 1.06, Y + 1.10, 'hostDeskTop');
-  rectBox(furniture, M.brass, HD[1] - 0.02, HD[1] - 0.014, HD[2] + 0.02, HD[3] - 0.02, Y + 0.91, Y + 0.93, 'hostDeskBrass');
+  // Mässingslisten på framsidan, mot dörren (källaren: västerut, mot dörren vid trappans fot).
+  if (plan?.door) rectBox(furniture, M.brass, HD[0] + 0.014, HD[0] + 0.02, HD[2] + 0.02, HD[3] - 0.02, Y + 0.91, Y + 0.93, 'hostDeskBrass');
+  else rectBox(furniture, M.brass, HD[1] - 0.02, HD[1] - 0.014, HD[2] + 0.02, HD[3] - 0.02, Y + 0.91, Y + 0.93, 'hostDeskBrass');
   // ── Vardagens koreografi (efter leverans 3) ──────────────────────
   // Trottoaren utanför dörren, där kön står. Samma höjd som golvet, en kantsten mot gatan.
   const paveM = mat('#4b433c', 0.95, 0), boardM = mat('#23221f', 0.9, 0), steelM = mat('#9a978f', 0.35, 0.6);
@@ -1284,6 +1287,7 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
     if (plan && !plan.winebarBar && st.id === 'bartender') return plan.bartender.at;
     if (plan && !plan.winebarBar && st.id === 'sommelier') return plan.sommelier.at;
     if (plan && st.id === 'dj') return plan.djAt;
+    if (plan?.door && st.id === 'host') return plan.door.host.at;
     if (st.id === 'bartender') return [st.local[0], RACK_Z - BARTENDER_FROM_RACK];
     if (st.id === 'sommelier') return [st.local[0], RACK_Z + LANE_FROM_RACK];
     return [st.local[0], st.local[1]];
@@ -1292,7 +1296,7 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
     return {
       id: st.id, role: st.role, local: stationLocal(st),
       standHeight: st.id === 'dj' && !alt ? DJ.platform : 0,
-      facing: plan && !plan.winebarBar && st.id === 'bartender' ? plan.bartender.facing : plan && !plan.winebarBar && st.id === 'sommelier' ? plan.sommelier.facing : bistro && st.id === 'bartender' ? Math.PI / 2 : bistro && st.id === 'sommelier' ? Math.PI : st.id === 'dj' ? faceNW : st.facing,
+      facing: plan?.door && st.id === 'host' ? plan.door.host.facing : plan && !plan.winebarBar && st.id === 'bartender' ? plan.bartender.facing : plan && !plan.winebarBar && st.id === 'sommelier' ? plan.sommelier.facing : bistro && st.id === 'bartender' ? Math.PI / 2 : bistro && st.id === 'sommelier' ? Math.PI : st.id === 'dj' ? faceNW : st.facing,
       uniform: UNIFORM_OF[st.id], note: st.note
     };
   });

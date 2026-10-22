@@ -79,12 +79,12 @@ try {
     await ctx.close();
   }
   if (DELAR.includes('B')) {
+    // Källarens standardvinkel (camera/eveningLevels.ts PREMISES_YAW): trappan i förgrunden vid Z och vid X.
     const { ctx, page, errors } = await evening({ premises: 'kallaren' }, '18.30');
-    const trappan = await shot(page, 'kallaren-trappan', 'z', async (p) => { for (let i = 0; i < 4; i++) { await p.keyboard.press('e'); await delay(400); } await delay(2500); });
     const krogen = await shot(page, 'kallaren-krogen', 'z');
     const gatan = await shot(page, 'kallaren-gatan', 'x');
     const byn = await shot(page, 'kallaren-byn', 'v');
-    result.B = { trappan, krogen, gatan, byn, errors };
+    result.B = { krogen, gatan, byn, errors };
     await ctx.close();
   }
   if (DELAR.includes('T')) {

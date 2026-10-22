@@ -5,6 +5,7 @@ import { reducer } from '../../strategic/simulation/reducer';
 import { firstDayOfWeek } from '../calendar';
 import { DISTRICTS } from '../balance';
 import { followingRegularsAtTakeover, truckRegularsTonight } from '../districts';
+import { dailyGuestCap } from '../economy';
 import { bookingFor } from '../../strategic/simulation/guestTypes';
 import { startInFoodtruck } from '../../strategic/testHarness/weekHarness';
 import type { SimulationState } from '../../strategic/types';
@@ -36,5 +37,16 @@ describe('ORDER 336 C — stamgästerna från Magasinsgatan', () => {
     expect(b.regulars).toBe(taken.economy.followingRegulars);
     expect(b.counts.middle).toBeGreaterThanOrEqual(b.regulars!);
     expect(reducer(offeredAt(0), { type: 'LADDER_TAKE' }).economy.followingRegulars).toBe(0);
+  });
+
+  it('i krogen är stamgästerna ett golv: kvällens tak blir aldrig lägre än dem, men de läggs inte ovanpå en full kväll', () => {
+    const taken = reducer(offeredAt(6), { type: 'LADDER_TAKE' });
+    const day = { ...taken.day, dayNumber: firstDayOfWeek(3) + 2 };
+    const without = dailyGuestCap({ ...taken, day, economy: { ...taken.economy, followingRegulars: 0 } });
+    const loyal = taken.economy.followingRegulars!;
+    expect(dailyGuestCap({ ...taken, day })).toBe(Math.max(without, loyal));
+    // En kväll med få gäster (lågt rykte): stamgästerna kommer ändå.
+    const thin = { ...taken, day, economy: { ...taken.economy, followingRegulars: 999 } };
+    expect(dailyGuestCap(thin)).toBeGreaterThanOrEqual(999);
   });
 });
