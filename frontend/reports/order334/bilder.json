@@ -1,0 +1,95 @@
+{
+  "definition": "ORDER 334. D: before = kortet innan banken (rubriken, namnrutan, Ta över), ask = bankens fråga, after.title = morgonens rubrik (morning-business-name) efter övertagandet. C: bilderna rum-<lokal>-<nivå>.png, clock och level vid varje. A: awRow = AW i morgonens lista i källaren, torgetAwRow = vid Torget. B: regulars = window.__nxTruckRegulars (inView = figurerna med egen kopp, tonight = sim day.regularsTonight). errors = sidans fel.",
+  "at": "2026-10-22T08:26:00.969Z",
+  "build": "produktion (vite build + preview)",
+  "D": {
+    "before": {
+      "title": "Vagnen",
+      "nameBox": false,
+      "take": false
+    },
+    "ask": "Banken lånar ut till en vinbar i källaren på Prästgatan. Vad ska den heta?",
+    "after": {
+      "title": "Valvet",
+      "offerGone": true
+    },
+    "errors": []
+  },
+  "C": {
+    "kallaren": {
+      "shots": {
+        "krogen": {
+          "clock": "20.17",
+          "level": "room"
+        },
+        "gatan": {
+          "clock": "20.25",
+          "level": "street"
+        },
+        "hela": {
+          "clock": "20.42",
+          "cam": null
+        }
+      },
+      "errors": []
+    },
+    "salongen": {
+      "shots": {
+        "krogen": {
+          "clock": "20.17",
+          "level": "room"
+        },
+        "gatan": {
+          "clock": "20.26",
+          "level": "street"
+        },
+        "hela": {
+          "clock": "20.42",
+          "cam": null
+        }
+      },
+      "errors": []
+    },
+    "glashornet": {
+      "shots": {
+        "krogen": {
+          "clock": "20.17",
+          "level": "room"
+        },
+        "gatan": {
+          "clock": "20.26",
+          "level": "street"
+        },
+        "hela": {
+          "clock": "20.42",
+          "cam": null
+        }
+      },
+      "errors": []
+    }
+  },
+  "A": {
+    "awRow": true,
+    "text": "AW i källarenEn skylt på Prästgatan och ett billigare glas från fem. Byborna kommer efter jobbet.12 bybor kommer efter jobbet",
+    "guests": "12",
+    "errors": [],
+    "torgetAwRow": false
+  },
+  "B": {
+    "clock": "19.07",
+    "regulars": {
+      "inView": [
+        "gst-12",
+        "gst-6",
+        "gst-13",
+        "gst-7",
+        "gst-8",
+        "gst-9",
+        "gst-10",
+        "gst-14"
+      ],
+      "tonight": 11
+    },
+    "errors": []
+  }
+}

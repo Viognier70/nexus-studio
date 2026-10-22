@@ -544,7 +544,23 @@ export const STRINGS = {
   'spot.tonight.conference': { sv: 'Konferens på campus.', en: 'A conference on campus.' },
   'spot.tonight.market': { sv: 'Marknad på torget.', en: 'Market day on the square.' },
   // ORDER 333 D — vinbarens lokal, vald när vinbaren tas över (Designs D15: källaren, salongen, Flygeln).
+  // ORDER 334 A — AW i källaren (morgonens satsning).
+  'afterWork.guests': { sv: '{n} bybor kommer efter jobbet', en: '{n} villagers come after work' },
+  'afterWork.came': { sv: 'AW i källaren: {n} bybor bokade efter jobbet.', en: 'After work in the cellar: {n} villagers booked after work.' },
+  // ORDER 334 B — stamgästerna på Magasinsgatan i kvällens resultat.
+  'spot.regularsCame': { sv: '{n} stamgäster kom med egen kopp. Vagnen har stått här {nights} kvällar.', en: '{n} regulars came with their own cup. The truck has stood here {nights} evenings.' },
   'premises.label': { sv: 'Lokalen', en: 'The premises' },
+  // ORDER 334 D — banken frågar efter namnet när lokalen är vald; hyran står vid varje lokal (ORDER 334 A).
+  'premises.rent': { sv: 'Hyran {rent} kr i veckan', en: 'Rent {rent} kr a week' },
+  'premises.toBank': { sv: 'Till banken', en: 'To the bank' },
+  'premises.back': { sv: 'Tillbaka', en: 'Back' },
+  'premises.bankKicker': { sv: 'Banken', en: 'The bank' },
+  'premises.bankAsk': { sv: 'Banken lånar ut till en vinbar {at}. Vad ska den heta?', en: 'The bank will lend you enough for a wine bar {at}. What should it be called?' },
+  'premises.namePlaceholder': { sv: 'Krogens namn', en: 'Name of the place' },
+  'premises.at.torget': { sv: 'vid torget', en: 'on the square' },
+  'premises.at.kallaren': { sv: 'i källaren på Prästgatan', en: 'in the cellar on Prästgatan' },
+  'premises.at.salongen': { sv: 'i salongen nära Gästgivaregården', en: 'in the salon near Gästgivaregården' },
+  'premises.at.glashornet': { sv: 'i Flygeln på campus', en: 'in Flygeln on campus' },
   'premises.name.torget': { sv: 'Torget', en: 'The square' },
   'premises.name.kallaren': { sv: 'Källaren', en: 'The cellar' },
   'premises.name.salongen': { sv: 'Salongen', en: 'The salon' },
@@ -2050,6 +2066,10 @@ export const TABLE = {
     'compost-audit': {
       name: { sv: 'Genomgång av kökets kompost', en: 'Review of the kitchen compost' },
       description: { sv: 'Gå igenom kärlen och flödet i förberedelsen. Små ändringar håller när någon har ett öga på dem.', en: 'Go through the bins and the flow in the prep. Small changes hold when someone keeps an eye on them.' }
+    },
+    'after-work': {
+      name: { sv: 'AW i källaren', en: 'After work in the cellar' },
+      description: { sv: 'En skylt på Prästgatan och ett billigare glas från fem. Byborna kommer efter jobbet.', en: 'A sign on Prästgatan and a cheaper glass from five. The villagers come after work.' }
     },
     'square-tasting': {
       name: { sv: 'Provsmakning på torget', en: 'A tasting on the square' },

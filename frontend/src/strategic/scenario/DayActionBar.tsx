@@ -213,8 +213,9 @@ export function DayActionBar({ onOpenHouse, onOpenBank, onOpenNewspaper, onOpenB
           <NxLabel>
             <span className="nx-accent-text">
               {s.label(strings.calendar.weekdays[cal.weekday], cal.week, SEASON.weeks)}
-              {/* ORDER 315b del 2 — Designs D7 (venueTier.ts morningLine): krogens namn, steget och nivån. */}
-              {business && bizName && <> · {bizName}</>}
+              {/* ORDER 315b del 2 — Designs D7 (venueTier.ts morningLine): krogens namn, steget och nivån.
+                  ORDER 334 D — namnet är det spelaren gav banken när lokalen var vald. */}
+              {business && bizName && <> · <span data-testid="morning-business-name">{bizName}</span></>}
               {business && <> · {stepName ?? strings.economy.classes[business]}</>}
               {business && tierNow && <> · {strings.shopTabs.tier[tierNow]}</>}
             </span>

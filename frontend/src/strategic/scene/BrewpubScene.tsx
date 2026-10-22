@@ -66,6 +66,9 @@ import { useCamera } from '../camera/CameraContext';
 import { IndoorLamps } from './IndoorLamps';
 import type { Vec2 } from './businessRoom';
 import { applyWineBarRoof, CUT_BELOW, roofAt, STAGE_LIGHT, stageLightIntensity } from '../village/roofBlend';
+import { applyPremisesCeiling, applyPremisesInterior, premisesToRoomLocal, PREMISES_LOOK, setAfterWorkSign, type PremisesInterior } from './premisesInterior';
+import { afterWorkGuestsTonight } from '../../sim/districts';
+import { currentPremises } from '../content/playerPremises';
 
 // ORDER 184 — skalets tonning: businessRoom.shellOpacityForDistance (samma
 // smoothstep som PlayerBusiness roof-fade; flyttad dit i ORDER 271).
@@ -116,6 +119,8 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
   const stageRef = useRef<THREE.SpotLight>(null);
   const appliedRef = useRef<{ mood: MoodId | null; wall: WineWallLevel | null }>({ mood: null, wall: null });
   const djPlaying = useMemo(() => LIGHT_MOODS[mood].djPlaying, [mood]);
+  // ORDER 334 A — AW i källaren i kväll: skylten står utanför dörren.
+  const afterWorkTonight = afterWorkGuestsTonight(sim) > 0;
 
   useEffect(() => {
     if (!isBrewpub) return;
@@ -125,9 +130,12 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
     // createRoom via businessRoom-kontraktet. Skickar in width/depth ur
     // interiorLayout så brewpubRoom bygger geometri i samma format
     // sim-lagret räknar i (OBB w869907975).
-    const room = createRoom(roomClass, { ...roomSizeFor(roomClass, layout.width, layout.depth), layout: roomLayout });
+    // ORDER 334 C — lokalens rum: höjden och D15:s interiör runt vinbarens möblering (premisesInterior.ts).
+    const premises = isWineBar ? currentPremises() : 'torget';
+    const room = createRoom(roomClass, { ...roomSizeFor(roomClass, layout.width, layout.depth), layout: roomLayout, ...(premises !== 'torget' ? { interiorHeight: PREMISES_LOOK[premises].heightM } : {}) });
     room.group.position.set(layout.centre[0], 0, layout.centre[1]);
     room.group.rotation.y = -layout.worldAngle;
+    if (premises !== 'torget') applyPremisesInterior(room.raw as WineBarRoom, premises, premisesToRoomLocal(premises, layout.centre, layout.worldAngle));
     grp.add(room.group);
     roomRef.current = room;
     // ORDER 150 — publicera kontraktets värld-XZ:er så InteriorGuests
@@ -246,6 +254,7 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
       const r = roomRef.current;
       if (r) {
         r.group.removeFromParent();
+        (r.group.userData.premisesInterior as PremisesInterior | undefined)?.dispose();
         r.dispose?.();
         roomRef.current = null;
       }
@@ -289,6 +298,8 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
       // kapas först när taket är under hälften (village/roofBlend.ts).
       const rk = roofAt(a.distance);
       applyWineBarRoof(raw, rk);
+      const pi = raw.group.userData.premisesInterior as PremisesInterior | undefined;
+      if (pi) { applyPremisesCeiling(pi, rk); setAfterWorkSign(pi, afterWorkTonight); }
       if (rk >= CUT_BELOW) {
         if (c.d !== -1) { for (const u of Object.values(raw.parts.wallUpper)) u.visible = true; cutRef.current = { ...c, d: -1 }; }
       } else if (!(Math.abs(a.yaw - c.yaw) < 0.02 && Math.abs(a.focus.x - c.x) < 0.5 && Math.abs(a.focus.z - c.z) < 0.5 && Math.abs(a.distance - c.d) < 1)) {

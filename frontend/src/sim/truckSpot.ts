@@ -18,6 +18,11 @@ export function setTruckSpot(state: SimulationState, spot: TruckSpotId): Simulat
 export function applyTruckSpotAtDoors(draft: SimulationState): void {
   if (draft.economy.businessClass !== 'foodtruck') return;
   if (!truckSpotOpen(playerTruckSpotOf(draft), draft.day.dayNumber)) draft.economy = { ...draft.economy, truckSpot: 'torget' };
+  // ORDER 334 B — kvällen räknas på platsen (en gång per dag), för stamgästerna på Magasinsgatan.
+  if (draft.economy.truckNightDay !== draft.day.dayNumber) {
+    const spot = playerTruckSpotOf(draft), nights = draft.economy.truckNights ?? {};
+    draft.economy = { ...draft.economy, truckNights: { ...nights, [spot]: (nights[spot] ?? 0) + 1 }, truckNightDay: draft.day.dayNumber };
+  }
   const fee = truckSpotFeeSek(playerTruckSpotOf(draft));
   if (fee <= 0) return;
   draft.ledger = [...draft.ledger];

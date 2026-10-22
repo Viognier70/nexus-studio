@@ -18,8 +18,8 @@ import { NxButton } from './system/components';
 import './ladder.css';
 import { DinVag } from './DinVag';
 import { ladderStep } from '../../sim/ladder';
-import { PremisesPicker } from '../business/PremisesPicker';
-import type { PremisesId } from '../../sim/districts';
+import { PremisesTakeSteps, useVinbarTake } from '../business/PremisesTakeSteps';
+import { t as tt } from '../../content/nexusStrings';
 
 export function LadderOfferCard({ hidden }: { hidden?: boolean }) {
   const sim = useSimState();
@@ -27,8 +27,8 @@ export function LadderOfferCard({ hidden }: { hidden?: boolean }) {
   const lang = useLanguage();
   const reviewPending = useReviewPending(sim);
   const [reopened, setReopened] = useState<number | null>(null);
-  // ORDER 333 D — lokalen när vinbaren tas över.
-  const [premises, setPremises] = useState<PremisesId>('torget');
+  // ORDER 333 D — lokalen när vinbaren tas över; ORDER 334 D — sedan frågar banken efter namnet.
+  const vin = useVinbarTake();
   const offer = sim.day.period === 'morning' ? currentOffer(sim) : null;
   if (!offer || hidden || reviewPending) return null;
   const l = strings.ladder;
@@ -54,11 +54,15 @@ export function LadderOfferCard({ hidden }: { hidden?: boolean }) {
         <p className="nx-small" data-testid="ladder-price">{offer.to === 'foodtruck' ? l.truckPrice : l.price(kr(offer.depositSek), kr(offer.loanSek))}</p>
         {can === 'cash' && <p className="nx-small" data-testid="ladder-cash-short">{l.cashShort(kr(offer.depositSek))}</p>}
         <p className="nx-small" style={{ opacity: 0.8 }}>{l.notYetNote}</p>
-        {offer.to === 'vinbar' && <PremisesPicker value={premises} onChange={setPremises} />}
+        {offer.to === 'vinbar' && <PremisesTakeSteps take={vin} />}
         <DinVag sim={sim} />
         <div style={{ display: 'flex', gap: '0.75em', justifyContent: 'flex-end', marginTop: '1em' }}>
-          <button type="button" className="nx-btn nx-btn-quiet" data-testid="ladder-not-yet" onClick={() => { setReopened(null); if (offer.state === 'offered') dispatch({ type: 'LADDER_DECLINE' }); }}>{l.notYet}</button>
-          <NxButton testId="ladder-take" onClick={() => dispatch({ type: 'LADDER_TAKE', ...(offer.to === 'vinbar' ? { premises } : {}) })} disabled={can !== 'ok'}>{l.take}</NxButton>
+          {offer.to === 'vinbar' && vin.step === 'name'
+            ? <button type="button" className="nx-btn nx-btn-quiet" data-testid="premises-back" onClick={() => vin.setStep('premises')}>{tt(lang, 'premises.back')}</button>
+            : <button type="button" className="nx-btn nx-btn-quiet" data-testid="ladder-not-yet" onClick={() => { setReopened(null); if (offer.state === 'offered') dispatch({ type: 'LADDER_DECLINE' }); }}>{l.notYet}</button>}
+          {offer.to === 'vinbar' && vin.step === 'premises'
+            ? <NxButton testId="premises-to-bank" onClick={() => vin.setStep('name')} disabled={can !== 'ok'}>{tt(lang, 'premises.toBank')}</NxButton>
+            : <NxButton testId="ladder-take" onClick={() => { if (offer.to === 'vinbar') vin.commitName(); dispatch({ type: 'LADDER_TAKE', ...(offer.to === 'vinbar' ? { premises: vin.premises } : {}) }); }} disabled={can !== 'ok' || (offer.to === 'vinbar' && !vin.named)}>{l.take}</NxButton>}
         </div>
       </section>
     </div>

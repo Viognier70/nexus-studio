@@ -1,0 +1,244 @@
+{
+  "definition": "ORDER 334. before = reports/order333/lokaler (ORDER 333, samma frön), after = reports/order334/lokaler. closed = stängda säsonger, meanCashEnd = medelkassan vid säsongens slut (kr), lowestCash = lägsta kassan, renegotiated = säsonger med omförhandlat lån, reachedVinbar/reachedBistro = säsonger som nådde steget, meanAfterWorks = morgnar med AW per säsong. kallaren-aw = KARNAN_AW=1 (AW de morgnar det går). magasinsgatan: vagnens kvällar där, intäkt och avgift per kväll, netPerEveningSek = intäkt minus avgift, byNight = intäkten och stamgästerna efter kvällarna vagnen stått där förut (0–4, 5–9, 10–19, 20+). torget333 = vagnens kvällar på Torget i samma körning före. prastgatan = vagnen på Prästgatan, before ur reports/order332/platser (ORDER 332:s körning, 40 frön), after efter sommarkurserna.",
+  "rows": {
+    "kallaren-trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 40,
+        "meanCashEnd": -39052,
+        "lowestCash": -68389,
+        "renegotiated": 40,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 17588,
+        "lowestCash": 2438,
+        "renegotiated": 36,
+        "reachedVinbar": 40,
+        "reachedBistro": 3,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 0
+      }
+    },
+    "kallaren-trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 32,
+        "meanCashEnd": -37409,
+        "lowestCash": -77470,
+        "renegotiated": 40,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 2,
+        "meanCashEnd": 18823,
+        "lowestCash": -3463,
+        "renegotiated": 40,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0
+      }
+    },
+    "kallaren-aw-trappa-mentorn": {
+      "before": null,
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 39304,
+        "lowestCash": 23441,
+        "renegotiated": 14,
+        "reachedVinbar": 40,
+        "reachedBistro": 24,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 29.7
+      }
+    },
+    "kallaren-aw-trappa-rimlig": {
+      "before": null,
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 28257,
+        "lowestCash": 12243,
+        "renegotiated": 21,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 28.6
+      }
+    },
+    "torget-trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 36424,
+        "lowestCash": 17439,
+        "renegotiated": 11,
+        "reachedVinbar": 40,
+        "reachedBistro": 36,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 36424,
+        "lowestCash": 17439,
+        "renegotiated": 11,
+        "reachedVinbar": 40,
+        "reachedBistro": 36,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 0
+      }
+    },
+    "torget-trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 28976,
+        "lowestCash": 10106,
+        "renegotiated": 17,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 28976,
+        "lowestCash": 10106,
+        "renegotiated": 17,
+        "reachedVinbar": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0
+      }
+    }
+  },
+  "magasinsgatan": {
+    "trappa-mentorn": {
+      "before": {
+        "evenings": 462,
+        "meanRevenueSek": 6284,
+        "feeSek": 100,
+        "netPerEveningSek": 6184,
+        "byNight": null
+      },
+      "after": {
+        "evenings": 440,
+        "meanRevenueSek": 5337,
+        "feeSek": 100,
+        "netPerEveningSek": 5237,
+        "byNight": {
+          "0-4": {
+            "evenings": 200,
+            "meanRevenueSek": 4748,
+            "meanRegulars": 4
+          },
+          "5-9": {
+            "evenings": 200,
+            "meanRevenueSek": 5349,
+            "meanRegulars": 14
+          },
+          "10-19": {
+            "evenings": 40,
+            "meanRevenueSek": 8218,
+            "meanRegulars": 20
+          },
+          "20-": {
+            "evenings": 0,
+            "meanRevenueSek": 0,
+            "meanRegulars": 0
+          }
+        }
+      },
+      "torget333": null
+    },
+    "trappa-rimlig": {
+      "before": {
+        "evenings": 477,
+        "meanRevenueSek": 6175,
+        "feeSek": 100,
+        "netPerEveningSek": 6075,
+        "byNight": null
+      },
+      "after": {
+        "evenings": 441,
+        "meanRevenueSek": 5138,
+        "feeSek": 100,
+        "netPerEveningSek": 5038,
+        "byNight": {
+          "0-4": {
+            "evenings": 200,
+            "meanRevenueSek": 4621,
+            "meanRegulars": 4
+          },
+          "5-9": {
+            "evenings": 200,
+            "meanRevenueSek": 5013,
+            "meanRegulars": 14
+          },
+          "10-19": {
+            "evenings": 41,
+            "meanRevenueSek": 8263,
+            "meanRegulars": 20
+          },
+          "20-": {
+            "evenings": 0,
+            "meanRevenueSek": 0,
+            "meanRegulars": 0
+          }
+        }
+      },
+      "torget333": null
+    }
+  },
+  "prastgatan": {
+    "before": {
+      "evenings": 449,
+      "meanRevenueSek": 4357,
+      "feeSek": 150,
+      "netPerEveningSek": 4207,
+      "byNight": null
+    },
+    "after": {
+      "evenings": 452,
+      "meanRevenueSek": 4627,
+      "feeSek": 150,
+      "netPerEveningSek": 4477,
+      "byNight": {
+        "0-4": {
+          "evenings": 200,
+          "meanRevenueSek": 4305,
+          "meanRegulars": 0
+        },
+        "5-9": {
+          "evenings": 200,
+          "meanRevenueSek": 4342,
+          "meanRegulars": 0
+        },
+        "10-19": {
+          "evenings": 52,
+          "meanRevenueSek": 6958,
+          "meanRegulars": 0
+        },
+        "20-": {
+          "evenings": 0,
+          "meanRevenueSek": 0,
+          "meanRegulars": 0
+        }
+      }
+    }
+  }
+}

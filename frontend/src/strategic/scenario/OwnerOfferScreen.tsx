@@ -19,8 +19,7 @@ import { PATH_KEY } from '../ui/DinVag';
 import type { SimulationState } from '../types';
 import { NxButton, NxLabel } from '../ui/system/components';
 import { AsaPortrait } from '../ui/AsaBubble';
-import { PremisesPicker } from '../business/PremisesPicker';
-import type { PremisesId } from '../../sim/districts';
+import { PremisesTakeSteps, useVinbarTake } from '../business/PremisesTakeSteps';
 import { useSimDispatch } from '../simulation/SimulationProvider';
 import '../ui/service/service.css';
 import './ownerOffer.css';
@@ -30,8 +29,8 @@ export function OwnerOfferScreen({ sim, onContinue }: { sim: SimulationState; on
   const lang = useLanguage();
   const S = (k: string, v?: Record<string, string | number>) => tt(lang, k as StringKey, v);
   const [answer, setAnswer] = useState<'take' | 'notyet' | null>(null);
-  // ORDER 333 D — lokalen när vinbaren tas över.
-  const [premises, setPremises] = useState<PremisesId>('torget');
+  // ORDER 333 D — lokalen när vinbaren tas över; ORDER 334 D — sedan frågar banken efter namnet.
+  const vin = useVinbarTake();
   const offer = offerAtDoorTonight(sim);
   if (!offer && !answer) return null;
   const kr = (n: number) => `${Math.round(n).toLocaleString(lang === 'sv' ? 'sv-SE' : 'en-GB')} kr`;
@@ -42,7 +41,8 @@ export function OwnerOfferScreen({ sim, onContinue }: { sim: SimulationState; on
     S('asa.row.rep'),
     S('asa.row.keep')
   ].filter((r): r is string => r !== null);
-  const take = () => { dispatch({ type: 'LADDER_TAKE', ...(offer?.to === 'vinbar' ? { premises } : {}) }); setAnswer('take'); };
+  const vinbar = offer?.to === 'vinbar';
+  const take = () => { if (vinbar) vin.commitName(); dispatch({ type: 'LADDER_TAKE', ...(vinbar ? { premises: vin.premises } : {}) }); setAnswer('take'); };
   const notYet = () => { dispatch({ type: 'LADDER_DECLINE' }); setAnswer('notyet'); };
   return (
     // Inte en helskärm: scenen vid dörren (OwnerAtDoor.tsx) syns, kortet står till höger (D7).
@@ -65,10 +65,14 @@ export function OwnerOfferScreen({ sim, onContinue }: { sim: SimulationState; on
               <ul className="nx-owner-rows" data-testid="owner-rows">
                 {rows.map((r) => <li key={r}>{r}</li>)}
               </ul>
-              {offer?.to === 'vinbar' && <PremisesPicker value={premises} onChange={setPremises} />}
+              {vinbar && <PremisesTakeSteps take={vin} />}
               <div className="nx-owner-actions">
-                <button type="button" className="nx-btn nx-btn-quiet" data-testid="owner-not-yet" onClick={notYet}>{S('asa.notyet')}</button>
-                <NxButton testId="owner-take" onClick={take} disabled={can !== 'ok'}>{S('asa.take')}</NxButton>
+                {vinbar && vin.step === 'name'
+                  ? <button type="button" className="nx-btn nx-btn-quiet" data-testid="premises-back" onClick={() => vin.setStep('premises')}>{S('premises.back')}</button>
+                  : <button type="button" className="nx-btn nx-btn-quiet" data-testid="owner-not-yet" onClick={notYet}>{S('asa.notyet')}</button>}
+                {vinbar && vin.step === 'premises'
+                  ? <NxButton testId="premises-to-bank" onClick={() => vin.setStep('name')} disabled={can !== 'ok'}>{S('premises.toBank')}</NxButton>
+                  : <NxButton testId="owner-take" onClick={take} disabled={can !== 'ok' || (vinbar && !vin.named)}>{S('asa.take')}</NxButton>}
               </div>
             </>
           ) : (

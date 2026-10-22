@@ -74,6 +74,17 @@ export function WhereGuestsWentPanel({ sim }: { sim: SimulationState }) {
           </p>
         );
       })}
+      {/* ORDER 334 B — stamgästerna på Magasinsgatan; ORDER 334 A — byborna på AW i källaren. */}
+      {(sim.day.regularsTonight ?? 0) > 0 && (
+        <p className="nx-small" data-testid="result-regulars" data-regulars={sim.day.regularsTonight} style={{ margin: 0 }}>
+          {tt(lang, 'spot.regularsCame', { n: sim.day.regularsTonight ?? 0, nights: sim.economy.truckNights?.[spot ?? 'torget'] ?? 0 })}
+        </p>
+      )}
+      {(sim.day.booking?.afterWork ?? 0) > 0 && (
+        <p className="nx-small" data-testid="result-after-work" data-guests={sim.day.booking?.afterWork} style={{ margin: 0 }}>
+          {tt(lang, 'afterWork.came', { n: sim.day.booking?.afterWork ?? 0 })}
+        </p>
+      )}
     </div>
   );
 }

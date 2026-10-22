@@ -16,7 +16,7 @@
 
 import type { PavilionId } from '../strategic/knowledge/pavilions';
 import type { KnowledgeAxis, StaffRole } from '../strategic/types';
-import type { DistrictId, TruckSpotId } from './districts';
+import type { DistrictId, PremisesId, TruckSpotId } from './districts';
 
 // Medaljnivåer i stigande ordning. Index + 1 = antal medaljsteg
 // (Ekonomin > Marknaden: "brons är ett steg och platina fyra").
@@ -403,8 +403,9 @@ export const DISTRICTS = {
     },
     student: {
       // Studenter och unga: liten plånbok, låg till medel kräsenhet, terminstid, vardagar och AW.
+      // ORDER 334 A — sommarkurserna på campus (Anders 2026-10-22): studenter också utanför terminen. Förut 0,45.
       pool: 0.8, doorMix: { student: 0.75, middle: 0.25, high: 0 }, walletPriceK: 1.6, walletComfortK: 0.85, pickiness: 0, starK: 1, quality: 'whole',
-      weekday: { mon: 1.1, tue: 1.1, wed: 1.15, thu: 1.25, fri: 0.95, sat: 0.7, sun: 0 }, outOfTermK: 0.45, termK: 1.15, seasonByWeek: null, marketK: 0.85, conferenceK: 1, weatherK: null, openWeeks: null
+      weekday: { mon: 1.1, tue: 1.1, wed: 1.15, thu: 1.25, fri: 0.95, sat: 0.7, sun: 0 }, outOfTermK: 0.65, termK: 1.15, seasonByWeek: null, marketK: 0.85, conferenceK: 1, weatherK: null, openWeeks: null
     },
     gastgivaregarden: {
       // Kulturturister och hotellets gäster: stor plånbok, hög kräsenhet (helheten), sommaren och helgen.
@@ -426,7 +427,26 @@ export const DISTRICTS = {
   // Foodtruckens platser: avgiften per kväll vagnen står där. Torget ingår i veckans tillstånd
   // (FOODTRUCK.pitchFeeWeeklySek), så Torgets tal är dagens.
   // ORDER 333 B — Magasinsgatan (avsnitt 8 punkt 2): gästerna som på torget, en egen avgift. Den lägsta av platserna.
-  truckSpotFeeSek: { torget: 0, prastgatan: 150, gastgivaregarden: 350, campus: 250, sjon: 300, magasinsgatan: 100 } as Record<TruckSpotId, number>
+  truckSpotFeeSek: { torget: 0, prastgatan: 150, gastgivaregarden: 350, campus: 250, sjon: 300, magasinsgatan: 100 } as Record<TruckSpotId, number>,
+  // ORDER 334 A — lokalens hyra gånger klassens (RENT). Källaren är billigare (Anders 2026-10-22: "lägre hyra").
+  premisesRentK: { torget: 1, kallaren: 0.7, salongen: 1, glashornet: 1 } as Record<PremisesId, number>,
+  // ORDER 334 B — Magasinsgatan är bybornas gata (Anders 2026-10-22): få gäster, mest bybor, och stamgäster som blir
+  // fler för varje kväll vagnen stått där (economy.truckNights). Avgiften står kvar (truckSpotFeeSek).
+  //   poolK: gatans gäster mot Torgets samma kväll; doorMix: vilka de är;
+  //   regularsPerEvening: stamgäster till per kväll vagnen stått där förut; regularsMax: taket.
+  magasinsgatan: { poolK: 0.35, doorMix: { student: 0.1, middle: 0.85, high: 0.05 }, regularsPerEvening: 2, regularsMax: 30 }
+} as const;
+
+// ORDER 334 A — AW i källaren (Anders 2026-10-22: "byborna på AW"). En satsning på morgonen, bara när krogen står i
+// en av lokalerna i premises och bara på vardagarna i days: byborna kommer efter jobbet, guests fler i kvällens tak,
+// alla bybor (bokningens mellangrupp).
+export const AFTER_WORK = {
+  section: 'Ekonomin > Byn',
+  activityId: 'after-work',
+  costSek: 500,
+  guests: 12,
+  premises: ['kallaren'] as readonly PremisesId[],
+  days: ['mon', 'tue', 'wed', 'thu', 'fri'] as readonly Weekday[]
 } as const;
 
 export interface DistrictSpec {

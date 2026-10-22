@@ -237,6 +237,8 @@ export function PlayerTruckCrew() {
   // ORDER 332 B (Designs D12 figureLife.ts) — livet och ansiktenas övergångar per figur, och vem medhjälparen nickat åt
   // i kön (gästens id → när), så att gästen nickar tillbaka (REACTIONS.passNod).
   const lives = useRef(new FigureLives());
+  // ORDER 334 B — stamgästernas egna koppar (Magasinsgatan): i handen i kön och på väg, inte vid ståbordet.
+  const regularCups = useRef(new Map<string, PropHandle>());
   const passNods = useRef(new Map<string, { at: number; from: [number, number] }>());
   const reducedMotion = usePrefersReducedMotion();
   const reducedRef = useRef(reducedMotion);
@@ -608,6 +610,23 @@ export function PlayerTruckCrew() {
         if (!cur) { m.x = r.root.position.x; m.z = r.root.position.z; m.y = r.root.position.y; }
       }
     }
+    // ORDER 334 B — stamgästen har sin egen kopp med sig (samma figur varje kväll, truckGuestFlow.ts newWalker).
+    const cups = regularCups.current;
+    for (const [id, cup] of cups) {
+      const w = flow.walkers.get(id), r = R.live.get(id);
+      if (w && r && r.root.visible && !(w.spot?.pose === 'eat' && w.settled)) continue;
+      crew.guestsGroup.remove(cup.group);
+      cups.delete(id);
+    }
+    for (const w of flow.walkers.values()) {
+      if (w.regular === undefined || (w.spot?.pose === 'eat' && w.settled)) continue;
+      const r = R.live.get(w.id);
+      if (!r || !r.root.visible) continue;
+      let cup = cups.get(w.id);
+      if (!cup) { cup = createProp('coffeeCup'); cup.group.name = 'regularCup'; cup.group.userData.regular = w.regular; holdProp(cup, r, 'L', crew.guestsGroup); cups.set(w.id, cup); }
+      updateHeld(cup);
+    }
+    if (typeof window !== 'undefined') (window as unknown as { __nxTruckRegulars?: unknown }).__nxTruckRegulars = { inView: [...cups.keys()], tonight: sim.day.regularsTonight ?? 0 };
     faceProbe.flush();
     for (let i = 0; i < crew.crewFaces.length; i++) lifeKeep.add(`crew:${i}`);
     lives.current.keepOnly(lifeKeep);

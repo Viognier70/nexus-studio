@@ -27,6 +27,7 @@ import { clockMinutes, doorsOpenMinutes } from '../../sim/clock';
 import { calendarFor } from '../../sim/calendar';
 import { creditLineSek, dailyInterestSek, dailyWagesSek, dayEndCash, weeklyRentSek } from '../../sim/economy';
 import { activityById } from './activities';
+import { playerPremisesOf } from '../../sim/districts';
 
 export const DJ_ACTIVITY_ID = 'book-dj';
 
@@ -177,7 +178,7 @@ export function forecastWeeks(state: SimulationState): number | null {
   const perEvening = recent.reduce((a, r) => a + r.resultSek, 0) / recent.length;
   const loan = state.economy.loan;
   const amortisation = loan && loan.weeksLeft > 0 ? loan.principalSek / loan.weeksLeft : 0;
-  const weeklyNet = perEvening * WEEK.serviceDays - weeklyRentSek(state.economy.businessClass, calendarFor(state.day.dayNumber).week) - amortisation;
+  const weeklyNet = perEvening * WEEK.serviceDays - weeklyRentSek(state.economy.businessClass, calendarFor(state.day.dayNumber).week, playerPremisesOf(state)) - amortisation;
   if (weeklyNet >= 0) return null;
   const weeksLeft = Math.max(0, SEASON.weeks - calendarFor(state.day.dayNumber).week);
   const room = accountAfterEvening(state) + creditLineSek(state);
