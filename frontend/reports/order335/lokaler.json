@@ -1,0 +1,181 @@
+{
+  "definition": "ORDER 335 D. before = 20 platser (källaren: reports/order334/lokaler; salongen och Flygeln: reports/order333/lokaler), after = lokalens planlösning (källaren 44, salongen 35, Flygeln 36; reports/order335/lokaler). 40 frön. closed = stängda säsonger, meanCashEnd = medelkassan vid säsongens slut (kr), lowestCash = lägsta kassan, renegotiated = säsonger med omförhandlat lån, reachedBistro = säsonger som nådde bistron, bistroWeekMedian = medianveckan dit, meanAfterWorks = morgnar med AW. -aw = KARNAN_AW=1.",
+  "rows": {
+    "kallaren-trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 17588,
+        "lowestCash": 2438,
+        "renegotiated": 36,
+        "reachedBistro": 3,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 1,
+        "meanCashEnd": 21312,
+        "lowestCash": -115,
+        "renegotiated": 35,
+        "reachedBistro": 2,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 0
+      }
+    },
+    "kallaren-trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 2,
+        "meanCashEnd": 18823,
+        "lowestCash": -3463,
+        "renegotiated": 40,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 24614,
+        "lowestCash": 3790,
+        "renegotiated": 38,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0
+      }
+    },
+    "kallaren-aw-trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 39304,
+        "lowestCash": 23441,
+        "renegotiated": 14,
+        "reachedBistro": 24,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 29.7
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 39661,
+        "lowestCash": 26081,
+        "renegotiated": 13,
+        "reachedBistro": 29,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 29.7
+      }
+    },
+    "kallaren-aw-trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 28257,
+        "lowestCash": 12243,
+        "renegotiated": 21,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 28.6
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 34407,
+        "lowestCash": 15997,
+        "renegotiated": 19,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 29.7
+      }
+    },
+    "salongen-trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 39334,
+        "lowestCash": 23595,
+        "renegotiated": 11,
+        "reachedBistro": 38,
+        "bistroWeekMedian": 4,
+        "meanAfterWorks": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 39175,
+        "lowestCash": 19161,
+        "renegotiated": 12,
+        "reachedBistro": 39,
+        "bistroWeekMedian": 4,
+        "meanAfterWorks": 0
+      }
+    },
+    "salongen-trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 31966,
+        "lowestCash": 14422,
+        "renegotiated": 17,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 37269,
+        "lowestCash": 22526,
+        "renegotiated": 15,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0
+      }
+    },
+    "glashornet-trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 24784,
+        "lowestCash": 8452,
+        "renegotiated": 17,
+        "reachedBistro": 17,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 26318,
+        "lowestCash": 10753,
+        "renegotiated": 15,
+        "reachedBistro": 25,
+        "bistroWeekMedian": 5,
+        "meanAfterWorks": 0
+      }
+    },
+    "glashornet-trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 3,
+        "meanCashEnd": 17282,
+        "lowestCash": -4004,
+        "renegotiated": 30,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 20544,
+        "lowestCash": 1393,
+        "renegotiated": 26,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "meanAfterWorks": 0
+      }
+    }
+  }
+}

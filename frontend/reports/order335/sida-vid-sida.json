@@ -1,0 +1,23 @@
+{
+  "definition": "ORDER 335 D. Bilderna reports/order335/rum/<lokal>-z.png och sida-vid-sida.png. clock = HUD:ens klocka, level = nivåknapparnas data-level (room = Krogen, Z), errors = sidans fel (pageerror).",
+  "at": "2026-10-22T10:20:39.343Z",
+  "build": "produktion (vite build + preview)",
+  "klockan": "19.30",
+  "rooms": {
+    "kallaren": {
+      "clock": "20.17",
+      "level": "room",
+      "errors": []
+    },
+    "salongen": {
+      "clock": "20.18",
+      "level": "room",
+      "errors": []
+    },
+    "glashornet": {
+      "clock": "20.18",
+      "level": "room",
+      "errors": []
+    }
+  }
+}

@@ -21,6 +21,7 @@ import { guestClipFor, sampleForFigure, staffClipFor, tempoFor } from './theatre
 import type { FigureSample, LedgerEntry, StaffKey, WineBarDirector } from './wineBarDirector';
 import { planRects, SURFACE_HEIGHT, WINE_BAR_PLAN, type WineBarRoom } from './wineBarRoom';
 import { BISTRO } from './bistroHouse';
+import { planOf } from './tablePlans';
 import { THEATRE } from '../../sim/balance';
 import { PROP_VISUAL_SCALE } from './staffRing';
 import type { CameraTarget } from '../types';
@@ -222,7 +223,8 @@ export class TheatreStage {
   dress(groups: readonly { id: string; kind: 'two' | 'lounge' | 'bar'; tableAt?: Vec2 }[], room?: WineBarRoom): void {
     this.surfaces = room ? propSurfaces(room) : [];
     for (const g of groups) if (g.tableAt) this.tableAtOf.set(g.id, { at: g.tableAt, kind: g.kind, surface: surfaceUnder(this.surfaces, g.tableAt[0], g.tableAt[1]) });
-    for (const [x, z] of room?.layout === 'bistro' ? BISTRO_BAR_BOTTLES : BAR_BOTTLES) {
+    // ORDER 335 D — lokalens plan: flaskorna på lokalens disk (tablePlans.ts bottles).
+    for (const [x, z] of planOf(room?.layout)?.bottles ?? (room?.layout === 'bistro' ? BISTRO_BAR_BOTTLES : BAR_BOTTLES)) {
       const p = this.take('wineBottle');
       placeProp(p, this.group, x, this.surfaceY(x, z, 'bar'), z, 0);
       this.dressing.push(p);

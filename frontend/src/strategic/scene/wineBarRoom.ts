@@ -90,6 +90,7 @@
 
 import * as THREE from 'three';
 import { BISTRO, BISTRO_CAPACITY, BISTRO_RUNWAY_X, BISTRO_SEATS, BISTRO_SHELF, bistroWalkPath, seatAccess } from './bistroHouse';
+import { planOf, planWalkPath, salonPathFrom, SALON_EXTRA_SEATS, SALON_TABLES, type PlanSeat, type PlanTable } from './tablePlans';
 // ORDER 317 — möbleringen i huset (Designs leverans 2026-10-07): måtten och
 // placeringarna läses ur wineBarHouse.ts, så att inget står i en vägg.
 import { ENTRANCE as HOUSE_ENTRANCE, LANES, LAYOUT as HOUSE, MIN_SIZE, MISE_SPOTS as HOUSE_MISE, QUEUE_SPOTS as HOUSE_QUEUE, ROOM as HOUSE_ROOM, STAFF_PATH_KITCHEN_TO_BAR, STAFF_STATIONS as HOUSE_STATIONS } from './wineBarHouse';
@@ -189,7 +190,8 @@ export interface WineBarOptions {
   layout?: RoomLayout;
 }
 
-export type RoomLayout = 'winebar' | 'bistro';
+/** ORDER 335 D — och lokalernas planlösningar (tablePlans.ts): källaren, Flygeln och salongen (vinbaren och salongens 15). */
+export type RoomLayout = 'winebar' | 'bistro' | 'kallaren' | 'flygeln' | 'salongen';
 
 export interface WineBarRoom {
   group: THREE.Group;
@@ -571,6 +573,11 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
   const inZ = halfD - WALL_T;
   const Y = PLINTH_M;
   const bistro = opts.layout === 'bistro';
+  // ORDER 335 D — lokalens planlösning (källaren, Flygeln): som bistron en egen bar, egna bord och gångar i vinbarens
+  // rum; salongen: vinbarens möblering och salongens platser väster om mellanväggen.
+  const plan = planOf(opts.layout);
+  const salon = opts.layout === 'salongen';
+  const alt = bistro || plan !== null;
 
   const group = new THREE.Group();
   group.name = bistro ? 'bistroRoom' : 'wineBarRoom';
@@ -672,7 +679,7 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
   ZONE_FLOORS.forEach(function (z) { zoneMats[z.id] = mat(z.colour, 0.9, 0); });
   // ORDER 315b del 2 — bistron: salens varmare ekgolv (D7 BISTRO_FLOOR), inga lounge- eller DJ-zoner.
   floorPlate(interior, bistro ? mat(BISTRO_FLOOR.hall, 0.9, 0) : zoneMats.main, -inX, inX, -inZ, inZ, 0, 'floorMain');
-  if (!bistro) {
+  if (!alt) {
     floorPlate(interior, zoneMats.lounge, LOUNGE_CX[0] - 1.44, LOUNGE_CX[1] + 1.44, HOUSE.lounge.tableZ - 0.4, inZ, 0.002, 'floorLounge');
     floorPlate(interior, zoneMats.barRunway, BAR.x0, BAR.x1 - BAR.depth, BAR.z0 + BAR.depth, BAR.z1 - BAR.depth, 0.002, 'floorBarRunway');
     floorPlate(interior, zoneMats.dj, DJ.x0 - 0.2, inX, -inZ, DJ.z1 + 0.2, 0.002, 'floorDj');
@@ -722,7 +729,7 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
   const glassAnchor = new THREE.Object3D();
   glassAnchor.name = 'glassAnchor';
   const startLevel: WineWallLevel = opts.wineWall ?? 'bas';
-  if (!bistro) {
+  if (!alt) {
   // Disken runt tre sidor, öppen mot väster.
   rectBox(bar, M.bar, BAR.x0, BAR.x1, BAR.z1 - BAR.depth, BAR.z1, Y, Y + bh, 'barCounterN');
   rectBox(bar, M.bar, BAR.x0, BAR.x1, BAR.z0, BAR.z0 + BAR.depth, Y, Y + bh, 'barCounterS');
@@ -824,6 +831,46 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
     put(bar, cyl(0.07, 0.04, 12), M.bulb, x, py - 0.01, RACK_Z, 'pendantBulb' + i);
     pendants.push({ id: 'pendant' + (i + 1), local: [x, py, RACK_Z] });
   });
+  } else if (plan) {
+    // ── ORDER 335 D — lokalens bar (tablePlans.ts): disken, hyllan bakom och vinväggens två lägen på hyllan
+    // (bas: 60 % av hyllan och 1,6 m, platina: hela och 2,06 m), så att platina i Stensöta syns också här.
+    const B = plan.bar;
+    rectBox(bar, M.bar, B.x0, B.x1, B.z0, B.z1, Y, Y + B.h, 'barCounterPlan');
+    rectBox(bar, M.barTop, B.x0 - 0.04, B.x1 + 0.04, B.z0 - 0.04, B.z1 + 0.04, Y + B.h, Y + B.h + 0.05, 'barTopPlan');
+    const SH = plan.shelf;
+    const alongX = SH ? SH.x1 - SH.x0 > SH.z1 - SH.z0 : true;
+    (['bas', 'platina'] as WineWallLevel[]).forEach(function (level) {
+      const g = new THREE.Group();
+      g.name = 'wineWall_' + level;
+      bar.add(g);
+      wineWall[level] = g;
+      shelfTargets[level] = [];
+      if (!SH) return;
+      const k = level === 'bas' ? 0.6 : 1, h = level === 'bas' ? 1.6 : 2.06;
+      const r = alongX ? { x0: SH.x0, x1: SH.x0 + (SH.x1 - SH.x0) * k, z0: SH.z0, z1: SH.z1 } : { x0: SH.x0, x1: SH.x1, z0: SH.z1 - (SH.z1 - SH.z0) * k, z1: SH.z1 };
+      rectBox(g, M.rack, r.x0, r.x1, r.z0, r.z1, Y, Y + h, 'wineWallCore_' + level);
+      const n = Math.floor(((alongX ? r.x1 - r.x0 : r.z1 - r.z0) - 0.1) / 0.18);
+      const bm = new THREE.InstancedMesh(cyl(0.036, 0.3, 8), bottleMats[level === 'bas' ? 0 : 1], n * 3);
+      bm.name = 'wineWallBottles_' + level;
+      const dummy = new THREE.Object3D();
+      for (let t = 0; t < 3; t++) for (let i = 0; i < n; i++) {
+        const u = 0.1 + i * 0.18, y = Y + 0.6 + t * 0.45;
+        if (alongX) dummy.position.set(r.x0 + u, y, (r.z0 + r.z1) / 2 + (B.z0 > r.z0 ? 0.12 : -0.12));
+        else dummy.position.set((r.x0 + r.x1) / 2 + (B.x0 > r.x0 ? 0.12 : -0.12), y, r.z0 + u);
+        dummy.updateMatrix();
+        bm.setMatrixAt(t * n + i, dummy.matrix);
+      }
+      g.add(bm);
+    });
+    if (plan.ledge) {
+      const LG = plan.ledge;
+      rectBox(bar, M.barTop, LG.x0, LG.x1, LG.z0, LG.z1, Y + 1.0, Y + 1.05, 'ledgeTop');
+      for (const x of [LG.x0 + 0.1, (LG.x0 + LG.x1) / 2, LG.x1 - 0.1]) rectBox(bar, M.bar, x - 0.04, x + 0.04, LG.z0, LG.z1, Y, Y + 1.0, 'ledgeLeg' + x.toFixed(1));
+    }
+    bottleAnchor.position.set(plan.spots.bottlePickup[0], Y + 1.34, plan.spots.bottlePickup[1]);
+    bar.add(bottleAnchor);
+    glassAnchor.position.set((B.x0 + B.x1) / 2, Y + B.h + 0.06, (B.z0 + B.z1) / 2);
+    bar.add(glassAnchor);
   } else {
     // ── ORDER 315b del 2 — bistrons bar (Designs D7 bistroRoom.ts): kortare, i sydväst framför
     // passet, med hyllan bakom (BISTRO_SHELF) och tre barstolar. Vinväggens två lägen finns som
@@ -867,7 +914,7 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
   interior.add(dj);
   // ORDER 315b del 2 — bistron har ingen DJ (D7: DJ:n går ut). Anders 2026-10-07: hörnet blir en
   // musikhörna med skivspelare (byggs nedan, efter möblerna); DJ-podiet syns inte.
-  dj.visible = !bistro;
+  dj.visible = !alt;
   const pY = Y + DJ.platform;
   rectBox(dj, M.djFront, DJ.x0, DJ.x1, DJ.z0, DJ.z1, Y, pY, 'djPlatform');
   // Kantljuset — lyser i helgstämningen. Vågrätt, så det syns uppifrån.
@@ -931,8 +978,39 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
     put(t, cyl(0.22, 0.03, 12), legMat, 0, Y + 0.015, 0, id + 'Base');
   }
 
+  // ORDER 335 D — en plats i en lokals plan (tablePlans.ts): stolen, pallen eller soffan, och platsen för simuleringen.
+  const entranceLocal: Vec2 = [HOUSE_ENTRANCE.local[0], HOUSE_ENTRANCE.local[1]];
+  const sofaM = mat('#5a2f2c', 0.9, 0);
+  function planSeat(st: PlanSeat, pathTo: (p: PlanSeat) => Vec2[]): void {
+    const sid = 'seat_' + st.id;
+    const c = new THREE.Group();
+    c.name = sid;
+    c.position.set(st.local[0], 0, st.local[1]);
+    c.rotation.y = st.facing;
+    furniture.add(c);
+    if (st.kind === 'chair') {
+      put(c, cyl(0.22, 0.05, 12), M.chair, 0, Y + CHAIR_H, 0, sid + 'Seat');
+      put(c, cyl(0.04, CHAIR_H, 8), M.chair, 0, Y + CHAIR_H / 2, 0, sid + 'Stem');
+      put(c, box(0.42, 0.4, 0.04), M.chair, 0, Y + CHAIR_H + 0.22, -0.2, sid + 'Back');
+    } else if (st.kind === 'stool') {
+      put(c, cyl(0.19, 0.05, 12), M.chair, 0, Y + STOOL_H, 0, sid + 'Seat');
+      put(c, cyl(0.045, STOOL_H, 8), M.chair, 0, Y + STOOL_H / 2, 0, sid + 'Stem');
+      put(c, cyl(0.17, 0.03, 12), M.brass, 0, Y + 0.02, 0, sid + 'Foot');
+    } else {
+      put(c, box(1.0, LOUNGE_H, 0.8), sofaM, 0, Y + LOUNGE_H / 2, 0, sid + 'Seat');
+      put(c, box(1.0, 0.45, 0.18), sofaM, 0, Y + LOUNGE_H + 0.22, -0.32, sid + 'Back');
+    }
+    const path = pathTo(st);
+    const h = st.kind === 'stool' ? STOOL_H : st.kind === 'sofa' ? LOUNGE_H : CHAIR_H;
+    seats.push({
+      id: st.id, kind: st.kind === 'stool' ? 'bar' : st.kind === 'sofa' ? 'lounge' : 'twotop', seatIndex: seats.length, furnitureId: st.furnitureId,
+      seatNodeId: sid, local: [st.local[0], st.local[1]], seatHeight: h, seatSurfaceY: Y + h,
+      facing: st.facing, approach: path[path.length - 2] ?? path[0], lane: 'spine'
+    });
+  }
+
   const standing: StandSpec[] = [];
-  if (!bistro) {
+  if (!alt) {
   // Loungerna: två grupper om tre separata dynor, 0,08 m glapp.
   LOUNGE_CX.forEach(function (cx, li) {
     const id = li === 0 ? 'loungeA' : 'loungeB';
@@ -1015,6 +1093,21 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
     standing.push({ id: id + 'a', kind: 'highTable', local: [p[0] - 0.55, p[1]], facing: Math.PI / 2, approach: [p[0] - 0.9, p[1]], lane: 'spine' });
     standing.push({ id: id + 'b', kind: 'highTable', local: [p[0] + 0.55, p[1]], facing: -Math.PI / 2, approach: [p[0] + 0.9, p[1]], lane: 'spine' });
   });
+  } else if (plan) {
+    // ── ORDER 335 D — lokalens bord och platser (tablePlans.ts): stolarna och borden som bistrons, pallarna som
+    // barstolarna, en pendel över varje bord.
+    plan.tables.forEach(function (t) {
+      table(t.id, t.at[0], t.at[1], t.w, t.d, TABLE_TOP_Y, M.tableLeg);
+      candle(t.at[0], Y + TABLE_TOP_Y + 0.025, t.at[1], t.id, false);
+    });
+    plan.seats.forEach(function (st) { planSeat(st, function (p) { return planWalkPath(plan, entranceLocal, p); }); });
+    plan.tables.forEach(function (t, k) {
+      const py = Y + 2.2;
+      put(furniture, cyl(0.008, H - 2.2, 4), M.shade, t.at[0], py + (H - 2.2) / 2, t.at[1], 'planPendantCord' + k);
+      put(furniture, cyl(0.15, 0.14, 16, 0.05), M.shade, t.at[0], py + 0.07, t.at[1], 'planPendantShade' + k);
+      put(furniture, cyl(0.06, 0.035, 12), M.bulb, t.at[0], py - 0.01, t.at[1], 'planPendantBulb' + k);
+      pendants.push({ id: 'pendant' + (k + 1), local: [t.at[0], py, t.at[1]] });
+    });
   } else {
     // ── ORDER 315b del 2 — bistrons bord och platser (bistroHouse.ts BISTRO_SEATS): bänken längs
     // norra väggen med fyra bord för två, tre bord för fyra och fyra bord för två i salen, tre
@@ -1073,6 +1166,20 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
       pendants.push({ id: 'pendant' + (k + 1), local: [t.at[0], py, t.at[1]] });
     });
   }
+  // ORDER 335 D — salongen: vinbarens 20 och salongens 15 väster om mellanväggen (tablePlans.ts SALON): de runda borden
+  // med vit duk, soffgruppen. Vägen dit går genom öppningen i mellanväggen.
+  if (salon) {
+    const cloth = mat('#efe9dc', 0.85, 0);
+    SALON_TABLES.forEach(function (t: PlanTable) {
+      const g = new THREE.Group(); g.name = t.id; g.position.set(t.at[0], 0, t.at[1]); furniture.add(g);
+      put(g, cyl(t.w / 2, 0.04, 20), cloth, 0, Y + TABLE_TOP_Y, 0, t.id + 'Top');
+      put(g, cyl(t.w / 2 + 0.02, 0.3, 20, t.w / 2 - 0.02), cloth, 0, Y + TABLE_TOP_Y - 0.17, 0, t.id + 'Cloth');
+      put(g, cyl(0.05, TABLE_TOP_Y, 8), M.tableLeg, 0, Y + TABLE_TOP_Y / 2, 0, t.id + 'Leg');
+      candle(t.at[0], Y + TABLE_TOP_Y + 0.025, t.at[1], t.id, false);
+    });
+    const toSalon: Vec2[] = [entranceLocal, [SPINE_X, 0], [SPINE_X, SOUTH_Z], [WINE_BAR_PLAN.corrX, SOUTH_Z]];
+    SALON_EXTRA_SEATS.forEach(function (st) { planSeat(st, function (p) { return [...toSalon.slice(0, -1), ...salonPathFrom(toSalon[toSalon.length - 1], p)]; }); });
+  }
   // ORDER 315b del 2 — bistrons musikhörna i sydöst (Anders 2026-10-07): en skänk mot södra väggen
   // med skivspelaren och en rad skivor, öster om tvåorna (deras östra stol når x 5,77).
   const MUSIC = { x0: 6.15, x1: 6.85, z0: -4.8, z1: -4.05 };
@@ -1115,7 +1222,7 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
   // Stående och 1,45 m hög, så att den som fyller syns över norra disken från spelets kamera.
   const BF = HOUSE.barFridge;
   // ORDER 315b del 2 — vinkylen hör till vinbarens bar; bistron har hyllan bakom baren.
-  if (!bistro) {
+  if (!alt) {
     rectBox(furniture, steelM, BF[0], BF[1], BF[2], BF[3], Y, Y + 1.45, 'barFridge');
     rectBox(furniture, mat('#3a4a4c', 0.15, 0.3, '#9fd0d0', 0.25), BF[0] - 0.015, BF[0], BF[2] + 0.05, BF[3] - 0.05, Y + 0.12, Y + 1.38, 'barFridgeGlass');
     rectBox(furniture, M.brass, BF[0] - 0.03, BF[0] - 0.015, BF[3] - 0.1, BF[3] - 0.07, Y + 0.6, Y + 1.0, 'barFridgeHandle');
@@ -1131,7 +1238,9 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
     return { id: q.id, side: q.side as QueueSpot['side'], order: q.order, local: local, facing: q.side === 'inside' ? -Math.PI / 2 : faceDoor(local) };
   });
   const miseSpots: MiseSpot[] = HOUSE_MISE.map(function (m) {
-    return { id: m.id, role: m.role, local: [m.local[0], m.local[1]] as Vec2, facing: m.facing, note: m.note };
+    // ORDER 335 D — det som stod vid vinbarens bar står vid lokalens (tablePlans.ts mise).
+    const o = plan?.mise[m.id];
+    return { id: m.id, role: m.role, local: o ? [o.local[0], o.local[1]] as Vec2 : [m.local[0], m.local[1]] as Vec2, facing: o ? o.facing : m.facing, note: m.note };
   });
 
   // ORDER 271 (montering) flyttade tre stationer efter kameraprovet; ORDER 317
@@ -1155,6 +1264,10 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
     if (bistro && st.id === 'bartender') return [BISTRO_RUNWAY_X, (BISTRO.bar.z0 + BISTRO.bar.z1) / 2];
     if (bistro && st.id === 'sommelier') return [(BISTRO.bar.x0 + BISTRO.bar.x1) / 2, BISTRO.bar.z1 + 0.5];
     if (bistro && st.id === 'dj') return [6.5, -3.4];
+    // ORDER 335 D — lokalens plan: bartendern bakom sin bar, sommelieren vid barens ände, ingen DJ.
+    if (plan && st.id === 'bartender') return plan.bartender.at;
+    if (plan && st.id === 'sommelier') return plan.sommelier.at;
+    if (plan && st.id === 'dj') return plan.djAt;
     if (st.id === 'bartender') return [st.local[0], RACK_Z - BARTENDER_FROM_RACK];
     if (st.id === 'sommelier') return [st.local[0], RACK_Z + LANE_FROM_RACK];
     return [st.local[0], st.local[1]];
@@ -1162,8 +1275,8 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
   const staffStations: StaffStation[] = HOUSE_STATIONS.map(function (st) {
     return {
       id: st.id, role: st.role, local: stationLocal(st),
-      standHeight: st.id === 'dj' && !bistro ? DJ.platform : 0,
-      facing: bistro && st.id === 'bartender' ? Math.PI / 2 : bistro && st.id === 'sommelier' ? Math.PI : st.id === 'dj' ? faceNW : st.facing,
+      standHeight: st.id === 'dj' && !alt ? DJ.platform : 0,
+      facing: plan && st.id === 'bartender' ? plan.bartender.facing : plan && st.id === 'sommelier' ? plan.sommelier.facing : bistro && st.id === 'bartender' ? Math.PI / 2 : bistro && st.id === 'sommelier' ? Math.PI : st.id === 'dj' ? faceNW : st.facing,
       uniform: UNIFORM_OF[st.id], note: st.note
     };
   });
@@ -1179,8 +1292,8 @@ export function createWineBarRoom(options?: WineBarOptions): WineBarRoom {
     group: group, parts: parts, seats: seats, standing: standing, staffStations: staffStations,
     candles: candles, pendants: pendants, entrance: entrance, waitingSpot: waitingSpot,
     queueSpots: queueSpots, miseSpots: miseSpots,
-    floorY: Y, capacity: bistro ? BISTRO_CAPACITY : TOTAL_SEATS, width: width, depth: depth, fits: fits, shortfall: shortfall,
-    wineWallLevel: startLevel, mood: opts.mood ?? 'tidig', layout: bistro ? 'bistro' : 'winebar',
+    floorY: Y, capacity: bistro ? BISTRO_CAPACITY : seats.length, width: width, depth: depth, fits: fits, shortfall: shortfall,
+    wineWallLevel: startLevel, mood: opts.mood ?? 'tidig', layout: opts.layout ?? 'winebar',
     dispose: function () {
       materials.forEach(function (m) { m.dispose(); });
       group.removeFromParent();
@@ -1220,7 +1333,8 @@ export function setWineWallLevel(room: WineBarRoom, level: WineWallLevel): void 
   if (room.layout === 'bistro') return;
   room.parts.wineWall.bas.visible = level === 'bas';
   room.parts.wineWall.platina.visible = level === 'platina';
-  // Flaskfästet följer väggens östra ände.
+  // Flaskfästet följer väggens östra ände (lokalens plan: flaskans plats, tablePlans.ts spots.bottlePickup).
+  if (planOf(room.layout)) return;
   room.parts.bottleAnchor.position.x = WINE_WALL[level].x1 - 0.1;
 }
 
@@ -1339,6 +1453,14 @@ export function walkPathToSeat(room: WineBarRoom, seatId: string): Vec2[] {
     const b = BISTRO_SEATS.find(function (x) { return x.id === seatId; });
     return b ? bistroWalkPath(room.entrance, b) : [];
   }
+  // ORDER 335 D — lokalens plan, och salongens platser väster om mellanväggen.
+  const plan = planOf(room.layout);
+  if (plan) {
+    const ps = plan.seats.find(function (x) { return x.id === seatId; });
+    return ps ? planWalkPath(plan, room.entrance, ps) : [];
+  }
+  const extra = room.layout === 'salongen' ? SALON_EXTRA_SEATS.find(function (x) { return x.id === seatId; }) : undefined;
+  if (extra) return [[room.entrance[0], room.entrance[1]], [SPINE_X, 0], [SPINE_X, SOUTH_Z], ...salonPathFrom([WINE_BAR_PLAN.corrX, SOUTH_Z], extra)];
   const p: Vec2[] = [[room.entrance[0], room.entrance[1]], [SPINE_X, 0]];
   if (seat.kind === 'lounge') {
     const cx = LOUNGE_CX[seat.furnitureId === 'loungeATable' ? 0 : 1];

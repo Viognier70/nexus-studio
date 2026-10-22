@@ -9,6 +9,8 @@ import { INITIAL_CAPITAL_VALUE } from './model';
 import { INTERIOR } from '../content/layout';
 import { businessHasOvernight, businessHasSeats, capacityForBusiness } from '../business/businessClass';
 import { BISTRO_CAPACITY, BISTRO_SEAT_GROUPS, BISTRO_SEAT_PREFERENCE } from '../scene/bistroHouse';
+import { planForPremises, planSeatGroups, planSeatPreference, SALON_EXTRA_SEATS } from '../scene/tablePlans';
+import { playerPremisesOf } from '../../sim/districts';
 import { ladderStep } from '../../sim/ladderStep';
 import type { BusinessClass } from '../business/businessClass';
 import type { Guest, SimulationState, StaffMember, StaffRole, TaskAssignment, TaskType, Vec2 } from '../types';
@@ -138,7 +140,23 @@ export function isSeatedCapacity(state: SimulationState): number {
   // gör policies.capacity till en cache som aldrig behöver invalideras.
   // ORDER 315b del 2 — bistron (Designs D7, bistroRoom.ts): 31 platser i samma hus.
   if (bistroLayout(state)) return BISTRO_CAPACITY;
+  // ORDER 335 D — vinbaren i en lokal: lokalens planlösning (scene/tablePlans.ts), D15:s antal platser.
+  const pp = premisesSeats(state.businessClass, state);
+  if (pp) return pp.capacity;
   return capacityForBusiness(state.businessClass, state.policies.staffCount);
+}
+
+/** ORDER 335 D — platserna i lokalens planlösning (källaren 44, salongen 35, Flygeln 36); null: vinbarens egna 20. */
+export function premisesSeats(businessClass: BusinessClass, state: Pick<SimulationState, 'ladder' | 'economy'>): { capacity: number; groups: readonly (readonly number[])[]; preference: readonly number[] } | null {
+  if (businessClass !== 'vinbaren' || bistroLayout(state)) return null;
+  const p = playerPremisesOf(state);
+  const plan = planForPremises(p);
+  if (plan) return { capacity: plan.seats.length, groups: planSeatGroups(plan.seats), preference: planSeatPreference(plan.seats) };
+  if (p === 'salongen') {
+    const n = SEAT_GROUPS_VINBAREN.flat().length;
+    return { capacity: n + SALON_EXTRA_SEATS.length, groups: [...SEAT_GROUPS_VINBAREN, ...planSeatGroups(SALON_EXTRA_SEATS, n)], preference: [...SEATS_VINBAREN.slice(0, 14), ...planSeatPreference(SALON_EXTRA_SEATS, n), ...SEATS_VINBAREN.slice(14)] };
+  }
+  return null;
 }
 
 /** ORDER 315b del 2 — rummet är bistron (karriärsteget, i vinbarens hus). */
@@ -219,6 +237,8 @@ const SEATS_VINBAREN = [
 
 function seatsPreferenceFor(businessClass: BusinessClass, state?: Pick<SimulationState, 'ladder' | 'economy'>): readonly number[] {
   if (state && bistroLayout(state)) return BISTRO_SEAT_PREFERENCE;
+  const pp = state ? premisesSeats(businessClass, state) : null;
+  if (pp) return pp.preference;
   if (businessClass === 'ölkrogen') return SEATS_OLKROGEN;
   if (businessClass === 'vinbaren') return SEATS_VINBAREN;
   return SEATS_DEFAULT;
@@ -262,6 +282,8 @@ const SEAT_GROUPS_VINBAREN: readonly (readonly number[])[] = [
 
 function seatGroupsFor(businessClass: BusinessClass, state?: Pick<SimulationState, 'ladder' | 'economy'>): readonly (readonly number[])[] {
   if (state && bistroLayout(state)) return BISTRO_SEAT_GROUPS;
+  const pp = state ? premisesSeats(businessClass, state) : null;
+  if (pp) return pp.groups;
   if (businessClass === 'ölkrogen') return SEAT_GROUPS_OLKROGEN;
   if (businessClass === 'vinbaren') return SEAT_GROUPS_VINBAREN;
   return SEAT_GROUPS_KVARTERSKROGEN;

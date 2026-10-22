@@ -20,6 +20,7 @@ import * as THREE from 'three';
 import type { PremisesId } from '../../sim/districts';
 import { PREMISES_FRAMES } from '../content/premises';
 import { CUT_H, PLINTH_M, type WallSide, type WineBarRoom } from './wineBarRoom';
+import { SALON } from './tablePlans';
 
 export type VenueId = Exclude<PremisesId, 'torget'>;
 type V2 = [number, number];
@@ -220,23 +221,15 @@ export function applyPremisesInterior(room: WineBarRoom, id: VenueId, toLocal: (
     roofOver([L(R.x0 - t, R.z0 - t), L(boxWest, R.z0 - t), L(boxWest, R.z1 + t), L(R.x0 - t, R.z1 + t)]);
     // Kakelugnen mot västra gaveln (D15: vita kakel, mässingskrönet och luckan), och soffgruppen framför den.
     const ku = mat('#ebe4d4', 0.45), brass = mat('#b88a3e', 0.4, { metalness: 0.6 });
-    const k = L(R.x0 + 0.75, 2.9);
+    // ORDER 335 D — soffgruppen och de runda borden är platser i rummets plan (tablePlans.ts SALON, wineBarRoom.ts);
+    // här står kakelugnen, mattan och det låga bordet, på samma punkter i rummets lokala ram.
+    const k = SALON.stove;
     cyl(group, 0.42, 0.48, 2.9, ku, k[0], 0.1 + 1.45, k[1], 'salonStove', 14);
     cyl(group, 0.5, 0.5, 0.12, brass, k[0], 0.1 + 2.96, k[1], 'salonStoveCrown', 14);
-    const door = L(R.x0 + 1.18, 2.9);
-    box(group, 0.06, 0.38, 0.32, mat('#1f1d1b', 0.6, { metalness: 0.4 }), door[0], 0.1 + 0.55, door[1], 'salonStoveDoor', rX);
-    const sofa = mat('#5a2f2c', 0.9), wood = mat('#4a3324', 0.7), rug = mat('#7c4b38', 0.95);
-    const rugAt = L(R.x0 + 3.6, 2.2);
-    box(group, 3.2, 0.01, 2.6, rug, rugAt[0], PLINTH_M + 0.003, rugAt[1], 'salonRug', rX);
-    const table = L(R.x0 + 3.6, 2.2);
-    box(group, 1.1, 0.42, 0.6, wood, table[0], 0.1 + 0.21, table[1], 'salonLowTable', rX);
-    for (const [dz, face] of [[1.25, -1], [-1.25, 1]] as const) {
-      const p = L(R.x0 + 3.6, 2.2 + dz), back = L(R.x0 + 3.6, 2.2 + dz + face * -0.32);
-      box(group, 1.9, 0.42, 0.8, sofa, p[0], 0.1 + 0.21, p[1], `salonSofa${dz}`, rX);
-      box(group, 1.9, 0.45, 0.18, sofa, back[0], 0.1 + 0.42 + 0.22, back[1], `salonSofaBack${dz}`, rX);
-    }
-    const arm = L(R.x0 + 5.1, 2.2);
-    box(group, 0.8, 0.42, 0.8, sofa, arm[0], 0.1 + 0.21, arm[1], 'salonArmchair', rX);
+    box(group, 0.06, 0.38, 0.32, mat('#1f1d1b', 0.6, { metalness: 0.4 }), k[0] + 0.43, 0.1 + 0.55, k[1], 'salonStoveDoor', rX);
+    const wood = mat('#4a3324', 0.7), rug = mat('#7c4b38', 0.95);
+    box(group, SALON.rug.w, 0.01, SALON.rug.d, rug, SALON.rug.at[0], PLINTH_M + 0.003, SALON.rug.at[1], 'salonRug', rX);
+    box(group, SALON.lowTable.w, 0.42, SALON.lowTable.d, wood, SALON.lowTable.at[0], 0.1 + 0.21, SALON.lowTable.at[1], 'salonLowTable', rX);
     // Ljuskronorna (tonar ut med taket).
     const cm = mat('#f6efd8', 0.3, { emissive: new THREE.Color('#ffd58f'), emissiveIntensity: 1.2, transparent: true });
     const bm = mat('#b88a3e', 0.4, { metalness: 0.6, transparent: true });

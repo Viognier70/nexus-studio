@@ -11,6 +11,7 @@ import { setCurrentPremises } from '../../content/playerPremises';
 import { PREMISES_FRAMES } from '../../content/premises';
 import { createRoom, roomSizeFor } from '../businessRoom';
 import { getObstacles, type WineBarRoom } from '../wineBarRoom';
+import { layoutForPremises } from '../tablePlans';
 import { applyPremisesCeiling, applyPremisesInterior, premisesToRoomLocal, PREMISES_LOOK, setAfterWorkSign, type VenueId } from '../premisesInterior';
 
 const VENUES: VenueId[] = ['kallaren', 'salongen', 'glashornet'];
@@ -18,7 +19,7 @@ const VENUES: VenueId[] = ['kallaren', 'salongen', 'glashornet'];
 function build(id: VenueId) {
   setCurrentPremises(id);
   const L = computePlayerBusinessInterior()!;
-  const room = createRoom('vinbaren', { ...roomSizeFor('vinbaren', L.width, L.depth), layout: 'winebar', interiorHeight: PREMISES_LOOK[id].heightM });
+  const room = createRoom('vinbaren', { ...roomSizeFor('vinbaren', L.width, L.depth), layout: layoutForPremises(id), interiorHeight: PREMISES_LOOK[id].heightM });
   const raw = room.raw as WineBarRoom;
   const toLocal = premisesToRoomLocal(id, L.centre, L.worldAngle);
   const pi = applyPremisesInterior(raw, id, toLocal);
@@ -59,7 +60,9 @@ describe('ORDER 334 C — lokalernas rum', () => {
     expect(names(k.pi.ceiling).filter((n) => n.startsWith('cellarArch')).length).toBe(4);
     expect(names(k.pi.group).filter((n) => n.startsWith('cellarPier')).length).toBe(4);
     const s = build('salongen');
-    expect(names(s.pi.group)).toEqual(expect.arrayContaining(['salonStove', 'salonLowTable', 'salonArmchair', 'salonSofa1.25', 'salonSofa-1.25']));
+    expect(names(s.pi.group)).toEqual(expect.arrayContaining(['salonStove', 'salonLowTable', 'salonRug']));
+    // ORDER 335 D — sofforna och fåtöljen är platser i rummets plan (tablePlans.ts SALON).
+    expect(names(s.raw.group)).toEqual(expect.arrayContaining(['seat_sofaNSeat', 'seat_sofaSSeat', 'seat_armchairSeat']));
     expect(names(s.pi.ceiling).filter((n) => n.startsWith('salonChandelier')).length).toBeGreaterThanOrEqual(2);
     const g = build('glashornet');
     // Rummets glasade sidor vetter mot lokalens söder (−z) och öster (+x).
