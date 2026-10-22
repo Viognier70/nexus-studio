@@ -139,18 +139,19 @@ export function isSeatedCapacity(state: SimulationState): number {
   // bar-stolarna på seatIndex 16-19. Att läsa direkt från businessClass
   // gör policies.capacity till en cache som aldrig behöver invalideras.
   // ORDER 315b del 2 — bistron (Designs D7, bistroRoom.ts): 31 platser i samma hus.
-  if (bistroLayout(state)) return BISTRO_CAPACITY;
   // ORDER 335 D — vinbaren i en lokal: lokalens planlösning (scene/tablePlans.ts), D15:s antal platser.
+  // ORDER 337 A — bistron i en lokal: lokalens bistroplan; vid Torget bistroHouse.ts.
   const pp = premisesSeats(state.businessClass, state);
   if (pp) return pp.capacity;
+  if (bistroLayout(state)) return BISTRO_CAPACITY;
   return capacityForBusiness(state.businessClass, state.policies.staffCount);
 }
 
 /** ORDER 335 D — platserna i lokalens planlösning (källaren 44, salongen 35, Flygeln 36); null: vinbarens egna 20. */
 export function premisesSeats(businessClass: BusinessClass, state: Pick<SimulationState, 'ladder' | 'economy'>): { capacity: number; groups: readonly (readonly number[])[]; preference: readonly number[] } | null {
-  if (businessClass !== 'vinbaren' || bistroLayout(state)) return null;
+  if (businessClass !== 'vinbaren') return null;
   const p = playerPremisesOf(state);
-  const plan = planForPremises(p);
+  const plan = planForPremises(p, bistroLayout(state));
   if (plan) return { capacity: plan.seats.length, groups: planSeatGroups(plan.seats), preference: planSeatPreference(plan.seats) };
   return null;
 }
@@ -232,9 +233,9 @@ const SEATS_VINBAREN = [
 ];
 
 function seatsPreferenceFor(businessClass: BusinessClass, state?: Pick<SimulationState, 'ladder' | 'economy'>): readonly number[] {
-  if (state && bistroLayout(state)) return BISTRO_SEAT_PREFERENCE;
   const pp = state ? premisesSeats(businessClass, state) : null;
   if (pp) return pp.preference;
+  if (state && bistroLayout(state)) return BISTRO_SEAT_PREFERENCE;
   if (businessClass === 'ölkrogen') return SEATS_OLKROGEN;
   if (businessClass === 'vinbaren') return SEATS_VINBAREN;
   return SEATS_DEFAULT;
@@ -277,9 +278,9 @@ const SEAT_GROUPS_VINBAREN: readonly (readonly number[])[] = [
 ];
 
 function seatGroupsFor(businessClass: BusinessClass, state?: Pick<SimulationState, 'ladder' | 'economy'>): readonly (readonly number[])[] {
-  if (state && bistroLayout(state)) return BISTRO_SEAT_GROUPS;
   const pp = state ? premisesSeats(businessClass, state) : null;
   if (pp) return pp.groups;
+  if (state && bistroLayout(state)) return BISTRO_SEAT_GROUPS;
   if (businessClass === 'ölkrogen') return SEAT_GROUPS_OLKROGEN;
   if (businessClass === 'vinbaren') return SEAT_GROUPS_VINBAREN;
   return SEAT_GROUPS_KVARTERSKROGEN;
@@ -527,7 +528,10 @@ export function tickGuests(state: SimulationState) {
       // ORDER 332 C — vid vagnen i regnet, utan tak över sig (markisen, luckans skiva): mindre tålamod
       // (sim/truckLife.ts rainQueuePatience, balance.ts RAIN_QUEUE_BALANCE.patienceRain).
       const rainPatience = rainQueuePatience(state, guest.id);
-      const drop = WAITING_SAT_DROP_PER_SEC * TICK_SECONDS * (abilityActive(state, 'regulars') ? SHOP.effects.regulersPatience : 1) / rainPatience;
+      // ORDER 337 B (Anders 2026-10-22) — stamgästerna från Magasinsgatan väntar utan att nöjdheten sjunker och går inte
+      // ur kön: deras väntan sänker inte ryktet.
+      const loyal = guest.spotRegular !== undefined;
+      const drop = loyal ? 0 : WAITING_SAT_DROP_PER_SEC * TICK_SECONDS * (abilityActive(state, 'regulars') ? SHOP.effects.regulersPatience : 1) / rainPatience;
       guest.satisfaction = Math.max(0, guest.satisfaction - drop);
       // ORDER 292 — det valda sällskapet får varje plats som blir ledig tills
       // alla i det sitter; de andra i kön väntar (spelarens val: Bord först).
@@ -538,6 +542,7 @@ export function tickGuests(state: SimulationState) {
         setGuestSeated(state, guest, seat);
       } else if (
         // ORDER 269 — Kalastorget: klagande gäster stannar oftare.
+        !loyal &&
         now - guest.stateTime > queuePatienceSeconds(state) * rainPatience &&
         guest.satisfaction < giveUpSatisfaction(state)
       ) {

@@ -20,16 +20,17 @@ function offeredAt(nights: number): SimulationState {
 }
 
 describe('ORDER 336 C — stamgästerna från Magasinsgatan', () => {
-  it('fyra fler per kväll vagnen stått där, taket 30', () => {
+  // ORDER 337 B — taket vid vagnen 20 (förut 30).
+  it('fyra fler per kväll vagnen stått där, taket 20', () => {
     const m = DISTRICTS.magasinsgatan;
-    expect([m.regularsPerEvening, m.regularsMax]).toEqual([4, 30]);
+    expect([m.regularsPerEvening, m.regularsMax]).toEqual([4, 20]);
     expect(truckRegularsTonight(offeredAt(3))).toBe(12);
-    expect(truckRegularsTonight(offeredAt(20))).toBe(30);
+    expect(truckRegularsTonight(offeredAt(20))).toBe(20);
   });
 
   it('en andel följer med till vinbaren och bokas varje kväll som bybor; utan kvällar på Magasinsgatan ingen', () => {
     const taken = reducer(offeredAt(6), { type: 'LADDER_TAKE', premises: 'salongen' });
-    const last = Math.min(30, 4 * 5);
+    const last = Math.min(20, 4 * 5);
     expect(taken.economy.followingRegulars).toBe(Math.floor(DISTRICTS.magasinsgatan.followShare * last));
     expect(followingRegularsAtTakeover(offeredAt(6))).toBe(taken.economy.followingRegulars);
     expect(truckRegularsTonight(taken)).toBe(taken.economy.followingRegulars);
@@ -48,5 +49,23 @@ describe('ORDER 336 C — stamgästerna från Magasinsgatan', () => {
     // En kväll med få gäster (lågt rykte): stamgästerna kommer ändå.
     const thin = { ...taken, day, economy: { ...taken.economy, followingRegulars: 999 } };
     expect(dailyGuestCap(thin)).toBeGreaterThanOrEqual(999);
+  });
+});
+
+// ORDER 337 B (Anders 2026-10-22): stamgästernas väntan i kön sänker inte ryktet.
+describe('ORDER 337 B — stamgästerna i kön', () => {
+  it('nöjdheten sjunker inte och de går inte ur kön, också långt efter tålamodet', async () => {
+    const { tickGuests, isSeatedCapacity } = await import('../../strategic/simulation/service');
+    const { makeGuest } = await import('../../strategic/simulation/model');
+    const s = reducer(offeredAt(6), { type: 'LADDER_TAKE' });
+    // Rummet fullt: varje plats har en gäst som äter, så de två i kön får ingen plats.
+    const cap = isSeatedCapacity(s);
+    const seated = Array.from({ length: cap }, (_, i) => ({ ...makeGuest(0), id: `s${i}`, state: 'eating' as const, seatIndex: i, stateTime: 9999 }));
+    const wait = (id: string, regular: boolean) => ({ ...makeGuest(0), id, state: 'waiting' as const, stateTime: 0, satisfaction: 0.5, ...(regular ? { spotRegular: 0 } : {}) });
+    const st = { ...s, simTime: 10000, guests: [...seated, wait('r', true), wait('o', false)], waitingIds: ['r', 'o'], seatedIds: seated.map((g) => g.id) } as SimulationState;
+    tickGuests(st);
+    const r = st.guests.find((g) => g.id === 'r')!, o = st.guests.find((g) => g.id === 'o')!;
+    expect([r.satisfaction, r.state]).toEqual([0.5, 'waiting']);
+    expect(o.satisfaction).toBeLessThan(0.5);
   });
 });

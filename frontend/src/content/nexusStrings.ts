@@ -610,8 +610,9 @@ export const TABLE = {
     // ORDER 315b del 2 — ombyggnadens dagar på morgonen.
     refitDay: { sv: (day: number, of: number) => `Stängt för ombyggnad, dag ${day} av ${of}:`, en: (day: number, of: number) => `Closed for the refit, day ${day} of ${of}:` },
     title: {
-      sv: { foodtruck: 'Foodtrucken vid Torget', vinbar: 'Vinbaren vid Prästgatan', bistro: 'Bistron i samma hus' } as Record<string, string>,
-      en: { foodtruck: 'The food truck on the square', vinbar: 'The wine bar on Prästgatan', bistro: 'The bistro in the same house' } as Record<string, string>
+      // ORDER 337 C — vinbaren utan plats i rubriken: lokalen väljs i kortet (business/PremisesTakeSteps.tsx).
+      sv: { foodtruck: 'Foodtrucken vid Torget', vinbar: 'Vinbaren', bistro: 'Bistron i samma hus' } as Record<string, string>,
+      en: { foodtruck: 'The food truck on the square', vinbar: 'The wine bar', bistro: 'The bistro in the same house' } as Record<string, string>
     },
     line: {
       sv: {
