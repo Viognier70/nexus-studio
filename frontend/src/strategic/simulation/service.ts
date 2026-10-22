@@ -9,7 +9,7 @@ import { INITIAL_CAPITAL_VALUE } from './model';
 import { INTERIOR } from '../content/layout';
 import { businessHasOvernight, businessHasSeats, capacityForBusiness } from '../business/businessClass';
 import { BISTRO_CAPACITY, BISTRO_SEAT_GROUPS, BISTRO_SEAT_PREFERENCE } from '../scene/bistroHouse';
-import { planForPremises, planSeatGroups, planSeatPreference, SALON_EXTRA_SEATS } from '../scene/tablePlans';
+import { planForPremises, planSeatGroups, planSeatPreference } from '../scene/tablePlans';
 import { playerPremisesOf } from '../../sim/districts';
 import { ladderStep } from '../../sim/ladderStep';
 import type { BusinessClass } from '../business/businessClass';
@@ -152,10 +152,6 @@ export function premisesSeats(businessClass: BusinessClass, state: Pick<Simulati
   const p = playerPremisesOf(state);
   const plan = planForPremises(p);
   if (plan) return { capacity: plan.seats.length, groups: planSeatGroups(plan.seats), preference: planSeatPreference(plan.seats) };
-  if (p === 'salongen') {
-    const n = SEAT_GROUPS_VINBAREN.flat().length;
-    return { capacity: n + SALON_EXTRA_SEATS.length, groups: [...SEAT_GROUPS_VINBAREN, ...planSeatGroups(SALON_EXTRA_SEATS, n)], preference: [...SEATS_VINBAREN.slice(0, 14), ...planSeatPreference(SALON_EXTRA_SEATS, n), ...SEATS_VINBAREN.slice(14)] };
-  }
   return null;
 }
 

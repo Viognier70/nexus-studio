@@ -434,7 +434,9 @@ export const DISTRICTS = {
   // fler för varje kväll vagnen stått där (economy.truckNights). Avgiften står kvar (truckSpotFeeSek).
   //   poolK: gatans gäster mot Torgets samma kväll; doorMix: vilka de är;
   //   regularsPerEvening: stamgäster till per kväll vagnen stått där förut; regularsMax: taket.
-  magasinsgatan: { poolK: 0.35, doorMix: { student: 0.1, middle: 0.85, high: 0.05 }, regularsPerEvening: 2, regularsMax: 30 }
+  // ORDER 336 C (Anders 2026-10-22): +4 per kväll (förut 2), taket 30; followShare: andelen av kvällens stamgäster som
+  //   följer med när spelaren tar över vinbaren och kommer dit varje kväll (economy.followingRegulars).
+  magasinsgatan: { poolK: 0.35, doorMix: { student: 0.1, middle: 0.85, high: 0.05 }, regularsPerEvening: 4, regularsMax: 30, followShare: 0.5 }
 } as const;
 
 // ORDER 334 A — AW i källaren (Anders 2026-10-22: "byborna på AW"). En satsning på morgonen, bara när krogen står i

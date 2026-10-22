@@ -242,7 +242,7 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
   const reached = s.ladder?.reachedOnDay ?? {};
   const weekOf = (d: number | undefined) => (d === undefined ? null : calendarFor(d).absoluteWeek);
   const ladderWeeks = { vinbar: weekOf(reached.vinbar), bistro: weekOf(reached.bistro), step: s.ladder?.step ?? s.economy.businessClass };
-  return { villageRanks, ladderWeeks, startCash, weeks: out, mornings, closedWeek: s.economy.risk?.closedWeek ?? null, renegotiated: !!s.economy.risk?.renegotiated, owned: s.shop?.owned ?? [], star: !!s.star?.held, starWeek, goldWeek, starWeeks, tastings, afterWorks, truckEvenings };
+  return { villageRanks, ladderWeeks, startCash, weeks: out, mornings, closedWeek: s.economy.risk?.closedWeek ?? null, renegotiated: !!s.economy.risk?.renegotiated, owned: s.shop?.owned ?? [], star: !!s.star?.held, starWeek, goldWeek, starWeeks, tastings, afterWorks, truckEvenings, following: s.economy.followingRegulars ?? 0 };
 }
 
 describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
@@ -284,6 +284,8 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
         targetHitShare: Math.round((runs.flatMap((r) => r.weeks).filter((w) => w.targetHit).length / Math.max(1, runs.flatMap((r) => r.weeks).length)) * 100) / 100,
         meanTastings: Math.round((runs.reduce((a, r) => a + r.tastings, 0) / runs.length) * 10) / 10,
         meanAfterWorks: Math.round((runs.reduce((a, r) => a + r.afterWorks, 0) / runs.length) * 10) / 10,
+        // ORDER 336 C — stamgästerna från Magasinsgatan som följde med till vinbaren.
+        meanFollowing: Math.round((runs.reduce((a, r) => a + r.following, 0) / runs.length) * 10) / 10,
         meanOwned: Math.round((runs.reduce((a, r) => a + r.owned.length, 0) / runs.length) * 10) / 10,
         // ORDER 315a — stegen: hur många som nådde vinbaren och bistron, och veckorna.
         ladder: {

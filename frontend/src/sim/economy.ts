@@ -244,6 +244,8 @@ export interface EconomyState {
   // senast räknades. Stamgästerna på Magasinsgatan blir fler med dem (sim/districts.ts truckRegularsTonight).
   truckNights?: Partial<Record<TruckSpotId, number>>;
   truckNightDay?: number;
+  // ORDER 336 C — stamgästerna från Magasinsgatan som följde med till vinbaren och kommer varje kväll.
+  followingRegulars?: number;
 }
 
 export function classSpec(id: BusinessClassId): BusinessClassSpec {

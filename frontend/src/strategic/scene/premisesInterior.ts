@@ -20,7 +20,7 @@ import * as THREE from 'three';
 import type { PremisesId } from '../../sim/districts';
 import { PREMISES_FRAMES } from '../content/premises';
 import { CUT_H, PLINTH_M, type WallSide, type WineBarRoom } from './wineBarRoom';
-import { SALON } from './tablePlans';
+import { planOf, SALON, CELLAR_PLAN } from './tablePlans';
 
 export type VenueId = Exclude<PremisesId, 'torget'>;
 type V2 = [number, number];
@@ -150,6 +150,7 @@ export function applyPremisesInterior(room: WineBarRoom, id: VenueId, toLocal: (
     room.parts.walls.traverse((o) => { const mesh = o as THREE.Mesh; if (mesh.isMesh && mesh.name.startsWith('wall' + side)) { mesh.material = m; mesh.castShadow = false; } });
   }
 
+  const CELLAR_DOOR_SPEC = id === 'kallaren' ? planOf(room.layout)?.door ?? null : null;
   if (id === 'kallaren') buildCellar(); else if (id === 'salongen') buildSalon(); else buildGlass();
 
   // ── Källaren ──
@@ -177,7 +178,10 @@ export function applyPremisesInterior(room: WineBarRoom, id: VenueId, toLocal: (
     for (const x of [-5.8, -1.8, 2.2, 5.6]) for (const s of [-1, 1]) cyl(ceiling, 0.05, 0.05, 0.12, bulb, x, H - 0.3, s * r, `cellarBulb${x}${s}`, 8);
     // ORDER 334 A — AW-skylten: en trottoarpratare utanför dörren de kvällar AW är vald (setAfterWorkSign), på andra
     // sidan dörren från kön ute (wineBarHouse.ts QUEUE_SPOTS queueOut, z ≤ 0,1). Ingen text, som i D15.
-    const aw = new THREE.Group(); aw.name = 'afterWorkSign'; aw.visible = false; aw.position.set(halfW + 0.65, 0, 1.9); group.add(aw);
+    const aw = new THREE.Group(); aw.name = 'afterWorkSign'; aw.visible = false; group.add(aw);
+    // ORDER 336 B — på gatan vid trappans början när källaren ligger under gatan; annars vid östra dörren.
+    if (CELLAR_DOOR_SPEC) aw.position.set(CELLAR_DOOR_SPEC.stair.x0 - 0.4, -CELLAR_DOOR_SPEC.floorY, CELLAR_DOOR_SPEC.stair.z0 - 0.7);
+    else aw.position.set(halfW + 0.65, 0, 1.9);
     const board = mat('#262624', 0.8), frame = mat('#b89a6a', 0.7), chalk = mat('#e9e3d6', 0.9, { emissive: new THREE.Color('#fff2d8'), emissiveIntensity: 0.25 });
     for (const sgn of [-1, 1]) {
       const leaf = new THREE.Group(); leaf.position.set(sgn * 0.17, 0, 0); leaf.rotation.z = sgn * 0.19; aw.add(leaf);
@@ -186,11 +190,61 @@ export function applyPremisesInterior(room: WineBarRoom, id: VenueId, toLocal: (
       for (const [i, y] of [0.72, 0.6, 0.46].entries()) box(leaf, 0.055, 0.035, 0.36 - i * 0.08, chalk, sgn * 0.006, y, 0, `afterWorkChalk${sgn}${i}`);
     }
     // Fönsterbrunnarna högt upp i norra muren (D15 windows: x −6,4, −4,0, −1,6, 1,0 × 0,5 m vid 1,75 m).
+    // ORDER 336 B — på murens insida, under gatan (golvet ligger 2,7 m under, tablePlans.ts CELLAR_DOOR).
     const north = boxSide(0, -1);
-    const nz = north === 'N' ? halfD : north === 'S' ? -halfD : 0;
+    const nz = north === 'N' ? halfD - 0.2 : north === 'S' ? -(halfD - 0.2) : 0;
     if (nz !== 0) for (const [i, x] of [-6.4, -4.0, -1.6].entries()) {
       const p = L(x, f.offsetZ - 5); const lx = Math.max(-halfW + 0.6, Math.min(halfW - 0.6, p[0]));
-      box(room.parts.wallUpper[north], 1.0, 0.5, 0.04, glowMat(), lx, 1.75 + 0.25, nz + Math.sign(nz) * 0.03, `cellarWindowWell${i}`);
+      box(room.parts.wallUpper[north], 1.0, 0.5, 0.04, glowMat(), lx, 1.75 + 0.25, nz - Math.sign(nz) * 0.03, `cellarWindowWell${i}`);
+    }
+    if (CELLAR_DOOR_SPEC) buildCellarPit();
+  }
+
+  // ── ORDER 336 B — källaren under gatan: murarna upp till gatan (står kvar vid Z), trappan ned längs norra fasaden till
+  //    vilplanet och dörren, räcket mot gatan, och huset ovanpå som tonar ut med taket (D15 buildCellar). ──
+  function buildCellarPit() {
+    const d = CELLAR_DOOR_SPEC!, st = d.stair, up = -d.floorY, T = 0.45;
+    const stone = mat('#5d5850', 0.95), step = mat('#6d665c', 0.9), rail = mat('#1f1d1b', 0.5, { metalness: 0.6 });
+    const pit = new THREE.Group(); pit.name = 'cellarPit'; group.add(pit);
+    const wx = halfW + T / 2, wz = halfD + T / 2;
+    // Murarna runt rummet från golvet till gatan; i södra (lokalens norra) en öppning för dörren.
+    box(pit, T, up + 0.1, 2 * (halfD + T), stone, -wx, (up + 0.1) / 2, 0, 'cellarPitW');
+    box(pit, T, up + 0.1, 2 * (halfD + T), stone, wx, (up + 0.1) / 2, 0, 'cellarPitE');
+    box(pit, 2 * halfW, up + 0.1, T, stone, 0, (up + 0.1) / 2, wz, 'cellarPitN');
+    box(pit, d.x0 + halfW, up + 0.1, T, stone, (-halfW + d.x0) / 2, (up + 0.1) / 2, -wz, 'cellarPitS0');
+    box(pit, halfW - d.x1, up + 0.1, T, stone, (d.x1 + halfW) / 2, (up + 0.1) / 2, -wz, 'cellarPitS1');
+    box(pit, d.x1 - d.x0, up + 0.1 - 2.2, T, stone, (d.x0 + d.x1) / 2, 2.2 + (up + 0.1 - 2.2) / 2, -wz, 'cellarPitLintel');
+    // Dörren (öppen, mörk karm) och lyktan bredvid.
+    box(pit, d.x1 - d.x0 + 0.2, 0.1, 0.12, mat('#2b1f17', 0.7), (d.x0 + d.x1) / 2, 2.2, -halfD - T - 0.02, 'cellarDoorHead');
+    box(pit, 0.3, 0.3, 0.06, glowMat(), d.x1 + 0.45, 1.95, -halfD - T - 0.05, 'cellarDoorLamp');
+    // Trappan: fjorton steg från gatan (x0) ned till vilplanet (x1), vilplanet till xEnd.
+    const n = 14, run = (st.x1 - st.x0) / n, rise = up / n, sw = st.z1 - st.z0, sz = (st.z0 + st.z1) / 2;
+    for (let i = 0; i < n; i++) {
+      const top = up - (i + 1) * rise + rise;
+      box(pit, run + 0.02, top, sw, step, st.x0 + (i + 0.5) * run, top / 2, sz, `cellarStep${i}`);
+    }
+    box(pit, st.xEnd - st.x1, 0.06, sw, step, (st.x1 + st.xEnd) / 2, 0.03, sz, 'cellarLanding');
+    // Stödmurarna runt trappgropen och räcket mot gatan.
+    box(pit, st.xEnd - st.x0 + 0.5, up + 0.1, 0.25, stone, (st.x0 + st.xEnd) / 2, (up + 0.1) / 2, st.z0 - 0.125, 'cellarStairWallOut');
+    box(pit, 0.25, up + 0.1, sw, stone, st.xEnd + 0.125, (up + 0.1) / 2, sz, 'cellarStairWallEnd');
+    box(pit, st.xEnd - st.x0, 0.04, 0.04, rail, (st.x0 + st.xEnd) / 2, up + 1.0, st.z0 - 0.12, 'cellarRail');
+    for (const x of [st.x0, (st.x0 + st.xEnd) / 2, st.xEnd]) box(pit, 0.04, 1.0, 0.04, rail, x, up + 0.5, st.z0 - 0.12, `cellarRailPost${x.toFixed(1)}`);
+    // Huset ovanpå: väggarna från gatan, två våningar fönster och sadeltaket; tonar ut med taket (ceiling).
+    const HW = halfW + T, HD = halfD + T, above = 6.6, facade = mat('#c9b48f', 0.85, { transparent: true }), roof = mat('#3d3b38', 0.7, { transparent: true });
+    const house = new THREE.Group(); house.name = 'cellarHouse'; ceiling.add(house);
+    box(house, 2 * HW, above, 0.3, facade, 0, up + above / 2, -HD - 0.15, 'cellarHouseS');
+    box(house, 2 * HW, above, 0.3, facade, 0, up + above / 2, HD + 0.15, 'cellarHouseN');
+    box(house, 0.3, above, 2 * HD, facade, -HW - 0.15, up + above / 2, 0, 'cellarHouseW');
+    box(house, 0.3, above, 2 * HD, facade, HW + 0.15, up + above / 2, 0, 'cellarHouseE');
+    box(house, 2 * HW + 0.6, 0.3, 2 * HD + 0.6, roof, 0, up + 0.15, 0, 'cellarHouseSlab');
+    const win = mat('#ffd9a0', 0.4, { emissive: new THREE.Color('#ffb45a'), emissiveIntensity: 1.1, transparent: true });
+    for (const zs of [-1, 1]) for (let k = 0; k < 5; k++) for (const y of [1.5, 4.3]) {
+      box(house, 0.9, 1.2, 0.05, win, -HW + (k + 0.5) * (2 * HW / 5), up + y + 0.6, zs * (HD + 0.32), `cellarHouseWin${zs}${k}${y}`);
+    }
+    const ridge = 3.0, slope = Math.hypot(HD + 0.3, ridge), ang = Math.atan2(ridge, HD + 0.3);
+    for (const zs of [-1, 1]) {
+      const m = box(house, 2 * HW + 0.6, 0.2, slope, roof, 0, up + above + ridge / 2, zs * (HD + 0.3) / 2, `cellarHouseRoof${zs}`);
+      m.rotation.x = zs * ang;
     }
   }
 
@@ -326,4 +380,15 @@ export function premisesToRoomLocal(id: VenueId, centre: readonly [number, numbe
     const dx = wx - centre[0], dz = wz - centre[1];
     return [ct * dx - st * dz, st * dx + ct * dz];
   };
+}
+
+/** ORDER 336 B — hålet i marken för källaren (gropen med murarna och trappgropen), i byns meter. null när vinbaren inte
+ *  står i källaren. Rummets lokala ram är källarens ram (content/premises.ts; offsetX och offsetZ är 0). */
+export function cellarHoleWorld(premises: PremisesId, room: { width: number; depth: number } = { width: 14.83, depth: 10.41 }): [number, number][] | null {
+  const d = premises === 'kallaren' ? CELLAR_PLAN.door : null;
+  if (!d) return null;
+  const f = PREMISES_FRAMES.kallaren, c = Math.cos(f.th), s = Math.sin(f.th);
+  const W = room.width / 2 + 0.45, D = room.depth / 2 + 0.45, st = d.stair;
+  const local: [number, number][] = [[-W, -D], [st.x0 - 0.25, -D], [st.x0 - 0.25, st.z0 - 0.25], [st.xEnd + 0.25, st.z0 - 0.25], [st.xEnd + 0.25, -D], [W, -D], [W, D], [-W, D]];
+  return local.map(([x, z]) => [f.C[0] + c * (x + f.offsetX) - s * (z + f.offsetZ), f.C[1] + s * (x + f.offsetX) + c * (z + f.offsetZ)]);
 }
