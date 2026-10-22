@@ -15,7 +15,7 @@
 // simuleringens slumpflöde inte flyttas. Gäster utan bokning, och de som
 // kommer när boken är slut, får en typ efter andelarna.
 
-import { districtSpec, playerDistrictOf } from '../../sim/districts';
+import { afterWorkGuestsTonight, playerDoorMix, truckRegularsTonight } from '../../sim/districts';
 import type { Guest, GuestBooking, GuestType, SimulationState } from '../types';
 import { BILLIONAIRE, CONCEPT, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, SHOP, SOCIAL_GUEST } from '../../sim/balance';
 import { conceptOf, reputationByTier, type Tier } from '../../sim/goods';
@@ -51,7 +51,8 @@ export function conceptTonight(state: SimulationState): Tier | null {
 export function typeShares(state: SimulationState, concept: Tier | null = null): Record<BookedType, number> {
   if (!concept) {
     // ORDER 332 D — vagnen i ett annat kvarter än Torget får kvarterets gäster (balance.ts DISTRICTS doorMix).
-    const mix = districtSpec(playerDistrictOf(state)).doorMix;
+    // ORDER 334 B — Magasinsgatan: bybornas gata (playerDoorMix).
+    const mix = playerDoorMix(state);
     if (mix) return mix;
     return GUEST_TYPES.share[state.businessClass] ?? GUEST_TYPES.share.default;
   }
@@ -88,7 +89,10 @@ export function bookingFor(state: SimulationState): GuestBooking {
   const capAll = Number.isFinite(capRaw) ? capRaw : 0;
   // ORDER 292 — gårdagens svar står som egna rader; typerna delar resten.
   const answerNet = answerBookingsFor(state);
-  const cap = Math.max(0, capAll - answerNet);
+  // ORDER 334 — stamgästerna på Magasinsgatan och byborna på AW är bybor (mellangruppen) och bokade.
+  const regulars = cal.isServiceDay ? truckRegularsTonight(state) : 0;
+  const afterWork = cal.isServiceDay ? afterWorkGuestsTonight(state) : 0;
+  const cap = Math.max(0, capAll - answerNet - regulars - afterWork);
   // ORDER 296 — Lovas nätverk: fler gäster med socialt kapital.
   const socialChance = SOCIAL_GUEST.chancePerEvening + (abilityActive(state, 'lova') ? SHOP.effects.lovaSocialChance : 0);
   const socialComing = cap > 0 && hash01(seed, `day${day}|social`) < socialChance;
@@ -97,7 +101,7 @@ export function bookingFor(state: SimulationState): GuestBooking {
   const shares = typeShares(state, concept);
   const student = Math.round(booked * shares.student);
   const high = Math.round(booked * shares.high);
-  const middle = Math.max(0, booked - student - high - (socialComing ? 1 : 0));
+  const middle = Math.max(0, booked - student - high - (socialComing ? 1 : 0)) + regulars + afterWork;
   const inTown = cap > 0 && BILLIONAIRE.inTown.includes(cal.weekday);
   const chance = BILLIONAIRE.chooseBase + BILLIONAIRE.chooseByReputation * state.reputation;
   const names = strings.guestTypes.socialNames.length;
@@ -110,7 +114,9 @@ export function bookingFor(state: SimulationState): GuestBooking {
     billionaireInTown: inTown,
     billionaire: inTown && hash01(seed, `day${day}|billionaire`) < chance,
     answers: state.answerBookings && state.answerBookings.forDay === day ? state.answerBookings.items : [],
-    concept
+    concept,
+    regulars,
+    afterWork
   };
 }
 
@@ -195,6 +201,12 @@ export function assignGuestTypes(draft: SimulationState): void {
       ? (partyType === 'social' || partyType === 'billionaire' ? 'middle' : partyType)
       : pickType(draft, book, arrived, g);
     g.guestType = t;
+    // ORDER 334 B — de första bybornas kväll är stamgästerna (bokningens regulars), med sitt nummer: samma figur
+    // kommer tillbaka kväll efter kväll (scene/village/truckGuestFlow.ts).
+    if (t === 'middle' && (draft.day.regularsTonight ?? 0) < (book.regulars ?? 0)) {
+      g.spotRegular = draft.day.regularsTonight ?? 0;
+      draft.day = { ...draft.day, regularsTonight: g.spotRegular + 1 };
+    }
     g.satisfaction = Math.max(0, Math.min(1, g.satisfaction + GUEST_TYPES.satisfactionOffset[t]));
     arrived[t] = (arrived[t] ?? 0) + 1;
     if (g.partyId && !partyType) byParty.set(g.partyId, t);

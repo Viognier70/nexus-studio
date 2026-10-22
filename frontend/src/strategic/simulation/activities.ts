@@ -4,7 +4,9 @@
 // named work carrying visible three-column effects.
 
 import { calendarFor } from '../../sim/calendar';
-import { EVENING_ECONOMY, TASTING, WEEK } from '../../sim/balance';
+import { AFTER_WORK, EVENING_ECONOMY, TASTING, WEEK } from '../../sim/balance';
+import { afterWorkAvailable } from '../../sim/districts';
+import type { SimulationState } from '../types';
 import type { SustainabilityKey } from '../types';
 import { strings } from '../../content/strings';
 
@@ -92,6 +94,16 @@ export const ACTIVITY_CATALOGUE: readonly Activity[] = [
     effect: { economic: 0, social: 0.01, ecological: 0 },
     availability: 'always'
   },
+  // ORDER 334 A — AW i källaren: byborna kommer efter jobbet (balance.ts AFTER_WORK). Bara i lokalerna i
+  // AFTER_WORK.premises och på vardagarna (activityAvailable).
+  {
+    id: AFTER_WORK.activityId,
+    name: 'After work in the cellar',
+    description: 'A sign on Prästgatan and a cheaper glass from five. The villagers come after work.',
+    costSek: AFTER_WORK.costSek,
+    effect: { economic: 0, social: 0.01, ecological: 0 },
+    availability: 'always'
+  },
   {
     id: 'compost-audit',
     name: 'Review of the kitchen compost',
@@ -121,6 +133,12 @@ export function activityName(a: Activity): string {
 export function activityDescription(a: Activity): string {
   const t = (strings.activityText as Record<string, { name: string; description: string } | undefined>)[a.id];
   return t?.description ?? a.description;
+}
+
+/** ORDER 334 A — satsningar som bara går i vissa lokaler och dagar (AW i källaren); de andra alltid. */
+export function activityAvailable(state: Pick<SimulationState, 'economy' | 'day'>, a: Activity): boolean {
+  if (a.id === AFTER_WORK.activityId) return afterWorkAvailable(state);
+  return true;
 }
 
 export function activityById(id: string): Activity | undefined {

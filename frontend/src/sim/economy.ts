@@ -6,7 +6,7 @@
 // Kassa och krediter byter aldrig plats: här läses medaljer, aldrig
 // krediter, och inget i filen skriver krediter.
 
-import { districtTonight, playerDistrictOf, type PremisesId, type TruckSpotId } from './districts';
+import { afterWorkGuestsTonight, districtTonight, playerDistrictOf, playerPremisesOf, truckRegularsTonight, truckSpotPoolK, type PremisesId, type TruckSpotId } from './districts';
 import { truckWeatherOf } from './truckLife';
 import { ladderWageFactor, starsPossible } from './ladderStep';
 import { staffSnapshot } from './staffCondition';
@@ -36,6 +36,7 @@ import {
   type MedalLevel,
   type MedalRequirement,
   RENT,
+  DISTRICTS,
   DOUBLE_OR_NOTHING,
   CONCEPT,
   SEASON
@@ -239,6 +240,10 @@ export interface EconomyState {
   truckSpot?: TruckSpotId;
   // ORDER 333 D — lokalen spelarens krog står i (sim/districts.ts PREMISES), vald när vinbaren tas över. Saknas: Torget.
   premises?: PremisesId;
+  // ORDER 334 B — kvällarna vagnen stått på varje plats (räknas när dörrarna öppnar, sim/truckSpot.ts), och dagen den
+  // senast räknades. Stamgästerna på Magasinsgatan blir fler med dem (sim/districts.ts truckRegularsTonight).
+  truckNights?: Partial<Record<TruckSpotId, number>>;
+  truckNightDay?: number;
 }
 
 export function classSpec(id: BusinessClassId): BusinessClassSpec {
@@ -322,8 +327,11 @@ export function dailyGuestCap(state: SimulationState): number {
   // ORDER 315b — foodtrucken når förbipasserande vid Torget (FOODTRUCK.guestCapFactor).
   const truck = state.economy.businessClass === 'foodtruck' ? FOODTRUCK.guestCapFactor : 1;
   // ORDER 332 D — kvarterets gäster mot Torgets i kväll (sim/districts.ts). Torget: 1.
-  const district = districtTonight(playerDistrictOf(state), d, truckWeatherOf(state)).poolFactor;
-  return Math.max(0, Math.floor(pool * truck * district * playerShareTonight(state) * Math.max(0, 1 + buzz + dj + regulars)) + answerBookingsFor(state));
+  // ORDER 334 B — Magasinsgatan: färre gäster på gatan (truckSpotPoolK), och stamgästerna som kommer i alla fall.
+  const district = districtTonight(playerDistrictOf(state), d, truckWeatherOf(state)).poolFactor * truckSpotPoolK(state);
+  // ORDER 334 A — byborna på AW i källaren (balance.ts AFTER_WORK).
+  const fixed = answerBookingsFor(state) + truckRegularsTonight(state) + afterWorkGuestsTonight(state);
+  return Math.max(0, Math.floor(pool * truck * district * playerShareTonight(state) * Math.max(0, 1 + buzz + dj + regulars)) + fixed);
 }
 
 // Nedgraderingskedjan (speldesign > Nedgradering).
@@ -666,12 +674,13 @@ export function isIntroRentWeek(week: number): boolean {
   return week <= RENT.introWeeks;
 }
 
-export function weeklyRentSek(id: BusinessClassId | null, week?: number): number {
+// ORDER 334 A — lokalens hyra: klassens gånger lokalens faktor (DISTRICTS.premisesRentK; Torget 1).
+export function weeklyRentSek(id: BusinessClassId | null, week?: number, premises: PremisesId = 'torget'): number {
   if (!id) return 0;
   // ORDER 315b — foodtrucken: platsen och tillståndet vid Torget, i stället för hyra.
   if (id === 'foodtruck') return FOODTRUCK.pitchFeeWeeklySek;
   const share = week !== undefined && isIntroRentWeek(week) ? RENT.introShareOfNormalWeeklyRevenue : RENT.shareOfNormalWeeklyRevenue;
-  return Math.round(share * ECONOMY.normalWeeklyRevenueSek[id]);
+  return Math.round(share * ECONOMY.normalWeeklyRevenueSek[id] * DISTRICTS.premisesRentK[premises]);
 }
 
 export function settleWeek(state: SimulationState): SimulationState {
@@ -693,7 +702,7 @@ export function settleWeek(state: SimulationState): SimulationState {
     postLedger(draft, { category: 'amortisation', amount: -amortisationSek, cause: strings.economy.ledger.amortisation });
   }
   // ORDER 280 — veckohyran dras vid avräkningen.
-  const rentSek = weeklyRentSek(e.businessClass, week);
+  const rentSek = weeklyRentSek(e.businessClass, week, playerPremisesOf(state));
   if (rentSek > 0) {
     applyCashDelta(draft, -rentSek);
     postLedger(draft, { category: 'rent', amount: -rentSek, cause: strings.economy.ledger.rent });

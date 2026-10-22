@@ -11,6 +11,7 @@
 import { useSimDispatch, useSimState } from '../simulation/SimulationProvider';
 import {
   ACTIVITY_CATALOGUE,
+  activityAvailable,
   activityDescription,
   activityName,
   scheduleSlotsFor,
@@ -22,7 +23,7 @@ import type { Activity } from '../simulation/activities';
 import { NxIcon, ACTIVITY_ICON } from '../ui/screens/icons';
 import { t as tt, type StringKey } from '../../content/nexusStrings';
 import { useLanguage } from '../../content/language';
-import { TASTING } from '../../sim/balance';
+import { AFTER_WORK, TASTING } from '../../sim/balance';
 import { reputationHoldsGuests, tastingPartiesFor } from '../simulation/arrivals';
 import { investLocked } from '../../sim/introduction';
 import '../ui/screens/screens.css';
@@ -55,7 +56,8 @@ export function MorningActivityPanel() {
 
   return (
     <div className="nx" aria-label={strings.panels.activityEffects.panelAria} data-testid="morning-activities">
-      {(calm ? [...ACTIVITY_CATALOGUE].sort((a, b) => Number(b.id === TASTING.activityId) - Number(a.id === TASTING.activityId)) : ACTIVITY_CATALOGUE).map((a) => {
+      {/* ORDER 334 A — AW står bara i listan i källaren på vardagarna (activityAvailable). */}
+      {(calm ? [...ACTIVITY_CATALOGUE].sort((a, b) => Number(b.id === TASTING.activityId) - Number(a.id === TASTING.activityId)) : ACTIVITY_CATALOGUE).filter((a) => activityAvailable(sim, a)).map((a) => {
         const picked = sim.day.pickedActivityIds.includes(a.id);
         const gated = isWeeklyGated(a);
         // ORDER 313 §2 — låst tills första provet är klarat.
@@ -85,6 +87,7 @@ export function MorningActivityPanel() {
                 {a.availability === 'weekly' && <> · {strings.morning.weekly}</>}
               </span>
               {locked && <span className="nxs-row-sub" style={{ display: 'block' }} data-testid="activity-locked">{strings.introduction.lockedUntilExam}</span>}
+              {a.id === AFTER_WORK.activityId && <span className="nxs-row-sub" style={{ display: 'block' }} data-testid="after-work-guests" data-guests={AFTER_WORK.guests}>{tt(lang, 'afterWork.guests', { n: AFTER_WORK.guests })}</span>}
               {tasting && <span className="nxs-row-sub" style={{ display: 'block' }} data-testid="tasting-parties" data-parties={tastingPartiesFor(sim)}>{tt(lang, 'tasting.parties', { n: tastingPartiesFor(sim) })}</span>}
             </span>
             {picked && <span className="nx-label nx-accent-text nxs-tag">{strings.screens.morning.picked}</span>}

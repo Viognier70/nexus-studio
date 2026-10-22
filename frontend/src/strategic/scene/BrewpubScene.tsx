@@ -66,7 +66,8 @@ import { useCamera } from '../camera/CameraContext';
 import { IndoorLamps } from './IndoorLamps';
 import type { Vec2 } from './businessRoom';
 import { applyWineBarRoof, CUT_BELOW, roofAt, STAGE_LIGHT, stageLightIntensity } from '../village/roofBlend';
-import { applyPremisesCeiling, applyPremisesInterior, premisesToRoomLocal, PREMISES_LOOK, type PremisesInterior } from './premisesInterior';
+import { applyPremisesCeiling, applyPremisesInterior, premisesToRoomLocal, PREMISES_LOOK, setAfterWorkSign, type PremisesInterior } from './premisesInterior';
+import { afterWorkGuestsTonight } from '../../sim/districts';
 import { currentPremises } from '../content/playerPremises';
 
 // ORDER 184 — skalets tonning: businessRoom.shellOpacityForDistance (samma
@@ -118,6 +119,8 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
   const stageRef = useRef<THREE.SpotLight>(null);
   const appliedRef = useRef<{ mood: MoodId | null; wall: WineWallLevel | null }>({ mood: null, wall: null });
   const djPlaying = useMemo(() => LIGHT_MOODS[mood].djPlaying, [mood]);
+  // ORDER 334 A — AW i källaren i kväll: skylten står utanför dörren.
+  const afterWorkTonight = afterWorkGuestsTonight(sim) > 0;
 
   useEffect(() => {
     if (!isBrewpub) return;
@@ -296,7 +299,7 @@ function ContractRoomScene({ roomClass, plinth, disposeGeometry }: ContractRoomS
       const rk = roofAt(a.distance);
       applyWineBarRoof(raw, rk);
       const pi = raw.group.userData.premisesInterior as PremisesInterior | undefined;
-      if (pi) applyPremisesCeiling(pi, rk);
+      if (pi) { applyPremisesCeiling(pi, rk); setAfterWorkSign(pi, afterWorkTonight); }
       if (rk >= CUT_BELOW) {
         if (c.d !== -1) { for (const u of Object.values(raw.parts.wallUpper)) u.visible = true; cutRef.current = { ...c, d: -1 }; }
       } else if (!(Math.abs(a.yaw - c.yaw) < 0.02 && Math.abs(a.focus.x - c.x) < 0.5 && Math.abs(a.focus.z - c.z) < 0.5 && Math.abs(a.distance - c.d) < 1)) {

@@ -15,7 +15,7 @@
 //
 //   WRITE_REPORTS=1 KARNAN_SEEDS=20 [KARNAN_START=25000] [KARNAN_VARIANT='{"RISK":{...}}'] npx vitest run src/strategic/testHarness/__tests__/order296Karnan.test.ts
 
-import { playerTruckSpotOf, truckSpotFeeSek, truckSpotOpen, TRUCK_SPOT_IDS, TRUCK_SPOTS, type PremisesId, type TruckSpotId } from '../../../sim/districts';
+import { afterWorkAvailable, playerTruckSpotOf, truckNightsBefore, truckRegularsTonight, truckSpotFeeSek, truckSpotOpen, TRUCK_SPOT_IDS, TRUCK_SPOTS, type PremisesId, type TruckSpotId } from '../../../sim/districts';
 import { rankedVillage } from '../../scenario/CompareScreen';
 import { PLAYER_VENUE } from '../../../sim/village';
 import { describe, expect, it } from 'vitest';
@@ -31,7 +31,7 @@ import { misePlan } from '../../../sim/miseEnPlace';
 import { EXAM } from '../../../sim/balance';
 import { hashKey } from '../../util/hash';
 import { reputationHoldsGuests } from '../../simulation/arrivals';
-import { TASTING } from '../../../sim/balance';
+import { AFTER_WORK, TASTING } from '../../../sim/balance';
 import { conceptTonight } from '../../simulation/guestTypes';
 import { staffKnows } from '../../../sim/staffCondition';
 
@@ -141,6 +141,14 @@ function withTasting(s: SimulationState, plan: MorningPlan): MorningPlan {
   return { ...plan, activities: [...(plan.activities ?? []), TASTING.activityId] };
 }
 
+// ORDER 334 A — KARNAN_AW=1: spelaren har AW i källaren de morgnar det går (lokalen och vardagen,
+// sim/districts.ts afterWorkAvailable), som morgonens lista visar det.
+const AW_ON = process.env.KARNAN_AW === '1';
+function withAfterWork(s: SimulationState, plan: MorningPlan): MorningPlan {
+  if (!AW_ON || !afterWorkAvailable(s)) return plan;
+  return { ...plan, activities: [...(plan.activities ?? []), AFTER_WORK.activityId] };
+}
+
 interface Week { week: number; credits: number; resultSek: number; revenueSek: number; rentSek: number; wagesSek: number; cashEnd: number; targetSek: number; targetHit: boolean; renegotiatedNow: boolean; closedNow: boolean }
 interface Morning { week: number; weekday: string; needMin: number; capacityMin: number; backlogMin: number; hand: boolean; booked: number; rep: number; concept: string | null }
 
@@ -175,7 +183,9 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
   // scenario/CompareScreen.tsx rankedVillage), från veckoavräkningens kvällar.
   const villageRanks: { week: number; rank: number; of: number }[] = [];
   // ORDER 332 H — vagnens kvällar: platsen, kvarteret, intäkten och avgiften (state.revenue före och efter dagen).
-  const truckEvenings: { week: number; weekday: string; spot: TruckSpotId; district: string; revenueSek: number; feeSek: number }[] = [];
+  const truckEvenings: { week: number; weekday: string; spot: TruckSpotId; district: string; revenueSek: number; feeSek: number; night: number; regulars: number }[] = [];
+  // ORDER 334 A — morgnarna med AW i källaren.
+  let afterWorks = 0;
   for (let d = 0; d < weeks * 7; d++) {
     const cal = calendarFor(s.day.dayNumber);
     if (TRUCK_SPOT && s.economy.businessClass === 'foodtruck' && cal.isServiceDay) {
@@ -186,15 +196,19 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
     }
     const truckTonight = s.economy.businessClass === 'foodtruck' && cal.isServiceDay ? playerTruckSpotOf(s) : null;
     const revenueBefore = s.revenue;
-    const plan = withTasting(s, PLANS[player](s));
+    const plan = withAfterWork(s, withTasting(s, PLANS[player](s)));
     if (plan.activities?.includes(TASTING.activityId)) tastings++;
+    if (plan.activities?.includes(AFTER_WORK.activityId)) afterWorks++;
+    // ORDER 334 B — kvällen i ordningen på platsen och stamgästerna (sim/districts.ts), före dagen.
+    const nightTonight = truckTonight ? truckNightsBefore(s, truckTonight) : 0;
+    const regularsTonight = truckTonight ? truckRegularsTonight({ ...s, economy: { ...s.economy, truckSpot: truckTonight } }) : 0;
     if (cal.isServiceDay && s.economy.businessClass) {
       const m = playMorning(s, plan);
       const mp = misePlan(m);
       mornings.push({ week: cal.week, weekday: cal.weekday, needMin: mp.needMin, capacityMin: mp.capacityMin, backlogMin: mp.backlogMin, hand: mp.extraHand, booked: mp.booked, rep: s.reputation, concept: conceptTonight(m) });
     }
     s = playDay(s, plan).state;
-    if (truckTonight) truckEvenings.push({ week: cal.week, weekday: cal.weekday, spot: truckTonight, district: TRUCK_SPOTS[truckTonight].district, revenueSek: Math.round(s.revenue - revenueBefore), feeSek: truckSpotFeeSek(truckTonight) });
+    if (truckTonight) truckEvenings.push({ week: cal.week, weekday: cal.weekday, spot: truckTonight, district: TRUCK_SPOTS[truckTonight].district, revenueSek: Math.round(s.revenue - revenueBefore), feeSek: truckSpotFeeSek(truckTonight), night: nightTonight, regulars: regularsTonight });
     const st = s.economy.lastSettlement;
     if (st && st.week !== lastWeek) {
       lastWeek = st.week;
@@ -228,7 +242,7 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
   const reached = s.ladder?.reachedOnDay ?? {};
   const weekOf = (d: number | undefined) => (d === undefined ? null : calendarFor(d).absoluteWeek);
   const ladderWeeks = { vinbar: weekOf(reached.vinbar), bistro: weekOf(reached.bistro), step: s.ladder?.step ?? s.economy.businessClass };
-  return { villageRanks, ladderWeeks, startCash, weeks: out, mornings, closedWeek: s.economy.risk?.closedWeek ?? null, renegotiated: !!s.economy.risk?.renegotiated, owned: s.shop?.owned ?? [], star: !!s.star?.held, starWeek, goldWeek, starWeeks, tastings, truckEvenings };
+  return { villageRanks, ladderWeeks, startCash, weeks: out, mornings, closedWeek: s.economy.risk?.closedWeek ?? null, renegotiated: !!s.economy.risk?.renegotiated, owned: s.shop?.owned ?? [], star: !!s.star?.held, starWeek, goldWeek, starWeeks, tastings, afterWorks, truckEvenings };
 }
 
 describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
@@ -269,6 +283,7 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
         meanCashEnd: mean(runs.map((r) => r.weeks[r.weeks.length - 1]?.cashEnd ?? r.startCash)),
         targetHitShare: Math.round((runs.flatMap((r) => r.weeks).filter((w) => w.targetHit).length / Math.max(1, runs.flatMap((r) => r.weeks).length)) * 100) / 100,
         meanTastings: Math.round((runs.reduce((a, r) => a + r.tastings, 0) / runs.length) * 10) / 10,
+        meanAfterWorks: Math.round((runs.reduce((a, r) => a + r.afterWorks, 0) / runs.length) * 10) / 10,
         meanOwned: Math.round((runs.reduce((a, r) => a + r.owned.length, 0) / runs.length) * 10) / 10,
         // ORDER 315a — stegen: hur många som nådde vinbaren och bistron, och veckorna.
         ladder: {
@@ -295,7 +310,10 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
         // ORDER 332 H — vagnens kvällar per plats: antal, intäkt per kväll och avgift per kväll.
         truckBySpot: Object.fromEntries(TRUCK_SPOT_IDS.map((id) => {
           const ev = runs.flatMap((r) => r.truckEvenings).filter((e) => e.spot === id);
-          return [id, { district: TRUCK_SPOTS[id].district, evenings: ev.length, meanRevenueSek: mean(ev.map((e) => e.revenueSek)), meanFeeSek: mean(ev.map((e) => e.feeSek)) }];
+          // ORDER 334 B — intäkten efter hur många kvällar vagnen stått där förut (0–4, 5–9, 10–19, 20+), och stamgästerna.
+          const bands = [[0, 4], [5, 9], [10, 19], [20, 999]] as const;
+          const byNight = Object.fromEntries(bands.map(([a, b]) => { const xs = ev.filter((e) => e.night >= a && e.night <= b); return [`${a}-${b === 999 ? '' : b}`, { evenings: xs.length, meanRevenueSek: mean(xs.map((e) => e.revenueSek)), meanRegulars: mean(xs.map((e) => e.regulars)) }]; }));
+          return [id, { district: TRUCK_SPOTS[id].district, evenings: ev.length, meanRevenueSek: mean(ev.map((e) => e.revenueSek)), meanFeeSek: mean(ev.map((e) => e.feeSek)), byNight }];
         })),
         byWeek, repByWeek, mise, runs
       };

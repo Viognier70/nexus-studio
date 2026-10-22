@@ -11,7 +11,7 @@ import { setCurrentPremises } from '../../content/playerPremises';
 import { PREMISES_FRAMES } from '../../content/premises';
 import { createRoom, roomSizeFor } from '../businessRoom';
 import { getObstacles, type WineBarRoom } from '../wineBarRoom';
-import { applyPremisesCeiling, applyPremisesInterior, premisesToRoomLocal, PREMISES_LOOK, type VenueId } from '../premisesInterior';
+import { applyPremisesCeiling, applyPremisesInterior, premisesToRoomLocal, PREMISES_LOOK, setAfterWorkSign, type VenueId } from '../premisesInterior';
 
 const VENUES: VenueId[] = ['kallaren', 'salongen', 'glashornet'];
 
@@ -93,6 +93,18 @@ describe('ORDER 334 C — lokalernas rum', () => {
         }
       });
     }
+  });
+
+  it('AW-skylten står utanför källarens dörr de kvällar AW är vald, inte i kön', () => {
+    const { raw, pi } = build('kallaren');
+    const sign = pi.group.getObjectByName('afterWorkSign')!;
+    expect(sign.visible).toBe(false);
+    setAfterWorkSign(pi, true);
+    expect(sign.visible).toBe(true);
+    const at: [number, number] = [sign.position.x, sign.position.z];
+    for (const q of raw.queueSpots) expect([q.id, Math.hypot(at[0] - q.local[0], at[1] - q.local[1]) > 1.0]).toEqual([q.id, true]);
+    expect(at[0]).toBeGreaterThan(raw.width / 2);
+    expect(build('salongen').pi.group.getObjectByName('afterWorkSign')).toBeUndefined();
   });
 
   it('valven, ljuskronorna och pendlarna tonar ut med taket', () => {

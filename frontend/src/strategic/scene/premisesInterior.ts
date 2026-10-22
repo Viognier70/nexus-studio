@@ -174,6 +174,16 @@ export function applyPremisesInterior(room: WineBarRoom, id: VenueId, toLocal: (
     // Glödlampor i valven.
     const bulb = mat(GLOW, 0.4, { emissive: new THREE.Color('#ffb040'), emissiveIntensity: 1.8, transparent: true });
     for (const x of [-5.8, -1.8, 2.2, 5.6]) for (const s of [-1, 1]) cyl(ceiling, 0.05, 0.05, 0.12, bulb, x, H - 0.3, s * r, `cellarBulb${x}${s}`, 8);
+    // ORDER 334 A — AW-skylten: en trottoarpratare utanför dörren de kvällar AW är vald (setAfterWorkSign), på andra
+    // sidan dörren från kön ute (wineBarHouse.ts QUEUE_SPOTS queueOut, z ≤ 0,1). Ingen text, som i D15.
+    const aw = new THREE.Group(); aw.name = 'afterWorkSign'; aw.visible = false; aw.position.set(halfW + 0.65, 0, 1.9); group.add(aw);
+    const board = mat('#262624', 0.8), frame = mat('#b89a6a', 0.7), chalk = mat('#e9e3d6', 0.9, { emissive: new THREE.Color('#fff2d8'), emissiveIntensity: 0.25 });
+    for (const sgn of [-1, 1]) {
+      const leaf = new THREE.Group(); leaf.position.set(sgn * 0.17, 0, 0); leaf.rotation.z = sgn * 0.19; aw.add(leaf);
+      box(leaf, 0.04, 0.95, 0.62, frame, 0, 0.48, 0, `afterWorkFrame${sgn}`);
+      box(leaf, 0.05, 0.78, 0.5, board, sgn * 0.005, 0.5, 0, `afterWorkBoard${sgn}`);
+      for (const [i, y] of [0.72, 0.6, 0.46].entries()) box(leaf, 0.055, 0.035, 0.36 - i * 0.08, chalk, sgn * 0.006, y, 0, `afterWorkChalk${sgn}${i}`);
+    }
     // Fönsterbrunnarna högt upp i norra muren (D15 windows: x −6,4, −4,0, −1,6, 1,0 × 0,5 m vid 1,75 m).
     const north = boxSide(0, -1);
     const nz = north === 'N' ? halfD : north === 'S' ? -halfD : 0;
@@ -291,6 +301,12 @@ export function applyPremisesInterior(room: WineBarRoom, id: VenueId, toLocal: (
   };
   room.group.userData.premisesInterior = pi;
   return pi;
+}
+
+/** ORDER 334 A — AW-skylten utanför källarens dörr de kvällar AW är vald. */
+export function setAfterWorkSign(pi: PremisesInterior, on: boolean): void {
+  const sign = pi.group.getObjectByName('afterWorkSign');
+  if (sign && sign.visible !== on) sign.visible = on;
 }
 
 /** Valven, ljuskronorna och pendlarna tonar ut med taket (rk = roofBlend.ts roofAt: 1 på, 0 borta). */

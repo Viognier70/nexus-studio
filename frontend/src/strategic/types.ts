@@ -409,6 +409,8 @@ export interface Guest {
   fromCurious?: boolean;
   // ORDER 319b del 2 — stamgästen som kommer tillbaka efter ett rätt svar en tidigare kväll.
   curiousRegular?: boolean;
+  // ORDER 334 B — stamgästen på Magasinsgatan, med sitt nummer i kvällens ordning (samma figur varje kväll).
+  spotRegular?: number;
   // ORDER 319c — platsen där gästen äter vid vagnen (sim/truckLife.ts, nyckel i truckProps.ts EAT_SPOTS),
   // och om gästen lämnade skräp på bordet när det var mycket folk.
   truckSpot?: string;
@@ -463,6 +465,9 @@ export interface GuestBooking {
   answers?: Array<{ track: 'sommellerie' | 'kok' | 'service'; n: number }>;
   // ORDER 307 — kvällens koncept ur varukorgen (sim/goods.ts), i klasserna med lagerpaket.
   concept?: import('../sim/goods').Tier | null;
+  // ORDER 334 — stamgästerna på Magasinsgatan och byborna på AW i kväll (ingår i counts.middle).
+  regulars?: number;
+  afterWork?: number;
 }
 
 // ORDER 287a — vad miljardären gjorde i kväll.
@@ -999,6 +1004,8 @@ export interface DayState {
   curiousRevenueSek?: number;
   // ORDER 319b del 2 — varav stamgästerna som kom tillbaka.
   curiousRegularRevenueSek?: number;
+  // ORDER 334 B — stamgästerna som kommit till vagnen i kväll (strategic/simulation/guestTypes.ts).
+  regularsTonight?: number;
   // ORDER 319c — livet vid vagnen i kväll: vädret, skräpet på borden och medhjälparens rundor (sim/truckLife.ts).
   truck?: import('../sim/truckLife').TruckDayState;
   helpZone?: { zone: 'bar' | 'floor' | 'lounge'; until: number } | null;

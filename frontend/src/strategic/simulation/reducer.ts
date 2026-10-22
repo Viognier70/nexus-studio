@@ -184,6 +184,7 @@ import { sustainabilityLevelsFor } from '../../sim/sustainabilityLevels';
 import { incidentBankFor } from '../../sim/incidentBank';
 import {
   WEEKLY_GATE_DAYS,
+  activityAvailable,
   activityById,
   activityName
 } from './activities';
@@ -619,6 +620,8 @@ function pickActivity(state: SimulationState, id: string): SimulationState {
   if (scheduleSlotsLeft(state) <= 0) return state;
   const activity = activityById(id);
   if (!activity) return state;
+  // ORDER 334 A — AW bara i källaren och på vardagarna.
+  if (!activityAvailable(state, activity)) return state;
   // ORDER 265 — golvet är kreditramen för satsningar (speldesign > Golvet).
   if (state.cash - activity.costSek < -creditLineSek(state)) return state;
   // Weekly gate — reject if this activity was picked within the last
@@ -1623,6 +1626,8 @@ function openService(
     doorsOpenedThisService: false,
     partiesTonight: 0,
     tastingPartiesTonight: 0,
+    // ORDER 334 B — stamgästerna räknas från noll varje kväll.
+    regularsTonight: 0,
     consequence: null,
     roomMoodLift: 0,
     worldFactors,

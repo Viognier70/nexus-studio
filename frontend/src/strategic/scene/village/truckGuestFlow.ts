@@ -65,7 +65,10 @@ export interface Spot {
   seated?: boolean;
 }
 /** ORDER 319c — gästens plats att äta på och skräpet, ur simuleringen (sim/truckLife.ts). */
-export interface FlowGuest { id: string; state: GuestState; truckSpot?: string; truckLitter?: boolean }
+/** ORDER 334 B — stamgästernas kläder börjar här i klädlistan (en annan än de flesta gästers hash). */
+const REGULAR_LOOK_FROM = 3;
+
+export interface FlowGuest { id: string; state: GuestState; truckSpot?: string; truckLitter?: boolean; spotRegular?: number }
 
 /** ORDER 319c — vädret vid vagnen just nu: regnet flyttar kön in under markisen (Designs truckWeather.ts rain.queue). */
 export interface FlowWeather { raining: boolean; tight?: boolean; awning?: boolean }
@@ -112,6 +115,8 @@ export interface TruckWalker {
   outcomeAt: number;
   /** Klädernas index, ur gästens id. */
   look: number;
+  /** ORDER 334 B — stamgästens nummer på Magasinsgatan (sim Guest.spotRegular). */
+  regular?: number;
   x: number;
   z: number;
   yaw: number;
@@ -423,6 +428,8 @@ export class TruckGuestFlow {
       if (!w) {
         if (!spot) continue;
         w = this.newWalker(g.id, this.arrivalPath(g.id, spot), spot);
+        // ORDER 334 B — stamgästen på Magasinsgatan: samma kläder varje kväll (numret i kvällens ordning).
+        if (g.spotRegular !== undefined) { w.regular = g.spotRegular; w.look = (REGULAR_LOOK_FROM + g.spotRegular) % this.looks; }
         this.walkers.set(g.id, w);
         events.push({ kind: 'spawn', id: g.id, x: w.x, z: w.z });
         continue;

@@ -55,7 +55,7 @@ export function spotToWorld(spot: TruckSpotId, local: readonly [number, number])
 // ---------- kvarteren i simuleringen (ORDER 332 D–G) ----------
 // Talen står i balance.ts DISTRICTS. Torget har alla faktorer 1, så spelarens krog på torget räknas som förut.
 
-import { DISTRICTS, MEDAL_LEVELS, HOLIDAYS, type DistrictSpec } from './balance';
+import { AFTER_WORK, DISTRICTS, MEDAL_LEVELS, HOLIDAYS, type DistrictSpec } from './balance';
 import { calendarFor } from './calendar';
 import { ALL_PAVILIONS, totalMedalSteps } from './economy';
 import type { SimulationState } from '../strategic/types';
@@ -142,4 +142,42 @@ export function truckSpotFeeSek(spot: TruckSpotId): number {
 /** Holidays som räknas som marknad, för texten på morgonen. */
 export function marketHolidays() {
   return HOLIDAYS.list.filter((h) => DISTRICTS.marketDemand.includes(h.demand));
+}
+
+// ---------- ORDER 334 A och B — AW i källaren och stamgästerna på Magasinsgatan ----------
+
+/** Kan krogen ha AW i kväll? Lokalen (AFTER_WORK.premises), inte vagnen, och en vardag (AFTER_WORK.days). */
+export function afterWorkAvailable(state: { economy?: { businessClass?: string | null; premises?: PremisesId } | null; day: { dayNumber: number } }): boolean {
+  const cls = state.economy?.businessClass;
+  if (!cls || cls === 'foodtruck') return false;
+  return AFTER_WORK.premises.includes(playerPremisesOf(state)) && AFTER_WORK.days.includes(calendarFor(state.day.dayNumber).weekday);
+}
+
+/** Byborna som kommer på AW i kväll: AFTER_WORK.guests om satsningen är vald och går att ha, annars 0. */
+export function afterWorkGuestsTonight(state: Pick<SimulationState, 'economy' | 'day'>): number {
+  return afterWorkAvailable(state) && (state.day.pickedActivityIds ?? []).includes(AFTER_WORK.activityId) ? AFTER_WORK.guests : 0;
+}
+
+/** Kvällarna vagnen stått på platsen före i kväll (economy.truckNights; i kväll räknas när dörrarna öppnar). */
+export function truckNightsBefore(state: Pick<SimulationState, 'economy' | 'day'>, spot: TruckSpotId): number {
+  const n = state.economy?.truckNights?.[spot] ?? 0;
+  return state.economy?.truckNightDay === state.day.dayNumber && playerTruckSpotOf(state) === spot ? Math.max(0, n - 1) : n;
+}
+
+/** Stamgästerna vid vagnen i kväll: på Magasinsgatan fler för varje kväll den stått där förut (DISTRICTS.magasinsgatan). */
+export function truckRegularsTonight(state: Pick<SimulationState, 'economy' | 'day'>): number {
+  if (state.economy?.businessClass !== 'foodtruck' || playerTruckSpotOf(state) !== 'magasinsgatan') return 0;
+  const m = DISTRICTS.magasinsgatan;
+  return Math.min(m.regularsMax, Math.floor(m.regularsPerEvening * truckNightsBefore(state, 'magasinsgatan')));
+}
+
+/** Gatans gäster mot kvarterets samma kväll: Magasinsgatan har färre (DISTRICTS.magasinsgatan.poolK), annars 1. */
+export function truckSpotPoolK(state: Pick<SimulationState, 'economy'>): number {
+  return state.economy?.businessClass === 'foodtruck' && playerTruckSpotOf(state) === 'magasinsgatan' ? DISTRICTS.magasinsgatan.poolK : 1;
+}
+
+/** Vilka gäster som kommer till spelarens dörr: Magasinsgatans bybor, annars kvarterets (doorMix, null = byns). */
+export function playerDoorMix(state: Pick<SimulationState, 'economy'>): { student: number; middle: number; high: number } | null {
+  if (state.economy?.businessClass === 'foodtruck' && playerTruckSpotOf(state) === 'magasinsgatan') return DISTRICTS.magasinsgatan.doorMix;
+  return districtSpec(playerDistrictOf(state)).doorMix;
 }

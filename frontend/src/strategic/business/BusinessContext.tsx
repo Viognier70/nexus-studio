@@ -88,3 +88,8 @@ export function useBusiness(): BusinessApi {
   if (!ctx) throw new Error('useBusiness must be called inside <BusinessProvider>');
   return ctx;
 }
+
+/** ORDER 334 D — som useBusiness, men null utanför <BusinessProvider> (erbjudandekorten i testerna). */
+export function useBusinessOptional(): BusinessApi | null {
+  return useContext(BusinessCtx);
+}
