@@ -2,6 +2,7 @@
 // balance.ts MISE_EN_PLACE; morgonens skärm (MorningBuyScreen) och harnessen
 // (order296Karnan.test.ts) läser samma funktioner.
 
+import { premisesTeamK } from './premisesScale';
 import type { SimulationState } from '../strategic/types';
 import { coverage } from '../strategic/simulation/morningBuy';
 import { bookingFor } from '../strategic/simulation/guestTypes';
@@ -32,7 +33,8 @@ export function misePlan(state: SimulationState): MisePlan {
   const extraHand = !!state.day.prepHand;
   // ORDER 296 — mise en place-rutinen (butiken): kocken har allt framme tidigare.
   const routine = abilityActive(state, 'mise') ? SHOP.effects.miseExtraMin : 0;
-  const capacityMin = staff * MISE_EN_PLACE.minutesPerStaff + (extraHand ? MISE_EN_PLACE.extraHandMin : 0) + routine;
+  // ORDER 339 B — ett större lag i en större lokal hinner mer (sim/premisesScale.ts premisesTeamK; 1 vid Torget).
+  const capacityMin = staff * MISE_EN_PLACE.minutesPerStaff * premisesTeamK(state) + (extraHand ? MISE_EN_PLACE.extraHandMin : 0) + routine;
   return { portions, booked, needMin, capacityMin, backlogMin: Math.max(0, needMin - capacityMin), extraHand };
 }
 

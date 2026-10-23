@@ -11,6 +11,7 @@ import { businessHasOvernight, businessHasSeats, capacityForBusiness } from '../
 import { BISTRO_CAPACITY, BISTRO_SEAT_GROUPS, BISTRO_SEAT_PREFERENCE } from '../scene/bistroHouse';
 import { planForPremises, planSeatGroups, planSeatPreference } from '../scene/tablePlans';
 import { playerPremisesOf } from '../../sim/districts';
+import { premisesTeamK } from '../../sim/premisesScale';
 import { ladderStep } from '../../sim/ladderStep';
 import type { BusinessClass } from '../business/businessClass';
 import type { Guest, SimulationState, StaffMember, StaffRole, TaskAssignment, TaskType, Vec2 } from '../types';
@@ -952,7 +953,7 @@ function beginBackgroundTask(state: SimulationState, staff: StaffMember, type: T
     type,
     state.capitals.values.social,
     roleCompetence(state.team, staff.role),
-    staffTempoFactor(state) *
+    staffTempoFactor(state) / premisesTeamK(state) *
     // ORDER 270 — följden av ett fel val kan göra personalen långsammare
     // tills nästa händelse (läses här för att undvika en importcirkel).
     (state.incidents?.ongoing?.tempoFactor ?? 1) *
@@ -1409,7 +1410,8 @@ function beginStaffTask(
     type,
     state.capitals.values.social,
     roleCompetence(state.team, staff.role),
-    runner * pass * queueWalk * help * backlogTaskTime(state) * staffTempoFactor(state) *
+    // ORDER 339 B — ett större lag i en större lokal: uppgifterna går fortare (sim/premisesScale.ts; 1 vid Torget).
+    runner * pass * queueWalk * help * backlogTaskTime(state) * staffTempoFactor(state) / premisesTeamK(state) *
     // ORDER 270 — följden av ett fel val kan göra personalen långsammare
     // tills nästa händelse (läses här för att undvika en importcirkel).
     (state.incidents?.ongoing?.tempoFactor ?? 1) *

@@ -1,0 +1,85 @@
+{
+  "definition": "ORDER 339 A–B (sim/premisesScale.ts). seats = platserna i rummet (premisesSeatsNow), capK = kvällens tak gånger, teamK = uppgifternas tid och köket delat med, wageK = lönerna gånger, areaK = hyran gånger (alla 1 vid Torget), rentSek = veckohyran för vinbaren vecka 6 (economy.ts weeklyRentSek, källaren med sin rabatt).",
+  "rows": [
+    {
+      "premises": "torget",
+      "step": "vinbar",
+      "seats": 20,
+      "capK": 1,
+      "teamK": 1,
+      "wageK": 1,
+      "areaK": 1,
+      "rentSek": 13469
+    },
+    {
+      "premises": "torget",
+      "step": "bistro",
+      "seats": 31,
+      "capK": 1,
+      "teamK": 1,
+      "wageK": 1,
+      "areaK": 1,
+      "rentSek": 13469
+    },
+    {
+      "premises": "kallaren",
+      "step": "vinbar",
+      "seats": 44,
+      "capK": 4.840000000000001,
+      "teamK": 1.7365843248428807,
+      "wageK": 1.370784144222729,
+      "areaK": 0.9979260208197452,
+      "rentSek": 9409
+    },
+    {
+      "premises": "kallaren",
+      "step": "bistro",
+      "seats": 28,
+      "capK": 0.8158168574401664,
+      "teamK": 0.9312310243648302,
+      "wageK": 0.9601045658188107,
+      "areaK": 0.9979260208197452,
+      "rentSek": 9409
+    },
+    {
+      "premises": "salongen",
+      "step": "vinbar",
+      "seats": 35,
+      "capK": 3.0625,
+      "teamK": 1.4795397379753739,
+      "wageK": 1.2508787635704217,
+      "areaK": 1.2374743453008217,
+      "rentSek": 16667
+    },
+    {
+      "premises": "salongen",
+      "step": "bistro",
+      "seats": 46,
+      "capK": 2.2018730489073883,
+      "teamK": 1.3181878261711266,
+      "wageK": 1.1710042064573603,
+      "areaK": 1.2374743453008217,
+      "rentSek": 16667
+    },
+    {
+      "premises": "glashornet",
+      "step": "vinbar",
+      "seats": 36,
+      "capK": 3.24,
+      "teamK": 1.509005259848636,
+      "wageK": 1.2650538190282499,
+      "areaK": 1.2050324125629348,
+      "rentSek": 16230
+    },
+    {
+      "premises": "glashornet",
+      "step": "bistro",
+      "seats": 66,
+      "capK": 4.532778355879292,
+      "teamK": 1.6971786865822824,
+      "wageK": 1.3529224290888489,
+      "areaK": 1.2050324125629348,
+      "rentSek": 16230
+    }
+  ]
+}

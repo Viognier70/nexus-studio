@@ -533,7 +533,39 @@ export const MARKET = {
   // Taket ska bita vid klassens ingångsnivå (brons i tre = tre steg =
   // 29 %) vid 90 % av det rummet drar: 43,25 × 0,9 / 0,29 ≈ 134. Med fler
   // medaljer släpper taket; utan medaljer har spelaren ingen verksamhet.
-  basePoolPerDay: 134
+  basePoolPerDay: 134,
+  // ORDER 339 A (Anders 2026-10-22) — kvällens tak växer med lokalens platser mot klassens vid Torget
+  // (sim/premisesScale.ts premisesCapK): taket gånger (platser / Torgets) ^ exponenten. Efterfrågan bestämmer
+  // fortfarande hur många som kommer.
+  premisesSeatExponent: 2
+} as const;
+
+// ORDER 339 C (Anders 2026-10-22: "Ett halvtomt rum: stämningen sjunker när beläggningen är låg") — från klockan
+// fromMinute (spelminuter sedan midnatt) sjunker rummets stämning (MOOD_BALANCE roomMoodLift, som notan läser,
+// moodBillPerLift) med liftPerGameMinute så länge färre än threshold av platserna är upptagna, ned till floor.
+// Kvällens resultat säger "Rummet kändes tomt" när rummet varit halvtomt minst resultMinutes.
+export const EMPTY_ROOM = {
+  section: 'Servicen > Gästerna',
+  threshold: 0.3,
+  fromMinute: 19 * 60,
+  liftPerGameMinute: 0.004,
+  floor: -0.08,
+  resultMinutes: 45
+} as const;
+
+// ORDER 339 B (Anders 2026-10-22: "En större lokal kostar") — hyran följer ytan och laget följer platserna
+// (sim/premisesScale.ts). areaM2: lokalens yta som hyrs (D15: källaren 144 m², salongen 236 + köket 59, Flygeln
+// cirka 270; Torget vinbarens hus 145). teamExponent: laget (lönerna och tempot) gånger (platser / Torgets) ^ det.
+// areaExponent: hyran gånger (yta / Torgets) ^ det. vinbarSeats: vinbarens platser vid Torget (wineBarRoom.ts TOTAL_SEATS).
+export const PREMISES_SCALE = {
+  section: 'Ekonomin > Byn',
+  areaM2: { torget: 145, kallaren: 144, salongen: 295, glashornet: 270 } as Record<PremisesId, number>,
+  // Hyran gånger (yta / Torgets) ^ areaExponent.
+  areaExponent: 0.3,
+  teamExponent: 0.7,
+  // Lönerna gånger (platser / Torgets) ^ wageExponent: ett större lag kostar mindre per person än i proportion.
+  wageExponent: 0.4,
+  vinbarSeats: 20
 } as const;
 
 // ORDER 265 (F8) — klassernas normala veckointäkt och startlån.

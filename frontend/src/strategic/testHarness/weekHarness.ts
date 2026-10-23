@@ -23,6 +23,8 @@ import { LADDER, WEEK } from '../../sim/balance';
 import { rankedScenarioChoice } from '../simulation/scenarios';
 import { incidentById } from '../../sim/incidentBank';
 import { packagesFor } from '../simulation/packages';
+import { coverage } from '../simulation/morningBuy';
+import { bookingFor } from '../simulation/guestTypes';
 import { canAfford, rankedStepOption } from '../../sim/incidents';
 import type { IncidentStep } from '../../sim/incidentBank';
 import { fikaTonight } from '../../sim/fika';
@@ -50,7 +52,9 @@ export interface MorningPlan {
   // ORDER 275 — lagret är insatsen. Den rimliga spelaren köper klassens
   // baspaket varje morgon ('base', förvalt); den svaga handlar själv
   // ('none', se scenarios.ts weakMorning). Klasser utan paket påverkas inte.
-  stock?: 'base' | 'none';
+  // ORDER 339 — 'booking': baspaketet och fler tills lagret räcker till kvällens bokning (högst STOCK_TO_BOOKING_MAX),
+  // som en stark spelare i en större lokal.
+  stock?: 'base' | 'none' | 'booking';
   // Stäng kvällens service (skala ner, samma som spelarens knapp) och
   // avsluta dagen utan service.
   closeEvening?: boolean;
@@ -250,6 +254,9 @@ export function answerFika(s: SimulationState, given: ScenarioAnswer): Simulatio
   return reducer(s, { type: 'FIKA_ANSWER', optionId: option.id });
 }
 
+/** ORDER 339 — högst så många baspaket en morgon med stock 'booking'. */
+export const STOCK_TO_BOOKING_MAX = 4;
+
 export function playMorning(s: SimulationState, plan: MorningPlan): SimulationState {
   s = answerLadder(s, plan.ladder ?? 'take');
   for (const e of plan.exams ?? []) {
@@ -262,7 +269,10 @@ export function playMorning(s: SimulationState, plan: MorningPlan): SimulationSt
   }
   for (const id of plan.activities ?? []) s = reducer(s, { type: 'PICK_ACTIVITY', id });
   const pkgs = packagesFor(s.economy.businessClass);
-  if (pkgs && (plan.stock ?? 'base') === 'base') s = reducer(s, { type: 'BUY_PACKAGE', packageId: pkgs.base.id });
+  if (pkgs && (plan.stock ?? 'base') !== 'none') s = reducer(s, { type: 'BUY_PACKAGE', packageId: pkgs.base.id });
+  if (pkgs && plan.stock === 'booking') {
+    for (let i = 1; i < STOCK_TO_BOOKING_MAX && coverage(s).covers < bookingFor(s).total; i++) s = reducer(s, { type: 'BUY_PACKAGE', packageId: pkgs.base.id });
+  }
   // ORDER 285 — gårdagens rester: bästa svaret tar vara på dem, det sämsta
   // skickar dem till sopbilen (salvage.ts), som svaren på raketerna.
   if (s.salvage && s.salvage.resolved === null) {

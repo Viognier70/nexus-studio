@@ -1006,6 +1006,11 @@ export interface DayState {
   curiousRegularRevenueSek?: number;
   // ORDER 334 B — stamgästerna som kommit till vagnen i kväll (strategic/simulation/guestTypes.ts).
   regularsTonight?: number;
+  // ORDER 339 C — beläggningen i kväll: spelminuterna rummet varit halvtomt, och beläggningen summerad över minuterna
+  // (medel = occupancyMinutes / servedMinutes), från EMPTY_ROOM.fromMinute.
+  emptyRoomMinutes?: number;
+  occupancyMinutes?: number;
+  servedMinutes?: number;
   // ORDER 319c — livet vid vagnen i kväll: vädret, skräpet på borden och medhjälparens rundor (sim/truckLife.ts).
   truck?: import('../sim/truckLife').TruckDayState;
   helpZone?: { zone: 'bar' | 'floor' | 'lounge'; until: number } | null;

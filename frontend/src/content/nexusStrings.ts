@@ -548,6 +548,8 @@ export const STRINGS = {
   'afterWork.guests': { sv: '{n} bybor kommer efter jobbet', en: '{n} villagers come after work' },
   'afterWork.came': { sv: 'AW i källaren: {n} bybor bokade efter jobbet.', en: 'After work in the cellar: {n} villagers booked after work.' },
   // ORDER 334 B — stamgästerna på Magasinsgatan i kvällens resultat.
+  // ORDER 339 C — ett halvtomt rum i kvällens resultat.
+  'result.emptyRoom': { sv: 'Rummet kändes tomt: i snitt var {pct} % av platserna upptagna, och stämningen sjönk.', en: 'The room felt empty: on average {pct} % of the seats were taken, and the mood fell.' },
   // ORDER 336 C — stamgästerna från Magasinsgatan som följde med till krogen.
   'spot.regularsFollowed': { sv: '{n} stamgäster från Magasinsgatan kom med sin kopp.', en: '{n} regulars from Magasinsgatan came with their cup.' },
   'spot.regularsCame': { sv: '{n} stamgäster kom med egen kopp. Vagnen har stått här {nights} kvällar.', en: '{n} regulars came with their own cup. The truck has stood here {nights} evenings.' },

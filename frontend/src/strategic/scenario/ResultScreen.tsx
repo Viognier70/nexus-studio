@@ -13,6 +13,7 @@
 // kvällens nivå är streckad (Designs skärm 6), och kvällens gäster efter typ
 // med vad de betydde (guestTypes.ts eveningGuests).
 
+import { EMPTY_ROOM } from '../../sim/balance';
 import { KnowledgePyramid } from '../ui/service/KnowledgePyramid';
 import { useEffect, useRef } from 'react';
 import type { LucideIcon } from 'lucide-react';
@@ -87,6 +88,21 @@ export function WhereGuestsWentPanel({ sim }: { sim: SimulationState }) {
           {tt(lang, 'afterWork.came', { n: sim.day.booking?.afterWork ?? 0 })}
         </p>
       )}
+    </div>
+  );
+}
+
+// ORDER 339 C — ett halvtomt rum (balance.ts EMPTY_ROOM): stämningen sjönk, och raden säger hur fullt det var. Egen
+// rad, så att den syns också när panelen om vart gästerna gick saknar rader.
+export function EmptyRoomLine({ sim }: { sim: SimulationState }) {
+  const lang = useLanguage();
+  if ((sim.day.emptyRoomMinutes ?? 0) < EMPTY_ROOM.resultMinutes) return null;
+  const pct = Math.round(((sim.day.occupancyMinutes ?? 0) / Math.max(1, sim.day.servedMinutes ?? 0)) * 100);
+  return (
+    <div className="nx-result-guests">
+      <p className="nx-small" data-testid="result-empty-room" data-occupancy={pct} style={{ margin: 0 }}>
+        {tt(lang, 'result.emptyRoom', { pct })}
+      </p>
     </div>
   );
 }
@@ -254,6 +270,7 @@ export function ResultScreen({ sim, onContinue }: { sim: SimulationState; onCont
           </ol>
           <EveningGuestsPanel sim={sim} />
           <WhereGuestsWentPanel sim={sim} />
+          <EmptyRoomLine sim={sim} />
         </section>
         <section className="nx-result-gains" aria-label={t.gains}>
           <div className="nx-label" style={{ marginBottom: 'calc(12 * var(--nx-u))' }}>{t.gains}</div>

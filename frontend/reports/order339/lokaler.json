@@ -1,0 +1,276 @@
+{
+  "definition": "ORDER 339 D. 40 frön per rad, vinbaren och bistron per lokal. before = utan storleken (reports/order337/lokaler; Flygeln reports/order338/flygeln; Torget saknas), after = med storleken (reports/order339/lokaler). closed = stängda säsonger, meanCashEnd = medelkassan vid säsongens slut (kr), lowestCash = lägsta kassan, renegotiated = säsonger med omförhandlat lån, reachedBistro = säsonger som nådde bistron, bistroWeekMedian = medianveckan dit, starEarned = säsonger med stjärna. ranking = lokalerna efter medelkassan per spelartyp (after); goal = bästa lokalen per spelartyp och platsen för de stora (1 = bäst av fem).",
+  "rows": {
+    "torget-trappa-mentorn": {
+      "before": null,
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 42125,
+        "lowestCash": 19978,
+        "renegotiated": 6,
+        "reachedBistro": 39,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      }
+    },
+    "kallaren-trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 1,
+        "meanCashEnd": 21302,
+        "lowestCash": -115,
+        "renegotiated": 35,
+        "reachedBistro": 2,
+        "bistroWeekMedian": 5,
+        "starEarned": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 22047,
+        "lowestCash": 8109,
+        "renegotiated": 35,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 3,
+        "starEarned": 0
+      }
+    },
+    "kallaren-aw-trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 42507,
+        "lowestCash": 25657,
+        "renegotiated": 13,
+        "reachedBistro": 29,
+        "bistroWeekMedian": 5,
+        "starEarned": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 55784,
+        "lowestCash": 26081,
+        "renegotiated": 1,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 3,
+        "starEarned": 0
+      }
+    },
+    "salongen-trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 42941,
+        "lowestCash": 21834,
+        "renegotiated": 12,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 61408,
+        "lowestCash": 23430,
+        "renegotiated": 2,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      }
+    },
+    "glashornet-trappa-mentorn": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 27853,
+        "lowestCash": 15581,
+        "renegotiated": 14,
+        "reachedBistro": 25,
+        "bistroWeekMedian": 5,
+        "starEarned": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 71434,
+        "lowestCash": 26081,
+        "renegotiated": 3,
+        "reachedBistro": 40,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      }
+    },
+    "torget-trappa-rimlig": {
+      "before": null,
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 28960,
+        "lowestCash": 10020,
+        "renegotiated": 17,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "kallaren-trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 24614,
+        "lowestCash": 3790,
+        "renegotiated": 38,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 71770,
+        "lowestCash": 24907,
+        "renegotiated": 11,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "kallaren-aw-trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 34407,
+        "lowestCash": 15997,
+        "renegotiated": 19,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 56608,
+        "lowestCash": 24907,
+        "renegotiated": 11,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "salongen-trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 33124,
+        "lowestCash": 20959,
+        "renegotiated": 17,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 52143,
+        "lowestCash": 24907,
+        "renegotiated": 11,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "glashornet-trappa-rimlig": {
+      "before": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 20544,
+        "lowestCash": 1393,
+        "renegotiated": 26,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "after": {
+        "seeds": 40,
+        "closed": 0,
+        "meanCashEnd": 51833,
+        "lowestCash": 24907,
+        "renegotiated": 13,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    }
+  },
+  "ranking": {
+    "mentorn": [
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": 71434,
+        "closed": 0
+      },
+      {
+        "lokal": "salongen",
+        "meanCashEnd": 61408,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": 55784,
+        "closed": 0
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": 42125,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": 22047,
+        "closed": 0
+      }
+    ],
+    "rimlig": [
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": 71770,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": 56608,
+        "closed": 0
+      },
+      {
+        "lokal": "salongen",
+        "meanCashEnd": 52143,
+        "closed": 0
+      },
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": 51833,
+        "closed": 0
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": 28960,
+        "closed": 0
+      }
+    ]
+  },
+  "goal": {
+    "bestMentorn": "glashornet",
+    "bestRimlig": "kallaren",
+    "noPremisesAlwaysBest": true,
+    "glashornetRank": {
+      "mentorn": 1,
+      "rimlig": 4
+    },
+    "salongenRank": {
+      "mentorn": 2,
+      "rimlig": 3
+    }
+  }
+}
