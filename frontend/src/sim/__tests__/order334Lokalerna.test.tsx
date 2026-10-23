@@ -2,6 +2,7 @@
 // ORDER 334 A, B och D — källarens hyra och AW, stamgästerna på Magasinsgatan, och banken som frågar efter namnet
 // när lokalen är vald (Anders 2026-10-22).
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { premisesAreaK } from '../premisesScale';
 import { cleanup, fireEvent, render } from '@testing-library/react';
 import { createElement } from 'react';
 import { reducer } from '../../strategic/simulation/reducer';
@@ -49,8 +50,9 @@ describe('ORDER 334 A — källaren', () => {
   it('hyran är klassens gånger lokalens faktor; källaren är billigare, de andra som förut', () => {
     const full = Math.round(RENT.shareOfNormalWeeklyRevenue * ECONOMY.normalWeeklyRevenueSek.vinbar);
     expect(weeklyRentSek('vinbar', 6)).toBe(full);
-    expect(weeklyRentSek('vinbar', 6, 'salongen')).toBe(full);
-    expect(weeklyRentSek('vinbar', 6, 'kallaren')).toBe(Math.round(full * DISTRICTS.premisesRentK.kallaren));
+    // ORDER 339 B — hyran följer också ytan (sim/premisesScale.ts premisesAreaK).
+    expect(weeklyRentSek('vinbar', 6, 'salongen')).toBe(Math.round(RENT.shareOfNormalWeeklyRevenue * ECONOMY.normalWeeklyRevenueSek.vinbar * premisesAreaK('salongen')));
+    expect(weeklyRentSek('vinbar', 6, 'kallaren')).toBe(Math.round(RENT.shareOfNormalWeeklyRevenue * ECONOMY.normalWeeklyRevenueSek.vinbar * DISTRICTS.premisesRentK.kallaren * premisesAreaK('kallaren')));
     expect(DISTRICTS.premisesRentK.kallaren).toBeLessThan(1);
   });
 

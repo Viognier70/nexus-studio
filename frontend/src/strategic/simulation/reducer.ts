@@ -6,7 +6,7 @@ import { buildMorningReview } from '../../sim/morningReview';
 import { calendarFor } from '../../sim/calendar';
 import { bestAnswerFactor, drinkRevenueFactor, enablersWithCredits } from '../../sim/knowledgeInService';
 import { EQUIPMENT_IDS, GOODS_SUPPLIER_IDS, reputationByTier, equipmentOpened, equipmentOwned, equipmentSpec, equipmentUnlocked, supplierOwned, supplierPrice, supplierUnlocked, type EquipmentId, type GoodsSupplierId } from '../../sim/goods';
-import { CONCEPT, CONSEQUENCES, DELIVERY, FOODTRUCK, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
+import { CONCEPT, CONSEQUENCES, EMPTY_ROOM, DELIVERY, FOODTRUCK, MOOD_BALANCE, EVENING, EVENING_ECONOMY, GAME_MINUTES_PER_SIM_SECOND, GUEST_TYPES, OPENING, QUEUE_CAP, SERVICE, SHOP, type BusinessClassId } from '../../sim/balance';
 import { answerSalvage, closeSalvage, discardUnresolvedSalvage } from './salvage';
 import { clockMinutes, formatClock, closeIncidents, countDown, isIncidentOpen, lockAnswer, lockIncidentRow, maybeOpenIncident, planIncidents, resolveIncident, setIncidentRow, settlePendingAnswer, timeoutAnswer, stopIncident, goOnIncident, tickOngoing, type CreditChange } from '../../sim/incidents';
 import { onNewMorning, onServiceClose, onServiceOpen, trackHygiene } from '../../sim/serviceEvents';
@@ -39,7 +39,8 @@ import {
   businessFromBankKlass,
   businessHasMiseEnPlace,
   businessHasOvernight,
-  capacityForBusiness
+  capacityForBusiness,
+  businessHasSeats
 } from '../business/businessClass';
 import { shouldUnlockUteplats } from '../business/uteplatsUnlock';
 import { updateEffectiveValueQuota } from './valueQuota';
@@ -152,7 +153,7 @@ import {
   clampReputation,
   REPUTATION_FLOOR
 } from './reputation';
-import { tickGuests, tickStaff } from './service';
+import { isSeatedCapacity, tickGuests, tickStaff } from './service';
 import { tickSustainability } from './sustainability';
 import {
   AGENCY_DECLINE_SOCIAL_COST,
@@ -1628,6 +1629,9 @@ function openService(
     tastingPartiesTonight: 0,
     // ORDER 334 B — stamgästerna räknas från noll varje kväll.
     regularsTonight: 0,
+    emptyRoomMinutes: 0,
+    occupancyMinutes: 0,
+    servedMinutes: 0,
     consequence: null,
     roomMoodLift: 0,
     worldFactors,
@@ -2780,6 +2784,8 @@ function advanceTick(state: SimulationState): SimulationState {
 
   // ORDER 299b — kunskapens lyft på stämningen klingar av (sim/guestMood.ts).
   decayMoodLift(draft, tickSeconds * GAME_MINUTES_PER_SIM_SECOND);
+  // ORDER 339 C — ett halvtomt rum sänker stämningen (balance.ts EMPTY_ROOM).
+  emptyRoomTick(draft, tickSeconds * GAME_MINUTES_PER_SIM_SECOND);
 
   // Regular arrivals.
   // ORDER 187 — maybeSpawnGuest returnerar en LIST (0-3 gäster) för att
@@ -4092,4 +4098,21 @@ function admitToQueue(draft: SimulationState, arriving: Guest[], counter: 'parti
   }
   if (turned > 0) draft.day = { ...draft.day, turnedAwayFull: (draft.day.turnedAwayFull ?? 0) + turned };
   return { admitted, all: arriving.length };
+}
+
+// ORDER 339 C — ett halvtomt rum: från EMPTY_ROOM.fromMinute, med dörrarna öppna, sjunker rummets stämning när färre än
+// threshold av platserna är upptagna (seatedIds mot isSeatedCapacity), ned till floor. Vagnen har inga platser.
+export function emptyRoomTick(draft: SimulationState, gameMinutes: number): void {
+  if (draft.day.period !== 'dinner' || !draft.day.doorsOpenedThisService || !businessHasSeats(draft.businessClass)) return;
+  if (clockMinutes(draft) < EMPTY_ROOM.fromMinute) return;
+  const cap = isSeatedCapacity(draft);
+  if (cap <= 0) return;
+  const occ = Math.min(1, draft.seatedIds.length / cap);
+  const day = { ...draft.day, occupancyMinutes: (draft.day.occupancyMinutes ?? 0) + occ * gameMinutes, servedMinutes: (draft.day.servedMinutes ?? 0) + gameMinutes };
+  if (occ < EMPTY_ROOM.threshold) {
+    day.emptyRoomMinutes = (day.emptyRoomMinutes ?? 0) + gameMinutes;
+    const room = day.roomMoodLift ?? 0;
+    if (room > EMPTY_ROOM.floor) day.roomMoodLift = Math.max(EMPTY_ROOM.floor, room - EMPTY_ROOM.liftPerGameMinute * gameMinutes);
+  }
+  draft.day = day;
 }

@@ -157,6 +157,7 @@ Beskrivningarna är dokumentens egna rubriker. Bilder, data och kod i en mapp re
 - `ORDER_336_RAPPORT.md`: ORDER 336 — salongen med runda bord, källaren under gatan med trappan och värdpulten, stamgästerna som följer med från Magasinsgatan (rapport, frågor till Anders).
 - `ORDER_337_RAPPORT.md`: ORDER 337 — bistron per lokal, stamgästerna i kön och taket vid vagnen, krogens namn i alla lokaler (rapport, frågor till Anders).
 - `ORDER_338_RAPPORT.md`: ORDER 338 — bistron i hela Flygeln, öppningen i mellanväggen och den norra delens bord (rapport, fråga till Anders).
+- `ORDER_339_RAPPORT.md`: ORDER 339 — storleken har följder: taket efter platserna, hyran efter ytan, laget, det halvtomma rummet och spelartyperna per lokal (rapport, frågor till Anders).
 - `ORDER_332_RAPPORT.md`: ORDER 332 — etapp 1: D12:s levande figurer, Grillstugan med markisen och kön i regn, kvarteren med gränserna, gästens val och vagnens fem platser (rapport, gränserna för Anders godkännande).
 - `ORDER_325_RAPPORT.md`: ORDER 325 — Ansikten och gester (Designs D11): ansiktena nära och på avstånd, de nya klippen och kartan, kamerans avstånd vid Krogen (Z) och gränserna i balance.ts, gatans sex gångsätt, kontrollbilderna (rapport).
 - `ORDER_324_RAPPORT.md`: ORDER 324 — Beslut om FÖR_GRANSKNING_323.md i spelet (svenska och engelska), ft06 steg 2 för Claude, somm-h7, och layouten i 1180 × 660 och 1024 × 600 (rapport); 324b: ft06 svar A, lagtexterna granskade, layoutkontrollen på engelska.

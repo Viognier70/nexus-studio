@@ -109,7 +109,8 @@ const PLANS: Record<PlayerId, (s: SimulationState) => MorningPlan> = {
   // ORDER 307b — bistro: baspaketet (nivå 0,74) med ROCKET_SKILL rätt per steg.
   bistro: (s0) => ({ scenarioAnswer: 'skill', pins: 'wise', exams: nextStarExam(s0), actions: (s) => [...wiseShop(), ...hand(s)] }),
   soigne: (s0) => ({ stock: 'none', scenarioAnswer: 'skill', pins: 'wise', exams: nextStarExam(s0), actions: (s) => [...wiseShop(), { type: 'BUY_ITEMS', items: SOIGNE_BASKET }, ...hand(s)] }),
-  mentorn: (s0) => ({ actions: hand, exams: nextBistroExam(s0) }),
+  // ORDER 339 — mentorn köper in efter kvällens bokning (weekHarness.ts stock 'booking'), också i en större lokal.
+  mentorn: (s0) => ({ stock: 'booking', actions: hand, exams: nextBistroExam(s0) }),
   // ORDER 296c (Vision Owner 2026-10-02): "en spelare som väljer klokt på
   // nålarna och i butiken, och en som låter Per välja allt". Båda har
   // mentorns morgon; Per-spelaren är densamma som mentorns.

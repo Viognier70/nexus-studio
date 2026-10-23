@@ -1,0 +1,44 @@
+{
+  "definition": "ORDER 339 C. krogen = bilden tomt-krogen.png kl. 20 (clock, level), mood = stämningsmätaren (data-mood, data-fill), emptyRoom = raden i kvällens resultat (text, data-occupancy = medelbeläggningen i %), savedAt20/savedAtResult = sparfilens day (emptyRoomMinutes, occupancyMinutes, servedMinutes, roomMoodLift) kl. 20 och vid resultatet, null om spelet inte sparat, sequence = kvällens skärmar i tur och ordning, resultShown = resultatet (screen-R1) visades, errors = sidans fel.",
+  "at": "2026-10-23T08:15:09.521Z",
+  "build": "produktion (vite build + preview)",
+  "premises": "kallaren",
+  "krogen": {
+    "clock": "20.17",
+    "level": "room"
+  },
+  "savedAt20": {
+    "period": "morning",
+    "emptyRoomMinutes": null,
+    "occupancyMinutes": null,
+    "servedMinutes": null,
+    "roomMoodLift": null
+  },
+  "mood": {
+    "mood": "impatient",
+    "fill": "1.91"
+  },
+  "sequence": [
+    "S1",
+    "transfer",
+    "R1"
+  ],
+  "dialogs": [
+    "screen-S1",
+    "screen-T2",
+    "screen-R1"
+  ],
+  "emptyRoom": {
+    "text": "Rummet kändes tomt: i snitt var 42 % av platserna upptagna, och stämningen sjönk.",
+    "occupancy": "42"
+  },
+  "savedAtResult": {
+    "period": "morning",
+    "emptyRoomMinutes": null,
+    "occupancyMinutes": null,
+    "servedMinutes": null,
+    "roomMoodLift": null
+  },
+  "resultShown": true,
+  "errors": []
+}

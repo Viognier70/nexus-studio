@@ -6,6 +6,7 @@
 // Kassa och krediter byter aldrig plats: här läses medaljer, aldrig
 // krediter, och inget i filen skriver krediter.
 
+import { premisesAreaK, premisesCapK, premisesWageK } from './premisesScale';
 import { afterWorkGuestsTonight, districtTonight, playerDistrictOf, playerPremisesOf, truckRegularsTonight, truckSpotPoolK, type PremisesId, type TruckSpotId } from './districts';
 import { truckWeatherOf } from './truckLife';
 import { ladderWageFactor, starsPossible } from './ladderStep';
@@ -337,7 +338,8 @@ export function dailyGuestCap(state: SimulationState): number {
   // rummet tar och lägre rykte, reports/order336/lokaler.json magasinsgatan). Vid vagnen ligger de ovanpå som förut.
   const atTruck = state.economy.businessClass === 'foodtruck';
   const loyal = truckRegularsTonight(state);
-  const market = Math.max(0, Math.floor(pool * truck * district * playerShareTonight(state) * Math.max(0, 1 + buzz + dj + regulars)));
+  // ORDER 339 A — taket växer med lokalens platser (sim/premisesScale.ts premisesCapK; 1 vid Torget).
+  const market = Math.max(0, Math.floor(pool * truck * district * premisesCapK(state) * playerShareTonight(state) * Math.max(0, 1 + buzz + dj + regulars)));
   const fixed = answerBookingsFor(state) + afterWorkGuestsTonight(state);
   return (atTruck ? market + loyal : Math.max(market, loyal)) + fixed;
 }
@@ -400,7 +402,8 @@ export function dayEndCash(state: SimulationState): number {
 // ORDER 268 — lönerna för dagen: bara på servicedagar ("Söndag ingen lön").
 export function dailyWagesSek(state: SimulationState): number {
   if (WAGES.onlyOnServiceDays && !calendarFor(state.day.dayNumber).isServiceDay) return 0;
-  const f = wageFactor(state);
+  // ORDER 339 B — laget följer lokalens platser (sim/premisesScale.ts premisesWageK; 1 vid Torget).
+  const f = wageFactor(state) * premisesWageK(state);
   return paidMembers(state).reduce((sum, m) => sum + Math.round(m.dailyCost * f), 0);
 }
 
@@ -688,7 +691,8 @@ export function weeklyRentSek(id: BusinessClassId | null, week?: number, premise
   // ORDER 315b — foodtrucken: platsen och tillståndet vid Torget, i stället för hyra.
   if (id === 'foodtruck') return FOODTRUCK.pitchFeeWeeklySek;
   const share = week !== undefined && isIntroRentWeek(week) ? RENT.introShareOfNormalWeeklyRevenue : RENT.shareOfNormalWeeklyRevenue;
-  return Math.round(share * ECONOMY.normalWeeklyRevenueSek[id] * DISTRICTS.premisesRentK[premises]);
+  // ORDER 339 B — och ytan (sim/premisesScale.ts premisesAreaK; Torget 1).
+  return Math.round(share * ECONOMY.normalWeeklyRevenueSek[id] * DISTRICTS.premisesRentK[premises] * premisesAreaK(premises));
 }
 
 export function settleWeek(state: SimulationState): SimulationState {
