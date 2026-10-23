@@ -1,0 +1,295 @@
+{
+  "definition": "ORDER 340 i produktionsbygget. A: lokalvalet (rent = veckohyran, fitOut = inredningen i kr, data-fitout; walkIns = raden om folket på torget), bild lokalvalet.png. BC: bistron i källaren och Flygeln vid Z kl. 19.30, bilderna bistro-*-z.png. P: bistrons meny vid Torget (line, pct = buy-bistro-prices, rows = radernas text med priserna), bild bistro-meny.png. D: bistron i Flygeln (D_LOKAL, D_BISTRO), bistroBill = raden om bistrons nota i kvällens resultat, stämningsmätaren var femte sekund (fill = fyllningen 0–5, mood, emptyRoom = det tomma rummets del day.emptyRoomLift), lowest = när den delen var lägst, meanFillNotEmpty/meanFillAtFloor = mätarens medel när delen var 0 respektive vid golvet (≤ −0,19), beforeEmpty = sista provet innan delen började sjunka, atFloor = första provet vid golvet, meterDrop = fyllningen före minus vid golvet (steg av fem), sequence = kvällens skärmar, emptyRoom = raden i kvällens resultat; bilderna tomt-z.png, tomt-nara.png och tomt-resultat.png. errors = sidans fel.",
+  "at": "2026-10-23T11:33:44.625Z",
+  "build": "produktion (vite build + preview)",
+  "D": {
+    "premises": "glashornet",
+    "bistro": true,
+    "series": [
+      {
+        "clock": "20.06",
+        "fill": 2.61,
+        "mood": "waiting",
+        "emptyRoom": -0.2
+      },
+      {
+        "clock": "20.11",
+        "fill": 1.18,
+        "mood": "impatient",
+        "emptyRoom": -0.2
+      },
+      {
+        "clock": "20.14",
+        "fill": 1.98,
+        "mood": "impatient",
+        "emptyRoom": -0.2
+      },
+      {
+        "clock": "20.17",
+        "fill": 1.98,
+        "mood": "impatient",
+        "emptyRoom": -0.2
+      },
+      {
+        "clock": "20.22",
+        "fill": 1.98,
+        "mood": "impatient",
+        "emptyRoom": -0.2
+      },
+      {
+        "clock": "20.32",
+        "fill": 1.77,
+        "mood": "impatient",
+        "emptyRoom": -0.2
+      },
+      {
+        "clock": "20.42",
+        "fill": 1.77,
+        "mood": "impatient",
+        "emptyRoom": -0.187
+      },
+      {
+        "clock": "20.45",
+        "fill": 1.98,
+        "mood": "impatient",
+        "emptyRoom": -0.159
+      },
+      {
+        "clock": "20.48",
+        "fill": 0.97,
+        "mood": "impatient",
+        "emptyRoom": -0.133
+      },
+      {
+        "clock": "20.51",
+        "fill": 0.99,
+        "mood": "impatient",
+        "emptyRoom": -0.104
+      },
+      {
+        "clock": "20.53",
+        "fill": 0.65,
+        "mood": "displeased",
+        "emptyRoom": -0.078
+      },
+      {
+        "clock": "20.56",
+        "fill": 0.67,
+        "mood": "displeased",
+        "emptyRoom": -0.05
+      },
+      {
+        "clock": "20.59",
+        "fill": 0.64,
+        "mood": "displeased",
+        "emptyRoom": -0.024
+      },
+      {
+        "clock": "21.04",
+        "fill": 0.68,
+        "mood": "displeased",
+        "emptyRoom": 0
+      },
+      {
+        "clock": "21.14",
+        "fill": 0.68,
+        "mood": "displeased",
+        "emptyRoom": -0.033
+      },
+      {
+        "clock": "21.22",
+        "fill": 0.68,
+        "mood": "displeased",
+        "emptyRoom": 0
+      },
+      {
+        "clock": "21.25",
+        "fill": 0.68,
+        "mood": "displeased",
+        "emptyRoom": 0
+      },
+      {
+        "clock": "21.28",
+        "fill": 1.28,
+        "mood": "impatient",
+        "emptyRoom": 0
+      },
+      {
+        "clock": "21.30",
+        "fill": 0.94,
+        "mood": "displeased",
+        "emptyRoom": -0.024
+      },
+      {
+        "clock": "21.36",
+        "fill": 0.94,
+        "mood": "displeased",
+        "emptyRoom": -0.077
+      },
+      {
+        "clock": "21.46",
+        "fill": 0.74,
+        "mood": "displeased",
+        "emptyRoom": -0.18
+      },
+      {
+        "clock": "21.56",
+        "fill": 0.53,
+        "mood": "displeased",
+        "emptyRoom": -0.2
+      },
+      {
+        "clock": "22.03",
+        "fill": 0.29,
+        "mood": "displeased",
+        "emptyRoom": -0.2
+      },
+      {
+        "clock": "22.05",
+        "fill": 0.29,
+        "mood": "displeased",
+        "emptyRoom": -0.2
+      },
+      {
+        "clock": "22.08",
+        "fill": 0.59,
+        "mood": "displeased",
+        "emptyRoom": -0.2
+      },
+      {
+        "clock": "22.11",
+        "fill": 0.59,
+        "mood": "displeased",
+        "emptyRoom": -0.2
+      },
+      {
+        "clock": "22.16",
+        "fill": 0.44,
+        "mood": "displeased",
+        "emptyRoom": -0.2
+      },
+      {
+        "clock": "22.26",
+        "fill": 0.44,
+        "mood": "displeased",
+        "emptyRoom": -0.2
+      },
+      {
+        "clock": "22.36",
+        "fill": 0.23,
+        "mood": "displeased",
+        "emptyRoom": -0.2
+      },
+      {
+        "clock": "22.46",
+        "fill": 0,
+        "mood": "displeased",
+        "emptyRoom": -0.2
+      },
+      {
+        "clock": "22.57",
+        "fill": 0,
+        "mood": "displeased",
+        "emptyRoom": -0.2
+      }
+    ],
+    "lowest": {
+      "clock": "20.06",
+      "fill": 2.61,
+      "mood": "waiting",
+      "emptyRoom": -0.2
+    },
+    "shot": true,
+    "sequence": [
+      "S1",
+      "transfer",
+      "R1"
+    ],
+    "beforeEmpty": null,
+    "atFloor": {
+      "clock": "20.06",
+      "fill": 2.61,
+      "mood": "waiting",
+      "emptyRoom": -0.2
+    },
+    "meterDrop": null,
+    "meanFillNotEmpty": 0.83,
+    "meanFillAtFloor": 0.93,
+    "bistroBill": {
+      "text": "Notan i bistron var 35 % högre än i vinbaren.",
+      "pct": "35"
+    },
+    "emptyRoom": {
+      "text": "Rummet kändes tomt: i snitt var 18 % av platserna upptagna, och stämningen sjönk.",
+      "occupancy": "18"
+    },
+    "errors": []
+  },
+  "A": {
+    "premises": {
+      "torget": {
+        "rent": "13469",
+        "fitOut": "0",
+        "fitOutText": "Redan inrett"
+      },
+      "kallaren": {
+        "rent": "9409",
+        "fitOut": "25000",
+        "fitOutText": "Inredningen 25 000 kr, på lånet"
+      },
+      "salongen": {
+        "rent": "16667",
+        "fitOut": "45000",
+        "fitOutText": "Inredningen 45 000 kr, på lånet"
+      },
+      "glashornet": {
+        "rent": "16230",
+        "fitOut": "40000",
+        "fitOutText": "Inredningen 40 000 kr, på lånet"
+      }
+    },
+    "walkIns": "Folk på torget går in: omkring 6 gäster en vanlig kväll, dubbelt så många på marknadsdagarna",
+    "errors": []
+  },
+  "BC": {
+    "kallaren": {
+      "image": "bistro-kallaren-z.png",
+      "clock": "20.15",
+      "level": "room",
+      "errors": []
+    },
+    "glashornet": {
+      "image": "bistro-flygeln-z.png",
+      "clock": "20.15",
+      "level": "room",
+      "errors": []
+    }
+  },
+  "P": {
+    "line": "Bistrons priser: allt säljs för 35 % mer än i vinbaren.",
+    "pct": "35",
+    "rows": [
+      "+ köper 5 portioner",
+      "Bistrons priser: allt säljs för 35 % mer än i vinbaren.",
+      "Inköp 14 kr · säljs för 128 kr",
+      "Inget i lager",
+      "Inköp 25 kr · säljs för 236 kr",
+      "Inget i lager",
+      "Inköp 31 kr · säljs för 263 kr",
+      "Inget i lager",
+      "Inköp 12 kr · säljs för 223 kr",
+      "Inget i lager",
+      "Inköp 13 kr · säljs för 115 kr",
+      "Inget i lager",
+      "Inköp 16 kr · säljs för 101 kr",
+      "Inget i lager",
+      "Inköp 24 kr · säljs för 236 kr",
+      "Inget i lager",
+      "Inköp 75 kr · säljs för 385 kr",
+      "Inget i lager",
+      "Inköp 203 kr · säljs för 520 kr",
+      "Inget i lager"
+    ],
+    "errors": []
+  }
+}

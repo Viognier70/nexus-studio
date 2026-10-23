@@ -1,0 +1,309 @@
+{
+  "definition": "ORDER 340 B. Torget, 20 frön, alla tar över vinbaren vecka 2. before = bistrons nota 1,15 (reports/order340/torget-nota115), after = 1,35 (reports/order340/lokaler). meanCashEnd = medelkassan vid säsongens slut (kr), diffSek = efter minus före, closed = stängda säsonger, reachedBistro = säsonger som nådde bistron. Spelartyper som aldrig når bistron ska vara lika.",
+  "rows": {
+    "mentorn": {
+      "before": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 35627,
+        "lowestCash": 21796,
+        "renegotiated": 0,
+        "reachedBistro": 16
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 59300,
+        "lowestCash": 25187,
+        "renegotiated": 0,
+        "reachedBistro": 16
+      },
+      "diffSek": 23673
+    },
+    "klok": {
+      "before": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 54541,
+        "lowestCash": 27342,
+        "renegotiated": 0,
+        "reachedBistro": 19
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 91520,
+        "lowestCash": 27342,
+        "renegotiated": 0,
+        "reachedBistro": 19
+      },
+      "diffSek": 36979
+    },
+    "per": {
+      "before": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 34302,
+        "lowestCash": 17867,
+        "renegotiated": 0,
+        "reachedBistro": 0
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 34302,
+        "lowestCash": 17867,
+        "renegotiated": 0,
+        "reachedBistro": 0
+      },
+      "diffSek": 0
+    },
+    "stjarna": {
+      "before": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 86465,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedBistro": 11
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 101203,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedBistro": 11
+      },
+      "diffSek": 14738
+    },
+    "rimlig": {
+      "before": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 21797,
+        "lowestCash": 12112,
+        "renegotiated": 0,
+        "reachedBistro": 0
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 21797,
+        "lowestCash": 12112,
+        "renegotiated": 0,
+        "reachedBistro": 0
+      },
+      "diffSek": 0
+    },
+    "halva": {
+      "before": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -49726,
+        "lowestCash": -77266,
+        "renegotiated": 20,
+        "reachedBistro": 0
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -49726,
+        "lowestCash": -77266,
+        "renegotiated": 20,
+        "reachedBistro": 0
+      },
+      "diffSek": 0
+    },
+    "halvbra": {
+      "before": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -25407,
+        "lowestCash": -35465,
+        "renegotiated": 20,
+        "reachedBistro": 0
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -25407,
+        "lowestCash": -35465,
+        "renegotiated": 20,
+        "reachedBistro": 0
+      },
+      "diffSek": 0
+    },
+    "slarvig": {
+      "before": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -64970,
+        "lowestCash": -70100,
+        "renegotiated": 20,
+        "reachedBistro": 0
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -64970,
+        "lowestCash": -70100,
+        "renegotiated": 20,
+        "reachedBistro": 0
+      },
+      "diffSek": 0
+    },
+    "enkel": {
+      "before": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 55593,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedBistro": 20
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 90304,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedBistro": 20
+      },
+      "diffSek": 34711
+    },
+    "bistro": {
+      "before": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 86465,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedBistro": 11
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 101203,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedBistro": 11
+      },
+      "diffSek": 14738
+    },
+    "soigne": {
+      "before": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 331409,
+        "lowestCash": 3566,
+        "renegotiated": 0,
+        "reachedBistro": 19
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 448272,
+        "lowestCash": 15637,
+        "renegotiated": 0,
+        "reachedBistro": 19
+      },
+      "diffSek": 116863
+    },
+    "ignorerar": {
+      "before": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -58978,
+        "lowestCash": -78585,
+        "renegotiated": 20,
+        "reachedBistro": 0
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -58978,
+        "lowestCash": -78585,
+        "renegotiated": 20,
+        "reachedBistro": 0
+      },
+      "diffSek": 0
+    },
+    "ignorerarUtbildad": {
+      "before": {
+        "seeds": 20,
+        "closed": 12,
+        "meanCashEnd": -9633,
+        "lowestCash": -41054,
+        "renegotiated": 5,
+        "reachedBistro": 0
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 12,
+        "meanCashEnd": -9633,
+        "lowestCash": -41054,
+        "renegotiated": 5,
+        "reachedBistro": 0
+      },
+      "diffSek": 0
+    },
+    "forsiktig": {
+      "before": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 87837,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedBistro": 10
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 99465,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedBistro": 10
+      },
+      "diffSek": 11628
+    },
+    "lasare": {
+      "before": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 35627,
+        "lowestCash": 21796,
+        "renegotiated": 0,
+        "reachedBistro": 16
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 59300,
+        "lowestCash": 25187,
+        "renegotiated": 0,
+        "reachedBistro": 16
+      },
+      "diffSek": 23673
+    },
+    "mentornVinbar": {
+      "before": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 37288,
+        "lowestCash": 24662,
+        "renegotiated": 0,
+        "reachedBistro": 0
+      },
+      "after": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 37288,
+        "lowestCash": 24662,
+        "renegotiated": 0,
+        "reachedBistro": 0
+      },
+      "diffSek": 0
+    }
+  }
+}

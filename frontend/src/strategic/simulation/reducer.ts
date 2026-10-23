@@ -1630,6 +1630,7 @@ function openService(
     // ORDER 334 B — stamgästerna räknas från noll varje kväll.
     regularsTonight: 0,
     emptyRoomMinutes: 0,
+    emptyRoomLift: 0,
     occupancyMinutes: 0,
     servedMinutes: 0,
     consequence: null,
@@ -4100,8 +4101,10 @@ function admitToQueue(draft: SimulationState, arriving: Guest[], counter: 'parti
   return { admitted, all: arriving.length };
 }
 
-// ORDER 339 C — ett halvtomt rum: från EMPTY_ROOM.fromMinute, med dörrarna öppna, sjunker rummets stämning när färre än
-// threshold av platserna är upptagna (seatedIds mot isSeatedCapacity), ned till floor. Vagnen har inga platser.
+// ORDER 339 C — ett halvtomt rum: från EMPTY_ROOM.fromMinute, med dörrarna öppna, räknas beläggningen (seatedIds mot
+// isSeatedCapacity). ORDER 340 D — det tomma rummets del av stämningen (day.emptyRoomLift) går mot EMPTY_ROOM.floor när
+// färre än threshold av platserna är upptagna och tillbaka mot 0 annars; ändringen läggs på rummets stämning
+// (roomMoodLift, inom MOOD_BALANCE.liftMax). Vagnen har inga platser.
 export function emptyRoomTick(draft: SimulationState, gameMinutes: number): void {
   if (draft.day.period !== 'dinner' || !draft.day.doorsOpenedThisService || !businessHasSeats(draft.businessClass)) return;
   if (clockMinutes(draft) < EMPTY_ROOM.fromMinute) return;
@@ -4109,10 +4112,16 @@ export function emptyRoomTick(draft: SimulationState, gameMinutes: number): void
   if (cap <= 0) return;
   const occ = Math.min(1, draft.seatedIds.length / cap);
   const day = { ...draft.day, occupancyMinutes: (draft.day.occupancyMinutes ?? 0) + occ * gameMinutes, servedMinutes: (draft.day.servedMinutes ?? 0) + gameMinutes };
-  if (occ < EMPTY_ROOM.threshold) {
-    day.emptyRoomMinutes = (day.emptyRoomMinutes ?? 0) + gameMinutes;
-    const room = day.roomMoodLift ?? 0;
-    if (room > EMPTY_ROOM.floor) day.roomMoodLift = Math.max(EMPTY_ROOM.floor, room - EMPTY_ROOM.liftPerGameMinute * gameMinutes);
+  const empty = occ < EMPTY_ROOM.threshold;
+  if (empty) day.emptyRoomMinutes = (day.emptyRoomMinutes ?? 0) + gameMinutes;
+  const was = day.emptyRoomLift ?? 0;
+  const target = empty ? EMPTY_ROOM.floor : 0;
+  const step = EMPTY_ROOM.liftPerGameMinute * gameMinutes;
+  const now = Math.abs(target - was) <= step ? target : was + Math.sign(target - was) * step;
+  if (now !== was) {
+    const max = MOOD_BALANCE.liftMax;
+    day.emptyRoomLift = now;
+    day.roomMoodLift = Math.max(-max, Math.min(max, (day.roomMoodLift ?? 0) + (now - was)));
   }
   draft.day = day;
 }

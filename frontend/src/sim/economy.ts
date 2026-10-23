@@ -7,7 +7,7 @@
 // krediter, och inget i filen skriver krediter.
 
 import { premisesAreaK, premisesCapK, premisesWageK } from './premisesScale';
-import { afterWorkGuestsTonight, districtTonight, playerDistrictOf, playerPremisesOf, truckRegularsTonight, truckSpotPoolK, type PremisesId, type TruckSpotId } from './districts';
+import { afterWorkGuestsTonight, districtTonight, isMarketDay, playerDistrictOf, playerPremisesOf, truckRegularsTonight, truckSpotPoolK, type PremisesId, type TruckSpotId } from './districts';
 import { truckWeatherOf } from './truckLife';
 import { ladderWageFactor, starsPossible } from './ladderStep';
 import { staffSnapshot } from './staffCondition';
@@ -40,6 +40,7 @@ import {
   DISTRICTS,
   DOUBLE_OR_NOTHING,
   CONCEPT,
+  PREMISES_MOVE,
   SEASON
 } from './balance';
 import { calendarFor } from './calendar';
@@ -247,6 +248,8 @@ export interface EconomyState {
   truckNightDay?: number;
   // ORDER 336 C — stamgästerna från Magasinsgatan som följde med till vinbaren och kommer varje kväll.
   followingRegulars?: number;
+  // ORDER 340 A — inredningen som lades på lånet när vinbaren togs över i en annan lokal än Torget (balance.ts PREMISES_MOVE).
+  fitOutSek?: number;
 }
 
 export function classSpec(id: BusinessClassId): BusinessClassSpec {
@@ -313,6 +316,15 @@ export function playerShareTonight(state: SimulationState): number {
   return Math.min(marketShareCap(state.medals), playerChoiceShare(state));
 }
 
+/** ORDER 340 A — förbipasserande på torget som går in i kväll: krogen i lokalen vid Torget (inte vagnen, inte lokalerna),
+ *  PREMISES_MOVE.walkIns en vanlig kväll och marketDayK gånger fler på marknadsdagarna, gånger kalenderns gästfaktor. */
+export function torgetWalkInsTonight(state: Pick<SimulationState, 'economy' | 'day'>): number {
+  const cls = state.economy?.businessClass;
+  if (!cls || cls === 'foodtruck' || playerPremisesOf(state) !== 'torget') return 0;
+  const d = state.day.dayNumber;
+  return Math.round(PREMISES_MOVE.walkIns * (isMarketDay(d) ? PREMISES_MOVE.marketDayK : 1) * calendarFor(d).guestFactor);
+}
+
 // Dagens tak på gäster: spelarens andel av dagens pool. Tester av
 // rummets mekanik kan stänga av taket med policies.marketCapEnabled.
 export function dailyGuestCap(state: SimulationState): number {
@@ -340,7 +352,8 @@ export function dailyGuestCap(state: SimulationState): number {
   const loyal = truckRegularsTonight(state);
   // ORDER 339 A — taket växer med lokalens platser (sim/premisesScale.ts premisesCapK; 1 vid Torget).
   const market = Math.max(0, Math.floor(pool * truck * district * premisesCapK(state) * playerShareTonight(state) * Math.max(0, 1 + buzz + dj + regulars)));
-  const fixed = answerBookingsFor(state) + afterWorkGuestsTonight(state);
+  // ORDER 340 A — genomströmningen på torget: förbipasserande som går in oavsett rykte (torgetWalkInsTonight).
+  const fixed = answerBookingsFor(state) + afterWorkGuestsTonight(state) + torgetWalkInsTonight(state);
   return (atTruck ? market + loyal : Math.max(market, loyal)) + fixed;
 }
 

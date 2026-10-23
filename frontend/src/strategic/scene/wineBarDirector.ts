@@ -56,14 +56,18 @@ import { EQUIPMENT, type EquipmentId } from './equipment';
 
 // #region typer
 
-export type StaffKey = 'server' | 'server2' | 'bartender' | 'sommelier' | 'cook' | 'dish' | 'host' | 'extra' | 'cook2';
+export type StaffKey = 'server' | 'server2' | 'bartender' | 'sommelier' | 'cook' | 'dish' | 'host' | 'extra' | 'cook2' | 'floor1' | 'floor2' | 'floor3' | 'floor4';
 export type StaffRoleKey = 'server' | 'bartender' | 'sommelier' | 'cook' | 'dish' | 'host';
 
 /** Designs personal i vinbaren (paket 6 §1) plus köket. Ordningen är poolens. */
 // ORDER 293 — Per, hovmästaren, sist så att de andras platser i listan står kvar.
 // ORDER 330 H — den extra sist: syns bara när spelaren har valt den (FrameInput.extraStaff).
 // ORDER 331 C — den andra kocken sist (gästkocken, eller en kock till i laget): syns bara då.
-export const STAFF_KEYS: readonly StaffKey[] = ['server', 'server2', 'bartender', 'sommelier', 'cook', 'dish', 'host', 'extra', 'cook2'];
+// ORDER 340 C — lokalens servitörer sist (floor1–floor4): syns när lokalen har fler platser än Torget (FrameInput.premisesServers).
+export const STAFF_KEYS: readonly StaffKey[] = ['server', 'server2', 'bartender', 'sommelier', 'cook', 'dish', 'host', 'extra', 'cook2', 'floor1', 'floor2', 'floor3', 'floor4'];
+/** ORDER 340 C — lokalens servitörer, i den ordning de går i tjänst. */
+export const FLOOR_KEYS: readonly StaffKey[] = ['floor1', 'floor2', 'floor3', 'floor4'];
+const OPTIONAL_KEYS = new Set<StaffKey>(['extra', 'cook2', ...FLOOR_KEYS]);
 
 /** ORDER 331 C — vagnarna som skjuts till bordet (D5 equipment.ts). */
 export type CartId = 'cheeseCart' | 'flambeCart' | 'avecCart';
@@ -229,6 +233,8 @@ export interface FrameInput {
   /** ORDER 330 H — den extra i tjänst (grundregeln: varje val syns): springaren eller byråns lärling under servicen,
    *  den extra handen vid förberedelsen före dörrarna. null: inte i kväll. */
   extraStaff?: 'runner' | 'agency' | 'prep' | null;
+  /** ORDER 340 C — servitörerna utöver Torgets i en större lokal (sim/premisesScale.ts premisesExtraServers), hela kvällen. */
+  premisesServers?: number;
   /** ORDER 331 C — laget (anställa och avskeda syns): de i personalen som inte finns i laget, och de som har
    *  anställts utöver klassens lag ('extra' en servitör till, 'cook2' en kock till). En som går ur laget medan
    *  rummet syns går ut genom dörren; en som kommer in går in genom den. */
@@ -583,9 +589,17 @@ export class WineBarDirector {
       // ORDER 330 H — den extra: en servitör till, i tjänst bara när spelaren har valt det (FrameInput.extraStaff).
       mk('extra', 'server', 'server', 'idle', [CORR_X, -3.2], Math.PI / 2),
       // ORDER 331 C — den andra kocken vid kallskänken: gästkocken (satsningen) eller en kock till i laget.
-      mk('cook2', 'cook', 'cookCold', 'cook')
+      mk('cook2', 'cook', 'cookCold', 'cook'),
+      // ORDER 340 C — lokalens servitörer: längs servitörernas gång (CORR_X) som den extra, växelvis norr och söder om
+      // servitörens station; i tjänst bara i en större lokal.
+      ...FLOOR_KEYS.map((k, i) => {
+        const s = st('server');
+        const z0 = s ? s.local[1] : 0, lim = room.depth / 2 - 0.8;
+        const z = Math.max(-lim, Math.min(lim, z0 + (i % 2 ? 1 : -1) * 1.1 * (1 + (i >> 1))));
+        return mk(k, 'server', 'server', 'idle', [CORR_X, z], Math.PI / 2);
+      })
     ];
-    for (const a of this.actors) if (a.key === 'extra' || a.key === 'cook2') a.off = true;
+    for (const a of this.actors) if (OPTIONAL_KEYS.has(a.key)) a.off = true;
     for (const a of this.actors) a.base = { home: [a.home[0], a.home[1]], facing: a.homeFacing, pose: a.idlePose };
     this.staffSamples = this.actors.map(() => emptySample());
   }
@@ -1392,7 +1406,10 @@ export class WineBarDirector {
       sommelier: { id: 'fridge', pose: 'stockFridge' },
       bartender: { id: 'polish', pose: 'polishGlass' },
       // ORDER 330 H — den extra handen dukar med servitören före dörrarna.
-      extra: { id: 'setTables', pose: 'setTable' }
+      extra: { id: 'setTables', pose: 'setTable' },
+      // ORDER 340 C — lokalens servitörer dukar också.
+      floor1: { id: 'setTables', pose: 'setTable' }, floor2: { id: 'polish', pose: 'polishGlass' },
+      floor3: { id: 'setTables', pose: 'setTable' }, floor4: { id: 'polish', pose: 'polishGlass' }
     };
     if (prep) {
       for (const a of this.actors) {
@@ -1400,7 +1417,8 @@ export class WineBarDirector {
         const at = m ? spot(m.id) : undefined;
         if (!m || !at) continue;
         // Två på samma plats står bredvid varandra.
-        const side = a.key === 'server2' ? 0.7 : a.key === 'extra' ? -0.7 : 0;
+        const fi = FLOOR_KEYS.indexOf(a.key);
+        const side = a.key === 'server2' ? 0.7 : a.key === 'extra' ? -0.7 : fi >= 0 ? (fi % 2 ? 1.4 : -1.4) : 0;
         a.home = [at.local[0] + side, at.local[1]];
         a.homeFacing = at.facing;
         a.idlePose = m.pose;
@@ -1494,12 +1512,13 @@ export class WineBarDirector {
     const off = new Set(input.crew?.off ?? []);
     const on = new Set(input.crew?.hired ?? []);
     if (input.extraStaff) on.add('extra');
+    FLOOR_KEYS.slice(0, input.premisesServers ?? 0).forEach((k) => on.add(k));
     if ((input.morning ?? []).includes('guestChef')) on.add('cook2');
     const first = !this.crewInit;
     this.crewInit = true;
     const door: Vec2 = [this.room.entrance[0] + this.inward()[0] * HOST_IN_M, this.room.entrance[1] + this.inward()[1] * HOST_IN_M];
     for (const a of this.actors) {
-      const optional = a.key === 'extra' || a.key === 'cook2';
+      const optional = OPTIONAL_KEYS.has(a.key);
       const want = optional ? on.has(a.key) && !off.has(a.key) : !off.has(a.key);
       if (want) {
         if (a.off) {
@@ -1566,7 +1585,7 @@ export class WineBarDirector {
       this.morningDone.add(show);
       if (show === 'briefing') {
         const c = spot('setTables') ?? [CORR_X - 1, 0];
-        circle(c, 'host', 'brief', ['server', 'server2', 'extra'], S.briefingS);
+        circle(c, 'host', 'brief', ['server', 'server2', 'extra', ...FLOOR_KEYS], S.briefingS);
         ready += S.briefingS + S.gapS;
       } else if (show === 'tasting') {
         circle(POUR_SPOT, 'sommelier', 'pour', ['bartender', 'server', 'server2'], S.tastingS, 'bottle');

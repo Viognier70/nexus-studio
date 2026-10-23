@@ -1,0 +1,6115 @@
+{
+  "truckSpot": null,
+  "premises": "glashornet",
+  "takeoverWeek": 2,
+  "tasting": false,
+  "definition": "Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).",
+  "start": null,
+  "variant": "{}",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "weeks": 8,
+  "players": {
+    "slarvig": {
+      "closed": 10,
+      "closedWeeks": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "renegotiated": 10,
+      "lowestCash": -91171,
+      "meanCashEnd": -87537,
+      "targetHitShare": 0,
+      "meanTastings": 0,
+      "meanAfterWorks": 0,
+      "meanFollowing": 0,
+      "meanOwned": 0,
+      "ladder": {
+        "reachedVinbar": 10,
+        "reachedBistro": 0,
+        "vinbarWeeks": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "bistroWeeks": [],
+        "finalSteps": [
+          "vinbar",
+          "vinbar",
+          "vinbar",
+          "vinbar",
+          "vinbar",
+          "vinbar",
+          "vinbar",
+          "vinbar",
+          "vinbar",
+          "vinbar"
+        ]
+      },
+      "village": {
+        "evenings": 60,
+        "topThreeShare": 0,
+        "meanRank": 6.17
+      },
+      "stars": 0,
+      "starEarned": 0,
+      "starWeeks": [],
+      "goldWeeks": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "meanRepAtSettlement": [
+        0.141,
+        0.12,
+        0.121,
+        0.121,
+        0,
+        0,
+        0,
+        0
+      ],
+      "meanJudgement": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "concepts": {
+        "enkel": 0,
+        "bistro": 0.75,
+        "soigne": 0
+      },
+      "truckBySpot": {
+        "torget": {
+          "district": "torget",
+          "evenings": 70,
+          "meanRevenueSek": 4495,
+          "meanFeeSek": 0,
+          "byNight": {
+            "0-4": {
+              "evenings": 50,
+              "meanRevenueSek": 5026,
+              "meanRegulars": 0
+            },
+            "5-9": {
+              "evenings": 20,
+              "meanRevenueSek": 3168,
+              "meanRegulars": 0
+            },
+            "10-19": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "20-": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            }
+          }
+        },
+        "prastgatan": {
+          "district": "student",
+          "evenings": 0,
+          "meanRevenueSek": 0,
+          "meanFeeSek": 0,
+          "byNight": {
+            "0-4": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "5-9": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "10-19": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "20-": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            }
+          }
+        },
+        "gastgivaregarden": {
+          "district": "gastgivaregarden",
+          "evenings": 0,
+          "meanRevenueSek": 0,
+          "meanFeeSek": 0,
+          "byNight": {
+            "0-4": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "5-9": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "10-19": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "20-": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            }
+          }
+        },
+        "campus": {
+          "district": "campus",
+          "evenings": 0,
+          "meanRevenueSek": 0,
+          "meanFeeSek": 0,
+          "byNight": {
+            "0-4": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "5-9": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "10-19": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "20-": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            }
+          }
+        },
+        "sjon": {
+          "district": "sjon",
+          "evenings": 0,
+          "meanRevenueSek": 0,
+          "meanFeeSek": 0,
+          "byNight": {
+            "0-4": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "5-9": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "10-19": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "20-": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            }
+          }
+        },
+        "magasinsgatan": {
+          "district": "torget",
+          "evenings": 0,
+          "meanRevenueSek": 0,
+          "meanFeeSek": 0,
+          "byNight": {
+            "0-4": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "5-9": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "10-19": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "20-": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            }
+          }
+        }
+      },
+      "byWeek": [
+        {
+          "week": 1,
+          "n": 10,
+          "meanResultSek": 14112,
+          "meanRevenueSek": 31415,
+          "meanCashEnd": 29112,
+          "meanCredits": 0,
+          "targetHit": 0,
+          "rentSek": 1500
+        },
+        {
+          "week": 2,
+          "n": 10,
+          "meanResultSek": -40935,
+          "meanRevenueSek": 727,
+          "meanCashEnd": -11824,
+          "meanCredits": 0,
+          "targetHit": 0,
+          "rentSek": 0
+        },
+        {
+          "week": 3,
+          "n": 10,
+          "meanResultSek": -38025,
+          "meanRevenueSek": 2281,
+          "meanCashEnd": -49849,
+          "meanCredits": 0,
+          "targetHit": 0,
+          "rentSek": 0
+        },
+        {
+          "week": 4,
+          "n": 10,
+          "meanResultSek": -37689,
+          "meanRevenueSek": 2426,
+          "meanCashEnd": -87537,
+          "meanCredits": 0,
+          "targetHit": 0,
+          "rentSek": 0
+        },
+        {
+          "week": 5,
+          "n": 0,
+          "meanResultSek": 0,
+          "meanRevenueSek": 0,
+          "meanCashEnd": 0,
+          "meanCredits": 0,
+          "targetHit": 0,
+          "rentSek": 0
+        },
+        {
+          "week": 6,
+          "n": 0,
+          "meanResultSek": 0,
+          "meanRevenueSek": 0,
+          "meanCashEnd": 0,
+          "meanCredits": 0,
+          "targetHit": 0,
+          "rentSek": 0
+        },
+        {
+          "week": 7,
+          "n": 0,
+          "meanResultSek": 0,
+          "meanRevenueSek": 0,
+          "meanCashEnd": 0,
+          "meanCredits": 0,
+          "targetHit": 0,
+          "rentSek": 0
+        },
+        {
+          "week": 8,
+          "n": 0,
+          "meanResultSek": 0,
+          "meanRevenueSek": 0,
+          "meanCashEnd": 0,
+          "meanCredits": 0,
+          "targetHit": 0,
+          "rentSek": 0
+        }
+      ],
+      "repByWeek": [
+        {
+          "week": 1,
+          "mon": 0.6,
+          "sat": 0.148
+        },
+        {
+          "week": 2,
+          "mon": 0.161,
+          "sat": 0.12
+        },
+        {
+          "week": 3,
+          "mon": 0.14,
+          "sat": 0.12
+        },
+        {
+          "week": 4,
+          "mon": 0.141,
+          "sat": 0.12
+        },
+        {
+          "week": 5,
+          "mon": 0,
+          "sat": 0
+        },
+        {
+          "week": 6,
+          "mon": 0,
+          "sat": 0
+        },
+        {
+          "week": 7,
+          "mon": 0,
+          "sat": 0
+        },
+        {
+          "week": 8,
+          "mon": 0,
+          "sat": 0
+        }
+      ],
+      "mise": {
+        "mon": {
+          "meanNeedMin": 25,
+          "meanCapacityMin": 126,
+          "handShare": 0,
+          "meanBacklogMin": 0
+        },
+        "tue": {
+          "meanNeedMin": 25,
+          "meanCapacityMin": 126,
+          "handShare": 0,
+          "meanBacklogMin": 0
+        },
+        "wed": {
+          "meanNeedMin": 23,
+          "meanCapacityMin": 126,
+          "handShare": 0,
+          "meanBacklogMin": 0
+        },
+        "thu": {
+          "meanNeedMin": 25,
+          "meanCapacityMin": 126,
+          "handShare": 0,
+          "meanBacklogMin": 2
+        },
+        "fri": {
+          "meanNeedMin": 37,
+          "meanCapacityMin": 126,
+          "handShare": 0,
+          "meanBacklogMin": 17
+        },
+        "sat": {
+          "meanNeedMin": 34,
+          "meanCapacityMin": 126,
+          "handShare": 0,
+          "meanBacklogMin": 18
+        }
+      },
+      "runs": [
+        {
+          "seed": 1,
+          "villageRanks": [
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 2,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 3,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 4,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            }
+          ],
+          "ladderWeeks": {
+            "vinbar": 2,
+            "bistro": null,
+            "step": "vinbar"
+          },
+          "startCash": 15000,
+          "weeks": [
+            {
+              "week": 1,
+              "credits": 0,
+              "resultSek": 15463,
+              "revenueSek": 33499,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 30463,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 2,
+              "credits": 0,
+              "resultSek": -41035,
+              "revenueSek": 998,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -10572,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": true,
+              "closedNow": false
+            },
+            {
+              "week": 3,
+              "credits": 0,
+              "resultSek": -36492,
+              "revenueSek": 3238,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -47065,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 4,
+              "credits": 0,
+              "resultSek": -39407,
+              "revenueSek": 1432,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -86471,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": true
+            }
+          ],
+          "mornings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "needMin": 42.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 85,
+              "rep": 0.6,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "needMin": 46.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 93,
+              "rep": 0.4370132610511128,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "needMin": 50,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 100,
+              "rep": 0.267109002736578,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "needMin": 63.5,
+              "capacityMin": 50,
+              "backlogMin": 13.5,
+              "hand": false,
+              "booked": 127,
+              "rep": 0.15010500000000007,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "needMin": 126,
+              "capacityMin": 50,
+              "backlogMin": 76,
+              "hand": false,
+              "booked": 252,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "needMin": 94,
+              "capacityMin": 50,
+              "backlogMin": 44,
+              "hand": false,
+              "booked": 188,
+              "rep": 0.13011,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "needMin": 25.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 17,
+              "rep": 0.17020497375,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "needMin": 17.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 27,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "needMin": 17,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 26,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "needMin": 16,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 24,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "needMin": 11,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 14,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "needMin": 4.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 3,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "needMin": 14.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 13,
+              "rep": 0.14021997187500002,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "needMin": 9,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 10,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "needMin": 10,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 12,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "needMin": 11.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 15,
+              "rep": 0.12295178183105689,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "needMin": 13.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 19,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "needMin": 7,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 6,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "needMin": 13.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 11,
+              "rep": 0.14021997187500002,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "needMin": 21,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 34,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "needMin": 18,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 28,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "needMin": 16,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 24,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "needMin": 7.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 7,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "needMin": 1.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 1,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            }
+          ],
+          "closedWeek": 4,
+          "renegotiated": true,
+          "owned": [],
+          "star": false,
+          "starWeek": null,
+          "goldWeek": null,
+          "starWeeks": [
+            {
+              "week": 1,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0,
+              "stepShare": 0.67,
+              "rockets": 24
+            },
+            {
+              "week": 2,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0.6,
+              "rockets": 24
+            },
+            {
+              "week": 3,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 24
+            },
+            {
+              "week": 4,
+              "held": false,
+              "reputation": 0.121,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 24
+            }
+          ],
+          "tastings": 0,
+          "afterWorks": 0,
+          "truckEvenings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5037,
+              "feeSek": 0,
+              "night": 0,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5486,
+              "feeSek": 0,
+              "night": 1,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4028,
+              "feeSek": 0,
+              "night": 2,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4776,
+              "feeSek": 0,
+              "night": 3,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 8658,
+              "feeSek": 0,
+              "night": 4,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5514,
+              "feeSek": 0,
+              "night": 5,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 39,
+              "feeSek": 0,
+              "night": 6,
+              "regulars": 0
+            }
+          ],
+          "following": 0
+        },
+        {
+          "seed": 2,
+          "villageRanks": [
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 1,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 2,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 3,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 4,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            }
+          ],
+          "ladderWeeks": {
+            "vinbar": 2,
+            "bistro": null,
+            "step": "vinbar"
+          },
+          "startCash": 15000,
+          "weeks": [
+            {
+              "week": 1,
+              "credits": 0,
+              "resultSek": 13693,
+              "revenueSek": 30903,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 28693,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 2,
+              "credits": 0,
+              "resultSek": -40398,
+              "revenueSek": 1199,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -11705,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": true,
+              "closedNow": false
+            },
+            {
+              "week": 3,
+              "credits": 0,
+              "resultSek": -37991,
+              "revenueSek": 2346,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -49696,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 4,
+              "credits": 0,
+              "resultSek": -36537,
+              "revenueSek": 2976,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -86233,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": true
+            }
+          ],
+          "mornings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "needMin": 42.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 85,
+              "rep": 0.6,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "needMin": 54,
+              "capacityMin": 50,
+              "backlogMin": 4,
+              "hand": false,
+              "booked": 108,
+              "rep": 0.22920522605109578,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "needMin": 57.5,
+              "capacityMin": 50,
+              "backlogMin": 7.5,
+              "hand": false,
+              "booked": 115,
+              "rep": 0.1501050000007345,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "needMin": 64,
+              "capacityMin": 50,
+              "backlogMin": 14,
+              "hand": false,
+              "booked": 128,
+              "rep": 0.15010500000000007,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "needMin": 112,
+              "capacityMin": 50,
+              "backlogMin": 62,
+              "hand": false,
+              "booked": 224,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "needMin": 105,
+              "capacityMin": 50,
+              "backlogMin": 55,
+              "hand": false,
+              "booked": 210,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "needMin": 25.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 17,
+              "rep": 0.17020497375,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "needMin": 17.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 27,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "needMin": 16.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 25,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "needMin": 16,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 24,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "needMin": 11.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 15,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "needMin": 4.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 3,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "needMin": 15,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 14,
+              "rep": 0.14021997187500002,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "needMin": 12.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 17,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "needMin": 11,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 14,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "needMin": 9.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 11,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "needMin": 9.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 11,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "needMin": 3,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 2,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "needMin": 12.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 9,
+              "rep": 0.14095730338914528,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "needMin": 16,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 24,
+              "rep": 0.12936050995625156,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "needMin": 16,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 24,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "needMin": 17,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 26,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "needMin": 8,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 8,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "needMin": 3,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 2,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            }
+          ],
+          "closedWeek": 4,
+          "renegotiated": true,
+          "owned": [],
+          "star": false,
+          "starWeek": null,
+          "goldWeek": null,
+          "starWeeks": [
+            {
+              "week": 1,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0,
+              "stepShare": 0.67,
+              "rockets": 24
+            },
+            {
+              "week": 2,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0.56,
+              "rockets": 22
+            },
+            {
+              "week": 3,
+              "held": false,
+              "reputation": 0.121,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 23
+            },
+            {
+              "week": 4,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 23
+            }
+          ],
+          "tastings": 0,
+          "afterWorks": 0,
+          "truckEvenings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6532,
+              "feeSek": 0,
+              "night": 0,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3297,
+              "feeSek": 0,
+              "night": 1,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3391,
+              "feeSek": 0,
+              "night": 2,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3710,
+              "feeSek": 0,
+              "night": 3,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6575,
+              "feeSek": 0,
+              "night": 4,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7399,
+              "feeSek": 0,
+              "night": 5,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 0,
+              "feeSek": 0,
+              "night": 6,
+              "regulars": 0
+            }
+          ],
+          "following": 0
+        },
+        {
+          "seed": 3,
+          "villageRanks": [
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 2,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 3,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 4,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            }
+          ],
+          "ladderWeeks": {
+            "vinbar": 2,
+            "bistro": null,
+            "step": "vinbar"
+          },
+          "startCash": 15000,
+          "weeks": [
+            {
+              "week": 1,
+              "credits": 0,
+              "resultSek": 12423,
+              "revenueSek": 28854,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 27423,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 2,
+              "credits": 0,
+              "resultSek": -40741,
+              "revenueSek": 677,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -13317,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": true,
+              "closedNow": false
+            },
+            {
+              "week": 3,
+              "credits": 0,
+              "resultSek": -37386,
+              "revenueSek": 2780,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -50704,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 4,
+              "credits": 0,
+              "resultSek": -37848,
+              "revenueSek": 2384,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -88552,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": true
+            }
+          ],
+          "mornings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "needMin": 42.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 85,
+              "rep": 0.6,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "needMin": 46.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 93,
+              "rep": 0.1501050060511129,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "needMin": 43.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 87,
+              "rep": 0.1501050000007345,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "needMin": 56,
+              "capacityMin": 50,
+              "backlogMin": 6,
+              "hand": false,
+              "booked": 112,
+              "rep": 0.15010500000000007,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "needMin": 111.5,
+              "capacityMin": 50,
+              "backlogMin": 61.5,
+              "hand": false,
+              "booked": 223,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "needMin": 120,
+              "capacityMin": 50,
+              "backlogMin": 70,
+              "hand": false,
+              "booked": 240,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "needMin": 19.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 13,
+              "rep": 0.14021997187500002,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "needMin": 19,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 30,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "needMin": 15,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 22,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "needMin": 19.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 31,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "needMin": 11,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 14,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "needMin": 6.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 5,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "needMin": 16.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 17,
+              "rep": 0.14083712402840656,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "needMin": 11,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 14,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "needMin": 10,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 12,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "needMin": 9,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 10,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "needMin": 10,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 12,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "needMin": 6,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 4,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "needMin": 13,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 10,
+              "rep": 0.1409627468826177,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "needMin": 17,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 26,
+              "rep": 0.126111,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "needMin": 14.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 21,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "needMin": 14,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 20,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "needMin": 7,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 6,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "needMin": 0,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 0,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            }
+          ],
+          "closedWeek": 4,
+          "renegotiated": true,
+          "owned": [],
+          "star": false,
+          "starWeek": null,
+          "goldWeek": null,
+          "starWeeks": [
+            {
+              "week": 1,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0.67,
+              "rockets": 23
+            },
+            {
+              "week": 2,
+              "held": false,
+              "reputation": 0.121,
+              "judgement": 0,
+              "stepShare": 0.52,
+              "rockets": 22
+            },
+            {
+              "week": 3,
+              "held": false,
+              "reputation": 0.121,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 24
+            },
+            {
+              "week": 4,
+              "held": false,
+              "reputation": 0.121,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 25
+            }
+          ],
+          "tastings": 0,
+          "afterWorks": 0,
+          "truckEvenings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7472,
+              "feeSek": 0,
+              "night": 0,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 2842,
+              "feeSek": 0,
+              "night": 1,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 1839,
+              "feeSek": 0,
+              "night": 2,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4965,
+              "feeSek": 0,
+              "night": 3,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7017,
+              "feeSek": 0,
+              "night": 4,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4718,
+              "feeSek": 0,
+              "night": 5,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 115,
+              "feeSek": 0,
+              "night": 6,
+              "regulars": 0
+            }
+          ],
+          "following": 0
+        },
+        {
+          "seed": 4,
+          "villageRanks": [
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 1,
+              "rank": 2,
+              "of": 5
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 2,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 3,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 4,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            }
+          ],
+          "ladderWeeks": {
+            "vinbar": 2,
+            "bistro": null,
+            "step": "vinbar"
+          },
+          "startCash": 15000,
+          "weeks": [
+            {
+              "week": 1,
+              "credits": 0,
+              "resultSek": 15138,
+              "revenueSek": 33022,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 30138,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 2,
+              "credits": 0,
+              "resultSek": -41473,
+              "revenueSek": 563,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -11335,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": true,
+              "closedNow": false
+            },
+            {
+              "week": 3,
+              "credits": 0,
+              "resultSek": -37322,
+              "revenueSek": 2347,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -48657,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 4,
+              "credits": 0,
+              "resultSek": -37637,
+              "revenueSek": 2775,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -86294,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": true
+            }
+          ],
+          "mornings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "needMin": 42.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 85,
+              "rep": 0.6,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "needMin": 54,
+              "capacityMin": 50,
+              "backlogMin": 4,
+              "hand": false,
+              "booked": 108,
+              "rep": 0.310304946051106,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "needMin": 50,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 100,
+              "rep": 0.2051361848153288,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "needMin": 56,
+              "capacityMin": 50,
+              "backlogMin": 6,
+              "hand": false,
+              "booked": 112,
+              "rep": 0.15010500000000007,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "needMin": 111.5,
+              "capacityMin": 50,
+              "backlogMin": 61.5,
+              "hand": false,
+              "booked": 223,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "needMin": 120,
+              "capacityMin": 50,
+              "backlogMin": 70,
+              "hand": false,
+              "booked": 240,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "needMin": 30,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 20,
+              "rep": 0.17020497375,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "needMin": 17.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 27,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "needMin": 13.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 19,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "needMin": 14.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 21,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "needMin": 8.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 9,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "needMin": 3,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 2,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "needMin": 14,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 12,
+              "rep": 0.14078528024228465,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "needMin": 12.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 17,
+              "rep": 0.126111,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "needMin": 11,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 14,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "needMin": 9.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 11,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "needMin": 10.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 13,
+              "rep": 0.12081724830379313,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "needMin": 6,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 4,
+              "rep": 0.12088373992323881,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "needMin": 12,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 8,
+              "rep": 0.14167261888561405,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "needMin": 14,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 20,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "needMin": 13.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 19,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "needMin": 16,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 24,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "needMin": 8,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 8,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "needMin": 3,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 2,
+              "rep": 0.12072346594521942,
+              "concept": "bistro"
+            }
+          ],
+          "closedWeek": 4,
+          "renegotiated": true,
+          "owned": [],
+          "star": false,
+          "starWeek": null,
+          "goldWeek": null,
+          "starWeeks": [
+            {
+              "week": 1,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0,
+              "stepShare": 0.67,
+              "rockets": 24
+            },
+            {
+              "week": 2,
+              "held": false,
+              "reputation": 0.121,
+              "judgement": 0,
+              "stepShare": 0.6,
+              "rockets": 21
+            },
+            {
+              "week": 3,
+              "held": false,
+              "reputation": 0.122,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 23
+            },
+            {
+              "week": 4,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 24
+            }
+          ],
+          "tastings": 0,
+          "afterWorks": 0,
+          "truckEvenings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5347,
+              "feeSek": 0,
+              "night": 0,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3981,
+              "feeSek": 0,
+              "night": 1,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4049,
+              "feeSek": 0,
+              "night": 2,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4316,
+              "feeSek": 0,
+              "night": 3,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 8076,
+              "feeSek": 0,
+              "night": 4,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7252,
+              "feeSek": 0,
+              "night": 5,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 35,
+              "feeSek": 0,
+              "night": 6,
+              "regulars": 0
+            }
+          ],
+          "following": 0
+        },
+        {
+          "seed": 5,
+          "villageRanks": [
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 1,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 2,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 3,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 4,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            }
+          ],
+          "ladderWeeks": {
+            "vinbar": 2,
+            "bistro": null,
+            "step": "vinbar"
+          },
+          "startCash": 15000,
+          "weeks": [
+            {
+              "week": 1,
+              "credits": 0,
+              "resultSek": 12377,
+              "revenueSek": 28947,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 27377,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 2,
+              "credits": 0,
+              "resultSek": -41000,
+              "revenueSek": 186,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -13623,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": true,
+              "closedNow": false
+            },
+            {
+              "week": 3,
+              "credits": 0,
+              "resultSek": -39134,
+              "revenueSek": 1682,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -52758,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 4,
+              "credits": 0,
+              "resultSek": -38413,
+              "revenueSek": 1763,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -91171,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": true
+            }
+          ],
+          "mornings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "needMin": 42.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 85,
+              "rep": 0.6,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "needMin": 46.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 93,
+              "rep": 0.2669957760510903,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "needMin": 43.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 87,
+              "rep": 0.1501050000007345,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "needMin": 48.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 97,
+              "rep": 0.15010500000000007,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "needMin": 111.5,
+              "capacityMin": 50,
+              "backlogMin": 61.5,
+              "hand": false,
+              "booked": 223,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "needMin": 136.5,
+              "capacityMin": 50,
+              "backlogMin": 86.5,
+              "hand": false,
+              "booked": 273,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "needMin": 25.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 17,
+              "rep": 0.14021997187500002,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "needMin": 21.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 35,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "needMin": 15.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 23,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "needMin": 16,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 24,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "needMin": 8,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 8,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "needMin": 4.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 3,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "needMin": 14.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 13,
+              "rep": 0.14079550676522506,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "needMin": 10.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 13,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "needMin": 7,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 6,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "needMin": 8,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 8,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "needMin": 11.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 15,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "needMin": 7.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 7,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "needMin": 16.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 17,
+              "rep": 0.14021997187500002,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "needMin": 18.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 29,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "needMin": 18.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 29,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "needMin": 19.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 31,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "needMin": 9.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 11,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "needMin": 4.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 3,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            }
+          ],
+          "closedWeek": 4,
+          "renegotiated": true,
+          "owned": [],
+          "star": false,
+          "starWeek": null,
+          "goldWeek": null,
+          "starWeeks": [
+            {
+              "week": 1,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0.67,
+              "rockets": 24
+            },
+            {
+              "week": 2,
+              "held": false,
+              "reputation": 0.121,
+              "judgement": 0,
+              "stepShare": 0.51,
+              "rockets": 19
+            },
+            {
+              "week": 3,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 20
+            },
+            {
+              "week": 4,
+              "held": false,
+              "reputation": 0.121,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 24
+            }
+          ],
+          "tastings": 0,
+          "afterWorks": 0,
+          "truckEvenings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7049,
+              "feeSek": 0,
+              "night": 0,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4279,
+              "feeSek": 0,
+              "night": 1,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 2571,
+              "feeSek": 0,
+              "night": 2,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 2816,
+              "feeSek": 0,
+              "night": 3,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4358,
+              "feeSek": 0,
+              "night": 4,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7874,
+              "feeSek": 0,
+              "night": 5,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 0,
+              "feeSek": 0,
+              "night": 6,
+              "regulars": 0
+            }
+          ],
+          "following": 0
+        },
+        {
+          "seed": 6,
+          "villageRanks": [
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 1,
+              "rank": 2,
+              "of": 5
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 2,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 3,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 4,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            }
+          ],
+          "ladderWeeks": {
+            "vinbar": 2,
+            "bistro": null,
+            "step": "vinbar"
+          },
+          "startCash": 15000,
+          "weeks": [
+            {
+              "week": 1,
+              "credits": 0,
+              "resultSek": 12626,
+              "revenueSek": 28832,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 27626,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 2,
+              "credits": 0,
+              "resultSek": -40875,
+              "revenueSek": 763,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -13249,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": true,
+              "closedNow": false
+            },
+            {
+              "week": 3,
+              "credits": 0,
+              "resultSek": -40017,
+              "revenueSek": 1049,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -53267,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 4,
+              "credits": 0,
+              "resultSek": -37688,
+              "revenueSek": 2364,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -90955,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": true
+            }
+          ],
+          "mornings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "needMin": 42.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 85,
+              "rep": 0.6,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "needMin": 54,
+              "capacityMin": 50,
+              "backlogMin": 4,
+              "hand": false,
+              "booked": 108,
+              "rep": 0.3972432060510928,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "needMin": 52,
+              "capacityMin": 50,
+              "backlogMin": 2,
+              "hand": false,
+              "booked": 104,
+              "rep": 0.26731889637450595,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "needMin": 63.5,
+              "capacityMin": 50,
+              "backlogMin": 13.5,
+              "hand": false,
+              "booked": 127,
+              "rep": 0.16442031665054893,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "needMin": 111,
+              "capacityMin": 50,
+              "backlogMin": 61,
+              "hand": false,
+              "booked": 222,
+              "rep": 0.15010500000000002,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "needMin": 120,
+              "capacityMin": 50,
+              "backlogMin": 70,
+              "hand": false,
+              "booked": 240,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "needMin": 30,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 20,
+              "rep": 0.17020497375,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "needMin": 21.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 35,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "needMin": 17,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 26,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "needMin": 16,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 24,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "needMin": 9.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 11,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "needMin": 3,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 2,
+              "rep": 0.12145385969146089,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "needMin": 14,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 12,
+              "rep": 0.14021997187500002,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "needMin": 10,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 12,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "needMin": 10.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 13,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "needMin": 10,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 12,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "needMin": 13,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 18,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "needMin": 6.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 5,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "needMin": 16,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 16,
+              "rep": 0.14021997187500002,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "needMin": 23.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 39,
+              "rep": 0.13210950000000002,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "needMin": 20.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 33,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "needMin": 19.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 31,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "needMin": 8.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 9,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "needMin": 1.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 1,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            }
+          ],
+          "closedWeek": 4,
+          "renegotiated": true,
+          "owned": [],
+          "star": false,
+          "starWeek": null,
+          "goldWeek": null,
+          "starWeeks": [
+            {
+              "week": 1,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0,
+              "stepShare": 0.67,
+              "rockets": 20
+            },
+            {
+              "week": 2,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0.49,
+              "rockets": 21
+            },
+            {
+              "week": 3,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 24
+            },
+            {
+              "week": 4,
+              "held": false,
+              "reputation": 0.121,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 24
+            }
+          ],
+          "tastings": 0,
+          "afterWorks": 0,
+          "truckEvenings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4557,
+              "feeSek": 0,
+              "night": 0,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 1207,
+              "feeSek": 0,
+              "night": 1,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5434,
+              "feeSek": 0,
+              "night": 2,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5178,
+              "feeSek": 0,
+              "night": 3,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7817,
+              "feeSek": 0,
+              "night": 4,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4640,
+              "feeSek": 0,
+              "night": 5,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 26,
+              "feeSek": 0,
+              "night": 6,
+              "regulars": 0
+            }
+          ],
+          "following": 0
+        },
+        {
+          "seed": 7,
+          "villageRanks": [
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 1,
+              "rank": 3,
+              "of": 5
+            },
+            {
+              "week": 1,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 2,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 3,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 4,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            }
+          ],
+          "ladderWeeks": {
+            "vinbar": 2,
+            "bistro": null,
+            "step": "vinbar"
+          },
+          "startCash": 15000,
+          "weeks": [
+            {
+              "week": 1,
+              "credits": 0,
+              "resultSek": 16139,
+              "revenueSek": 34490,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 31139,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 2,
+              "credits": 0,
+              "resultSek": -41486,
+              "revenueSek": 361,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -10347,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": true,
+              "closedNow": false
+            },
+            {
+              "week": 3,
+              "credits": 0,
+              "resultSek": -39136,
+              "revenueSek": 2110,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -49483,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 4,
+              "credits": 0,
+              "resultSek": -36241,
+              "revenueSek": 3736,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -85723,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": true
+            }
+          ],
+          "mornings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "needMin": 42.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 85,
+              "rep": 0.6,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "needMin": 46.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 93,
+              "rep": 0.38168709605109735,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "needMin": 50,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 100,
+              "rep": 0.23876992427781954,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "needMin": 63.5,
+              "capacityMin": 50,
+              "backlogMin": 13.5,
+              "hand": false,
+              "booked": 127,
+              "rep": 0.15010500000000007,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "needMin": 140.5,
+              "capacityMin": 50,
+              "backlogMin": 90.5,
+              "hand": false,
+              "booked": 281,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "needMin": 136.5,
+              "capacityMin": 50,
+              "backlogMin": 86.5,
+              "hand": false,
+              "booked": 273,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "needMin": 34.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 23,
+              "rep": 0.17020497375,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "needMin": 21,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 34,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "needMin": 23,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 38,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "needMin": 22,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 36,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "needMin": 12.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 17,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "needMin": 6,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 4,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "needMin": 17,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 18,
+              "rep": 0.14021997187500002,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "needMin": 13,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 18,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "needMin": 11,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 14,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "needMin": 10.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 13,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "needMin": 13,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 18,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "needMin": 8.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 9,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "needMin": 16.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 17,
+              "rep": 0.14021997187500002,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "needMin": 22.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 37,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "needMin": 17,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 26,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "needMin": 16,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 24,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "needMin": 7.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 7,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "needMin": 4.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 3,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            }
+          ],
+          "closedWeek": 4,
+          "renegotiated": true,
+          "owned": [],
+          "star": false,
+          "starWeek": null,
+          "goldWeek": null,
+          "starWeeks": [
+            {
+              "week": 1,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0,
+              "stepShare": 0.67,
+              "rockets": 24
+            },
+            {
+              "week": 2,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0.57,
+              "rockets": 21
+            },
+            {
+              "week": 3,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 24
+            },
+            {
+              "week": 4,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 24
+            }
+          ],
+          "tastings": 0,
+          "afterWorks": 0,
+          "truckEvenings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6087,
+              "feeSek": 0,
+              "night": 0,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4734,
+              "feeSek": 0,
+              "night": 1,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4039,
+              "feeSek": 0,
+              "night": 2,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4765,
+              "feeSek": 0,
+              "night": 3,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7450,
+              "feeSek": 0,
+              "night": 4,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7414,
+              "feeSek": 0,
+              "night": 5,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 0,
+              "feeSek": 0,
+              "night": 6,
+              "regulars": 0
+            }
+          ],
+          "following": 0
+        },
+        {
+          "seed": 8,
+          "villageRanks": [
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 1,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 2,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 3,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 4,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            }
+          ],
+          "ladderWeeks": {
+            "vinbar": 2,
+            "bistro": null,
+            "step": "vinbar"
+          },
+          "startCash": 15000,
+          "weeks": [
+            {
+              "week": 1,
+              "credits": 0,
+              "resultSek": 15809,
+              "revenueSek": 34005,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 30809,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 2,
+              "credits": 0,
+              "resultSek": -41324,
+              "revenueSek": 635,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -10516,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": true,
+              "closedNow": false
+            },
+            {
+              "week": 3,
+              "credits": 0,
+              "resultSek": -36554,
+              "revenueSek": 2978,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -47070,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 4,
+              "credits": 0,
+              "resultSek": -37959,
+              "revenueSek": 2273,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -85029,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": true
+            }
+          ],
+          "mornings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "needMin": 42.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 85,
+              "rep": 0.6,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "needMin": 54,
+              "capacityMin": 50,
+              "backlogMin": 4,
+              "hand": false,
+              "booked": 108,
+              "rep": 0.3370582560510929,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "needMin": 50.5,
+              "capacityMin": 50,
+              "backlogMin": 0.5,
+              "hand": false,
+              "booked": 101,
+              "rep": 0.1501050000007345,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "needMin": 64,
+              "capacityMin": 50,
+              "backlogMin": 14,
+              "hand": false,
+              "booked": 128,
+              "rep": 0.15010500000000007,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "needMin": 112,
+              "capacityMin": 50,
+              "backlogMin": 62,
+              "hand": false,
+              "booked": 224,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "needMin": 121,
+              "capacityMin": 50,
+              "backlogMin": 71,
+              "hand": false,
+              "booked": 242,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "needMin": 24,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 16,
+              "rep": 0.17020497375,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "needMin": 19,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 30,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "needMin": 16.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 25,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "needMin": 16,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 24,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "needMin": 9.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 11,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "needMin": 1.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 1,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "needMin": 12,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 8,
+              "rep": 0.14021997187500002,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "needMin": 10,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 12,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "needMin": 10,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 12,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "needMin": 10.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 13,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "needMin": 10.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 13,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "needMin": 6,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 4,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "needMin": 12.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 9,
+              "rep": 0.14021997187500002,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "needMin": 16.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 25,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "needMin": 13,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 18,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "needMin": 14,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 20,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "needMin": 7,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 6,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "needMin": 1.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 1,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            }
+          ],
+          "closedWeek": 4,
+          "renegotiated": true,
+          "owned": [],
+          "star": false,
+          "starWeek": null,
+          "goldWeek": null,
+          "starWeeks": [
+            {
+              "week": 1,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0,
+              "stepShare": 0.67,
+              "rockets": 24
+            },
+            {
+              "week": 2,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0.57,
+              "rockets": 20
+            },
+            {
+              "week": 3,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 24
+            },
+            {
+              "week": 4,
+              "held": false,
+              "reputation": 0.121,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 24
+            }
+          ],
+          "tastings": 0,
+          "afterWorks": 0,
+          "truckEvenings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7220,
+              "feeSek": 0,
+              "night": 0,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6397,
+              "feeSek": 0,
+              "night": 1,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 2999,
+              "feeSek": 0,
+              "night": 2,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 2963,
+              "feeSek": 0,
+              "night": 3,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6202,
+              "feeSek": 0,
+              "night": 4,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 8225,
+              "feeSek": 0,
+              "night": 5,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 166,
+              "feeSek": 0,
+              "night": 6,
+              "regulars": 0
+            }
+          ],
+          "following": 0
+        },
+        {
+          "seed": 9,
+          "villageRanks": [
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 2,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 3,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 4,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            }
+          ],
+          "ladderWeeks": {
+            "vinbar": 2,
+            "bistro": null,
+            "step": "vinbar"
+          },
+          "startCash": 15000,
+          "weeks": [
+            {
+              "week": 1,
+              "credits": 0,
+              "resultSek": 15086,
+              "revenueSek": 32991,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 30086,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 2,
+              "credits": 0,
+              "resultSek": -40725,
+              "revenueSek": 670,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -10639,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": true,
+              "closedNow": false
+            },
+            {
+              "week": 3,
+              "credits": 0,
+              "resultSek": -37469,
+              "revenueSek": 2233,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -48108,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 4,
+              "credits": 0,
+              "resultSek": -35975,
+              "revenueSek": 3528,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -84083,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": true
+            }
+          ],
+          "mornings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "needMin": 42.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 85,
+              "rep": 0.6,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "needMin": 46.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 93,
+              "rep": 0.36221196605109784,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "needMin": 43,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 86,
+              "rep": 0.1560654755603199,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "needMin": 48.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 97,
+              "rep": 0.15010500000000007,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "needMin": 96.5,
+              "capacityMin": 50,
+              "backlogMin": 46.5,
+              "hand": false,
+              "booked": 193,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "needMin": 120.5,
+              "capacityMin": 50,
+              "backlogMin": 70.5,
+              "hand": false,
+              "booked": 241,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "needMin": 34.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 23,
+              "rep": 0.17020497375,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "needMin": 21.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 35,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "needMin": 16,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 24,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "needMin": 13,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 18,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "needMin": 8,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 8,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "needMin": 6,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 4,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "needMin": 13.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 11,
+              "rep": 0.14021997187500002,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "needMin": 9.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 11,
+              "rep": 0.126111,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "needMin": 9,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 10,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "needMin": 9.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 11,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "needMin": 12.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 17,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "needMin": 8.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 9,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "needMin": 15,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 14,
+              "rep": 0.14021997187500002,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "needMin": 19.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 31,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "needMin": 13.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 19,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "needMin": 14,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 20,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "needMin": 8,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 8,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "needMin": 3,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 2,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            }
+          ],
+          "closedWeek": 4,
+          "renegotiated": true,
+          "owned": [],
+          "star": false,
+          "starWeek": null,
+          "goldWeek": null,
+          "starWeeks": [
+            {
+              "week": 1,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0,
+              "stepShare": 0.67,
+              "rockets": 25
+            },
+            {
+              "week": 2,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0.61,
+              "rockets": 22
+            },
+            {
+              "week": 3,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 24
+            },
+            {
+              "week": 4,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 24
+            }
+          ],
+          "tastings": 0,
+          "afterWorks": 0,
+          "truckEvenings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6239,
+              "feeSek": 0,
+              "night": 0,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5168,
+              "feeSek": 0,
+              "night": 1,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4143,
+              "feeSek": 0,
+              "night": 2,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4405,
+              "feeSek": 0,
+              "night": 3,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6521,
+              "feeSek": 0,
+              "night": 4,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6516,
+              "feeSek": 0,
+              "night": 5,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 0,
+              "feeSek": 0,
+              "night": 6,
+              "regulars": 0
+            }
+          ],
+          "following": 0
+        },
+        {
+          "seed": 10,
+          "villageRanks": [
+            {
+              "week": 1,
+              "rank": 2,
+              "of": 4
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 2,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 3,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 4,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            }
+          ],
+          "ladderWeeks": {
+            "vinbar": 2,
+            "bistro": null,
+            "step": "vinbar"
+          },
+          "startCash": 15000,
+          "weeks": [
+            {
+              "week": 1,
+              "credits": 0,
+              "resultSek": 12363,
+              "revenueSek": 28607,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 27363,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 2,
+              "credits": 0,
+              "resultSek": -40298,
+              "revenueSek": 1218,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -12935,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": true,
+              "closedNow": false
+            },
+            {
+              "week": 3,
+              "credits": 0,
+              "resultSek": -38745,
+              "revenueSek": 2047,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -51679,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 4,
+              "credits": 0,
+              "resultSek": -39182,
+              "revenueSek": 1032,
+              "rentSek": 0,
+              "wagesSek": 32370,
+              "cashEnd": -90861,
+              "targetSek": 39986,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": true
+            }
+          ],
+          "mornings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "needMin": 42.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 85,
+              "rep": 0.6,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "needMin": 46.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 93,
+              "rep": 0.41607849605111163,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "needMin": 50,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 100,
+              "rep": 0.1849347864278368,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "needMin": 63.5,
+              "capacityMin": 50,
+              "backlogMin": 13.5,
+              "hand": false,
+              "booked": 127,
+              "rep": 0.15010500000000007,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "needMin": 141,
+              "capacityMin": 50,
+              "backlogMin": 91,
+              "hand": false,
+              "booked": 282,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "needMin": 152,
+              "capacityMin": 50,
+              "backlogMin": 102,
+              "hand": false,
+              "booked": 304,
+              "rep": 0.150105,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "needMin": 28.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 19,
+              "rep": 0.14021997187500002,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "needMin": 19.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 31,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "needMin": 15.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 23,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "needMin": 15,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 22,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "needMin": 9,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 10,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "needMin": 3,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 2,
+              "rep": 0.12079593598649781,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "needMin": 14,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 12,
+              "rep": 0.1408338267118433,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "needMin": 10.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 13,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "needMin": 10,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 12,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "needMin": 10,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 12,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "needMin": 13,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 18,
+              "rep": 0.12767016716008894,
+              "concept": "bistro"
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "needMin": 7.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 7,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "needMin": 15,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 14,
+              "rep": 0.1416877793459334,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "needMin": 17,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 26,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "needMin": 13,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 18,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "needMin": 17.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 27,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "needMin": 9.5,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 11,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "needMin": 6,
+              "capacityMin": 150.9005259848636,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 4,
+              "rep": 0.12011250000000001,
+              "concept": "bistro"
+            }
+          ],
+          "closedWeek": 4,
+          "renegotiated": true,
+          "owned": [],
+          "star": false,
+          "starWeek": null,
+          "goldWeek": null,
+          "starWeeks": [
+            {
+              "week": 1,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0.66,
+              "rockets": 22
+            },
+            {
+              "week": 2,
+              "held": false,
+              "reputation": 0.121,
+              "judgement": 0,
+              "stepShare": 0.54,
+              "rockets": 22
+            },
+            {
+              "week": 3,
+              "held": false,
+              "reputation": 0.122,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 25
+            },
+            {
+              "week": 4,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0,
+              "stepShare": 0,
+              "rockets": 24
+            }
+          ],
+          "tastings": 0,
+          "afterWorks": 0,
+          "truckEvenings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3480,
+              "feeSek": 0,
+              "night": 0,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6578,
+              "feeSek": 0,
+              "night": 1,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3532,
+              "feeSek": 0,
+              "night": 2,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4875,
+              "feeSek": 0,
+              "night": 3,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6855,
+              "feeSek": 0,
+              "night": 4,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3287,
+              "feeSek": 0,
+              "night": 5,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 143,
+              "feeSek": 0,
+              "night": 6,
+              "regulars": 0
+            }
+          ],
+          "following": 0
+        }
+      ]
+    }
+  }
+}

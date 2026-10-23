@@ -328,3 +328,27 @@ export function applyPassNod(rig: Pick<FigureRig, 'joints'>, yaw: number, phase:
   rig.joints.head.rotation.x += -nod;
   rig.joints.chest.rotation.y += yaw * 0.15;
 }
+
+/**
+ * ORDER 340 D (Anders 2026-10-23: "gästerna tittar ut över de tomma borden") — en sittande gäst i ett halvtomt rum vänder
+ * huvudet och bröstet mot ett tomt bord en stund i taget: lookS av var cycleS sekund, ett nytt tomt bord varje gång
+ * (ur fröet), högst ±1,2 rad mot kroppen. Efter applyPose och livet. Ingen effekt utan tomma platser.
+ */
+export const EMPTY_LOOK = { cycleS: 7, lookS: 3.2, headShare: 0.75, chestShare: 0.3, maxYaw: 1.2, pitch: -0.06 } as const;
+export function applyEmptyRoomLook(rig: Pick<FigureRig, 'joints' | 'root'>, empty: readonly { x: number; z: number }[], t: number, seed: number): void {
+  if (empty.length === 0) return;
+  const L = EMPTY_LOOK;
+  const u = t / L.cycleS + (seed % 997) / 997;
+  const cycle = Math.floor(u), into = (u - cycle) * L.cycleS;
+  const w = ramp(into, 0, 0.6) * (1 - ramp(into, L.lookS - 0.6, L.lookS));
+  if (w <= 0) return;
+  const target = empty[Math.floor(rng(seed * 31 + cycle)() * empty.length)];
+  const p = rig.root.position;
+  let a = Math.atan2(target.x - p.x, target.z - p.z) - rig.root.rotation.y;
+  while (a > Math.PI) a -= 2 * Math.PI;
+  while (a < -Math.PI) a += 2 * Math.PI;
+  const yaw = Math.max(-L.maxYaw, Math.min(L.maxYaw, a)) * w;
+  rig.joints.head.rotation.y += yaw * L.headShare;
+  rig.joints.head.rotation.x += -L.pitch * w;
+  rig.joints.chest.rotation.y += yaw * L.chestShare;
+}

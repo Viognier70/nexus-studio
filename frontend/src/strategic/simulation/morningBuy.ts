@@ -21,6 +21,7 @@ import { findDish, GLASSES_PER_BOTTLE, minIngredientCost } from './m4Catalogue';
 import { packageDishIds, scaledBaseItems, type StockPackage } from './packages';
 import { goodAvailable, tierOf } from '../../sim/goods';
 import { CONCEPT } from '../../sim/balance';
+import { ladderBillFactor } from '../../sim/ladderStep';
 import { boughtTodayOf, computePlatesRemaining, dishShelfEvenings, menuFromStock, usesPackages } from './stockPackages';
 import { firstLastEvening, openBottleLastEvening, syncLots } from '../../sim/shelfLife';
 
@@ -73,6 +74,9 @@ export function morningRows(state: SimulationState): { dishes: DishRow[]; drinks
   const lots = state.dishPortions ? syncLots(state.dishLots, state.dishPortions, day, dishShelfEvenings) : undefined;
   const expected = dailyGuestCap(state);
   const guests = Number.isFinite(expected) && expected > 0 ? expected : null;
+  // ORDER 340 B — priserna gästen betalar: stegets nota (bistron högre än vinbaren, LADDER.steps.*.billFactor), som
+  // reducern lägger på notan.
+  const k = ladderBillFactor(state);
   // Kvällar lagret räcker: gästerna fördelade på varorna som finns i lager.
   const foodInStock = Math.max(1, ids.filter((id) => findDish(id)?.kind !== 'drink' && (plates[id] ?? 0) > 0).length);
   const lasts = (have: number, perEvening: number | null) => (perEvening && perEvening > 0 ? Math.floor(have / perEvening) : null);
@@ -83,7 +87,7 @@ export function morningRows(state: SimulationState): { dishes: DishRow[]; drinks
       dishId: id,
       name: findDish(id)!.name,
       costSek: Math.round(dishCost(id)),
-      priceSek: findDish(id)!.suggestedPrice,
+      priceSek: Math.round(findDish(id)!.suggestedPrice * k),
       portions: plates[id] ?? 0,
       step: ITEM_BATCH.dish,
       items: { [id]: ITEM_BATCH.dish },
@@ -112,7 +116,7 @@ export function morningRows(state: SimulationState): { dishes: DishRow[]; drinks
       beer,
       glassesPerBottle: gpb,
       costPerBottleSek: Math.round(minIngredientCost(ing) * gpb),
-      glassPriceSek: d.suggestedPrice,
+      glassPriceSek: Math.round(d.suggestedPrice * k),
       bottles: Math.floor(units / gpb),
       openGlasses: units % gpb,
       step,
@@ -151,7 +155,7 @@ export function coverage(state: SimulationState) {
   const guests = Number.isFinite(expected) ? expected : covers;
   const { drinks } = morningRows(state);
   const glasses = drinks.reduce((a, d) => a + d.bottles * d.glassesPerBottle + d.openGlasses, 0);
-  const meanFood = food.length > 0 ? food.reduce((a, m) => a + m.price, 0) / food.length : 0;
+  const meanFood = food.length > 0 ? (food.reduce((a, m) => a + m.price, 0) / food.length) * ladderBillFactor(state) : 0;
   const potentialSek = Math.round(covers * meanFood + drinks.reduce((a, d) => a + (d.bottles * d.glassesPerBottle + d.openGlasses) * d.glassPriceSek, 0));
   // ORDER 291 — behovet och varningen när inköpet är mer än dubbelt behovet.
   const glassesNeeded = Math.ceil(guests * (1 + STOCK.secondDrinkChance));

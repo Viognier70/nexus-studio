@@ -9,6 +9,7 @@
 // - Mätaren ändras efter symbolerna över borden: delayAfterSymbolMs, och i
 //   konsekvensögonblicket först vid CONSEQUENCE.meter.at efter svaret.
 // Värdet: sim/guestMood.ts roomMoodValue med dödzonen i stableRoomMood.
+// ORDER 340 D — data-empty-room: det tomma rummets del av stämningen (day.emptyRoomLift), för mätningen i spelarens flöde.
 
 import { useEffect, useRef, useState } from 'react';
 import { t as tt, type StringKey } from '../../../content/nexusStrings';
@@ -64,7 +65,7 @@ function MoodMeterInService() {
   const word = shown.mood ? tt(lang, `mood.${shown.mood}` as StringKey) : tt(lang, 'rival.noGuests');
   const lostFrom = change?.dir === 'down' ? change.from : shown.fill;
   return (
-    <div className="nx-mood-meter nx-mood-panel" data-testid="mood-meter" data-mood={shown.mood ?? ''} data-fill={shown.fill.toFixed(2)} data-change={change?.dir ?? ''}
+    <div className="nx-mood-meter nx-mood-panel" data-testid="mood-meter" data-mood={shown.mood ?? ''} data-fill={shown.fill.toFixed(2)} data-change={change?.dir ?? ''} data-empty-room={(sim.day.emptyRoomLift ?? 0).toFixed(3)}
       role="img" aria-label={tt(lang, 'hud.mood.a11y' as StringKey, { mood: word })}>
       <div className="nx-label">{tt(lang, 'hud.mood.title' as StringKey)}</div>
       <div className="nx-mood-head">

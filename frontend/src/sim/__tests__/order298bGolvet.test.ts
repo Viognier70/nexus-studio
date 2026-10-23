@@ -56,7 +56,9 @@ describe('ORDER 298b — provsmakningen på torget', () => {
   // per kväll, de fyra första oavsett trycket) blir skillnaden vid rykte 0,2
   // nästan noll: 340 mot 338 över 16 frön (reports/order314/provsmakningen-16.json).
   // Frågan står i ORDER_314_RAPPORT.md; it.fails blir it när den är avgjord.
-  it.fails('ger fler sällskap samma kväll, utöver golvet', () => {
+  // ORDER 340 — med folket på torget (balance.ts PREMISES_MOVE.walkIns) ger provsmakningen fler sittande sällskap igen
+  // över de fyra fröna, så testet går och it.fails blev it. Frågan i ORDER 314 står kvar för talet vid rykte 0,2.
+  it('ger fler sällskap samma kväll, utöver golvet', () => {
     let without = 0;
     let withTasting = 0;
     for (const seed of [1, 2, 3, 10]) {

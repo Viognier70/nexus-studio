@@ -2,6 +2,7 @@
 // §2) — foodtrucken som första steg: inträdet, foodtruckens ekonomi (notan,
 // varorna, medhjälparen, platsens avgift, inget lån), kön och vagnen vid Torget.
 
+import { torgetWalkInsTonight } from '../economy';
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
@@ -38,7 +39,8 @@ describe('ORDER 315b — foodtrucken', () => {
   it('dagens tak gånger guestCapFactor (förbipasserande), och kön vid luckan', () => {
     const s = playMorning(startInFoodtruck(3, firstDayOfWeek(2)), {});
     const asVinbar = { ...s, economy: { ...s.economy, businessClass: 'vinbar' as const } };
-    expect(dailyGuestCap(s)).toBeGreaterThanOrEqual(Math.floor(dailyGuestCap(asVinbar) * FOODTRUCK.guestCapFactor) - FOODTRUCK.guestCapFactor);
+    // ORDER 340 A — vinbarens tak har folket på torget som går in; vagnen har guestCapFactor i stället.
+    expect(dailyGuestCap(s)).toBeGreaterThanOrEqual(Math.floor((dailyGuestCap(asVinbar) - torgetWalkInsTonight(asVinbar)) * FOODTRUCK.guestCapFactor) - FOODTRUCK.guestCapFactor);
     expect(BUSINESS_CLASS_CONFIG.foodtrucken.capacityFor(2)).toBe(2 * FOODTRUCK.queuePerStaff);
   });
 

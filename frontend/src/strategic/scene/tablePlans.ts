@@ -263,7 +263,7 @@ export const SALON_PLAN: TablePlan = {
 // Anders 2026-10-22: "Bistron får en egen planlösning i varje lokal … Antal platser efter lokalens storlek." Som bistron
 // vid Torget (bistroHouse.ts, Designs D7) bord för fyra i salen, en kortare bar och pendlar över borden; lokalens dörr,
 // trappa och glas som vinbarens plan. Platserna efter golvytan: Torget 31 (145 m²), källaren 28 (samma yta, baren och
-// trappans vilplan tar plats), Flygeln 44 (vinbarens del av flygeln med glaset), salongen 46 (hela salongen, 236 m²).
+// trappans vilplan tar plats; ORDER 340 B: 40 vid långborden), Flygeln 44 (vinbarens del av flygeln med glaset), salongen 46 (hela salongen, 236 m²).
 
 function fourTop(out: PlanSeat[], t: PlanTable): void {
   const rx = t.w / 2 + CHAIR_FROM_EDGE, rz = t.d / 2 + CHAIR_FROM_EDGE, [x, z] = t.at;
@@ -278,14 +278,17 @@ function fourTop(out: PlanSeat[], t: PlanTable): void {
   out.push({ id: t.id + 'e', kind: 'chair', furnitureId: t.id, local: [x + rx, z], facing: -Math.PI / 2 });
 }
 
-const BISTRO_CELLAR_TABLES: PlanTable[] = [[-3.0, -2.8], [-0.6, -2.8], [1.8, -2.8], [-2.6, 2.8], [-0.2, 2.8], [2.2, 2.8]].map(([x, z], i) => ({ id: `bfour${i + 1}`, at: [x, z] as Vec2, w: 1.0, d: 1.0 }));
+// ORDER 340 B (Anders 2026-10-23: "Bistron i källaren: 40 platser vid långborden") — vinbarens fyra långbord om tio
+// (CELLAR_TABLES, fem per sida), med duk; baren längs östra väggen utan pallar. Förut sex bord för fyra och barens
+// pallar (28), färre än bistron vid Torget, så att bistrosteget krympte kvällens tak (ORDER 339 D).
+const BISTRO_CELLAR_TABLES: PlanTable[] = CELLAR_TABLES.map((t) => ({ ...t, cloth: true }));
 export const BISTRO_CELLAR_PLAN: TablePlan = {
   ...CELLAR_PLAN,
   id: 'bistro-kallaren',
   bistro: true,
   tables: BISTRO_CELLAR_TABLES,
-  seats: (() => { const out: PlanSeat[] = []; BISTRO_CELLAR_TABLES.forEach((t) => fourTop(out, t)); out.push(...CELLAR_PLAN.seats.filter((x) => x.furnitureId === 'bar')); return out; })(),
-  mise: { ...CELLAR_PLAN.mise, setTables: { local: [-0.6, -1.6], facing: Math.PI } }
+  seats: CELLAR_PLAN.seats.filter((x) => x.furnitureId !== 'bar'),
+  mise: { ...CELLAR_PLAN.mise }
 };
 
 const BISTRO_WING_TABLES: PlanTable[] = [-3.0, -0.7, 1.6, 3.9].flatMap((x, i) => [

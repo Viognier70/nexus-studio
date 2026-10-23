@@ -550,12 +550,20 @@ export const STRINGS = {
   // ORDER 334 B — stamgästerna på Magasinsgatan i kvällens resultat.
   // ORDER 339 C — ett halvtomt rum i kvällens resultat.
   'result.emptyRoom': { sv: 'Rummet kändes tomt: i snitt var {pct} % av platserna upptagna, och stämningen sjönk.', en: 'The room felt empty: on average {pct} % of the seats were taken, and the mood fell.' },
+  // ORDER 340 B — bistrons högre nota syns på menyn om morgonen och i kvällens resultat.
+  'buy.bistroPrices': { sv: 'Bistrons priser: allt säljs för {pct} % mer än i vinbaren.', en: "The bistro's prices: everything sells for {pct} % more than in the wine bar." },
+  'result.bistroBill': { sv: 'Notan i bistron var {pct} % högre än i vinbaren.', en: 'The bill in the bistro was {pct} % higher than in the wine bar.' },
   // ORDER 336 C — stamgästerna från Magasinsgatan som följde med till krogen.
   'spot.regularsFollowed': { sv: '{n} stamgäster från Magasinsgatan kom med sin kopp.', en: '{n} regulars from Magasinsgatan came with their cup.' },
   'spot.regularsCame': { sv: '{n} stamgäster kom med egen kopp. Vagnen har stått här {nights} kvällar.', en: '{n} regulars came with their own cup. The truck has stood here {nights} evenings.' },
   'premises.label': { sv: 'Lokalen', en: 'The premises' },
   // ORDER 334 D — banken frågar efter namnet när lokalen är vald; hyran står vid varje lokal (ORDER 334 A).
   'premises.rent': { sv: 'Hyran {rent} kr i veckan', en: 'Rent {rent} kr a week' },
+  // ORDER 340 A — flytten kostar inredning; Torget är inrett och har genomströmningen och marknadsdagarna.
+  'premises.fitOut.loan': { sv: 'Inredningen {sek} kr, på lånet', en: 'Fitting out {sek} kr, added to the loan' },
+  'premises.fitOut.cash': { sv: 'Inredningen {sek} kr, ur kassan', en: 'Fitting out {sek} kr, from your cash' },
+  'premises.fitted': { sv: 'Redan inrett', en: 'Already fitted out' },
+  'premises.walkIns': { sv: 'Folk på torget går in: omkring {n} gäster en vanlig kväll, dubbelt så många på marknadsdagarna', en: 'People on the square walk in: about {n} guests on an ordinary evening, twice as many on market days' },
   'premises.toBank': { sv: 'Till banken', en: 'To the bank' },
   'premises.back': { sv: 'Tillbaka', en: 'Back' },
   'premises.bankKicker': { sv: 'Banken', en: 'The bank' },
@@ -1352,6 +1360,8 @@ export const TABLE = {
       rent: { sv: 'Veckohyra för lokalen', en: "The week's rent for the premises" },
       sale: { sv: 'Lokalen såld till banken', en: 'Premises sold to the bank' },
       deposit: { sv: 'Kontantinsats för den nya lokalen', en: 'Cash deposit for the new premises' },
+      // ORDER 340 A — inredningen i en annan lokal än Torget, när den betalas ur kassan.
+      fitOut: { sv: 'Inredningen av lokalen', en: 'Fitting out the premises' },
       // ORDER 296 — den extra handen till förberedelsen.
       prepHand: { sv: 'En extra hand till förberedelsen', en: 'An extra pair of hands for the prep' },
       // ORDER 332 G — platsavgiften när vagnen står på en annan plats än Torget.
