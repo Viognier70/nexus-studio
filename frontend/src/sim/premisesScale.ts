@@ -34,9 +34,14 @@ export function seatRatio(state: ScaleState): number {
   return base && seats ? seats / base : 1;
 }
 
-/** A. Kvällens tak gånger det här (1 vid Torget). */
+/** A. Kvällens tak gånger det här (1 vid Torget). ORDER 340 B (Anders 2026-10-23: "Bistrosteget får aldrig sänka
+ *  resultatet för den starka spelaren") — bistrons tak är aldrig lägre än vinbarens i samma lokal. */
 export function premisesCapK(state: ScaleState): number {
-  return Math.pow(seatRatio(state), MARKET.premisesSeatExponent);
+  const own = Math.pow(seatRatio(state), MARKET.premisesSeatExponent);
+  if (state.economy?.businessClass !== 'vinbar' || ladderStep(state) !== 'bistro') return own;
+  const plan = planForPremises(playerPremisesOf(state), false);
+  const vinbar = Math.pow((plan ? plan.seats.length : PREMISES_SCALE.vinbarSeats) / PREMISES_SCALE.vinbarSeats, MARKET.premisesSeatExponent);
+  return Math.max(own, vinbar);
 }
 
 /** B. Laget mot Torgets: uppgifternas tid och köket (mise en place) delat med det (1 vid Torget). */
@@ -47,6 +52,14 @@ export function premisesTeamK(state: ScaleState): number {
 /** B. Lönerna mot Torgets (PREMISES_SCALE.wageExponent; 1 vid Torget). */
 export function premisesWageK(state: ScaleState): number {
   return Math.pow(seatRatio(state), PREMISES_SCALE.wageExponent);
+}
+
+/** ORDER 340 C — servitörerna i rummet utöver Torgets: en för var PREMISES_SCALE.seatsPerExtraServer platser över
+ *  Torgets för steget, högst maxExtraServers (0 vid Torget och för klasserna utan lokaler). */
+export function premisesExtraServers(state: ScaleState): number {
+  const base = torgetSeats(state), seats = premisesSeatsNow(state);
+  if (!base || !seats) return 0;
+  return Math.min(PREMISES_SCALE.maxExtraServers, Math.max(0, Math.round((seats - base) / PREMISES_SCALE.seatsPerExtraServer)));
 }
 
 /** B. Hyran efter ytan mot Torgets 145 m² (PREMISES_SCALE.areaExponent; 1 vid Torget). */

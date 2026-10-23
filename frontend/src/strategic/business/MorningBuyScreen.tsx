@@ -19,6 +19,7 @@ import { itemsCostSek, packagesFor } from '../simulation/packages';
 import { misePlan } from '../../sim/miseEnPlace';
 import { MISE_EN_PLACE } from '../../sim/balance';
 import { t as tt } from '../../content/nexusStrings';
+import { billAboveVinbarPct } from './bistroPrices';
 import { baseItemsFor, coverage, morningRows, spentTodaySek, stockValueSek, type DishRow, type DrinkRow } from '../simulation/morningBuy';
 import { stockReadiness } from '../simulation/stockPackages';
 import { NxButton, NxLabel, u } from '../ui/system/components';
@@ -125,6 +126,8 @@ export function MorningBuyScreen({ open, onClose }: { open: boolean; onClose: ()
       <div className="nxs-buy-grid">
         <section className="nx-panel nx-paper nxs-buy-col" data-testid="buy-menu">
           <header className="nxs-buy-head"><NxLabel>{T.menu}</NxLabel><span className="nxs-row-sub">{T.menuStep}</span></header>
+          {/* ORDER 340 B — bistrons priser (stegets nota, sim/ladderStep.ts); radernas priser är redan bistrons. */}
+          {billAboveVinbarPct(sim) > 0 && <p className="nxs-row-sub" data-testid="buy-bistro-prices" data-pct={billAboveVinbarPct(sim)} style={{ margin: 0, padding: 'calc(10 * var(--nx-u)) calc(24 * var(--nx-u))', borderBottom: '1px solid var(--nx-rule)' }}>{tt(lang, 'buy.bistroPrices', { pct: billAboveVinbarPct(sim) })}</p>}
           <div className="nxs-buy-rows">{dishes.map(dishRow)}</div>
           <footer className="nxs-buy-foot">{T.dishSum(portionsTotal, formatSek(stockValueSek(sim, 'food')))}</footer>
         </section>

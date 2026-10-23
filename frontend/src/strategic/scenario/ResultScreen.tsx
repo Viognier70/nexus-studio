@@ -14,6 +14,7 @@
 // med vad de betydde (guestTypes.ts eveningGuests).
 
 import { EMPTY_ROOM } from '../../sim/balance';
+import { billAboveVinbarPct } from '../business/bistroPrices';
 import { KnowledgePyramid } from '../ui/service/KnowledgePyramid';
 import { useEffect, useRef } from 'react';
 import type { LucideIcon } from 'lucide-react';
@@ -109,6 +110,7 @@ export function EmptyRoomLine({ sim }: { sim: SimulationState }) {
 
 // ORDER 287a — vilka som kom och vad de betydde.
 function EveningGuestsPanel({ sim }: { sim: SimulationState }) {
+  const lang = useLanguage();
   const g = strings.guestTypes;
   const e = eveningGuests(sim);
   if (e.rows.length === 0 && !e.social && !e.billionaire) return null;
@@ -123,6 +125,10 @@ function EveningGuestsPanel({ sim }: { sim: SimulationState }) {
           <span className="nx-small nx-muted">{g.result.perGuest(formatSek(r.guests > 0 ? Math.round(r.revenueSek / r.guests) : 0))}</span>
         </div>
       ))}
+      {/* ORDER 340 B — bistrons högre nota (stegets nota, sim/ladderStep.ts), som gästerna ovan betalade. */}
+      {billAboveVinbarPct(sim) > 0 && (
+        <p className="nx-small" data-testid="result-bistro-bill" data-pct={billAboveVinbarPct(sim)} style={{ margin: 0 }}>{tt(lang, 'result.bistroBill', { pct: billAboveVinbarPct(sim) })}</p>
+      )}
       {e.social && (
         <p className="nx-small" data-testid="result-social" data-outcome={e.social.outcome ?? 'open'} style={{ margin: 0 }}>
           {e.social.outcome === 'good' ? g.result.socialGood(e.social.name)

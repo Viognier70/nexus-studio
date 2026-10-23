@@ -29,6 +29,7 @@ import { canAfford, rankedStepOption } from '../../sim/incidents';
 import type { IncidentStep } from '../../sim/incidentBank';
 import { fikaTonight } from '../../sim/fika';
 import { ladderOf } from '../../sim/ladder';
+import type { PremisesId } from '../../sim/districts';
 import { dilemmaById } from '../../content/fika/dilemmas';
 import type { PavilionKey, ScenarioChoice, SimAction, SimulationState } from '../types';
 
@@ -75,7 +76,10 @@ export interface MorningPlan {
   // ORDER 315a — Åsas erbjudande om nästa steg: 'take' tar det första
   // morgonen det står (förvalt), 'careful' (spelartypen "försiktig") väntar
   // LADDER.carefulWaitDays, 'never' stannar kvar.
-  ladder?: 'take' | 'careful' | 'never';
+  // ORDER 340 B — 'vinbar' tar vinbaren men inte bistron (jämförelsen: sänker bistrosteget resultatet?).
+  ladder?: 'take' | 'careful' | 'never' | 'vinbar';
+  // ORDER 340 A — lokalen när vinbaren tas över (LADDER_TAKE med lokalen, så att inredningen betalas). Utelämnat: Torget.
+  premises?: PremisesId;
   // ORDER 319b del 2 — det spelaren gör under servicen, varje tick (t.ex. pratar med de nyfikna).
   onTick?: (s: SimulationState) => SimulationState;
 }
@@ -234,11 +238,12 @@ function answer(s: SimulationState, correctCount: number): SimulationState {
 }
 
 // ORDER 315a — Åsas erbjudande på morgonen (samma åtgärd som kortets knapp).
-export function answerLadder(s: SimulationState, how: 'take' | 'careful' | 'never'): SimulationState {
+export function answerLadder(s: SimulationState, how: 'take' | 'careful' | 'never' | 'vinbar', premises?: PremisesId): SimulationState {
   const offer = ladderOf(s)?.offer;
   if (!offer || how === 'never' || s.day.period !== 'morning') return s;
+  if (how === 'vinbar' && offer.to !== 'vinbar') return s;
   if (how === 'careful' && s.day.dayNumber - offer.offeredOnDay < LADDER.carefulWaitDays) return s;
-  return reducer(s, { type: 'LADDER_TAKE' });
+  return reducer(s, { type: 'LADDER_TAKE', ...(offer.to === 'vinbar' && premises ? { premises } : {}) });
 }
 
 // ORDER 316 — fikat efter stängning: spelaren svarar på kvällens dilemma som
@@ -258,7 +263,7 @@ export function answerFika(s: SimulationState, given: ScenarioAnswer): Simulatio
 export const STOCK_TO_BOOKING_MAX = 4;
 
 export function playMorning(s: SimulationState, plan: MorningPlan): SimulationState {
-  s = answerLadder(s, plan.ladder ?? 'take');
+  s = answerLadder(s, plan.ladder ?? 'take', plan.premises);
   for (const e of plan.exams ?? []) {
     s = reducer(s, { type: 'VISIT_PAVILION', pavilion: e.pavilion, mode: 'exam' });
     s = answer(s, e.correct);

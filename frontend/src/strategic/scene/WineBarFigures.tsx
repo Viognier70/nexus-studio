@@ -37,7 +37,7 @@ import { createOrkRing, orkFacing, orkRingShown, type OrkRing } from './orkRing'
 import { WellbeingLayer, type WellbeingItem } from './wellbeingLayer';
 import { withStreetFloorOnTree } from './village/streetFigureLight';
 import { applyStreetBlend, beyondDoorMat, dressAllGroups, disposeDressed, groupOfGuestType, showGroup, stepStreetBlend, streetShare, HEAD_SIGNS, type DressedRig } from './guestLooks';
-import { FigureLives, applyPassNod, faceKOf, intensityOfGuest, liveFrame, passNodTarget, temperamentForGuest } from './figureLife';
+import { FigureLives, applyEmptyRoomLook, applyPassNod, faceKOf, intensityOfGuest, liveFrame, passNodTarget, temperamentForGuest } from './figureLife';
 import { GUEST_GROUPS } from './guestGroups';
 import { crewShown, equipmentUsesOf, morningShowsOf } from './choicesShown';
 import { RoomEquipment } from './roomEquipment';
@@ -144,7 +144,9 @@ import { play } from '../ui/sound/sound';
 import { createStaffMark, disposeStaffMark, updateStaffMark, type StaffMark } from './staffMarks';
 import { seatKindFromRoom, type ClipSample } from './figureClips';
 import type { GuestType } from '../types';
-import { EVENING_ECONOMY, THEATRE } from '../../sim/balance';
+import { EMPTY_ROOM, EVENING_ECONOMY, THEATRE } from '../../sim/balance';
+import { premisesExtraServers } from '../../sim/premisesScale';
+import { hashKey } from '../util/hash';
 import type { ActiveIncident } from '../../sim/incidents';
 import { strings } from '../../content/strings';
 import { TheatreCaption } from '../ui/TheatreCaption';
@@ -199,7 +201,7 @@ const DJ_MUSIC_FROM_MIN = 21 * 60;
 // Båsets kantljus när DJ:n spelar (rummets helgnivå, wineBarRoom).
 const DJ_GLOW_ON = 1.4;
 // ORDER 294b — manusens personal (Designs handelserManus.js) mot rummets roller.
-const SCRIPT_ACTOR_OF: Record<StaffKey, string> = { host: 'per', server: 'sara', server2: '-', sommelier: 'elin', bartender: 'mira', cook: 'cook', dish: 'dish1', extra: '-', cook2: '-' };
+const SCRIPT_ACTOR_OF: Record<StaffKey, string> = { host: 'per', server: 'sara', server2: '-', sommelier: 'elin', bartender: 'mira', cook: 'cook', dish: 'dish1', extra: '-', cook2: '-', floor1: '-', floor2: '-', floor3: '-', floor4: '-' };
 const THEATRE_LOW_CLIPS = new Set(['staff.kneelTalk', 'staff.sweep', 'staff.wipeFloor', 'guest.slip', 'staff.smother', 'guest.wheel', 'guest.wheelRoll', 'guest.wheelTurn', 'guest.wheelToTable', 'bar.stockFridge', 'staff.carryCrate']);
 
 // ORDER 292b — figurmätningen var femtonde bildruta.
@@ -265,6 +267,8 @@ const STAFF_COLOUR: Record<StaffKey, string> = {
   extra: STAFF_UNIFORMS.server,
   // ORDER 331 C — den andra kocken bär kökets kläder (gästkockens egen uniform är beställd av Design, D14).
   cook2: STAFF_UNIFORMS.kitchen,
+  // ORDER 340 C — lokalens servitörer bär servitörens kläder.
+  floor1: STAFF_UNIFORMS.server, floor2: STAFF_UNIFORMS.server, floor3: STAFF_UNIFORMS.server, floor4: STAFF_UNIFORMS.server,
   server: STAFF_UNIFORMS.server,
   server2: STAFF_UNIFORMS.server,
   bartender: STAFF_UNIFORMS.bartender,
@@ -819,6 +823,8 @@ export function WineBarFigures({ room, mood }: Props) {
         : (s.day.period === 'lunch' || s.day.period === 'dinner')
           ? ((s.day.pickedActivityIds ?? []).includes(EVENING_ECONOMY.runnerActivityId) ? 'runner' : s.team.members.some((m) => m.isAgency) ? 'agency' : null)
           : null,
+      // ORDER 340 C — grundregeln: fler platser ger fler servitörer i rummet (sim/premisesScale.ts).
+      premisesServers: premisesExtraServers(s),
       // ORDER 331 C — grundregeln: laget, morgonens satsningar, värdens bjudning och utrustningen i bruk (choicesShown.ts).
       crew: crewShown(s.team),
       morning: morningShowsOf(s.day.pickedActivityIds),
@@ -1359,6 +1365,11 @@ export function WineBarFigures({ room, mood }: Props) {
     const faceHold = momentAt !== null && momentAt < CONSEQUENCE.guests.faceSwapAt;
     // ORDER 332 B (Designs D12 §2) — efter applyPose: livet (applyLife) och ansiktet som går över (face.show(faceAt)).
     const lifeKeep = new Set<string>();
+    // ORDER 340 D — i ett halvtomt rum (day.emptyRoomLift under EMPTY_ROOM.lookBelow) tittar de sittande gästerna ut
+    // över de tomma platserna (figureLife.ts applyEmptyRoomLook).
+    const emptyLook = inService && !reducedMotionRef.current && (s.day.emptyRoomLift ?? 0) <= EMPTY_ROOM.lookBelow;
+    const taken = emptyLook ? new Set(s.guests.map((x) => x.seatIndex).filter((x): x is number => x !== null && x !== undefined)) : null;
+    const emptySeats = taken ? room.seats.filter((x) => !taken.has(x.seatIndex)).map((x) => ({ x: x.local[0], z: x.local[1] })) : [];
     for (let i = 0; i < cast.guestFaces.length; i++) {
       const face = cast.guestFaces[i];
       const smp = gs[i];
@@ -1375,6 +1386,7 @@ export function WineBarFigures({ room, mood }: Props) {
         const k = cast.moodGestures.faceKFor(i) ?? faceKOf(intensityOfGuest(value), temper);
         const moving = !smp.seated && /walk|arrive|leave/.test(smp.pose);
         liveFrame(cast.guestRigs[i], face, st, { t, busy: moving ? 1 : cast.guestBusy[i], standing: !smp.seated && !moving, mood, k, reduced: reducedMotionRef.current });
+        if (emptyLook && smp.seated) applyEmptyRoomLook(cast.guestRigs[i], emptySeats, t, Math.floor(hashKey(0, id) * 1e6));
       }
       // ORDER 325 §2 — avståndet till huvudet för mätningen (faceProbe.ts), bara för gäster som syns.
       faceProbe.add(face.update(camera), !!g && !!gs[i]?.visible && roomShownRef.current);

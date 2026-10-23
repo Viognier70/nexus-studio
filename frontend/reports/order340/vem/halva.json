@@ -1,0 +1,6190 @@
+{
+  "truckSpot": null,
+  "premises": null,
+  "tasting": false,
+  "definition": "Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).",
+  "start": null,
+  "variant": null,
+  "seeds": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "weeks": 8,
+  "players": {
+    "halva": {
+      "closed": 0,
+      "closedWeeks": [],
+      "renegotiated": 0,
+      "lowestCash": 28512,
+      "meanCashEnd": 114228,
+      "targetHitShare": 0.16,
+      "meanTastings": 0,
+      "meanAfterWorks": 0,
+      "meanFollowing": 0,
+      "meanOwned": 0,
+      "ladder": {
+        "reachedVinbar": 0,
+        "reachedBistro": 0,
+        "vinbarWeeks": [],
+        "bistroWeeks": [],
+        "finalSteps": [
+          "foodtruck",
+          "foodtruck",
+          "foodtruck",
+          "foodtruck"
+        ]
+      },
+      "village": {
+        "evenings": 120,
+        "topThreeShare": 0.72,
+        "meanRank": 2.52
+      },
+      "stars": 0,
+      "starEarned": 0,
+      "starWeeks": [],
+      "goldWeeks": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "meanRepAtSettlement": [
+        0.144,
+        0.155,
+        0.142,
+        0.15,
+        0.142,
+        0.142,
+        0.153,
+        0.151
+      ],
+      "meanJudgement": [
+        0.55,
+        0.57,
+        0.5,
+        0.5,
+        0.53,
+        0.49,
+        0.5,
+        0.46
+      ],
+      "concepts": {
+        "enkel": 0,
+        "bistro": 0,
+        "soigne": 0
+      },
+      "truckBySpot": {
+        "torget": {
+          "district": "torget",
+          "evenings": 192,
+          "meanRevenueSek": 5798,
+          "meanFeeSek": 0,
+          "byNight": {
+            "0-4": {
+              "evenings": 20,
+              "meanRevenueSek": 6456,
+              "meanRegulars": 0
+            },
+            "5-9": {
+              "evenings": 20,
+              "meanRevenueSek": 5518,
+              "meanRegulars": 0
+            },
+            "10-19": {
+              "evenings": 40,
+              "meanRevenueSek": 5902,
+              "meanRegulars": 0
+            },
+            "20-": {
+              "evenings": 112,
+              "meanRevenueSek": 5693,
+              "meanRegulars": 0
+            }
+          }
+        },
+        "prastgatan": {
+          "district": "student",
+          "evenings": 0,
+          "meanRevenueSek": 0,
+          "meanFeeSek": 0,
+          "byNight": {
+            "0-4": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "5-9": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "10-19": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "20-": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            }
+          }
+        },
+        "gastgivaregarden": {
+          "district": "gastgivaregarden",
+          "evenings": 0,
+          "meanRevenueSek": 0,
+          "meanFeeSek": 0,
+          "byNight": {
+            "0-4": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "5-9": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "10-19": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "20-": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            }
+          }
+        },
+        "campus": {
+          "district": "campus",
+          "evenings": 0,
+          "meanRevenueSek": 0,
+          "meanFeeSek": 0,
+          "byNight": {
+            "0-4": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "5-9": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "10-19": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "20-": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            }
+          }
+        },
+        "sjon": {
+          "district": "sjon",
+          "evenings": 0,
+          "meanRevenueSek": 0,
+          "meanFeeSek": 0,
+          "byNight": {
+            "0-4": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "5-9": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "10-19": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "20-": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            }
+          }
+        },
+        "magasinsgatan": {
+          "district": "torget",
+          "evenings": 0,
+          "meanRevenueSek": 0,
+          "meanFeeSek": 0,
+          "byNight": {
+            "0-4": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "5-9": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "10-19": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            },
+            "20-": {
+              "evenings": 0,
+              "meanRevenueSek": 0,
+              "meanRegulars": 0
+            }
+          }
+        }
+      },
+      "byWeek": [
+        {
+          "week": 1,
+          "n": 4,
+          "meanResultSek": 15929,
+          "meanRevenueSek": 38682,
+          "meanCashEnd": 30929,
+          "meanCredits": 100,
+          "targetHit": 2,
+          "rentSek": 1500
+        },
+        {
+          "week": 2,
+          "n": 4,
+          "meanResultSek": 11053,
+          "meanRevenueSek": 33255,
+          "meanCashEnd": 41982,
+          "meanCredits": 197,
+          "targetHit": 0,
+          "rentSek": 1500
+        },
+        {
+          "week": 3,
+          "n": 4,
+          "meanResultSek": 13403,
+          "meanRevenueSek": 36195,
+          "meanCashEnd": 55384,
+          "meanCredits": 288,
+          "targetHit": 1,
+          "rentSek": 1500
+        },
+        {
+          "week": 4,
+          "n": 4,
+          "meanResultSek": 10897,
+          "meanRevenueSek": 32858,
+          "meanCashEnd": 66282,
+          "meanCredits": 375,
+          "targetHit": 0,
+          "rentSek": 1500
+        },
+        {
+          "week": 5,
+          "n": 4,
+          "meanResultSek": 13908,
+          "meanRevenueSek": 36880,
+          "meanCashEnd": 80190,
+          "meanCredits": 470,
+          "targetHit": 1,
+          "rentSek": 1500
+        },
+        {
+          "week": 6,
+          "n": 4,
+          "meanResultSek": 9366,
+          "meanRevenueSek": 30831,
+          "meanCashEnd": 89556,
+          "meanCredits": 557,
+          "targetHit": 0,
+          "rentSek": 1500
+        },
+        {
+          "week": 7,
+          "n": 4,
+          "meanResultSek": 12836,
+          "meanRevenueSek": 35330,
+          "meanCashEnd": 102392,
+          "meanCredits": 644,
+          "targetHit": 1,
+          "rentSek": 1500
+        },
+        {
+          "week": 8,
+          "n": 4,
+          "meanResultSek": 11837,
+          "meanRevenueSek": 34269,
+          "meanCashEnd": 114228,
+          "meanCredits": 725,
+          "targetHit": 0,
+          "rentSek": 1500
+        }
+      ],
+      "repByWeek": [
+        {
+          "week": 1,
+          "mon": 0.6,
+          "sat": 0.174
+        },
+        {
+          "week": 2,
+          "mon": 0.164,
+          "sat": 0.155
+        },
+        {
+          "week": 3,
+          "mon": 0.176,
+          "sat": 0.143
+        },
+        {
+          "week": 4,
+          "mon": 0.163,
+          "sat": 0.143
+        },
+        {
+          "week": 5,
+          "mon": 0.17,
+          "sat": 0.15
+        },
+        {
+          "week": 6,
+          "mon": 0.163,
+          "sat": 0.15
+        },
+        {
+          "week": 7,
+          "mon": 0.163,
+          "sat": 0.15
+        },
+        {
+          "week": 8,
+          "mon": 0.174,
+          "sat": 0.143
+        }
+      ],
+      "mise": {
+        "mon": {
+          "meanNeedMin": 70,
+          "meanCapacityMin": 85,
+          "handShare": 0.88,
+          "meanBacklogMin": 0
+        },
+        "tue": {
+          "meanNeedMin": 79,
+          "meanCapacityMin": 90,
+          "handShare": 1,
+          "meanBacklogMin": 1
+        },
+        "wed": {
+          "meanNeedMin": 76,
+          "meanCapacityMin": 90,
+          "handShare": 1,
+          "meanBacklogMin": 0
+        },
+        "thu": {
+          "meanNeedMin": 87,
+          "meanCapacityMin": 90,
+          "handShare": 1,
+          "meanBacklogMin": 4
+        },
+        "fri": {
+          "meanNeedMin": 130,
+          "meanCapacityMin": 90,
+          "handShare": 1,
+          "meanBacklogMin": 40
+        },
+        "sat": {
+          "meanNeedMin": 149,
+          "meanCapacityMin": 90,
+          "handShare": 1,
+          "meanBacklogMin": 59
+        }
+      },
+      "runs": [
+        {
+          "seed": 1,
+          "villageRanks": [
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 2,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 2,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 3,
+              "of": 4
+            },
+            {
+              "week": 3,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 3,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 4,
+              "rank": 2,
+              "of": 5
+            },
+            {
+              "week": 4,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 5,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 5,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 2,
+              "of": 4
+            },
+            {
+              "week": 6,
+              "rank": 4,
+              "of": 5
+            },
+            {
+              "week": 6,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 7,
+              "rank": 2,
+              "of": 5
+            },
+            {
+              "week": 7,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 8,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 8,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 7,
+              "of": 7
+            }
+          ],
+          "ladderWeeks": {
+            "vinbar": null,
+            "bistro": null,
+            "step": "foodtruck"
+          },
+          "startCash": 15000,
+          "weeks": [
+            {
+              "week": 1,
+              "credits": 100,
+              "resultSek": 17954,
+              "revenueSek": 41716,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 32954,
+              "targetSek": 38000,
+              "targetHit": true,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 2,
+              "credits": 222,
+              "resultSek": 12966,
+              "revenueSek": 36690,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 45920,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 3,
+              "credits": 322,
+              "resultSek": 14663,
+              "revenueSek": 38094,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 60583,
+              "targetSek": 38000,
+              "targetHit": true,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 4,
+              "credits": 398,
+              "resultSek": 11902,
+              "revenueSek": 34187,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 72485,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 5,
+              "credits": 488,
+              "resultSek": 14518,
+              "revenueSek": 37846,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 87003,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 6,
+              "credits": 588,
+              "resultSek": 11754,
+              "revenueSek": 33735,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 98757,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 7,
+              "credits": 657,
+              "resultSek": 15585,
+              "revenueSek": 39544,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 114343,
+              "targetSek": 38000,
+              "targetHit": true,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 8,
+              "credits": 747,
+              "resultSek": 12612,
+              "revenueSek": 36392,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 126954,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            }
+          ],
+          "mornings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "needMin": 42.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 85,
+              "rep": 0.6,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "needMin": 51,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 102,
+              "rep": 0.6312223489630453,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "needMin": 62,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 124,
+              "rep": 0.5000168016060476,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "needMin": 79.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 159,
+              "rep": 0.43244340975850887,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "needMin": 127.5,
+              "capacityMin": 90,
+              "backlogMin": 37.5,
+              "hand": true,
+              "booked": 255,
+              "rep": 0.2545233873036893,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "needMin": 122.5,
+              "capacityMin": 90,
+              "backlogMin": 32.5,
+              "hand": true,
+              "booked": 245,
+              "rep": 0.1501427278484251,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "needMin": 62,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 124,
+              "rep": 0.17030153424949393,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "needMin": 73.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 147,
+              "rep": 0.24407121162207598,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "needMin": 77,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 154,
+              "rep": 0.21803607312316106,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "needMin": 83.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 167,
+              "rep": 0.18480919342215726,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "needMin": 124.5,
+              "capacityMin": 90,
+              "backlogMin": 34.5,
+              "hand": true,
+              "booked": 249,
+              "rep": 0.2030112725805642,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "needMin": 133,
+              "capacityMin": 90,
+              "backlogMin": 43,
+              "hand": true,
+              "booked": 266,
+              "rep": 0.1974812030768468,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "needMin": 80.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 161,
+              "rep": 0.1703522965231121,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "needMin": 79.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 159,
+              "rep": 0.15018224967416102,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "needMin": 76,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 152,
+              "rep": 0.15018359983608878,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "needMin": 95,
+              "capacityMin": 90,
+              "backlogMin": 5,
+              "hand": true,
+              "booked": 190,
+              "rep": 0.15018629967223676,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "needMin": 195.5,
+              "capacityMin": 90,
+              "backlogMin": 105.5,
+              "hand": true,
+              "booked": 391,
+              "rep": 0.15018899967221688,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "needMin": 186,
+              "capacityMin": 90,
+              "backlogMin": 96,
+              "hand": true,
+              "booked": 372,
+              "rep": 0.15044882966227233,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "needMin": 72.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 145,
+              "rep": 0.17038469510270632,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "needMin": 91.5,
+              "capacityMin": 90,
+              "backlogMin": 1.5,
+              "hand": true,
+              "booked": 183,
+              "rep": 0.17871746917669115,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "needMin": 85.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 171,
+              "rep": 0.15149726564064803,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "needMin": 93.5,
+              "capacityMin": 90,
+              "backlogMin": 3.5,
+              "hand": true,
+              "booked": 187,
+              "rep": 0.15020519967221688,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "needMin": 110,
+              "capacityMin": 90,
+              "backlogMin": 20,
+              "hand": true,
+              "booked": 220,
+              "rep": 0.15020654983608855,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "needMin": 119.5,
+              "capacityMin": 90,
+              "backlogMin": 29.5,
+              "hand": true,
+              "booked": 239,
+              "rep": 0.15020789983610844,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "mon",
+              "needMin": 62,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 124,
+              "rep": 0.17041167905088886,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "tue",
+              "needMin": 70.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 141,
+              "rep": 0.15020924999998017,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "wed",
+              "needMin": 78,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 156,
+              "rep": 0.15731278328389475,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "thu",
+              "needMin": 102,
+              "capacityMin": 90,
+              "backlogMin": 12,
+              "hand": true,
+              "booked": 204,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "fri",
+              "needMin": 148.5,
+              "capacityMin": 90,
+              "backlogMin": 58.5,
+              "hand": true,
+              "booked": 297,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "sat",
+              "needMin": 141,
+              "capacityMin": 90,
+              "backlogMin": 51,
+              "hand": true,
+              "booked": 282,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "mon",
+              "needMin": 69.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 139,
+              "rep": 0.17041167937812499,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "tue",
+              "needMin": 70.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 141,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "wed",
+              "needMin": 66,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 132,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "thu",
+              "needMin": 88.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 177,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "fri",
+              "needMin": 131,
+              "capacityMin": 90,
+              "backlogMin": 41,
+              "hand": true,
+              "booked": 262,
+              "rep": 0.16075520957227793,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "sat",
+              "needMin": 140,
+              "capacityMin": 90,
+              "backlogMin": 50,
+              "hand": true,
+              "booked": 280,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "mon",
+              "needMin": 80.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 161,
+              "rep": 0.17041167937812499,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "tue",
+              "needMin": 81,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 162,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "wed",
+              "needMin": 83.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 167,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "thu",
+              "needMin": 93.5,
+              "capacityMin": 90,
+              "backlogMin": 3.5,
+              "hand": true,
+              "booked": 187,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "fri",
+              "needMin": 125,
+              "capacityMin": 90,
+              "backlogMin": 35,
+              "hand": true,
+              "booked": 250,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "sat",
+              "needMin": 120.5,
+              "capacityMin": 90,
+              "backlogMin": 30.5,
+              "hand": true,
+              "booked": 241,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "mon",
+              "needMin": 62,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 124,
+              "rep": 0.17041167937812499,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "tue",
+              "needMin": 82.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 165,
+              "rep": 0.19288826985311824,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "wed",
+              "needMin": 82.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 165,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "thu",
+              "needMin": 98,
+              "capacityMin": 90,
+              "backlogMin": 8,
+              "hand": true,
+              "booked": 196,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "fri",
+              "needMin": 127,
+              "capacityMin": 90,
+              "backlogMin": 37,
+              "hand": true,
+              "booked": 254,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "sat",
+              "needMin": 280,
+              "capacityMin": 90,
+              "backlogMin": 190,
+              "hand": true,
+              "booked": 560,
+              "rep": 0.15020925,
+              "concept": null
+            }
+          ],
+          "closedWeek": null,
+          "renegotiated": false,
+          "owned": [],
+          "star": false,
+          "starWeek": null,
+          "goldWeek": null,
+          "starWeeks": [
+            {
+              "week": 1,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.54,
+              "stepShare": 0.85,
+              "rockets": 24
+            },
+            {
+              "week": 2,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.71,
+              "stepShare": 0.9,
+              "rockets": 24
+            },
+            {
+              "week": 3,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.54,
+              "stepShare": 0.85,
+              "rockets": 24
+            },
+            {
+              "week": 4,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.42,
+              "stepShare": 0.81,
+              "rockets": 24
+            },
+            {
+              "week": 5,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.5,
+              "stepShare": 0.83,
+              "rockets": 24
+            },
+            {
+              "week": 6,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.54,
+              "stepShare": 0.85,
+              "rockets": 24
+            },
+            {
+              "week": 7,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.38,
+              "stepShare": 0.79,
+              "rockets": 24
+            },
+            {
+              "week": 8,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.5,
+              "stepShare": 0.83,
+              "rockets": 24
+            }
+          ],
+          "tastings": 0,
+          "afterWorks": 0,
+          "truckEvenings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5431,
+              "feeSek": 0,
+              "night": 0,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 8674,
+              "feeSek": 0,
+              "night": 1,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7021,
+              "feeSek": 0,
+              "night": 2,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6448,
+              "feeSek": 0,
+              "night": 3,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7314,
+              "feeSek": 0,
+              "night": 4,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6829,
+              "feeSek": 0,
+              "night": 5,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4930,
+              "feeSek": 0,
+              "night": 6,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5795,
+              "feeSek": 0,
+              "night": 7,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6606,
+              "feeSek": 0,
+              "night": 8,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5993,
+              "feeSek": 0,
+              "night": 9,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6140,
+              "feeSek": 0,
+              "night": 10,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7226,
+              "feeSek": 0,
+              "night": 11,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4760,
+              "feeSek": 0,
+              "night": 12,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5768,
+              "feeSek": 0,
+              "night": 13,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5905,
+              "feeSek": 0,
+              "night": 14,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7225,
+              "feeSek": 0,
+              "night": 15,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7241,
+              "feeSek": 0,
+              "night": 16,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7195,
+              "feeSek": 0,
+              "night": 17,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3553,
+              "feeSek": 0,
+              "night": 18,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5177,
+              "feeSek": 0,
+              "night": 19,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5119,
+              "feeSek": 0,
+              "night": 20,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6419,
+              "feeSek": 0,
+              "night": 21,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6937,
+              "feeSek": 0,
+              "night": 22,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6981,
+              "feeSek": 0,
+              "night": 23,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6150,
+              "feeSek": 0,
+              "night": 24,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5621,
+              "feeSek": 0,
+              "night": 25,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6030,
+              "feeSek": 0,
+              "night": 26,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6472,
+              "feeSek": 0,
+              "night": 27,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6812,
+              "feeSek": 0,
+              "night": 28,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6761,
+              "feeSek": 0,
+              "night": 29,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4190,
+              "feeSek": 0,
+              "night": 30,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4326,
+              "feeSek": 0,
+              "night": 31,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4928,
+              "feeSek": 0,
+              "night": 32,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6128,
+              "feeSek": 0,
+              "night": 33,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7119,
+              "feeSek": 0,
+              "night": 34,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7044,
+              "feeSek": 0,
+              "night": 35,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7676,
+              "feeSek": 0,
+              "night": 36,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6192,
+              "feeSek": 0,
+              "night": 37,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6384,
+              "feeSek": 0,
+              "night": 38,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6666,
+              "feeSek": 0,
+              "night": 39,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6671,
+              "feeSek": 0,
+              "night": 40,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5957,
+              "feeSek": 0,
+              "night": 41,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4384,
+              "feeSek": 0,
+              "night": 42,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6290,
+              "feeSek": 0,
+              "night": 43,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6151,
+              "feeSek": 0,
+              "night": 44,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7054,
+              "feeSek": 0,
+              "night": 45,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5669,
+              "feeSek": 0,
+              "night": 46,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6845,
+              "feeSek": 0,
+              "night": 47,
+              "regulars": 0
+            }
+          ],
+          "following": 0
+        },
+        {
+          "seed": 2,
+          "villageRanks": [
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 2,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 2,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 2,
+              "of": 4
+            },
+            {
+              "week": 3,
+              "rank": 3,
+              "of": 5
+            },
+            {
+              "week": 3,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 4,
+              "rank": 2,
+              "of": 5
+            },
+            {
+              "week": 4,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 5,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 5,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 4,
+              "of": 4
+            },
+            {
+              "week": 6,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 6,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 2,
+              "of": 4
+            },
+            {
+              "week": 7,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 7,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 2,
+              "of": 4
+            },
+            {
+              "week": 8,
+              "rank": 3,
+              "of": 5
+            },
+            {
+              "week": 8,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 2,
+              "of": 7
+            }
+          ],
+          "ladderWeeks": {
+            "vinbar": null,
+            "bistro": null,
+            "step": "foodtruck"
+          },
+          "startCash": 15000,
+          "weeks": [
+            {
+              "week": 1,
+              "credits": 100,
+              "resultSek": 14036,
+              "revenueSek": 35822,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 29036,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 2,
+              "credits": 204,
+              "resultSek": 8425,
+              "revenueSek": 30162,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 37461,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 3,
+              "credits": 297,
+              "resultSek": 13986,
+              "revenueSek": 37030,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 51447,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 4,
+              "credits": 380,
+              "resultSek": 11807,
+              "revenueSek": 33966,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 63254,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 5,
+              "credits": 491,
+              "resultSek": 15449,
+              "revenueSek": 39139,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 78703,
+              "targetSek": 38000,
+              "targetHit": true,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 6,
+              "credits": 574,
+              "resultSek": 13092,
+              "revenueSek": 35660,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 91795,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 7,
+              "credits": 678,
+              "resultSek": 11589,
+              "revenueSek": 33532,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 103384,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 8,
+              "credits": 757,
+              "resultSek": 11682,
+              "revenueSek": 33800,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 115065,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            }
+          ],
+          "mornings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "needMin": 42.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 85,
+              "rep": 0.6,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "needMin": 58.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 117,
+              "rep": 0.5309372729260914,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "needMin": 71,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 142,
+              "rep": 0.48855384330512597,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "needMin": 80,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 160,
+              "rep": 0.5,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "needMin": 114,
+              "capacityMin": 90,
+              "backlogMin": 24,
+              "hand": true,
+              "booked": 228,
+              "rep": 0.22146009300744923,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "needMin": 125.5,
+              "capacityMin": 90,
+              "backlogMin": 35.5,
+              "hand": true,
+              "booked": 251,
+              "rep": 0.17492699846971113,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "needMin": 69.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 139,
+              "rep": 0.1703074623210973,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "needMin": 91.5,
+              "capacityMin": 90,
+              "backlogMin": 1.5,
+              "hand": true,
+              "booked": 183,
+              "rep": 0.15015929983705095,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "needMin": 77.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 155,
+              "rep": 0.19019447046676316,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "needMin": 84.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 169,
+              "rep": 0.15155948591965424,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "needMin": 96.5,
+              "capacityMin": 90,
+              "backlogMin": 6.5,
+              "hand": true,
+              "booked": 193,
+              "rep": 0.17423158652391132,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "needMin": 80,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 160,
+              "rep": 0.12018292267585451,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "needMin": 72.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 145,
+              "rep": 0.19228905374760996,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "needMin": 91.5,
+              "capacityMin": 90,
+              "backlogMin": 1.5,
+              "hand": true,
+              "booked": 183,
+              "rep": 0.18170802392912483,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "needMin": 84,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 168,
+              "rep": 0.15018089967318077,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "needMin": 93.5,
+              "capacityMin": 90,
+              "backlogMin": 3.5,
+              "hand": true,
+              "booked": 187,
+              "rep": 0.150183599672217,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "needMin": 199.5,
+              "capacityMin": 90,
+              "backlogMin": 109.5,
+              "hand": true,
+              "booked": 399,
+              "rep": 0.1501862996722169,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "needMin": 171,
+              "capacityMin": 90,
+              "backlogMin": 81,
+              "hand": true,
+              "booked": 342,
+              "rep": 0.12019912288215942,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "needMin": 71,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 142,
+              "rep": 0.17037659274634387,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "needMin": 72,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 144,
+              "rep": 0.2020025350705898,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "needMin": 66.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 133,
+              "rep": 0.1580650288620529,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "needMin": 73.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 147,
+              "rep": 0.150201149672197,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "needMin": 111.5,
+              "capacityMin": 90,
+              "backlogMin": 21.5,
+              "hand": true,
+              "booked": 223,
+              "rep": 0.16231875631079726,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "needMin": 117.5,
+              "capacityMin": 90,
+              "backlogMin": 27.5,
+              "hand": true,
+              "booked": 235,
+              "rep": 0.1502065496722169,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "mon",
+              "needMin": 79,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 158,
+              "rep": 0.17040898355647413,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "tue",
+              "needMin": 92.5,
+              "capacityMin": 90,
+              "backlogMin": 2.5,
+              "hand": true,
+              "booked": 185,
+              "rep": 0.15284762868310764,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "wed",
+              "needMin": 87.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 175,
+              "rep": 0.15020924999998017,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "thu",
+              "needMin": 117.5,
+              "capacityMin": 90,
+              "backlogMin": 27.5,
+              "hand": true,
+              "booked": 235,
+              "rep": 0.1504672914815907,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "fri",
+              "needMin": 134,
+              "capacityMin": 90,
+              "backlogMin": 44,
+              "hand": true,
+              "booked": 268,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "sat",
+              "needMin": 168,
+              "capacityMin": 90,
+              "backlogMin": 78,
+              "hand": true,
+              "booked": 336,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "mon",
+              "needMin": 71,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 142,
+              "rep": 0.17041167937812499,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "tue",
+              "needMin": 86,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 172,
+              "rep": 0.12367376228903086,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "wed",
+              "needMin": 85.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 171,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "thu",
+              "needMin": 105.5,
+              "capacityMin": 90,
+              "backlogMin": 15.5,
+              "hand": true,
+              "booked": 211,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "fri",
+              "needMin": 122,
+              "capacityMin": 90,
+              "backlogMin": 32,
+              "hand": true,
+              "booked": 244,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "sat",
+              "needMin": 148,
+              "capacityMin": 90,
+              "backlogMin": 58,
+              "hand": true,
+              "booked": 296,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "mon",
+              "needMin": 69.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 139,
+              "rep": 0.17041167937812499,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "tue",
+              "needMin": 91.5,
+              "capacityMin": 90,
+              "backlogMin": 1.5,
+              "hand": true,
+              "booked": 183,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "wed",
+              "needMin": 84.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 169,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "thu",
+              "needMin": 94,
+              "capacityMin": 90,
+              "backlogMin": 4,
+              "hand": true,
+              "booked": 188,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "fri",
+              "needMin": 123.5,
+              "capacityMin": 90,
+              "backlogMin": 33.5,
+              "hand": true,
+              "booked": 247,
+              "rep": 0.16332067324488866,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "sat",
+              "needMin": 133,
+              "capacityMin": 90,
+              "backlogMin": 43,
+              "hand": true,
+              "booked": 266,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "mon",
+              "needMin": 71,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 142,
+              "rep": 0.17041167937812499,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "tue",
+              "needMin": 81,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 162,
+              "rep": 0.15582635038857837,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "wed",
+              "needMin": 93.5,
+              "capacityMin": 90,
+              "backlogMin": 3.5,
+              "hand": true,
+              "booked": 187,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "thu",
+              "needMin": 104,
+              "capacityMin": 90,
+              "backlogMin": 14,
+              "hand": true,
+              "booked": 208,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "fri",
+              "needMin": 127,
+              "capacityMin": 90,
+              "backlogMin": 37,
+              "hand": true,
+              "booked": 254,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "sat",
+              "needMin": 210,
+              "capacityMin": 90,
+              "backlogMin": 120,
+              "hand": true,
+              "booked": 420,
+              "rep": 0.15020925,
+              "concept": null
+            }
+          ],
+          "closedWeek": null,
+          "renegotiated": false,
+          "owned": [],
+          "star": false,
+          "starWeek": null,
+          "goldWeek": null,
+          "starWeeks": [
+            {
+              "week": 1,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.57,
+              "stepShare": 0.86,
+              "rockets": 23
+            },
+            {
+              "week": 2,
+              "held": false,
+              "reputation": 0.172,
+              "judgement": 0.56,
+              "stepShare": 0.85,
+              "rockets": 25
+            },
+            {
+              "week": 3,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.48,
+              "stepShare": 0.83,
+              "rockets": 25
+            },
+            {
+              "week": 4,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.46,
+              "stepShare": 0.82,
+              "rockets": 24
+            },
+            {
+              "week": 5,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.6,
+              "stepShare": 0.87,
+              "rockets": 25
+            },
+            {
+              "week": 6,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.46,
+              "stepShare": 0.82,
+              "rockets": 24
+            },
+            {
+              "week": 7,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.58,
+              "stepShare": 0.86,
+              "rockets": 24
+            },
+            {
+              "week": 8,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.42,
+              "stepShare": 0.81,
+              "rockets": 24
+            }
+          ],
+          "tastings": 0,
+          "afterWorks": 0,
+          "truckEvenings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5095,
+              "feeSek": 0,
+              "night": 0,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4598,
+              "feeSek": 0,
+              "night": 1,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 8579,
+              "feeSek": 0,
+              "night": 2,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5177,
+              "feeSek": 0,
+              "night": 3,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6004,
+              "feeSek": 0,
+              "night": 4,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6369,
+              "feeSek": 0,
+              "night": 5,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5597,
+              "feeSek": 0,
+              "night": 6,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4178,
+              "feeSek": 0,
+              "night": 7,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6521,
+              "feeSek": 0,
+              "night": 8,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4585,
+              "feeSek": 0,
+              "night": 9,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4431,
+              "feeSek": 0,
+              "night": 10,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4851,
+              "feeSek": 0,
+              "night": 11,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6270,
+              "feeSek": 0,
+              "night": 12,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6349,
+              "feeSek": 0,
+              "night": 13,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5774,
+              "feeSek": 0,
+              "night": 14,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6150,
+              "feeSek": 0,
+              "night": 15,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5628,
+              "feeSek": 0,
+              "night": 16,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6859,
+              "feeSek": 0,
+              "night": 17,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5470,
+              "feeSek": 0,
+              "night": 18,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6154,
+              "feeSek": 0,
+              "night": 19,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5874,
+              "feeSek": 0,
+              "night": 20,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3366,
+              "feeSek": 0,
+              "night": 21,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7192,
+              "feeSek": 0,
+              "night": 22,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5910,
+              "feeSek": 0,
+              "night": 23,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6645,
+              "feeSek": 0,
+              "night": 24,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6126,
+              "feeSek": 0,
+              "night": 25,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5836,
+              "feeSek": 0,
+              "night": 26,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6774,
+              "feeSek": 0,
+              "night": 27,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7859,
+              "feeSek": 0,
+              "night": 28,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5898,
+              "feeSek": 0,
+              "night": 29,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3234,
+              "feeSek": 0,
+              "night": 30,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5326,
+              "feeSek": 0,
+              "night": 31,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6657,
+              "feeSek": 0,
+              "night": 32,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6051,
+              "feeSek": 0,
+              "night": 33,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6684,
+              "feeSek": 0,
+              "night": 34,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7708,
+              "feeSek": 0,
+              "night": 35,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3505,
+              "feeSek": 0,
+              "night": 36,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5975,
+              "feeSek": 0,
+              "night": 37,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4299,
+              "feeSek": 0,
+              "night": 38,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6339,
+              "feeSek": 0,
+              "night": 39,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6461,
+              "feeSek": 0,
+              "night": 40,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6954,
+              "feeSek": 0,
+              "night": 41,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5273,
+              "feeSek": 0,
+              "night": 42,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5676,
+              "feeSek": 0,
+              "night": 43,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4612,
+              "feeSek": 0,
+              "night": 44,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6337,
+              "feeSek": 0,
+              "night": 45,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4910,
+              "feeSek": 0,
+              "night": 46,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6992,
+              "feeSek": 0,
+              "night": 47,
+              "regulars": 0
+            }
+          ],
+          "following": 0
+        },
+        {
+          "seed": 3,
+          "villageRanks": [
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 2,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 2,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 3,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 3,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 6,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 4,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 4,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 5,
+              "rank": 2,
+              "of": 5
+            },
+            {
+              "week": 5,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 6,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 6,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 7,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 7,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 2,
+              "of": 4
+            },
+            {
+              "week": 8,
+              "rank": 3,
+              "of": 5
+            },
+            {
+              "week": 8,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 3,
+              "of": 7
+            }
+          ],
+          "ladderWeeks": {
+            "vinbar": null,
+            "bistro": null,
+            "step": "foodtruck"
+          },
+          "startCash": 15000,
+          "weeks": [
+            {
+              "week": 1,
+              "credits": 93,
+              "resultSek": 13512,
+              "revenueSek": 35057,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 28512,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 2,
+              "credits": 180,
+              "resultSek": 13861,
+              "revenueSek": 36869,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 42373,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 3,
+              "credits": 263,
+              "resultSek": 12442,
+              "revenueSek": 34973,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 54815,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 4,
+              "credits": 357,
+              "resultSek": 10278,
+              "revenueSek": 31353,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 65094,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 5,
+              "credits": 440,
+              "resultSek": 14454,
+              "revenueSek": 37781,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 79548,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 6,
+              "credits": 516,
+              "resultSek": 7037,
+              "revenueSek": 28127,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 86585,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 7,
+              "credits": 610,
+              "resultSek": 13115,
+              "revenueSek": 35809,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 99699,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 8,
+              "credits": 683,
+              "resultSek": 9788,
+              "revenueSek": 30865,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 109487,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            }
+          ],
+          "mornings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "needMin": 42.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 85,
+              "rep": 0.6,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "needMin": 58.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 117,
+              "rep": 0.48293427792607335,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "needMin": 62.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 125,
+              "rep": 0.42546291618106047,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "needMin": 66.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 133,
+              "rep": 0.36514814495165043,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "needMin": 113,
+              "capacityMin": 90,
+              "backlogMin": 23,
+              "hand": true,
+              "booked": 226,
+              "rep": 0.1501339517104796,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "needMin": 139,
+              "capacityMin": 90,
+              "backlogMin": 49,
+              "hand": true,
+              "booked": 278,
+              "rep": 0.15013831185183288,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "needMin": 71.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 143,
+              "rep": 0.1403137201395532,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "needMin": 91.5,
+              "capacityMin": 90,
+              "backlogMin": 1.5,
+              "hand": true,
+              "booked": 183,
+              "rep": 0.15015631167664156,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "needMin": 73,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 146,
+              "rep": 0.15016064967320036,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "needMin": 82,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 164,
+              "rep": 0.15016334967320036,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "needMin": 107,
+              "capacityMin": 90,
+              "backlogMin": 17,
+              "hand": true,
+              "booked": 214,
+              "rep": 0.15016604967320035,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "needMin": 115.5,
+              "capacityMin": 90,
+              "backlogMin": 25.5,
+              "hand": true,
+              "booked": 231,
+              "rep": 0.15016874967320035,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "needMin": 80.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 161,
+              "rep": 0.17033609958311638,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "needMin": 82.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 165,
+              "rep": 0.15017414967418075,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "needMin": 73.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 147,
+              "rep": 0.15017819950982042,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "needMin": 73,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 146,
+              "rep": 0.16176304030116553,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "needMin": 180.5,
+              "capacityMin": 90,
+              "backlogMin": 90.5,
+              "hand": true,
+              "booked": 361,
+              "rep": 0.15018359967221687,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "needMin": 188,
+              "capacityMin": 90,
+              "backlogMin": 98,
+              "hand": true,
+              "booked": 376,
+              "rep": 0.15018494983608854,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "needMin": 71,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 142,
+              "rep": 0.17036579489651385,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "needMin": 70.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 141,
+              "rep": 0.15018899967322005,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "needMin": 63,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 126,
+              "rep": 0.18783479056449898,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "needMin": 83.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 167,
+              "rep": 0.22198950156276873,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "needMin": 117.5,
+              "capacityMin": 90,
+              "backlogMin": 27.5,
+              "hand": true,
+              "booked": 235,
+              "rep": 0.15020114934445367,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "needMin": 100.5,
+              "capacityMin": 90,
+              "backlogMin": 10.5,
+              "hand": true,
+              "booked": 201,
+              "rep": 0.12021261788309748,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "mon",
+              "needMin": 71,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 142,
+              "rep": 0.1704008889717037,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "tue",
+              "needMin": 72,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 144,
+              "rep": 0.1929891059926799,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "wed",
+              "needMin": 72.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 145,
+              "rep": 0.150209249672217,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "thu",
+              "needMin": 109,
+              "capacityMin": 90,
+              "backlogMin": 19,
+              "hand": true,
+              "booked": 218,
+              "rep": 0.15125263679856896,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "fri",
+              "needMin": 156,
+              "capacityMin": 90,
+              "backlogMin": 66,
+              "hand": true,
+              "booked": 312,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "sat",
+              "needMin": 173.5,
+              "capacityMin": 90,
+              "backlogMin": 83.5,
+              "hand": true,
+              "booked": 347,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "mon",
+              "needMin": 79,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 158,
+              "rep": 0.17041167937812499,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "tue",
+              "needMin": 74.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 149,
+              "rep": 0.120219375,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "wed",
+              "needMin": 66.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 133,
+              "rep": 0.16202509380283878,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "thu",
+              "needMin": 84.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 169,
+              "rep": 0.16355279533268854,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "fri",
+              "needMin": 124.5,
+              "capacityMin": 90,
+              "backlogMin": 34.5,
+              "hand": true,
+              "booked": 249,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "sat",
+              "needMin": 132.5,
+              "capacityMin": 90,
+              "backlogMin": 42.5,
+              "hand": true,
+              "booked": 265,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "mon",
+              "needMin": 79,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 158,
+              "rep": 0.17041167937812499,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "tue",
+              "needMin": 81,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 162,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "wed",
+              "needMin": 73,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 146,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "thu",
+              "needMin": 84,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 168,
+              "rep": 0.16061509136739535,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "fri",
+              "needMin": 123,
+              "capacityMin": 90,
+              "backlogMin": 33,
+              "hand": true,
+              "booked": 246,
+              "rep": 0.15486228419026954,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "sat",
+              "needMin": 131.5,
+              "capacityMin": 90,
+              "backlogMin": 41.5,
+              "hand": true,
+              "booked": 263,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "mon",
+              "needMin": 80.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 161,
+              "rep": 0.18324722816017125,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "tue",
+              "needMin": 79.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 159,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "wed",
+              "needMin": 80,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 160,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "thu",
+              "needMin": 91,
+              "capacityMin": 90,
+              "backlogMin": 1,
+              "hand": true,
+              "booked": 182,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "fri",
+              "needMin": 118.5,
+              "capacityMin": 90,
+              "backlogMin": 28.5,
+              "hand": true,
+              "booked": 237,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "sat",
+              "needMin": 181,
+              "capacityMin": 90,
+              "backlogMin": 91,
+              "hand": true,
+              "booked": 362,
+              "rep": 0.120219375,
+              "concept": null
+            }
+          ],
+          "closedWeek": null,
+          "renegotiated": false,
+          "owned": [],
+          "star": false,
+          "starWeek": null,
+          "goldWeek": null,
+          "starWeeks": [
+            {
+              "week": 1,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0.52,
+              "stepShare": 0.84,
+              "rockets": 23
+            },
+            {
+              "week": 2,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.5,
+              "stepShare": 0.83,
+              "rockets": 24
+            },
+            {
+              "week": 3,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.44,
+              "stepShare": 0.81,
+              "rockets": 25
+            },
+            {
+              "week": 4,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.57,
+              "stepShare": 0.86,
+              "rockets": 23
+            },
+            {
+              "week": 5,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.46,
+              "stepShare": 0.82,
+              "rockets": 24
+            },
+            {
+              "week": 6,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.43,
+              "stepShare": 0.81,
+              "rockets": 23
+            },
+            {
+              "week": 7,
+              "held": false,
+              "reputation": 0.163,
+              "judgement": 0.52,
+              "stepShare": 0.84,
+              "rockets": 25
+            },
+            {
+              "week": 8,
+              "held": false,
+              "reputation": 0.153,
+              "judgement": 0.45,
+              "stepShare": 0.82,
+              "rockets": 22
+            }
+          ],
+          "tastings": 0,
+          "afterWorks": 0,
+          "truckEvenings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6692,
+              "feeSek": 0,
+              "night": 0,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6471,
+              "feeSek": 0,
+              "night": 1,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4947,
+              "feeSek": 0,
+              "night": 2,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6721,
+              "feeSek": 0,
+              "night": 3,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5166,
+              "feeSek": 0,
+              "night": 4,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5061,
+              "feeSek": 0,
+              "night": 5,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5469,
+              "feeSek": 0,
+              "night": 6,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7191,
+              "feeSek": 0,
+              "night": 7,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5442,
+              "feeSek": 0,
+              "night": 8,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5960,
+              "feeSek": 0,
+              "night": 9,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6266,
+              "feeSek": 0,
+              "night": 10,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6542,
+              "feeSek": 0,
+              "night": 11,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6668,
+              "feeSek": 0,
+              "night": 12,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5801,
+              "feeSek": 0,
+              "night": 13,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4473,
+              "feeSek": 0,
+              "night": 14,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4572,
+              "feeSek": 0,
+              "night": 15,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6383,
+              "feeSek": 0,
+              "night": 16,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7077,
+              "feeSek": 0,
+              "night": 17,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6020,
+              "feeSek": 0,
+              "night": 18,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4612,
+              "feeSek": 0,
+              "night": 19,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3920,
+              "feeSek": 0,
+              "night": 20,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5173,
+              "feeSek": 0,
+              "night": 21,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3955,
+              "feeSek": 0,
+              "night": 22,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7674,
+              "feeSek": 0,
+              "night": 23,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5230,
+              "feeSek": 0,
+              "night": 24,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6020,
+              "feeSek": 0,
+              "night": 25,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4945,
+              "feeSek": 0,
+              "night": 26,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7224,
+              "feeSek": 0,
+              "night": 27,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7305,
+              "feeSek": 0,
+              "night": 28,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7058,
+              "feeSek": 0,
+              "night": 29,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3751,
+              "feeSek": 0,
+              "night": 30,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3489,
+              "feeSek": 0,
+              "night": 31,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4311,
+              "feeSek": 0,
+              "night": 32,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5166,
+              "feeSek": 0,
+              "night": 33,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5136,
+              "feeSek": 0,
+              "night": 34,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6275,
+              "feeSek": 0,
+              "night": 35,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5777,
+              "feeSek": 0,
+              "night": 36,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7401,
+              "feeSek": 0,
+              "night": 37,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5921,
+              "feeSek": 0,
+              "night": 38,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4812,
+              "feeSek": 0,
+              "night": 39,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6519,
+              "feeSek": 0,
+              "night": 40,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5379,
+              "feeSek": 0,
+              "night": 41,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5682,
+              "feeSek": 0,
+              "night": 42,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5444,
+              "feeSek": 0,
+              "night": 43,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5783,
+              "feeSek": 0,
+              "night": 44,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4885,
+              "feeSek": 0,
+              "night": 45,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3181,
+              "feeSek": 0,
+              "night": 46,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5889,
+              "feeSek": 0,
+              "night": 47,
+              "regulars": 0
+            }
+          ],
+          "following": 0
+        },
+        {
+          "seed": 4,
+          "villageRanks": [
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 1,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 2,
+              "rank": 5,
+              "of": 5
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 2,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 3,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 3,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 3,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 4,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 4,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 4,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 1,
+              "of": 4
+            },
+            {
+              "week": 5,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 5,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 5,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 2,
+              "of": 4
+            },
+            {
+              "week": 6,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 6,
+              "rank": 7,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 6,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 2,
+              "of": 4
+            },
+            {
+              "week": 7,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 7,
+              "rank": 5,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 2,
+              "of": 7
+            },
+            {
+              "week": 7,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 2,
+              "of": 4
+            },
+            {
+              "week": 8,
+              "rank": 1,
+              "of": 5
+            },
+            {
+              "week": 8,
+              "rank": 1,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 4,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 3,
+              "of": 7
+            },
+            {
+              "week": 8,
+              "rank": 3,
+              "of": 7
+            }
+          ],
+          "ladderWeeks": {
+            "vinbar": null,
+            "bistro": null,
+            "step": "foodtruck"
+          },
+          "startCash": 15000,
+          "weeks": [
+            {
+              "week": 1,
+              "credits": 107,
+              "resultSek": 18215,
+              "revenueSek": 42134,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 33215,
+              "targetSek": 38000,
+              "targetHit": true,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 2,
+              "credits": 180,
+              "resultSek": 8958,
+              "revenueSek": 29300,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 42173,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 3,
+              "credits": 270,
+              "resultSek": 12520,
+              "revenueSek": 34682,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 54692,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 4,
+              "credits": 364,
+              "resultSek": 9601,
+              "revenueSek": 31926,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 64294,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 5,
+              "credits": 461,
+              "resultSek": 11212,
+              "revenueSek": 32755,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 75505,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 6,
+              "credits": 548,
+              "resultSek": 5581,
+              "revenueSek": 25801,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 81086,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 7,
+              "credits": 631,
+              "resultSek": 11055,
+              "revenueSek": 32433,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 92141,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            },
+            {
+              "week": 8,
+              "credits": 711,
+              "resultSek": 13264,
+              "revenueSek": 36018,
+              "rentSek": 1500,
+              "wagesSek": 3000,
+              "cashEnd": 105405,
+              "targetSek": 38000,
+              "targetHit": false,
+              "renegotiatedNow": false,
+              "closedNow": false
+            }
+          ],
+          "mornings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "needMin": 42.5,
+              "capacityMin": 50,
+              "backlogMin": 0,
+              "hand": false,
+              "booked": 85,
+              "rep": 0.6,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "needMin": 58.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 117,
+              "rep": 0.4839540229260745,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "needMin": 62.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 125,
+              "rep": 0.4195642601501597,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "needMin": 60,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 120,
+              "rep": 0.39337200682696083,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "needMin": 114.5,
+              "capacityMin": 90,
+              "backlogMin": 24.5,
+              "hand": true,
+              "booked": 229,
+              "rep": 0.30929775148628563,
+              "concept": null
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "needMin": 123,
+              "capacityMin": 90,
+              "backlogMin": 33,
+              "hand": true,
+              "booked": 246,
+              "rep": 0.21932409916258105,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "needMin": 71,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 142,
+              "rep": 0.1746620228124222,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "needMin": 70.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 141,
+              "rep": 0.15421568968484514,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "needMin": 75.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 151,
+              "rep": 0.15544592502771898,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "needMin": 65.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 131,
+              "rep": 0.1201752172637092,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "needMin": 124.5,
+              "capacityMin": 90,
+              "backlogMin": 34.5,
+              "hand": true,
+              "booked": 249,
+              "rep": 0.15016604988409257,
+              "concept": null
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "needMin": 117,
+              "capacityMin": 90,
+              "backlogMin": 27,
+              "hand": true,
+              "booked": 234,
+              "rep": 0.15343579764849227,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "needMin": 79,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 158,
+              "rep": 0.17033879507745192,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "needMin": 91.5,
+              "capacityMin": 90,
+              "backlogMin": 1.5,
+              "hand": true,
+              "booked": 183,
+              "rep": 0.15017414983707064,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "needMin": 85,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 170,
+              "rep": 0.15025046990916105,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "needMin": 92.5,
+              "capacityMin": 90,
+              "backlogMin": 2.5,
+              "hand": true,
+              "booked": 185,
+              "rep": 0.15018089950834534,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "needMin": 170,
+              "capacityMin": 90,
+              "backlogMin": 80,
+              "hand": true,
+              "booked": 340,
+              "rep": 0.150183599672197,
+              "concept": null
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "needMin": 208.5,
+              "capacityMin": 90,
+              "backlogMin": 118.5,
+              "hand": true,
+              "booked": 417,
+              "rep": 0.1501862996722169,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "needMin": 80,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 160,
+              "rep": 0.14039141001192104,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "needMin": 93,
+              "capacityMin": 90,
+              "backlogMin": 3,
+              "hand": true,
+              "booked": 186,
+              "rep": 0.15019034983499352,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "needMin": 75.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 151,
+              "rep": 0.1599904799576744,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "needMin": 73,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 146,
+              "rep": 0.18764740411352196,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "needMin": 113,
+              "capacityMin": 90,
+              "backlogMin": 23,
+              "hand": true,
+              "booked": 226,
+              "rep": 0.2486684890535417,
+              "concept": null
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "needMin": 119,
+              "capacityMin": 90,
+              "backlogMin": 29,
+              "hand": true,
+              "booked": 238,
+              "rep": 0.1502051995083452,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "mon",
+              "needMin": 69.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 139,
+              "rep": 0.17040628401205943,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "tue",
+              "needMin": 70.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 141,
+              "rep": 0.1502078998366001,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "wed",
+              "needMin": 66,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 132,
+              "rep": 0.1502092498361085,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "thu",
+              "needMin": 92.5,
+              "capacityMin": 90,
+              "backlogMin": 2.5,
+              "hand": true,
+              "booked": 185,
+              "rep": 0.16121571653980066,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "fri",
+              "needMin": 120,
+              "capacityMin": 90,
+              "backlogMin": 30,
+              "hand": true,
+              "booked": 240,
+              "rep": 0.18079035929776324,
+              "concept": null
+            },
+            {
+              "week": 5,
+              "weekday": "sat",
+              "needMin": 146.5,
+              "capacityMin": 90,
+              "backlogMin": 56.5,
+              "hand": true,
+              "booked": 293,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "mon",
+              "needMin": 70,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 140,
+              "rep": 0.14043192596093748,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "tue",
+              "needMin": 82.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 165,
+              "rep": 0.1839685922589307,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "wed",
+              "needMin": 69.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 139,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "thu",
+              "needMin": 88.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 177,
+              "rep": 0.16232415663858038,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "fri",
+              "needMin": 129.5,
+              "capacityMin": 90,
+              "backlogMin": 39.5,
+              "hand": true,
+              "booked": 259,
+              "rep": 0.16974239897759796,
+              "concept": null
+            },
+            {
+              "week": 6,
+              "weekday": "sat",
+              "needMin": 152.5,
+              "capacityMin": 90,
+              "backlogMin": 62.5,
+              "hand": true,
+              "booked": 305,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "mon",
+              "needMin": 89,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 178,
+              "rep": 0.14043192596093748,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "tue",
+              "needMin": 91.5,
+              "capacityMin": 90,
+              "backlogMin": 1.5,
+              "hand": true,
+              "booked": 183,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "wed",
+              "needMin": 89,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 178,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "thu",
+              "needMin": 67.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 135,
+              "rep": 0.120219375,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "fri",
+              "needMin": 111,
+              "capacityMin": 90,
+              "backlogMin": 21,
+              "hand": true,
+              "booked": 222,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 7,
+              "weekday": "sat",
+              "needMin": 121,
+              "capacityMin": 90,
+              "backlogMin": 31,
+              "hand": true,
+              "booked": 242,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "mon",
+              "needMin": 72.5,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 145,
+              "rep": 0.17041167937812499,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "tue",
+              "needMin": 81,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 162,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "wed",
+              "needMin": 77,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 154,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "thu",
+              "needMin": 69,
+              "capacityMin": 90,
+              "backlogMin": 0,
+              "hand": true,
+              "booked": 138,
+              "rep": 0.120219375,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "fri",
+              "needMin": 130.5,
+              "capacityMin": 90,
+              "backlogMin": 40.5,
+              "hand": true,
+              "booked": 261,
+              "rep": 0.15020925,
+              "concept": null
+            },
+            {
+              "week": 8,
+              "weekday": "sat",
+              "needMin": 222,
+              "capacityMin": 90,
+              "backlogMin": 132,
+              "hand": true,
+              "booked": 444,
+              "rep": 0.15020925,
+              "concept": null
+            }
+          ],
+          "closedWeek": null,
+          "renegotiated": false,
+          "owned": [],
+          "star": false,
+          "starWeek": null,
+          "goldWeek": null,
+          "starWeeks": [
+            {
+              "week": 1,
+              "held": false,
+              "reputation": 0.155,
+              "judgement": 0.56,
+              "stepShare": 0.85,
+              "rockets": 25
+            },
+            {
+              "week": 2,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.5,
+              "stepShare": 0.83,
+              "rockets": 20
+            },
+            {
+              "week": 3,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0.55,
+              "stepShare": 0.85,
+              "rockets": 22
+            },
+            {
+              "week": 4,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.54,
+              "stepShare": 0.85,
+              "rockets": 24
+            },
+            {
+              "week": 5,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0.54,
+              "stepShare": 0.85,
+              "rockets": 24
+            },
+            {
+              "week": 6,
+              "held": false,
+              "reputation": 0.12,
+              "judgement": 0.55,
+              "stepShare": 0.85,
+              "rockets": 22
+            },
+            {
+              "week": 7,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.52,
+              "stepShare": 0.84,
+              "rockets": 21
+            },
+            {
+              "week": 8,
+              "held": false,
+              "reputation": 0.15,
+              "judgement": 0.46,
+              "stepShare": 0.82,
+              "rockets": 24
+            }
+          ],
+          "tastings": 0,
+          "afterWorks": 0,
+          "truckEvenings": [
+            {
+              "week": 1,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7093,
+              "feeSek": 0,
+              "night": 0,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7303,
+              "feeSek": 0,
+              "night": 1,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6516,
+              "feeSek": 0,
+              "night": 2,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5732,
+              "feeSek": 0,
+              "night": 3,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 8146,
+              "feeSek": 0,
+              "night": 4,
+              "regulars": 0
+            },
+            {
+              "week": 1,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7345,
+              "feeSek": 0,
+              "night": 5,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5651,
+              "feeSek": 0,
+              "night": 6,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4738,
+              "feeSek": 0,
+              "night": 7,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 502,
+              "feeSek": 0,
+              "night": 8,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5593,
+              "feeSek": 0,
+              "night": 9,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6005,
+              "feeSek": 0,
+              "night": 10,
+              "regulars": 0
+            },
+            {
+              "week": 2,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6811,
+              "feeSek": 0,
+              "night": 11,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5568,
+              "feeSek": 0,
+              "night": 12,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6339,
+              "feeSek": 0,
+              "night": 13,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6562,
+              "feeSek": 0,
+              "night": 14,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6061,
+              "feeSek": 0,
+              "night": 15,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6023,
+              "feeSek": 0,
+              "night": 16,
+              "regulars": 0
+            },
+            {
+              "week": 3,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4128,
+              "feeSek": 0,
+              "night": 17,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7381,
+              "feeSek": 0,
+              "night": 18,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4667,
+              "feeSek": 0,
+              "night": 19,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3690,
+              "feeSek": 0,
+              "night": 20,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3251,
+              "feeSek": 0,
+              "night": 21,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6338,
+              "feeSek": 0,
+              "night": 22,
+              "regulars": 0
+            },
+            {
+              "week": 4,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6599,
+              "feeSek": 0,
+              "night": 23,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5340,
+              "feeSek": 0,
+              "night": 24,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6588,
+              "feeSek": 0,
+              "night": 25,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4712,
+              "feeSek": 0,
+              "night": 26,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5759,
+              "feeSek": 0,
+              "night": 27,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6036,
+              "feeSek": 0,
+              "night": 28,
+              "regulars": 0
+            },
+            {
+              "week": 5,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4321,
+              "feeSek": 0,
+              "night": 29,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 2387,
+              "feeSek": 0,
+              "night": 30,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5736,
+              "feeSek": 0,
+              "night": 31,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 3260,
+              "feeSek": 0,
+              "night": 32,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4820,
+              "feeSek": 0,
+              "night": 33,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5356,
+              "feeSek": 0,
+              "night": 34,
+              "regulars": 0
+            },
+            {
+              "week": 6,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 4243,
+              "feeSek": 0,
+              "night": 35,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5710,
+              "feeSek": 0,
+              "night": 36,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6849,
+              "feeSek": 0,
+              "night": 37,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 835,
+              "feeSek": 0,
+              "night": 38,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5184,
+              "feeSek": 0,
+              "night": 39,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6280,
+              "feeSek": 0,
+              "night": 40,
+              "regulars": 0
+            },
+            {
+              "week": 7,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7575,
+              "feeSek": 0,
+              "night": 41,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "mon",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5553,
+              "feeSek": 0,
+              "night": 42,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "tue",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 6936,
+              "feeSek": 0,
+              "night": 43,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "wed",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5649,
+              "feeSek": 0,
+              "night": 44,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "thu",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5459,
+              "feeSek": 0,
+              "night": 45,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "fri",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 5276,
+              "feeSek": 0,
+              "night": 46,
+              "regulars": 0
+            },
+            {
+              "week": 8,
+              "weekday": "sat",
+              "spot": "torget",
+              "district": "torget",
+              "revenueSek": 7146,
+              "feeSek": 0,
+              "night": 47,
+              "regulars": 0
+            }
+          ],
+          "following": 0
+        }
+      ]
+    }
+  }
+}

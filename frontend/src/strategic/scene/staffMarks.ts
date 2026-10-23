@@ -21,7 +21,9 @@ export const ROLE_OF: Record<StaffKey, StaffRole> = {
   // ORDER 330 H — den extra i vinbaren och bistron (springaren, byråns lärling, den extra handen).
   extra: 'waiter',
   // ORDER 331 C — den andra kocken (gästkocken, eller en kock till i laget).
-  cook2: 'cook'
+  cook2: 'cook',
+  // ORDER 340 C — lokalens servitörer.
+  floor1: 'waiter', floor2: 'waiter', floor3: 'waiter', floor4: 'waiter'
 };
 
 export interface StaffMark {

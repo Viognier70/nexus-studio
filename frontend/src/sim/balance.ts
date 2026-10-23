@@ -541,16 +541,21 @@ export const MARKET = {
 } as const;
 
 // ORDER 339 C (Anders 2026-10-22: "Ett halvtomt rum: stämningen sjunker när beläggningen är låg") — från klockan
-// fromMinute (spelminuter sedan midnatt) sjunker rummets stämning (MOOD_BALANCE roomMoodLift, som notan läser,
-// moodBillPerLift) med liftPerGameMinute så länge färre än threshold av platserna är upptagna, ned till floor.
+// fromMinute (spelminuter sedan midnatt), med dörrarna öppna, räknas beläggningen (upptagna platser mot rummets).
 // Kvällens resultat säger "Rummet kändes tomt" när rummet varit halvtomt minst resultMinutes.
+// ORDER 340 D (Anders 2026-10-23: "Det tomma rummet känns: mätaren sjunker tydligt under 30 % beläggning") — det tomma
+// rummets del av rummets stämning (day.emptyRoomLift, i MOOD_BALANCE roomMoodLift som mätaren, gästerna och notan läser)
+// går mot floor så länge färre än threshold av platserna är upptagna, och tillbaka mot 0 när rummet fylls, med
+// liftPerGameMinute. floor −0,2 är mer än ett av mätarens fem steg (MOOD_BALANCE.threshold). Förut −0,08, som mätaren
+// inte visade (reports/order339/tomt.json). lookBelow: gästerna tittar ut över de tomma borden under den nivån.
 export const EMPTY_ROOM = {
   section: 'Servicen > Gästerna',
   threshold: 0.3,
   fromMinute: 19 * 60,
-  liftPerGameMinute: 0.004,
-  floor: -0.08,
-  resultMinutes: 45
+  liftPerGameMinute: 0.01,
+  floor: -0.2,
+  resultMinutes: 45,
+  lookBelow: -0.05
 } as const;
 
 // ORDER 339 B (Anders 2026-10-22: "En större lokal kostar") — hyran följer ytan och laget följer platserna
@@ -565,8 +570,26 @@ export const PREMISES_SCALE = {
   teamExponent: 0.7,
   // Lönerna gånger (platser / Torgets) ^ wageExponent: ett större lag kostar mindre per person än i proportion.
   wageExponent: 0.4,
-  vinbarSeats: 20
+  vinbarSeats: 20,
+  // ORDER 340 C (Anders 2026-10-23: "Laget syns: fler platser ger fler i personalen i rummet") — en servitör till i
+  // rummet för var seatsPerExtraServer platser över Torgets för steget, högst maxExtraServers (befintliga figurer).
+  seatsPerExtraServer: 10,
+  maxExtraServers: 4
 } as const;
+
+// ORDER 340 A (Anders 2026-10-23: "Torget är det trygga valet: en flytt kostar inredning (engångssumma eller lån, i
+// balance.ts), och Torget har marknadsdagarna och genomströmningen").
+//   fitOutSek: inredningen när vinbaren tas över i en annan lokal än Torget (Torget är inrett).
+//   fitOutPayment: 'loan' läggs på lånet (amorteras med det, LOAN), 'cash' dras ur kassan vid övertagandet.
+//   walkIns: förbipasserande på torget som går in en vanlig kväll, oavsett rykte (Torget har dem, inte lokalerna);
+//   marketDayK: så många gånger fler på marknadsdagarna (sim/districts.ts isMarketDay).
+export const PREMISES_MOVE = {
+  section: 'Ekonomin > Byn',
+  fitOutSek: { torget: 0, kallaren: 25000, salongen: 45000, glashornet: 40000 } as Record<PremisesId, number>,
+  fitOutPayment: 'loan' as 'loan' | 'cash',
+  walkIns: 6,
+  marketDayK: 2
+};
 
 // ORDER 265 (F8) — klassernas normala veckointäkt och startlån.
 // Speldesignen anger inte beloppen. Intäkten är mätt med veckoharnessen:
@@ -1132,7 +1155,10 @@ export const LADDER = {
     vinbar: { businessClass: 'vinbar' as BusinessClassId, building: 'w869907975' as string | null, starsPossible: false, billFactor: 1, wageFactor: 1, revenueFactor: 1 },
     // Bistron: maten i centrum. Notan och lönerna högre än i vinbaren, och
     // priset (insatsen och lånet) räknas på en större veckointäkt.
-    bistro: { businessClass: 'vinbar' as BusinessClassId, building: 'w869907975' as string | null, rebuildsFrom: 'vinbar', starsPossible: true, billFactor: 1.15, wageFactor: 1.08, revenueFactor: 1.25 }
+    // ORDER 340 B (Anders 2026-10-23: "Bistrosteget får aldrig sänka resultatet för den starka spelaren") — notan 1,35
+    // (förut 1,15): med 1,15 gav bistron mentorn mindre än vinbaren i fyra lokaler av fem, eftersom insatsen, ombyggnaden
+    // på lånet och de tre stängda dagarna inte vägdes upp (reports/order340/kal1.json, kal2-bill/).
+    bistro: { businessClass: 'vinbar' as BusinessClassId, building: 'w869907975' as string | null, rebuildsFrom: 'vinbar', starsPossible: true, billFactor: 1.35, wageFactor: 1.08, revenueFactor: 1.25 }
   },
   // Kraven för steget: kassan vid dagens slut, byns rykte (0–1, 50 av 100 =
   // 0,5) och medaljerna. Bistron: silver i Metodköket och brons i Stensöta.

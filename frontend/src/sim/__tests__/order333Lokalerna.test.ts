@@ -1,5 +1,7 @@
 // ORDER 333 D — vinbarens lokal (avsnitt 8 punkt 4): spelaren väljer lokal när vinbaren tas över, lokalens kvarter
 // styr gästerna och klassen är densamma.
+import { PREMISES_MOVE } from '../balance';
+import { fitOutSek } from '../ladder';
 import { describe, expect, it } from 'vitest';
 import { reducer } from '../../strategic/simulation/reducer';
 import { firstDayOfWeek } from '../calendar';
@@ -40,14 +42,16 @@ describe('ORDER 333 D — lokalerna', () => {
     }
   });
 
-  it('klassen är densamma: samma klass, lån och insats i alla lokaler', () => {
+  it('klassen är densamma: samma klass, lån och insats i alla lokaler (ORDER 340 A: lånet med inredningen)', () => {
     const s = offered();
     const takes = PREMISES_IDS.map((p) => reducer(s, { type: 'LADDER_TAKE', premises: p }));
-    for (const t of takes) {
+    takes.forEach((t, i) => {
       expect(t.economy.businessClass).toBe(takes[0].economy.businessClass);
-      expect(t.economy.loan).toEqual(takes[0].economy.loan);
-      expect(t.cash).toBe(takes[0].cash);
-    }
+      // ORDER 340 A — inredningen i en annan lokal än Torget läggs på lånet (balance.ts PREMISES_MOVE).
+      const fit = PREMISES_MOVE.fitOutPayment === 'loan' ? fitOutSek(PREMISES_IDS[i]) : 0;
+      expect(t.economy.loan).toEqual({ ...takes[0].economy.loan, originalSek: takes[0].economy.loan!.originalSek + fit, principalSek: takes[0].economy.loan!.principalSek + fit });
+      expect(t.cash).toBe(takes[0].cash - (PREMISES_MOVE.fitOutPayment === 'cash' ? fitOutSek(PREMISES_IDS[i]) : 0));
+    });
   });
 
   it('lokalens kvarter styr gästerna: Torget är dagens, de andra skiljer sig', () => {

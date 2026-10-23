@@ -16,6 +16,7 @@ import {
   meetsClass,
   settleWeek,
   startLoanSek,
+  torgetWalkInsTonight,
   weeklyRentSek
 } from '../economy';
 import { ECONOMY, FLOOR, LOAN, MARKET, RENT, SEASON } from '../balance';
@@ -217,7 +218,8 @@ describe('ORDER 265 — marknaden', () => {
 
   it('dagens tak följer poolen och kalendern', () => {
     const s = makeInitialState(1);
-    expect(dailyGuestCap(s)).toBe(Math.floor(MARKET.basePoolPerDay * calendarFor(1).guestFactor * MARKET.baseShareCap));
+    // ORDER 340 A — och folket på torget som går in (torgetWalkInsTonight; krogen står vid Torget).
+    expect(dailyGuestCap(s)).toBe(Math.floor(MARKET.basePoolPerDay * calendarFor(1).guestFactor * MARKET.baseShareCap) + torgetWalkInsTonight(s));
   });
 
   it('en service tar aldrig emot fler gäster än taket', () => {

@@ -1,0 +1,1402 @@
+{
+  "definition": "ORDER 340 E. Rader ur reports/order340/lokaler (scripts/order340-lokaler.sh): alla spelartyper tar över vinbaren vecka 2 i lokalen (KARNAN_TAKEOVER_WEEK), också de som annars aldrig når den. closed = stängda säsonger, meanCashEnd = medelkassan vid säsongens slut (kr), lowestCash = lägsta kassan, renegotiated = säsonger med omförhandlat lån, reachedBistro = säsonger som nådde bistron, bistroWeekMedian = medianveckan dit, starEarned = säsonger med stjärna. ranking = lokalerna efter medelkassan per spelartyp; goal = målen i ORDER 340 (A: slarvigBestTorget, lasareBestNotTorget, noPremisesBestForAll; B: bistroStep, mentorn mot mentornVinbar som aldrig tar bistron).",
+  "rows": {
+    "bistro": {
+      "torget": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 101203,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 11,
+        "bistroWeekMedian": 5,
+        "starEarned": 7
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 115450,
+        "lowestCash": 29747,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 12,
+        "bistroWeekMedian": 4,
+        "starEarned": 11
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 90918,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 6,
+        "bistroWeekMedian": 5,
+        "starEarned": 5
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 119569,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 16,
+        "bistroWeekMedian": 5,
+        "starEarned": 12
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 113737,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 16,
+        "bistroWeekMedian": 4,
+        "starEarned": 10
+      }
+    },
+    "enkel": {
+      "torget": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 90304,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 4,
+        "starEarned": 18
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 142500,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 3,
+        "starEarned": 19
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 132796,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 3,
+        "starEarned": 19
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 119483,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 3,
+        "starEarned": 19
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 166805,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 3,
+        "starEarned": 19
+      }
+    },
+    "forsiktig": {
+      "torget": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 99465,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 10,
+        "bistroWeekMedian": 6,
+        "starEarned": 4
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 108126,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 12,
+        "bistroWeekMedian": 6,
+        "starEarned": 8
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 94866,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 5,
+        "bistroWeekMedian": 6,
+        "starEarned": 3
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 107891,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 15,
+        "bistroWeekMedian": 6,
+        "starEarned": 10
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 106262,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 18,
+        "bistroWeekMedian": 5,
+        "starEarned": 9
+      }
+    },
+    "halva": {
+      "torget": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -49726,
+        "lowestCash": -77266,
+        "renegotiated": 20,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -44238,
+        "lowestCash": -75483,
+        "renegotiated": 19,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -44207,
+        "lowestCash": -63250,
+        "renegotiated": 17,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -49273,
+        "lowestCash": -77828,
+        "renegotiated": 20,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -53526,
+        "lowestCash": -86176,
+        "renegotiated": 20,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "halvbra": {
+      "torget": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -25407,
+        "lowestCash": -35465,
+        "renegotiated": 20,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -31629,
+        "lowestCash": -43885,
+        "renegotiated": 20,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -33735,
+        "lowestCash": -50954,
+        "renegotiated": 20,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -29139,
+        "lowestCash": -39445,
+        "renegotiated": 20,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -39541,
+        "lowestCash": -51042,
+        "renegotiated": 20,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "ignorerar": {
+      "torget": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -58978,
+        "lowestCash": -78585,
+        "renegotiated": 20,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -47207,
+        "lowestCash": -66803,
+        "renegotiated": 13,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -47903,
+        "lowestCash": -92369,
+        "renegotiated": 11,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -62801,
+        "lowestCash": -83927,
+        "renegotiated": 10,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -60641,
+        "lowestCash": -97660,
+        "renegotiated": 20,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "ignorerarUtbildad": {
+      "torget": {
+        "seeds": 20,
+        "closed": 12,
+        "meanCashEnd": -9633,
+        "lowestCash": -41054,
+        "renegotiated": 5,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 14,
+        "meanCashEnd": -8242,
+        "lowestCash": -38271,
+        "renegotiated": 2,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 18,
+        "meanCashEnd": -15263,
+        "lowestCash": -31674,
+        "renegotiated": 3,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 18,
+        "meanCashEnd": -21551,
+        "lowestCash": -43517,
+        "renegotiated": 1,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -45013,
+        "lowestCash": -66121,
+        "renegotiated": 10,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "klok": {
+      "torget": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 91520,
+        "lowestCash": 27342,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 19,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 103843,
+        "lowestCash": 27342,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 19,
+        "bistroWeekMedian": 5,
+        "starEarned": 0
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 83681,
+        "lowestCash": 27342,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 13,
+        "bistroWeekMedian": 5,
+        "starEarned": 0
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 114834,
+        "lowestCash": 27342,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 111319,
+        "lowestCash": 27342,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      }
+    },
+    "lasare": {
+      "torget": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 59300,
+        "lowestCash": 25187,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 16,
+        "bistroWeekMedian": 5,
+        "starEarned": 0
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 110722,
+        "lowestCash": 26905,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 110722,
+        "lowestCash": 26905,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 149235,
+        "lowestCash": 28566,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 3,
+        "starEarned": 0
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 194219,
+        "lowestCash": 28269,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 3,
+        "starEarned": 19
+      }
+    },
+    "mentorn": {
+      "torget": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 59300,
+        "lowestCash": 25187,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 16,
+        "bistroWeekMedian": 5,
+        "starEarned": 0
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 117993,
+        "lowestCash": 26905,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 110722,
+        "lowestCash": 26905,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 97815,
+        "lowestCash": 26905,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 123296,
+        "lowestCash": 26905,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 20,
+        "bistroWeekMedian": 4,
+        "starEarned": 0
+      }
+    },
+    "mentornVinbar": {
+      "torget": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 37288,
+        "lowestCash": 24662,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 100465,
+        "lowestCash": 26905,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 84829,
+        "lowestCash": 26905,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 60694,
+        "lowestCash": 26905,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 58828,
+        "lowestCash": 26905,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "per": {
+      "torget": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 34302,
+        "lowestCash": 17867,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 74087,
+        "lowestCash": 25089,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 56427,
+        "lowestCash": 25089,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 45975,
+        "lowestCash": 25089,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 52286,
+        "lowestCash": 25089,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "rimlig": {
+      "torget": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 21797,
+        "lowestCash": 12112,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 68436,
+        "lowestCash": 25089,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 51227,
+        "lowestCash": 25089,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 49596,
+        "lowestCash": 25089,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 46511,
+        "lowestCash": 25089,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "slarvig": {
+      "torget": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -64970,
+        "lowestCash": -70100,
+        "renegotiated": 20,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -97391,
+        "lowestCash": -100348,
+        "renegotiated": 20,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -98811,
+        "lowestCash": -104441,
+        "renegotiated": 20,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -88556,
+        "lowestCash": -92892,
+        "renegotiated": 20,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -88434,
+        "lowestCash": -93217,
+        "renegotiated": 20,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      }
+    },
+    "soigne": {
+      "torget": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 448272,
+        "lowestCash": 15637,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 19,
+        "bistroWeekMedian": 3,
+        "starEarned": 17
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 20,
+        "meanCashEnd": -218914,
+        "lowestCash": -305276,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 0,
+        "bistroWeekMedian": null,
+        "starEarned": 0
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 8,
+        "meanCashEnd": 12211,
+        "lowestCash": -250625,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 10,
+        "bistroWeekMedian": 5,
+        "starEarned": 8
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 489299,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 8,
+        "bistroWeekMedian": 5,
+        "starEarned": 6
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 475295,
+        "lowestCash": 26831,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 16,
+        "bistroWeekMedian": 4,
+        "starEarned": 10
+      }
+    },
+    "stjarna": {
+      "torget": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 101203,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 11,
+        "bistroWeekMedian": 5,
+        "starEarned": 7
+      },
+      "kallaren": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 115450,
+        "lowestCash": 29747,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 12,
+        "bistroWeekMedian": 4,
+        "starEarned": 11
+      },
+      "kallaren-aw": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 90918,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 6,
+        "bistroWeekMedian": 5,
+        "starEarned": 5
+      },
+      "salongen": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 119569,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 16,
+        "bistroWeekMedian": 5,
+        "starEarned": 12
+      },
+      "glashornet": {
+        "seeds": 20,
+        "closed": 0,
+        "meanCashEnd": 113737,
+        "lowestCash": 32091,
+        "renegotiated": 0,
+        "reachedVinbar": 20,
+        "reachedBistro": 16,
+        "bistroWeekMedian": 4,
+        "starEarned": 10
+      }
+    }
+  },
+  "ranking": {
+    "bistro": [
+      {
+        "lokal": "salongen",
+        "meanCashEnd": 119569,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": 115450,
+        "closed": 0
+      },
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": 113737,
+        "closed": 0
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": 101203,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": 90918,
+        "closed": 0
+      }
+    ],
+    "enkel": [
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": 166805,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": 142500,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": 132796,
+        "closed": 0
+      },
+      {
+        "lokal": "salongen",
+        "meanCashEnd": 119483,
+        "closed": 0
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": 90304,
+        "closed": 0
+      }
+    ],
+    "forsiktig": [
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": 108126,
+        "closed": 0
+      },
+      {
+        "lokal": "salongen",
+        "meanCashEnd": 107891,
+        "closed": 0
+      },
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": 106262,
+        "closed": 0
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": 99465,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": 94866,
+        "closed": 0
+      }
+    ],
+    "halva": [
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": -44207,
+        "closed": 20
+      },
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": -44238,
+        "closed": 20
+      },
+      {
+        "lokal": "salongen",
+        "meanCashEnd": -49273,
+        "closed": 20
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": -49726,
+        "closed": 20
+      },
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": -53526,
+        "closed": 20
+      }
+    ],
+    "halvbra": [
+      {
+        "lokal": "torget",
+        "meanCashEnd": -25407,
+        "closed": 20
+      },
+      {
+        "lokal": "salongen",
+        "meanCashEnd": -29139,
+        "closed": 20
+      },
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": -31629,
+        "closed": 20
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": -33735,
+        "closed": 20
+      },
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": -39541,
+        "closed": 20
+      }
+    ],
+    "ignorerar": [
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": -47207,
+        "closed": 20
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": -47903,
+        "closed": 20
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": -58978,
+        "closed": 20
+      },
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": -60641,
+        "closed": 20
+      },
+      {
+        "lokal": "salongen",
+        "meanCashEnd": -62801,
+        "closed": 20
+      }
+    ],
+    "ignorerarUtbildad": [
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": -8242,
+        "closed": 14
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": -9633,
+        "closed": 12
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": -15263,
+        "closed": 18
+      },
+      {
+        "lokal": "salongen",
+        "meanCashEnd": -21551,
+        "closed": 18
+      },
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": -45013,
+        "closed": 20
+      }
+    ],
+    "klok": [
+      {
+        "lokal": "salongen",
+        "meanCashEnd": 114834,
+        "closed": 0
+      },
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": 111319,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": 103843,
+        "closed": 0
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": 91520,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": 83681,
+        "closed": 0
+      }
+    ],
+    "lasare": [
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": 194219,
+        "closed": 0
+      },
+      {
+        "lokal": "salongen",
+        "meanCashEnd": 149235,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": 110722,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": 110722,
+        "closed": 0
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": 59300,
+        "closed": 0
+      }
+    ],
+    "mentorn": [
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": 123296,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": 117993,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": 110722,
+        "closed": 0
+      },
+      {
+        "lokal": "salongen",
+        "meanCashEnd": 97815,
+        "closed": 0
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": 59300,
+        "closed": 0
+      }
+    ],
+    "mentornVinbar": [
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": 100465,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": 84829,
+        "closed": 0
+      },
+      {
+        "lokal": "salongen",
+        "meanCashEnd": 60694,
+        "closed": 0
+      },
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": 58828,
+        "closed": 0
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": 37288,
+        "closed": 0
+      }
+    ],
+    "per": [
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": 74087,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": 56427,
+        "closed": 0
+      },
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": 52286,
+        "closed": 0
+      },
+      {
+        "lokal": "salongen",
+        "meanCashEnd": 45975,
+        "closed": 0
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": 34302,
+        "closed": 0
+      }
+    ],
+    "rimlig": [
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": 68436,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": 51227,
+        "closed": 0
+      },
+      {
+        "lokal": "salongen",
+        "meanCashEnd": 49596,
+        "closed": 0
+      },
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": 46511,
+        "closed": 0
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": 21797,
+        "closed": 0
+      }
+    ],
+    "slarvig": [
+      {
+        "lokal": "torget",
+        "meanCashEnd": -64970,
+        "closed": 20
+      },
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": -88434,
+        "closed": 20
+      },
+      {
+        "lokal": "salongen",
+        "meanCashEnd": -88556,
+        "closed": 20
+      },
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": -97391,
+        "closed": 20
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": -98811,
+        "closed": 20
+      }
+    ],
+    "soigne": [
+      {
+        "lokal": "salongen",
+        "meanCashEnd": 489299,
+        "closed": 0
+      },
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": 475295,
+        "closed": 0
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": 448272,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": 12211,
+        "closed": 8
+      },
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": -218914,
+        "closed": 20
+      }
+    ],
+    "stjarna": [
+      {
+        "lokal": "salongen",
+        "meanCashEnd": 119569,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren",
+        "meanCashEnd": 115450,
+        "closed": 0
+      },
+      {
+        "lokal": "glashornet",
+        "meanCashEnd": 113737,
+        "closed": 0
+      },
+      {
+        "lokal": "torget",
+        "meanCashEnd": 101203,
+        "closed": 0
+      },
+      {
+        "lokal": "kallaren-aw",
+        "meanCashEnd": 90918,
+        "closed": 0
+      }
+    ]
+  },
+  "goal": {
+    "bestPerPlayer": {
+      "bistro": "salongen",
+      "enkel": "glashornet",
+      "forsiktig": "kallaren",
+      "halva": "kallaren-aw",
+      "halvbra": "torget",
+      "ignorerar": "kallaren",
+      "ignorerarUtbildad": "kallaren",
+      "klok": "salongen",
+      "lasare": "glashornet",
+      "mentorn": "glashornet",
+      "mentornVinbar": "kallaren",
+      "per": "kallaren",
+      "rimlig": "kallaren",
+      "slarvig": "torget",
+      "soigne": "salongen",
+      "stjarna": "salongen"
+    },
+    "slarvigBestTorget": true,
+    "lasareBestNotTorget": true,
+    "noPremisesBestForAll": true,
+    "bistroStep": {
+      "torget": {
+        "mentorn": 59300,
+        "mentornVinbar": 37288,
+        "bistroNotLower": true
+      },
+      "kallaren": {
+        "mentorn": 117993,
+        "mentornVinbar": 100465,
+        "bistroNotLower": true
+      },
+      "kallaren-aw": {
+        "mentorn": 110722,
+        "mentornVinbar": 84829,
+        "bistroNotLower": true
+      },
+      "salongen": {
+        "mentorn": 97815,
+        "mentornVinbar": 60694,
+        "bistroNotLower": true
+      },
+      "glashornet": {
+        "mentorn": 123296,
+        "mentornVinbar": 58828,
+        "bistroNotLower": true
+      }
+    },
+    "bistroNeverLower": true
+  }
+}

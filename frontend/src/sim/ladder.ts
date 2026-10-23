@@ -15,7 +15,7 @@
 // Stjärnan delas bara ut från bistron (LadderStep.starsPossible).
 
 import type { BusinessClassId } from './balance';
-import { FLOOR, FOODTRUCK, LADDER, MEDAL_LEVELS, ECONOMY, LOAN, TEAM_BY_CLASS } from './balance';
+import { FLOOR, FOODTRUCK, LADDER, MEDAL_LEVELS, ECONOMY, LOAN, PREMISES_MOVE, TEAM_BY_CLASS } from './balance';
 import { teamForClass } from '../strategic/simulation/team';
 import { ladderOf, nextStep, refitClosedToday, stepSpec, type LadderOffer, type LadderState, type PlayableStep, type StepRequirement } from './ladderStep';
 export * from './ladderStep';
@@ -187,6 +187,8 @@ export function takeOffer(state: SimulationState, premises?: PremisesId): Simula
     next = { ...changed, reputation: state.reputation * LADDER.reputationFactorOnPurchase };
     // ORDER 336 C — en del av stamgästerna från Magasinsgatan följer med (sim/districts.ts followingRegularsAtTakeover).
     if (toSpec.businessClass === 'vinbar') next = { ...next, economy: { ...next.economy, premises: premises ?? 'torget', followingRegulars: followingRegularsAtTakeover(state) } };
+    // ORDER 340 A — inredningen i en annan lokal än Torget: på lånet eller ur kassan (balance.ts PREMISES_MOVE).
+    if (toSpec.businessClass === 'vinbar') next = payFitOut(next, premises ?? 'torget');
   } else {
     // Ombyggnad i samma hus (vinbaren → bistron): insatsen ur kassan och
     // ombyggnaden till lånet.
@@ -212,6 +214,35 @@ export function takeOffer(state: SimulationState, premises?: PremisesId): Simula
     ladder: {
       step: offer.to, reachedOnDay: { ...ladder.reachedOnDay, [offer.to]: state.day.dayNumber }, offer: null,
       refit: rebuild ? { fromDay, untilDay: fromDay + LADDER.refitDays - 1 } : null
+    }
+  };
+}
+
+/** ORDER 340 A — inredningen för lokalen (0 vid Torget). */
+export function fitOutSek(premises: PremisesId): number {
+  return PREMISES_MOVE.fitOutSek[premises] ?? 0;
+}
+
+/** ORDER 340 A — inredningen betalas: läggs på lånet (amorteras med det) eller dras ur kassan (PREMISES_MOVE.fitOutPayment). */
+function payFitOut(state: SimulationState, premises: PremisesId): SimulationState {
+  const sek = fitOutSek(premises);
+  if (sek <= 0) return state;
+  if (PREMISES_MOVE.fitOutPayment === 'cash') {
+    const next = { ...state, ledger: [...state.ledger] };
+    applyCashDelta(next, -sek);
+    postLedger(next, { category: 'other', amount: -sek, cause: strings.economy.ledger.fitOut });
+    if (state.day.period === 'morning') next.day = { ...next.day, cashAtDayStart: (state.day.cashAtDayStart ?? state.cash) - sek };
+    return next;
+  }
+  const loan = state.economy.loan;
+  return {
+    ...state,
+    economy: {
+      ...state.economy,
+      loan: loan
+        ? { ...loan, originalSek: loan.originalSek + sek, principalSek: loan.principalSek + sek }
+        : { originalSek: sek, principalSek: sek, weeksLeft: LOAN.amortisationWeeks },
+      fitOutSek: sek
     }
   };
 }

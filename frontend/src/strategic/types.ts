@@ -1009,6 +1009,8 @@ export interface DayState {
   // ORDER 339 C — beläggningen i kväll: spelminuterna rummet varit halvtomt, och beläggningen summerad över minuterna
   // (medel = occupancyMinutes / servedMinutes), från EMPTY_ROOM.fromMinute.
   emptyRoomMinutes?: number;
+  // ORDER 340 D — det tomma rummets del av rummets stämning (roomMoodLift), mellan EMPTY_ROOM.floor och 0.
+  emptyRoomLift?: number;
   occupancyMinutes?: number;
   servedMinutes?: number;
   // ORDER 319c — livet vid vagnen i kväll: vädret, skräpet på borden och medhjälparens rundor (sim/truckLife.ts).

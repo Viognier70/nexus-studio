@@ -1,0 +1,61 @@
+{
+  "definition": "ORDER 340 B–C (sim/premisesScale.ts). seats = platserna i rummet, extraServers = servitörerna utöver Torgets i rummet (premisesExtraServers), capK = kvällens tak gånger (bistron aldrig under vinbaren i samma lokal).",
+  "rows": [
+    {
+      "premises": "torget",
+      "step": "vinbar",
+      "seats": 20,
+      "extraServers": 0,
+      "capK": 1
+    },
+    {
+      "premises": "torget",
+      "step": "bistro",
+      "seats": 31,
+      "extraServers": 0,
+      "capK": 1
+    },
+    {
+      "premises": "kallaren",
+      "step": "vinbar",
+      "seats": 44,
+      "extraServers": 2,
+      "capK": 4.84
+    },
+    {
+      "premises": "kallaren",
+      "step": "bistro",
+      "seats": 40,
+      "extraServers": 1,
+      "capK": 4.84
+    },
+    {
+      "premises": "salongen",
+      "step": "vinbar",
+      "seats": 35,
+      "extraServers": 2,
+      "capK": 3.06
+    },
+    {
+      "premises": "salongen",
+      "step": "bistro",
+      "seats": 46,
+      "extraServers": 2,
+      "capK": 3.06
+    },
+    {
+      "premises": "glashornet",
+      "step": "vinbar",
+      "seats": 36,
+      "extraServers": 2,
+      "capK": 3.24
+    },
+    {
+      "premises": "glashornet",
+      "step": "bistro",
+      "seats": 66,
+      "extraServers": 4,
+      "capK": 4.53
+    }
+  ]
+}

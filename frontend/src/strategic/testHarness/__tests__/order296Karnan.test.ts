@@ -34,8 +34,9 @@ import { reputationHoldsGuests } from '../../simulation/arrivals';
 import { AFTER_WORK, TASTING } from '../../../sim/balance';
 import { conceptTonight } from '../../simulation/guestTypes';
 import { staffKnows } from '../../../sim/staffCondition';
+import { depositSek, purchaseLoanSek } from '../../../sim/ladder';
 
-type PlayerId = 'mentorn' | 'klok' | 'per' | 'stjarna' | 'rimlig' | 'halva' | 'halvbra' | 'slarvig' | 'enkel' | 'bistro' | 'soigne' | 'ignorerar' | 'ignorerarUtbildad' | 'forsiktig';
+type PlayerId = 'mentorn' | 'klok' | 'per' | 'stjarna' | 'rimlig' | 'halva' | 'halvbra' | 'slarvig' | 'enkel' | 'bistro' | 'soigne' | 'ignorerar' | 'ignorerarUtbildad' | 'forsiktig' | 'lasare' | 'mentornVinbar';
 // ORDER 314 — "ignorerar" svarar aldrig (personalen tar över); den
 // utbildade lär personalen vin, mat och service med morgonens satsningar
 // (balance.ts STAFF_CONDITION.trainingActivities) tills alla kan sitt område.
@@ -130,7 +131,20 @@ const PLANS: Record<PlayerId, (s: SimulationState) => MorningPlan> = {
   ignorerar: () => ({ scenarioAnswer: 'ignore', actions: hand }),
   ignorerarUtbildad: (s) => ({ scenarioAnswer: 'ignore', activities: [...untrained(s)], actions: hand }),
   // ORDER 315a — "försiktig": som stjärnjägaren, men väntar en vecka med Åsas erbjudande.
-  forsiktig: (s) => ({ actions: (x) => [...wiseShop(), ...hand(x)], pins: 'wise', exams: nextStarExam(s), scenarioAnswer: 'skill', ladder: 'careful' })
+  forsiktig: (s) => ({ actions: (x) => [...wiseShop(), ...hand(x)], pins: 'wise', exams: nextStarExam(s), scenarioAnswer: 'skill', ladder: 'careful' }),
+  // ORDER 340 B — mentorn som stannar i vinbaren (tar inte bistron): bistrosteget får inte ge den starka spelaren mindre.
+  mentornVinbar: (s0) => ({ stock: 'booking', actions: hand, exams: nextBistroExam(s0), ladder: 'vinbar' }),
+  // ORDER 340 A — den som läser kvarteret (KVARTEREN_KONKURRENSEN_SPELLAGEN.md §1–2): mentorns morgon, och det lokalens
+  // kvarter vill ha. Studentkvarteret (källaren): AW på vardagarna. Gästgivaregården (salongen, kräsna gäster som läser
+  // helheten): klokt i butiken och på nålarna och kunskapen i svaren. Campus (Flygeln, läser medaljerna): proven mot
+  // stjärnan. Torget: som mentorn.
+  lasare: (s0) => {
+    const base: MorningPlan = { stock: 'booking', actions: hand, exams: nextBistroExam(s0) };
+    if (PREMISES_ROW === 'kallaren') return { ...base, activities: afterWorkAvailable(s0) ? [AFTER_WORK.activityId] : [] };
+    if (PREMISES_ROW === 'salongen') return { ...base, actions: (s) => [...wiseShop(), ...hand(s)], pins: 'wise', scenarioAnswer: 'skill' };
+    if (PREMISES_ROW === 'glashornet') return { ...base, exams: nextStarExam(s0) };
+    return base;
+  }
 };
 
 // ORDER 298b — KARNAN_TASTING=1: spelaren köper "Provsmakning på torget" de
@@ -163,6 +177,7 @@ const TRUCK_SPOT = (process.env.KARNAN_TRUCK_SPOT ?? null) as TruckSpotId | null
 // ORDER 333 D — KARNAN_PREMISES=kallaren: vinbaren (och bistron) står i en av lokalerna från övertagandet, som
 // spelaren väljer i erbjudandet. Utan den Torget som förut.
 const PREMISES_ROW = (process.env.KARNAN_PREMISES ?? null) as PremisesId | null;
+const TAKEOVER_WEEK = process.env.KARNAN_TAKEOVER_WEEK ? Number(process.env.KARNAN_TAKEOVER_WEEK) : null;
 // Från den här veckan räknas platsen i byn (efter stegen i foodtrucken och vinbaren).
 const TOP_FROM_WEEK = 4;
 
@@ -192,12 +207,15 @@ function season(seed: number, player: PlayerId, weeks: number, start: number | n
     if (TRUCK_SPOT && s.economy.businessClass === 'foodtruck' && cal.isServiceDay) {
       s = { ...s, economy: { ...s.economy, truckSpot: truckSpotOpen(TRUCK_SPOT, s.day.dayNumber) ? TRUCK_SPOT : 'torget' } };
     }
-    if (PREMISES_ROW && s.economy.businessClass && s.economy.businessClass !== 'foodtruck' && s.economy.premises !== PREMISES_ROW) {
-      s = { ...s, economy: { ...s.economy, premises: PREMISES_ROW } };
+    // ORDER 340 A — lokalen väljs när vinbaren tas över (plan.premises → LADDER_TAKE), så att inredningen betalas.
+    // ORDER 340 E — KARNAN_TAKEOVER_WEEK: alla tar över vinbaren den veckans första servicemorgon (Åsas erbjudande
+    // utan kraven), också de som annars aldrig når den, så att alla spelartyper kan mätas i lokalerna.
+    if (TAKEOVER_WEEK !== null && cal.week >= TAKEOVER_WEEK && cal.isServiceDay && s.economy.businessClass === 'foodtruck' && !s.ladder?.offer) {
+      s = { ...s, ladder: { ...s.ladder!, offer: { to: 'vinbar', depositSek: depositSek('vinbar', s.medals), loanSek: purchaseLoanSek('vinbar'), state: 'offered', offeredOnDay: s.day.dayNumber } } };
     }
     const truckTonight = s.economy.businessClass === 'foodtruck' && cal.isServiceDay ? playerTruckSpotOf(s) : null;
     const revenueBefore = s.revenue;
-    const plan = withAfterWork(s, withTasting(s, PLANS[player](s)));
+    const plan = withAfterWork(s, withTasting(s, { ...PLANS[player](s), ...(PREMISES_ROW ? { premises: PREMISES_ROW } : {}) }));
     if (plan.activities?.includes(TASTING.activityId)) tastings++;
     if (plan.activities?.includes(AFTER_WORK.activityId)) afterWorks++;
     // ORDER 334 B — kvällen i ordningen på platsen och stamgästerna (sim/districts.ts), före dagen.
@@ -254,7 +272,7 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
     // Prövning av tal i minnet: KARNAN_VARIANT='{"INCIDENTS":{"wrongCashShare":1}}'.
     const balance = await import('../../../sim/balance');
     for (const [k, v] of Object.entries(JSON.parse(process.env.KARNAN_VARIANT ?? '{}') as Record<string, Record<string, unknown>>)) Object.assign((balance as unknown as Record<string, Record<string, unknown>>)[k], v);
-    const all: PlayerId[] = ['mentorn', 'klok', 'per', 'stjarna', 'rimlig', 'halva', 'halvbra', 'slarvig', 'enkel', 'bistro', 'soigne', 'ignorerar', 'ignorerarUtbildad', 'forsiktig'];
+    const all: PlayerId[] = ['mentorn', 'klok', 'per', 'stjarna', 'rimlig', 'halva', 'halvbra', 'slarvig', 'enkel', 'bistro', 'soigne', 'ignorerar', 'ignorerarUtbildad', 'forsiktig', 'lasare', 'mentornVinbar'];
     // KARNAN_PLAYERS=halva,rimlig kör bara de spelarna (kalibreringen).
     const players = process.env.KARNAN_PLAYERS ? all.filter((p) => process.env.KARNAN_PLAYERS!.split(',').includes(p)) : all;
     const result: Record<string, unknown> = {};
@@ -327,7 +345,7 @@ describe.skipIf(!process.env.KARNAN_SEEDS)('ORDER 296 — kärnans tal', () => {
       const { fileURLToPath } = await import('node:url');
       const out = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../reports', process.env.REPORT_ORDER ?? 'order296');
       mkdirSync(out, { recursive: true });
-      writeFileSync(resolve(out, process.env.KARNAN_OUT ?? 'karnan.json'), JSON.stringify({ truckSpot: TRUCK_SPOT, premises: PREMISES_ROW, tasting: TASTING_ON, definition: 'Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).', start, variant: process.env.KARNAN_VARIANT ?? null, seeds, weeks, players: result }, null, 2) + '\n');
+      writeFileSync(resolve(out, process.env.KARNAN_OUT ?? 'karnan.json'), JSON.stringify({ truckSpot: TRUCK_SPOT, premises: PREMISES_ROW, takeoverWeek: TAKEOVER_WEEK, tasting: TASTING_ON, definition: 'Säsongen med spelets regler (balance.ts RISK): startkassan, veckomålet på intäkten, omförhandlingen och stängningen räknas av simuleringen (sim/economy.ts settleWeek). resultSek = kassans förändring vecka till vecka. Mise en place ur sim/miseEnPlace.ts misePlan (behov, hinns, eftersläp i spelminuter, och den extra handen).', start, variant: process.env.KARNAN_VARIANT ?? null, seeds, weeks, players: result }, null, 2) + '\n');
     }
     expect(Object.keys(result).length).toBe(players.length);
   }, 3600000);

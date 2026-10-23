@@ -2,10 +2,13 @@
 // Under valet står vem som finns i lokalens kvarter (samma rader som vagnens platser, spot.who.*). Klassen är densamma i
 // alla lokaler; spelaren läser kvarteret. Valet syns i världen: vinbaren står i lokalens hus.
 // ORDER 334 A — hyran står vid varje lokal (källaren är billigare, balance.ts DISTRICTS.premisesRentK).
+// ORDER 340 A — och inredningen (balance.ts PREMISES_MOVE): Torget är inrett och har folket på torget som går in.
 import { useLanguage } from '../../content/language';
 import { t as tt, type StringKey } from '../../content/nexusStrings';
 import { PREMISES, PREMISES_IDS, type PremisesId } from '../../sim/districts';
 import { weeklyRentSek } from '../../sim/economy';
+import { fitOutSek } from '../../sim/ladder';
+import { PREMISES_MOVE } from '../../sim/balance';
 import '../ui/screens/screens.css';
 
 export function PremisesPicker({ value, onChange }: { value: PremisesId; onChange: (p: PremisesId) => void }) {
@@ -27,6 +30,12 @@ export function PremisesPicker({ value, onChange }: { value: PremisesId; onChang
             <span className="nxs-spot-name">{tt(lang, `premises.name.${id}` as StringKey)}</span>
             <span className="nx-small">{tt(lang, `premises.where.${id}` as StringKey)}</span>
             <span className="nx-small" data-testid={`premises-rent-${id}`} data-rent={weeklyRentSek('vinbar', undefined, id)}>{tt(lang, 'premises.rent', { rent: weeklyRentSek('vinbar', undefined, id).toLocaleString(lang === 'sv' ? 'sv-SE' : 'en-GB') })}</span>
+            <span className="nx-small" data-testid={`premises-fitout-${id}`} data-fitout={fitOutSek(id)}>
+              {fitOutSek(id) > 0
+                ? tt(lang, PREMISES_MOVE.fitOutPayment === 'cash' ? 'premises.fitOut.cash' : 'premises.fitOut.loan', { sek: fitOutSek(id).toLocaleString(lang === 'sv' ? 'sv-SE' : 'en-GB') })
+                : tt(lang, 'premises.fitted')}
+            </span>
+            {id === 'torget' && <span className="nx-small" data-testid="premises-walkins" data-walkins={PREMISES_MOVE.walkIns}>{tt(lang, 'premises.walkIns', { n: PREMISES_MOVE.walkIns })}</span>}
           </button>
         ))}
       </div>

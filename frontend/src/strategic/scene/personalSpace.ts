@@ -186,6 +186,9 @@ export class PersonalSpace {
     for (const { t } of at) { t.ox *= decay; t.oz *= decay; }
     this.resolve(at, PERSONAL_SPACE.iterationsPerFrame);
     if (this.closest(at) < MIN_GAP_M) this.resolve(at, PERSONAL_SPACE.settleIterations);
+    // ORDER 340 — en som går och fortfarande står i en som sitter (eftersläpningen bakom vägen har lagt den vid ett
+    // bord, och den som sitter flyttas inte) hämtar in eftersläpningen och står på sin väg; sedan löses det igen.
+    if (this.closest(at) < MIN_GAP_M && this.catchUpAtPinned(at)) this.resolve(at, PERSONAL_SPACE.settleIterations);
     this.shown.clear();
     for (const { b, t } of at) this.shown.set(b.key, [b.x - t.lagX + t.ox, b.z - t.lagZ + t.oz]);
     return this.shown;
@@ -199,6 +202,20 @@ export class PersonalSpace {
     this.shown.clear();
     for (const { b, t } of at) this.shown.set(b.key, [b.x - t.lagX + t.ox, b.z - t.lagZ + t.oz]);
     return this.shown;
+  }
+
+  /** Sätter eftersläpningen till 0 för den som inte sitter i varje par under MIN_GAP_M där den andra sitter. */
+  private catchUpAtPinned(at: ReadonlyArray<{ b: SpaceBody; t: Track }>): boolean {
+    let any = false;
+    for (let i = 0; i < at.length; i++) for (let j = i + 1; j < at.length; j++) {
+      const a = at[i], c = at[j];
+      if (a.b.pinned === c.b.pinned) continue;
+      const d = Math.hypot(a.b.x - a.t.lagX + a.t.ox - (c.b.x - c.t.lagX + c.t.ox), a.b.z - a.t.lagZ + a.t.oz - (c.b.z - c.t.lagZ + c.t.oz));
+      if (d >= MIN_GAP_M) continue;
+      const free = a.b.pinned ? c.t : a.t;
+      if (free.lagX !== 0 || free.lagZ !== 0) { free.lagX = 0; free.lagZ = 0; any = true; }
+    }
+    return any;
   }
 
   private closest(at: ReadonlyArray<{ b: SpaceBody; t: Track }>): number {
